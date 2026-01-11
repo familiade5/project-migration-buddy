@@ -1,0 +1,326 @@
+import { useRef, useState } from 'react';
+import { toPng } from 'html-to-image';
+import { Download, ChevronLeft, ChevronRight, Loader2, Square, Smartphone } from 'lucide-react';
+import { PropertyData } from '@/types/property';
+import { PostCover } from './posts/PostCover';
+import { PostDetails } from './posts/PostDetails';
+import { PostFeatures } from './posts/PostFeatures';
+import { PostContact } from './posts/PostContact';
+import { PostCoverStory } from './posts/story/PostCoverStory';
+import { PostDetailsStory } from './posts/story/PostDetailsStory';
+import { PostFeaturesStory } from './posts/story/PostFeaturesStory';
+import { PostContactStory } from './posts/story/PostContactStory';
+import { Button } from '@/components/ui/button';
+import { toast } from 'sonner';
+
+interface PostPreviewProps {
+  data: PropertyData;
+  photos: string[];
+}
+
+type FormatType = 'feed' | 'story';
+
+export const PostPreview = ({ data, photos }: PostPreviewProps) => {
+  const [currentPost, setCurrentPost] = useState(0);
+  const [isExporting, setIsExporting] = useState(false);
+  const [format, setFormat] = useState<FormatType>('feed');
+  
+  // Refs para formato feed (1:1)
+  const feedRefs = [useRef<HTMLDivElement>(null), useRef<HTMLDivElement>(null), useRef<HTMLDivElement>(null), useRef<HTMLDivElement>(null)];
+  // Refs para formato story (9:16)
+  const storyRefs = [useRef<HTMLDivElement>(null), useRef<HTMLDivElement>(null), useRef<HTMLDivElement>(null), useRef<HTMLDivElement>(null)];
+
+  const feedPosts = [
+    { name: 'Capa', component: PostCover, photoIndex: 0 },
+    { name: 'Detalhes', component: PostDetails, photoIndex: 1 },
+    { name: 'Diferenciais', component: PostFeatures, photoIndex: 2 },
+    { name: 'Contato', component: PostContact, photoIndex: 3 },
+  ];
+
+  const storyPosts = [
+    { name: 'Capa', component: PostCoverStory, photoIndex: 0 },
+    { name: 'Detalhes', component: PostDetailsStory, photoIndex: 1 },
+    { name: 'Diferenciais', component: PostFeaturesStory, photoIndex: 2 },
+    { name: 'Contato', component: PostContactStory, photoIndex: 3 },
+  ];
+
+  const posts = format === 'feed' ? feedPosts : storyPosts;
+  const postRefs = format === 'feed' ? feedRefs : storyRefs;
+
+  const handleExportSingle = async (index: number) => {
+    const ref = postRefs[index];
+    if (!ref.current) return;
+
+    try {
+      setIsExporting(true);
+      const dataUrl = await toPng(ref.current, {
+        quality: 1,
+        pixelRatio: 2,
+        cacheBust: true,
+      });
+      
+      const link = document.createElement('a');
+      const formatSuffix = format === 'feed' ? 'feed' : 'story';
+      link.download = `post-${index + 1}-${posts[index].name.toLowerCase()}-${formatSuffix}.png`;
+      link.href = dataUrl;
+      link.click();
+      toast.success(`Post ${index + 1} (${format === 'feed' ? 'Feed' : 'Story'}) exportado!`);
+    } catch (error) {
+      toast.error('Erro ao exportar imagem');
+      console.error(error);
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
+  const handleExportAll = async () => {
+    setIsExporting(true);
+    try {
+      const formatSuffix = format === 'feed' ? 'feed' : 'story';
+      for (let i = 0; i < postRefs.length; i++) {
+        const ref = postRefs[i];
+        if (!ref.current) continue;
+
+        const dataUrl = await toPng(ref.current, {
+          quality: 1,
+          pixelRatio: 2,
+          cacheBust: true,
+        });
+        
+        const link = document.createElement('a');
+        link.download = `post-${i + 1}-${posts[i].name.toLowerCase()}-${formatSuffix}.png`;
+        link.href = dataUrl;
+        link.click();
+        
+        await new Promise(resolve => setTimeout(resolve, 300));
+      }
+      toast.success(`Todos os posts (${format === 'feed' ? 'Feed' : 'Story'}) exportados!`);
+    } catch (error) {
+      toast.error('Erro ao exportar imagens');
+      console.error(error);
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
+  const handleExportBothFormats = async () => {
+    setIsExporting(true);
+    try {
+      // Exportar formato feed
+      for (let i = 0; i < feedRefs.length; i++) {
+        const ref = feedRefs[i];
+        if (!ref.current) continue;
+
+        const dataUrl = await toPng(ref.current, {
+          quality: 1,
+          pixelRatio: 2,
+          cacheBust: true,
+        });
+        
+        const link = document.createElement('a');
+        link.download = `post-${i + 1}-${feedPosts[i].name.toLowerCase()}-feed.png`;
+        link.href = dataUrl;
+        link.click();
+        
+        await new Promise(resolve => setTimeout(resolve, 200));
+      }
+
+      // Exportar formato story
+      for (let i = 0; i < storyRefs.length; i++) {
+        const ref = storyRefs[i];
+        if (!ref.current) continue;
+
+        const dataUrl = await toPng(ref.current, {
+          quality: 1,
+          pixelRatio: 2,
+          cacheBust: true,
+        });
+        
+        const link = document.createElement('a');
+        link.download = `post-${i + 1}-${storyPosts[i].name.toLowerCase()}-story.png`;
+        link.href = dataUrl;
+        link.click();
+        
+        await new Promise(resolve => setTimeout(resolve, 200));
+      }
+
+      toast.success('Todos os 8 posts (Feed + Story) exportados!');
+    } catch (error) {
+      toast.error('Erro ao exportar imagens');
+      console.error(error);
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
+  const CurrentPostComponent = posts[currentPost].component;
+  const currentPhoto = photos[posts[currentPost].photoIndex] || photos[0] || null;
+
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <h3 className="font-display text-lg text-gold">Preview do Carrossel</h3>
+        
+        {/* Seletor de formato */}
+        <div className="flex items-center gap-1 bg-surface rounded-lg p-1">
+          <button
+            onClick={() => setFormat('feed')}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm transition-all ${
+              format === 'feed'
+                ? 'bg-gold text-primary-foreground'
+                : 'text-muted-foreground hover:text-foreground'
+            }`}
+          >
+            <Square className="w-4 h-4" />
+            <span>Feed</span>
+          </button>
+          <button
+            onClick={() => setFormat('story')}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm transition-all ${
+              format === 'story'
+                ? 'bg-gold text-primary-foreground'
+                : 'text-muted-foreground hover:text-foreground'
+            }`}
+          >
+            <Smartphone className="w-4 h-4" />
+            <span>Story</span>
+          </button>
+        </div>
+      </div>
+
+      {/* Botões de exportação */}
+      <div className="flex flex-wrap gap-2">
+        <Button
+          onClick={handleExportAll}
+          disabled={isExporting}
+          variant="outline"
+          className="gap-2 flex-1"
+        >
+          {isExporting ? (
+            <Loader2 className="w-4 h-4 animate-spin" />
+          ) : (
+            <Download className="w-4 h-4" />
+          )}
+          Exportar {format === 'feed' ? 'Feed' : 'Stories'}
+        </Button>
+        <Button
+          onClick={handleExportBothFormats}
+          disabled={isExporting}
+          className="bg-gold hover:bg-gold-dark text-primary-foreground gap-2 flex-1"
+        >
+          {isExporting ? (
+            <Loader2 className="w-4 h-4 animate-spin" />
+          ) : (
+            <Download className="w-4 h-4" />
+          )}
+          Exportar Tudo (8 imagens)
+        </Button>
+      </div>
+
+      {/* Post Navigation */}
+      <div className="flex items-center justify-center gap-2">
+        {posts.map((post, index) => (
+          <button
+            key={index}
+            onClick={() => setCurrentPost(index)}
+            className={`px-3 py-1.5 rounded-full text-sm transition-all ${
+              currentPost === index
+                ? 'bg-gold text-primary-foreground'
+                : 'bg-surface text-muted-foreground hover:bg-surface-elevated'
+            }`}
+          >
+            {post.name}
+          </button>
+        ))}
+      </div>
+
+      {/* Current Post Preview */}
+      <div className="relative">
+        <div className="flex items-center justify-center gap-4">
+          <button
+            onClick={() => setCurrentPost((prev) => (prev === 0 ? 3 : prev - 1))}
+            className="p-2 rounded-full bg-surface hover:bg-surface-elevated transition-colors"
+          >
+            <ChevronLeft className="w-5 h-5 text-muted-foreground" />
+          </button>
+
+          <div className="relative rounded-xl overflow-hidden shadow-2xl">
+            <div ref={postRefs[currentPost]}>
+              <CurrentPostComponent data={data} photo={currentPhoto} photos={photos} />
+            </div>
+          </div>
+
+          <button
+            onClick={() => setCurrentPost((prev) => (prev === 3 ? 0 : prev + 1))}
+            className="p-2 rounded-full bg-surface hover:bg-surface-elevated transition-colors"
+          >
+            <ChevronRight className="w-5 h-5 text-muted-foreground" />
+          </button>
+        </div>
+
+        {/* Export single button */}
+        <div className="flex justify-center mt-4">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => handleExportSingle(currentPost)}
+            disabled={isExporting}
+            className="gap-2"
+          >
+            <Download className="w-4 h-4" />
+            Exportar este post
+          </Button>
+        </div>
+      </div>
+
+      {/* All Posts Grid (hidden, used for export) - FEED */}
+      <div className="fixed -left-[9999px] top-0">
+        {feedPosts.map((Post, index) => (
+          <div key={`feed-${index}`} ref={feedRefs[index]}>
+            <Post.component data={data} photo={photos[index] || photos[0] || null} photos={photos} />
+          </div>
+        ))}
+      </div>
+
+      {/* All Posts Grid (hidden, used for export) - STORY */}
+      <div className="fixed -left-[9999px] top-0">
+        {storyPosts.map((Post, index) => (
+          <div key={`story-${index}`} ref={storyRefs[index]}>
+            <Post.component data={data} photo={photos[index] || photos[0] || null} photos={photos} />
+          </div>
+        ))}
+      </div>
+
+      {/* Thumbnails */}
+      <div className="grid grid-cols-4 gap-2">
+        {posts.map((Post, index) => (
+          <button
+            key={index}
+            onClick={() => setCurrentPost(index)}
+            className={`relative rounded-lg overflow-hidden transition-all ${
+              currentPost === index
+                ? 'ring-2 ring-gold ring-offset-2 ring-offset-background'
+                : 'opacity-60 hover:opacity-100'
+            }`}
+          >
+            <div 
+              className="origin-top-left" 
+              style={{ 
+                transform: format === 'feed' ? 'scale(0.2)' : 'scale(0.15)', 
+                width: format === 'feed' ? '400px' : '360px' 
+              }}
+            >
+              <Post.component data={data} photo={photos[index] || photos[0] || null} photos={photos} />
+            </div>
+            <div className="absolute inset-0" style={{ aspectRatio: format === 'feed' ? '1/1' : '9/16' }} />
+          </button>
+        ))}
+      </div>
+
+      {/* Info sobre formatos */}
+      <div className="text-center text-xs text-muted-foreground">
+        <p>📱 <strong>Feed:</strong> 1:1 (400x400px) • <strong>Story:</strong> 9:16 (360x640px)</p>
+      </div>
+    </div>
+  );
+};
