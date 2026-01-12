@@ -1,6 +1,7 @@
-import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
+import { createContext, useContext, useEffect, useState, ReactNode, useCallback } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
+import type { Json } from '@/integrations/supabase/types';
 
 interface Profile {
   id: string;
@@ -109,14 +110,52 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  const logActivity = useCallback(async (
+    userId: string,
+    userEmail: string | undefined,
+    userName: string,
+    action: string,
+    resourceType?: string,
+    resourceId?: string,
+    details?: Record<string, unknown>
+  ) => {
+    try {
+      await supabase.from('activity_logs').insert({
+        user_id: userId,
+        user_email: userEmail || null,
+        user_name: userName,
+        action,
+        resource_type: resourceType || null,
+        resource_id: resourceId || null,
+        details: (details as Json) || null,
+      });
+    } catch (error) {
+      console.error('Error logging activity:', error);
+    }
+  }, []);
+
   const signIn = async (email: string, password: string) => {
     try {
-      const { error } = await supabase.auth.signInWithPassword({
+      const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
       
       if (error) return { error };
+      
+      // Log login activity
+      if (data.user) {
+        const userMetadata = data.user.user_metadata;
+        await logActivity(
+          data.user.id,
+          data.user.email,
+          userMetadata?.full_name || 'Usuário',
+          'login',
+          undefined,
+          undefined,
+          { email: data.user.email }
+        );
+      }
       
       return { error: null };
     } catch (error) {
@@ -147,6 +186,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const signOut = async () => {
+    // Log logout activity before signing out
+    if (user && profile) {
+      await logActivity(
+        user.id,
+        profile.email || user.email,
+        profile.full_name || 'Usuário',
+        'logout'
+      );
+    }
     await supabase.auth.signOut();
   };
 

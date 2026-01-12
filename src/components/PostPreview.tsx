@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react';
 import { toPng } from 'html-to-image';
-import { Download, ChevronLeft, ChevronRight, Loader2, Square, Smartphone } from 'lucide-react';
+import { Download, ChevronLeft, ChevronRight, Loader2, Square, Smartphone, Save } from 'lucide-react';
 import { PropertyData } from '@/types/property';
 import { PostCover } from './posts/PostCover';
 import { PostDetails } from './posts/PostDetails';
@@ -12,6 +12,10 @@ import { PostFeaturesStory } from './posts/story/PostFeaturesStory';
 import { PostContactStory } from './posts/story/PostContactStory';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/contexts/AuthContext';
+import { useActivityLog } from '@/hooks/useActivityLog';
+import type { Json } from '@/integrations/supabase/types';
 
 interface PostPreviewProps {
   data: PropertyData;
@@ -23,7 +27,11 @@ type FormatType = 'feed' | 'story';
 export const PostPreview = ({ data, photos }: PostPreviewProps) => {
   const [currentPost, setCurrentPost] = useState(0);
   const [isExporting, setIsExporting] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   const [format, setFormat] = useState<FormatType>('feed');
+  
+  const { user, profile } = useAuth();
+  const { logActivity } = useActivityLog();
   
   // Refs para formato feed (1:1)
   const feedRefs = [useRef<HTMLDivElement>(null), useRef<HTMLDivElement>(null), useRef<HTMLDivElement>(null), useRef<HTMLDivElement>(null)];
@@ -46,6 +54,54 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
 
   const posts = format === 'feed' ? feedPosts : storyPosts;
   const postRefs = format === 'feed' ? feedRefs : storyRefs;
+
+  // Generate a title based on property data
+  const generateTitle = () => {
+    const type = data.type || 'Imóvel';
+    const city = data.city || '';
+    const neighborhood = data.neighborhood || '';
+    const location = [neighborhood, city].filter(Boolean).join(' - ') || 'Sem localização';
+    return `${type} - ${location}`;
+  };
+
+  // Save creative to database
+  const saveCreative = async (thumbnailUrl?: string) => {
+    if (!user) {
+      toast.error('Você precisa estar logado para salvar');
+      return null;
+    }
+
+    try {
+      const title = generateTitle();
+      const { data: creative, error } = await supabase
+        .from('creatives')
+        .insert({
+          user_id: user.id,
+          title,
+          property_data: data as unknown as Json,
+          photos,
+          thumbnail_url: thumbnailUrl || null,
+        })
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      // Log the activity
+      await logActivity('create_creative', 'creative', creative.id, {
+        title,
+        type: data.type,
+        city: data.city,
+        neighborhood: data.neighborhood,
+        photos_count: photos.length,
+      });
+
+      return creative;
+    } catch (error) {
+      console.error('Error saving creative:', error);
+      throw error;
+    }
+  };
 
   const handleExportSingle = async (index: number) => {
     const ref = postRefs[index];
@@ -77,6 +133,8 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
     setIsExporting(true);
     try {
       const formatSuffix = format === 'feed' ? 'feed' : 'story';
+      let thumbnailUrl: string | undefined;
+      
       for (let i = 0; i < postRefs.length; i++) {
         const ref = postRefs[i];
         if (!ref.current) continue;
@@ -87,6 +145,11 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
           cacheBust: true,
         });
         
+        // Use first image as thumbnail
+        if (i === 0) {
+          thumbnailUrl = dataUrl;
+        }
+        
         const link = document.createElement('a');
         link.download = `post-${i + 1}-${posts[i].name.toLowerCase()}-${formatSuffix}.png`;
         link.href = dataUrl;
@@ -94,7 +157,11 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
         
         await new Promise(resolve => setTimeout(resolve, 300));
       }
-      toast.success(`Todos os posts (${format === 'feed' ? 'Feed' : 'Story'}) exportados!`);
+      
+      // Save to library and log activity
+      await saveCreative(thumbnailUrl);
+      
+      toast.success(`Todos os posts (${format === 'feed' ? 'Feed' : 'Story'}) exportados e salvos!`);
     } catch (error) {
       toast.error('Erro ao exportar imagens');
       console.error(error);
@@ -106,6 +173,8 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
   const handleExportBothFormats = async () => {
     setIsExporting(true);
     try {
+      let thumbnailUrl: string | undefined;
+      
       // Exportar formato feed
       for (let i = 0; i < feedRefs.length; i++) {
         const ref = feedRefs[i];
@@ -116,6 +185,11 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
           pixelRatio: 2,
           cacheBust: true,
         });
+        
+        // Use first feed image as thumbnail
+        if (i === 0) {
+          thumbnailUrl = dataUrl;
+        }
         
         const link = document.createElement('a');
         link.download = `post-${i + 1}-${feedPosts[i].name.toLowerCase()}-feed.png`;
@@ -144,12 +218,46 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
         await new Promise(resolve => setTimeout(resolve, 200));
       }
 
-      toast.success('Todos os 8 posts (Feed + Story) exportados!');
+      // Save to library and log activity
+      await saveCreative(thumbnailUrl);
+
+      toast.success('Todos os 8 posts (Feed + Story) exportados e salvos!');
     } catch (error) {
       toast.error('Erro ao exportar imagens');
       console.error(error);
     } finally {
       setIsExporting(false);
+    }
+  };
+
+  // Handle save only (without export)
+  const handleSaveToLibrary = async () => {
+    if (!user) {
+      toast.error('Você precisa estar logado para salvar');
+      return;
+    }
+
+    setIsSaving(true);
+    try {
+      // Generate thumbnail from first feed post
+      const ref = feedRefs[0];
+      let thumbnailUrl: string | undefined;
+      
+      if (ref.current) {
+        thumbnailUrl = await toPng(ref.current, {
+          quality: 0.8,
+          pixelRatio: 1,
+          cacheBust: true,
+        });
+      }
+
+      await saveCreative(thumbnailUrl);
+      toast.success('Criativo salvo na biblioteca!');
+    } catch (error) {
+      toast.error('Erro ao salvar criativo');
+      console.error(error);
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -189,34 +297,50 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
         </div>
       </div>
 
-      {/* Botões de exportação */}
-      <div className="flex flex-col sm:flex-row gap-2">
+      {/* Botões de exportação e salvamento */}
+      <div className="flex flex-col gap-2">
+        <div className="flex flex-col sm:flex-row gap-2">
+          <Button
+            onClick={handleExportAll}
+            disabled={isExporting || isSaving}
+            variant="outline"
+            className="gap-2 flex-1 text-xs sm:text-sm"
+            size="sm"
+          >
+            {isExporting ? (
+              <Loader2 className="w-4 h-4 animate-spin" />
+            ) : (
+              <Download className="w-4 h-4" />
+            )}
+            Exportar {format === 'feed' ? 'Feed' : 'Stories'}
+          </Button>
+          <Button
+            onClick={handleExportBothFormats}
+            disabled={isExporting || isSaving}
+            className="bg-gold hover:bg-gold-dark text-primary-foreground gap-2 flex-1 text-xs sm:text-sm"
+            size="sm"
+          >
+            {isExporting ? (
+              <Loader2 className="w-4 h-4 animate-spin" />
+            ) : (
+              <Download className="w-4 h-4" />
+            )}
+            Exportar Tudo (8)
+          </Button>
+        </div>
         <Button
-          onClick={handleExportAll}
-          disabled={isExporting}
+          onClick={handleSaveToLibrary}
+          disabled={isExporting || isSaving}
           variant="outline"
-          className="gap-2 flex-1 text-xs sm:text-sm"
+          className="gap-2 text-xs sm:text-sm border-gold/30 hover:bg-gold/10"
           size="sm"
         >
-          {isExporting ? (
+          {isSaving ? (
             <Loader2 className="w-4 h-4 animate-spin" />
           ) : (
-            <Download className="w-4 h-4" />
+            <Save className="w-4 h-4" />
           )}
-          Exportar {format === 'feed' ? 'Feed' : 'Stories'}
-        </Button>
-        <Button
-          onClick={handleExportBothFormats}
-          disabled={isExporting}
-          className="bg-gold hover:bg-gold-dark text-primary-foreground gap-2 flex-1 text-xs sm:text-sm"
-          size="sm"
-        >
-          {isExporting ? (
-            <Loader2 className="w-4 h-4 animate-spin" />
-          ) : (
-            <Download className="w-4 h-4" />
-          )}
-          Exportar Tudo (8)
+          Salvar na Biblioteca (sem baixar)
         </Button>
       </div>
 
