@@ -100,12 +100,12 @@ export const PostCoverStory = ({ data, photo }: PostCoverStoryProps) => {
                 <span className="text-white font-medium" style={{ fontSize: '28px' }}>Aceita FGTS</span>
               </div>
             )}
-            {data.acceptsFinancing && (
-              <div className="flex items-center bg-[#1e3a2f] rounded" style={{ gap: '12px', padding: '12px 24px' }}>
-                <Check className="text-[#4ade80]" style={{ width: '28px', height: '28px' }} />
-                <span className="text-white font-medium" style={{ fontSize: '28px' }}>Aceita Financiamento</span>
-              </div>
-            )}
+            <div className={`flex items-center rounded ${data.acceptsFinancing ? 'bg-[#1e3a2f]' : 'bg-[#4a2c2c]'}`} style={{ gap: '12px', padding: '12px 24px' }}>
+              <Check className={data.acceptsFinancing ? 'text-[#4ade80]' : 'text-[#f87171]'} style={{ width: '28px', height: '28px' }} />
+              <span className="text-white font-medium" style={{ fontSize: '28px' }}>
+                {data.acceptsFinancing ? 'Aceita Financiamento' : 'Não Aceita Financiamento'}
+              </span>
+            </div>
           </div>
 
           {/* Informações de localização */}
