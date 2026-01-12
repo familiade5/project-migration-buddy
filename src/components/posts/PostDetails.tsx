@@ -37,7 +37,7 @@ export const PostDetails = ({ data, photo, photos = [] }: PostDetailsProps) => {
       {/* Layout dividido - Fotos à esquerda em triângulo, conteúdo à direita */}
       <div className="absolute inset-0 flex">
         {/* Grid de 3 fotos em triângulo à esquerda */}
-        <div className="w-[55%] h-full p-2 flex flex-col gap-2">
+        <div className="w-[55%] h-full flex flex-col" style={{ padding: '24px', gap: '24px' }}>
           {/* Foto grande no topo - usa primeira foto disponível */}
           <div className="flex-1 relative overflow-hidden rounded-lg">
             {getPhoto(0) ? (
@@ -49,12 +49,12 @@ export const PostDetails = ({ data, photo, photos = [] }: PostDetailsProps) => {
               <div className="absolute inset-0 bg-gradient-to-br from-[#2a3142] to-[#1a1f2e]" />
             )}
             <div className="absolute inset-0 flex items-center justify-center">
-              <p className="text-white/15 text-3xl font-bold tracking-wider">VDH</p>
+              <p className="text-white/15 font-bold tracking-wider" style={{ fontSize: '100px' }}>VDH</p>
             </div>
           </div>
           
           {/* Duas fotos menores embaixo - usa fotos alternadas */}
-          <div className="flex gap-2 h-[40%]">
+          <div className="flex h-[40%]" style={{ gap: '24px' }}>
             {[1, 2].map((photoIndex) => (
               <div key={photoIndex} className="flex-1 relative overflow-hidden rounded-lg">
                 {getPhoto(photoIndex) ? (
@@ -66,7 +66,7 @@ export const PostDetails = ({ data, photo, photos = [] }: PostDetailsProps) => {
                   <div className="absolute inset-0 bg-gradient-to-br from-[#2a3142] to-[#1a1f2e]" />
                 )}
                 <div className="absolute inset-0 flex items-center justify-center">
-                  <p className="text-white/15 text-xl font-bold tracking-wider">VDH</p>
+                  <p className="text-white/15 font-bold tracking-wider" style={{ fontSize: '60px' }}>VDH</p>
                 </div>
               </div>
             ))}
@@ -74,24 +74,25 @@ export const PostDetails = ({ data, photo, photos = [] }: PostDetailsProps) => {
         </div>
 
         {/* Painel de características à direita */}
-        <div className="w-[45%] h-full flex flex-col justify-center p-6 bg-[#2a3142]">
+        <div className="w-[45%] h-full flex flex-col justify-center bg-[#2a3142]" style={{ padding: '60px' }}>
           {displayFeatures.map((feature, index) => (
             <div
               key={index}
-              className="flex items-center gap-3 py-4 border-b border-white/10 last:border-b-0"
+              className="flex items-center border-b border-white/10 last:border-b-0"
+              style={{ gap: '32px', padding: '48px 0' }}
             >
-              <div className="w-7 h-7 rounded bg-[#d4a44c] flex items-center justify-center flex-shrink-0">
-                <Check className="w-4 h-4 text-[#1a1f2e]" />
+              <div className="rounded bg-[#d4a44c] flex items-center justify-center flex-shrink-0" style={{ width: '72px', height: '72px' }}>
+                <Check className="text-[#1a1f2e]" style={{ width: '44px', height: '44px' }} />
               </div>
-              <span className="text-white text-base font-medium">{feature}</span>
+              <span className="text-white font-medium" style={{ fontSize: '44px' }}>{feature}</span>
             </div>
           ))}
         </div>
       </div>
 
       {/* Logo VDH no canto inferior direito */}
-      <div className="absolute bottom-4 right-4 z-10">
-        <img src={logoVDH} alt="VDH" className="h-10 w-auto rounded" />
+      <div className="absolute z-10" style={{ bottom: '40px', right: '40px' }}>
+        <img src={logoVDH} alt="VDH" className="rounded" style={{ height: '100px' }} />
       </div>
     </div>
   );

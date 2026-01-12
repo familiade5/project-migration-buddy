@@ -22,29 +22,29 @@ export const PostContactStory = ({ data, photo }: PostContactStoryProps) => {
           <div className="absolute inset-0 bg-gradient-to-br from-[#2a3142] to-[#1a1f2e]" />
         )}
         <div className="absolute inset-0 flex items-center justify-center">
-          <p className="text-white/15 text-6xl font-bold tracking-wider">VDH</p>
+          <p className="text-white/15 font-bold tracking-wider" style={{ fontSize: '180px' }}>VDH</p>
         </div>
       </div>
 
       {/* CTA na parte inferior */}
-      <div className="absolute bottom-0 left-0 right-0 h-[50%] bg-[#2a3142] flex flex-col justify-center items-center p-6">
+      <div className="absolute bottom-0 left-0 right-0 h-[50%] bg-[#2a3142] flex flex-col justify-center items-center" style={{ padding: '60px' }}>
         {/* Texto principal */}
-        <div className="text-center mb-8">
-          <p className="text-white text-3xl font-semibold">Seu novo lar</p>
-          <p className="text-[#d4a44c] text-2xl italic">está mais perto</p>
-          <p className="text-[#d4a44c] text-2xl italic">do que você imagina</p>
+        <div className="text-center" style={{ marginBottom: '80px' }}>
+          <p className="text-white font-semibold" style={{ fontSize: '80px' }}>Seu novo lar</p>
+          <p className="text-[#d4a44c] italic" style={{ fontSize: '64px' }}>está mais perto</p>
+          <p className="text-[#d4a44c] italic" style={{ fontSize: '64px' }}>do que você imagina</p>
         </div>
 
         {/* Botão CTA */}
-        <div className="bg-[#d4a44c] rounded-lg py-4 px-8 mb-6">
-          <span className="text-[#1a1f2e] font-semibold text-lg">Fale agora </span>
-          <span className="text-[#1a1f2e]/80 text-lg">com nossa equipe</span>
+        <div className="bg-[#d4a44c] rounded-lg" style={{ padding: '40px 80px', marginBottom: '60px' }}>
+          <span className="text-[#1a1f2e] font-semibold" style={{ fontSize: '48px' }}>Fale agora </span>
+          <span className="text-[#1a1f2e]/80" style={{ fontSize: '48px' }}>com nossa equipe</span>
         </div>
 
         {/* WhatsApp */}
-        <div className="flex items-center gap-3 mb-4">
-          <MessageCircle className="w-8 h-8 text-[#25D366]" />
-          <span className="text-white font-medium text-xl">
+        <div className="flex items-center" style={{ gap: '30px', marginBottom: '40px' }}>
+          <MessageCircle className="text-[#25D366]" style={{ width: '80px', height: '80px' }} />
+          <span className="text-white font-medium" style={{ fontSize: '56px' }}>
             {data.contactPhone || '(67) 91234-5678'}
           </span>
         </div>
@@ -52,8 +52,8 @@ export const PostContactStory = ({ data, photo }: PostContactStoryProps) => {
 
       {/* Footer com logo */}
       <div className="absolute bottom-0 left-0 right-0 bg-[#1e3a2f] z-10">
-        <div className="flex items-center justify-center py-3">
-          <img src={logoVDH} alt="VDH" className="h-10 w-auto rounded" />
+        <div className="flex items-center justify-center" style={{ padding: '30px' }}>
+          <img src={logoVDH} alt="VDH" className="rounded" style={{ height: '100px' }} />
         </div>
       </div>
     </div>
