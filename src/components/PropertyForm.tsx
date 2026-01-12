@@ -24,7 +24,7 @@ export const PropertyForm = ({ data, onChange }: PropertyFormProps) => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 max-w-full overflow-hidden">
       {/* Nome do Imóvel */}
       <div className="space-y-4">
         <h3 className="font-display text-lg text-gold">🏡 Identificação</h3>
@@ -46,11 +46,11 @@ export const PropertyForm = ({ data, onChange }: PropertyFormProps) => {
         <h3 className="font-display text-lg text-gold">📍 Slide 1 - Capa</h3>
         
         <div className="grid gap-4">
-          <div className="grid grid-cols-2 gap-3">
-            <div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div className="min-w-0">
               <Label className="text-muted-foreground text-sm">Tipo do Imóvel</Label>
               <Select value={data.type} onValueChange={(v) => updateField('type', v)}>
-                <SelectTrigger className="input-premium mt-1">
+                <SelectTrigger className="input-premium mt-1 w-full">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -60,10 +60,10 @@ export const PropertyForm = ({ data, onChange }: PropertyFormProps) => {
                 </SelectContent>
               </Select>
             </div>
-            <div>
+            <div className="min-w-0">
               <Label className="text-muted-foreground text-sm">Origem</Label>
               <Select value={data.propertySource} onValueChange={(v) => updateField('propertySource', v)}>
-                <SelectTrigger className="input-premium mt-1">
+                <SelectTrigger className="input-premium mt-1 w-full">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -86,8 +86,8 @@ export const PropertyForm = ({ data, onChange }: PropertyFormProps) => {
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
-            <div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div className="min-w-0">
               <Label htmlFor="evaluationValue" className="text-muted-foreground text-sm">Valor de Avaliação</Label>
               <Input
                 id="evaluationValue"
@@ -97,8 +97,8 @@ export const PropertyForm = ({ data, onChange }: PropertyFormProps) => {
                 className="input-premium mt-1"
               />
             </div>
-            <div>
-              <Label htmlFor="minimumValue" className="text-muted-foreground text-sm">Valor Mínimo de Venda</Label>
+            <div className="min-w-0">
+              <Label htmlFor="minimumValue" className="text-muted-foreground text-sm">Valor Mínimo</Label>
               <Input
                 id="minimumValue"
                 placeholder="R$ 72.988,41"
@@ -124,7 +124,7 @@ export const PropertyForm = ({ data, onChange }: PropertyFormProps) => {
           <div>
             <Label className="text-muted-foreground text-sm">Forma de Pagamento</Label>
             <Select value={data.paymentMethod} onValueChange={(v) => updateField('paymentMethod', v)}>
-              <SelectTrigger className="input-premium mt-1">
+              <SelectTrigger className="input-premium mt-1 w-full">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -136,7 +136,7 @@ export const PropertyForm = ({ data, onChange }: PropertyFormProps) => {
           </div>
 
           <div className="flex items-center justify-between p-3 bg-surface rounded-lg">
-            <Label htmlFor="acceptsFGTS" className="text-foreground">Aceita FGTS?</Label>
+            <Label htmlFor="acceptsFGTS" className="text-foreground text-sm">Aceita FGTS?</Label>
             <Switch
               id="acceptsFGTS"
               checked={data.acceptsFGTS}
@@ -145,7 +145,7 @@ export const PropertyForm = ({ data, onChange }: PropertyFormProps) => {
           </div>
 
           <div className="flex items-center justify-between p-3 bg-surface rounded-lg">
-            <Label htmlFor="acceptsFinancing" className="text-foreground">Aceita Financiamento?</Label>
+            <Label htmlFor="acceptsFinancing" className="text-foreground text-sm">Aceita Financiamento?</Label>
             <Switch
               id="acceptsFinancing"
               checked={data.acceptsFinancing}
@@ -160,18 +160,19 @@ export const PropertyForm = ({ data, onChange }: PropertyFormProps) => {
         <h3 className="font-display text-lg text-gold">📍 Localização</h3>
         
         <div className="grid gap-4">
-          <div className="grid grid-cols-3 gap-3">
-            <div className="col-span-2">
-              <Label htmlFor="street" className="text-muted-foreground text-sm">Rua/Avenida</Label>
-              <Input
-                id="street"
-                placeholder="Rua 29"
-                value={data.street}
-                onChange={(e) => updateField('street', e.target.value)}
-                className="input-premium mt-1"
-              />
-            </div>
-            <div>
+          <div>
+            <Label htmlFor="street" className="text-muted-foreground text-sm">Rua/Avenida</Label>
+            <Input
+              id="street"
+              placeholder="Rua 29"
+              value={data.street}
+              onChange={(e) => updateField('street', e.target.value)}
+              className="input-premium mt-1"
+            />
+          </div>
+
+          <div className="grid grid-cols-2 gap-3">
+            <div className="min-w-0">
               <Label htmlFor="number" className="text-muted-foreground text-sm">Número</Label>
               <Input
                 id="number"
@@ -181,20 +182,7 @@ export const PropertyForm = ({ data, onChange }: PropertyFormProps) => {
                 className="input-premium mt-1"
               />
             </div>
-          </div>
-
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <Label htmlFor="complement" className="text-muted-foreground text-sm">Complemento</Label>
-              <Input
-                id="complement"
-                placeholder="Casa 01, Apto 101..."
-                value={data.complement}
-                onChange={(e) => updateField('complement', e.target.value)}
-                className="input-premium mt-1"
-              />
-            </div>
-            <div>
+            <div className="min-w-0">
               <Label htmlFor="cep" className="text-muted-foreground text-sm">CEP</Label>
               <Input
                 id="cep"
@@ -204,6 +192,17 @@ export const PropertyForm = ({ data, onChange }: PropertyFormProps) => {
                 className="input-premium mt-1"
               />
             </div>
+          </div>
+
+          <div>
+            <Label htmlFor="complement" className="text-muted-foreground text-sm">Complemento</Label>
+            <Input
+              id="complement"
+              placeholder="Casa 01, Apto 101..."
+              value={data.complement}
+              onChange={(e) => updateField('complement', e.target.value)}
+              className="input-premium mt-1"
+            />
           </div>
 
           <div>
@@ -218,7 +217,7 @@ export const PropertyForm = ({ data, onChange }: PropertyFormProps) => {
           </div>
 
           <div className="grid grid-cols-2 gap-3">
-            <div>
+            <div className="min-w-0">
               <Label htmlFor="city" className="text-muted-foreground text-sm">Cidade</Label>
               <Input
                 id="city"
@@ -228,7 +227,7 @@ export const PropertyForm = ({ data, onChange }: PropertyFormProps) => {
                 className="input-premium mt-1"
               />
             </div>
-            <div>
+            <div className="min-w-0">
               <Label htmlFor="state" className="text-muted-foreground text-sm">Estado</Label>
               <Input
                 id="state"
@@ -247,8 +246,8 @@ export const PropertyForm = ({ data, onChange }: PropertyFormProps) => {
         <h3 className="font-display text-lg text-gold">🏠 Características</h3>
         
         <div className="grid grid-cols-3 gap-3">
-          <div>
-            <Label htmlFor="bedrooms" className="text-muted-foreground text-sm">Quartos</Label>
+          <div className="min-w-0">
+            <Label htmlFor="bedrooms" className="text-muted-foreground text-xs sm:text-sm">Quartos</Label>
             <Input
               id="bedrooms"
               type="number"
@@ -258,8 +257,8 @@ export const PropertyForm = ({ data, onChange }: PropertyFormProps) => {
               className="input-premium mt-1"
             />
           </div>
-          <div>
-            <Label htmlFor="bathrooms" className="text-muted-foreground text-sm">Banheiros</Label>
+          <div className="min-w-0">
+            <Label htmlFor="bathrooms" className="text-muted-foreground text-xs sm:text-sm">Banheiros</Label>
             <Input
               id="bathrooms"
               type="number"
@@ -269,8 +268,8 @@ export const PropertyForm = ({ data, onChange }: PropertyFormProps) => {
               className="input-premium mt-1"
             />
           </div>
-          <div>
-            <Label htmlFor="garageSpaces" className="text-muted-foreground text-sm">Vagas</Label>
+          <div className="min-w-0">
+            <Label htmlFor="garageSpaces" className="text-muted-foreground text-xs sm:text-sm">Vagas</Label>
             <Input
               id="garageSpaces"
               type="number"
@@ -285,7 +284,7 @@ export const PropertyForm = ({ data, onChange }: PropertyFormProps) => {
         {/* Cômodos básicos */}
         <div className="grid grid-cols-3 gap-2">
           <div className="flex items-center justify-between p-2 bg-surface rounded-lg">
-            <Label htmlFor="hasSala" className="text-foreground text-sm">Sala</Label>
+            <Label htmlFor="hasSala" className="text-foreground text-xs sm:text-sm">Sala</Label>
             <Switch
               id="hasSala"
               checked={data.hasSala}
@@ -293,7 +292,7 @@ export const PropertyForm = ({ data, onChange }: PropertyFormProps) => {
             />
           </div>
           <div className="flex items-center justify-between p-2 bg-surface rounded-lg">
-            <Label htmlFor="hasCozinha" className="text-foreground text-sm">Cozinha</Label>
+            <Label htmlFor="hasCozinha" className="text-foreground text-xs sm:text-sm">Cozinha</Label>
             <Switch
               id="hasCozinha"
               checked={data.hasCozinha}
@@ -301,7 +300,7 @@ export const PropertyForm = ({ data, onChange }: PropertyFormProps) => {
             />
           </div>
           <div className="flex items-center justify-between p-2 bg-surface rounded-lg">
-            <Label htmlFor="hasAreaServico" className="text-foreground text-sm">Á. Serviço</Label>
+            <Label htmlFor="hasAreaServico" className="text-foreground text-xs">Á.Serv</Label>
             <Switch
               id="hasAreaServico"
               checked={data.hasAreaServico}
@@ -312,8 +311,8 @@ export const PropertyForm = ({ data, onChange }: PropertyFormProps) => {
 
         {/* Áreas */}
         <div className="grid grid-cols-3 gap-3">
-          <div>
-            <Label htmlFor="areaTotal" className="text-muted-foreground text-sm">Área Total (m²)</Label>
+          <div className="min-w-0">
+            <Label htmlFor="areaTotal" className="text-muted-foreground text-xs">Área Total</Label>
             <Input
               id="areaTotal"
               placeholder="42,87"
@@ -322,8 +321,8 @@ export const PropertyForm = ({ data, onChange }: PropertyFormProps) => {
               className="input-premium mt-1"
             />
           </div>
-          <div>
-            <Label htmlFor="areaPrivativa" className="text-muted-foreground text-sm">Á. Privativa (m²)</Label>
+          <div className="min-w-0">
+            <Label htmlFor="areaPrivativa" className="text-muted-foreground text-xs">Á. Privat.</Label>
             <Input
               id="areaPrivativa"
               placeholder="63,63"
@@ -332,8 +331,8 @@ export const PropertyForm = ({ data, onChange }: PropertyFormProps) => {
               className="input-premium mt-1"
             />
           </div>
-          <div>
-            <Label htmlFor="areaTerreno" className="text-muted-foreground text-sm">Á. Terreno (m²)</Label>
+          <div className="min-w-0">
+            <Label htmlFor="areaTerreno" className="text-muted-foreground text-xs">Á. Terreno</Label>
             <Input
               id="areaTerreno"
               placeholder="136,66"
@@ -350,8 +349,8 @@ export const PropertyForm = ({ data, onChange }: PropertyFormProps) => {
         <h3 className="font-display text-lg text-gold">✨ Slide 3 - Diferenciais</h3>
         
         <div className="flex items-center justify-between p-3 bg-surface rounded-lg">
-          <div>
-            <Label htmlFor="hasEasyEntry" className="text-foreground">Entrada facilitada?</Label>
+          <div className="min-w-0 flex-1">
+            <Label htmlFor="hasEasyEntry" className="text-foreground text-sm">Entrada facilitada?</Label>
             <p className="text-xs text-muted-foreground">Se não, mostra "Condições especiais"</p>
           </div>
           <Switch
@@ -362,8 +361,8 @@ export const PropertyForm = ({ data, onChange }: PropertyFormProps) => {
         </div>
 
         <div className="flex items-center justify-between p-3 bg-surface rounded-lg">
-          <div>
-            <Label htmlFor="canUseFGTS" className="text-foreground">Pode usar FGTS?</Label>
+          <div className="min-w-0 flex-1">
+            <Label htmlFor="canUseFGTS" className="text-foreground text-sm">Pode usar FGTS?</Label>
             <p className="text-xs text-muted-foreground">Se não, mostra "Melhores taxas"</p>
           </div>
           <Switch
@@ -386,9 +385,9 @@ export const PropertyForm = ({ data, onChange }: PropertyFormProps) => {
               <Checkbox
                 checked={data.features.includes(feature)}
                 onCheckedChange={() => toggleFeature(feature)}
-                className="border-muted-foreground data-[state=checked]:bg-gold data-[state=checked]:border-gold"
+                className="border-muted-foreground data-[state=checked]:bg-gold data-[state=checked]:border-gold flex-shrink-0"
               />
-              <span className="text-sm text-foreground/80">{feature}</span>
+              <span className="text-xs sm:text-sm text-foreground/80 truncate">{feature}</span>
             </label>
           ))}
         </div>
@@ -449,7 +448,7 @@ export const PropertyForm = ({ data, onChange }: PropertyFormProps) => {
             <Label htmlFor="creci" className="text-muted-foreground text-sm">CRECI</Label>
             <Input
               id="creci"
-              placeholder="CRECI 14851 – MS"
+              placeholder="CRECI 14851 MS PJ"
               value={data.creci}
               onChange={(e) => updateField('creci', e.target.value)}
               className="input-premium mt-1"

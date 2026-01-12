@@ -3,7 +3,6 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { 
   Building2, 
-  LayoutDashboard, 
   Calendar, 
   Settings, 
   LogOut, 
@@ -11,9 +10,8 @@ import {
   X,
   Shield,
   ChevronDown,
-  User
+  MoreVertical
 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -75,15 +73,15 @@ export function AppLayout({ children }: AppLayoutProps) {
         <div className="flex flex-col h-full">
           {/* Logo */}
           <div className="flex items-center gap-3 px-6 py-5 border-b border-border">
-            <div className="w-10 h-10 rounded-xl bg-gold flex items-center justify-center">
+            <div className="w-10 h-10 rounded-xl bg-gold flex items-center justify-center flex-shrink-0">
               <Building2 className="w-5 h-5 text-primary-foreground" />
             </div>
-            <div>
+            <div className="min-w-0 flex-1">
               <h1 className="font-display text-xl font-semibold text-foreground">PostGen</h1>
-              <p className="text-xs text-muted-foreground">Gerador de Posts</p>
+              <p className="text-xs text-muted-foreground truncate">Gerador de Posts</p>
             </div>
             <button 
-              className="ml-auto lg:hidden text-muted-foreground hover:text-foreground"
+              className="lg:hidden text-muted-foreground hover:text-foreground flex-shrink-0"
               onClick={() => setSidebarOpen(false)}
             >
               <X className="w-5 h-5" />
@@ -107,7 +105,7 @@ export function AppLayout({ children }: AppLayoutProps) {
                     }
                   `}
                 >
-                  <item.icon className="w-5 h-5" />
+                  <item.icon className="w-5 h-5 flex-shrink-0" />
                   {item.name}
                 </Link>
               );
@@ -135,7 +133,7 @@ export function AppLayout({ children }: AppLayoutProps) {
                         }
                       `}
                     >
-                      <item.icon className="w-5 h-5" />
+                      <item.icon className="w-5 h-5 flex-shrink-0" />
                       {item.name}
                     </Link>
                   );
@@ -144,66 +142,52 @@ export function AppLayout({ children }: AppLayoutProps) {
             )}
           </nav>
 
-          {/* User section */}
-          <div className="p-4 border-t border-border space-y-2">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <button className="flex items-center gap-3 w-full px-3 py-2 rounded-xl hover:bg-surface transition-colors">
-                  <Avatar className="h-9 w-9 bg-surface-elevated">
-                    <AvatarFallback className="bg-gold text-primary-foreground text-sm">
-                      {profile?.full_name ? getInitials(profile.full_name) : 'U'}
-                    </AvatarFallback>
-                  </Avatar>
-                  <div className="flex-1 text-left">
-                    <p className="text-sm font-medium text-foreground truncate">
-                      {profile?.full_name || 'Usuário'}
-                    </p>
-                    <p className="text-xs text-muted-foreground truncate">
-                      {profile?.email}
-                    </p>
-                  </div>
-                  <ChevronDown className="w-4 h-4 text-muted-foreground" />
-                </button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-56 bg-card border-border">
-                <DropdownMenuItem asChild>
-                  <Link to="/settings" className="flex items-center gap-2 cursor-pointer">
-                    <Settings className="w-4 h-4" />
-                    Configurações
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuSeparator className="bg-border" />
-                <DropdownMenuItem
-                  onClick={handleSignOut}
-                  className="text-destructive focus:text-destructive cursor-pointer"
-                >
-                  <LogOut className="w-4 h-4 mr-2" />
-                  Sair
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-
-            {/* Fallback (sempre visível) */}
-            <Link
-              to="/settings"
-              className="flex items-center justify-center gap-2 w-full px-3 py-2 rounded-xl border border-border bg-surface hover:bg-surface-elevated text-sm font-medium"
-            >
-              <Settings className="w-4 h-4" />
-              Configurações
-            </Link>
-            <button
-              onClick={handleSignOut}
-              className="flex items-center justify-center gap-2 w-full px-3 py-2 rounded-xl border border-border bg-surface hover:bg-surface-elevated text-sm font-medium text-destructive"
-            >
-              <LogOut className="w-4 h-4" />
-              Sair
-            </button>
+          {/* User section - Desktop */}
+          <div className="p-4 border-t border-border">
+            <div className="flex items-center gap-3 px-3 py-2 rounded-xl bg-surface">
+              <Avatar className="h-9 w-9 flex-shrink-0">
+                <AvatarFallback className="bg-gold text-primary-foreground text-sm">
+                  {profile?.full_name ? getInitials(profile.full_name) : 'U'}
+                </AvatarFallback>
+              </Avatar>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium text-foreground truncate">
+                  {profile?.full_name || 'Usuário'}
+                </p>
+                <p className="text-xs text-muted-foreground truncate">
+                  {profile?.email}
+                </p>
+              </div>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button className="p-1.5 rounded-lg hover:bg-surface-elevated transition-colors flex-shrink-0">
+                    <MoreVertical className="w-4 h-4 text-muted-foreground" />
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-48 bg-card border-border">
+                  <DropdownMenuItem asChild>
+                    <Link to="/settings" className="flex items-center gap-2 cursor-pointer">
+                      <Settings className="w-4 h-4" />
+                      Configurações
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator className="bg-border" />
+                  <DropdownMenuItem
+                    onClick={handleSignOut}
+                    className="text-destructive focus:text-destructive cursor-pointer"
+                  >
+                    <LogOut className="w-4 h-4 mr-2" />
+                    Sair
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
           </div>
         </div>
       </aside>
 
       {/* Main content */}
-      <div className="lg:pl-64">
+      <div className="lg:pl-64 min-h-screen flex flex-col">
         {/* Mobile header */}
         <header className="sticky top-0 z-30 lg:hidden bg-card/95 backdrop-blur border-b border-border">
           <div className="flex items-center justify-between px-4 py-3">
@@ -220,27 +204,34 @@ export function AppLayout({ children }: AppLayoutProps) {
               </div>
               <span className="font-display font-semibold text-foreground">PostGen</span>
             </div>
-            <div className="flex items-center gap-1">
-              <Link
-                to="/settings"
-                className="p-2 text-muted-foreground hover:text-foreground"
-                aria-label="Configurações"
-              >
-                <Settings className="w-5 h-5" />
-              </Link>
-              <button
-                onClick={handleSignOut}
-                className="p-2 text-destructive hover:text-destructive"
-                aria-label="Sair"
-              >
-                <LogOut className="w-5 h-5" />
-              </button>
-            </div>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button className="p-2 text-muted-foreground hover:text-foreground" aria-label="Menu">
+                  <MoreVertical className="w-5 h-5" />
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-48 bg-card border-border">
+                <DropdownMenuItem asChild>
+                  <Link to="/settings" className="flex items-center gap-2 cursor-pointer">
+                    <Settings className="w-4 h-4" />
+                    Configurações
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator className="bg-border" />
+                <DropdownMenuItem
+                  onClick={handleSignOut}
+                  className="text-destructive focus:text-destructive cursor-pointer"
+                >
+                  <LogOut className="w-4 h-4 mr-2" />
+                  Sair
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </header>
 
         {/* Page content */}
-        <main className="min-h-screen">
+        <main className="flex-1 overflow-x-hidden">
           {children}
         </main>
       </div>

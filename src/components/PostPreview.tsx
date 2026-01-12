@@ -157,44 +157,46 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
   const currentPhoto = photos[posts[currentPost].photoIndex] || photos[0] || null;
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h3 className="font-display text-lg text-gold">Preview do Carrossel</h3>
+    <div className="space-y-4 sm:space-y-6 overflow-hidden">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <h3 className="font-display text-base sm:text-lg text-gold">Preview do Carrossel</h3>
         
         {/* Seletor de formato */}
-        <div className="flex items-center gap-1 bg-surface rounded-lg p-1">
+        <div className="flex items-center gap-1 bg-surface rounded-lg p-1 self-start">
           <button
             onClick={() => setFormat('feed')}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm transition-all ${
+            className={`flex items-center gap-1.5 px-2 sm:px-3 py-1.5 rounded-md text-xs sm:text-sm transition-all ${
               format === 'feed'
                 ? 'bg-gold text-primary-foreground'
                 : 'text-muted-foreground hover:text-foreground'
             }`}
           >
-            <Square className="w-4 h-4" />
+            <Square className="w-3 h-3 sm:w-4 sm:h-4" />
             <span>Feed</span>
           </button>
           <button
             onClick={() => setFormat('story')}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm transition-all ${
+            className={`flex items-center gap-1.5 px-2 sm:px-3 py-1.5 rounded-md text-xs sm:text-sm transition-all ${
               format === 'story'
                 ? 'bg-gold text-primary-foreground'
                 : 'text-muted-foreground hover:text-foreground'
             }`}
           >
-            <Smartphone className="w-4 h-4" />
+            <Smartphone className="w-3 h-3 sm:w-4 sm:h-4" />
             <span>Story</span>
           </button>
         </div>
       </div>
 
       {/* Botões de exportação */}
-      <div className="flex flex-wrap gap-2">
+      <div className="flex flex-col sm:flex-row gap-2">
         <Button
           onClick={handleExportAll}
           disabled={isExporting}
           variant="outline"
-          className="gap-2 flex-1"
+          className="gap-2 flex-1 text-xs sm:text-sm"
+          size="sm"
         >
           {isExporting ? (
             <Loader2 className="w-4 h-4 animate-spin" />
@@ -206,24 +208,25 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
         <Button
           onClick={handleExportBothFormats}
           disabled={isExporting}
-          className="bg-gold hover:bg-gold-dark text-primary-foreground gap-2 flex-1"
+          className="bg-gold hover:bg-gold-dark text-primary-foreground gap-2 flex-1 text-xs sm:text-sm"
+          size="sm"
         >
           {isExporting ? (
             <Loader2 className="w-4 h-4 animate-spin" />
           ) : (
             <Download className="w-4 h-4" />
           )}
-          Exportar Tudo (8 imagens)
+          Exportar Tudo (8)
         </Button>
       </div>
 
       {/* Post Navigation */}
-      <div className="flex items-center justify-center gap-2">
+      <div className="flex items-center justify-center gap-1 sm:gap-2 flex-wrap">
         {posts.map((post, index) => (
           <button
             key={index}
             onClick={() => setCurrentPost(index)}
-            className={`px-3 py-1.5 rounded-full text-sm transition-all ${
+            className={`px-2 sm:px-3 py-1 sm:py-1.5 rounded-full text-xs sm:text-sm transition-all ${
               currentPost === index
                 ? 'bg-gold text-primary-foreground'
                 : 'bg-surface text-muted-foreground hover:bg-surface-elevated'
@@ -234,27 +237,45 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
         ))}
       </div>
 
-      {/* Current Post Preview */}
+      {/* Current Post Preview - Responsive Container */}
       <div className="relative">
-        <div className="flex items-center justify-center gap-4">
+        <div className="flex items-center justify-center gap-2 sm:gap-4">
           <button
             onClick={() => setCurrentPost((prev) => (prev === 0 ? 3 : prev - 1))}
-            className="p-2 rounded-full bg-surface hover:bg-surface-elevated transition-colors"
+            className="p-1.5 sm:p-2 rounded-full bg-surface hover:bg-surface-elevated transition-colors flex-shrink-0"
           >
-            <ChevronLeft className="w-5 h-5 text-muted-foreground" />
+            <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5 text-muted-foreground" />
           </button>
 
-          <div className="relative rounded-xl overflow-hidden shadow-2xl">
-            <div ref={postRefs[currentPost]}>
-              <CurrentPostComponent data={data} photo={currentPhoto} photos={photos} />
+          {/* Preview container with proper scaling */}
+          <div 
+            className="relative rounded-xl overflow-hidden shadow-2xl w-full"
+            style={{ 
+              maxWidth: format === 'feed' ? '280px' : '200px',
+              aspectRatio: format === 'feed' ? '1/1' : '9/16'
+            }}
+          >
+            <div 
+              className="absolute inset-0 origin-top-left"
+              style={{ 
+                width: format === 'feed' ? '400px' : '360px',
+                height: format === 'feed' ? '400px' : '640px',
+                transform: format === 'feed' 
+                  ? 'scale(calc(280 / 400))' 
+                  : 'scale(calc(200 / 360))'
+              }}
+            >
+              <div ref={postRefs[currentPost]}>
+                <CurrentPostComponent data={data} photo={currentPhoto} photos={photos} />
+              </div>
             </div>
           </div>
 
           <button
             onClick={() => setCurrentPost((prev) => (prev === 3 ? 0 : prev + 1))}
-            className="p-2 rounded-full bg-surface hover:bg-surface-elevated transition-colors"
+            className="p-1.5 sm:p-2 rounded-full bg-surface hover:bg-surface-elevated transition-colors flex-shrink-0"
           >
-            <ChevronRight className="w-5 h-5 text-muted-foreground" />
+            <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5 text-muted-foreground" />
           </button>
         </div>
 
@@ -265,7 +286,7 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
             size="sm"
             onClick={() => handleExportSingle(currentPost)}
             disabled={isExporting}
-            className="gap-2"
+            className="gap-2 text-xs sm:text-sm"
           >
             <Download className="w-4 h-4" />
             Exportar este post
@@ -291,8 +312,8 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
         ))}
       </div>
 
-      {/* Thumbnails */}
-      <div className="grid grid-cols-4 gap-2">
+      {/* Thumbnails - Hidden on mobile */}
+      <div className="hidden sm:grid grid-cols-4 gap-2">
         {posts.map((Post, index) => (
           <button
             key={index}
@@ -302,24 +323,25 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
                 ? 'ring-2 ring-gold ring-offset-2 ring-offset-background'
                 : 'opacity-60 hover:opacity-100'
             }`}
+            style={{ aspectRatio: format === 'feed' ? '1/1' : '9/16' }}
           >
             <div 
-              className="origin-top-left" 
+              className="absolute inset-0 origin-top-left" 
               style={{ 
-                transform: format === 'feed' ? 'scale(0.2)' : 'scale(0.15)', 
-                width: format === 'feed' ? '400px' : '360px' 
+                transform: format === 'feed' ? 'scale(0.2)' : 'scale(0.12)', 
+                width: format === 'feed' ? '400px' : '360px',
+                height: format === 'feed' ? '400px' : '640px'
               }}
             >
               <Post.component data={data} photo={photos[index] || photos[0] || null} photos={photos} />
             </div>
-            <div className="absolute inset-0" style={{ aspectRatio: format === 'feed' ? '1/1' : '9/16' }} />
           </button>
         ))}
       </div>
 
       {/* Info sobre formatos */}
       <div className="text-center text-xs text-muted-foreground">
-        <p>📱 <strong>Feed:</strong> 1:1 (400x400px) • <strong>Story:</strong> 9:16 (360x640px)</p>
+        <p>📱 <strong>Feed:</strong> 1:1 • <strong>Story:</strong> 9:16</p>
       </div>
     </div>
   );
