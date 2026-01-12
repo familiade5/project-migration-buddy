@@ -249,20 +249,20 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
 
           {/* Preview container with proper scaling */}
           <div 
-            className="relative rounded-xl overflow-hidden shadow-2xl w-full"
+            className="relative rounded-xl overflow-hidden shadow-2xl flex-shrink-0"
             style={{ 
-              maxWidth: format === 'feed' ? '280px' : '200px',
-              aspectRatio: format === 'feed' ? '1/1' : '9/16'
+              width: format === 'feed' ? '280px' : '180px',
+              height: format === 'feed' ? '280px' : '320px',
             }}
           >
             <div 
-              className="absolute inset-0 origin-top-left"
+              className="origin-top-left"
               style={{ 
-                width: format === 'feed' ? '400px' : '360px',
-                height: format === 'feed' ? '400px' : '640px',
+                width: format === 'feed' ? '1080px' : '1080px',
+                height: format === 'feed' ? '1080px' : '1920px',
                 transform: format === 'feed' 
-                  ? 'scale(calc(280 / 400))' 
-                  : 'scale(calc(200 / 360))'
+                  ? 'scale(0.2593)' 
+                  : 'scale(0.1667)'
               }}
             >
               <div ref={postRefs[currentPost]}>
@@ -323,14 +323,17 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
                 ? 'ring-2 ring-gold ring-offset-2 ring-offset-background'
                 : 'opacity-60 hover:opacity-100'
             }`}
-            style={{ aspectRatio: format === 'feed' ? '1/1' : '9/16' }}
+            style={{ 
+              width: format === 'feed' ? '80px' : '54px',
+              height: format === 'feed' ? '80px' : '96px'
+            }}
           >
             <div 
-              className="absolute inset-0 origin-top-left" 
+              className="origin-top-left" 
               style={{ 
-                transform: format === 'feed' ? 'scale(0.2)' : 'scale(0.12)', 
-                width: format === 'feed' ? '400px' : '360px',
-                height: format === 'feed' ? '400px' : '640px'
+                transform: format === 'feed' ? 'scale(0.074)' : 'scale(0.05)', 
+                width: '1080px',
+                height: format === 'feed' ? '1080px' : '1920px'
               }}
             >
               <Post.component data={data} photo={photos[index] || photos[0] || null} photos={photos} />
