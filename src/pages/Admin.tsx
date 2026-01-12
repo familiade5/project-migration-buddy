@@ -11,7 +11,25 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
+  DialogDescription,
 } from '@/components/ui/dialog';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 import {
   Table,
   TableBody,
@@ -30,17 +48,22 @@ import {
   Search,
   Trash2,
   Shield,
+  ShieldOff,
   Clock,
   Mail,
   Lock,
   User,
   Copy,
   Check,
-  BarChart3
+  BarChart3,
+  MoreVertical,
+  KeyRound,
+  Eye
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { z } from 'zod';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface Profile {
   id: string;
@@ -74,6 +97,7 @@ const newUserSchema = z.object({
 const TEMP_PASSWORD = '@vendadiretahoje';
 
 export default function Admin() {
+  const { user: currentUser } = useAuth();
   const [users, setUsers] = useState<UserWithRole[]>([]);
   const [logs, setLogs] = useState<ActivityLog[]>([]);
   const [isLoadingUsers, setIsLoadingUsers] = useState(true);
@@ -84,6 +108,13 @@ export default function Admin() {
   const [copiedPassword, setCopiedPassword] = useState<string | null>(null);
   const [newUserData, setNewUserData] = useState({ fullName: '', email: '' });
   const [userCreated, setUserCreated] = useState(false);
+  
+  // User action states
+  const [selectedUser, setSelectedUser] = useState<UserWithRole | null>(null);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [passwordDialogOpen, setPasswordDialogOpen] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
+  
   const { toast } = useToast();
 
   useEffect(() => {
@@ -153,7 +184,6 @@ export default function Admin() {
     setIsAddingUser(true);
 
     try {
-      // Use edge function to create user without logging in as them
       const { data, error } = await supabase.functions.invoke('create-user', {
         body: {
           email: newUserData.email,
@@ -171,7 +201,6 @@ export default function Admin() {
         description: 'O funcionário pode fazer login com a senha temporária.',
       });
 
-      // Refresh users list
       setTimeout(() => {
         fetchUsers();
       }, 1000);
@@ -194,31 +223,99 @@ export default function Admin() {
     setTimeout(() => setCopiedPassword(null), 2000);
   };
 
-  const toggleAdminRole = async (userId: string, currentRole: 'admin' | 'user') => {
+  const handleDeleteUser = async () => {
+    if (!selectedUser) return;
+    
+    setIsProcessing(true);
     try {
-      if (currentRole === 'admin') {
-        // Remove admin role
-        await supabase
-          .from('user_roles')
-          .delete()
-          .eq('user_id', userId)
-          .eq('role', 'admin');
-      } else {
-        // Add admin role
-        await supabase
-          .from('user_roles')
-          .insert({ user_id: userId, role: 'admin' });
-      }
-      
+      const { data, error } = await supabase.functions.invoke('manage-user', {
+        body: { action: 'delete', userId: selectedUser.id },
+      });
+
+      if (error) throw error;
+      if (data.error) throw new Error(data.error);
+
+      toast({
+        title: 'Usuário excluído',
+        description: `${selectedUser.full_name} foi removido do sistema.`,
+      });
+
       fetchUsers();
+    } catch (error: unknown) {
+      const err = error as Error;
+      toast({
+        title: 'Erro ao excluir usuário',
+        description: err.message,
+        variant: 'destructive',
+      });
+    } finally {
+      setIsProcessing(false);
+      setDeleteDialogOpen(false);
+      setSelectedUser(null);
+    }
+  };
+
+  const handleResetPassword = async () => {
+    if (!selectedUser) return;
+    
+    setIsProcessing(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('manage-user', {
+        body: { action: 'reset-password', userId: selectedUser.id },
+      });
+
+      if (error) throw error;
+      if (data.error) throw new Error(data.error);
+
+      toast({
+        title: 'Senha resetada',
+        description: `A senha de ${selectedUser.full_name} foi redefinida para a senha temporária.`,
+      });
+
+      fetchUsers();
+    } catch (error: unknown) {
+      const err = error as Error;
+      toast({
+        title: 'Erro ao resetar senha',
+        description: err.message,
+        variant: 'destructive',
+      });
+    } finally {
+      setIsProcessing(false);
+      setPasswordDialogOpen(false);
+      setSelectedUser(null);
+    }
+  };
+
+  const handleToggleRole = async (user: UserWithRole) => {
+    const newRole = user.role === 'admin' ? 'user' : 'admin';
+    
+    setIsProcessing(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('manage-user', {
+        body: { action: 'set-role', userId: user.id, role: newRole },
+      });
+
+      if (error) throw error;
+      if (data.error) throw new Error(data.error);
+
       toast({
         title: 'Permissão atualizada',
-        description: currentRole === 'admin' 
-          ? 'Usuário removido como admin' 
-          : 'Usuário promovido a admin',
+        description: newRole === 'admin' 
+          ? `${user.full_name} agora é administrador.`
+          : `${user.full_name} agora é usuário comum.`,
       });
-    } catch (error) {
-      console.error('Error toggling role:', error);
+
+      fetchUsers();
+    } catch (error: unknown) {
+      const err = error as Error;
+      toast({
+        title: 'Erro ao alterar permissão',
+        description: err.message,
+        variant: 'destructive',
+      });
+    } finally {
+      setIsProcessing(false);
     }
   };
 
@@ -257,6 +354,8 @@ export default function Admin() {
     };
     return colors[action] || 'bg-gray-500/20 text-gray-400';
   };
+
+  const isCurrentUser = (userId: string) => currentUser?.id === userId;
 
   return (
     <AppLayout>
@@ -346,6 +445,9 @@ export default function Admin() {
                     <DialogTitle className="font-display text-xl">
                       Cadastrar Funcionário
                     </DialogTitle>
+                    <DialogDescription>
+                      Crie uma conta para um novo funcionário
+                    </DialogDescription>
                   </DialogHeader>
                   
                   {userCreated ? (
@@ -462,14 +564,21 @@ export default function Admin() {
                       <TableHead className="text-muted-foreground">Função</TableHead>
                       <TableHead className="text-muted-foreground">Status</TableHead>
                       <TableHead className="text-muted-foreground">Cadastro</TableHead>
-                      <TableHead className="text-muted-foreground w-[100px]">Ações</TableHead>
+                      <TableHead className="text-muted-foreground w-[60px]">Ações</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {filteredUsers.map((user) => (
                       <TableRow key={user.id} className="border-border">
                         <TableCell className="font-medium text-foreground">
-                          {user.full_name}
+                          <div className="flex items-center gap-2">
+                            {user.full_name}
+                            {isCurrentUser(user.id) && (
+                              <Badge variant="outline" className="text-xs border-muted-foreground text-muted-foreground">
+                                Você
+                              </Badge>
+                            )}
+                          </div>
                         </TableCell>
                         <TableCell className="text-muted-foreground">
                           {user.email}
@@ -500,14 +609,78 @@ export default function Admin() {
                           {format(new Date(user.created_at), 'dd/MM/yyyy')}
                         </TableCell>
                         <TableCell>
-                          <Button
-                            size="sm"
-                            variant="ghost"
-                            onClick={() => toggleAdminRole(user.id, user.role)}
-                            title={user.role === 'admin' ? 'Remover admin' : 'Tornar admin'}
-                          >
-                            <Shield className={`w-4 h-4 ${user.role === 'admin' ? 'text-gold' : 'text-muted-foreground'}`} />
-                          </Button>
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                                <MoreVertical className="w-4 h-4" />
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end" className="bg-card border-border">
+                              {/* View temp password */}
+                              {user.temp_password && (
+                                <DropdownMenuItem
+                                  onClick={() => {
+                                    copyPassword(TEMP_PASSWORD);
+                                    toast({
+                                      title: 'Senha copiada',
+                                      description: `Senha temporária: ${TEMP_PASSWORD}`,
+                                    });
+                                  }}
+                                  className="cursor-pointer"
+                                >
+                                  <Eye className="w-4 h-4 mr-2" />
+                                  Ver senha temporária
+                                </DropdownMenuItem>
+                              )}
+                              
+                              {/* Reset password */}
+                              <DropdownMenuItem
+                                onClick={() => {
+                                  setSelectedUser(user);
+                                  setPasswordDialogOpen(true);
+                                }}
+                                className="cursor-pointer"
+                                disabled={isCurrentUser(user.id)}
+                              >
+                                <KeyRound className="w-4 h-4 mr-2" />
+                                Resetar senha
+                              </DropdownMenuItem>
+
+                              {/* Toggle role */}
+                              <DropdownMenuItem
+                                onClick={() => handleToggleRole(user)}
+                                className="cursor-pointer"
+                                disabled={isCurrentUser(user.id) || isProcessing}
+                              >
+                                {user.role === 'admin' ? (
+                                  <>
+                                    <ShieldOff className="w-4 h-4 mr-2" />
+                                    Remover admin
+                                  </>
+                                ) : (
+                                  <>
+                                    <Shield className="w-4 h-4 mr-2" />
+                                    Tornar admin
+                                  </>
+                                )}
+                              </DropdownMenuItem>
+
+                              <DropdownMenuSeparator className="bg-border" />
+
+                              {/* Delete user */}
+                              <DropdownMenuItem
+                                onClick={() => {
+                                  setSelectedUser(user);
+                                  setDeleteDialogOpen(true);
+                                }}
+                                className="cursor-pointer text-destructive focus:text-destructive"
+                                disabled={isCurrentUser(user.id)}
+                              >
+                                <Trash2 className="w-4 h-4 mr-2" />
+                                Excluir usuário
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
                         </TableCell>
                       </TableRow>
                     ))}
@@ -572,6 +745,64 @@ export default function Admin() {
           </TabsContent>
         </Tabs>
       </div>
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <AlertDialogContent className="bg-card border-border">
+          <AlertDialogHeader>
+            <AlertDialogTitle>Excluir usuário</AlertDialogTitle>
+            <AlertDialogDescription>
+              Tem certeza que deseja excluir <strong>{selectedUser?.full_name}</strong>? 
+              Esta ação não pode ser desfeita e todos os dados do usuário serão perdidos.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={isProcessing}>Cancelar</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleDeleteUser}
+              disabled={isProcessing}
+              className="bg-destructive hover:bg-destructive/90"
+            >
+              {isProcessing ? (
+                <Loader2 className="w-4 h-4 animate-spin mr-2" />
+              ) : (
+                <Trash2 className="w-4 h-4 mr-2" />
+              )}
+              Excluir
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Reset Password Dialog */}
+      <AlertDialog open={passwordDialogOpen} onOpenChange={setPasswordDialogOpen}>
+        <AlertDialogContent className="bg-card border-border">
+          <AlertDialogHeader>
+            <AlertDialogTitle>Resetar senha</AlertDialogTitle>
+            <AlertDialogDescription>
+              A senha de <strong>{selectedUser?.full_name}</strong> será redefinida para a senha temporária padrão:
+              <code className="block mt-2 px-3 py-2 bg-surface rounded-lg text-foreground font-mono">
+                {TEMP_PASSWORD}
+              </code>
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={isProcessing}>Cancelar</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleResetPassword}
+              disabled={isProcessing}
+              className="bg-gold hover:bg-gold-dark"
+            >
+              {isProcessing ? (
+                <Loader2 className="w-4 h-4 animate-spin mr-2" />
+              ) : (
+                <KeyRound className="w-4 h-4 mr-2" />
+              )}
+              Resetar senha
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </AppLayout>
   );
 }
