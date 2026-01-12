@@ -24,12 +24,11 @@ export const PostFeaturesStory = ({ data, photo }: PostFeaturesStoryProps) => {
       features.push('Financiamento com as melhores taxas');
     }
     
+    // Financiamento
     if (data.acceptsFinancing) {
-      features.push('Aprovação rápida de crédito');
-    } else if (data.discount && parseFloat(data.discount.replace(',', '.')) > 30) {
-      features.push('Desconto imperdível');
+      features.push('Aceita financiamento');
     } else {
-      features.push('Oportunidade única de investimento');
+      features.push('Não aceita financiamento');
     }
     
     return features;
