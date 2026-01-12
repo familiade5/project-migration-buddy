@@ -145,7 +145,7 @@ export function AppLayout({ children }: AppLayoutProps) {
           </nav>
 
           {/* User section */}
-          <div className="p-4 border-t border-border">
+          <div className="p-4 border-t border-border space-y-2">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <button className="flex items-center gap-3 w-full px-3 py-2 rounded-xl hover:bg-surface transition-colors">
@@ -173,7 +173,7 @@ export function AppLayout({ children }: AppLayoutProps) {
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator className="bg-border" />
-                <DropdownMenuItem 
+                <DropdownMenuItem
                   onClick={handleSignOut}
                   className="text-destructive focus:text-destructive cursor-pointer"
                 >
@@ -182,6 +182,22 @@ export function AppLayout({ children }: AppLayoutProps) {
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
+
+            {/* Fallback (sempre visível) */}
+            <Link
+              to="/settings"
+              className="flex items-center justify-center gap-2 w-full px-3 py-2 rounded-xl border border-border bg-surface hover:bg-surface-elevated text-sm font-medium"
+            >
+              <Settings className="w-4 h-4" />
+              Configurações
+            </Link>
+            <button
+              onClick={handleSignOut}
+              className="flex items-center justify-center gap-2 w-full px-3 py-2 rounded-xl border border-border bg-surface hover:bg-surface-elevated text-sm font-medium text-destructive"
+            >
+              <LogOut className="w-4 h-4" />
+              Sair
+            </button>
           </div>
         </div>
       </aside>
@@ -194,6 +210,7 @@ export function AppLayout({ children }: AppLayoutProps) {
             <button
               onClick={() => setSidebarOpen(true)}
               className="p-2 -ml-2 text-muted-foreground hover:text-foreground"
+              aria-label="Abrir menu"
             >
               <Menu className="w-6 h-6" />
             </button>
@@ -203,7 +220,22 @@ export function AppLayout({ children }: AppLayoutProps) {
               </div>
               <span className="font-display font-semibold text-foreground">PostGen</span>
             </div>
-            <div className="w-10" /> {/* Spacer */}
+            <div className="flex items-center gap-1">
+              <Link
+                to="/settings"
+                className="p-2 text-muted-foreground hover:text-foreground"
+                aria-label="Configurações"
+              >
+                <Settings className="w-5 h-5" />
+              </Link>
+              <button
+                onClick={handleSignOut}
+                className="p-2 text-destructive hover:text-destructive"
+                aria-label="Sair"
+              >
+                <LogOut className="w-5 h-5" />
+              </button>
+            </div>
           </div>
         </header>
 
