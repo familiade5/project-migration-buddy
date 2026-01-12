@@ -71,6 +71,8 @@ const newUserSchema = z.object({
   email: z.string().email('Email inválido'),
 });
 
+const TEMP_PASSWORD = '@vendadiretahoje';
+
 export default function Admin() {
   const [users, setUsers] = useState<UserWithRole[]>([]);
   const [logs, setLogs] = useState<ActivityLog[]>([]);
@@ -81,7 +83,7 @@ export default function Admin() {
   const [addDialogOpen, setAddDialogOpen] = useState(false);
   const [copiedPassword, setCopiedPassword] = useState<string | null>(null);
   const [newUserData, setNewUserData] = useState({ fullName: '', email: '' });
-  const [tempPassword, setTempPassword] = useState<string | null>(null);
+  const [userCreated, setUserCreated] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -137,15 +139,6 @@ export default function Admin() {
     }
   };
 
-  const generateTempPassword = () => {
-    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789';
-    let password = '';
-    for (let i = 0; i < 10; i++) {
-      password += chars.charAt(Math.floor(Math.random() * chars.length));
-    }
-    return password;
-  };
-
   const createUser = async () => {
     const result = newUserSchema.safeParse(newUserData);
     if (!result.success) {
@@ -158,28 +151,24 @@ export default function Admin() {
     }
 
     setIsAddingUser(true);
-    const password = generateTempPassword();
 
     try {
-      // Create user via Supabase Auth Admin API through edge function would be ideal,
-      // but for now we'll use signUp and the trigger will handle profile creation
-      const { data, error } = await supabase.auth.signUp({
-        email: newUserData.email,
-        password: password,
-        options: {
-          data: {
-            full_name: newUserData.fullName,
-            temp_password: true,
-          },
+      // Use edge function to create user without logging in as them
+      const { data, error } = await supabase.functions.invoke('create-user', {
+        body: {
+          email: newUserData.email,
+          fullName: newUserData.fullName,
+          password: TEMP_PASSWORD,
         },
       });
 
       if (error) throw error;
+      if (data.error) throw new Error(data.error);
 
-      setTempPassword(password);
+      setUserCreated(true);
       toast({
         title: 'Usuário criado!',
-        description: 'Copie a senha temporária e envie ao funcionário.',
+        description: 'O funcionário pode fazer login com a senha temporária.',
       });
 
       // Refresh users list
@@ -359,33 +348,36 @@ export default function Admin() {
                     </DialogTitle>
                   </DialogHeader>
                   
-                  {tempPassword ? (
+                  {userCreated ? (
                     <div className="space-y-4">
                       <div className="p-4 bg-green-500/10 border border-green-500/20 rounded-xl">
                         <p className="text-sm text-green-400 mb-3">
-                          Usuário criado com sucesso! Envie a senha temporária abaixo:
+                          Usuário criado com sucesso! A senha temporária é:
                         </p>
                         <div className="flex items-center gap-2">
                           <code className="flex-1 px-3 py-2 bg-surface rounded-lg text-foreground font-mono">
-                            {tempPassword}
+                            {TEMP_PASSWORD}
                           </code>
                           <Button
                             size="sm"
                             variant="outline"
-                            onClick={() => copyPassword(tempPassword)}
+                            onClick={() => copyPassword(TEMP_PASSWORD)}
                           >
-                            {copiedPassword === tempPassword ? (
+                            {copiedPassword === TEMP_PASSWORD ? (
                               <Check className="w-4 h-4 text-green-400" />
                             ) : (
                               <Copy className="w-4 h-4" />
                             )}
                           </Button>
                         </div>
+                        <p className="text-xs text-muted-foreground mt-2">
+                          O funcionário pode alterar a senha após fazer login.
+                        </p>
                       </div>
                       <Button
                         className="w-full"
                         onClick={() => {
-                          setTempPassword(null);
+                          setUserCreated(false);
                           setNewUserData({ fullName: '', email: '' });
                           setAddDialogOpen(false);
                         }}
@@ -422,11 +414,21 @@ export default function Admin() {
                           />
                         </div>
                       </div>
-                      <div className="p-3 bg-surface rounded-lg">
-                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                          <Lock className="w-4 h-4" />
-                          Uma senha temporária será gerada automaticamente
+                      <div className="space-y-2">
+                        <Label htmlFor="tempPassword">Senha temporária</Label>
+                        <div className="relative">
+                          <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                          <Input
+                            id="tempPassword"
+                            type="text"
+                            className="pl-9 input-premium bg-surface"
+                            value={TEMP_PASSWORD}
+                            disabled
+                          />
                         </div>
+                        <p className="text-xs text-muted-foreground">
+                          O funcionário poderá alterar a senha após o primeiro login
+                        </p>
                       </div>
                       <Button
                         className="w-full bg-gold hover:bg-gold-dark text-primary-foreground"

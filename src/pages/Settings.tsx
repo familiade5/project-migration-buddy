@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { Button } from '@/components/ui/button';
@@ -12,7 +12,9 @@ import {
   Loader2, 
   User, 
   AlertTriangle,
-  Check
+  Check,
+  MapPin,
+  Phone
 } from 'lucide-react';
 import { z } from 'zod';
 import { supabase } from '@/integrations/supabase/client';
@@ -27,7 +29,15 @@ const passwordSchema = z.object({
 
 const profileSchema = z.object({
   fullName: z.string().min(2, 'O nome deve ter no mínimo 2 caracteres'),
+  address: z.string().optional(),
+  whatsapp: z.string().optional(),
 });
+
+interface ProfileData {
+  fullName: string;
+  address: string;
+  whatsapp: string;
+}
 
 export default function Settings() {
   const { profile, updatePassword, refreshProfile } = useAuth();
@@ -40,10 +50,34 @@ export default function Settings() {
     newPassword: '',
     confirmPassword: '',
   });
-  const [profileData, setProfileData] = useState({
-    fullName: profile?.full_name || '',
+  const [profileData, setProfileData] = useState<ProfileData>({
+    fullName: '',
+    address: '',
+    whatsapp: '',
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
+
+  // Load profile data including new fields
+  useEffect(() => {
+    const loadProfileData = async () => {
+      if (profile?.id) {
+        const { data } = await supabase
+          .from('profiles')
+          .select('full_name, address, whatsapp')
+          .eq('id', profile.id)
+          .single();
+        
+        if (data) {
+          setProfileData({
+            fullName: data.full_name || '',
+            address: data.address || '',
+            whatsapp: data.whatsapp || '',
+          });
+        }
+      }
+    };
+    loadProfileData();
+  }, [profile?.id]);
 
   const handlePasswordChange = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -103,7 +137,11 @@ export default function Settings() {
     try {
       const { error } = await supabase
         .from('profiles')
-        .update({ full_name: profileData.fullName })
+        .update({ 
+          full_name: profileData.fullName,
+          address: profileData.address || null,
+          whatsapp: profileData.whatsapp || null,
+        })
         .eq('id', profile?.id);
       
       if (error) throw error;
@@ -162,13 +200,16 @@ export default function Settings() {
           <form onSubmit={handleProfileUpdate} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="fullName">Nome completo</Label>
-              <Input
-                id="fullName"
-                type="text"
-                className="input-premium"
-                value={profileData.fullName}
-                onChange={(e) => setProfileData({ ...profileData, fullName: e.target.value })}
-              />
+              <div className="relative">
+                <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                <Input
+                  id="fullName"
+                  type="text"
+                  className="pl-9 input-premium"
+                  value={profileData.fullName}
+                  onChange={(e) => setProfileData({ ...profileData, fullName: e.target.value })}
+                />
+              </div>
               {errors.fullName && (
                 <p className="text-sm text-destructive">{errors.fullName}</p>
               )}
@@ -184,6 +225,36 @@ export default function Settings() {
                 disabled
               />
               <p className="text-xs text-muted-foreground">O email não pode ser alterado</p>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="address">Endereço</Label>
+              <div className="relative">
+                <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                <Input
+                  id="address"
+                  type="text"
+                  placeholder="Seu endereço completo"
+                  className="pl-9 input-premium"
+                  value={profileData.address}
+                  onChange={(e) => setProfileData({ ...profileData, address: e.target.value })}
+                />
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="whatsapp">WhatsApp</Label>
+              <div className="relative">
+                <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                <Input
+                  id="whatsapp"
+                  type="tel"
+                  placeholder="(00) 00000-0000"
+                  className="pl-9 input-premium"
+                  value={profileData.whatsapp}
+                  onChange={(e) => setProfileData({ ...profileData, whatsapp: e.target.value })}
+                />
+              </div>
             </div>
 
             <Button
