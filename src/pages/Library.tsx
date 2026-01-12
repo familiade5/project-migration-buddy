@@ -365,8 +365,8 @@ export default function Library() {
 
         {/* Photo Viewer Modal - Shows Exported Posts */}
         <Dialog open={viewingPhotos} onOpenChange={() => setViewingPhotos(false)}>
-          <DialogContent className="max-w-4xl bg-black/95 border-border p-0">
-            <div className="relative">
+          <DialogContent className="max-w-4xl w-[95vw] sm:w-full bg-black/95 border-border p-0 max-h-[90vh] overflow-hidden flex flex-col">
+            <div className="relative flex flex-col flex-1 overflow-hidden pt-12">
               <Button
                 variant="ghost"
                 size="icon"
@@ -385,11 +385,11 @@ export default function Library() {
               )}
               
               {selectedCreative?.exported_images && selectedCreative.exported_images.length > 0 && (
-                <div className="relative flex items-center justify-center min-h-[60vh] p-8">
+                <div className="relative flex items-center justify-center flex-1 px-2 sm:px-8 py-4">
                   <img
                     src={selectedCreative.exported_images[currentPhotoIndex]}
                     alt={`Post exportado ${currentPhotoIndex + 1}`}
-                    className="max-w-full max-h-[80vh] object-contain rounded-lg shadow-2xl"
+                    className="max-w-full max-h-[60vh] sm:max-h-[70vh] object-contain rounded-lg shadow-2xl"
                   />
                   
                   {selectedCreative.exported_images.length > 1 && (
@@ -397,22 +397,22 @@ export default function Library() {
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="absolute left-4 text-white hover:bg-white/20"
+                        className="absolute left-1 sm:left-4 text-white hover:bg-white/20 h-10 w-10 sm:h-12 sm:w-12"
                         onClick={() => setCurrentPhotoIndex(prev => 
                           prev === 0 ? selectedCreative.exported_images!.length - 1 : prev - 1
                         )}
                       >
-                        <ChevronLeft className="w-8 h-8" />
+                        <ChevronLeft className="w-6 h-6 sm:w-8 sm:h-8" />
                       </Button>
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="absolute right-4 text-white hover:bg-white/20"
+                        className="absolute right-1 sm:right-4 text-white hover:bg-white/20 h-10 w-10 sm:h-12 sm:w-12"
                         onClick={() => setCurrentPhotoIndex(prev => 
                           prev === selectedCreative.exported_images!.length - 1 ? 0 : prev + 1
                         )}
                       >
-                        <ChevronRight className="w-8 h-8" />
+                        <ChevronRight className="w-6 h-6 sm:w-8 sm:h-8" />
                       </Button>
                     </>
                   )}
