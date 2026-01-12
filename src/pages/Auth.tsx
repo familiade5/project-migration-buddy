@@ -4,7 +4,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Building2, Mail, Lock, User, Loader2, Eye, EyeOff } from 'lucide-react';
+import { Building2, Mail, Lock, Loader2, Eye, EyeOff } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { z } from 'zod';
 
@@ -13,29 +13,16 @@ const loginSchema = z.object({
   password: z.string().min(6, 'Senha deve ter no mínimo 6 caracteres'),
 });
 
-const signupSchema = z.object({
-  fullName: z.string().min(2, 'Nome deve ter no mínimo 2 caracteres'),
-  email: z.string().email('Email inválido'),
-  password: z.string().min(6, 'Senha deve ter no mínimo 6 caracteres'),
-  confirmPassword: z.string(),
-}).refine((data) => data.password === data.confirmPassword, {
-  message: 'Senhas não coincidem',
-  path: ['confirmPassword'],
-});
-
 export default function Auth() {
-  const [isLogin, setIsLogin] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
-    fullName: '',
     email: '',
     password: '',
-    confirmPassword: '',
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  const { signIn, signUp, user } = useAuth();
+  const { signIn, user } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const { toast } = useToast();
@@ -54,71 +41,38 @@ export default function Auth() {
     setIsLoading(true);
 
     try {
-      if (isLogin) {
-        const result = loginSchema.safeParse({
-          email: formData.email,
-          password: formData.password,
+      const result = loginSchema.safeParse({
+        email: formData.email,
+        password: formData.password,
+      });
+
+      if (!result.success) {
+        const fieldErrors: Record<string, string> = {};
+        result.error.errors.forEach((err) => {
+          if (err.path[0]) {
+            fieldErrors[err.path[0] as string] = err.message;
+          }
         });
+        setErrors(fieldErrors);
+        setIsLoading(false);
+        return;
+      }
 
-        if (!result.success) {
-          const fieldErrors: Record<string, string> = {};
-          result.error.errors.forEach((err) => {
-            if (err.path[0]) {
-              fieldErrors[err.path[0] as string] = err.message;
-            }
-          });
-          setErrors(fieldErrors);
-          setIsLoading(false);
-          return;
-        }
-
-        const { error } = await signIn(formData.email, formData.password);
-        
-        if (error) {
-          toast({
-            title: 'Erro ao entrar',
-            description: error.message === 'Invalid login credentials' 
-              ? 'Email ou senha incorretos' 
-              : error.message,
-            variant: 'destructive',
-          });
-        } else {
-          toast({
-            title: 'Bem-vindo!',
-            description: 'Login realizado com sucesso.',
-          });
-        }
+      const { error } = await signIn(formData.email, formData.password);
+      
+      if (error) {
+        toast({
+          title: 'Erro ao entrar',
+          description: error.message === 'Invalid login credentials' 
+            ? 'Email ou senha incorretos' 
+            : error.message,
+          variant: 'destructive',
+        });
       } else {
-        const result = signupSchema.safeParse(formData);
-
-        if (!result.success) {
-          const fieldErrors: Record<string, string> = {};
-          result.error.errors.forEach((err) => {
-            if (err.path[0]) {
-              fieldErrors[err.path[0] as string] = err.message;
-            }
-          });
-          setErrors(fieldErrors);
-          setIsLoading(false);
-          return;
-        }
-
-        const { error } = await signUp(formData.email, formData.password, formData.fullName);
-        
-        if (error) {
-          toast({
-            title: 'Erro ao cadastrar',
-            description: error.message === 'User already registered'
-              ? 'Este email já está cadastrado'
-              : error.message,
-            variant: 'destructive',
-          });
-        } else {
-          toast({
-            title: 'Conta criada!',
-            description: 'Você foi logado automaticamente.',
-          });
-        }
+        toast({
+          title: 'Bem-vindo!',
+          description: 'Login realizado com sucesso.',
+        });
       }
     } catch {
       toast({
@@ -183,36 +137,14 @@ export default function Auth() {
 
           <div className="text-center">
             <h2 className="font-display text-3xl font-semibold text-foreground">
-              {isLogin ? 'Bem-vindo de volta' : 'Criar conta'}
+              Bem-vindo de volta
             </h2>
             <p className="mt-2 text-muted-foreground">
-              {isLogin 
-                ? 'Entre com suas credenciais para acessar' 
-                : 'Preencha os dados para criar sua conta'}
+              Entre com suas credenciais para acessar
             </p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">
-            {!isLogin && (
-              <div className="space-y-2">
-                <Label htmlFor="fullName">Nome completo</Label>
-                <div className="relative">
-                  <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-                  <Input
-                    id="fullName"
-                    type="text"
-                    placeholder="Seu nome"
-                    className="pl-10 input-premium"
-                    value={formData.fullName}
-                    onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
-                  />
-                </div>
-                {errors.fullName && (
-                  <p className="text-sm text-destructive">{errors.fullName}</p>
-                )}
-              </div>
-            )}
-
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
               <div className="relative">
@@ -256,26 +188,6 @@ export default function Auth() {
               )}
             </div>
 
-            {!isLogin && (
-              <div className="space-y-2">
-                <Label htmlFor="confirmPassword">Confirmar senha</Label>
-                <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-                  <Input
-                    id="confirmPassword"
-                    type={showPassword ? 'text' : 'password'}
-                    placeholder="••••••••"
-                    className="pl-10 input-premium"
-                    value={formData.confirmPassword}
-                    onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
-                  />
-                </div>
-                {errors.confirmPassword && (
-                  <p className="text-sm text-destructive">{errors.confirmPassword}</p>
-                )}
-              </div>
-            )}
-
             <Button
               type="submit"
               className="w-full bg-gold hover:bg-gold-dark text-primary-foreground font-medium h-12"
@@ -283,28 +195,15 @@ export default function Auth() {
             >
               {isLoading ? (
                 <Loader2 className="w-5 h-5 animate-spin" />
-              ) : isLogin ? (
-                'Entrar'
               ) : (
-                'Criar conta'
+                'Entrar'
               )}
             </Button>
           </form>
 
-          <div className="text-center">
-            <button
-              type="button"
-              onClick={() => {
-                setIsLogin(!isLogin);
-                setErrors({});
-              }}
-              className="text-gold hover:text-gold-light transition-colors"
-            >
-              {isLogin 
-                ? 'Não tem conta? Criar agora' 
-                : 'Já tem conta? Entrar'}
-            </button>
-          </div>
+          <p className="text-center text-sm text-muted-foreground">
+            Acesso restrito. Entre em contato com o administrador.
+          </p>
         </div>
       </div>
     </div>
