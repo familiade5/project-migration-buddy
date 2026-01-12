@@ -158,6 +158,7 @@ export default function Admin() {
       const { data, error } = await supabase
         .from('activity_logs')
         .select('*')
+        .neq('user_email', 'neto@vendadiretahoje.com.br')
         .order('created_at', { ascending: false })
         .limit(100);
       
