@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react';
 import { toPng } from 'html-to-image';
-import { Download, ChevronLeft, ChevronRight, Loader2, Square, Smartphone, Save } from 'lucide-react';
+import { Download, ChevronLeft, ChevronRight, Loader2, Square, Smartphone } from 'lucide-react';
 import { PropertyData } from '@/types/property';
 import { PostCover } from './posts/PostCover';
 import { PostDetails } from './posts/PostDetails';
@@ -27,7 +27,6 @@ type FormatType = 'feed' | 'story';
 export const PostPreview = ({ data, photos }: PostPreviewProps) => {
   const [currentPost, setCurrentPost] = useState(0);
   const [isExporting, setIsExporting] = useState(false);
-  const [isSaving, setIsSaving] = useState(false);
   const [format, setFormat] = useState<FormatType>('feed');
   
   const { user, profile } = useAuth();
@@ -120,7 +119,11 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
       link.download = `post-${index + 1}-${posts[index].name.toLowerCase()}-${formatSuffix}.png`;
       link.href = dataUrl;
       link.click();
-      toast.success(`Post ${index + 1} (${format === 'feed' ? 'Feed' : 'Story'}) exportado!`);
+      
+      // Save to library automatically
+      await saveCreative(dataUrl);
+      
+      toast.success(`Post exportado e salvo na biblioteca!`);
     } catch (error) {
       toast.error('Erro ao exportar imagem');
       console.error(error);
@@ -230,37 +233,6 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
     }
   };
 
-  // Handle save only (without export)
-  const handleSaveToLibrary = async () => {
-    if (!user) {
-      toast.error('Você precisa estar logado para salvar');
-      return;
-    }
-
-    setIsSaving(true);
-    try {
-      // Generate thumbnail from first feed post
-      const ref = feedRefs[0];
-      let thumbnailUrl: string | undefined;
-      
-      if (ref.current) {
-        thumbnailUrl = await toPng(ref.current, {
-          quality: 0.8,
-          pixelRatio: 1,
-          cacheBust: true,
-        });
-      }
-
-      await saveCreative(thumbnailUrl);
-      toast.success('Criativo salvo na biblioteca!');
-    } catch (error) {
-      toast.error('Erro ao salvar criativo');
-      console.error(error);
-    } finally {
-      setIsSaving(false);
-    }
-  };
-
   const CurrentPostComponent = posts[currentPost].component;
   const currentPhoto = photos[posts[currentPost].photoIndex] || photos[0] || null;
 
@@ -297,52 +269,40 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
         </div>
       </div>
 
-      {/* Botões de exportação e salvamento */}
-      <div className="flex flex-col gap-2">
-        <div className="flex flex-col sm:flex-row gap-2">
-          <Button
-            onClick={handleExportAll}
-            disabled={isExporting || isSaving}
-            variant="outline"
-            className="gap-2 flex-1 text-xs sm:text-sm"
-            size="sm"
-          >
-            {isExporting ? (
-              <Loader2 className="w-4 h-4 animate-spin" />
-            ) : (
-              <Download className="w-4 h-4" />
-            )}
-            Exportar {format === 'feed' ? 'Feed' : 'Stories'}
-          </Button>
-          <Button
-            onClick={handleExportBothFormats}
-            disabled={isExporting || isSaving}
-            className="bg-gold hover:bg-gold-dark text-primary-foreground gap-2 flex-1 text-xs sm:text-sm"
-            size="sm"
-          >
-            {isExporting ? (
-              <Loader2 className="w-4 h-4 animate-spin" />
-            ) : (
-              <Download className="w-4 h-4" />
-            )}
-            Exportar Tudo (8)
-          </Button>
-        </div>
+      {/* Botões de exportação */}
+      <div className="flex flex-col sm:flex-row gap-2">
         <Button
-          onClick={handleSaveToLibrary}
-          disabled={isExporting || isSaving}
+          onClick={handleExportAll}
+          disabled={isExporting}
           variant="outline"
-          className="gap-2 text-xs sm:text-sm border-gold/30 hover:bg-gold/10"
+          className="gap-2 flex-1 text-xs sm:text-sm"
           size="sm"
         >
-          {isSaving ? (
+          {isExporting ? (
             <Loader2 className="w-4 h-4 animate-spin" />
           ) : (
-            <Save className="w-4 h-4" />
+            <Download className="w-4 h-4" />
           )}
-          Salvar na Biblioteca (sem baixar)
+          Exportar {format === 'feed' ? 'Feed' : 'Stories'}
+        </Button>
+        <Button
+          onClick={handleExportBothFormats}
+          disabled={isExporting}
+          className="bg-gold hover:bg-gold-dark text-primary-foreground gap-2 flex-1 text-xs sm:text-sm"
+          size="sm"
+        >
+          {isExporting ? (
+            <Loader2 className="w-4 h-4 animate-spin" />
+          ) : (
+            <Download className="w-4 h-4" />
+          )}
+          Exportar Tudo (8)
         </Button>
       </div>
+      
+      <p className="text-xs text-muted-foreground text-center">
+        ✓ Os posts são salvos automaticamente na biblioteca ao exportar
+      </p>
 
       {/* Post Navigation */}
       <div className="flex items-center justify-center gap-1 sm:gap-2 flex-wrap">
