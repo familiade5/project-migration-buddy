@@ -107,12 +107,12 @@ export const PostCover = ({ data, photo }: PostCoverProps) => {
                 <span className="text-white font-medium" style={{ fontSize: '26px' }}>Aceita FGTS</span>
               </div>
             )}
-            {data.acceptsFinancing && (
-              <div className="flex items-center bg-[#1e3a2f] rounded" style={{ gap: '12px', padding: '8px 20px' }}>
-                <Check className="text-[#4ade80]" style={{ width: '24px', height: '24px' }} />
-                <span className="text-white font-medium" style={{ fontSize: '26px' }}>Aceita Financiamento</span>
-              </div>
-            )}
+            <div className={`flex items-center rounded ${data.acceptsFinancing ? 'bg-[#1e3a2f]' : 'bg-[#4a2c2c]'}`} style={{ gap: '12px', padding: '8px 20px' }}>
+              <Check className={data.acceptsFinancing ? 'text-[#4ade80]' : 'text-[#f87171]'} style={{ width: '24px', height: '24px' }} />
+              <span className="text-white font-medium" style={{ fontSize: '26px' }}>
+                {data.acceptsFinancing ? 'Aceita Financiamento' : 'Não Aceita Financiamento'}
+              </span>
+            </div>
           </div>
 
           {/* Informações de localização - alinhadas à direita */}
