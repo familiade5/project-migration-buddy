@@ -85,6 +85,7 @@ export type Database = {
       }
       profiles: {
         Row: {
+          address: string | null
           avatar_url: string | null
           created_at: string | null
           email: string
@@ -92,8 +93,10 @@ export type Database = {
           id: string
           temp_password: boolean | null
           updated_at: string | null
+          whatsapp: string | null
         }
         Insert: {
+          address?: string | null
           avatar_url?: string | null
           created_at?: string | null
           email: string
@@ -101,8 +104,10 @@ export type Database = {
           id: string
           temp_password?: boolean | null
           updated_at?: string | null
+          whatsapp?: string | null
         }
         Update: {
+          address?: string | null
           avatar_url?: string | null
           created_at?: string | null
           email?: string
@@ -110,6 +115,7 @@ export type Database = {
           id?: string
           temp_password?: boolean | null
           updated_at?: string | null
+          whatsapp?: string | null
         }
         Relationships: []
       }

@@ -172,12 +172,6 @@ export function AppLayout({ children }: AppLayoutProps) {
                     Configurações
                   </Link>
                 </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link to="/profile" className="flex items-center gap-2 cursor-pointer">
-                    <User className="w-4 h-4" />
-                    Meu Perfil
-                  </Link>
-                </DropdownMenuItem>
                 <DropdownMenuSeparator className="bg-border" />
                 <DropdownMenuItem 
                   onClick={handleSignOut}
