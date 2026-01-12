@@ -40,6 +40,8 @@ interface Creative {
   updated_at: string;
   user_id: string;
   creator_name?: string;
+  exported_images?: string[];
+  format?: string;
 }
 
 export default function Library() {
@@ -87,6 +89,8 @@ export default function Library() {
         property_data: item.property_data as unknown as PropertyData,
         photos: item.photos || [],
         creator_name: profileMap[item.user_id] || 'Usuário desconhecido',
+        exported_images: (item as any).exported_images || [],
+        format: (item as any).format || 'feed',
       })) as Creative[];
       
       setCreatives(typedData);
@@ -311,10 +315,10 @@ export default function Library() {
                       setCurrentPhotoIndex(0);
                       setViewingPhotos(true);
                     }}
-                    disabled={!selectedCreative.photos || selectedCreative.photos.length === 0}
+                    disabled={!selectedCreative.exported_images || selectedCreative.exported_images.length === 0}
                   >
                     <Eye className="w-4 h-4 mr-2" />
-                    Visualizar ({selectedCreative.photos?.length || 0} fotos)
+                    Ver Posts ({selectedCreative.exported_images?.length || 0})
                   </Button>
                   {isAdmin && (
                     <Button 
@@ -331,7 +335,7 @@ export default function Library() {
           </DialogContent>
         </Dialog>
 
-        {/* Photo Viewer Modal */}
+        {/* Photo Viewer Modal - Shows Exported Posts */}
         <Dialog open={viewingPhotos} onOpenChange={() => setViewingPhotos(false)}>
           <DialogContent className="max-w-4xl bg-black/95 border-border p-0">
             <div className="relative">
@@ -344,22 +348,30 @@ export default function Library() {
                 <X className="w-6 h-6" />
               </Button>
               
-              {selectedCreative?.photos && selectedCreative.photos.length > 0 && (
-                <div className="relative flex items-center justify-center min-h-[60vh]">
+              {/* Header with format info */}
+              {selectedCreative?.exported_images && selectedCreative.exported_images.length > 0 && (
+                <div className="absolute top-4 left-4 z-10 bg-black/50 px-3 py-1 rounded-full text-white text-sm">
+                  Post {currentPhotoIndex + 1} de {selectedCreative.exported_images.length}
+                  {selectedCreative.format && ` • ${selectedCreative.format === 'both' ? 'Feed + Story' : selectedCreative.format.toUpperCase()}`}
+                </div>
+              )}
+              
+              {selectedCreative?.exported_images && selectedCreative.exported_images.length > 0 && (
+                <div className="relative flex items-center justify-center min-h-[60vh] p-8">
                   <img
-                    src={selectedCreative.photos[currentPhotoIndex]}
-                    alt={`Foto ${currentPhotoIndex + 1}`}
-                    className="max-w-full max-h-[80vh] object-contain"
+                    src={selectedCreative.exported_images[currentPhotoIndex]}
+                    alt={`Post exportado ${currentPhotoIndex + 1}`}
+                    className="max-w-full max-h-[80vh] object-contain rounded-lg shadow-2xl"
                   />
                   
-                  {selectedCreative.photos.length > 1 && (
+                  {selectedCreative.exported_images.length > 1 && (
                     <>
                       <Button
                         variant="ghost"
                         size="icon"
                         className="absolute left-4 text-white hover:bg-white/20"
                         onClick={() => setCurrentPhotoIndex(prev => 
-                          prev === 0 ? selectedCreative.photos.length - 1 : prev - 1
+                          prev === 0 ? selectedCreative.exported_images!.length - 1 : prev - 1
                         )}
                       >
                         <ChevronLeft className="w-8 h-8" />
@@ -369,7 +381,7 @@ export default function Library() {
                         size="icon"
                         className="absolute right-4 text-white hover:bg-white/20"
                         onClick={() => setCurrentPhotoIndex(prev => 
-                          prev === selectedCreative.photos.length - 1 ? 0 : prev + 1
+                          prev === selectedCreative.exported_images!.length - 1 ? 0 : prev + 1
                         )}
                       >
                         <ChevronRight className="w-8 h-8" />
@@ -379,17 +391,26 @@ export default function Library() {
                 </div>
               )}
               
-              <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
-                {selectedCreative?.photos?.map((_, index) => (
-                  <button
-                    key={index}
-                    onClick={() => setCurrentPhotoIndex(index)}
-                    className={`w-2 h-2 rounded-full transition-colors ${
-                      index === currentPhotoIndex ? 'bg-gold' : 'bg-white/50'
-                    }`}
-                  />
-                ))}
-              </div>
+              {/* Thumbnail navigation */}
+              {selectedCreative?.exported_images && selectedCreative.exported_images.length > 1 && (
+                <div className="flex justify-center gap-2 pb-4 overflow-x-auto px-4">
+                  {selectedCreative.exported_images.map((img, index) => (
+                    <button
+                      key={index}
+                      onClick={() => setCurrentPhotoIndex(index)}
+                      className={`w-12 h-12 rounded-md overflow-hidden border-2 transition-all flex-shrink-0 ${
+                        index === currentPhotoIndex ? 'border-gold scale-110' : 'border-transparent opacity-60 hover:opacity-100'
+                      }`}
+                    >
+                      <img 
+                        src={img} 
+                        alt={`Thumbnail ${index + 1}`}
+                        className="w-full h-full object-cover"
+                      />
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
           </DialogContent>
         </Dialog>
@@ -399,24 +420,29 @@ export default function Library() {
 }
 
 function CreativeCard({ creative, onClick }: { creative: Creative; onClick: () => void }) {
+  // Use exported image as thumbnail, fallback to thumbnail_url, then original photos
+  const thumbnailSrc = creative.exported_images?.[0] || creative.thumbnail_url || creative.photos?.[0];
+  const exportCount = creative.exported_images?.length || 0;
+  
   return (
     <button
       onClick={onClick}
       className="glass-card rounded-xl p-4 text-left hover:border-gold/30 transition-all group"
     >
-      <div className="aspect-square bg-surface rounded-lg mb-3 flex items-center justify-center overflow-hidden">
-        {creative.photos && creative.photos.length > 0 ? (
-          <img 
-            src={creative.photos[0]} 
-            alt={creative.title}
-            className="w-full h-full object-cover"
-          />
-        ) : creative.thumbnail_url ? (
-          <img 
-            src={creative.thumbnail_url} 
-            alt={creative.title}
-            className="w-full h-full object-cover"
-          />
+      <div className="aspect-square bg-surface rounded-lg mb-3 flex items-center justify-center overflow-hidden relative">
+        {thumbnailSrc ? (
+          <>
+            <img 
+              src={thumbnailSrc} 
+              alt={creative.title}
+              className="w-full h-full object-cover"
+            />
+            {exportCount > 1 && (
+              <div className="absolute bottom-2 right-2 bg-black/70 text-white text-xs px-2 py-1 rounded-full">
+                {exportCount} posts
+              </div>
+            )}
+          </>
         ) : (
           <Building2 className="w-10 h-10 text-muted-foreground" />
         )}
@@ -431,9 +457,16 @@ function CreativeCard({ creative, onClick }: { creative: Creative; onClick: () =
         <User className="w-3 h-3" />
         <span className="truncate">{creative.creator_name}</span>
       </div>
-      <p className="text-xs text-muted-foreground mt-1">
-        {format(new Date(creative.created_at), 'dd/MM/yyyy')}
-      </p>
+      <div className="flex items-center justify-between mt-1">
+        <p className="text-xs text-muted-foreground">
+          {format(new Date(creative.created_at), 'dd/MM/yyyy')}
+        </p>
+        {creative.format && (
+          <span className="text-xs bg-gold/20 text-gold px-2 py-0.5 rounded-full">
+            {creative.format === 'both' ? 'Feed + Story' : creative.format}
+          </span>
+        )}
+      </div>
     </button>
   );
 }

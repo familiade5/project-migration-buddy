@@ -53,6 +53,8 @@ export type Database = {
       creatives: {
         Row: {
           created_at: string | null
+          exported_images: string[] | null
+          format: string | null
           id: string
           photos: string[] | null
           property_data: Json
@@ -63,6 +65,8 @@ export type Database = {
         }
         Insert: {
           created_at?: string | null
+          exported_images?: string[] | null
+          format?: string | null
           id?: string
           photos?: string[] | null
           property_data: Json
@@ -73,6 +77,8 @@ export type Database = {
         }
         Update: {
           created_at?: string | null
+          exported_images?: string[] | null
+          format?: string | null
           id?: string
           photos?: string[] | null
           property_data?: Json
