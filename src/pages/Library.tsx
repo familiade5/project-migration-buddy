@@ -3,6 +3,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { useActivityLog } from '@/hooks/useActivityLog';
 import { AppLayout } from '@/components/layout/AppLayout';
+import { toast } from 'sonner';
 import { Calendar } from '@/components/ui/calendar';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -103,18 +104,45 @@ export default function Library() {
 
   const deleteCreative = async (id: string) => {
     try {
-      const { error } = await supabase
+      const creativeToDelete = selectedCreative;
+      
+      // Delete from storage first (exported images)
+      if (creativeToDelete?.exported_images && creativeToDelete.exported_images.length > 0) {
+        const filesToDelete = creativeToDelete.exported_images.map(url => {
+          const parts = url.split('/exported-creatives/');
+          return parts[1] || '';
+        }).filter(Boolean);
+        
+        if (filesToDelete.length > 0) {
+          await supabase.storage
+            .from('exported-creatives')
+            .remove(filesToDelete);
+        }
+      }
+      
+      // Delete from database
+      const { error, count } = await supabase
         .from('creatives')
         .delete()
-        .eq('id', id);
+        .eq('id', id)
+        .select();
       
-      if (error) throw error;
+      if (error) {
+        console.error('Delete error:', error);
+        toast.error(`Erro ao excluir: ${error.message}`);
+        return;
+      }
       
-      await logActivity('delete_creative', 'creative', id, { title: selectedCreative?.title });
-      setCreatives(creatives.filter(c => c.id !== id));
+      await logActivity('delete_creative', 'creative', id, { title: creativeToDelete?.title });
+      
+      // Update local state
+      setCreatives(prev => prev.filter(c => c.id !== id));
       setSelectedCreative(null);
-    } catch (error) {
+      toast.success('Criativo excluído com sucesso!');
+      
+    } catch (error: any) {
       console.error('Error deleting creative:', error);
+      toast.error(`Erro ao excluir criativo: ${error.message || 'Tente novamente'}`);
     }
   };
 
