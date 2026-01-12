@@ -15,13 +15,16 @@ import {
 import { 
   Calendar as CalendarIcon, 
   Grid3X3, 
-  List, 
   Search, 
   Loader2,
   Building2,
   Trash2,
   Eye,
-  Clock
+  Clock,
+  User,
+  ChevronLeft,
+  ChevronRight,
+  X
 } from 'lucide-react';
 import { format, isSameDay } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
@@ -35,6 +38,8 @@ interface Creative {
   thumbnail_url: string | null;
   created_at: string;
   updated_at: string;
+  user_id: string;
+  creator_name?: string;
 }
 
 export default function Library() {
@@ -44,7 +49,9 @@ export default function Library() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
   const [selectedCreative, setSelectedCreative] = useState<Creative | null>(null);
-  const { user } = useAuth();
+  const [viewingPhotos, setViewingPhotos] = useState(false);
+  const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0);
+  const { user, isAdmin } = useAuth();
   const { logActivity } = useActivityLog();
 
   useEffect(() => {
@@ -62,11 +69,24 @@ export default function Library() {
       
       if (error) throw error;
       
+      // Fetch creator names from profiles
+      const userIds = [...new Set((data || []).map(item => item.user_id))];
+      const { data: profiles } = await supabase
+        .from('profiles')
+        .select('id, full_name')
+        .in('id', userIds);
+      
+      const profileMap = (profiles || []).reduce((acc, p) => {
+        acc[p.id] = p.full_name;
+        return acc;
+      }, {} as Record<string, string>);
+      
       // Type assertion with proper handling
       const typedData = (data || []).map(item => ({
         ...item,
         property_data: item.property_data as unknown as PropertyData,
         photos: item.photos || [],
+        creator_name: profileMap[item.user_id] || 'Usuário desconhecido',
       })) as Creative[];
       
       setCreatives(typedData);
@@ -244,7 +264,7 @@ export default function Library() {
         )}
 
         {/* Creative Detail Modal */}
-        <Dialog open={!!selectedCreative} onOpenChange={() => setSelectedCreative(null)}>
+        <Dialog open={!!selectedCreative && !viewingPhotos} onOpenChange={() => setSelectedCreative(null)}>
           <DialogContent className="max-w-2xl bg-card border-border">
             <DialogHeader>
               <DialogTitle className="font-display text-xl">
@@ -274,25 +294,103 @@ export default function Library() {
                 </div>
                 
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <User className="w-4 h-4" />
+                  Criado por: <span className="text-foreground font-medium">{selectedCreative.creator_name}</span>
+                </div>
+                
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
                   <Clock className="w-4 h-4" />
                   Criado em {format(new Date(selectedCreative.created_at), "dd/MM/yyyy 'às' HH:mm", { locale: ptBR })}
                 </div>
 
                 <div className="flex gap-3 pt-4">
-                  <Button variant="outline" className="flex-1" onClick={() => setSelectedCreative(null)}>
-                    <Eye className="w-4 h-4 mr-2" />
-                    Visualizar
-                  </Button>
                   <Button 
-                    variant="destructive" 
-                    onClick={() => deleteCreative(selectedCreative.id)}
+                    variant="outline" 
+                    className="flex-1" 
+                    onClick={() => {
+                      setCurrentPhotoIndex(0);
+                      setViewingPhotos(true);
+                    }}
+                    disabled={!selectedCreative.photos || selectedCreative.photos.length === 0}
                   >
-                    <Trash2 className="w-4 h-4 mr-2" />
-                    Excluir
+                    <Eye className="w-4 h-4 mr-2" />
+                    Visualizar ({selectedCreative.photos?.length || 0} fotos)
                   </Button>
+                  {isAdmin && (
+                    <Button 
+                      variant="destructive" 
+                      onClick={() => deleteCreative(selectedCreative.id)}
+                    >
+                      <Trash2 className="w-4 h-4 mr-2" />
+                      Excluir
+                    </Button>
+                  )}
                 </div>
               </div>
             )}
+          </DialogContent>
+        </Dialog>
+
+        {/* Photo Viewer Modal */}
+        <Dialog open={viewingPhotos} onOpenChange={() => setViewingPhotos(false)}>
+          <DialogContent className="max-w-4xl bg-black/95 border-border p-0">
+            <div className="relative">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="absolute top-4 right-4 z-10 text-white hover:bg-white/20"
+                onClick={() => setViewingPhotos(false)}
+              >
+                <X className="w-6 h-6" />
+              </Button>
+              
+              {selectedCreative?.photos && selectedCreative.photos.length > 0 && (
+                <div className="relative flex items-center justify-center min-h-[60vh]">
+                  <img
+                    src={selectedCreative.photos[currentPhotoIndex]}
+                    alt={`Foto ${currentPhotoIndex + 1}`}
+                    className="max-w-full max-h-[80vh] object-contain"
+                  />
+                  
+                  {selectedCreative.photos.length > 1 && (
+                    <>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="absolute left-4 text-white hover:bg-white/20"
+                        onClick={() => setCurrentPhotoIndex(prev => 
+                          prev === 0 ? selectedCreative.photos.length - 1 : prev - 1
+                        )}
+                      >
+                        <ChevronLeft className="w-8 h-8" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="absolute right-4 text-white hover:bg-white/20"
+                        onClick={() => setCurrentPhotoIndex(prev => 
+                          prev === selectedCreative.photos.length - 1 ? 0 : prev + 1
+                        )}
+                      >
+                        <ChevronRight className="w-8 h-8" />
+                      </Button>
+                    </>
+                  )}
+                </div>
+              )}
+              
+              <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
+                {selectedCreative?.photos?.map((_, index) => (
+                  <button
+                    key={index}
+                    onClick={() => setCurrentPhotoIndex(index)}
+                    className={`w-2 h-2 rounded-full transition-colors ${
+                      index === currentPhotoIndex ? 'bg-gold' : 'bg-white/50'
+                    }`}
+                  />
+                ))}
+              </div>
+            </div>
           </DialogContent>
         </Dialog>
       </div>
@@ -307,7 +405,13 @@ function CreativeCard({ creative, onClick }: { creative: Creative; onClick: () =
       className="glass-card rounded-xl p-4 text-left hover:border-gold/30 transition-all group"
     >
       <div className="aspect-square bg-surface rounded-lg mb-3 flex items-center justify-center overflow-hidden">
-        {creative.thumbnail_url ? (
+        {creative.photos && creative.photos.length > 0 ? (
+          <img 
+            src={creative.photos[0]} 
+            alt={creative.title}
+            className="w-full h-full object-cover"
+          />
+        ) : creative.thumbnail_url ? (
           <img 
             src={creative.thumbnail_url} 
             alt={creative.title}
@@ -323,6 +427,10 @@ function CreativeCard({ creative, onClick }: { creative: Creative; onClick: () =
       <p className="text-sm text-muted-foreground">
         {creative.property_data.city} - {creative.property_data.neighborhood}
       </p>
+      <div className="flex items-center gap-1 text-xs text-muted-foreground mt-1">
+        <User className="w-3 h-3" />
+        <span className="truncate">{creative.creator_name}</span>
+      </div>
       <p className="text-xs text-muted-foreground mt-1">
         {format(new Date(creative.created_at), 'dd/MM/yyyy')}
       </p>
