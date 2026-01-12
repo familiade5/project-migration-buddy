@@ -17,6 +17,46 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useActivityLog } from '@/hooks/useActivityLog';
 import type { Json } from '@/integrations/supabase/types';
 
+// Helper to convert data URL to Blob
+const dataURLtoBlob = (dataURL: string): Blob => {
+  const arr = dataURL.split(',');
+  const mime = arr[0].match(/:(.*?);/)?.[1] || 'image/png';
+  const bstr = atob(arr[1]);
+  let n = bstr.length;
+  const u8arr = new Uint8Array(n);
+  while (n--) {
+    u8arr[n] = bstr.charCodeAt(n);
+  }
+  return new Blob([u8arr], { type: mime });
+};
+
+// Upload image to Supabase storage
+const uploadExportedImage = async (
+  dataUrl: string, 
+  userId: string, 
+  creativeId: string, 
+  index: number,
+  format: 'feed' | 'story'
+): Promise<string> => {
+  const blob = dataURLtoBlob(dataUrl);
+  const fileName = `${userId}/${creativeId}/${format}-${index + 1}.png`;
+  
+  const { error } = await supabase.storage
+    .from('exported-creatives')
+    .upload(fileName, blob, {
+      contentType: 'image/png',
+      upsert: true,
+    });
+  
+  if (error) throw error;
+  
+  const { data: { publicUrl } } = supabase.storage
+    .from('exported-creatives')
+    .getPublicUrl(fileName);
+  
+  return publicUrl;
+};
+
 interface PostPreviewProps {
   data: PropertyData;
   photos: string[];
@@ -63,8 +103,11 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
     return `${type} - ${location}`;
   };
 
-  // Save creative to database
-  const saveCreative = async (thumbnailUrl?: string) => {
+  // Save creative to database with exported images
+  const saveCreativeWithExports = async (
+    exportedImages: { dataUrl: string; format: 'feed' | 'story'; index: number }[],
+    exportFormat: 'feed' | 'story' | 'both'
+  ) => {
     if (!user) {
       toast.error('Você precisa estar logado para salvar');
       return null;
@@ -72,6 +115,8 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
 
     try {
       const title = generateTitle();
+      
+      // First, create the creative entry to get an ID
       const { data: creative, error } = await supabase
         .from('creatives')
         .insert({
@@ -79,12 +124,37 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
           title,
           property_data: data as unknown as Json,
           photos,
-          thumbnail_url: thumbnailUrl || null,
+          thumbnail_url: null,
+          format: exportFormat,
         })
         .select()
         .single();
 
       if (error) throw error;
+
+      // Upload all exported images to storage
+      const uploadedUrls: string[] = [];
+      for (const img of exportedImages) {
+        const url = await uploadExportedImage(
+          img.dataUrl, 
+          user.id, 
+          creative.id, 
+          img.index,
+          img.format
+        );
+        uploadedUrls.push(url);
+      }
+
+      // Update creative with exported image URLs and thumbnail
+      const { error: updateError } = await supabase
+        .from('creatives')
+        .update({
+          exported_images: uploadedUrls,
+          thumbnail_url: uploadedUrls[0] || null,
+        })
+        .eq('id', creative.id);
+
+      if (updateError) throw updateError;
 
       // Log the activity
       await logActivity('create_creative', 'creative', creative.id, {
@@ -93,6 +163,8 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
         city: data.city,
         neighborhood: data.neighborhood,
         photos_count: photos.length,
+        exported_count: uploadedUrls.length,
+        format: exportFormat,
       });
 
       return creative;
@@ -120,8 +192,11 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
       link.href = dataUrl;
       link.click();
       
-      // Save to library automatically
-      await saveCreative(dataUrl);
+      // Save to library automatically with the exported image
+      await saveCreativeWithExports(
+        [{ dataUrl, format, index }],
+        format
+      );
       
       toast.success(`Post exportado e salvo na biblioteca!`);
     } catch (error) {
@@ -136,7 +211,7 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
     setIsExporting(true);
     try {
       const formatSuffix = format === 'feed' ? 'feed' : 'story';
-      let thumbnailUrl: string | undefined;
+      const exportedImages: { dataUrl: string; format: 'feed' | 'story'; index: number }[] = [];
       
       for (let i = 0; i < postRefs.length; i++) {
         const ref = postRefs[i];
@@ -148,10 +223,7 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
           cacheBust: true,
         });
         
-        // Use first image as thumbnail
-        if (i === 0) {
-          thumbnailUrl = dataUrl;
-        }
+        exportedImages.push({ dataUrl, format, index: i });
         
         const link = document.createElement('a');
         link.download = `post-${i + 1}-${posts[i].name.toLowerCase()}-${formatSuffix}.png`;
@@ -161,8 +233,8 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
         await new Promise(resolve => setTimeout(resolve, 300));
       }
       
-      // Save to library and log activity
-      await saveCreative(thumbnailUrl);
+      // Save to library with all exported images
+      await saveCreativeWithExports(exportedImages, format);
       
       toast.success(`Todos os posts (${format === 'feed' ? 'Feed' : 'Story'}) exportados e salvos!`);
     } catch (error) {
@@ -176,7 +248,7 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
   const handleExportBothFormats = async () => {
     setIsExporting(true);
     try {
-      let thumbnailUrl: string | undefined;
+      const exportedImages: { dataUrl: string; format: 'feed' | 'story'; index: number }[] = [];
       
       // Exportar formato feed
       for (let i = 0; i < feedRefs.length; i++) {
@@ -189,10 +261,7 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
           cacheBust: true,
         });
         
-        // Use first feed image as thumbnail
-        if (i === 0) {
-          thumbnailUrl = dataUrl;
-        }
+        exportedImages.push({ dataUrl, format: 'feed', index: i });
         
         const link = document.createElement('a');
         link.download = `post-${i + 1}-${feedPosts[i].name.toLowerCase()}-feed.png`;
@@ -213,6 +282,8 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
           cacheBust: true,
         });
         
+        exportedImages.push({ dataUrl, format: 'story', index: i });
+        
         const link = document.createElement('a');
         link.download = `post-${i + 1}-${storyPosts[i].name.toLowerCase()}-story.png`;
         link.href = dataUrl;
@@ -221,8 +292,8 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
         await new Promise(resolve => setTimeout(resolve, 200));
       }
 
-      // Save to library and log activity
-      await saveCreative(thumbnailUrl);
+      // Save to library with all exported images
+      await saveCreativeWithExports(exportedImages, 'both');
 
       toast.success('Todos os 8 posts (Feed + Story) exportados e salvos!');
     } catch (error) {
