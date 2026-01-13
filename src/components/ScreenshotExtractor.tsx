@@ -95,15 +95,16 @@ export const ScreenshotExtractor = ({ onExtract }: ScreenshotExtractorProps) => 
         propertyUpdate.discount = extractedData.discount;
         fieldsFound.push('Desconto');
       }
-      if (extractedData.bedrooms) {
+      // Só atualiza quartos/banheiros/garagem se houver valor específico (não vazio e não 0)
+      if (extractedData.bedrooms && extractedData.bedrooms !== '' && extractedData.bedrooms !== '0') {
         propertyUpdate.bedrooms = extractedData.bedrooms;
         fieldsFound.push('Quartos');
       }
-      if (extractedData.bathrooms) {
+      if (extractedData.bathrooms && extractedData.bathrooms !== '' && extractedData.bathrooms !== '0') {
         propertyUpdate.bathrooms = extractedData.bathrooms;
         fieldsFound.push('Banheiros');
       }
-      if (extractedData.garageSpaces) {
+      if (extractedData.garageSpaces && extractedData.garageSpaces !== '' && extractedData.garageSpaces !== '0') {
         propertyUpdate.garageSpaces = extractedData.garageSpaces;
         fieldsFound.push('Garagem');
       }

@@ -11,6 +11,7 @@ interface PhotoSearcherProps {
   propertyType: string;
   onPhotosSelected: (photos: string[]) => void;
   onCondominiumFound?: (name: string) => void;
+  onClear?: () => void;
 }
 
 interface PhotoResult {
@@ -23,7 +24,8 @@ export const PhotoSearcher = ({
   address, 
   propertyType, 
   onPhotosSelected,
-  onCondominiumFound 
+  onCondominiumFound,
+  onClear
 }: PhotoSearcherProps) => {
   const [isSearching, setIsSearching] = useState(false);
   const [photos, setPhotos] = useState<PhotoResult[]>([]);
@@ -225,7 +227,20 @@ export const PhotoSearcher = ({
                 className="gap-2"
               >
                 <X className="w-4 h-4" />
-                Limpar
+                Limpar seleção
+              </Button>
+            )}
+            {onClear && (
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setSelectedPhotos([]);
+                  onClear();
+                }}
+                className="gap-2 text-destructive hover:text-destructive"
+              >
+                <X className="w-4 h-4" />
+                Limpar slides
               </Button>
             )}
           </div>
