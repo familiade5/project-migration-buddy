@@ -12,27 +12,45 @@ export const PostFeaturesStory = ({ data, photo }: PostFeaturesStoryProps) => {
   const getHighlightFeatures = () => {
     const features: string[] = [];
     
-    if (data.hasEasyEntry) {
-      features.push('Entrada facilitada e parcelada');
-    } else {
-      features.push('Condições especiais de pagamento');
+    // Primeiro: mostrar características do imóvel se disponíveis
+    if (data.bedrooms && data.bedrooms !== '' && data.bedrooms !== '0') {
+      features.push(`${data.bedrooms} quarto${Number(data.bedrooms) > 1 ? 's' : ''}`);
+    }
+    if (data.bathrooms && data.bathrooms !== '' && data.bathrooms !== '0') {
+      features.push(`${data.bathrooms} banheiro${Number(data.bathrooms) > 1 ? 's' : ''}`);
+    }
+    if (data.area && data.area !== '') {
+      features.push(`${data.area}m² de área útil`);
     }
     
-    if (data.canUseFGTS) {
-      features.push('Use seu saldo do FGTS');
-    } else {
-      features.push('Financiamento com as melhores taxas');
+    // Se ainda não tem 3 features, adiciona condições de pagamento
+    if (features.length < 3) {
+      if (data.hasEasyEntry) {
+        features.push('Entrada facilitada e parcelada');
+      } else if (data.canUseFGTS) {
+        features.push('Use seu saldo do FGTS');
+      } else if (data.acceptsFinancing) {
+        features.push('Aprovação rápida de crédito');
+      } else if (data.discount && parseFloat(data.discount.replace(',', '.')) > 30) {
+        features.push('Desconto imperdível');
+      }
     }
     
-    if (data.acceptsFinancing) {
-      features.push('Aprovação rápida de crédito');
-    } else if (data.discount && parseFloat(data.discount.replace(',', '.')) > 30) {
-      features.push('Desconto imperdível');
-    } else {
-      features.push('Oportunidade única de investimento');
+    // Adicionar features selecionadas do imóvel
+    if (features.length < 3 && data.features.length > 0) {
+      data.features.forEach(f => {
+        if (features.length < 3) features.push(f);
+      });
     }
     
-    return features;
+    // Se ainda não tem nada, adiciona mensagens genéricas
+    if (features.length === 0) {
+      features.push('Oportunidade única');
+      features.push('Condições especiais');
+      features.push('Investimento seguro');
+    }
+    
+    return features.slice(0, 3);
   };
 
   const highlightFeatures = getHighlightFeatures();
