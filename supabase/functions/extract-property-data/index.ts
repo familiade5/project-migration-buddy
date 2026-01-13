@@ -44,7 +44,7 @@ Regras importantes:
 - Se houver valor de entrada especificado, extraia em entryValue
 - Extraia cidade, estado e bairro separadamente
 - Identifique o tipo de imóvel (Casa, Apartamento, Terreno, etc.)
-- Extraia quartos, banheiros, garagem e área
+- IMPORTANTE sobre quartos/banheiros/garagem: Só extraia se houver NÚMERO ESPECÍFICO mencionado. Se apenas mencionar "quarto" ou "banheiro" sem quantidade, DEIXE O CAMPO VAZIO. Não invente números.
 - Extraia o ENDEREÇO COMPLETO incluindo rua, número, complemento, bairro, cidade e estado
 - Para o paymentMethod, descreva as formas de pagamento disponíveis (ex: "À Vista, FGTS" ou "Financiamento Habitacional, FGTS")`;
 
@@ -97,9 +97,9 @@ Regras importantes:
                   evaluationValue: { type: "string", description: "Valor de avaliação no formato R$ 123.456,78" },
                   minimumValue: { type: "string", description: "Valor mínimo de venda no formato R$ 123.456,78" },
                   discount: { type: "string", description: "Percentual de desconto (apenas número, ex: 41,33)" },
-                  bedrooms: { type: "string", description: "Número de quartos" },
-                  bathrooms: { type: "string", description: "Número de banheiros" },
-                  garageSpaces: { type: "string", description: "Número de vagas de garagem" },
+                  bedrooms: { type: "string", description: "Número de quartos. DEIXE VAZIO se não houver número específico mencionado (ex: se diz apenas 'quarto' sem número, não preencha)" },
+                  bathrooms: { type: "string", description: "Número de banheiros. DEIXE VAZIO se não houver número específico mencionado" },
+                  garageSpaces: { type: "string", description: "Número de vagas de garagem. DEIXE VAZIO se não houver número específico mencionado" },
                   area: { type: "string", description: "Área do imóvel em m²" },
                   areaTotal: { type: "string", description: "Área total em m²" },
                   areaPrivativa: { type: "string", description: "Área privativa em m²" },
