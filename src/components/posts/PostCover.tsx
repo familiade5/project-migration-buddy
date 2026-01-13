@@ -1,5 +1,5 @@
 import { PropertyData } from '@/types/property';
-import { MapPin, Home, Check } from 'lucide-react';
+import { MapPin, Home, Check, Sparkles, TrendingDown, Zap } from 'lucide-react';
 import logoVDH from '@/assets/logo-vdh.jpg';
 
 interface PostCoverProps {
@@ -11,6 +11,27 @@ interface PostCoverProps {
 export const PostCover = ({ data, photo }: PostCoverProps) => {
   // Formatar resumo do imóvel
   const propertySummary = `${data.type} de ${data.bedrooms} quartos${data.garageSpaces ? ` e ${data.garageSpaces} vaga${Number(data.garageSpaces) > 1 ? 's' : ''} de garagem` : ''}`;
+  
+  // Endereço completo ou fallback para bairro + cidade
+  const displayAddress = data.fullAddress || (data.street ? `${data.street}${data.number ? `, ${data.number}` : ''} - ${data.neighborhood}, ${data.city} - ${data.state}` : `${data.neighborhood} ${data.city} • ${data.state}`);
+
+  // Textos chamativos para quando não há entrada
+  const noEntryTexts = [
+    { title: 'Oportunidade Única', subtitle: 'Abaixo do Mercado', icon: Sparkles },
+    { title: 'Desconto Imperdível', subtitle: `${data.discount}% OFF`, icon: TrendingDown },
+    { title: 'Preço Exclusivo', subtitle: 'Venda Direta', icon: Zap },
+  ];
+  
+  // Seleciona texto baseado no desconto
+  const getNoEntryContent = () => {
+    if (data.discount && parseFloat(data.discount) >= 30) {
+      return noEntryTexts[1]; // Desconto Imperdível
+    }
+    return noEntryTexts[0]; // Oportunidade Única
+  };
+
+  const noEntryContent = getNoEntryContent();
+  const NoEntryIcon = noEntryContent.icon;
 
   return (
     <div className="post-template relative overflow-hidden">
@@ -32,14 +53,28 @@ export const PostCover = ({ data, photo }: PostCoverProps) => {
         <p className="text-white/15 font-bold tracking-wider" style={{ fontSize: '180px' }}>VDH</p>
       </div>
 
-      {/* Header Verde Escuro - com cantos arredondados */}
+      {/* Header - Entrada ou Texto Chamativo */}
       <div className="absolute z-10" style={{ top: '20px', left: '20px' }}>
-        <div className="bg-[#1e3a2f] rounded-t-lg" style={{ padding: '12px 40px' }}>
-          <p className="text-white font-medium leading-tight" style={{ fontSize: '28px' }}>Entrada a partir de</p>
-          <p className="text-white font-bold tracking-tight leading-none" style={{ fontSize: '72px' }}>
-            {data.entryValue || 'R$ 7.500'}
-          </p>
-        </div>
+        {data.hasEasyEntry && data.entryValue ? (
+          // Com entrada facilitada
+          <div className="bg-[#1e3a2f] rounded-t-lg" style={{ padding: '12px 40px' }}>
+            <p className="text-white font-medium leading-tight" style={{ fontSize: '28px' }}>Entrada a partir de</p>
+            <p className="text-white font-bold tracking-tight leading-none" style={{ fontSize: '72px' }}>
+              {data.entryValue}
+            </p>
+          </div>
+        ) : (
+          // Sem entrada - Texto chamativo
+          <div className="bg-gradient-to-r from-[#1e3a2f] to-[#2d5a4f] rounded-t-lg" style={{ padding: '12px 40px' }}>
+            <div className="flex items-center gap-3">
+              <NoEntryIcon className="text-[#f5d485]" style={{ width: '28px', height: '28px' }} />
+              <p className="text-[#f5d485] font-medium leading-tight" style={{ fontSize: '28px' }}>{noEntryContent.title}</p>
+            </div>
+            <p className="text-white font-bold tracking-tight leading-none" style={{ fontSize: '72px' }}>
+              {noEntryContent.subtitle}
+            </p>
+          </div>
+        )}
         
         {/* Subtítulo com tipo e cidade */}
         <div className="bg-[#2d4a3f] flex items-center rounded-b-lg" style={{ padding: '8px 40px', gap: '20px' }}>
@@ -119,7 +154,7 @@ export const PostCover = ({ data, photo }: PostCoverProps) => {
           <div className="flex-1 flex flex-col items-end text-right">
             <div className="flex items-center text-white/90" style={{ gap: '12px' }}>
               <MapPin className="text-[#f5d485] flex-shrink-0" style={{ width: '28px', height: '28px' }} />
-              <span className="font-medium" style={{ fontSize: '26px' }}>{data.neighborhood} {data.city} • {data.state}</span>
+              <span className="font-medium" style={{ fontSize: '26px' }}>{displayAddress}</span>
             </div>
             <div className="flex items-center text-white/90" style={{ gap: '12px' }}>
               <Home className="text-[#f5d485] flex-shrink-0" style={{ width: '28px', height: '28px' }} />
