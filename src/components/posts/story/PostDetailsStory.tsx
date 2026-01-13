@@ -16,9 +16,11 @@ export const PostDetailsStory = ({ data, photo, photos = [] }: PostDetailsStoryP
     return photo;
   };
 
+  // Features dinâmicas baseadas nos dados - com fallbacks de venda
   const generateFeatures = () => {
     const features: string[] = [];
-    // Só adiciona se houver valor específico (não vazio e não zero)
+    
+    // Primeiro: adiciona dados reais se existirem
     if (data.bedrooms && data.bedrooms !== '' && data.bedrooms !== '0') {
       features.push(`${data.bedrooms} quarto${Number(data.bedrooms) > 1 ? 's' : ''} aconchegante${Number(data.bedrooms) > 1 ? 's' : ''}`);
     }
@@ -31,9 +33,27 @@ export const PostDetailsStory = ({ data, photo, photos = [] }: PostDetailsStoryP
     if (data.area && data.area !== '' && data.area !== '0') {
       features.push(`${data.area}m² de área`);
     }
+    
+    // Adicionar features selecionadas
     data.features.forEach(f => {
       if (features.length < 5) features.push(f);
     });
+    
+    // Se não tem features suficientes, adiciona textos de venda
+    const sellingPoints = [
+      'Localização privilegiada',
+      'Ótimo custo-benefício',
+      'Pronto para morar',
+      'Excelente oportunidade',
+      'Investimento seguro',
+    ];
+    
+    let sellingIndex = 0;
+    while (features.length < 4 && sellingIndex < sellingPoints.length) {
+      features.push(sellingPoints[sellingIndex]);
+      sellingIndex++;
+    }
+    
     return features.slice(0, 4);
   };
 

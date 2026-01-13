@@ -9,32 +9,33 @@ interface PostFeaturesProps {
 }
 
 export const PostFeatures = ({ data, photo }: PostFeaturesProps) => {
-  // Features dinâmicas baseadas nas opções
+  // Features dinâmicas baseadas nas opções - sempre mostra 3 itens
   const getHighlightFeatures = () => {
     const features: string[] = [];
     
     // Primeiro: mostrar características do imóvel se disponíveis
     if (data.bedrooms && data.bedrooms !== '' && data.bedrooms !== '0') {
-      features.push(`${data.bedrooms} quarto${Number(data.bedrooms) > 1 ? 's' : ''}`);
+      features.push(`${data.bedrooms} quarto${Number(data.bedrooms) > 1 ? 's' : ''} espaçoso${Number(data.bedrooms) > 1 ? 's' : ''}`);
     }
     if (data.bathrooms && data.bathrooms !== '' && data.bathrooms !== '0') {
-      features.push(`${data.bathrooms} banheiro${Number(data.bathrooms) > 1 ? 's' : ''}`);
+      features.push(`${data.bathrooms} banheiro${Number(data.bathrooms) > 1 ? 's' : ''} completo${Number(data.bathrooms) > 1 ? 's' : ''}`);
     }
     if (data.area && data.area !== '') {
       features.push(`${data.area}m² de área útil`);
     }
     
-    // Se ainda não tem 3 features, adiciona condições de pagamento
-    if (features.length < 3) {
-      if (data.hasEasyEntry) {
-        features.push('Entrada facilitada e parcelada');
-      } else if (data.canUseFGTS) {
-        features.push('Use seu saldo do FGTS');
-      } else if (data.acceptsFinancing) {
-        features.push('Aprovação rápida de crédito');
-      } else if (data.discount && parseFloat(data.discount.replace(',', '.')) > 30) {
-        features.push('Desconto imperdível');
-      }
+    // Adiciona condições de pagamento se relevantes
+    if (features.length < 3 && data.hasEasyEntry) {
+      features.push('Entrada facilitada e parcelada');
+    }
+    if (features.length < 3 && data.canUseFGTS) {
+      features.push('Use seu saldo do FGTS');
+    }
+    if (features.length < 3 && data.acceptsFinancing) {
+      features.push('Financiamento facilitado');
+    }
+    if (features.length < 3 && data.discount && parseFloat(data.discount.replace(',', '.')) > 30) {
+      features.push(`${data.discount}% de desconto`);
     }
     
     // Adicionar features selecionadas do imóvel
@@ -44,11 +45,19 @@ export const PostFeatures = ({ data, photo }: PostFeaturesProps) => {
       });
     }
     
-    // Se ainda não tem nada, adiciona mensagens genéricas
-    if (features.length === 0) {
-      features.push('Oportunidade única');
-      features.push('Condições especiais');
-      features.push('Investimento seguro');
+    // Fallback: textos de venda atraentes
+    const sellingPoints = [
+      'Realize o sonho da casa própria',
+      'Oportunidade única de investimento',
+      'Abaixo do valor de mercado',
+      'Documentação regularizada',
+      'Pronto para financiar',
+    ];
+    
+    let sellingIndex = 0;
+    while (features.length < 3 && sellingIndex < sellingPoints.length) {
+      features.push(sellingPoints[sellingIndex]);
+      sellingIndex++;
     }
     
     return features.slice(0, 3);
