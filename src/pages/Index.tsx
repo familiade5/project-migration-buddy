@@ -5,7 +5,8 @@ import { PhotoUpload } from '@/components/PhotoUpload';
 import { PostPreview } from '@/components/PostPreview';
 import { CaptionGenerator } from '@/components/CaptionGenerator';
 import { ScreenshotExtractor } from '@/components/ScreenshotExtractor';
-import { Sparkles, Image, FileText, Upload, Edit3 } from 'lucide-react';
+import { PhotoSearcher } from '@/components/PhotoSearcher';
+import { Sparkles, Image, FileText, Upload, Edit3, Search } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { AppLayout } from '@/components/layout/AppLayout';
 
@@ -43,9 +44,46 @@ const Index = () => {
         <div className="grid lg:grid-cols-2 gap-6 lg:gap-8">
           {/* Left Column - Input */}
           <div className="space-y-6 min-w-0">
-            {/* Photos */}
+            {/* Photos - With Tabs for Upload and Search */}
             <div className="glass-card rounded-2xl p-4 sm:p-6 overflow-hidden">
-              <PhotoUpload photos={photos} onChange={setPhotos} />
+              <Tabs defaultValue="upload" className="w-full">
+                <TabsList className="grid w-full grid-cols-2 bg-surface mb-4">
+                  <TabsTrigger 
+                    value="upload" 
+                    className="gap-2 text-xs sm:text-sm data-[state=active]:bg-gold data-[state=active]:text-primary-foreground"
+                  >
+                    <Upload className="w-4 h-4" />
+                    Upload Manual
+                  </TabsTrigger>
+                  <TabsTrigger 
+                    value="search" 
+                    className="gap-2 text-xs sm:text-sm data-[state=active]:bg-gold data-[state=active]:text-primary-foreground"
+                  >
+                    <Search className="w-4 h-4" />
+                    Buscar Fotos
+                  </TabsTrigger>
+                </TabsList>
+                
+                <TabsContent value="upload" className="mt-0">
+                  <PhotoUpload photos={photos} onChange={setPhotos} />
+                </TabsContent>
+                
+                <TabsContent value="search" className="mt-0">
+                  <PhotoSearcher 
+                    address={propertyData.fullAddress || `${propertyData.street}, ${propertyData.neighborhood}, ${propertyData.city} - ${propertyData.state}`}
+                    propertyType={propertyData.type}
+                    onPhotosSelected={(selectedPhotos) => {
+                      setPhotos(prev => [...prev, ...selectedPhotos].slice(0, 4));
+                    }}
+                    onCondominiumFound={(name) => {
+                      setPropertyData(prev => ({
+                        ...prev,
+                        propertyName: name
+                      }));
+                    }}
+                  />
+                </TabsContent>
+              </Tabs>
             </div>
             
             {/* Property Data - With Mode Tabs */}
