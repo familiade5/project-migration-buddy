@@ -111,66 +111,66 @@ export const PostCover = ({ data, photo }: PostCoverProps) => {
         </div>
       </div>
 
-      {/* Rodapé - mesmo cinza da logo/outras imagens */}
+      {/* Rodapé compacto */}
       <div className="absolute bottom-0 left-0 right-0 bg-[#2a3142] z-10">
-        {/* Linha superior com logo e valores */}
-        <div className="flex border-b border-white/10">
-          {/* Logo VDH */}
-          <div className="w-[24%] flex items-center justify-center border-r border-white/10" style={{ padding: '16px' }}>
+        {/* Linha única com logo, valores e informações */}
+        <div className="flex items-center" style={{ padding: '12px 20px', gap: '16px' }}>
+          {/* Logo VDH - compacto */}
+          <div className="flex-shrink-0">
             <img 
               src={logoVDH} 
-              alt="VDH - Venda Direta Hoje" 
+              alt="VDH" 
               className="object-contain"
-              style={{ height: '80px' }}
+              style={{ height: '60px' }}
             />
           </div>
           
-          {/* Valores - alinhados à direita */}
-          <div className="flex-1 flex flex-col items-end justify-center" style={{ padding: '12px 40px' }}>
-            <div className="flex items-baseline" style={{ gap: '16px' }}>
-              <span className="text-white/80 font-semibold" style={{ fontSize: '26px' }}>Valor de Avaliação:</span>
-              <span className="text-[#f5d485] font-bold" style={{ fontSize: '32px' }}>{data.evaluationValue}</span>
+          {/* Valores e desconto */}
+          <div className="flex flex-col" style={{ gap: '2px' }}>
+            <div className="flex items-baseline" style={{ gap: '8px' }}>
+              <span className="text-white/70" style={{ fontSize: '18px' }}>Avaliação:</span>
+              <span className="text-[#f5d485] font-bold" style={{ fontSize: '22px' }}>{data.evaluationValue}</span>
             </div>
-            <div className="flex items-baseline" style={{ gap: '16px' }}>
-              <span className="text-white/80 font-semibold" style={{ fontSize: '26px' }}>Valor Mínimo de Venda:</span>
-              <span className="text-[#f5d485] font-bold" style={{ fontSize: '32px' }}>{data.minimumValue}</span>
-            </div>
-            {/* Desconto destacado */}
-            <div className="bg-gradient-to-r from-[#dc2626] to-[#ef4444] rounded-full" style={{ marginTop: '8px', padding: '6px 24px' }}>
-              <span className="text-white font-bold tracking-wide" style={{ fontSize: '26px' }}>🔥 DESCONTO DE {data.discount}%</span>
+            <div className="flex items-baseline" style={{ gap: '8px' }}>
+              <span className="text-white/70" style={{ fontSize: '18px' }}>Mínimo:</span>
+              <span className="text-[#f5d485] font-bold" style={{ fontSize: '22px' }}>{data.minimumValue}</span>
             </div>
           </div>
-        </div>
 
-        {/* Linha inferior com tag e localização */}
-        <div className="flex items-start" style={{ padding: '16px 20px', gap: '20px' }}>
-          {/* Tags FGTS e Financiamento */}
-          <div className="flex flex-col" style={{ gap: '8px' }}>
+          {/* Desconto */}
+          {data.discount && (
+            <div className="bg-gradient-to-r from-[#dc2626] to-[#ef4444] rounded-full flex-shrink-0" style={{ padding: '4px 16px' }}>
+              <span className="text-white font-bold" style={{ fontSize: '20px' }}>🔥 {data.discount}%</span>
+            </div>
+          )}
+
+          {/* Tags FGTS/Financiamento - compactas */}
+          <div className="flex flex-col flex-shrink-0" style={{ gap: '4px' }}>
             {data.acceptsFGTS && (
-              <div className="flex items-center bg-[#1e3a2f] rounded" style={{ gap: '12px', padding: '8px 20px' }}>
-                <Check className="text-[#4ade80]" style={{ width: '24px', height: '24px' }} />
-                <span className="text-white font-medium" style={{ fontSize: '26px' }}>Aceita FGTS</span>
+              <div className="flex items-center bg-[#1e3a2f] rounded" style={{ gap: '6px', padding: '4px 12px' }}>
+                <Check className="text-[#4ade80]" style={{ width: '16px', height: '16px' }} />
+                <span className="text-white font-medium" style={{ fontSize: '16px' }}>FGTS</span>
               </div>
             )}
-            <div className={`flex items-center rounded ${data.acceptsFinancing ? 'bg-[#1e3a2f]' : 'bg-[#4a2c2c]'}`} style={{ gap: '12px', padding: '8px 20px' }}>
-              <Check className={data.acceptsFinancing ? 'text-[#4ade80]' : 'text-[#f87171]'} style={{ width: '24px', height: '24px' }} />
-              <span className="text-white font-medium" style={{ fontSize: '26px' }}>
-                {data.acceptsFinancing ? 'Aceita Financiamento' : 'Não Aceita Financiamento'}
+            <div className={`flex items-center rounded ${data.acceptsFinancing ? 'bg-[#1e3a2f]' : 'bg-[#4a2c2c]'}`} style={{ gap: '6px', padding: '4px 12px' }}>
+              <Check className={data.acceptsFinancing ? 'text-[#4ade80]' : 'text-[#f87171]'} style={{ width: '16px', height: '16px' }} />
+              <span className="text-white font-medium" style={{ fontSize: '16px' }}>
+                {data.acceptsFinancing ? 'Financ.' : 'Sem Financ.'}
               </span>
             </div>
           </div>
 
-          {/* Informações de localização - alinhadas à direita */}
-          <div className="flex-1 flex flex-col items-end text-right">
-            <div className="flex items-center text-white/90" style={{ gap: '12px' }}>
-              <MapPin className="text-[#f5d485] flex-shrink-0" style={{ width: '28px', height: '28px' }} />
-              <span className="font-medium" style={{ fontSize: '26px' }}>{displayAddress}</span>
+          {/* Localização - alinhada à direita */}
+          <div className="flex-1 flex flex-col items-end text-right" style={{ gap: '2px' }}>
+            <div className="flex items-center text-white/90" style={{ gap: '8px' }}>
+              <MapPin className="text-[#f5d485] flex-shrink-0" style={{ width: '20px', height: '20px' }} />
+              <span className="font-medium" style={{ fontSize: '18px' }}>{displayAddress}</span>
             </div>
-            <div className="flex items-center text-white/90" style={{ gap: '12px' }}>
-              <Home className="text-[#f5d485] flex-shrink-0" style={{ width: '28px', height: '28px' }} />
-              <span style={{ fontSize: '26px' }}>{propertySummary}</span>
+            <div className="flex items-center text-white/90" style={{ gap: '8px' }}>
+              <Home className="text-[#f5d485] flex-shrink-0" style={{ width: '20px', height: '20px' }} />
+              <span style={{ fontSize: '18px' }}>{propertySummary}</span>
             </div>
-            <p className="text-white/60" style={{ fontSize: '24px' }}>Venda Direta Hoje • {data.creci}</p>
+            <p className="text-white/50" style={{ fontSize: '14px' }}>VDH • {data.creci}</p>
           </div>
         </div>
       </div>

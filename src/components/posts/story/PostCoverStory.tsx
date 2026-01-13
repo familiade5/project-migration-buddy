@@ -108,63 +108,64 @@ export const PostCoverStory = ({ data, photo }: PostCoverStoryProps) => {
         </div>
       </div>
 
-      {/* Rodapé expandido para story */}
+      {/* Rodapé compacto para story */}
       <div className="absolute bottom-0 left-0 right-0 bg-[#2a3142] z-10">
-        {/* Logo VDH */}
-        <div className="flex justify-center border-b border-white/10" style={{ padding: '30px' }}>
+        {/* Logo + Valores na mesma linha */}
+        <div className="flex items-center justify-between border-b border-white/10" style={{ padding: '16px 30px' }}>
           <img 
             src={logoVDH} 
-            alt="VDH - Venda Direta Hoje" 
+            alt="VDH" 
             className="object-contain"
-            style={{ height: '100px' }}
+            style={{ height: '70px' }}
           />
-        </div>
-        
-        {/* Valores */}
-        <div className="flex flex-col items-center border-b border-white/10" style={{ padding: '30px 40px', gap: '12px' }}>
-          <div className="flex items-baseline" style={{ gap: '20px' }}>
-            <span className="text-white/80 font-semibold" style={{ fontSize: '32px' }}>Valor de Avaliação:</span>
-            <span className="text-[#f5d485] font-bold" style={{ fontSize: '38px' }}>{data.evaluationValue}</span>
-          </div>
-          <div className="flex items-baseline" style={{ gap: '20px' }}>
-            <span className="text-white/80 font-semibold" style={{ fontSize: '32px' }}>Valor Mínimo de Venda:</span>
-            <span className="text-[#f5d485] font-bold" style={{ fontSize: '38px' }}>{data.minimumValue}</span>
-          </div>
-          {/* Desconto destacado */}
-          <div className="bg-gradient-to-r from-[#dc2626] to-[#ef4444] rounded-full" style={{ marginTop: '12px', padding: '10px 40px' }}>
-            <span className="text-white font-bold tracking-wide" style={{ fontSize: '36px' }}>🔥 DESCONTO DE {data.discount}%</span>
+          
+          {/* Valores compactos */}
+          <div className="flex flex-col items-end" style={{ gap: '4px' }}>
+            <div className="flex items-baseline" style={{ gap: '12px' }}>
+              <span className="text-white/70" style={{ fontSize: '24px' }}>Avaliação:</span>
+              <span className="text-[#f5d485] font-bold" style={{ fontSize: '28px' }}>{data.evaluationValue}</span>
+            </div>
+            <div className="flex items-baseline" style={{ gap: '12px' }}>
+              <span className="text-white/70" style={{ fontSize: '24px' }}>Mínimo:</span>
+              <span className="text-[#f5d485] font-bold" style={{ fontSize: '28px' }}>{data.minimumValue}</span>
+            </div>
           </div>
         </div>
 
-        {/* Tags e localização */}
-        <div style={{ padding: '30px 40px' }}>
-          {/* Tags FGTS e Financiamento */}
-          <div className="flex justify-center" style={{ gap: '20px', marginBottom: '20px' }}>
+        {/* Tags, desconto e localização */}
+        <div className="flex items-center justify-between" style={{ padding: '12px 30px' }}>
+          {/* Tags + Desconto */}
+          <div className="flex items-center" style={{ gap: '12px' }}>
             {data.acceptsFGTS && (
-              <div className="flex items-center bg-[#1e3a2f] rounded" style={{ gap: '12px', padding: '12px 24px' }}>
-                <Check className="text-[#4ade80]" style={{ width: '28px', height: '28px' }} />
-                <span className="text-white font-medium" style={{ fontSize: '28px' }}>Aceita FGTS</span>
+              <div className="flex items-center bg-[#1e3a2f] rounded" style={{ gap: '8px', padding: '8px 16px' }}>
+                <Check className="text-[#4ade80]" style={{ width: '20px', height: '20px' }} />
+                <span className="text-white font-medium" style={{ fontSize: '20px' }}>FGTS</span>
               </div>
             )}
-            <div className={`flex items-center rounded ${data.acceptsFinancing ? 'bg-[#1e3a2f]' : 'bg-[#4a2c2c]'}`} style={{ gap: '12px', padding: '12px 24px' }}>
-              <Check className={data.acceptsFinancing ? 'text-[#4ade80]' : 'text-[#f87171]'} style={{ width: '28px', height: '28px' }} />
-              <span className="text-white font-medium" style={{ fontSize: '28px' }}>
-                {data.acceptsFinancing ? 'Aceita Financiamento' : 'Não Aceita Financiamento'}
+            <div className={`flex items-center rounded ${data.acceptsFinancing ? 'bg-[#1e3a2f]' : 'bg-[#4a2c2c]'}`} style={{ gap: '8px', padding: '8px 16px' }}>
+              <Check className={data.acceptsFinancing ? 'text-[#4ade80]' : 'text-[#f87171]'} style={{ width: '20px', height: '20px' }} />
+              <span className="text-white font-medium" style={{ fontSize: '20px' }}>
+                {data.acceptsFinancing ? 'Financ.' : 'Sem Financ.'}
               </span>
             </div>
+            {data.discount && (
+              <div className="bg-gradient-to-r from-[#dc2626] to-[#ef4444] rounded-full" style={{ padding: '6px 20px' }}>
+                <span className="text-white font-bold" style={{ fontSize: '22px' }}>🔥 {data.discount}%</span>
+              </div>
+            )}
           </div>
 
-          {/* Informações de localização */}
-          <div className="flex flex-col items-center text-center" style={{ gap: '8px' }}>
-            <div className="flex items-center text-white/90" style={{ gap: '12px' }}>
-              <MapPin className="text-[#f5d485] flex-shrink-0" style={{ width: '28px', height: '28px' }} />
-              <span className="font-medium" style={{ fontSize: '28px' }}>{displayAddress}</span>
+          {/* Localização */}
+          <div className="flex flex-col items-end text-right" style={{ gap: '4px' }}>
+            <div className="flex items-center text-white/90" style={{ gap: '8px' }}>
+              <MapPin className="text-[#f5d485] flex-shrink-0" style={{ width: '22px', height: '22px' }} />
+              <span className="font-medium" style={{ fontSize: '22px' }}>{displayAddress}</span>
             </div>
-            <div className="flex items-center text-white/90" style={{ gap: '12px' }}>
-              <Home className="text-[#f5d485] flex-shrink-0" style={{ width: '28px', height: '28px' }} />
-              <span style={{ fontSize: '28px' }}>{propertySummary}</span>
+            <div className="flex items-center text-white/90" style={{ gap: '8px' }}>
+              <Home className="text-[#f5d485] flex-shrink-0" style={{ width: '22px', height: '22px' }} />
+              <span style={{ fontSize: '22px' }}>{propertySummary}</span>
             </div>
-            <p className="text-white/60" style={{ fontSize: '26px' }}>Venda Direta Hoje • {data.creci}</p>
+            <p className="text-white/50" style={{ fontSize: '18px' }}>VDH • {data.creci}</p>
           </div>
         </div>
       </div>
