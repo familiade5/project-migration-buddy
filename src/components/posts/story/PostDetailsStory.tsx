@@ -18,10 +18,19 @@ export const PostDetailsStory = ({ data, photo, photos = [] }: PostDetailsStoryP
 
   const generateFeatures = () => {
     const features: string[] = [];
-    if (data.bedrooms) features.push(`${data.bedrooms} quartos aconchegantes`);
-    if (data.bathrooms) features.push(`${data.bathrooms} banheiro${Number(data.bathrooms) > 1 ? 's' : ''}`);
-    if (data.garageSpaces) features.push(`${data.garageSpaces} vaga${Number(data.garageSpaces) > 1 ? 's' : ''} de garagem`);
-    if (data.area) features.push(`${data.area}m² de área`);
+    // Só adiciona se houver valor específico (não vazio e não zero)
+    if (data.bedrooms && data.bedrooms !== '' && data.bedrooms !== '0') {
+      features.push(`${data.bedrooms} quarto${Number(data.bedrooms) > 1 ? 's' : ''} aconchegante${Number(data.bedrooms) > 1 ? 's' : ''}`);
+    }
+    if (data.bathrooms && data.bathrooms !== '' && data.bathrooms !== '0') {
+      features.push(`${data.bathrooms} banheiro${Number(data.bathrooms) > 1 ? 's' : ''}`);
+    }
+    if (data.garageSpaces && data.garageSpaces !== '' && data.garageSpaces !== '0') {
+      features.push(`${data.garageSpaces} vaga${Number(data.garageSpaces) > 1 ? 's' : ''} de garagem`);
+    }
+    if (data.area && data.area !== '' && data.area !== '0') {
+      features.push(`${data.area}m² de área`);
+    }
     data.features.forEach(f => {
       if (features.length < 5) features.push(f);
     });
