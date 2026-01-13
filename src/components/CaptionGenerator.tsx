@@ -33,9 +33,20 @@ export const CaptionGenerator = ({ data }: CaptionGeneratorProps) => {
     // FGTS e Financiamento
     if (data.acceptsFGTS) {
       lines.push('💼 Aceita FGTS');
+    } else {
+      lines.push('❌ Não Aceita FGTS');
     }
     if (data.acceptsFinancing) {
       lines.push('🏦 Aceita Financiamento');
+    } else {
+      lines.push('❌ Não Aceita Financiamento');
+    }
+    
+    // Entrada facilitada
+    if (data.hasEasyEntry && data.entryValue) {
+      lines.push(`📥 Entrada Facilitada: ${data.entryValue}`);
+    } else if (data.hasEasyEntry) {
+      lines.push('📥 Entrada Facilitada');
     }
     lines.push('');
 
