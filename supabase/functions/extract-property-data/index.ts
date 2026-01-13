@@ -1,0 +1,173 @@
+import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+};
+
+serve(async (req) => {
+  // Handle CORS preflight requests
+  if (req.method === 'OPTIONS') {
+    return new Response(null, { headers: corsHeaders });
+  }
+
+  try {
+    const { imageBase64 } = await req.json();
+    
+    if (!imageBase64) {
+      console.error("No image provided");
+      return new Response(
+        JSON.stringify({ error: "Nenhuma imagem fornecida" }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    console.log("Extracting property data from image...");
+
+    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+    if (!LOVABLE_API_KEY) {
+      console.error("LOVABLE_API_KEY not configured");
+      throw new Error("LOVABLE_API_KEY is not configured");
+    }
+
+    const systemPrompt = `Você é um especialista em extrair informações de imóveis de screenshots de sites de bancos brasileiros (Caixa, Banco do Brasil, etc.).
+
+Analise a imagem e extraia TODAS as informações disponíveis sobre o imóvel. Retorne os dados usando a função extract_property_data.
+
+Regras importantes:
+- Extraia valores monetários no formato brasileiro (R$ 123.456,78)
+- Calcule o desconto se houver valor de avaliação e valor mínimo
+- Identifique se aceita FGTS baseado no texto (procure por "FGTS", "permite utilização de FGTS", etc.)
+- Identifique se aceita financiamento baseado nas formas de pagamento
+- Extraia cidade, estado e bairro separadamente
+- Identifique o tipo de imóvel (Casa, Apartamento, Terreno, etc.)
+- Extraia quartos, banheiros, garagem e área
+- Extraia endereço completo se disponível`;
+
+    const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${LOVABLE_API_KEY}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        model: "google/gemini-2.5-pro",
+        messages: [
+          { role: "system", content: systemPrompt },
+          { 
+            role: "user", 
+            content: [
+              {
+                type: "image_url",
+                image_url: {
+                  url: `data:image/png;base64,${imageBase64}`
+                }
+              },
+              {
+                type: "text",
+                text: "Extraia todas as informações do imóvel desta imagem do site da Caixa/Banco."
+              }
+            ]
+          }
+        ],
+        tools: [
+          {
+            type: "function",
+            function: {
+              name: "extract_property_data",
+              description: "Extrai dados estruturados de um imóvel a partir de uma imagem",
+              parameters: {
+                type: "object",
+                properties: {
+                  type: { 
+                    type: "string", 
+                    description: "Tipo do imóvel: Casa, Apartamento, Terreno, Comercial, Galpão, Fazenda, Chácara" 
+                  },
+                  propertySource: { 
+                    type: "string", 
+                    description: "Origem do imóvel: Imóvel Caixa, Banco do Brasil, Santander, etc." 
+                  },
+                  city: { type: "string", description: "Cidade do imóvel" },
+                  state: { type: "string", description: "Estado do imóvel (nome completo)" },
+                  neighborhood: { type: "string", description: "Bairro do imóvel" },
+                  evaluationValue: { type: "string", description: "Valor de avaliação no formato R$ 123.456,78" },
+                  minimumValue: { type: "string", description: "Valor mínimo de venda no formato R$ 123.456,78" },
+                  discount: { type: "string", description: "Percentual de desconto (apenas número, ex: 41,33)" },
+                  bedrooms: { type: "string", description: "Número de quartos" },
+                  bathrooms: { type: "string", description: "Número de banheiros" },
+                  garageSpaces: { type: "string", description: "Número de vagas de garagem" },
+                  area: { type: "string", description: "Área do imóvel em m²" },
+                  areaTotal: { type: "string", description: "Área total em m²" },
+                  areaPrivativa: { type: "string", description: "Área privativa em m²" },
+                  acceptsFGTS: { type: "boolean", description: "Se aceita FGTS" },
+                  acceptsFinancing: { type: "boolean", description: "Se aceita financiamento" },
+                  street: { type: "string", description: "Nome da rua/avenida" },
+                  number: { type: "string", description: "Número do endereço" },
+                  complement: { type: "string", description: "Complemento (apto, casa, bloco)" },
+                  cep: { type: "string", description: "CEP no formato 00000-000" },
+                  condominiumRules: { type: "string", description: "Regras de condomínio/despesas" },
+                  taxRules: { type: "string", description: "Regras de tributos/IPTU" },
+                  hasSala: { type: "boolean", description: "Se possui sala" },
+                  hasCozinha: { type: "boolean", description: "Se possui cozinha" },
+                  hasAreaServico: { type: "boolean", description: "Se possui área de serviço" },
+                  features: { 
+                    type: "array", 
+                    items: { type: "string" },
+                    description: "Lista de diferenciais/características do imóvel" 
+                  }
+                },
+                required: ["type", "city", "state"]
+              }
+            }
+          }
+        ],
+        tool_choice: { type: "function", function: { name: "extract_property_data" } }
+      }),
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error("AI gateway error:", response.status, errorText);
+      
+      if (response.status === 429) {
+        return new Response(
+          JSON.stringify({ error: "Limite de requisições excedido. Tente novamente em alguns segundos." }),
+          { status: 429, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
+      if (response.status === 402) {
+        return new Response(
+          JSON.stringify({ error: "Créditos insuficientes. Adicione créditos na sua conta." }),
+          { status: 402, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
+      
+      throw new Error(`AI gateway error: ${response.status}`);
+    }
+
+    const data = await response.json();
+    console.log("AI response received:", JSON.stringify(data, null, 2));
+
+    // Extract the tool call arguments
+    const toolCall = data.choices?.[0]?.message?.tool_calls?.[0];
+    if (!toolCall?.function?.arguments) {
+      console.error("No tool call found in response");
+      throw new Error("Não foi possível extrair dados da imagem");
+    }
+
+    const extractedData = JSON.parse(toolCall.function.arguments);
+    console.log("Extracted property data:", extractedData);
+
+    return new Response(
+      JSON.stringify({ success: true, data: extractedData }),
+      { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    );
+
+  } catch (error) {
+    console.error("Error extracting property data:", error);
+    return new Response(
+      JSON.stringify({ error: error instanceof Error ? error.message : "Erro ao processar imagem" }),
+      { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    );
+  }
+});

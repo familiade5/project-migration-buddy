@@ -1,16 +1,28 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { PropertyData, defaultPropertyData } from '@/types/property';
 import { PropertyForm } from '@/components/PropertyForm';
 import { PhotoUpload } from '@/components/PhotoUpload';
 import { PostPreview } from '@/components/PostPreview';
 import { CaptionGenerator } from '@/components/CaptionGenerator';
-import { Sparkles, Image, FileText } from 'lucide-react';
+import { ScreenshotExtractor } from '@/components/ScreenshotExtractor';
+import { Sparkles, Image, FileText, Upload, Edit3 } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { AppLayout } from '@/components/layout/AppLayout';
 
 const Index = () => {
   const [propertyData, setPropertyData] = useState<PropertyData>(defaultPropertyData);
   const [photos, setPhotos] = useState<string[]>([]);
+  const [inputMode, setInputMode] = useState<'manual' | 'auto'>('manual');
+
+  // Handler for extracted data from screenshot
+  const handleExtractedData = useCallback((extractedData: Partial<PropertyData>) => {
+    setPropertyData(prev => ({
+      ...prev,
+      ...extractedData
+    }));
+    // Switch to manual mode to show the filled form
+    setInputMode('manual');
+  }, []);
 
   return (
     <AppLayout>
@@ -31,12 +43,39 @@ const Index = () => {
         <div className="grid lg:grid-cols-2 gap-6 lg:gap-8">
           {/* Left Column - Input */}
           <div className="space-y-6 min-w-0">
+            {/* Photos */}
             <div className="glass-card rounded-2xl p-4 sm:p-6 overflow-hidden">
               <PhotoUpload photos={photos} onChange={setPhotos} />
             </div>
             
+            {/* Property Data - With Mode Tabs */}
             <div className="glass-card rounded-2xl p-4 sm:p-6 overflow-hidden">
-              <PropertyForm data={propertyData} onChange={setPropertyData} />
+              <Tabs value={inputMode} onValueChange={(v) => setInputMode(v as 'manual' | 'auto')} className="w-full">
+                <TabsList className="grid w-full grid-cols-2 bg-surface mb-6">
+                  <TabsTrigger 
+                    value="auto" 
+                    className="gap-2 text-xs sm:text-sm data-[state=active]:bg-gold data-[state=active]:text-primary-foreground"
+                  >
+                    <Upload className="w-4 h-4" />
+                    <span className="hidden sm:inline">Extração</span> Automática
+                  </TabsTrigger>
+                  <TabsTrigger 
+                    value="manual" 
+                    className="gap-2 text-xs sm:text-sm data-[state=active]:bg-gold data-[state=active]:text-primary-foreground"
+                  >
+                    <Edit3 className="w-4 h-4" />
+                    <span className="hidden sm:inline">Preenchimento</span> Manual
+                  </TabsTrigger>
+                </TabsList>
+                
+                <TabsContent value="auto" className="mt-0">
+                  <ScreenshotExtractor onExtract={handleExtractedData} />
+                </TabsContent>
+                
+                <TabsContent value="manual" className="mt-0">
+                  <PropertyForm data={propertyData} onChange={setPropertyData} />
+                </TabsContent>
+              </Tabs>
             </div>
           </div>
 
