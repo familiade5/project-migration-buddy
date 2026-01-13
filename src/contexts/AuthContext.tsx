@@ -195,7 +195,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         'logout'
       );
     }
-    await supabase.auth.signOut();
+    
+    try {
+      await supabase.auth.signOut();
+    } catch (error) {
+      console.error('Error during sign out:', error);
+    }
+    
+    // Always clear local state, even if signOut fails (e.g., session already expired)
+    setUser(null);
+    setSession(null);
+    setProfile(null);
+    setIsAdmin(false);
   };
 
   const updatePassword = async (newPassword: string) => {
