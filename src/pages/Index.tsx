@@ -65,7 +65,7 @@ const Index = () => {
                 </TabsList>
                 
                 <TabsContent value="upload" className="mt-0">
-                  <PhotoUpload photos={photos} onChange={setPhotos} />
+                  <PhotoUpload photos={photos} onChange={setPhotos} onClear={() => setPhotos([])} />
                 </TabsContent>
                 
                 <TabsContent value="search" className="mt-0">
@@ -81,6 +81,7 @@ const Index = () => {
                         propertyName: name
                       }));
                     }}
+                    onClear={() => setPhotos([])}
                   />
                 </TabsContent>
               </Tabs>

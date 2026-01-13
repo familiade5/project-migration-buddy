@@ -1,12 +1,14 @@
 import { useCallback } from 'react';
-import { Upload, X, Image as ImageIcon } from 'lucide-react';
+import { Upload, X, Image as ImageIcon, Trash2 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 interface PhotoUploadProps {
   photos: string[];
   onChange: (photos: string[]) => void;
+  onClear?: () => void;
 }
 
-export const PhotoUpload = ({ photos, onChange }: PhotoUploadProps) => {
+export const PhotoUpload = ({ photos, onChange, onClear }: PhotoUploadProps) => {
   const handleFileChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
     
@@ -77,10 +79,23 @@ export const PhotoUpload = ({ photos, onChange }: PhotoUploadProps) => {
         </div>
       )}
 
-      {photos.length > 0 && photos.length < 4 && (
-        <p className="text-muted-foreground text-sm">
-          {photos.length}/4 fotos adicionadas
-        </p>
+      {photos.length > 0 && (
+        <div className="flex items-center justify-between">
+          <p className="text-muted-foreground text-sm">
+            {photos.length}/4 fotos adicionadas
+          </p>
+          {onClear && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={onClear}
+              className="gap-2 text-destructive hover:text-destructive"
+            >
+              <Trash2 className="w-4 h-4" />
+              Limpar todas
+            </Button>
+          )}
+        </div>
       )}
     </div>
   );
