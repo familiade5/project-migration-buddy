@@ -57,6 +57,7 @@ export interface PropertyData {
   number: string; // Número
   complement: string; // Casa 01, Apto 101, etc.
   cep: string;
+  fullAddress: string; // Endereço completo extraído
   
   // Regras de despesas
   condominiumRules: string;
@@ -108,6 +109,7 @@ export const defaultPropertyData: PropertyData = {
   number: '',
   complement: '',
   cep: '',
+  fullAddress: '',
   
   condominiumRules: 'Responsabilidade do comprador (até 10% do valor de avaliação). A CAIXA arcará com o valor que exceder esse limite.',
   taxRules: 'Responsabilidade do comprador.',
