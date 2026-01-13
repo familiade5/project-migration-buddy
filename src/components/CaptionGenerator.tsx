@@ -14,11 +14,13 @@ export const CaptionGenerator = ({ data }: CaptionGeneratorProps) => {
   const generateCaption = (): string => {
     const lines: string[] = [];
 
-    // Título do imóvel
-    if (data.propertyName) {
+    // Título do imóvel - usa nome do condomínio se disponível
+    if (data.propertyName && data.propertyName !== '') {
       lines.push(`🏡 ${data.propertyName.toUpperCase()}`);
-    } else {
+    } else if (data.neighborhood && data.neighborhood !== '') {
       lines.push(`🏡 ${data.type.toUpperCase()} - ${data.neighborhood.toUpperCase()}`);
+    } else {
+      lines.push(`🏡 ${data.type.toUpperCase()} - ${data.city.toUpperCase()}`);
     }
     lines.push('');
 
