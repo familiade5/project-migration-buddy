@@ -9,7 +9,18 @@ interface PostCoverStoryProps {
 }
 
 export const PostCoverStory = ({ data, photo }: PostCoverStoryProps) => {
-  const propertySummary = `${data.type} de ${data.bedrooms} quartos${data.garageSpaces ? ` e ${data.garageSpaces} vaga${Number(data.garageSpaces) > 1 ? 's' : ''} de garagem` : ''}`;
+  // Formatar resumo do imóvel (só mostra quartos/garagem se especificado)
+  const getPropertySummary = () => {
+    let summary = data.type;
+    if (data.bedrooms) {
+      summary += ` de ${data.bedrooms} quarto${Number(data.bedrooms) > 1 ? 's' : ''}`;
+    }
+    if (data.garageSpaces) {
+      summary += ` e ${data.garageSpaces} vaga${Number(data.garageSpaces) > 1 ? 's' : ''} de garagem`;
+    }
+    return summary;
+  };
+  const propertySummary = getPropertySummary();
   
   // Endereço completo ou fallback para bairro + cidade
   const displayAddress = data.fullAddress || (data.street ? `${data.street}${data.number ? `, ${data.number}` : ''} - ${data.neighborhood}, ${data.city} - ${data.state}` : `${data.neighborhood} ${data.city} • ${data.state}`);
@@ -78,7 +89,7 @@ export const PostCoverStory = ({ data, photo }: PostCoverStoryProps) => {
         {/* Subtítulo com tipo e cidade */}
         <div className="bg-[#2d4a3f] flex items-center rounded-b-xl" style={{ padding: '16px 50px', gap: '20px' }}>
           <span className="text-white font-medium" style={{ fontSize: '32px' }}>
-            {data.type} de {data.bedrooms} quartos
+            {data.bedrooms ? `${data.type} de ${data.bedrooms} quartos` : data.type}
           </span>
           <span className="text-white/50">|</span>
           <span className="text-white" style={{ fontSize: '32px' }}>{data.city}</span>
