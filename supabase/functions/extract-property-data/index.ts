@@ -38,11 +38,15 @@ Regras importantes:
 - Extraia valores monetários no formato brasileiro (R$ 123.456,78)
 - Calcule o desconto se houver valor de avaliação e valor mínimo
 - Identifique se aceita FGTS baseado no texto (procure por "FGTS", "permite utilização de FGTS", etc.)
-- Identifique se aceita financiamento baseado nas formas de pagamento
+- IMPORTANTE sobre financiamento: Se nas formas de pagamento aparecer SOMENTE "Recurso Próprio" e/ou "FGTS" (sem mencionar "Financiamento Habitacional" ou "Parcelamento"), então acceptsFinancing deve ser FALSE
+- Se aparecer "Financiamento Habitacional" ou menção explícita a financiamento bancário, então acceptsFinancing deve ser TRUE
+- IMPORTANTE sobre entrada facilitada: Se NÃO houver menção a "Entrada Mínima", "Entrada Facilitada" ou valor de entrada, então hasEasyEntry deve ser FALSE
+- Se houver valor de entrada especificado, extraia em entryValue
 - Extraia cidade, estado e bairro separadamente
 - Identifique o tipo de imóvel (Casa, Apartamento, Terreno, etc.)
 - Extraia quartos, banheiros, garagem e área
-- Extraia endereço completo se disponível`;
+- Extraia o ENDEREÇO COMPLETO incluindo rua, número, complemento, bairro, cidade e estado
+- Para o paymentMethod, descreva as formas de pagamento disponíveis (ex: "À Vista, FGTS" ou "Financiamento Habitacional, FGTS")`;
 
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
@@ -99,12 +103,16 @@ Regras importantes:
                   area: { type: "string", description: "Área do imóvel em m²" },
                   areaTotal: { type: "string", description: "Área total em m²" },
                   areaPrivativa: { type: "string", description: "Área privativa em m²" },
-                  acceptsFGTS: { type: "boolean", description: "Se aceita FGTS" },
-                  acceptsFinancing: { type: "boolean", description: "Se aceita financiamento" },
-                  street: { type: "string", description: "Nome da rua/avenida" },
+                  acceptsFGTS: { type: "boolean", description: "Se aceita FGTS (procure por 'FGTS' nas formas de pagamento)" },
+                  acceptsFinancing: { type: "boolean", description: "Se aceita financiamento habitacional bancário. FALSE se apenas 'Recurso Próprio' e 'FGTS' sem menção a financiamento" },
+                  hasEasyEntry: { type: "boolean", description: "Se tem entrada facilitada/parcelada. FALSE se não houver menção a entrada" },
+                  entryValue: { type: "string", description: "Valor da entrada mínima se houver" },
+                  paymentMethod: { type: "string", description: "Formas de pagamento disponíveis (ex: 'À Vista, FGTS' ou 'Financiamento Habitacional')" },
+                  street: { type: "string", description: "Nome completo da rua/avenida" },
                   number: { type: "string", description: "Número do endereço" },
                   complement: { type: "string", description: "Complemento (apto, casa, bloco)" },
                   cep: { type: "string", description: "CEP no formato 00000-000" },
+                  fullAddress: { type: "string", description: "Endereço completo formatado" },
                   condominiumRules: { type: "string", description: "Regras de condomínio/despesas" },
                   taxRules: { type: "string", description: "Regras de tributos/IPTU" },
                   hasSala: { type: "boolean", description: "Se possui sala" },

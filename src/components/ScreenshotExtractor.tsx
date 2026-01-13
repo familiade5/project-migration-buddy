@@ -126,7 +126,28 @@ export const ScreenshotExtractor = ({ onExtract }: ScreenshotExtractorProps) => 
       }
       if (typeof extractedData.acceptsFinancing === 'boolean') {
         propertyUpdate.acceptsFinancing = extractedData.acceptsFinancing;
-        fieldsFound.push('Financiamento');
+        fieldsFound.push(extractedData.acceptsFinancing ? 'Aceita Financiamento' : 'Não Aceita Financiamento');
+      }
+      if (typeof extractedData.hasEasyEntry === 'boolean') {
+        propertyUpdate.hasEasyEntry = extractedData.hasEasyEntry;
+        if (extractedData.hasEasyEntry) {
+          fieldsFound.push('Entrada Facilitada');
+        }
+      }
+      if (extractedData.entryValue) {
+        propertyUpdate.entryValue = extractedData.entryValue;
+        fieldsFound.push('Valor Entrada');
+      }
+      if (extractedData.paymentMethod) {
+        propertyUpdate.paymentMethod = extractedData.paymentMethod;
+        fieldsFound.push('Forma Pagamento');
+      }
+      if (extractedData.fullAddress) {
+        // Try to parse the full address if individual fields weren't extracted
+        if (!extractedData.street) {
+          propertyUpdate.street = extractedData.fullAddress;
+        }
+        fieldsFound.push('Endereço Completo');
       }
       if (extractedData.street) {
         propertyUpdate.street = extractedData.street;
@@ -143,6 +164,14 @@ export const ScreenshotExtractor = ({ onExtract }: ScreenshotExtractorProps) => 
       if (extractedData.cep) {
         propertyUpdate.cep = extractedData.cep;
         fieldsFound.push('CEP');
+      }
+      if (extractedData.condominiumRules) {
+        propertyUpdate.condominiumRules = extractedData.condominiumRules;
+        fieldsFound.push('Regras Condomínio');
+      }
+      if (extractedData.taxRules) {
+        propertyUpdate.taxRules = extractedData.taxRules;
+        fieldsFound.push('Regras Tributos');
       }
       if (extractedData.condominiumRules) {
         propertyUpdate.condominiumRules = extractedData.condominiumRules;
