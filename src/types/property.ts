@@ -65,31 +65,31 @@ export interface PropertyData {
 }
 
 export const defaultPropertyData: PropertyData = {
-  entryValue: 'R$ 7.500',
+  entryValue: '',
   propertySource: 'Imóvel Caixa',
   type: 'Casa',
-  bedrooms: '2',
-  city: 'Campo Grande',
-  state: 'Mato Grosso do Sul',
-  neighborhood: 'Vila Nova',
+  bedrooms: '', // Vazio por padrão - só preenche se especificado
+  city: '',
+  state: '',
+  neighborhood: '',
   
-  evaluationValue: 'R$ 126.000,00',
-  minimumValue: 'R$ 72.988,41',
-  discount: '42,07',
+  evaluationValue: '',
+  minimumValue: '',
+  discount: '',
   
-  garageSpaces: '1',
-  bathrooms: '1',
+  garageSpaces: '', // Vazio por padrão - só preenche se especificado
+  bathrooms: '', // Vazio por padrão - só preenche se especificado
   area: '',
   
-  acceptsFGTS: true,
-  acceptsFinancing: true,
+  acceptsFGTS: false,
+  acceptsFinancing: false,
   
-  hasEasyEntry: true,
-  canUseFGTS: true,
+  hasEasyEntry: false,
+  canUseFGTS: false,
   
   creci: 'CRECI 14851 MS PJ',
   
-  features: ['Vaga de Garagem'],
+  features: [],
   contactPhone: '(67) 99999-9999',
   contactName: 'Iury Sampaio',
   
@@ -97,9 +97,9 @@ export const defaultPropertyData: PropertyData = {
   propertyName: '',
   paymentMethod: 'Somente à vista',
   
-  hasSala: true,
-  hasCozinha: true,
-  hasAreaServico: true,
+  hasSala: false,
+  hasCozinha: false,
+  hasAreaServico: false,
   
   areaTotal: '',
   areaPrivativa: '',
@@ -111,8 +111,8 @@ export const defaultPropertyData: PropertyData = {
   cep: '',
   fullAddress: '',
   
-  condominiumRules: 'Responsabilidade do comprador (até 10% do valor de avaliação). A CAIXA arcará com o valor que exceder esse limite.',
-  taxRules: 'Responsabilidade do comprador.',
+  condominiumRules: '',
+  taxRules: '',
 };
 
 export const propertyTypes = [
