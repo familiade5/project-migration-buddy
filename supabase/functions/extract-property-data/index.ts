@@ -48,109 +48,145 @@ Regras importantes:
 - Extraia o ENDEREÇO COMPLETO incluindo rua, número, complemento, bairro, cidade e estado
 - Para o paymentMethod, descreva as formas de pagamento disponíveis (ex: "À Vista, FGTS" ou "Financiamento Habitacional, FGTS")`;
 
-    const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${LOVABLE_API_KEY}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model: "google/gemini-2.5-pro",
-        messages: [
-          { role: "system", content: systemPrompt },
-          { 
-            role: "user", 
-            content: [
-              {
-                type: "image_url",
-                image_url: {
-                  url: `data:image/png;base64,${imageBase64}`
-                }
-              },
-              {
-                type: "text",
-                text: "Extraia todas as informações do imóvel desta imagem do site da Caixa/Banco."
-              }
-            ]
-          }
-        ],
-        tools: [
-          {
-            type: "function",
-            function: {
-              name: "extract_property_data",
-              description: "Extrai dados estruturados de um imóvel a partir de uma imagem",
-              parameters: {
-                type: "object",
-                properties: {
-                  type: { 
-                    type: "string", 
-                    description: "Tipo do imóvel: Casa, Apartamento, Terreno, Comercial, Galpão, Fazenda, Chácara" 
+    // Retry logic for transient errors
+    let response: Response | null = null;
+    let lastError: string = "";
+    
+    for (let attempt = 1; attempt <= 3; attempt++) {
+      try {
+        console.log(`Attempt ${attempt} to call AI gateway...`);
+        
+        response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${LOVABLE_API_KEY}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            model: "google/gemini-3-flash-preview",
+            messages: [
+              { role: "system", content: systemPrompt },
+              { 
+                role: "user", 
+                content: [
+                  {
+                    type: "image_url",
+                    image_url: {
+                      url: `data:image/png;base64,${imageBase64}`
+                    }
                   },
-                  propertySource: { 
-                    type: "string", 
-                    description: "Origem do imóvel: Imóvel Caixa, Banco do Brasil, Santander, etc." 
-                  },
-                  city: { type: "string", description: "Cidade do imóvel" },
-                  state: { type: "string", description: "Estado do imóvel (nome completo)" },
-                  neighborhood: { type: "string", description: "Bairro do imóvel" },
-                  evaluationValue: { type: "string", description: "Valor de avaliação no formato R$ 123.456,78" },
-                  minimumValue: { type: "string", description: "Valor mínimo de venda no formato R$ 123.456,78" },
-                  discount: { type: "string", description: "Percentual de desconto (apenas número, ex: 41,33)" },
-                  bedrooms: { type: "string", description: "Número de quartos. DEIXE VAZIO se não houver número específico mencionado (ex: se diz apenas 'quarto' sem número, não preencha)" },
-                  bathrooms: { type: "string", description: "Número de banheiros. DEIXE VAZIO se não houver número específico mencionado" },
-                  garageSpaces: { type: "string", description: "Número de vagas de garagem. DEIXE VAZIO se não houver número específico mencionado" },
-                  area: { type: "string", description: "Área do imóvel em m²" },
-                  areaTotal: { type: "string", description: "Área total em m²" },
-                  areaPrivativa: { type: "string", description: "Área privativa em m²" },
-                  acceptsFGTS: { type: "boolean", description: "Se aceita FGTS (procure por 'FGTS' nas formas de pagamento)" },
-                  acceptsFinancing: { type: "boolean", description: "Se aceita financiamento habitacional bancário. FALSE se apenas 'Recurso Próprio' e 'FGTS' sem menção a financiamento" },
-                  hasEasyEntry: { type: "boolean", description: "Se tem entrada facilitada/parcelada. FALSE se não houver menção a entrada" },
-                  entryValue: { type: "string", description: "Valor da entrada mínima se houver" },
-                  paymentMethod: { type: "string", description: "Formas de pagamento disponíveis (ex: 'À Vista, FGTS' ou 'Financiamento Habitacional')" },
-                  street: { type: "string", description: "Nome completo da rua/avenida" },
-                  number: { type: "string", description: "Número do endereço" },
-                  complement: { type: "string", description: "Complemento (apto, casa, bloco)" },
-                  cep: { type: "string", description: "CEP no formato 00000-000" },
-                  fullAddress: { type: "string", description: "Endereço completo formatado" },
-                  condominiumRules: { type: "string", description: "Regras de condomínio/despesas" },
-                  taxRules: { type: "string", description: "Regras de tributos/IPTU" },
-                  hasSala: { type: "boolean", description: "Se possui sala" },
-                  hasCozinha: { type: "boolean", description: "Se possui cozinha" },
-                  hasAreaServico: { type: "boolean", description: "Se possui área de serviço" },
-                  features: { 
-                    type: "array", 
-                    items: { type: "string" },
-                    description: "Lista de diferenciais/características do imóvel" 
+                  {
+                    type: "text",
+                    text: "Extraia todas as informações do imóvel desta imagem do site da Caixa/Banco."
                   }
-                },
-                required: ["type", "city", "state"]
+                ]
               }
-            }
-          }
-        ],
-        tool_choice: { type: "function", function: { name: "extract_property_data" } }
-      }),
-    });
+            ],
+            tools: [
+              {
+                type: "function",
+                function: {
+                  name: "extract_property_data",
+                  description: "Extrai dados estruturados de um imóvel a partir de uma imagem",
+                  parameters: {
+                    type: "object",
+                    properties: {
+                      type: { 
+                        type: "string", 
+                        description: "Tipo do imóvel: Casa, Apartamento, Terreno, Comercial, Galpão, Fazenda, Chácara" 
+                      },
+                      propertySource: { 
+                        type: "string", 
+                        description: "Origem do imóvel: Imóvel Caixa, Banco do Brasil, Santander, etc." 
+                      },
+                      city: { type: "string", description: "Cidade do imóvel" },
+                      state: { type: "string", description: "Estado do imóvel (nome completo)" },
+                      neighborhood: { type: "string", description: "Bairro do imóvel" },
+                      evaluationValue: { type: "string", description: "Valor de avaliação no formato R$ 123.456,78" },
+                      minimumValue: { type: "string", description: "Valor mínimo de venda no formato R$ 123.456,78" },
+                      discount: { type: "string", description: "Percentual de desconto (apenas número, ex: 41,33)" },
+                      bedrooms: { type: "string", description: "Número de quartos. DEIXE VAZIO se não houver número específico mencionado (ex: se diz apenas 'quarto' sem número, não preencha)" },
+                      bathrooms: { type: "string", description: "Número de banheiros. DEIXE VAZIO se não houver número específico mencionado" },
+                      garageSpaces: { type: "string", description: "Número de vagas de garagem. DEIXE VAZIO se não houver número específico mencionado" },
+                      area: { type: "string", description: "Área do imóvel em m²" },
+                      areaTotal: { type: "string", description: "Área total em m²" },
+                      areaPrivativa: { type: "string", description: "Área privativa em m²" },
+                      acceptsFGTS: { type: "boolean", description: "Se aceita FGTS (procure por 'FGTS' nas formas de pagamento)" },
+                      acceptsFinancing: { type: "boolean", description: "Se aceita financiamento habitacional bancário. FALSE se apenas 'Recurso Próprio' e 'FGTS' sem menção a financiamento" },
+                      hasEasyEntry: { type: "boolean", description: "Se tem entrada facilitada/parcelada. FALSE se não houver menção a entrada" },
+                      entryValue: { type: "string", description: "Valor da entrada mínima se houver" },
+                      paymentMethod: { type: "string", description: "Formas de pagamento disponíveis (ex: 'À Vista, FGTS' ou 'Financiamento Habitacional')" },
+                      street: { type: "string", description: "Nome completo da rua/avenida" },
+                      number: { type: "string", description: "Número do endereço" },
+                      complement: { type: "string", description: "Complemento (apto, casa, bloco)" },
+                      cep: { type: "string", description: "CEP no formato 00000-000" },
+                      fullAddress: { type: "string", description: "Endereço completo formatado" },
+                      condominiumRules: { type: "string", description: "Regras de condomínio/despesas" },
+                      taxRules: { type: "string", description: "Regras de tributos/IPTU" },
+                      hasSala: { type: "boolean", description: "Se possui sala" },
+                      hasCozinha: { type: "boolean", description: "Se possui cozinha" },
+                      hasAreaServico: { type: "boolean", description: "Se possui área de serviço" },
+                      features: { 
+                        type: "array", 
+                        items: { type: "string" },
+                        description: "Lista de diferenciais/características do imóvel" 
+                      }
+                    },
+                    required: ["type", "city", "state"]
+                  }
+                }
+              }
+            ],
+            tool_choice: { type: "function", function: { name: "extract_property_data" } }
+          }),
+        });
 
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error("AI gateway error:", response.status, errorText);
+        if (response.ok) {
+          break; // Success, exit retry loop
+        }
+
+        lastError = await response.text();
+        console.error(`Attempt ${attempt} failed:`, response.status, lastError);
+        
+        // Don't retry on client errors (4xx), only on server errors (5xx)
+        if (response.status < 500) {
+          break;
+        }
+        
+        // Wait before retrying (exponential backoff)
+        if (attempt < 3) {
+          await new Promise(resolve => setTimeout(resolve, 1000 * attempt));
+        }
+      } catch (fetchError) {
+        console.error(`Attempt ${attempt} fetch error:`, fetchError);
+        lastError = fetchError instanceof Error ? fetchError.message : "Erro de conexão";
+        if (attempt < 3) {
+          await new Promise(resolve => setTimeout(resolve, 1000 * attempt));
+        }
+      }
+    }
+
+    if (!response || !response.ok) {
+      const status = response?.status || 500;
       
-      if (response.status === 429) {
+      if (status === 429) {
         return new Response(
           JSON.stringify({ error: "Limite de requisições excedido. Tente novamente em alguns segundos." }),
           { status: 429, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
         );
       }
-      if (response.status === 402) {
+      if (status === 402) {
         return new Response(
-          JSON.stringify({ error: "Créditos insuficientes. Adicione créditos na sua conta." }),
+          JSON.stringify({ error: "Créditos insuficientes. Adicione créditos na sua conta Lovable." }),
           { status: 402, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
         );
       }
       
-      throw new Error(`AI gateway error: ${response.status}`);
+      console.error("All retry attempts failed. Last error:", lastError);
+      return new Response(
+        JSON.stringify({ error: "Serviço temporariamente indisponível. Tente novamente em alguns instantes." }),
+        { status: 503, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
     }
 
     const data = await response.json();
