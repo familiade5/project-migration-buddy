@@ -95,17 +95,29 @@ export const VDHStory2 = ({ data, photo, photos }: VDHStory2Props) => {
         <p className="text-white font-bold tracking-wider" style={{ fontSize: '300px' }}>VDH</p>
       </div>
 
-      {/* Badge do desconto no topo */}
-      {data.discount && parseFloat(data.discount.replace(',', '.')) > 0 && (
-        <div className="absolute z-20" style={{ top: '50px', right: '50px' }}>
-          <div className="bg-[#e87722] rounded-xl shadow-xl" style={{ padding: '20px 30px' }}>
-            <p className="text-white font-bold text-center" style={{ fontSize: '48px' }}>
-              {data.discount}%
-            </p>
-            <p className="text-white/90 text-center" style={{ fontSize: '24px' }}>OFF</p>
+      {/* Benefícios principais no topo */}
+      <div className="absolute z-20 flex flex-wrap gap-3" style={{ top: '50px', left: '40px', right: '40px' }}>
+        {data.acceptsFinancing && (
+          <div className="bg-[#22c55e]/90 backdrop-blur rounded-full flex items-center gap-2" style={{ padding: '12px 24px' }}>
+            <span className="text-white font-semibold" style={{ fontSize: '22px' }}>✓ Aceita Financiamento</span>
           </div>
-        </div>
-      )}
+        )}
+        {data.acceptsFGTS && (
+          <div className="bg-[#3b82f6]/90 backdrop-blur rounded-full flex items-center gap-2" style={{ padding: '12px 24px' }}>
+            <span className="text-white font-semibold" style={{ fontSize: '22px' }}>✓ Usa FGTS</span>
+          </div>
+        )}
+        {data.bedrooms && data.bedrooms !== '0' && (
+          <div className="bg-white/20 backdrop-blur rounded-full flex items-center gap-2" style={{ padding: '12px 24px' }}>
+            <span className="text-white font-semibold" style={{ fontSize: '22px' }}>{data.bedrooms} Quartos</span>
+          </div>
+        )}
+        {(data.area || data.areaTotal) && (
+          <div className="bg-white/20 backdrop-blur rounded-full flex items-center gap-2" style={{ padding: '12px 24px' }}>
+            <span className="text-white font-semibold" style={{ fontSize: '22px' }}>{data.area || data.areaTotal} m²</span>
+          </div>
+        )}
+      </div>
 
       {/* Footer com localização e logo */}
       <div className="absolute bottom-0 left-0 right-0 bg-[#2a3444] z-10" style={{ padding: '40px' }}>

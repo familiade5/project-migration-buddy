@@ -223,11 +223,13 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
   const handleExportAll = async () => {
     setIsExporting(true);
     try {
-      const formatSuffix = format === 'feed' ? 'feed' : 'story';
+      const formatSuffix = format === 'feed' ? 'feed' : format === 'story' ? 'story' : 'vdh';
+      const currentRefs = format === 'feed' ? feedRefs : format === 'story' ? storyRefs : vdhRefs;
+      const currentPosts = format === 'feed' ? feedPosts : format === 'story' ? storyPosts : vdhPosts;
       const exportedImages: { dataUrl: string; format: 'feed' | 'story' | 'vdh'; index: number }[] = [];
       
-      for (let i = 0; i < postRefs.length; i++) {
-        const ref = postRefs[i];
+      for (let i = 0; i < currentRefs.length; i++) {
+        const ref = currentRefs[i];
         if (!ref.current) continue;
 
         const dataUrl = await toPng(ref.current, {
@@ -239,7 +241,7 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
         exportedImages.push({ dataUrl, format, index: i });
         
         const link = document.createElement('a');
-        link.download = `post-${i + 1}-${posts[i].name.toLowerCase()}-${formatSuffix}.png`;
+        link.download = `post-${i + 1}-${currentPosts[i].name.toLowerCase()}-${formatSuffix}.png`;
         link.href = dataUrl;
         link.click();
         
@@ -249,7 +251,8 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
       // Save to library with all exported images
       await saveCreativeWithExports(exportedImages, format);
       
-      toast.success(`Todos os posts (${format === 'feed' ? 'Feed' : 'Story'}) exportados e salvos!`);
+      const formatLabel = format === 'feed' ? 'Feed' : format === 'story' ? 'Story' : 'VDH';
+      toast.success(`Todos os posts (${formatLabel}) exportados e salvos!`);
     } catch (error) {
       toast.error('Erro ao exportar imagens');
       console.error(error);
@@ -378,7 +381,7 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
           ) : (
             <Download className="w-4 h-4" />
           )}
-          Exportar {format === 'feed' ? 'Feed' : 'Stories'}
+          Exportar {format === 'feed' ? 'Feed (4)' : format === 'story' ? 'Stories (4)' : 'VDH (4)'}
         </Button>
         <Button
           onClick={handleExportBothFormats}
