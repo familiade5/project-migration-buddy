@@ -228,6 +228,8 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
       const currentPosts = format === 'feed' ? feedPosts : format === 'story' ? storyPosts : vdhPosts;
       const exportedImages: { dataUrl: string; format: 'feed' | 'story' | 'vdh'; index: number }[] = [];
       
+      // First, generate all images
+      const allDataUrls: string[] = [];
       for (let i = 0; i < currentRefs.length; i++) {
         const ref = currentRefs[i];
         if (!ref.current) continue;
@@ -238,14 +240,18 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
           cacheBust: true,
         });
         
+        allDataUrls.push(dataUrl);
         exportedImages.push({ dataUrl, format, index: i });
-        
+      }
+      
+      // Then download all of them
+      for (let i = 0; i < allDataUrls.length; i++) {
         const link = document.createElement('a');
         link.download = `post-${i + 1}-${currentPosts[i].name.toLowerCase()}-${formatSuffix}.png`;
-        link.href = dataUrl;
+        link.href = allDataUrls[i];
         link.click();
         
-        await new Promise(resolve => setTimeout(resolve, 300));
+        await new Promise(resolve => setTimeout(resolve, 500));
       }
       
       // Save to library with all exported images
