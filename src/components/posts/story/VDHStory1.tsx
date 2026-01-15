@@ -15,13 +15,18 @@ export const VDHStory1 = ({ data, photo }: VDHStory1Props) => {
     return `${data.bedrooms} Quartos`;
   };
 
-  // Formatar localização
+  // Formatar localização - Bairro - Cidade - Estado
   const getLocation = () => {
     const parts = [];
     if (data.neighborhood) parts.push(data.neighborhood);
     if (data.city) parts.push(data.city);
     if (data.state) parts.push(data.state);
-    return parts.join(' – ');
+    return parts.join(' - ');
+  };
+
+  // Formatar nome do condomínio/imóvel destacado
+  const getCondominiumName = () => {
+    return data.propertyName || data.neighborhood || '';
   };
 
   // Formatar área
@@ -46,12 +51,17 @@ export const VDHStory1 = ({ data, photo }: VDHStory1Props) => {
       {/* Overlay gradiente escuro nas bordas para legibilidade */}
       <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/60" />
 
-      {/* Localização no topo com pin laranja */}
-      <div className="absolute z-10 flex items-center gap-3" style={{ top: '60px', left: '50px' }}>
+      {/* Nome do condomínio destacado no topo */}
+      <div className="absolute z-10 flex items-center gap-3" style={{ top: '60px', left: '50px', right: '50px' }}>
         <MapPin className="text-[#e87722] flex-shrink-0" style={{ width: '40px', height: '40px' }} />
-        <span className="text-white font-medium drop-shadow-lg" style={{ fontSize: '36px' }}>
-          {getLocation()}
-        </span>
+        <div className="flex flex-col">
+          <span className="text-white font-bold drop-shadow-lg" style={{ fontSize: '42px' }}>
+            {getCondominiumName()}
+          </span>
+          <span className="text-white/80 font-medium drop-shadow-lg" style={{ fontSize: '28px' }}>
+            {getLocation()}
+          </span>
+        </div>
       </div>
 
       {/* Card principal com tipo do imóvel e badge Imóvel Caixa */}
@@ -116,9 +126,9 @@ export const VDHStory1 = ({ data, photo }: VDHStory1Props) => {
         </div>
       </div>
 
-      {/* Badge de desconto no canto superior direito */}
+      {/* Badge de desconto abaixo do card Imóvel Caixa */}
       {data.discount && parseFloat(data.discount.replace(',', '.')) > 0 && (
-        <div className="absolute z-20" style={{ top: '60px', right: '50px' }}>
+        <div className="absolute z-20" style={{ top: '320px', right: '50px' }}>
           <div className="bg-[#e87722] rounded-2xl shadow-2xl text-center" style={{ padding: '25px 35px' }}>
             <p className="text-white font-black" style={{ fontSize: '64px', lineHeight: '1' }}>
               {data.discount}%

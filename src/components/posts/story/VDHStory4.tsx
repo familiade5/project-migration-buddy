@@ -57,11 +57,6 @@ export const VDHStory4 = ({ data, photo }: VDHStory4Props) => {
               ⚡ Imóvel sujeito a disponibilidade
             </p>
           </div>
-          <div className="bg-white/10 backdrop-blur rounded-xl text-center" style={{ padding: '18px' }}>
-            <p className="text-white font-semibold" style={{ fontSize: '26px' }}>
-              Condições exclusivas por tempo limitado
-            </p>
-          </div>
         </div>
 
         {/* Preço destacado */}
@@ -73,14 +68,14 @@ export const VDHStory4 = ({ data, photo }: VDHStory4Props) => {
 
         {/* Botão CTA WhatsApp */}
         <div 
-          className="bg-[#25D366] rounded-2xl flex items-center justify-center gap-4 shadow-xl cursor-pointer hover:bg-[#20bd5a] transition-colors w-full"
-          style={{ padding: '30px' }}
+          className="bg-[#25D366] rounded-2xl flex flex-col items-center justify-center gap-3 shadow-xl cursor-pointer hover:bg-[#20bd5a] transition-colors w-full"
+          style={{ padding: '35px' }}
         >
-          <MessageCircle className="text-white" style={{ width: '50px', height: '50px' }} />
-          <div>
-            <p className="text-white font-bold" style={{ fontSize: '38px' }}>FALE AGORA!</p>
-            <p className="text-white/90" style={{ fontSize: '22px' }}>{data.contactPhone || '(92) 98839-1098'}</p>
+          <div className="flex items-center gap-4">
+            <MessageCircle className="text-white" style={{ width: '60px', height: '60px' }} />
+            <p className="text-white font-black" style={{ fontSize: '52px' }}>{data.contactPhone || '(92) 98839-1098'}</p>
           </div>
+          <p className="text-white font-semibold" style={{ fontSize: '30px' }}>Chame no Direct ou Fale Agora!</p>
         </div>
       </div>
 
