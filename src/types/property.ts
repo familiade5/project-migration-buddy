@@ -111,7 +111,7 @@ export const defaultPropertyData: PropertyData = {
   cep: '',
   fullAddress: '',
   
-  condominiumRules: 'Responsabilidade do comprador a partir do registro da arrematação junto ao CRI ou da imissão na posse, o que ocorrer primeiro, ainda que haja débitos de condomínio ou impostos de período anterior à arrematação.',
+  condominiumRules: 'Responsabilidade do comprador (até 10% do valor de avaliação). A CAIXA arcará com o excedente.',
   taxRules: 'Responsabilidade do comprador.',
 };
 
