@@ -13,7 +13,6 @@ import { AppLayout } from '@/components/layout/AppLayout';
 const Index = () => {
   const [propertyData, setPropertyData] = useState<PropertyData>(defaultPropertyData);
   const [photos, setPhotos] = useState<string[]>([]);
-  const [inputMode, setInputMode] = useState<'manual' | 'auto'>('manual');
 
   // Handler for extracted data from screenshot
   const handleExtractedData = useCallback((extractedData: Partial<PropertyData>) => {
@@ -21,8 +20,6 @@ const Index = () => {
       ...prev,
       ...extractedData
     }));
-    // Switch to manual mode to show the filled form
-    setInputMode('manual');
   }, []);
 
   return (
@@ -44,39 +41,22 @@ const Index = () => {
         <div className="grid lg:grid-cols-2 gap-6 lg:gap-8">
           {/* Left Column - Input */}
           <div className="space-y-6 min-w-0">
-            {/* Property Data - With Mode Tabs (FIRST) */}
+            {/* 1. Screenshot Extractor - FIRST */}
             <div className="glass-card rounded-2xl p-4 sm:p-6 overflow-hidden">
-              <Tabs value={inputMode} onValueChange={(v) => setInputMode(v as 'manual' | 'auto')} className="w-full">
-                <TabsList className="grid w-full grid-cols-2 bg-surface mb-6">
-                  <TabsTrigger 
-                    value="auto" 
-                    className="gap-2 text-xs sm:text-sm data-[state=active]:bg-gold data-[state=active]:text-primary-foreground"
-                  >
-                    <Upload className="w-4 h-4" />
-                    <span className="hidden sm:inline">Extração</span> Automática
-                  </TabsTrigger>
-                  <TabsTrigger 
-                    value="manual" 
-                    className="gap-2 text-xs sm:text-sm data-[state=active]:bg-gold data-[state=active]:text-primary-foreground"
-                  >
-                    <Edit3 className="w-4 h-4" />
-                    <span className="hidden sm:inline">Preenchimento</span> Manual
-                  </TabsTrigger>
-                </TabsList>
-                
-                <TabsContent value="auto" className="mt-0">
-                  <ScreenshotExtractor onExtract={handleExtractedData} />
-                </TabsContent>
-                
-                <TabsContent value="manual" className="mt-0">
-                  <PropertyForm data={propertyData} onChange={setPropertyData} />
-                </TabsContent>
-              </Tabs>
+              <div className="flex items-center gap-2 mb-4">
+                <Upload className="w-5 h-5 text-gold" />
+                <h2 className="font-semibold text-foreground">Extração Automática</h2>
+              </div>
+              <ScreenshotExtractor onExtract={handleExtractedData} />
             </div>
 
-            {/* Photos - With Tabs for Upload and Search (SECOND) */}
+            {/* 2. Photos - Upload and Search - SECOND */}
             <div className="glass-card rounded-2xl p-4 sm:p-6 overflow-hidden">
               <Tabs defaultValue="upload" className="w-full">
+                <div className="flex items-center gap-2 mb-4">
+                  <Image className="w-5 h-5 text-gold" />
+                  <h2 className="font-semibold text-foreground">Fotos do Imóvel</h2>
+                </div>
                 <TabsList className="grid w-full grid-cols-2 bg-surface mb-4">
                   <TabsTrigger 
                     value="upload" 
@@ -115,6 +95,15 @@ const Index = () => {
                   />
                 </TabsContent>
               </Tabs>
+            </div>
+
+            {/* 3. Manual Property Form - THIRD */}
+            <div className="glass-card rounded-2xl p-4 sm:p-6 overflow-hidden">
+              <div className="flex items-center gap-2 mb-4">
+                <Edit3 className="w-5 h-5 text-gold" />
+                <h2 className="font-semibold text-foreground">Preenchimento Manual</h2>
+              </div>
+              <PropertyForm data={propertyData} onChange={setPropertyData} />
             </div>
           </div>
 
