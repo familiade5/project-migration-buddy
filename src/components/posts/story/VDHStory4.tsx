@@ -1,5 +1,5 @@
 import { PropertyData } from '@/types/property';
-import { MessageCircle, Clock, MapPin } from 'lucide-react';
+import { MessageCircle, Clock } from 'lucide-react';
 import logoVDH from '@/assets/logo-vdh.jpg';
 
 interface VDHStory4Props {
@@ -39,46 +39,48 @@ export const VDHStory4 = ({ data, photo }: VDHStory4Props) => {
       </div>
 
       {/* Conteúdo CTA principal */}
-      <div className="absolute z-10 flex flex-col items-center justify-center" style={{ top: '45%', left: '50px', right: '50px' }}>
-        {/* Resumo rápido do imóvel */}
-        <div className="text-center mb-8">
-          <p className="text-white font-bold" style={{ fontSize: '48px' }}>
-            {data.type || 'Imóvel'}
-            {data.bedrooms && data.bedrooms !== '0' && ` ${data.bedrooms} quartos`}
+      <div className="absolute z-10 flex flex-col items-center justify-center" style={{ top: '42%', left: '50px', right: '50px' }}>
+        {/* Texto de urgência */}
+        <div className="text-center mb-6">
+          <p className="text-white font-bold" style={{ fontSize: '52px' }}>
+            Não perca essa
           </p>
-          <div className="flex items-center justify-center gap-2 mt-3">
-            <MapPin className="text-[#e87722]" style={{ width: '28px', height: '28px' }} />
-            <p className="text-white/80" style={{ fontSize: '28px' }}>
-              {data.neighborhood && `${data.neighborhood}, `}{data.city} - {data.state}
+          <p className="text-[#f5d485] font-black" style={{ fontSize: '64px' }}>
+            OPORTUNIDADE!
+          </p>
+        </div>
+
+        {/* Alertas de urgência */}
+        <div className="flex flex-col gap-3 mb-8 w-full">
+          <div className="bg-[#dc2626]/90 rounded-xl text-center" style={{ padding: '18px' }}>
+            <p className="text-white font-bold" style={{ fontSize: '28px' }}>
+              ⚡ Imóvel sujeito a disponibilidade
+            </p>
+          </div>
+          <div className="bg-white/10 backdrop-blur rounded-xl text-center" style={{ padding: '18px' }}>
+            <p className="text-white font-semibold" style={{ fontSize: '26px' }}>
+              Condições exclusivas por tempo limitado
             </p>
           </div>
         </div>
 
         {/* Preço destacado */}
-        <div className="bg-[#1e3a2f] rounded-2xl text-center mb-8" style={{ padding: '30px 60px' }}>
-          <p className="text-white/70 mb-1" style={{ fontSize: '24px' }}>Por apenas</p>
-          <p className="text-[#f5d485] font-bold" style={{ fontSize: '56px' }}>
+        <div className="bg-[#1e3a2f] rounded-2xl text-center mb-6 w-full" style={{ padding: '25px' }}>
+          <p className="text-[#f5d485] font-bold" style={{ fontSize: '52px' }}>
             {data.minimumValue || 'Consulte'}
           </p>
         </div>
 
         {/* Botão CTA WhatsApp */}
         <div 
-          className="bg-[#25D366] rounded-2xl flex items-center justify-center gap-4 shadow-xl cursor-pointer hover:bg-[#20bd5a] transition-colors"
-          style={{ padding: '35px 70px' }}
+          className="bg-[#25D366] rounded-2xl flex items-center justify-center gap-4 shadow-xl cursor-pointer hover:bg-[#20bd5a] transition-colors w-full"
+          style={{ padding: '30px' }}
         >
           <MessageCircle className="text-white" style={{ width: '50px', height: '50px' }} />
           <div>
-            <p className="text-white font-bold" style={{ fontSize: '40px' }}>Quero Saber Mais!</p>
-            <p className="text-white/90" style={{ fontSize: '24px' }}>Clique e fale conosco</p>
+            <p className="text-white font-bold" style={{ fontSize: '38px' }}>FALE AGORA!</p>
+            <p className="text-white/90" style={{ fontSize: '22px' }}>{data.contactPhone || '(92) 98839-1098'}</p>
           </div>
-        </div>
-
-        {/* Telefone */}
-        <div className="mt-6">
-          <p className="text-white/80 text-center" style={{ fontSize: '28px' }}>
-            {data.contactPhone || '(92) 98839-1098'}
-          </p>
         </div>
       </div>
 

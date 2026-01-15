@@ -116,6 +116,18 @@ export const VDHStory1 = ({ data, photo }: VDHStory1Props) => {
         </div>
       </div>
 
+      {/* Badge de desconto no canto superior direito */}
+      {data.discount && parseFloat(data.discount.replace(',', '.')) > 0 && (
+        <div className="absolute z-20" style={{ top: '60px', right: '50px' }}>
+          <div className="bg-[#e87722] rounded-2xl shadow-2xl text-center" style={{ padding: '25px 35px' }}>
+            <p className="text-white font-black" style={{ fontSize: '64px', lineHeight: '1' }}>
+              {data.discount}%
+            </p>
+            <p className="text-white/90 font-bold" style={{ fontSize: '28px' }}>DESCONTO</p>
+          </div>
+        </div>
+      )}
+
       {/* Logo VDH na parte inferior */}
       <div className="absolute z-10 flex items-center justify-center" style={{ bottom: '60px', left: '0', right: '0' }}>
         <div className="flex items-center gap-4">
@@ -125,11 +137,7 @@ export const VDHStory1 = ({ data, photo }: VDHStory1Props) => {
             className="object-contain rounded"
             style={{ height: '80px' }}
           />
-          <div className="flex flex-col">
-            <span className="text-white font-bold tracking-widest" style={{ fontSize: '36px' }}>VDH</span>
-            <span className="text-white/80 text-xs tracking-wider" style={{ fontSize: '18px' }}>VENDA</span>
-            <span className="text-[#e87722] font-semibold tracking-wider" style={{ fontSize: '18px' }}>DIRETA HOJE</span>
-          </div>
+          <span className="text-white font-semibold tracking-wide" style={{ fontSize: '28px' }}>Venda Direta Hoje</span>
         </div>
       </div>
     </div>

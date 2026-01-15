@@ -40,42 +40,54 @@ export const VDHStory3 = ({ data, photo }: VDHStory3Props) => {
       </div>
 
       {/* Conteúdo de preço e condições */}
-      <div className="absolute z-10" style={{ top: '50%', left: '50px', right: '50px' }}>
-        {/* Valor mínimo */}
-        <div className="text-center mb-8">
-          <p className="text-white/70 mb-2" style={{ fontSize: '32px' }}>A partir de</p>
-          <p className="text-[#f5d485] font-bold" style={{ fontSize: '72px' }}>
-            {data.minimumValue || 'R$ --'}
-          </p>
+      <div className="absolute z-10" style={{ top: '48%', left: '50px', right: '50px' }}>
+        {/* Comparação de valores - destaque principal */}
+        <div className="bg-[#1a2433]/95 backdrop-blur rounded-2xl mb-6" style={{ padding: '40px' }}>
+          {/* Valor de avaliação (riscado) */}
+          {data.evaluationValue && (
+            <div className="text-center mb-4">
+              <p className="text-white/60 mb-1" style={{ fontSize: '24px' }}>Valor de avaliação</p>
+              <p className="text-white/50 line-through" style={{ fontSize: '48px' }}>
+                {data.evaluationValue}
+              </p>
+            </div>
+          )}
+          
+          {/* Valor de venda - grande destaque */}
+          <div className="text-center">
+            <p className="text-[#22c55e] font-medium mb-2" style={{ fontSize: '28px' }}>Valor de Venda</p>
+            <p className="text-[#f5d485] font-bold" style={{ fontSize: '72px' }}>
+              {data.minimumValue || 'R$ --'}
+            </p>
+          </div>
+
+          {/* Economia */}
+          {data.discount && parseFloat(data.discount.replace(',', '.')) > 0 && (
+            <div className="text-center mt-4 bg-[#e87722] rounded-xl" style={{ padding: '15px 30px' }}>
+              <p className="text-white font-bold" style={{ fontSize: '32px' }}>
+                Economia de {data.discount}%
+              </p>
+            </div>
+          )}
         </div>
 
         {/* Card de condições */}
-        <div className="bg-[#3a4555]/90 backdrop-blur rounded-2xl" style={{ padding: '40px' }}>
-          {/* Desconto */}
-          {data.discount && parseFloat(data.discount.replace(',', '.')) > 0 && (
-            <div className="flex items-center justify-between mb-6 pb-6 border-b border-white/10">
-              <span className="text-white/80" style={{ fontSize: '32px' }}>Desconto</span>
-              <span className="text-[#e87722] font-bold" style={{ fontSize: '40px' }}>
-                {data.discount}% OFF
-              </span>
-            </div>
-          )}
-
+        <div className="bg-[#3a4555]/90 backdrop-blur rounded-2xl" style={{ padding: '30px 40px' }}>
           {/* Financiamento */}
-          <div className="flex items-center justify-between mb-6 pb-6 border-b border-white/10">
-            <span className="text-white/80" style={{ fontSize: '32px' }}>Pagamento</span>
-            <span className="font-bold" style={{ fontSize: '32px', color: financing.color }}>
+          <div className="flex items-center justify-between mb-5 pb-5 border-b border-white/10">
+            <span className="text-white/80" style={{ fontSize: '28px' }}>Pagamento</span>
+            <span className="font-bold" style={{ fontSize: '28px', color: financing.color }}>
               {financing.text}
             </span>
           </div>
 
           {/* FGTS */}
           <div className="flex items-center justify-between">
-            <span className="text-white/80" style={{ fontSize: '32px' }}>FGTS</span>
+            <span className="text-white/80" style={{ fontSize: '28px' }}>FGTS</span>
             <span 
               className="font-bold" 
               style={{ 
-                fontSize: '32px', 
+                fontSize: '28px', 
                 color: data.acceptsFGTS ? '#22c55e' : '#f97316' 
               }}
             >
@@ -83,15 +95,6 @@ export const VDHStory3 = ({ data, photo }: VDHStory3Props) => {
             </span>
           </div>
         </div>
-
-        {/* Comparação com valor de avaliação */}
-        {data.evaluationValue && (
-          <div className="text-center mt-6">
-            <p className="text-white/60" style={{ fontSize: '24px' }}>
-              Valor de avaliação: <span className="line-through">{data.evaluationValue}</span>
-            </p>
-          </div>
-        )}
       </div>
 
       {/* Footer com logo */}
