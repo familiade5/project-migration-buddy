@@ -44,7 +44,37 @@ const Index = () => {
         <div className="grid lg:grid-cols-2 gap-6 lg:gap-8">
           {/* Left Column - Input */}
           <div className="space-y-6 min-w-0">
-            {/* Photos - With Tabs for Upload and Search */}
+            {/* Property Data - With Mode Tabs (FIRST) */}
+            <div className="glass-card rounded-2xl p-4 sm:p-6 overflow-hidden">
+              <Tabs value={inputMode} onValueChange={(v) => setInputMode(v as 'manual' | 'auto')} className="w-full">
+                <TabsList className="grid w-full grid-cols-2 bg-surface mb-6">
+                  <TabsTrigger 
+                    value="auto" 
+                    className="gap-2 text-xs sm:text-sm data-[state=active]:bg-gold data-[state=active]:text-primary-foreground"
+                  >
+                    <Upload className="w-4 h-4" />
+                    <span className="hidden sm:inline">Extração</span> Automática
+                  </TabsTrigger>
+                  <TabsTrigger 
+                    value="manual" 
+                    className="gap-2 text-xs sm:text-sm data-[state=active]:bg-gold data-[state=active]:text-primary-foreground"
+                  >
+                    <Edit3 className="w-4 h-4" />
+                    <span className="hidden sm:inline">Preenchimento</span> Manual
+                  </TabsTrigger>
+                </TabsList>
+                
+                <TabsContent value="auto" className="mt-0">
+                  <ScreenshotExtractor onExtract={handleExtractedData} />
+                </TabsContent>
+                
+                <TabsContent value="manual" className="mt-0">
+                  <PropertyForm data={propertyData} onChange={setPropertyData} />
+                </TabsContent>
+              </Tabs>
+            </div>
+
+            {/* Photos - With Tabs for Upload and Search (SECOND) */}
             <div className="glass-card rounded-2xl p-4 sm:p-6 overflow-hidden">
               <Tabs defaultValue="upload" className="w-full">
                 <TabsList className="grid w-full grid-cols-2 bg-surface mb-4">
@@ -83,36 +113,6 @@ const Index = () => {
                     }}
                     onClear={() => setPhotos([])}
                   />
-                </TabsContent>
-              </Tabs>
-            </div>
-            
-            {/* Property Data - With Mode Tabs */}
-            <div className="glass-card rounded-2xl p-4 sm:p-6 overflow-hidden">
-              <Tabs value={inputMode} onValueChange={(v) => setInputMode(v as 'manual' | 'auto')} className="w-full">
-                <TabsList className="grid w-full grid-cols-2 bg-surface mb-6">
-                  <TabsTrigger 
-                    value="auto" 
-                    className="gap-2 text-xs sm:text-sm data-[state=active]:bg-gold data-[state=active]:text-primary-foreground"
-                  >
-                    <Upload className="w-4 h-4" />
-                    <span className="hidden sm:inline">Extração</span> Automática
-                  </TabsTrigger>
-                  <TabsTrigger 
-                    value="manual" 
-                    className="gap-2 text-xs sm:text-sm data-[state=active]:bg-gold data-[state=active]:text-primary-foreground"
-                  >
-                    <Edit3 className="w-4 h-4" />
-                    <span className="hidden sm:inline">Preenchimento</span> Manual
-                  </TabsTrigger>
-                </TabsList>
-                
-                <TabsContent value="auto" className="mt-0">
-                  <ScreenshotExtractor onExtract={handleExtractedData} />
-                </TabsContent>
-                
-                <TabsContent value="manual" className="mt-0">
-                  <PropertyForm data={propertyData} onChange={setPropertyData} />
                 </TabsContent>
               </Tabs>
             </div>
