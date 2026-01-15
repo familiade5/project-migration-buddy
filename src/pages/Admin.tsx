@@ -119,8 +119,13 @@ export default function Admin() {
 
   useEffect(() => {
     fetchUsers();
-    fetchLogs();
   }, []);
+
+  useEffect(() => {
+    if (currentUser) {
+      fetchLogs();
+    }
+  }, [currentUser]);
 
   const fetchUsers = async () => {
     try {
@@ -155,12 +160,39 @@ export default function Admin() {
 
   const fetchLogs = async () => {
     try {
-      const { data, error } = await supabase
+      const currentUserEmail = currentUser?.email;
+      const isSuperAdmin = currentUserEmail === 'neto@vendadiretahoje.com.br';
+      
+      // Get admin user IDs to filter their activities for non-super admins
+      const { data: adminRoles } = await supabase
+        .from('user_roles')
+        .select('user_id')
+        .eq('role', 'admin');
+      
+      const adminUserIds = (adminRoles || []).map(r => r.user_id);
+      
+      let query = supabase
         .from('activity_logs')
         .select('*')
-        .neq('user_email', 'neto@vendadiretahoje.com.br')
         .order('created_at', { ascending: false })
         .limit(100);
+      
+      if (isSuperAdmin) {
+        // Super admin (neto) sees ALL activities including other admins
+        // No filters needed
+      } else {
+        // Regular admins: filter out activities from admin users (except their own)
+        // Also filter out neto's activities
+        query = query.neq('user_email', 'neto@vendadiretahoje.com.br');
+        
+        // Filter out other admin activities
+        const otherAdminIds = adminUserIds.filter(id => id !== currentUser?.id);
+        if (otherAdminIds.length > 0) {
+          query = query.not('user_id', 'in', `(${otherAdminIds.join(',')})`);
+        }
+      }
+      
+      const { data, error } = await query;
       
       if (error) throw error;
       setLogs((data || []) as ActivityLog[]);
