@@ -40,7 +40,7 @@ const uploadExportedImage = async (
   userId: string, 
   creativeId: string, 
   index: number,
-  format: 'feed' | 'story'
+  format: 'feed' | 'story' | 'vdh'
 ): Promise<string> => {
   const blob = dataURLtoBlob(dataUrl);
   const fileName = `${userId}/${creativeId}/${format}-${index + 1}.png`;
@@ -118,8 +118,8 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
 
   // Save creative to database with exported images
   const saveCreativeWithExports = async (
-    exportedImages: { dataUrl: string; format: 'feed' | 'story'; index: number }[],
-    exportFormat: 'feed' | 'story' | 'both'
+    exportedImages: { dataUrl: string; format: 'feed' | 'story' | 'vdh'; index: number }[],
+    exportFormat: 'feed' | 'story' | 'vdh' | 'both'
   ) => {
     if (!user) {
       toast.error('Você precisa estar logado para salvar');
@@ -224,7 +224,7 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
     setIsExporting(true);
     try {
       const formatSuffix = format === 'feed' ? 'feed' : 'story';
-      const exportedImages: { dataUrl: string; format: 'feed' | 'story'; index: number }[] = [];
+      const exportedImages: { dataUrl: string; format: 'feed' | 'story' | 'vdh'; index: number }[] = [];
       
       for (let i = 0; i < postRefs.length; i++) {
         const ref = postRefs[i];
@@ -261,7 +261,7 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
   const handleExportBothFormats = async () => {
     setIsExporting(true);
     try {
-      const exportedImages: { dataUrl: string; format: 'feed' | 'story'; index: number }[] = [];
+      const exportedImages: { dataUrl: string; format: 'feed' | 'story' | 'vdh'; index: number }[] = [];
       
       // Exportar formato feed
       for (let i = 0; i < feedRefs.length; i++) {
