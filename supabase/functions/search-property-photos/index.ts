@@ -17,6 +17,33 @@ interface PlaceResult {
   types?: string[];
 }
 
+// Helper function to convert image URL to base64
+async function urlToBase64(url: string): Promise<string | null> {
+  try {
+    const response = await fetch(url);
+    if (!response.ok) {
+      console.error(`Failed to fetch image: ${response.status}`);
+      return null;
+    }
+    
+    const contentType = response.headers.get('content-type') || 'image/jpeg';
+    const arrayBuffer = await response.arrayBuffer();
+    const uint8Array = new Uint8Array(arrayBuffer);
+    
+    // Convert to base64
+    let binary = '';
+    for (let i = 0; i < uint8Array.length; i++) {
+      binary += String.fromCharCode(uint8Array[i]);
+    }
+    const base64 = btoa(binary);
+    
+    return `data:${contentType};base64,${base64}`;
+  } catch (error) {
+    console.error(`Error converting image to base64:`, error);
+    return null;
+  }
+}
+
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
@@ -57,7 +84,7 @@ serve(async (req) => {
     }
 
     let condominiumName = "";
-    let allPhotos: Array<{ url: string; reference: string }> = [];
+    let photoReferences: Array<{ reference: string }> = [];
     let foundPlaces: PlaceResult[] = textSearchData.results || [];
 
     // Se for apartamento, buscar também por "condomínio" + endereço
@@ -104,9 +131,7 @@ serve(async (req) => {
         
         if (detailsData.status === "OK" && detailsData.result?.photos) {
           for (const photo of detailsData.result.photos.slice(0, 10)) {
-            const photoUrl = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=800&photo_reference=${photo.photo_reference}&key=${GOOGLE_API_KEY}`;
-            allPhotos.push({
-              url: photoUrl,
+            photoReferences.push({
               reference: photo.photo_reference
             });
           }
@@ -117,18 +142,40 @@ serve(async (req) => {
     }
 
     // Remover duplicatas
-    const uniquePhotos = allPhotos.filter((photo, index, self) =>
+    const uniqueReferences = photoReferences.filter((photo, index, self) =>
       index === self.findIndex(p => p.reference === photo.reference)
     );
 
-    console.log(`Found ${uniquePhotos.length} photos, condominium name: ${condominiumName || 'not found'}`);
+    console.log(`Found ${uniqueReferences.length} unique photo references`);
+
+    // Convert photos to base64 (limit to 12 to avoid timeout)
+    const maxPhotos = Math.min(uniqueReferences.length, 12);
+    const photosWithBase64: Array<{ url: string; reference: string }> = [];
+    
+    console.log(`Converting ${maxPhotos} photos to base64...`);
+    
+    for (let i = 0; i < maxPhotos; i++) {
+      const photoRef = uniqueReferences[i];
+      const photoUrl = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=800&photo_reference=${photoRef.reference}&key=${GOOGLE_API_KEY}`;
+      
+      const base64Url = await urlToBase64(photoUrl);
+      if (base64Url) {
+        photosWithBase64.push({
+          url: base64Url,
+          reference: photoRef.reference
+        });
+        console.log(`Converted photo ${i + 1}/${maxPhotos}`);
+      }
+    }
+
+    console.log(`Successfully converted ${photosWithBase64.length} photos, condominium name: ${condominiumName || 'not found'}`);
 
     return new Response(
       JSON.stringify({ 
         success: true, 
         condominiumName,
-        photos: uniquePhotos.slice(0, 20), // Limitar a 20 fotos
-        totalFound: uniquePhotos.length
+        photos: photosWithBase64,
+        totalFound: uniqueReferences.length
       }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
