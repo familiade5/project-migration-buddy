@@ -31,6 +31,7 @@ const navigation = [
 ];
 
 const adminNavigation = [
+  { name: 'Imobiliária', href: '/imobiliaria', icon: Building2 },
   { name: 'Admin', href: '/admin', icon: Shield },
 ];
 

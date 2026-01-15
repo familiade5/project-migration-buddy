@@ -128,9 +128,15 @@ export const PostCover = ({ data, photo }: PostCoverProps) => {
             <div className="bg-[#e87722] rounded" style={{ padding: '6px 16px' }}>
               <span className="text-white font-bold" style={{ fontSize: '20px' }}>Imóvel Caixa</span>
             </div>
-            <div className={`rounded text-center ${data.acceptsFinancing ? 'bg-[#1e3a2f]' : 'bg-[#3a4a5a]'}`} style={{ padding: '4px 16px' }}>
-              <span className="text-white" style={{ fontSize: '16px' }}>
-                {data.acceptsFinancing ? 'Aceita Financiamento' : 'Não Aceita Financiamento Bancário'}
+            <div className="rounded text-center bg-[#1a2433]" style={{ padding: '4px 16px' }}>
+              <span 
+                className="font-semibold" 
+                style={{ 
+                  fontSize: '16px',
+                  color: data.acceptsFinancing ? '#22c55e' : '#f97316'
+                }}
+              >
+                {data.acceptsFinancing ? 'Aceita Financiamento' : 'Somente à Vista'}
               </span>
             </div>
           </div>

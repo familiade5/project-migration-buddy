@@ -89,6 +89,50 @@ export type Database = {
         }
         Relationships: []
       }
+      crecis: {
+        Row: {
+          agency_id: string
+          created_at: string
+          creci_number: string
+          id: string
+          is_active: boolean
+          is_default: boolean
+          name: string | null
+          state: string
+          updated_at: string
+        }
+        Insert: {
+          agency_id: string
+          created_at?: string
+          creci_number: string
+          id?: string
+          is_active?: boolean
+          is_default?: boolean
+          name?: string | null
+          state?: string
+          updated_at?: string
+        }
+        Update: {
+          agency_id?: string
+          created_at?: string
+          creci_number?: string
+          id?: string
+          is_active?: boolean
+          is_default?: boolean
+          name?: string | null
+          state?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "crecis_agency_id_fkey"
+            columns: ["agency_id"]
+            isOneToOne: false
+            referencedRelation: "real_estate_agency"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           address: string | null
@@ -122,6 +166,42 @@ export type Database = {
           temp_password?: boolean | null
           updated_at?: string | null
           whatsapp?: string | null
+        }
+        Relationships: []
+      }
+      real_estate_agency: {
+        Row: {
+          address: string | null
+          created_at: string
+          email: string | null
+          id: string
+          logo_url: string | null
+          name: string
+          phone: string | null
+          updated_at: string
+          website: string | null
+        }
+        Insert: {
+          address?: string | null
+          created_at?: string
+          email?: string | null
+          id?: string
+          logo_url?: string | null
+          name?: string
+          phone?: string | null
+          updated_at?: string
+          website?: string | null
+        }
+        Update: {
+          address?: string | null
+          created_at?: string
+          email?: string | null
+          id?: string
+          logo_url?: string | null
+          name?: string
+          phone?: string | null
+          updated_at?: string
+          website?: string | null
         }
         Relationships: []
       }
