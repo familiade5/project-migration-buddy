@@ -90,7 +90,7 @@ export const defaultPropertyData: PropertyData = {
   creci: 'CRECI 14851 MS PJ',
   
   features: [],
-  contactPhone: '(67) 99999-9999',
+  contactPhone: '(92) 98839-1098',
   contactName: 'Iury Sampaio',
   
   // Novos campos
@@ -111,8 +111,8 @@ export const defaultPropertyData: PropertyData = {
   cep: '',
   fullAddress: '',
   
-  condominiumRules: '',
-  taxRules: '',
+  condominiumRules: 'Responsabilidade do comprador a partir do registro da arrematação junto ao CRI ou da imissão na posse, o que ocorrer primeiro, ainda que haja débitos de condomínio ou impostos de período anterior à arrematação.',
+  taxRules: 'Responsabilidade do comprador.',
 };
 
 export const propertyTypes = [
