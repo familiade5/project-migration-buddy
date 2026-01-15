@@ -10,6 +10,7 @@ import Auth from "./pages/Auth";
 import Library from "./pages/Library";
 import Admin from "./pages/Admin";
 import Settings from "./pages/Settings";
+import Imobiliaria from "./pages/Imobiliaria";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -36,6 +37,11 @@ const App = () => (
             <Route path="/admin" element={
               <ProtectedRoute requireAdmin>
                 <Admin />
+              </ProtectedRoute>
+            } />
+            <Route path="/imobiliaria" element={
+              <ProtectedRoute requireAdmin>
+                <Imobiliaria />
               </ProtectedRoute>
             } />
             <Route path="/settings" element={

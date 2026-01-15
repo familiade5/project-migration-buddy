@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react';
 import { toPng } from 'html-to-image';
-import { Download, ChevronLeft, ChevronRight, Loader2, Square, Smartphone } from 'lucide-react';
+import { Download, ChevronLeft, ChevronRight, Loader2, Square, Smartphone, Sparkles } from 'lucide-react';
 import { PropertyData } from '@/types/property';
 import { PostCover } from './posts/PostCover';
 import { PostDetails } from './posts/PostDetails';
@@ -10,6 +10,10 @@ import { PostCoverStory } from './posts/story/PostCoverStory';
 import { PostDetailsStory } from './posts/story/PostDetailsStory';
 import { PostFeaturesStory } from './posts/story/PostFeaturesStory';
 import { PostContactStory } from './posts/story/PostContactStory';
+import { VDHStory1 } from './posts/story/VDHStory1';
+import { VDHStory2 } from './posts/story/VDHStory2';
+import { VDHStory3 } from './posts/story/VDHStory3';
+import { VDHStory4 } from './posts/story/VDHStory4';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
@@ -62,7 +66,7 @@ interface PostPreviewProps {
   photos: string[];
 }
 
-type FormatType = 'feed' | 'story';
+type FormatType = 'feed' | 'story' | 'vdh';
 
 export const PostPreview = ({ data, photos }: PostPreviewProps) => {
   const [currentPost, setCurrentPost] = useState(0);
@@ -76,6 +80,8 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
   const feedRefs = [useRef<HTMLDivElement>(null), useRef<HTMLDivElement>(null), useRef<HTMLDivElement>(null), useRef<HTMLDivElement>(null)];
   // Refs para formato story (9:16)
   const storyRefs = [useRef<HTMLDivElement>(null), useRef<HTMLDivElement>(null), useRef<HTMLDivElement>(null), useRef<HTMLDivElement>(null)];
+  // Refs para formato VDH (9:16)
+  const vdhRefs = [useRef<HTMLDivElement>(null), useRef<HTMLDivElement>(null), useRef<HTMLDivElement>(null), useRef<HTMLDivElement>(null)];
 
   const feedPosts = [
     { name: 'Capa', component: PostCover, photoIndex: 0 },
@@ -91,8 +97,15 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
     { name: 'Contato', component: PostContactStory, photoIndex: 3 },
   ];
 
-  const posts = format === 'feed' ? feedPosts : storyPosts;
-  const postRefs = format === 'feed' ? feedRefs : storyRefs;
+  const vdhPosts = [
+    { name: 'Atração', component: VDHStory1, photoIndex: 0 },
+    { name: 'Interesse', component: VDHStory2, photoIndex: 1 },
+    { name: 'Decisão', component: VDHStory3, photoIndex: 2 },
+    { name: 'Ação', component: VDHStory4, photoIndex: 3 },
+  ];
+
+  const posts = format === 'feed' ? feedPosts : format === 'story' ? storyPosts : vdhPosts;
+  const postRefs = format === 'feed' ? feedRefs : format === 'story' ? storyRefs : vdhRefs;
 
   // Generate a title based on property data
   const generateTitle = () => {
@@ -316,7 +329,7 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
         {/* Seletor de formato */}
         <div className="flex items-center gap-1 bg-surface rounded-lg p-1 self-start">
           <button
-            onClick={() => setFormat('feed')}
+            onClick={() => { setFormat('feed'); setCurrentPost(0); }}
             className={`flex items-center gap-1.5 px-2 sm:px-3 py-1.5 rounded-md text-xs sm:text-sm transition-all ${
               format === 'feed'
                 ? 'bg-gold text-primary-foreground'
@@ -327,7 +340,7 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
             <span>Feed</span>
           </button>
           <button
-            onClick={() => setFormat('story')}
+            onClick={() => { setFormat('story'); setCurrentPost(0); }}
             className={`flex items-center gap-1.5 px-2 sm:px-3 py-1.5 rounded-md text-xs sm:text-sm transition-all ${
               format === 'story'
                 ? 'bg-gold text-primary-foreground'
@@ -336,6 +349,17 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
           >
             <Smartphone className="w-3 h-3 sm:w-4 sm:h-4" />
             <span>Story</span>
+          </button>
+          <button
+            onClick={() => { setFormat('vdh'); setCurrentPost(0); }}
+            className={`flex items-center gap-1.5 px-2 sm:px-3 py-1.5 rounded-md text-xs sm:text-sm transition-all ${
+              format === 'vdh'
+                ? 'bg-gold text-primary-foreground'
+                : 'text-muted-foreground hover:text-foreground'
+            }`}
+          >
+            <Sparkles className="w-3 h-3 sm:w-4 sm:h-4" />
+            <span>VDH</span>
           </button>
         </div>
       </div>
@@ -462,6 +486,15 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
       <div className="fixed -left-[9999px] top-0">
         {storyPosts.map((Post, index) => (
           <div key={`story-${index}`} ref={storyRefs[index]}>
+            <Post.component data={data} photo={photos[index] || photos[0] || null} photos={photos} />
+          </div>
+        ))}
+      </div>
+
+      {/* All Posts Grid (hidden, used for export) - VDH */}
+      <div className="fixed -left-[9999px] top-0">
+        {vdhPosts.map((Post, index) => (
+          <div key={`vdh-${index}`} ref={vdhRefs[index]}>
             <Post.component data={data} photo={photos[index] || photos[0] || null} photos={photos} />
           </div>
         ))}

@@ -5,6 +5,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Checkbox } from '@/components/ui/checkbox';
 import { Switch } from '@/components/ui/switch';
 import { Textarea } from '@/components/ui/textarea';
+import { useCrecis } from '@/hooks/useCrecis';
+import { useEffect } from 'react';
 
 interface PropertyFormProps {
   data: PropertyData;
@@ -12,6 +14,15 @@ interface PropertyFormProps {
 }
 
 export const PropertyForm = ({ data, onChange }: PropertyFormProps) => {
+  const { crecis, defaultCreci, formatCreci } = useCrecis();
+
+  // Set default CRECI when loaded
+  useEffect(() => {
+    if (defaultCreci && !data.creci) {
+      onChange({ ...data, creci: defaultCreci });
+    }
+  }, [defaultCreci]);
+
   const updateField = <K extends keyof PropertyData>(field: K, value: PropertyData[K]) => {
     onChange({ ...data, [field]: value });
   };
@@ -446,13 +457,29 @@ export const PropertyForm = ({ data, onChange }: PropertyFormProps) => {
           </div>
           <div>
             <Label htmlFor="creci" className="text-muted-foreground text-sm">CRECI</Label>
-            <Input
-              id="creci"
-              placeholder="CRECI 14851 MS PJ"
-              value={data.creci}
-              onChange={(e) => updateField('creci', e.target.value)}
-              className="input-premium mt-1"
-            />
+            {crecis.length > 0 ? (
+              <Select value={data.creci} onValueChange={(v) => updateField('creci', v)}>
+                <SelectTrigger className="input-premium mt-1 w-full">
+                  <SelectValue placeholder="Selecione o CRECI" />
+                </SelectTrigger>
+                <SelectContent>
+                  {crecis.map(creci => (
+                    <SelectItem key={creci.id} value={formatCreci(creci)}>
+                      {formatCreci(creci)}
+                      {creci.is_default && ' (padrão)'}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            ) : (
+              <Input
+                id="creci"
+                placeholder="CRECI 14851 MS PJ"
+                value={data.creci}
+                onChange={(e) => updateField('creci', e.target.value)}
+                className="input-premium mt-1"
+              />
+            )}
           </div>
         </div>
       </div>
