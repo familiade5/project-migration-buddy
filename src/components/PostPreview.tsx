@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react';
 import { toPng } from 'html-to-image';
+import JSZip from 'jszip';
 import { Download, ChevronLeft, ChevronRight, Loader2, Square, Smartphone, Sparkles } from 'lucide-react';
 import { PropertyData } from '@/types/property';
 import { PostCover } from './posts/PostCover';
@@ -198,19 +199,16 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
         pixelRatio: 2,
         cacheBust: true,
       });
-      
+
       const link = document.createElement('a');
-      const formatSuffix = format === 'feed' ? 'feed' : 'story';
+      const formatSuffix = format;
       link.download = `post-${index + 1}-${posts[index].name.toLowerCase()}-${formatSuffix}.png`;
       link.href = dataUrl;
       link.click();
-      
+
       // Save to library automatically with the exported image
-      await saveCreativeWithExports(
-        [{ dataUrl, format, index }],
-        format
-      );
-      
+      await saveCreativeWithExports([{ dataUrl, format, index }], format);
+
       toast.success(`Post exportado e salvo na biblioteca!`);
     } catch (error) {
       toast.error('Erro ao exportar imagem');
@@ -223,12 +221,12 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
   const handleExportAll = async () => {
     setIsExporting(true);
     try {
-      const formatSuffix = format === 'feed' ? 'feed' : format === 'story' ? 'story' : 'vdh';
+      const formatSuffix = format;
       const currentRefs = format === 'feed' ? feedRefs : format === 'story' ? storyRefs : vdhRefs;
       const currentPosts = format === 'feed' ? feedPosts : format === 'story' ? storyPosts : vdhPosts;
       const exportedImages: { dataUrl: string; format: 'feed' | 'story' | 'vdh'; index: number }[] = [];
-      
-      // First, generate all images
+
+      // Generate all images
       const allDataUrls: string[] = [];
       for (let i = 0; i < currentRefs.length; i++) {
         const ref = currentRefs[i];
@@ -239,24 +237,43 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
           pixelRatio: 2,
           cacheBust: true,
         });
-        
+
         allDataUrls.push(dataUrl);
         exportedImages.push({ dataUrl, format, index: i });
       }
-      
-      // Then download all of them
-      for (let i = 0; i < allDataUrls.length; i++) {
+
+      // Download: for VDH, use a ZIP to avoid browser blocking multiple downloads
+      if (format === 'vdh') {
+        const zip = new JSZip();
+        for (let i = 0; i < allDataUrls.length; i++) {
+          const res = await fetch(allDataUrls[i]);
+          const blob = await res.blob();
+          const filename = `post-${i + 1}-${currentPosts[i].name.toLowerCase()}-${formatSuffix}.png`;
+          zip.file(filename, blob);
+        }
+
+        const zipBlob = await zip.generateAsync({ type: 'blob' });
+        const url = URL.createObjectURL(zipBlob);
         const link = document.createElement('a');
-        link.download = `post-${i + 1}-${currentPosts[i].name.toLowerCase()}-${formatSuffix}.png`;
-        link.href = allDataUrls[i];
+        link.href = url;
+        link.download = `posts-${formatSuffix}.zip`;
         link.click();
-        
-        await new Promise(resolve => setTimeout(resolve, 500));
+        URL.revokeObjectURL(url);
+      } else {
+        // Then download all of them (feed/story)
+        for (let i = 0; i < allDataUrls.length; i++) {
+          const link = document.createElement('a');
+          link.download = `post-${i + 1}-${currentPosts[i].name.toLowerCase()}-${formatSuffix}.png`;
+          link.href = allDataUrls[i];
+          link.click();
+
+          await new Promise((resolve) => setTimeout(resolve, 500));
+        }
       }
-      
+
       // Save to library with all exported images
       await saveCreativeWithExports(exportedImages, format);
-      
+
       const formatLabel = format === 'feed' ? 'Feed' : format === 'story' ? 'Story' : 'VDH';
       toast.success(`Todos os posts (${formatLabel}) exportados e salvos!`);
     } catch (error) {
