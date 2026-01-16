@@ -53,23 +53,23 @@ export const VDHStory1 = ({ data, photo }: VDHStory1Props) => {
       <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/60" />
 
       {/* Nome do condomínio destacado no topo */}
-      <div className="absolute z-10 flex items-center gap-3" style={{ top: '60px', left: '50px', right: '50px' }}>
+      <div className="absolute z-10 flex items-center gap-3" style={{ top: '50px', left: '50px', right: '50px' }}>
         <MapPin className="text-[#e87722] flex-shrink-0" style={{ width: '40px', height: '40px' }} />
         <div className="flex flex-col min-w-0">
           <span
             className="text-white font-bold drop-shadow-lg truncate"
-            style={{ fontSize: '42px', maxWidth: '980px' }}
+            style={{ fontSize: '42px', maxWidth: '980px', lineHeight: '1.05' }}
           >
             {getCondominiumName()}
           </span>
-          <span className="text-white/80 font-medium drop-shadow-lg" style={{ fontSize: '28px' }}>
+          <span className="text-white/80 font-medium drop-shadow-lg" style={{ fontSize: '26px', lineHeight: '1.15' }}>
             {getLocation()}
           </span>
         </div>
       </div>
 
       {/* Card principal com tipo do imóvel e badge Imóvel Caixa */}
-      <div className="absolute z-10" style={{ top: '140px', left: '50px', right: '50px' }}>
+      <div className="absolute z-10" style={{ top: '200px', left: '50px', right: '50px' }}>
         <div className="flex items-stretch gap-3">
           {/* Tipo do imóvel e quartos */}
           <div className="bg-[#3a4555]/95 backdrop-blur-sm rounded-xl flex-1" style={{ padding: '30px 40px' }}>
@@ -132,7 +132,7 @@ export const VDHStory1 = ({ data, photo }: VDHStory1Props) => {
 
       {/* Badge de desconto abaixo do card Imóvel Caixa */}
       {data.discount && parseFloat(data.discount.replace(',', '.')) > 0 && (
-        <div className="absolute z-20" style={{ top: '370px', right: '50px' }}>
+        <div className="absolute z-20" style={{ top: '560px', right: '50px' }}>
           <div className="bg-[#e87722] rounded-2xl shadow-2xl text-center" style={{ padding: '25px 35px' }}>
             <p className="text-white font-black" style={{ fontSize: '64px', lineHeight: '1' }}>
               {data.discount}%
