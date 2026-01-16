@@ -144,11 +144,13 @@ export const PostCoverStory = ({ data, photo }: PostCoverStoryProps) => {
 
           {/* Info do imóvel */}
           <div className="flex-1 flex flex-col" style={{ gap: '4px' }}>
-            <p className="text-white font-bold" style={{ fontSize: '26px' }}>
-              {data.neighborhood || data.street || 'Localização'}
+            <p className="text-white font-bold truncate" style={{ fontSize: '26px' }}>
+              {(data.propertyName && data.propertyName.trim()) || `${data.type || 'Casa'} - Ótima localização`}
             </p>
             <p className="text-white/80" style={{ fontSize: '20px' }}>
-              {data.city} ({data.state})
+              {[data.neighborhood, data.city, (data.state || '').trim().length > 2 ? (data.state || '').trim().slice(0, 2).toUpperCase() : data.state]
+                .filter(Boolean)
+                .join(' - ')}
             </p>
             <p className="text-white/80" style={{ fontSize: '20px' }}>
               {propertySummary}

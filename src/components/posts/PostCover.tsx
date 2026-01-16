@@ -147,10 +147,12 @@ export const PostCover = ({ data, photo }: PostCoverProps) => {
           {/* Informações do imóvel */}
           <div className="flex-1 flex flex-col" style={{ gap: '2px' }}>
             <p className="text-white font-bold truncate" style={{ fontSize: '22px' }}>
-              {data.neighborhood || data.street || 'Localização'}
+              {(data.propertyName && data.propertyName.trim()) || `${data.type || 'Casa'} - Ótima localização`}
             </p>
             <p className="text-white/80" style={{ fontSize: '16px' }}>
-              {data.city} ({data.state})
+              {[data.neighborhood, data.city, (data.state || '').trim().length > 2 ? (data.state || '').trim().slice(0, 2).toUpperCase() : data.state]
+                .filter(Boolean)
+                .join(' - ')}
             </p>
             <p className="text-white/80" style={{ fontSize: '16px' }}>
               {propertySummary}
