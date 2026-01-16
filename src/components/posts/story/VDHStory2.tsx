@@ -121,25 +121,24 @@ export const VDHStory2 = ({ data, photo, photos }: VDHStory2Props) => {
 
       {/* Footer com localização e logo */}
       <div className="absolute bottom-0 left-0 right-0 bg-[#2a3444] z-10" style={{ padding: '40px' }}>
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between gap-6">
           {/* Localização */}
-          <div>
-            {data.propertyName && (
-              <p className="text-white font-semibold mb-1" style={{ fontSize: '32px' }}>
-                {data.propertyName}
-              </p>
-            )}
-            <p className="text-white/80" style={{ fontSize: '28px' }}>
-              {data.neighborhood && `${data.neighborhood}, `}
-              {data.city} - {data.state}
+          <div className="min-w-0">
+            <p className="text-white font-semibold mb-1 truncate" style={{ fontSize: '32px', maxWidth: '780px' }}>
+              {(data.propertyName && data.propertyName.trim()) || `${data.type || 'Casa'} - Ótima localização`}
+            </p>
+            <p className="text-white/80 truncate" style={{ fontSize: '28px', maxWidth: '780px' }}>
+              {[data.neighborhood, data.city, (data.state || '').trim().length > 2 ? (data.state || '').trim().slice(0, 2).toUpperCase() : data.state]
+                .filter(Boolean)
+                .join(' - ')}
             </p>
           </div>
-          
+
           {/* Logo VDH */}
           <img 
             src={logoVDH} 
             alt="VDH" 
-            className="object-contain rounded"
+            className="object-contain rounded flex-shrink-0"
             style={{ height: '70px' }}
           />
         </div>
