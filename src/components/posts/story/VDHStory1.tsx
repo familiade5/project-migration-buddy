@@ -26,7 +26,8 @@ export const VDHStory1 = ({ data, photo }: VDHStory1Props) => {
 
   // Formatar nome do condomínio/imóvel destacado
   const getCondominiumName = () => {
-    return data.propertyName || data.neighborhood || '';
+    // Preferir nome do condomínio/imóvel; se não tiver, cair para um texto genérico
+    return data.propertyName?.trim() || `${data.type || 'Casa'} - Ótima localização`;
   };
 
   // Formatar área
@@ -54,8 +55,11 @@ export const VDHStory1 = ({ data, photo }: VDHStory1Props) => {
       {/* Nome do condomínio destacado no topo */}
       <div className="absolute z-10 flex items-center gap-3" style={{ top: '60px', left: '50px', right: '50px' }}>
         <MapPin className="text-[#e87722] flex-shrink-0" style={{ width: '40px', height: '40px' }} />
-        <div className="flex flex-col">
-          <span className="text-white font-bold drop-shadow-lg" style={{ fontSize: '42px' }}>
+        <div className="flex flex-col min-w-0">
+          <span
+            className="text-white font-bold drop-shadow-lg truncate"
+            style={{ fontSize: '42px', maxWidth: '980px' }}
+          >
             {getCondominiumName()}
           </span>
           <span className="text-white/80 font-medium drop-shadow-lg" style={{ fontSize: '28px' }}>
@@ -128,7 +132,7 @@ export const VDHStory1 = ({ data, photo }: VDHStory1Props) => {
 
       {/* Badge de desconto abaixo do card Imóvel Caixa */}
       {data.discount && parseFloat(data.discount.replace(',', '.')) > 0 && (
-        <div className="absolute z-20" style={{ top: '320px', right: '50px' }}>
+        <div className="absolute z-20" style={{ top: '370px', right: '50px' }}>
           <div className="bg-[#e87722] rounded-2xl shadow-2xl text-center" style={{ padding: '25px 35px' }}>
             <p className="text-white font-black" style={{ fontSize: '64px', lineHeight: '1' }}>
               {data.discount}%
