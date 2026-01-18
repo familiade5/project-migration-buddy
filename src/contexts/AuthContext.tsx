@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState, ReactNode, useCallback } from 'react';
+import { createContext, useContext, useEffect, useState, ReactNode, useCallback, useRef } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import type { Json } from '@/integrations/supabase/types';
@@ -26,25 +26,100 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+// Retry helper with exponential backoff
+async function retryWithBackoff<T>(
+  fn: () => Promise<T>,
+  maxRetries = 3,
+  baseDelay = 500
+): Promise<T> {
+  let lastError: Error | null = null;
+  for (let i = 0; i < maxRetries; i++) {
+    try {
+      return await fn();
+    } catch (error) {
+      lastError = error as Error;
+      if (i < maxRetries - 1) {
+        const delay = baseDelay * Math.pow(2, i);
+        await new Promise(resolve => setTimeout(resolve, delay));
+      }
+    }
+  }
+  throw lastError;
+}
+
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const fetchingRef = useRef(false);
+  const initRef = useRef(false);
 
+  const fetchUserData = useCallback(async (userId: string) => {
+    // Prevent duplicate calls
+    if (fetchingRef.current) return;
+    fetchingRef.current = true;
+
+    try {
+      // Fetch profile and admin role in parallel with retry
+      const [profileResult, adminResult] = await Promise.allSettled([
+        retryWithBackoff(async () => {
+          const { data, error } = await supabase
+            .from('profiles')
+            .select('*')
+            .eq('id', userId)
+            .single();
+          if (error) throw error;
+          return data;
+        }),
+        retryWithBackoff(async () => {
+          const { data, error } = await supabase
+            .from('user_roles')
+            .select('role')
+            .eq('user_id', userId)
+            .eq('role', 'admin')
+            .maybeSingle();
+          if (error) throw error;
+          return data;
+        })
+      ]);
+
+      if (profileResult.status === 'fulfilled') {
+        setProfile(profileResult.value);
+      } else {
+        console.error('Error fetching profile:', profileResult.reason);
+      }
+
+      if (adminResult.status === 'fulfilled') {
+        setIsAdmin(!!adminResult.value);
+      } else {
+        console.error('Error checking admin role:', adminResult.reason);
+        setIsAdmin(false);
+      }
+    } catch (error) {
+      console.error('Error fetching user data:', error);
+    } finally {
+      fetchingRef.current = false;
+      setIsLoading(false);
+    }
+  }, []);
+
+  // Initialize auth state
   useEffect(() => {
+    if (initRef.current) return;
+    initRef.current = true;
+
     // Set up auth state listener FIRST
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
         setSession(session);
         setUser(session?.user ?? null);
         
-        // Defer profile fetch with setTimeout to avoid deadlock
+        // Defer data fetch with setTimeout to avoid deadlock
         if (session?.user) {
           setTimeout(() => {
-            fetchProfile(session.user.id);
-            checkAdminRole(session.user.id);
+            fetchUserData(session.user.id);
           }, 0);
         } else {
           setProfile(null);
@@ -60,53 +135,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setUser(session?.user ?? null);
       
       if (session?.user) {
-        fetchProfile(session.user.id);
-        checkAdminRole(session.user.id);
+        fetchUserData(session.user.id);
       } else {
         setIsLoading(false);
       }
     });
 
     return () => subscription.unsubscribe();
-  }, []);
-
-  const fetchProfile = async (userId: string) => {
-    try {
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', userId)
-        .single();
-      
-      if (error) throw error;
-      setProfile(data);
-    } catch (error) {
-      console.error('Error fetching profile:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  }, [fetchUserData]);
 
   const refreshProfile = async () => {
     if (user) {
-      await fetchProfile(user.id);
-    }
-  };
-
-  const checkAdminRole = async (userId: string) => {
-    try {
-      const { data, error } = await supabase
-        .from('user_roles')
-        .select('role')
-        .eq('user_id', userId)
-        .eq('role', 'admin')
-        .maybeSingle();
-      
-      if (error) throw error;
-      setIsAdmin(!!data);
-    } catch (error) {
-      console.error('Error checking admin role:', error);
-      setIsAdmin(false);
+      fetchingRef.current = false; // Reset to allow refresh
+      await fetchUserData(user.id);
     }
   };
 
