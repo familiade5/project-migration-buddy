@@ -3,7 +3,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import type { Json } from '@/integrations/supabase/types';
 
 export function useActivityLog() {
-  const { user, profile } = useAuth();
+  const { user } = useAuth();
 
   const logActivity = async (
     action: string,
@@ -14,14 +14,12 @@ export function useActivityLog() {
     if (!user) return;
 
     try {
-      await supabase.from('activity_logs').insert({
-        user_id: user.id,
-        user_email: profile?.email || user.email || null,
-        user_name: profile?.full_name || 'Usuário',
-        action,
-        resource_type: resourceType || null,
-        resource_id: resourceId || null,
-        details: (details as Json) || null,
+      // Use the secure database function that validates user data server-side
+      await supabase.rpc('log_user_activity', {
+        p_action: action,
+        p_resource_type: resourceType || null,
+        p_resource_id: resourceId || null,
+        p_details: (details as Json) || null,
       });
     } catch (error) {
       console.error('Error logging activity:', error);

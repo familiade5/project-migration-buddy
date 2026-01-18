@@ -152,23 +152,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const logActivity = useCallback(async (
-    userId: string,
-    userEmail: string | undefined,
-    userName: string,
     action: string,
     resourceType?: string,
     resourceId?: string,
     details?: Record<string, unknown>
   ) => {
     try {
-      await supabase.from('activity_logs').insert({
-        user_id: userId,
-        user_email: userEmail || null,
-        user_name: userName,
-        action,
-        resource_type: resourceType || null,
-        resource_id: resourceId || null,
-        details: (details as Json) || null,
+      // Use the secure database function that validates user data server-side
+      await supabase.rpc('log_user_activity', {
+        p_action: action,
+        p_resource_type: resourceType || null,
+        p_resource_id: resourceId || null,
+        p_details: (details as Json) || null,
       });
     } catch (error) {
       console.error('Error logging activity:', error);
@@ -184,13 +179,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       
       if (error) return { error };
       
-      // Log login activity
+      // Log login activity using secure RPC
       if (data.user) {
-        const userMetadata = data.user.user_metadata;
         await logActivity(
-          data.user.id,
-          data.user.email,
-          userMetadata?.full_name || 'Usuário',
           'login',
           undefined,
           undefined,
@@ -227,14 +218,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const signOut = async () => {
-    // Log logout activity before signing out
-    if (user && profile) {
-      await logActivity(
-        user.id,
-        profile.email || user.email,
-        profile.full_name || 'Usuário',
-        'logout'
-      );
+    // Log logout activity before signing out using secure RPC
+    if (user) {
+      await logActivity('logout');
     }
     
     try {

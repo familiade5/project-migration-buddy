@@ -5,7 +5,17 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-const TEMP_PASSWORD = '@vendadiretahoje';
+// Generate a secure random temporary password
+function generateTempPassword(length = 16): string {
+  const charset = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*';
+  const randomBytes = new Uint8Array(length);
+  crypto.getRandomValues(randomBytes);
+  let password = '';
+  for (let i = 0; i < length; i++) {
+    password += charset[randomBytes[i] % charset.length];
+  }
+  return password;
+}
 
 Deno.serve(async (req) => {
   // Handle CORS preflight requests
@@ -73,9 +83,11 @@ Deno.serve(async (req) => {
       }
 
       case 'reset-password': {
-        // Reset password to temporary password
+        // Generate a secure random temporary password
+        const tempPassword = generateTempPassword();
+        
         const { error: updateError } = await supabaseAdmin.auth.admin.updateUserById(userId, {
-          password: TEMP_PASSWORD,
+          password: tempPassword,
           user_metadata: { temp_password: true },
         });
         if (updateError) {
@@ -91,7 +103,7 @@ Deno.serve(async (req) => {
 
         console.log(`Password reset for user ${userId}`);
         return new Response(
-          JSON.stringify({ success: true, message: 'Password reset', tempPassword: TEMP_PASSWORD }),
+          JSON.stringify({ success: true, message: 'Password reset', tempPassword: tempPassword }),
           { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
         );
       }
