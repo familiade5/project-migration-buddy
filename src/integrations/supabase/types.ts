@@ -235,6 +235,15 @@ export type Database = {
         }
         Returns: boolean
       }
+      log_user_activity: {
+        Args: {
+          p_action: string
+          p_details?: Json
+          p_resource_id?: string
+          p_resource_type?: string
+        }
+        Returns: string
+      }
     }
     Enums: {
       app_role: "admin" | "user"

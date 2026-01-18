@@ -94,7 +94,7 @@ const newUserSchema = z.object({
   email: z.string().email('Email inválido'),
 });
 
-const TEMP_PASSWORD = '@vendadiretahoje';
+// Password is now generated server-side and returned in response
 
 export default function Admin() {
   const { user: currentUser } = useAuth();
@@ -108,6 +108,8 @@ export default function Admin() {
   const [copiedPassword, setCopiedPassword] = useState<string | null>(null);
   const [newUserData, setNewUserData] = useState({ fullName: '', email: '' });
   const [userCreated, setUserCreated] = useState(false);
+  const [createdUserPassword, setCreatedUserPassword] = useState<string | null>(null);
+  const [resetPasswordValue, setResetPasswordValue] = useState<string | null>(null);
   
   // User action states
   const [selectedUser, setSelectedUser] = useState<UserWithRole | null>(null);
@@ -221,13 +223,14 @@ export default function Admin() {
         body: {
           email: newUserData.email,
           fullName: newUserData.fullName,
-          password: TEMP_PASSWORD,
         },
       });
 
       if (error) throw error;
       if (data.error) throw new Error(data.error);
 
+      // Store the server-generated password for one-time display
+      setCreatedUserPassword(data.tempPassword);
       setUserCreated(true);
       toast({
         title: 'Usuário criado!',
@@ -300,9 +303,11 @@ export default function Admin() {
       if (error) throw error;
       if (data.error) throw new Error(data.error);
 
+      // Store the new password for display
+      setResetPasswordValue(data.tempPassword);
       toast({
         title: 'Senha resetada',
-        description: `A senha de ${selectedUser.full_name} foi redefinida para a senha temporária.`,
+        description: `A nova senha temporária de ${selectedUser.full_name} foi gerada.`,
       });
 
       fetchUsers();
@@ -483,22 +488,22 @@ export default function Admin() {
                     </DialogDescription>
                   </DialogHeader>
                   
-                  {userCreated ? (
+                  {userCreated && createdUserPassword ? (
                     <div className="space-y-4">
                       <div className="p-4 bg-green-500/10 border border-green-500/20 rounded-xl">
                         <p className="text-sm text-green-400 mb-3">
                           Usuário criado com sucesso! A senha temporária é:
                         </p>
                         <div className="flex items-center gap-2">
-                          <code className="flex-1 px-3 py-2 bg-surface rounded-lg text-foreground font-mono">
-                            {TEMP_PASSWORD}
+                          <code className="flex-1 px-3 py-2 bg-surface rounded-lg text-foreground font-mono text-sm break-all">
+                            {createdUserPassword}
                           </code>
                           <Button
                             size="sm"
                             variant="outline"
-                            onClick={() => copyPassword(TEMP_PASSWORD)}
+                            onClick={() => copyPassword(createdUserPassword)}
                           >
-                            {copiedPassword === TEMP_PASSWORD ? (
+                            {copiedPassword === createdUserPassword ? (
                               <Check className="w-4 h-4 text-green-400" />
                             ) : (
                               <Copy className="w-4 h-4" />
@@ -506,13 +511,14 @@ export default function Admin() {
                           </Button>
                         </div>
                         <p className="text-xs text-muted-foreground mt-2">
-                          O funcionário pode alterar a senha após fazer login.
+                          ⚠️ Copie esta senha agora! Ela não será exibida novamente.
                         </p>
                       </div>
                       <Button
                         className="w-full"
                         onClick={() => {
                           setUserCreated(false);
+                          setCreatedUserPassword(null);
                           setNewUserData({ fullName: '', email: '' });
                           setAddDialogOpen(false);
                         }}
@@ -549,20 +555,10 @@ export default function Admin() {
                           />
                         </div>
                       </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="tempPassword">Senha temporária</Label>
-                        <div className="relative">
-                          <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                          <Input
-                            id="tempPassword"
-                            type="text"
-                            className="pl-9 input-premium bg-surface"
-                            value={TEMP_PASSWORD}
-                            disabled
-                          />
-                        </div>
+                      <div className="p-3 bg-surface/50 rounded-lg">
                         <p className="text-xs text-muted-foreground">
-                          O funcionário poderá alterar a senha após o primeiro login
+                          Uma senha temporária segura será gerada automaticamente.
+                          O funcionário poderá alterar a senha após o primeiro login.
                         </p>
                       </div>
                       <Button
@@ -649,20 +645,17 @@ export default function Admin() {
                               </Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end" className="bg-card border-border">
-                              {/* View temp password */}
+                              {/* Since passwords are now randomly generated, users with temp_password need to reset */}
                               {user.temp_password && (
                                 <DropdownMenuItem
                                   onClick={() => {
-                                    copyPassword(TEMP_PASSWORD);
-                                    toast({
-                                      title: 'Senha copiada',
-                                      description: `Senha temporária: ${TEMP_PASSWORD}`,
-                                    });
+                                    setSelectedUser(user);
+                                    setPasswordDialogOpen(true);
                                   }}
-                                  className="cursor-pointer"
+                                  className="cursor-pointer text-yellow-500"
                                 >
-                                  <Eye className="w-4 h-4 mr-2" />
-                                  Ver senha temporária
+                                  <Lock className="w-4 h-4 mr-2" />
+                                  Gerar nova senha
                                 </DropdownMenuItem>
                               )}
                               
@@ -808,31 +801,75 @@ export default function Admin() {
       </AlertDialog>
 
       {/* Reset Password Dialog */}
-      <AlertDialog open={passwordDialogOpen} onOpenChange={setPasswordDialogOpen}>
+      <AlertDialog open={passwordDialogOpen} onOpenChange={(open) => {
+        setPasswordDialogOpen(open);
+        if (!open) setResetPasswordValue(null);
+      }}>
         <AlertDialogContent className="bg-card border-border">
           <AlertDialogHeader>
-            <AlertDialogTitle>Resetar senha</AlertDialogTitle>
-            <AlertDialogDescription>
-              A senha de <strong>{selectedUser?.full_name}</strong> será redefinida para a senha temporária padrão:
-              <code className="block mt-2 px-3 py-2 bg-surface rounded-lg text-foreground font-mono">
-                {TEMP_PASSWORD}
-              </code>
+            <AlertDialogTitle>
+              {resetPasswordValue ? 'Nova senha gerada' : 'Resetar senha'}
+            </AlertDialogTitle>
+            <AlertDialogDescription asChild>
+              {resetPasswordValue ? (
+                <div className="space-y-3">
+                  <p>A nova senha temporária de <strong>{selectedUser?.full_name}</strong> é:</p>
+                  <div className="flex items-center gap-2">
+                    <code className="flex-1 px-3 py-2 bg-surface rounded-lg text-foreground font-mono text-sm break-all">
+                      {resetPasswordValue}
+                    </code>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => copyPassword(resetPasswordValue)}
+                    >
+                      {copiedPassword === resetPasswordValue ? (
+                        <Check className="w-4 h-4 text-green-400" />
+                      ) : (
+                        <Copy className="w-4 h-4" />
+                      )}
+                    </Button>
+                  </div>
+                  <p className="text-xs text-yellow-500">
+                    ⚠️ Copie esta senha agora! Ela não será exibida novamente.
+                  </p>
+                </div>
+              ) : (
+                <p>
+                  Uma nova senha temporária segura será gerada para <strong>{selectedUser?.full_name}</strong>.
+                </p>
+              )}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel disabled={isProcessing}>Cancelar</AlertDialogCancel>
-            <AlertDialogAction
-              onClick={handleResetPassword}
-              disabled={isProcessing}
-              className="bg-gold hover:bg-gold-dark"
-            >
-              {isProcessing ? (
-                <Loader2 className="w-4 h-4 animate-spin mr-2" />
-              ) : (
-                <KeyRound className="w-4 h-4 mr-2" />
-              )}
-              Resetar senha
-            </AlertDialogAction>
+            {resetPasswordValue ? (
+              <AlertDialogAction
+                onClick={() => {
+                  setPasswordDialogOpen(false);
+                  setResetPasswordValue(null);
+                  setSelectedUser(null);
+                }}
+                className="bg-gold hover:bg-gold-dark"
+              >
+                Fechar
+              </AlertDialogAction>
+            ) : (
+              <>
+                <AlertDialogCancel disabled={isProcessing}>Cancelar</AlertDialogCancel>
+                <AlertDialogAction
+                  onClick={handleResetPassword}
+                  disabled={isProcessing}
+                  className="bg-gold hover:bg-gold-dark"
+                >
+                  {isProcessing ? (
+                    <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                  ) : (
+                    <KeyRound className="w-4 h-4 mr-2" />
+                  )}
+                  Gerar nova senha
+                </AlertDialogAction>
+              </>
+            )}
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

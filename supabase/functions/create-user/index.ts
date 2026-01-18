@@ -5,6 +5,18 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
+// Generate a secure random temporary password
+function generateTempPassword(length = 16): string {
+  const charset = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*';
+  const randomBytes = new Uint8Array(length);
+  crypto.getRandomValues(randomBytes);
+  let password = '';
+  for (let i = 0; i < length; i++) {
+    password += charset[randomBytes[i] % charset.length];
+  }
+  return password;
+}
+
 Deno.serve(async (req) => {
   // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
@@ -51,18 +63,21 @@ Deno.serve(async (req) => {
       throw new Error('Only admins can create users');
     }
 
-    const { email, fullName, password } = await req.json();
+    const { email, fullName } = await req.json();
 
-    if (!email || !fullName || !password) {
-      throw new Error('Email, fullName and password are required');
+    if (!email || !fullName) {
+      throw new Error('Email and fullName are required');
     }
+
+    // Generate a secure random temporary password server-side
+    const tempPassword = generateTempPassword();
 
     console.log(`Creating user: ${email} by admin: ${requestingUser.email}`);
 
     // Create user using admin API (won't log in the admin)
     const { data: newUser, error: createError } = await supabaseAdmin.auth.admin.createUser({
       email,
-      password,
+      password: tempPassword,
       email_confirm: true,
       user_metadata: {
         full_name: fullName,
@@ -91,7 +106,9 @@ Deno.serve(async (req) => {
         user: { 
           id: newUser.user?.id, 
           email: newUser.user?.email 
-        } 
+        },
+        // Return the temp password to be displayed one-time to the admin
+        tempPassword: tempPassword
       }),
       { 
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
