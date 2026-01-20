@@ -7,12 +7,23 @@ import { toast } from 'sonner';
 import { Calendar } from '@/components/ui/calendar';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Checkbox } from '@/components/ui/checkbox';
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 import { 
   Calendar as CalendarIcon, 
   Grid3X3, 
@@ -25,7 +36,9 @@ import {
   User,
   ChevronLeft,
   ChevronRight,
-  X
+  X,
+  CheckSquare,
+  Square
 } from 'lucide-react';
 import { format, isSameDay } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
@@ -56,12 +69,25 @@ export default function Library() {
   const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0);
   const { user, isAdmin } = useAuth();
   const { logActivity } = useActivityLog();
+  
+  // Multi-select state
+  const [selectionMode, setSelectionMode] = useState(false);
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   useEffect(() => {
     if (user) {
       fetchCreatives();
     }
   }, [user]);
+
+  // Exit selection mode when no items selected
+  useEffect(() => {
+    if (selectionMode && selectedIds.size === 0) {
+      // Keep selection mode active even with 0 selected
+    }
+  }, [selectedIds, selectionMode]);
 
   const fetchCreatives = async () => {
     try {
@@ -146,6 +172,91 @@ export default function Library() {
     }
   };
 
+  const deleteMultipleCreatives = async () => {
+    if (selectedIds.size === 0) return;
+    
+    setIsDeleting(true);
+    const idsToDelete = Array.from(selectedIds);
+    const creativesToDelete = creatives.filter(c => idsToDelete.includes(c.id));
+    
+    try {
+      // Collect all files to delete from storage
+      const allFilesToDelete: string[] = [];
+      creativesToDelete.forEach(creative => {
+        if (creative.exported_images && creative.exported_images.length > 0) {
+          creative.exported_images.forEach(url => {
+            const parts = url.split('/exported-creatives/');
+            if (parts[1]) {
+              allFilesToDelete.push(parts[1]);
+            }
+          });
+        }
+      });
+      
+      // Delete from storage
+      if (allFilesToDelete.length > 0) {
+        await supabase.storage
+          .from('exported-creatives')
+          .remove(allFilesToDelete);
+      }
+      
+      // Delete from database
+      const { error } = await supabase
+        .from('creatives')
+        .delete()
+        .in('id', idsToDelete);
+      
+      if (error) {
+        console.error('Delete error:', error);
+        toast.error(`Erro ao excluir: ${error.message}`);
+        return;
+      }
+      
+      // Log activity for each deletion
+      for (const creative of creativesToDelete) {
+        await logActivity('delete_creative', 'creative', creative.id, { title: creative.title, bulk_delete: true });
+      }
+      
+      // Update local state
+      setCreatives(prev => prev.filter(c => !idsToDelete.includes(c.id)));
+      setSelectedIds(new Set());
+      setSelectionMode(false);
+      toast.success(`${idsToDelete.length} criativos excluídos com sucesso!`);
+      
+    } catch (error: any) {
+      console.error('Error deleting creatives:', error);
+      toast.error(`Erro ao excluir criativos: ${error.message || 'Tente novamente'}`);
+    } finally {
+      setIsDeleting(false);
+      setShowDeleteConfirm(false);
+    }
+  };
+
+  const toggleSelection = (id: string) => {
+    setSelectedIds(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(id)) {
+        newSet.delete(id);
+      } else {
+        newSet.add(id);
+      }
+      return newSet;
+    });
+  };
+
+  const toggleSelectAll = () => {
+    if (selectedIds.size === filteredCreatives.length) {
+      setSelectedIds(new Set());
+    } else {
+      setSelectedIds(new Set(filteredCreatives.map(c => c.id)));
+    }
+  };
+
+  const exitSelectionMode = () => {
+    setSelectionMode(false);
+    setSelectedIds(new Set());
+  };
+
   const filteredCreatives = creatives.filter(creative => {
     const matchesSearch = creative.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       creative.property_data?.city?.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -177,6 +288,54 @@ export default function Library() {
           </div>
           
           <div className="flex items-center gap-3">
+            {/* Selection mode controls */}
+            {isAdmin && (
+              <>
+                {selectionMode ? (
+                  <div className="flex items-center gap-2">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={toggleSelectAll}
+                      className="text-muted-foreground"
+                    >
+                      {selectedIds.size === filteredCreatives.length ? (
+                        <CheckSquare className="w-4 h-4 mr-2" />
+                      ) : (
+                        <Square className="w-4 h-4 mr-2" />
+                      )}
+                      {selectedIds.size === filteredCreatives.length ? 'Desmarcar todos' : 'Selecionar todos'}
+                    </Button>
+                    <Button
+                      variant="destructive"
+                      size="sm"
+                      onClick={() => setShowDeleteConfirm(true)}
+                      disabled={selectedIds.size === 0}
+                    >
+                      <Trash2 className="w-4 h-4 mr-2" />
+                      Excluir ({selectedIds.size})
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={exitSelectionMode}
+                    >
+                      Cancelar
+                    </Button>
+                  </div>
+                ) : (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setSelectionMode(true)}
+                  >
+                    <CheckSquare className="w-4 h-4 mr-2" />
+                    Selecionar
+                  </Button>
+                )}
+              </>
+            )}
+            
             <div className="relative flex-1 sm:w-64">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
               <Input
@@ -264,7 +423,10 @@ export default function Library() {
                     <CreativeCard
                       key={creative.id}
                       creative={creative}
-                      onClick={() => setSelectedCreative(creative)}
+                      onClick={() => !selectionMode && setSelectedCreative(creative)}
+                      selectionMode={selectionMode}
+                      isSelected={selectedIds.has(creative.id)}
+                      onToggleSelect={() => toggleSelection(creative.id)}
                     />
                   ))}
                 </div>
@@ -288,7 +450,10 @@ export default function Library() {
                 <CreativeCard
                   key={creative.id}
                   creative={creative}
-                  onClick={() => setSelectedCreative(creative)}
+                  onClick={() => !selectionMode && setSelectedCreative(creative)}
+                  selectionMode={selectionMode}
+                  isSelected={selectedIds.has(creative.id)}
+                  onToggleSelect={() => toggleSelection(creative.id)}
                 />
               ))
             )}
@@ -442,21 +607,88 @@ export default function Library() {
             </div>
           </DialogContent>
         </Dialog>
+
+        {/* Bulk Delete Confirmation Dialog */}
+        <AlertDialog open={showDeleteConfirm} onOpenChange={setShowDeleteConfirm}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Confirmar exclusão em massa</AlertDialogTitle>
+              <AlertDialogDescription>
+                Você está prestes a excluir <strong>{selectedIds.size}</strong> criativos. 
+                Esta ação não pode ser desfeita. Todos os posts exportados também serão removidos.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel disabled={isDeleting}>Cancelar</AlertDialogCancel>
+              <AlertDialogAction
+                onClick={deleteMultipleCreatives}
+                disabled={isDeleting}
+                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              >
+                {isDeleting ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    Excluindo...
+                  </>
+                ) : (
+                  <>
+                    <Trash2 className="w-4 h-4 mr-2" />
+                    Excluir {selectedIds.size} criativos
+                  </>
+                )}
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
     </AppLayout>
   );
 }
 
-function CreativeCard({ creative, onClick }: { creative: Creative; onClick: () => void }) {
+interface CreativeCardProps {
+  creative: Creative;
+  onClick: () => void;
+  selectionMode?: boolean;
+  isSelected?: boolean;
+  onToggleSelect?: () => void;
+}
+
+function CreativeCard({ creative, onClick, selectionMode, isSelected, onToggleSelect }: CreativeCardProps) {
   // Use exported image as thumbnail, fallback to thumbnail_url, then original photos
   const thumbnailSrc = creative.exported_images?.[0] || creative.thumbnail_url || creative.photos?.[0];
   const exportCount = creative.exported_images?.length || 0;
   
+  const handleClick = () => {
+    if (selectionMode && onToggleSelect) {
+      onToggleSelect();
+    } else {
+      onClick();
+    }
+  };
+  
   return (
     <button
-      onClick={onClick}
-      className="glass-card rounded-xl p-4 text-left hover:border-gold/30 transition-all group"
+      onClick={handleClick}
+      className={`glass-card rounded-xl p-4 text-left hover:border-gold/30 transition-all group relative ${
+        isSelected ? 'ring-2 ring-gold border-gold/50' : ''
+      }`}
     >
+      {/* Selection checkbox */}
+      {selectionMode && (
+        <div 
+          className="absolute top-2 left-2 z-10"
+          onClick={(e) => {
+            e.stopPropagation();
+            onToggleSelect?.();
+          }}
+        >
+          <Checkbox 
+            checked={isSelected} 
+            className="h-5 w-5 border-2 bg-background/80 backdrop-blur-sm"
+          />
+        </div>
+      )}
+      
       <div className="aspect-square bg-surface rounded-lg mb-3 flex items-center justify-center overflow-hidden relative">
         {thumbnailSrc ? (
           <>
