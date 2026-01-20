@@ -667,35 +667,45 @@ function CreativeCard({ creative, onClick, selectionMode, isSelected, onToggleSe
   };
   
   return (
-    <button
+    <div
+      role="button"
+      tabIndex={0}
       onClick={handleClick}
-      className={`glass-card rounded-xl p-4 text-left hover:border-gold/30 transition-all group relative ${
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          handleClick();
+        }
+      }}
+      className={`glass-card rounded-xl p-4 text-left hover:border-gold/30 transition-all group relative cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background ${
         isSelected ? 'ring-2 ring-gold border-gold/50' : ''
       }`}
     >
-      {/* Selection checkbox */}
+      {/* Selection checkbox (avoid nested <button> inside <button>) */}
       {selectionMode && (
-        <div 
+        <div
           className="absolute top-2 left-2 z-10"
           onClick={(e) => {
             e.stopPropagation();
             onToggleSelect?.();
           }}
         >
-          <Checkbox 
-            checked={isSelected} 
+          <Checkbox
+            checked={isSelected}
+            aria-label={isSelected ? 'Desmarcar criativo' : 'Selecionar criativo'}
             className="h-5 w-5 border-2 bg-background/80 backdrop-blur-sm"
           />
         </div>
       )}
-      
+
       <div className="aspect-square bg-surface rounded-lg mb-3 flex items-center justify-center overflow-hidden relative">
         {thumbnailSrc ? (
           <>
-            <img 
-              src={thumbnailSrc} 
+            <img
+              src={thumbnailSrc}
               alt={creative.title}
               className="w-full h-full object-cover"
+              loading="lazy"
             />
             {exportCount > 1 && (
               <div className="absolute bottom-2 right-2 bg-black/70 text-white text-xs px-2 py-1 rounded-full">
@@ -718,15 +728,13 @@ function CreativeCard({ creative, onClick, selectionMode, isSelected, onToggleSe
         <span className="truncate">{creative.creator_name}</span>
       </div>
       <div className="flex items-center justify-between mt-1">
-        <p className="text-xs text-muted-foreground">
-          {format(new Date(creative.created_at), 'dd/MM/yyyy')}
-        </p>
+        <p className="text-xs text-muted-foreground">{format(new Date(creative.created_at), 'dd/MM/yyyy')}</p>
         {creative.format && (
           <span className="text-xs bg-gold/20 text-gold px-2 py-0.5 rounded-full">
             {creative.format === 'both' ? 'Feed + Story' : creative.format}
           </span>
         )}
       </div>
-    </button>
+    </div>
   );
 }
