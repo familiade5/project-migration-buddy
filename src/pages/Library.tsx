@@ -91,19 +91,30 @@ export default function Library() {
 
   const fetchCreatives = async () => {
     try {
+      // NOTE: Avoid selecting large payloads and unlimited rows.
+      // A broad "select *" on a large table can hit statement_timeout and make
+      // the library look empty.
       const { data, error } = await supabase
         .from('creatives')
-        .select('*')
-        .order('created_at', { ascending: false });
+        .select(
+          'id,title,property_data,photos,thumbnail_url,created_at,updated_at,user_id,exported_images,format'
+        )
+        .order('created_at', { ascending: false })
+        .limit(200);
       
       if (error) throw error;
       
       // Fetch creator names from profiles
-      const userIds = [...new Set((data || []).map(item => item.user_id))];
-      const { data: profiles } = await supabase
+      const userIds = [...new Set((data || []).map((item) => item.user_id))];
+      const { data: profiles, error: profilesError } = await supabase
         .from('profiles')
         .select('id, full_name')
         .in('id', userIds);
+
+      // If profiles are blocked by RLS or fail for any reason, we still want to show creatives.
+      if (profilesError) {
+        console.warn('Could not fetch creator names:', profilesError);
+      }
       
       const profileMap = (profiles || []).reduce((acc, p) => {
         acc[p.id] = p.full_name;
@@ -123,6 +134,7 @@ export default function Library() {
       setCreatives(typedData);
     } catch (error) {
       console.error('Error fetching creatives:', error);
+      toast.error('Não foi possível carregar sua biblioteca. Tente novamente.');
     } finally {
       setIsLoading(false);
     }
