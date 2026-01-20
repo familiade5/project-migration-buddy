@@ -150,7 +150,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setUser(initialSession?.user ?? null);
 
         if (initialSession?.user) {
-          await fetchUserData(initialSession.user.id, { setLoading: false });
+          // IMPORTANT: For the initial load, block until profile/role are fetched.
+          // This prevents admin users from being redirected before isAdmin is resolved.
+          await fetchUserData(initialSession.user.id, { setLoading: true });
         }
       } finally {
         if (isMounted) setIsLoading(false);
