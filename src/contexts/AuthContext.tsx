@@ -56,98 +56,119 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const fetchingRef = useRef(false);
   const initRef = useRef(false);
 
-  const fetchUserData = useCallback(async (userId: string) => {
-    // Prevent duplicate calls
-    if (fetchingRef.current) return;
-    fetchingRef.current = true;
-
-    try {
-      // Fetch profile and admin role in parallel with retry
-      const [profileResult, adminResult] = await Promise.allSettled([
-        retryWithBackoff(async () => {
-          const { data, error } = await supabase
-            .from('profiles')
-            .select('*')
-            .eq('id', userId)
-            .single();
-          if (error) throw error;
-          return data;
-        }),
-        retryWithBackoff(async () => {
-          const { data, error } = await supabase
-            .from('user_roles')
-            .select('role')
-            .eq('user_id', userId)
-            .eq('role', 'admin')
-            .maybeSingle();
-          if (error) throw error;
-          return data;
-        })
-      ]);
-
-      if (profileResult.status === 'fulfilled') {
-        setProfile(profileResult.value);
-      } else {
-        console.error('Error fetching profile:', profileResult.reason);
-      }
-
-      if (adminResult.status === 'fulfilled') {
-        setIsAdmin(!!adminResult.value);
-      } else {
-        console.error('Error checking admin role:', adminResult.reason);
-        setIsAdmin(false);
-      }
-    } catch (error) {
-      console.error('Error fetching user data:', error);
-    } finally {
-      fetchingRef.current = false;
-      setIsLoading(false);
-    }
+  const isMountedRef = useRef(true);
+  useEffect(() => {
+    isMountedRef.current = true;
+    return () => {
+      isMountedRef.current = false;
+    };
   }, []);
 
-  // Initialize auth state
+  const fetchUserData = useCallback(
+    async (userId: string, opts?: { setLoading?: boolean }) => {
+      // Prevent duplicate calls
+      if (fetchingRef.current) return;
+      fetchingRef.current = true;
+
+      const setLoading = opts?.setLoading ?? false;
+      if (setLoading && isMountedRef.current) setIsLoading(true);
+
+      try {
+        // Fetch profile and admin role in parallel with retry
+        const [profileResult, adminResult] = await Promise.allSettled([
+          retryWithBackoff(async () => {
+            const { data, error } = await supabase
+              .from('profiles')
+              .select('*')
+              .eq('id', userId)
+              .single();
+            if (error) throw error;
+            return data;
+          }),
+          retryWithBackoff(async () => {
+            const { data, error } = await supabase
+              .from('user_roles')
+              .select('role')
+              .eq('user_id', userId)
+              .eq('role', 'admin')
+              .maybeSingle();
+            if (error) throw error;
+            return data;
+          }),
+        ]);
+
+        if (profileResult.status === 'fulfilled') {
+          if (isMountedRef.current) setProfile(profileResult.value);
+        } else {
+          console.error('Error fetching profile:', profileResult.reason);
+        }
+
+        if (adminResult.status === 'fulfilled') {
+          if (isMountedRef.current) setIsAdmin(!!adminResult.value);
+        } else {
+          console.error('Error checking admin role:', adminResult.reason);
+          if (isMountedRef.current) setIsAdmin(false);
+        }
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+      } finally {
+        fetchingRef.current = false;
+        if (setLoading && isMountedRef.current) setIsLoading(false);
+      }
+    },
+    []
+  );
+
+  // Initialize auth state (avoid setTimeout + avoid tying loading to onAuthStateChange)
   useEffect(() => {
     if (initRef.current) return;
     initRef.current = true;
 
-    // Set up auth state listener FIRST
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, session) => {
-        setSession(session);
-        setUser(session?.user ?? null);
-        
-        // Defer data fetch with setTimeout to avoid deadlock
-        if (session?.user) {
-          setTimeout(() => {
-            fetchUserData(session.user.id);
-          }, 0);
-        } else {
-          setProfile(null);
-          setIsAdmin(false);
-          setIsLoading(false);
-        }
-      }
-    );
+    let isMounted = true;
 
-    // THEN check for existing session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      setUser(session?.user ?? null);
-      
-      if (session?.user) {
-        fetchUserData(session.user.id);
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, nextSession) => {
+      if (!isMounted) return;
+
+      setSession(nextSession);
+      setUser(nextSession?.user ?? null);
+
+      // Ongoing changes: update derived data, but don't block UI with isLoading.
+      if (nextSession?.user) {
+        fetchUserData(nextSession.user.id, { setLoading: false });
       } else {
-        setIsLoading(false);
+        setProfile(null);
+        setIsAdmin(false);
       }
     });
 
-    return () => subscription.unsubscribe();
+    const initializeAuth = async () => {
+      try {
+        const { data: { session: initialSession } } = await supabase.auth.getSession();
+        if (!isMounted) return;
+
+        setSession(initialSession);
+        setUser(initialSession?.user ?? null);
+
+        if (initialSession?.user) {
+          await fetchUserData(initialSession.user.id, { setLoading: false });
+        }
+      } finally {
+        if (isMounted) setIsLoading(false);
+      }
+    };
+
+    initializeAuth();
+
+    return () => {
+      isMounted = false;
+      subscription.unsubscribe();
+    };
   }, [fetchUserData]);
 
   const refreshProfile = async () => {
     if (user) {
       fetchingRef.current = false; // Reset to allow refresh
-      await fetchUserData(user.id);
+      await fetchUserData(user.id, { setLoading: true });
     }
   };
 
