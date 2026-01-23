@@ -48,8 +48,8 @@ import type { PropertyData } from '@/types/property';
 interface Creative {
   id: string;
   title: string;
-  property_data: PropertyData;
-  photos: string[];
+  // Loaded on-demand when opening the creative
+  property_data?: PropertyData;
   thumbnail_url: string | null;
   created_at: string;
   updated_at: string;
@@ -90,9 +90,20 @@ export default function Library() {
     if (postId && creatives.length > 0 && !isLoading) {
       const creative = creatives.find(c => c.id === postId);
       if (creative) {
-        setSelectedCreative(creative);
-        // Clear the URL param after opening
-        setSearchParams({}, { replace: true });
+        (async () => {
+          try {
+            const detailed = await fetchCreativeDetails(postId);
+            setSelectedCreative({
+              ...detailed,
+              creator_name: creative.creator_name,
+            });
+            // Clear the URL param after opening
+            setSearchParams({}, { replace: true });
+          } catch (e: any) {
+            console.error('Error opening creative from URL:', e);
+            toast.error('Não foi possível abrir este post.');
+          }
+        })();
       }
     }
   }, [searchParams, creatives, isLoading, setSearchParams]);
@@ -106,14 +117,13 @@ export default function Library() {
 
   const fetchCreatives = async () => {
     try {
-      // IMPORTANT: If we don't filter by user_id, Postgres may need to scan a lot
-      // of rows to find the first 200 rows allowed by RLS, which can hit statement_timeout.
-      // So we always filter for regular users; admins can still see all.
+      // CRITICAL PERFORMANCE FIX:
+      // The `photos` column may contain massive data URLs (base64) and can make
+      // the request time out. We never select it for the listing.
+      // We also load `property_data` only on-demand when opening a creative.
       let query = supabase
         .from('creatives')
-        .select(
-          'id,title,property_data,photos,thumbnail_url,created_at,updated_at,user_id,exported_images,format'
-        )
+        .select('id,title,thumbnail_url,created_at,updated_at,user_id,exported_images,format')
         .order('created_at', { ascending: false })
         .limit(200);
 
@@ -154,8 +164,6 @@ export default function Library() {
       // Type assertion with proper handling
       const typedData = (data || []).map(item => ({
         ...item,
-        property_data: item.property_data as unknown as PropertyData,
-        photos: item.photos || [],
         creator_name: isAdmin ? (profileMap[item.user_id] || 'Usuário desconhecido') : 'Você',
         exported_images: (item as any).exported_images || [],
         format: (item as any).format || 'feed',
@@ -168,6 +176,25 @@ export default function Library() {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const fetchCreativeDetails = async (id: string) => {
+    // Fetch details on-demand (no `photos` to avoid huge payloads)
+    const { data, error } = await supabase
+      .from('creatives')
+      .select('id,title,property_data,thumbnail_url,created_at,updated_at,user_id,exported_images,format')
+      .eq('id', id)
+      .maybeSingle();
+
+    if (error) throw error;
+    if (!data) throw new Error('Criativo não encontrado');
+
+    return {
+      ...data,
+      property_data: (data as any).property_data as unknown as PropertyData,
+      exported_images: (data as any).exported_images || [],
+      format: (data as any).format || 'feed',
+    } as Creative;
   };
 
   const deleteCreative = async (id: string) => {
@@ -300,9 +327,11 @@ export default function Library() {
   };
 
   const filteredCreatives = creatives.filter(creative => {
-    const matchesSearch = creative.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      creative.property_data?.city?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      creative.property_data?.neighborhood?.toLowerCase().includes(searchQuery.toLowerCase());
+    const q = searchQuery.toLowerCase();
+    const matchesSearch =
+      creative.title.toLowerCase().includes(q) ||
+      (creative.property_data?.city?.toLowerCase()?.includes(q) ?? false) ||
+      (creative.property_data?.neighborhood?.toLowerCase()?.includes(q) ?? false);
     
     const matchesDate = selectedDate 
       ? isSameDay(new Date(creative.created_at), selectedDate)
@@ -461,11 +490,24 @@ export default function Library() {
                 </div>
               ) : (
                 <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-4">
-                  {filteredCreatives.map((creative) => (
+                    {filteredCreatives.map((creative) => (
                     <CreativeCard
                       key={creative.id}
                       creative={creative}
-                      onClick={() => !selectionMode && setSelectedCreative(creative)}
+                        onClick={async () => {
+                          if (selectionMode) return;
+                          try {
+                            // Ensure details are loaded before opening modal.
+                            const detailed = await fetchCreativeDetails(creative.id);
+                            setSelectedCreative({
+                              ...detailed,
+                              creator_name: creative.creator_name,
+                            });
+                          } catch (e: any) {
+                            console.error('Error fetching creative details:', e);
+                            toast.error('Não foi possível abrir este post.');
+                          }
+                        }}
                       selectionMode={selectionMode}
                       isSelected={selectedIds.has(creative.id)}
                       onToggleSelect={() => toggleSelection(creative.id)}
@@ -492,7 +534,19 @@ export default function Library() {
                 <CreativeCard
                   key={creative.id}
                   creative={creative}
-                  onClick={() => !selectionMode && setSelectedCreative(creative)}
+                  onClick={async () => {
+                    if (selectionMode) return;
+                    try {
+                      const detailed = await fetchCreativeDetails(creative.id);
+                      setSelectedCreative({
+                        ...detailed,
+                        creator_name: creative.creator_name,
+                      });
+                    } catch (e: any) {
+                      console.error('Error fetching creative details:', e);
+                      toast.error('Não foi possível abrir este post.');
+                    }
+                  }}
                   selectionMode={selectionMode}
                   isSelected={selectedIds.has(creative.id)}
                   onToggleSelect={() => toggleSelection(creative.id)}
@@ -516,19 +570,19 @@ export default function Library() {
                 <div className="grid grid-cols-2 gap-4 text-sm">
                   <div>
                     <span className="text-muted-foreground">Tipo:</span>
-                    <span className="ml-2 text-foreground">{selectedCreative.property_data.type}</span>
+                    <span className="ml-2 text-foreground">{selectedCreative.property_data?.type || '-'}</span>
                   </div>
                   <div>
                     <span className="text-muted-foreground">Cidade:</span>
-                    <span className="ml-2 text-foreground">{selectedCreative.property_data.city}</span>
+                    <span className="ml-2 text-foreground">{selectedCreative.property_data?.city || '-'}</span>
                   </div>
                   <div>
                     <span className="text-muted-foreground">Bairro:</span>
-                    <span className="ml-2 text-foreground">{selectedCreative.property_data.neighborhood}</span>
+                    <span className="ml-2 text-foreground">{selectedCreative.property_data?.neighborhood || '-'}</span>
                   </div>
                   <div>
                     <span className="text-muted-foreground">Valor:</span>
-                    <span className="ml-2 text-foreground">{selectedCreative.property_data.minimumValue}</span>
+                    <span className="ml-2 text-foreground">{selectedCreative.property_data?.minimumValue || '-'}</span>
                   </div>
                 </div>
                 
@@ -697,7 +751,7 @@ interface CreativeCardProps {
 
 function CreativeCard({ creative, onClick, selectionMode, isSelected, onToggleSelect }: CreativeCardProps) {
   // Use exported image as thumbnail, fallback to thumbnail_url, then original photos
-  const thumbnailSrc = creative.exported_images?.[0] || creative.thumbnail_url || creative.photos?.[0];
+  const thumbnailSrc = creative.exported_images?.[0] || creative.thumbnail_url;
   const exportCount = creative.exported_images?.length || 0;
   
   const handleClick = () => {
