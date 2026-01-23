@@ -106,25 +106,40 @@ export default function Library() {
 
   const fetchCreatives = async () => {
     try {
-      // NOTE: Avoid selecting large payloads and unlimited rows.
-      // A broad "select *" on a large table can hit statement_timeout and make
-      // the library look empty.
-      const { data, error } = await supabase
+      // IMPORTANT: If we don't filter by user_id, Postgres may need to scan a lot
+      // of rows to find the first 200 rows allowed by RLS, which can hit statement_timeout.
+      // So we always filter for regular users; admins can still see all.
+      let query = supabase
         .from('creatives')
         .select(
           'id,title,property_data,photos,thumbnail_url,created_at,updated_at,user_id,exported_images,format'
         )
         .order('created_at', { ascending: false })
         .limit(200);
+
+      if (!isAdmin && user?.id) {
+        query = query.eq('user_id', user.id);
+      }
+
+      const { data, error } = await query;
       
       if (error) throw error;
       
-      // Fetch creator names from profiles
-      const userIds = [...new Set((data || []).map((item) => item.user_id))];
-      const { data: profiles, error: profilesError } = await supabase
-        .from('profiles')
-        .select('id, full_name')
-        .in('id', userIds);
+      // Fetch creator names from profiles (admins only). For regular users we can
+      // skip this extra query entirely.
+      let profiles: Array<{ id: string; full_name: string }> | null = null;
+      let profilesError: any = null;
+      if (isAdmin) {
+        const userIds = [...new Set((data || []).map((item) => item.user_id))];
+        if (userIds.length > 0) {
+          const res = await supabase
+            .from('profiles')
+            .select('id, full_name')
+            .in('id', userIds);
+          profiles = res.data as any;
+          profilesError = res.error;
+        }
+      }
 
       // If profiles are blocked by RLS or fail for any reason, we still want to show creatives.
       if (profilesError) {
@@ -141,7 +156,7 @@ export default function Library() {
         ...item,
         property_data: item.property_data as unknown as PropertyData,
         photos: item.photos || [],
-        creator_name: profileMap[item.user_id] || 'Usuário desconhecido',
+        creator_name: isAdmin ? (profileMap[item.user_id] || 'Usuário desconhecido') : 'Você',
         exported_images: (item as any).exported_images || [],
         format: (item as any).format || 'feed',
       })) as Creative[];
