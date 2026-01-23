@@ -58,8 +58,10 @@ import {
   BarChart3,
   MoreVertical,
   KeyRound,
-  Eye
+  Eye,
+  ExternalLink
 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { z } from 'zod';
@@ -97,6 +99,7 @@ const newUserSchema = z.object({
 // Password is now generated server-side and returned in response
 
 export default function Admin() {
+  const navigate = useNavigate();
   const { user: currentUser } = useAuth();
   const [users, setUsers] = useState<UserWithRole[]>([]);
   const [logs, setLogs] = useState<ActivityLog[]>([]);
@@ -752,9 +755,23 @@ export default function Admin() {
                           </div>
                         </TableCell>
                         <TableCell>
-                          <Badge className={getActionColor(log.action)}>
-                            {getActionLabel(log.action)}
-                          </Badge>
+                          <div className="flex items-center gap-2">
+                            <Badge className={getActionColor(log.action)}>
+                              {getActionLabel(log.action)}
+                            </Badge>
+                            {/* Link to view creative if action is create_creative */}
+                            {log.action === 'create_creative' && log.resource_id && (
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                className="h-7 px-2 text-gold hover:text-gold-dark"
+                                onClick={() => navigate(`/library?post=${log.resource_id}`)}
+                                title="Ver post criado"
+                              >
+                                <ExternalLink className="w-3.5 h-3.5" />
+                              </Button>
+                            )}
+                          </div>
                         </TableCell>
                         <TableCell className="text-muted-foreground">
                           <div className="flex items-center gap-2">

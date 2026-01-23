@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { useActivityLog } from '@/hooks/useActivityLog';
@@ -59,6 +60,7 @@ interface Creative {
 }
 
 export default function Library() {
+  const [searchParams, setSearchParams] = useSearchParams();
   const [creatives, setCreatives] = useState<Creative[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [viewMode, setViewMode] = useState<'grid' | 'calendar'>('grid');
@@ -81,6 +83,19 @@ export default function Library() {
       fetchCreatives();
     }
   }, [user]);
+
+  // Open post from URL parameter (e.g. /library?post=uuid)
+  useEffect(() => {
+    const postId = searchParams.get('post');
+    if (postId && creatives.length > 0 && !isLoading) {
+      const creative = creatives.find(c => c.id === postId);
+      if (creative) {
+        setSelectedCreative(creative);
+        // Clear the URL param after opening
+        setSearchParams({}, { replace: true });
+      }
+    }
+  }, [searchParams, creatives, isLoading, setSearchParams]);
 
   // Exit selection mode when no items selected
   useEffect(() => {
