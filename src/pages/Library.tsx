@@ -816,8 +816,8 @@ function CreativeCard({ creative, onClick, selectionMode, isSelected, onToggleSe
       <h3 className="font-medium text-foreground truncate group-hover:text-gold transition-colors">
         {creative.title}
       </h3>
-      <p className="text-sm text-muted-foreground">
-        {creative.property_data.city} - {creative.property_data.neighborhood}
+      <p className="text-sm text-muted-foreground truncate">
+        {creative.property_data?.city || creative.title} {creative.property_data?.neighborhood ? `- ${creative.property_data.neighborhood}` : ''}
       </p>
       <div className="flex items-center gap-1 text-xs text-muted-foreground mt-1">
         <User className="w-3 h-3" />
