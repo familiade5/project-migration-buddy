@@ -1,6 +1,6 @@
 import { PropertyData } from '@/types/property';
-import { Check, Sparkles, Shield, TrendingUp } from 'lucide-react';
-import logoElite from '@/assets/logo-elite.png';
+import { Sparkles, Shield, TrendingUp } from 'lucide-react';
+import { EliteLogo } from '../EliteLogo';
 
 interface EliteFeaturesProps {
   data: PropertyData;
@@ -120,11 +120,7 @@ export const EliteFeatures = ({ data, photo }: EliteFeaturesProps) => {
 
           {/* Logo at bottom */}
           <div style={{ marginTop: 'auto', paddingTop: '40px' }}>
-            <img 
-              src={logoElite} 
-              alt="Élite Imóveis" 
-              style={{ height: '50px', objectFit: 'contain', opacity: 0.7 }}
-            />
+            <EliteLogo size="md" variant="minimal" />
           </div>
         </div>
 
@@ -132,9 +128,11 @@ export const EliteFeatures = ({ data, photo }: EliteFeaturesProps) => {
         <div className="relative" style={{ width: '50%', height: '100%' }}>
           {photo ? (
             <div 
-              className="absolute inset-0 bg-cover bg-center"
+              className="absolute inset-0"
               style={{ 
                 backgroundImage: `url(${photo})`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
                 clipPath: 'polygon(8% 0, 100% 0, 100% 100%, 0 100%)'
               }}
             />

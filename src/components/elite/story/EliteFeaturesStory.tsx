@@ -1,6 +1,6 @@
 import { PropertyData } from '@/types/property';
 import { TrendingUp, Shield, Sparkles } from 'lucide-react';
-import logoElite from '@/assets/logo-elite.png';
+import { EliteLogo } from '../EliteLogo';
 
 interface EliteFeaturesStoryProps {
   data: PropertyData;
@@ -20,13 +20,15 @@ export const EliteFeaturesStory = ({ data, photo }: EliteFeaturesStoryProps) => 
       {/* Top photo section - clean, no heavy overlays */}
       {photo ? (
         <div 
-          className="absolute bg-cover bg-center"
+          className="absolute"
           style={{ 
             top: 0,
             left: 0,
             right: 0,
             height: '45%',
-            backgroundImage: `url(${photo})`
+            backgroundImage: `url(${photo})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
           }}
         >
           {/* Minimal fade to content area */}
@@ -56,11 +58,7 @@ export const EliteFeaturesStory = ({ data, photo }: EliteFeaturesStoryProps) => 
         className="absolute z-20"
         style={{ top: '50px', left: '50px' }}
       >
-        <img 
-          src={logoElite} 
-          alt="Élite Imóveis" 
-          style={{ height: '60px', objectFit: 'contain' }}
-        />
+        <EliteLogo size="lg" />
       </div>
 
       {/* Main content */}

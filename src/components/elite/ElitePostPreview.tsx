@@ -238,13 +238,14 @@ export const ElitePostPreview = ({ data, photos }: ElitePostPreviewProps) => {
         </button>
       </div>
 
-      {/* Preview */}
+      {/* Preview - Fixed container to prevent cropping */}
       <div 
-        className="relative mx-auto overflow-hidden rounded-2xl"
+        className="relative mx-auto rounded-2xl"
         style={{ 
           width: `${templateWidth * scale}px`,
           height: `${templateHeight * scale}px`,
-          boxShadow: '0 25px 80px rgba(212,175,55,0.2)'
+          boxShadow: '0 25px 80px rgba(212,175,55,0.2)',
+          overflow: 'hidden',
         }}
       >
         <div
@@ -253,6 +254,9 @@ export const ElitePostPreview = ({ data, photos }: ElitePostPreviewProps) => {
             transformOrigin: 'top left',
             width: `${templateWidth}px`,
             height: `${templateHeight}px`,
+            position: 'absolute',
+            top: 0,
+            left: 0,
           }}
         >
           <CurrentComponent

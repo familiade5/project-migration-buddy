@@ -1,6 +1,6 @@
 import { PropertyData } from '@/types/property';
 import { MapPin, Crown } from 'lucide-react';
-import logoElite from '@/assets/logo-elite.png';
+import { EliteLogo, EliteWatermark } from '../EliteLogo';
 
 interface EliteCoverProps {
   data: PropertyData;
@@ -9,25 +9,25 @@ interface EliteCoverProps {
 }
 
 export const EliteCover = ({ data, photo }: EliteCoverProps) => {
-  const displayAddress = data.fullAddress || 
-    (data.street ? `${data.street}${data.number ? `, ${data.number}` : ''} - ${data.neighborhood}, ${data.city} - ${data.state}` 
-    : `${data.neighborhood}, ${data.city} - ${data.state}`);
-
   return (
     <div className="post-template relative overflow-hidden" style={{ background: '#0a0a0f' }}>
       {/* Full bleed photo - clean, no heavy overlays */}
       {photo ? (
         <>
           <div 
-            className="absolute inset-0 bg-cover bg-center"
-            style={{ backgroundImage: `url(${photo})` }}
+            className="absolute inset-0"
+            style={{ 
+              backgroundImage: `url(${photo})`,
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+            }}
           />
           {/* Minimal gradient only at bottom for text readability */}
           <div 
             className="absolute inset-x-0 bottom-0"
             style={{ 
-              height: '50%',
-              background: 'linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.5) 50%, transparent 100%)'
+              height: '55%',
+              background: 'linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.6) 50%, transparent 100%)'
             }}
           />
         </>
@@ -68,18 +68,13 @@ export const EliteCover = ({ data, photo }: EliteCoverProps) => {
         </div>
       </div>
 
-      {/* Elegant watermark */}
-      <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-[0.03]">
-        <p className="font-display font-bold tracking-[0.3em]" style={{ fontSize: '280px', color: '#d4af37' }}>É</p>
-      </div>
+      {/* Subtle watermark */}
+      <EliteWatermark opacity={0.03} />
 
       {/* Bottom content panel */}
       <div 
         className="absolute bottom-0 left-0 right-0 z-10"
-        style={{ 
-          background: 'linear-gradient(to top, rgba(10,10,15,0.98) 0%, rgba(10,10,15,0.95) 70%, transparent 100%)',
-          padding: '80px 50px 50px'
-        }}
+        style={{ padding: '80px 50px 50px' }}
       >
         {/* Property type badge */}
         <div className="flex items-center gap-4" style={{ marginBottom: '24px' }}>
@@ -124,11 +119,7 @@ export const EliteCover = ({ data, photo }: EliteCoverProps) => {
         {/* Bottom bar with logo and price */}
         <div className="flex items-center justify-between" style={{ paddingTop: '30px', borderTop: '1px solid rgba(212,175,55,0.2)' }}>
           {/* Logo */}
-          <img 
-            src={logoElite} 
-            alt="Élite Imóveis" 
-            style={{ height: '60px', objectFit: 'contain' }}
-          />
+          <EliteLogo size="lg" />
 
           {/* Price */}
           <div className="text-right">
