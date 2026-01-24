@@ -15,7 +15,7 @@ const sizeConfig = {
 };
 
 // Main logo component - uses the uploaded VDH Revenda+ image
-// Always transparent overlay, no background boxes
+// Blue tinted with illumination effect, no background
 export const RevendaLogo = ({ 
   size = 'md', 
   className = '',
@@ -36,9 +36,15 @@ export const RevendaLogo = ({
         alt="VDH Revenda+"
         className="w-full h-full object-contain"
         style={{
-          filter: dark 
-            ? 'drop-shadow(0 2px 8px rgba(0,0,0,0.5))' 
-            : 'drop-shadow(0 2px 8px rgba(0,0,0,0.3))',
+          // Blue tint with illumination effect similar to gold glow
+          filter: `
+            brightness(1.1) 
+            sepia(1) 
+            saturate(3) 
+            hue-rotate(180deg) 
+            drop-shadow(0 0 8px rgba(59, 130, 246, 0.5))
+            drop-shadow(0 2px 12px rgba(59, 130, 246, 0.3))
+          `,
         }}
       />
     </div>
@@ -79,7 +85,15 @@ export const RevendaWatermark = ({
         alt="VDH Revenda+"
         className="w-full h-full object-contain"
         style={{
-          filter: 'drop-shadow(0 2px 10px rgba(0,0,0,0.5))',
+          // Blue illumination effect
+          filter: `
+            brightness(1.1) 
+            sepia(1) 
+            saturate(3) 
+            hue-rotate(180deg) 
+            drop-shadow(0 0 10px rgba(59, 130, 246, 0.6))
+            drop-shadow(0 4px 16px rgba(59, 130, 246, 0.4))
+          `,
           opacity: 0.95,
         }}
       />

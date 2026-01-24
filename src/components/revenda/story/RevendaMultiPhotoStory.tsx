@@ -11,80 +11,22 @@ interface RevendaMultiPhotoStoryProps {
 export const RevendaMultiPhotoStory = ({ data, photos, label, variant = 'triangle' }: RevendaMultiPhotoStoryProps) => {
   const photoCount = photos.length;
   
-  // Triangular layout - modern with thin premium border
+  // Triangular layout - modern, organized with premium blue borders
   const renderTriangleLayout = () => {
     if (photoCount < 3) return null;
     
     return (
-      <div className="absolute inset-0">
-        {/* Top large photo - takes upper 50% */}
+      <div className="absolute inset-0 p-10">
+        {/* Main large photo at top - hero shot */}
         <div 
-          className="absolute top-8 left-8 right-8 rounded-xl overflow-hidden"
+          className="absolute rounded-2xl overflow-hidden"
           style={{ 
-            height: '45%',
-            border: '2px solid rgba(212,175,55,0.4)',
-            boxShadow: '0 8px 32px rgba(0,0,0,0.3)',
-          }}
-        >
-          <img 
-            src={photos[0]} 
-            alt="Property main"
-            className="w-full h-full object-cover"
-          />
-        </div>
-        
-        {/* Bottom left photo - diagonal offset */}
-        <div 
-          className="absolute left-8 rounded-xl overflow-hidden"
-          style={{ 
-            top: '52%',
-            width: '55%',
+            top: '80px',
+            left: '40px',
+            right: '40px',
             height: '42%',
-            border: '2px solid rgba(212,175,55,0.4)',
-            boxShadow: '0 8px 32px rgba(0,0,0,0.3)',
-          }}
-        >
-          <img 
-            src={photos[1]} 
-            alt="Property 2"
-            className="w-full h-full object-cover"
-          />
-        </div>
-        
-        {/* Bottom right photo - offset higher for triangle effect */}
-        <div 
-          className="absolute right-8 rounded-xl overflow-hidden"
-          style={{ 
-            top: '58%',
-            width: '40%',
-            height: '36%',
-            border: '2px solid rgba(212,175,55,0.4)',
-            boxShadow: '0 8px 32px rgba(0,0,0,0.3)',
-          }}
-        >
-          <img 
-            src={photos[2]} 
-            alt="Property 3"
-            className="w-full h-full object-cover"
-          />
-        </div>
-      </div>
-    );
-  };
-
-  // Rounded boxes layout - 3 photos in elegant boxes
-  const renderRoundedBoxesLayout = () => {
-    if (photoCount < 3) return null;
-    
-    return (
-      <div className="absolute inset-0 flex flex-col gap-4 p-8">
-        {/* Top photo - larger */}
-        <div 
-          className="w-full rounded-3xl overflow-hidden"
-          style={{ 
-            height: '40%',
-            border: '3px solid rgba(212,175,55,0.5)',
-            boxShadow: '0 12px 40px rgba(0,0,0,0.4)',
+            border: '2px solid rgba(59, 130, 246, 0.5)',
+            boxShadow: '0 8px 32px rgba(59, 130, 246, 0.2), 0 4px 16px rgba(0,0,0,0.3)',
           }}
         >
           <img 
@@ -94,13 +36,22 @@ export const RevendaMultiPhotoStory = ({ data, photos, label, variant = 'triangl
           />
         </div>
         
-        {/* Middle row - 2 photos side by side */}
-        <div className="flex gap-4" style={{ height: '35%' }}>
+        {/* Bottom row - 2 photos side by side with gap */}
+        <div 
+          className="absolute flex gap-5"
+          style={{ 
+            top: '55%',
+            left: '40px',
+            right: '40px',
+            height: '32%',
+          }}
+        >
+          {/* Left photo */}
           <div 
-            className="w-1/2 rounded-3xl overflow-hidden"
+            className="flex-1 rounded-2xl overflow-hidden"
             style={{ 
-              border: '3px solid rgba(212,175,55,0.5)',
-              boxShadow: '0 12px 40px rgba(0,0,0,0.4)',
+              border: '2px solid rgba(59, 130, 246, 0.5)',
+              boxShadow: '0 8px 32px rgba(59, 130, 246, 0.2), 0 4px 16px rgba(0,0,0,0.3)',
             }}
           >
             <img 
@@ -109,11 +60,13 @@ export const RevendaMultiPhotoStory = ({ data, photos, label, variant = 'triangl
               className="w-full h-full object-cover"
             />
           </div>
+          
+          {/* Right photo */}
           <div 
-            className="w-1/2 rounded-3xl overflow-hidden"
+            className="flex-1 rounded-2xl overflow-hidden"
             style={{ 
-              border: '3px solid rgba(212,175,55,0.5)',
-              boxShadow: '0 12px 40px rgba(0,0,0,0.4)',
+              border: '2px solid rgba(59, 130, 246, 0.5)',
+              boxShadow: '0 8px 32px rgba(59, 130, 246, 0.2), 0 4px 16px rgba(0,0,0,0.3)',
             }}
           >
             <img 
@@ -123,9 +76,61 @@ export const RevendaMultiPhotoStory = ({ data, photos, label, variant = 'triangl
             />
           </div>
         </div>
+      </div>
+    );
+  };
+
+  // Rounded boxes layout - 3 photos in elegant boxes with blue accents
+  const renderRoundedBoxesLayout = () => {
+    if (photoCount < 3) return null;
+    
+    return (
+      <div className="absolute inset-0 flex flex-col gap-5 p-10" style={{ paddingTop: '80px', paddingBottom: '200px' }}>
+        {/* Top photo - larger hero */}
+        <div 
+          className="w-full rounded-3xl overflow-hidden"
+          style={{ 
+            flex: '1.2',
+            border: '3px solid rgba(59, 130, 246, 0.5)',
+            boxShadow: '0 12px 40px rgba(59, 130, 246, 0.2), 0 8px 24px rgba(0,0,0,0.3)',
+          }}
+        >
+          <img 
+            src={photos[0]} 
+            alt="Property main"
+            className="w-full h-full object-cover"
+          />
+        </div>
         
-        {/* Spacer for logo */}
-        <div style={{ height: '20%' }} />
+        {/* Bottom row - 2 photos side by side */}
+        <div className="flex gap-5" style={{ flex: '1' }}>
+          <div 
+            className="flex-1 rounded-3xl overflow-hidden"
+            style={{ 
+              border: '3px solid rgba(59, 130, 246, 0.5)',
+              boxShadow: '0 12px 40px rgba(59, 130, 246, 0.2), 0 8px 24px rgba(0,0,0,0.3)',
+            }}
+          >
+            <img 
+              src={photos[1]} 
+              alt="Property 2"
+              className="w-full h-full object-cover"
+            />
+          </div>
+          <div 
+            className="flex-1 rounded-3xl overflow-hidden"
+            style={{ 
+              border: '3px solid rgba(59, 130, 246, 0.5)',
+              boxShadow: '0 12px 40px rgba(59, 130, 246, 0.2), 0 8px 24px rgba(0,0,0,0.3)',
+            }}
+          >
+            <img 
+              src={photos[2]} 
+              alt="Property 3"
+              className="w-full h-full object-cover"
+            />
+          </div>
+        </div>
       </div>
     );
   };
