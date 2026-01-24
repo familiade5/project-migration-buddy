@@ -18,6 +18,18 @@ export const PostDetails = ({ data, photo, photos = [] }: PostDetailsProps) => {
   };
   // SLIDE 3 - Foco: CARACTERÍSTICAS DO IMÓVEL (Gatilhos: Especificidade, Tangibilidade)
   const generateFeatures = () => {
+    // Se tem textos personalizados, usa eles
+    if (data.customSlide3Texts && data.customSlide3Texts.some(t => t && t.trim() !== '')) {
+      const customTexts = data.customSlide3Texts.filter(t => t && t.trim() !== '');
+      if (customTexts.length >= 3) return customTexts.slice(0, 3);
+      // Preenche o resto com automáticos
+      const autoTexts = generateAutoTexts();
+      return [...customTexts, ...autoTexts].slice(0, 3);
+    }
+    return generateAutoTexts();
+  };
+
+  const generateAutoTexts = () => {
     const features: string[] = [];
     
     // Formato: dados concretos que geram confiança
@@ -61,13 +73,13 @@ export const PostDetails = ({ data, photo, photos = [] }: PostDetailsProps) => {
       if (features.length < 3) features.push(f);
     });
     
-    // Fallback: Diferenciais tangíveis (não repetir os do slide 2)
+    // Fallback: Diferenciais universais (não repetir os do slide 2)
     const tangibleBenefits = [
       'Localização estratégica',
       'Infraestrutura completa',
       'Região em valorização',
-      'Vizinhança residencial',
-      'Fácil acesso ao centro',
+      'Ótimo custo-benefício',
+      'Investimento com potencial',
     ];
     
     let benefitIndex = 0;

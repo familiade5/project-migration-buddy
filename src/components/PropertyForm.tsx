@@ -384,6 +384,48 @@ export const PropertyForm = ({ data, onChange }: PropertyFormProps) => {
         </div>
       </div>
 
+      {/* Textos Personalizados dos Slides */}
+      <div className="space-y-4">
+        <h3 className="font-display text-lg text-gold">✏️ Textos dos Slides (Editáveis)</h3>
+        <p className="text-xs text-muted-foreground">Deixe em branco para usar os textos automáticos</p>
+        
+        {/* Slide 2 - Benefícios */}
+        <div className="space-y-3 p-4 bg-surface rounded-lg">
+          <Label className="text-foreground text-sm font-medium">Slide 2 - Benefícios/Condições</Label>
+          {[0, 1, 2].map((index) => (
+            <Input
+              key={`slide2-${index}`}
+              placeholder={`Texto ${index + 1} (ex: Documentação regularizada)`}
+              value={data.customSlide2Texts?.[index] || ''}
+              onChange={(e) => {
+                const newTexts = [...(data.customSlide2Texts || ['', '', ''])];
+                newTexts[index] = e.target.value;
+                updateField('customSlide2Texts', newTexts);
+              }}
+              className="input-premium"
+            />
+          ))}
+        </div>
+
+        {/* Slide 3 - Características */}
+        <div className="space-y-3 p-4 bg-surface rounded-lg">
+          <Label className="text-foreground text-sm font-medium">Slide 3 - Características</Label>
+          {[0, 1, 2].map((index) => (
+            <Input
+              key={`slide3-${index}`}
+              placeholder={`Texto ${index + 1} (ex: 2 quartos amplos)`}
+              value={data.customSlide3Texts?.[index] || ''}
+              onChange={(e) => {
+                const newTexts = [...(data.customSlide3Texts || ['', '', ''])];
+                newTexts[index] = e.target.value;
+                updateField('customSlide3Texts', newTexts);
+              }}
+              className="input-premium"
+            />
+          ))}
+        </div>
+      </div>
+
       {/* Extras do Imóvel */}
       <div className="space-y-4">
         <h3 className="font-display text-lg text-gold">🏠 Extras do Imóvel</h3>
