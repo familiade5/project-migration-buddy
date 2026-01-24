@@ -30,7 +30,7 @@ const RevendaPostGenerator = () => {
           <div className="max-w-2xl w-full">
             {/* Header */}
             <div className="text-center mb-8">
-              <RevendaLogo size="xl" variant="full" className="justify-center" />
+              <RevendaLogo size="xl" className="justify-center" />
               <p className="mt-4 text-slate-500">
                 Crie posts elegantes para imóveis de revenda no mercado
               </p>
@@ -58,7 +58,7 @@ const RevendaPostGenerator = () => {
         {/* Page Header */}
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-4">
-            <RevendaLogo size="md" variant="minimal" />
+            <RevendaLogo size="md" />
             <div>
               <h1 className="font-display text-xl sm:text-2xl font-semibold" style={{ color: '#0f172a' }}>
                 Revenda – Mercado

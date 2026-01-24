@@ -1,5 +1,5 @@
 import { RevendaPropertyData } from '@/types/revenda';
-import { RevendaLogo } from '../RevendaLogo';
+import { RevendaWatermark } from '../RevendaLogo';
 
 interface RevendaPhotoStoryProps {
   data: RevendaPropertyData;
@@ -41,33 +41,34 @@ export const RevendaPhotoStory = ({ data, photo, label }: RevendaPhotoStoryProps
         />
       </div>
 
-      {/* Top logo */}
-      <div className="absolute top-12 left-0 right-0 flex justify-center">
-        <RevendaLogo size="lg" variant="minimal" dark />
-      </div>
-
-      {/* Label badge (optional) - top left */}
+      {/* Label badge (optional) - top center */}
       {label && (
-        <div 
-          className="absolute top-32 left-12 px-8 py-4 rounded-full"
-          style={{ 
-            backgroundColor: 'rgba(15,23,42,0.85)',
-            backdropFilter: 'blur(8px)',
-            border: '1px solid rgba(14,165,233,0.3)',
-          }}
-        >
-          <span 
-            className="text-xl font-medium uppercase tracking-[0.2em]"
-            style={{ color: '#0ea5e9' }}
+        <div className="absolute top-12 left-0 right-0 flex justify-center">
+          <div 
+            className="px-8 py-4 rounded-full"
+            style={{ 
+              backgroundColor: 'rgba(15,23,42,0.85)',
+              backdropFilter: 'blur(8px)',
+              border: '1px solid rgba(212,175,55,0.3)',
+            }}
           >
-            {label}
-          </span>
+            <span 
+              className="text-xl font-medium uppercase tracking-[0.2em]"
+              style={{ 
+                background: 'linear-gradient(135deg, #d4af37, #f4e5a3)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+              }}
+            >
+              {label}
+            </span>
+          </div>
         </div>
       )}
 
       {/* Bottom info */}
       <div 
-        className="absolute bottom-0 left-0 right-0 px-12 pb-20 pt-32"
+        className="absolute bottom-0 left-0 right-0 px-12 pb-24 pt-32"
         style={{
           background: 'linear-gradient(to top, rgba(15,23,42,0.95), transparent)',
         }}
@@ -96,6 +97,9 @@ export const RevendaPhotoStory = ({ data, photo, label }: RevendaPhotoStoryProps
           </p>
         )}
       </div>
+
+      {/* Logo watermark - bottom right */}
+      <RevendaWatermark position="bottom-right" size="lg" />
     </div>
   );
 };

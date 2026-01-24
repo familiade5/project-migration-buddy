@@ -126,7 +126,7 @@ export const RevendaLifestyleStory = ({ data, photo }: RevendaLifestyleStoryProp
 
         {/* Logo */}
         <div className="flex justify-center pt-8">
-          <RevendaLogo size="lg" variant="minimal" />
+          <RevendaLogo size="lg" />
         </div>
       </div>
     </div>

@@ -171,7 +171,7 @@ export const RevendaPriceStory = ({ data, photo }: RevendaPriceStoryProps) => {
 
         {/* Logo */}
         <div className="flex justify-center py-8">
-          <RevendaLogo size="lg" variant="minimal" />
+          <RevendaLogo size="lg" />
         </div>
       </div>
     </div>
