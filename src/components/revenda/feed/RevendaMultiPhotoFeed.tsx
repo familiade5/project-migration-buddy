@@ -4,12 +4,42 @@ import { RevendaWatermark } from '../RevendaLogo';
 interface RevendaMultiPhotoFeedProps {
   data: RevendaPropertyData;
   photos: string[];
+  photoLabels?: string[];
   label?: string;
-  variant?: 'split' | 'triangle';
+  variant?: 'triangle' | 'rounded-boxes' | 'split';
 }
 
-export const RevendaMultiPhotoFeed = ({ data, photos, label, variant = 'split' }: RevendaMultiPhotoFeedProps) => {
+// Room label component - elegante e consistente com o Story
+const RoomLabel = ({ label }: { label: string }) => (
+  <div 
+    className="absolute bottom-4 left-4 px-4 py-2 rounded-lg"
+    style={{
+      backgroundColor: 'rgba(15, 23, 42, 0.8)',
+      backdropFilter: 'blur(8px)',
+      border: '1px solid rgba(59, 130, 246, 0.3)',
+    }}
+  >
+    <span 
+      className="text-sm font-medium uppercase tracking-widest"
+      style={{ 
+        background: 'linear-gradient(135deg, #60a5fa, #93c5fd)',
+        WebkitBackgroundClip: 'text',
+        WebkitTextFillColor: 'transparent',
+      }}
+    >
+      {label}
+    </span>
+  </div>
+);
+
+export const RevendaMultiPhotoFeed = ({ data, photos, photoLabels = [], label, variant = 'triangle' }: RevendaMultiPhotoFeedProps) => {
   const photoCount = photos.length;
+
+  const getLabel = (index: number): string => {
+    if (photoLabels[index]) return photoLabels[index];
+    const defaults = ['Sala', 'Quarto', 'Cozinha'];
+    return defaults[index] || 'Ambiente';
+  };
   
   // Layout variants
   const renderLayout = () => {
@@ -28,11 +58,15 @@ export const RevendaMultiPhotoFeed = ({ data, photos, label, variant = 'split' }
     
     if (photoCount === 1) {
       return (
-        <img 
-          src={photos[0]} 
-          alt="Property"
-          className="w-full h-full object-cover"
-        />
+        <div className="w-full h-full relative">
+          <img 
+            src={photos[0]} 
+            alt="Property"
+            className="w-full h-full object-cover"
+          />
+          <RoomLabel label={getLabel(0)} />
+          <RevendaWatermark position="top-right" size="sm" />
+        </div>
       );
     }
     
@@ -47,6 +81,8 @@ export const RevendaMultiPhotoFeed = ({ data, photos, label, variant = 'split' }
                 alt={`Property ${i + 1}`}
                 className="w-full h-full object-cover"
               />
+              <RoomLabel label={getLabel(i)} />
+              <RevendaWatermark position="top-right" size="sm" />
               {i === 0 && (
                 <div 
                   className="absolute top-0 right-0 bottom-0 w-[3px]"
@@ -61,75 +97,130 @@ export const RevendaMultiPhotoFeed = ({ data, photos, label, variant = 'split' }
     
     // 3 photos layouts
     if (photoCount >= 3) {
-      if (variant === 'triangle') {
-        // Triangular layout - modern and dynamic
+      if (variant === 'rounded-boxes') {
+        // Mesmo espírito do Story 3, adaptado para 1:1 (1080x1080)
         return (
-          <div className="w-full h-full relative">
-            {/* Top photo - full width, shorter height */}
-            <div className="absolute top-0 left-0 right-0 h-[45%]">
-              <img 
-                src={photos[0]} 
-                alt="Property main"
-                className="w-full h-full object-cover"
-              />
-              <div 
-                className="absolute left-0 right-0 bottom-0 h-[3px]"
-                style={{ backgroundColor: '#0f172a' }}
-              />
-            </div>
-            
-            {/* Bottom left photo - takes left side */}
-            <div className="absolute bottom-0 left-0 w-[55%] h-[55%]">
-              <img 
-                src={photos[1]} 
-                alt="Property 2"
-                className="w-full h-full object-cover"
-              />
-              <div 
-                className="absolute top-0 right-0 bottom-0 w-[3px]"
-                style={{ backgroundColor: '#0f172a' }}
-              />
-            </div>
-            
-            {/* Bottom right photo - takes right side */}
-            <div className="absolute bottom-0 right-0 w-[45%] h-[55%]">
-              <img 
-                src={photos[2]} 
-                alt="Property 3"
-                className="w-full h-full object-cover"
-              />
+          <div className="absolute inset-0 p-10" style={{ paddingTop: '90px', paddingBottom: '90px' }}>
+            <div className="w-full h-full flex flex-col gap-4">
+              {/* Top hero */}
+              <div
+                className="w-full rounded-3xl overflow-hidden relative"
+                style={{
+                  flex: '1.15',
+                  border: '3px solid rgba(59, 130, 246, 0.5)',
+                  boxShadow: '0 12px 40px rgba(59, 130, 246, 0.2), 0 8px 24px rgba(0,0,0,0.3)',
+                }}
+              >
+                <img src={photos[0]} alt="Property main" className="w-full h-full object-cover" />
+                <RoomLabel label={getLabel(0)} />
+                <RevendaWatermark position="top-right" size="sm" />
+              </div>
+
+              {/* Bottom row */}
+              <div className="flex gap-4" style={{ flex: '1' }}>
+                <div
+                  className="flex-1 rounded-3xl overflow-hidden relative"
+                  style={{
+                    border: '3px solid rgba(59, 130, 246, 0.5)',
+                    boxShadow: '0 12px 40px rgba(59, 130, 246, 0.2), 0 8px 24px rgba(0,0,0,0.3)',
+                  }}
+                >
+                  <img src={photos[1]} alt="Property 2" className="w-full h-full object-cover" />
+                  <RoomLabel label={getLabel(1)} />
+                  <RevendaWatermark position="top-right" size="sm" />
+                </div>
+                <div
+                  className="flex-1 rounded-3xl overflow-hidden relative"
+                  style={{
+                    border: '3px solid rgba(59, 130, 246, 0.5)',
+                    boxShadow: '0 12px 40px rgba(59, 130, 246, 0.2), 0 8px 24px rgba(0,0,0,0.3)',
+                  }}
+                >
+                  <img src={photos[2]} alt="Property 3" className="w-full h-full object-cover" />
+                  <RoomLabel label={getLabel(2)} />
+                  <RevendaWatermark position="top-right" size="sm" />
+                </div>
+              </div>
             </div>
           </div>
         );
       }
-      
-      // Default split layout: 1 large left, 2 stacked right
+
+      if (variant === 'triangle') {
+        // Mesmo espírito do Story 2, adaptado para 1:1 (1080x1080)
+        return (
+          <div className="absolute inset-0 p-10">
+            {/* Main hero */}
+            <div
+              className="absolute rounded-2xl overflow-hidden"
+              style={{
+                top: '90px',
+                left: '40px',
+                right: '40px',
+                height: '50%',
+                border: '2px solid rgba(59, 130, 246, 0.5)',
+                boxShadow: '0 8px 32px rgba(59, 130, 246, 0.2), 0 4px 16px rgba(0,0,0,0.3)',
+              }}
+            >
+              <img src={photos[0]} alt="Property main" className="w-full h-full object-cover" />
+              <RoomLabel label={getLabel(0)} />
+              <RevendaWatermark position="top-right" size="sm" />
+            </div>
+
+            {/* Bottom row */}
+            <div
+              className="absolute flex gap-4"
+              style={{
+                top: '62%',
+                left: '40px',
+                right: '40px',
+                height: '30%',
+              }}
+            >
+              <div
+                className="flex-1 rounded-2xl overflow-hidden relative"
+                style={{
+                  border: '2px solid rgba(59, 130, 246, 0.5)',
+                  boxShadow: '0 8px 32px rgba(59, 130, 246, 0.2), 0 4px 16px rgba(0,0,0,0.3)',
+                }}
+              >
+                <img src={photos[1]} alt="Property 2" className="w-full h-full object-cover" />
+                <RoomLabel label={getLabel(1)} />
+                <RevendaWatermark position="top-right" size="sm" />
+              </div>
+              <div
+                className="flex-1 rounded-2xl overflow-hidden relative"
+                style={{
+                  border: '2px solid rgba(59, 130, 246, 0.5)',
+                  boxShadow: '0 8px 32px rgba(59, 130, 246, 0.2), 0 4px 16px rgba(0,0,0,0.3)',
+                }}
+              >
+                <img src={photos[2]} alt="Property 3" className="w-full h-full object-cover" />
+                <RoomLabel label={getLabel(2)} />
+                <RevendaWatermark position="top-right" size="sm" />
+              </div>
+            </div>
+          </div>
+        );
+      }
+
+      // Fallback split (mantido)
       return (
         <div className="w-full h-full flex">
           <div className="w-[60%] h-full relative">
-            <img 
-              src={photos[0]} 
-              alt="Property main"
-              className="w-full h-full object-cover"
-            />
-            <div 
-              className="absolute top-0 right-0 bottom-0 w-[3px]"
-              style={{ backgroundColor: '#0f172a' }}
-            />
+            <img src={photos[0]} alt="Property main" className="w-full h-full object-cover" />
+            <RoomLabel label={getLabel(0)} />
+            <RevendaWatermark position="top-right" size="sm" />
+            <div className="absolute top-0 right-0 bottom-0 w-[3px]" style={{ backgroundColor: '#0f172a' }} />
           </div>
           <div className="w-[40%] h-full flex flex-col">
             {photos.slice(1, 3).map((photo, i) => (
               <div key={i} className="w-full h-1/2 relative">
-                <img 
-                  src={photo} 
-                  alt={`Property ${i + 2}`}
-                  className="w-full h-full object-cover"
-                />
+                <img src={photo} alt={`Property ${i + 2}`} className="w-full h-full object-cover" />
+                <RoomLabel label={getLabel(i + 1)} />
+                <RevendaWatermark position="top-right" size="sm" />
                 {i === 0 && (
-                  <div 
-                    className="absolute left-0 right-0 bottom-0 h-[3px]"
-                    style={{ backgroundColor: '#0f172a' }}
-                  />
+                  <div className="absolute left-0 right-0 bottom-0 h-[3px]" style={{ backgroundColor: '#0f172a' }} />
                 )}
               </div>
             ))}
