@@ -48,69 +48,82 @@ export const EliteCoverStory = ({ data, photo }: EliteCoverStoryProps) => {
       {/* Subtle watermark */}
       <EliteWatermark opacity={0.03} />
 
-      {/* Bottom floating panel - glassmorphism style */}
+      {/* Bottom content - no background, styled text */}
       <div 
         className="absolute bottom-0 left-0 right-0 z-10"
-        style={{ padding: '0 40px 60px' }}
+        style={{ padding: '50px' }}
       >
-        <div
-          style={{
-            background: 'rgba(0,0,0,0.85)',
-            backdropFilter: 'blur(20px)',
-            borderRadius: '28px',
-            padding: '50px',
-            border: '1px solid rgba(212,175,55,0.3)'
-          }}
-        >
-          {/* Property type */}
-          <div className="flex items-center gap-4" style={{ marginBottom: '24px' }}>
-            <div 
-              style={{ 
-                width: '50px',
-                height: '2px',
-                background: 'linear-gradient(90deg, #d4af37, transparent)'
-              }}
-            />
-            <span 
-              className="uppercase tracking-[0.2em] font-medium"
-              style={{ fontSize: '18px', color: '#d4af37' }}
-            >
-              {data.type || 'Imóvel'} de Alto Padrão
-            </span>
-          </div>
-
-          {/* Property name */}
-          <h1 
-            className="font-display font-semibold leading-tight"
+        {/* Property type */}
+        <div className="flex items-center gap-4" style={{ marginBottom: '24px' }}>
+          <div 
             style={{ 
-              fontSize: '64px', 
-              color: '#ffffff',
-              marginBottom: '24px'
+              width: '50px',
+              height: '2px',
+              background: 'linear-gradient(90deg, #d4af37, transparent)'
+            }}
+          />
+          <span 
+            className="uppercase tracking-[0.2em] font-medium"
+            style={{ 
+              fontSize: '18px', 
+              color: '#d4af37',
+              textShadow: '0 2px 8px rgba(0,0,0,0.9)'
             }}
           >
-            {data.propertyName || `${data.type || 'Residência'} Premium`}
-          </h1>
+            {data.type || 'Imóvel'} de Alto Padrão
+          </span>
+        </div>
 
-          {/* Location */}
-          <div className="flex items-center gap-3" style={{ marginBottom: '40px' }}>
-            <MapPin style={{ width: '26px', height: '26px', color: '#d4af37' }} />
-            <span style={{ fontSize: '26px', color: 'rgba(255,255,255,0.8)' }}>
-              {data.neighborhood}, {data.city} - {data.state}
-            </span>
-          </div>
+        {/* Property name */}
+        <h1 
+          className="font-display font-semibold leading-tight"
+          style={{ 
+            fontSize: '64px', 
+            color: '#ffffff',
+            marginBottom: '24px',
+            textShadow: '0 4px 24px rgba(0,0,0,0.95), 0 2px 10px rgba(0,0,0,0.9)'
+          }}
+        >
+          {data.propertyName || `${data.type || 'Residência'} Premium`}
+        </h1>
 
-          {/* Price and logo bar */}
-          <div className="flex items-center justify-between" style={{ paddingTop: '30px', borderTop: '1px solid rgba(212,175,55,0.2)' }}>
-            <EliteLogo size="lg" />
-            <div className="text-right">
-              <p style={{ fontSize: '18px', color: 'rgba(255,255,255,0.5)', marginBottom: '6px' }}>A partir de</p>
-              <p 
-                className="font-display font-semibold"
-                style={{ fontSize: '52px', color: '#d4af37' }}
-              >
-                {data.minimumValue || 'Consulte'}
-              </p>
-            </div>
+        {/* Location */}
+        <div className="flex items-center gap-3" style={{ marginBottom: '40px' }}>
+          <MapPin style={{ 
+            width: '26px', 
+            height: '26px', 
+            color: '#d4af37',
+            filter: 'drop-shadow(0 2px 6px rgba(0,0,0,0.9))'
+          }} />
+          <span style={{ 
+            fontSize: '26px', 
+            color: 'rgba(255,255,255,0.95)',
+            textShadow: '0 2px 10px rgba(0,0,0,0.95)'
+          }}>
+            {data.neighborhood}, {data.city} - {data.state}
+          </span>
+        </div>
+
+        {/* Price and logo bar */}
+        <div className="flex items-center justify-between" style={{ paddingTop: '30px', borderTop: '1px solid rgba(212,175,55,0.5)' }}>
+          <EliteLogo size="lg" />
+          <div className="text-right">
+            <p style={{ 
+              fontSize: '18px', 
+              color: 'rgba(255,255,255,0.8)', 
+              marginBottom: '6px',
+              textShadow: '0 2px 8px rgba(0,0,0,0.95)'
+            }}>A partir de</p>
+            <p 
+              className="font-display font-semibold"
+              style={{ 
+                fontSize: '52px', 
+                color: '#d4af37',
+                textShadow: '0 4px 20px rgba(0,0,0,0.95), 0 2px 8px rgba(0,0,0,0.9)'
+              }}
+            >
+              {data.minimumValue || 'Consulte'}
+            </p>
           </div>
         </div>
       </div>
