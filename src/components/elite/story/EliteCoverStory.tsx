@@ -1,6 +1,6 @@
 import { PropertyData } from '@/types/property';
 import { MapPin, Crown } from 'lucide-react';
-import logoElite from '@/assets/logo-elite.png';
+import { EliteLogo, EliteWatermark } from '../EliteLogo';
 
 interface EliteCoverStoryProps {
   data: PropertyData;
@@ -15,8 +15,12 @@ export const EliteCoverStory = ({ data, photo }: EliteCoverStoryProps) => {
       {photo ? (
         <>
           <div 
-            className="absolute inset-0 bg-cover bg-center"
-            style={{ backgroundImage: `url(${photo})` }}
+            className="absolute inset-0"
+            style={{ 
+              backgroundImage: `url(${photo})`,
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+            }}
           />
           {/* Minimal gradient only at bottom for text readability */}
           <div 
@@ -44,11 +48,7 @@ export const EliteCoverStory = ({ data, photo }: EliteCoverStoryProps) => {
         className="absolute z-20 flex items-center justify-between"
         style={{ top: '60px', left: '50px', right: '50px' }}
       >
-        <img 
-          src={logoElite} 
-          alt="Élite Imóveis" 
-          style={{ height: '70px', objectFit: 'contain' }}
-        />
+        <EliteLogo size="lg" />
         <div 
           className="flex items-center gap-3"
           style={{ 
@@ -62,18 +62,13 @@ export const EliteCoverStory = ({ data, photo }: EliteCoverStoryProps) => {
         </div>
       </div>
 
-      {/* Elegant watermark */}
-      <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-[0.03]">
-        <p className="font-display font-bold" style={{ fontSize: '400px', color: '#d4af37' }}>É</p>
-      </div>
+      {/* Subtle watermark */}
+      <EliteWatermark opacity={0.03} />
 
       {/* Bottom content */}
       <div 
         className="absolute bottom-0 left-0 right-0 z-10"
-        style={{ 
-          background: 'linear-gradient(to top, rgba(10,10,15,0.98) 0%, rgba(10,10,15,0.9) 60%, transparent 100%)',
-          padding: '150px 50px 80px'
-        }}
+        style={{ padding: '150px 50px 80px' }}
       >
         {/* Property type */}
         <div className="flex items-center gap-4" style={{ marginBottom: '30px' }}>

@@ -1,6 +1,6 @@
 import { PropertyData } from '@/types/property';
-import { Bed, Car, Bath, Maximize2, Crown } from 'lucide-react';
-import logoElite from '@/assets/logo-elite.png';
+import { Bed, Car, Bath, Maximize2 } from 'lucide-react';
+import { EliteLogo } from '../EliteLogo';
 
 interface EliteDetailsProps {
   data: PropertyData;
@@ -48,7 +48,7 @@ export const EliteDetails = ({ data, photo, photos = [] }: EliteDetailsProps) =>
         <div className="relative" style={{ width: '55%', height: '100%' }}>
           {/* Main large photo */}
           <div 
-            className="absolute bg-cover bg-center"
+            className="absolute"
             style={{ 
               top: '40px',
               left: '40px',
@@ -56,6 +56,8 @@ export const EliteDetails = ({ data, photo, photos = [] }: EliteDetailsProps) =>
               height: '60%',
               borderRadius: '16px',
               backgroundImage: `url(${getPhoto(0)})`,
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
               boxShadow: '0 20px 60px rgba(0,0,0,0.5)'
             }}
           />
@@ -70,23 +72,26 @@ export const EliteDetails = ({ data, photo, photos = [] }: EliteDetailsProps) =>
             }}
           >
             <div 
-              className="flex-1 bg-cover bg-center"
+              className="flex-1"
               style={{ 
                 borderRadius: '12px',
                 backgroundImage: `url(${getPhoto(1)})`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
                 boxShadow: '0 10px 40px rgba(0,0,0,0.4)'
               }}
             />
             <div 
-              className="flex-1 bg-cover bg-center"
+              className="flex-1"
               style={{ 
                 borderRadius: '12px',
                 backgroundImage: `url(${getPhoto(2)})`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
                 boxShadow: '0 10px 40px rgba(0,0,0,0.4)'
               }}
             />
           </div>
-          {/* Removed gradient overlay for cleaner photos */}
         </div>
 
         {/* Right - Details panel */}
@@ -163,11 +168,7 @@ export const EliteDetails = ({ data, photo, photos = [] }: EliteDetailsProps) =>
 
           {/* Logo */}
           <div className="flex items-center justify-end">
-            <img 
-              src={logoElite} 
-              alt="Élite Imóveis" 
-              style={{ height: '50px', objectFit: 'contain', opacity: 0.8 }}
-            />
+            <EliteLogo size="md" variant="minimal" />
           </div>
         </div>
       </div>
