@@ -71,11 +71,9 @@ export const PostDetailsStory = ({ data, photo, photos = [] }: PostDetailsStoryP
     });
     
     const tangibleBenefits = [
-      'Localização estratégica',
-      'Infraestrutura completa',
-      'Região em valorização',
-      'Ótimo custo-benefício',
-      'Investimento com potencial',
+      'Preço abaixo do mercado',
+      'Processo simples e seguro',
+      'Excelente custo-benefício',
     ];
     
     let benefitIndex = 0;
