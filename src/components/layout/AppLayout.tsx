@@ -10,7 +10,8 @@ import {
   X,
   Shield,
   ChevronDown,
-  MoreVertical
+  MoreVertical,
+  Crown
 } from 'lucide-react';
 import {
   DropdownMenu,
@@ -25,6 +26,8 @@ interface AppLayoutProps {
   children: React.ReactNode;
 }
 
+const SUPER_ADMIN_EMAIL = 'neto@vendadiretahoje.com.br';
+
 const navigation = [
   { name: 'Criar Post', href: '/', icon: Building2 },
   { name: 'Biblioteca', href: '/library', icon: Calendar },
@@ -37,9 +40,11 @@ const adminNavigation = [
 
 export function AppLayout({ children }: AppLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const { profile, isAdmin, signOut } = useAuth();
+  const { profile, isAdmin, signOut, user } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
+
+  const isSuperAdmin = user?.email === SUPER_ADMIN_EMAIL;
 
   const handleSignOut = async () => {
     await signOut();
@@ -139,6 +144,31 @@ export function AppLayout({ children }: AppLayoutProps) {
                     </Link>
                   );
                 })}
+              </>
+            )}
+
+            {/* Super Admin exclusive */}
+            {isSuperAdmin && (
+              <>
+                <div className="pt-4 pb-2">
+                  <p className="px-4 text-xs font-medium text-amber-500/80 uppercase tracking-wider">
+                    Projetos Exclusivos
+                  </p>
+                </div>
+                <Link
+                  to="/elite"
+                  onClick={() => setSidebarOpen(false)}
+                  className={`
+                    flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all
+                    ${location.pathname === '/elite'
+                      ? 'bg-gradient-to-r from-amber-500/20 to-yellow-500/10 text-amber-400 border border-amber-500/30' 
+                      : 'text-amber-500/70 hover:bg-amber-500/10 hover:text-amber-400'
+                    }
+                  `}
+                >
+                  <Crown className="w-5 h-5 flex-shrink-0" />
+                  Élite Imóveis
+                </Link>
               </>
             )}
           </nav>

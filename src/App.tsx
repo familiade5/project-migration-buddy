@@ -5,12 +5,14 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
+import { SuperAdminRoute } from "@/components/SuperAdminRoute";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import Library from "./pages/Library";
 import Admin from "./pages/Admin";
 import Settings from "./pages/Settings";
 import Imobiliaria from "./pages/Imobiliaria";
+import ElitePostGenerator from "./pages/ElitePostGenerator";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -48,6 +50,11 @@ const App = () => (
               <ProtectedRoute>
                 <Settings />
               </ProtectedRoute>
+            } />
+            <Route path="/elite" element={
+              <SuperAdminRoute>
+                <ElitePostGenerator />
+              </SuperAdminRoute>
             } />
             <Route path="*" element={<NotFound />} />
           </Routes>
