@@ -329,8 +329,13 @@ export const RevendaPropertyForm = ({ data, onChange }: RevendaPropertyFormProps
             <div>
               <Label className="text-slate-600 text-xs">Itens de Lazer (separados por vírgula)</Label>
               <Input
-                value={data.itensLazer?.join(', ') || ''}
-                onChange={(e) => updateField('itensLazer', e.target.value.split(',').map(s => s.trim()).filter(Boolean))}
+                value={data.itensLazerText || ''}
+                onChange={(e) => {
+                  updateField('itensLazerText', e.target.value);
+                  // Parse into array on blur/submit, not on every keystroke
+                  const items = e.target.value.split(',').map(s => s.trim()).filter(Boolean);
+                  updateField('itensLazer', items);
+                }}
                 placeholder="Piscina, Academia, Churrasqueira, Playground"
                 className="bg-white border-slate-200 focus:border-sky-400 text-slate-900"
               />

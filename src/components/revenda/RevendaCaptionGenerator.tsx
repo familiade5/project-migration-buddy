@@ -24,13 +24,18 @@ export const RevendaCaptionGenerator = ({ data }: RevendaCaptionGeneratorProps) 
     const itensLazer = lazerList.length > 0 
       ? lazerList.join(', ')
       : featuresList.slice(0, 5).join(', ') || 'Área de lazer completa';
-    const endereco = data.fullAddress || `${data.neighborhood}, ${data.city} - ${data.state}`;
+    // Build complete address with city, state, and CEP
+    const cep = data.cep || '';
+    const addressParts = [data.fullAddress, data.city, data.state].filter(Boolean);
+    const endereco = addressParts.length > 0 
+      ? addressParts.join(', ') + (cep ? ` - CEP: ${cep}` : '')
+      : `${data.neighborhood}, ${data.city} - ${data.state}`;
+    
     const nomeCorretor = data.contactName || '—';
     const creci = data.creci?.replace('CRECI ', '') || '—';
     const whatsapp = data.contactPhone || '—';
     const facebook = data.facebookUrl || '';
     const site = data.siteUrl || '';
-    const cep = data.cep || '';
 
     // Build caption with EXACT structure
     let caption = `📣 ${propertyTitle} ${quartos} quartos – ${bairro}
@@ -59,9 +64,6 @@ export const RevendaCaptionGenerator = ({ data }: RevendaCaptionGeneratorProps) 
     }
     if (site) {
       caption += `\n${site}`;
-    }
-    if (cep) {
-      caption += `\n${cep}`;
     }
 
     return caption;

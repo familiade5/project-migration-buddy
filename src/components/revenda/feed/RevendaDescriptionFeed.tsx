@@ -91,9 +91,11 @@ export const RevendaDescriptionFeed = ({ data, photo }: RevendaDescriptionFeedPr
               background: 'linear-gradient(135deg, rgba(15,23,42,0.92) 0%, rgba(15,23,42,0.85) 100%)',
             }}
           />
-          <RevendaWatermark position="top-right" size="sm" />
         </>
       )}
+      
+      {/* Single watermark - top right only */}
+      <RevendaWatermark position="top-right" size="sm" />
 
       {/* Content */}
       <div className="absolute inset-0 flex flex-col p-16">
@@ -140,7 +142,7 @@ export const RevendaDescriptionFeed = ({ data, photo }: RevendaDescriptionFeedPr
           </p>
         </div>
 
-        {/* Bottom: Price + Logo */}
+        {/* Bottom: Price only - no logo here (watermark is top-right) */}
         <div className="flex items-end justify-between mt-10">
           {/* Price */}
           {data.price && (
@@ -159,9 +161,6 @@ export const RevendaDescriptionFeed = ({ data, photo }: RevendaDescriptionFeedPr
               </p>
             </div>
           )}
-
-          {/* Logo */}
-          <RevendaLogo size="lg" />
         </div>
       </div>
     </div>
