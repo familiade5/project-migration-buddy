@@ -115,10 +115,10 @@ const RevendaPostGenerator = () => {
           </div>
 
           {/* Right Column - Preview & Caption */}
-          <div className="lg:sticky lg:top-4 space-y-6 min-w-0">
+          <div className="space-y-6 min-w-0">
             {/* Post Preview */}
             <div 
-              className="rounded-2xl p-6 shadow-sm"
+              className="rounded-2xl p-4 sm:p-6 shadow-sm"
               style={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0' }}
             >
               <div className="flex items-center gap-2 mb-4">
@@ -133,7 +133,7 @@ const RevendaPostGenerator = () => {
 
             {/* Caption Generator */}
             <div 
-              className="rounded-2xl p-6 shadow-sm"
+              className="rounded-2xl p-4 sm:p-6 shadow-sm"
               style={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0' }}
             >
               <RevendaCaptionGenerator data={propertyData} />
