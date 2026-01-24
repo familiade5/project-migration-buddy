@@ -1,5 +1,6 @@
 import logoVdhRevenda from '@/assets/logo-vdh-revenda.png';
 import logoVdhRevendaTransparent from '@/assets/logo-vdh-revenda-transparent.png';
+import logoVdhRevendaWhiteAlpha from '@/assets/logo-vdh-revenda-white-alpha.png';
 
 interface RevendaLogoProps {
   size?: 'sm' | 'md' | 'lg' | 'xl' | 'xxl';
@@ -56,16 +57,9 @@ export const RevendaLogo = ({
       }}
     >
       <img 
-        src={logoVdhRevendaTransparent}
+        src={logoVdhRevendaWhiteAlpha}
         alt="VDH Revenda+"
         className="w-full h-full object-contain"
-        style={{
-          // Assinatura branca, sem fundo (usa PNG transparente)
-          filter: `
-            drop-shadow(0 0 8px rgba(255, 255, 255, 0.35))
-            drop-shadow(0 2px 10px rgba(0, 0, 0, 0.45))
-          `,
-        }}
       />
     </div>
   );
@@ -92,12 +86,11 @@ export const RevendaWatermark = ({
         className="absolute bottom-8 left-0 right-0 flex justify-center pointer-events-none"
       >
         <img 
-          src={logoVdhRevendaTransparent}
+          src={logoVdhRevendaWhiteAlpha}
           alt="VDH Revenda+"
           style={{
             width: config[size].width,
             height: 'auto',
-            filter: 'drop-shadow(0 2px 8px rgba(0, 0, 0, 0.6)) drop-shadow(0 4px 16px rgba(0, 0, 0, 0.4))',
           }}
         />
       </div>
@@ -120,12 +113,9 @@ export const RevendaWatermark = ({
       }}
     >
       <img 
-        src={logoVdhRevendaTransparent}
+        src={logoVdhRevendaWhiteAlpha}
         alt="VDH Revenda+"
         className="w-full h-full object-contain"
-        style={{
-          filter: 'drop-shadow(0 2px 6px rgba(0, 0, 0, 0.5))',
-        }}
       />
     </div>
   );
@@ -141,12 +131,11 @@ export const RevendaLogoBar = () => {
       }}
     >
       <img 
-        src={logoVdhRevendaTransparent}
+        src={logoVdhRevendaWhiteAlpha}
         alt="VDH Revenda+"
         style={{
           width: '180px',
           height: 'auto',
-          filter: 'drop-shadow(0 2px 8px rgba(0, 0, 0, 0.6)) drop-shadow(0 4px 16px rgba(0, 0, 0, 0.4))',
         }}
       />
     </div>
@@ -163,12 +152,11 @@ export const RevendaLogoBarStory = () => {
       }}
     >
       <img 
-        src={logoVdhRevendaTransparent}
+        src={logoVdhRevendaWhiteAlpha}
         alt="VDH Revenda+"
         style={{
           width: '220px',
           height: 'auto',
-          filter: 'drop-shadow(0 2px 8px rgba(0, 0, 0, 0.6)) drop-shadow(0 4px 16px rgba(0, 0, 0, 0.4))',
         }}
       />
     </div>
