@@ -19,9 +19,11 @@ export const RevendaCaptionGenerator = ({ data }: RevendaCaptionGeneratorProps) 
     const andarOuTipo = data.andarOuTipo || data.type || '—';
     const area = data.area || '—';
     const vagas = data.garageSpaces || '—';
-    const itensLazer = data.itensLazer.length > 0 
-      ? data.itensLazer.join(', ')
-      : data.features.slice(0, 5).join(', ') || 'Área de lazer completa';
+    const lazerList = data.itensLazer || [];
+    const featuresList = data.features || [];
+    const itensLazer = lazerList.length > 0 
+      ? lazerList.join(', ')
+      : featuresList.slice(0, 5).join(', ') || 'Área de lazer completa';
     const endereco = data.fullAddress || `${data.neighborhood}, ${data.city} - ${data.state}`;
     const nomeCorretor = data.contactName || '—';
     const creci = data.creci?.replace('CRECI ', '') || '—';
