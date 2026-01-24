@@ -11,19 +11,27 @@ interface EliteCoverProps {
 export const EliteCover = ({ data, photo }: EliteCoverProps) => {
   return (
     <div className="post-template relative overflow-hidden" style={{ background: '#0a0a0f' }}>
-      {/* Full bleed photo - 100% clean, no overlays */}
+      {/* Full bleed photo */}
       {photo ? (
         <div 
           className="absolute inset-0"
           style={{ 
             backgroundImage: `url(${photo})`,
             backgroundSize: 'cover',
-            backgroundPosition: 'center',
+            backgroundPosition: 'center top',
           }}
         />
       ) : (
         <div className="absolute inset-0 bg-gradient-to-br from-[#1a1a1f] via-[#0f0f14] to-[#0a0a0f]" />
       )}
+
+      {/* Subtle bottom gradient for text legibility */}
+      <div 
+        className="absolute inset-0 z-[1]"
+        style={{
+          background: 'linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.6) 25%, rgba(0,0,0,0.2) 50%, transparent 70%)'
+        }}
+      />
 
       {/* Top corner accent - Luxury badge */}
       <div className="absolute z-20" style={{ top: '40px', right: '40px' }}>
