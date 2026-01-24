@@ -159,20 +159,20 @@ export const RevendaMultiPhotoFeed = ({ data, photos, label, variant = 'split' }
         />
       </div>
 
-      {/* Label badge (optional) - top left, elegant */}
+      {/* Label badge (optional) - top left, elegant blue styling */}
       {label && (
         <div 
           className="absolute top-10 left-10 px-6 py-3 rounded-full"
           style={{ 
             backgroundColor: 'rgba(15,23,42,0.85)',
             backdropFilter: 'blur(8px)',
-            border: '1px solid rgba(212,175,55,0.3)',
+            border: '1px solid rgba(59, 130, 246, 0.3)',
           }}
         >
           <span 
             className="text-sm font-medium uppercase tracking-[0.2em]"
             style={{ 
-              background: 'linear-gradient(135deg, #d4af37, #f4e5a3)',
+              background: 'linear-gradient(135deg, #60a5fa, #93c5fd)',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
             }}

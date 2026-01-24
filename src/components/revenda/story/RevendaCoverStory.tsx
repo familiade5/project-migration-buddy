@@ -46,7 +46,7 @@ export const RevendaCoverStory = ({ data, photo }: RevendaCoverStoryProps) => {
 
       {/* Top Logo */}
       <div className="absolute top-12 left-0 right-0 flex justify-center">
-        <RevendaLogo size="lg" dark />
+        <RevendaLogo size="lg" />
       </div>
 
       {/* Property Title - Bottom */}

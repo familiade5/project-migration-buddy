@@ -3,7 +3,6 @@ import logoVdhRevenda from '@/assets/logo-vdh-revenda.png';
 interface RevendaLogoProps {
   size?: 'sm' | 'md' | 'lg' | 'xl' | 'xxl';
   className?: string;
-  dark?: boolean;
 }
 
 const sizeConfig = {
@@ -15,11 +14,10 @@ const sizeConfig = {
 };
 
 // Main logo component - uses the uploaded VDH Revenda+ image
-// Blue tinted with illumination effect, no background
+// White/transparent version for overlay on images - NO background
 export const RevendaLogo = ({ 
   size = 'md', 
   className = '',
-  dark = false
 }: RevendaLogoProps) => {
   const config = sizeConfig[size];
   
@@ -36,14 +34,11 @@ export const RevendaLogo = ({
         alt="VDH Revenda+"
         className="w-full h-full object-contain"
         style={{
-          // Blue tint with illumination effect similar to gold glow
+          // White color with subtle glow - no background, fully transparent
           filter: `
-            brightness(1.1) 
-            sepia(1) 
-            saturate(3) 
-            hue-rotate(180deg) 
-            drop-shadow(0 0 8px rgba(59, 130, 246, 0.5))
-            drop-shadow(0 2px 12px rgba(59, 130, 246, 0.3))
+            brightness(0) invert(1)
+            drop-shadow(0 0 6px rgba(255, 255, 255, 0.4))
+            drop-shadow(0 2px 8px rgba(0, 0, 0, 0.3))
           `,
         }}
       />
@@ -51,25 +46,25 @@ export const RevendaLogo = ({
   );
 };
 
-// Watermark overlay - subtle logo in corner
+// Watermark overlay - subtle white logo in corner for all images
 export const RevendaWatermark = ({ 
-  position = 'bottom-left',
-  size = 'md',
+  position = 'bottom-right',
+  size = 'sm',
 }: { 
   position?: 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
   size?: 'sm' | 'md' | 'lg';
 }) => {
   const config = {
-    sm: { width: 80, height: 40 },
-    md: { width: 120, height: 60 },
-    lg: { width: 160, height: 80 },
+    sm: { width: 60, height: 30 },
+    md: { width: 80, height: 40 },
+    lg: { width: 100, height: 50 },
   };
 
   const positionStyles = {
-    'top-left': 'top-8 left-8',
-    'top-right': 'top-8 right-8',
-    'bottom-left': 'bottom-8 left-8',
-    'bottom-right': 'bottom-8 right-8',
+    'top-left': 'top-6 left-6',
+    'top-right': 'top-6 right-6',
+    'bottom-left': 'bottom-6 left-6',
+    'bottom-right': 'bottom-6 right-6',
   };
 
   return (
@@ -85,16 +80,12 @@ export const RevendaWatermark = ({
         alt="VDH Revenda+"
         className="w-full h-full object-contain"
         style={{
-          // Blue illumination effect
+          // Subtle white watermark - discreet signature
           filter: `
-            brightness(1.1) 
-            sepia(1) 
-            saturate(3) 
-            hue-rotate(180deg) 
-            drop-shadow(0 0 10px rgba(59, 130, 246, 0.6))
-            drop-shadow(0 4px 16px rgba(59, 130, 246, 0.4))
+            brightness(0) invert(1)
+            drop-shadow(0 0 4px rgba(0, 0, 0, 0.5))
           `,
-          opacity: 0.95,
+          opacity: 0.5,
         }}
       />
     </div>
@@ -102,33 +93,29 @@ export const RevendaWatermark = ({
 };
 
 // Logo bar for bottom of feed posts - elegant gradient fade
-export const RevendaLogoBar = ({ dark = false }: { dark?: boolean }) => {
+export const RevendaLogoBar = () => {
   return (
     <div 
       className="absolute bottom-0 left-0 right-0 flex items-center justify-center py-8"
       style={{
-        background: dark 
-          ? 'linear-gradient(to top, rgba(15,23,42,0.9) 0%, rgba(15,23,42,0.6) 50%, transparent 100%)'
-          : 'linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.3) 50%, transparent 100%)',
+        background: 'linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.3) 50%, transparent 100%)',
       }}
     >
-      <RevendaLogo size="lg" dark={dark} />
+      <RevendaLogo size="lg" />
     </div>
   );
 };
 
 // Story logo bar - vertical format
-export const RevendaLogoBarStory = ({ dark = false }: { dark?: boolean }) => {
+export const RevendaLogoBarStory = () => {
   return (
     <div 
       className="absolute bottom-0 left-0 right-0 flex items-center justify-center py-12"
       style={{
-        background: dark 
-          ? 'linear-gradient(to top, rgba(15,23,42,0.95) 0%, rgba(15,23,42,0.6) 50%, transparent 100%)'
-          : 'linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.4) 50%, transparent 100%)',
+        background: 'linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.4) 50%, transparent 100%)',
       }}
     >
-      <RevendaLogo size="xl" dark={dark} />
+      <RevendaLogo size="xl" />
     </div>
   );
 };

@@ -126,7 +126,7 @@ export const RevendaFeaturesFeed = ({ data, photo }: RevendaFeaturesFeedProps) =
 
         {/* Logo at bottom */}
         <div className="mt-auto pt-12">
-          <RevendaLogo size="md" dark />
+          <RevendaLogo size="md" />
         </div>
       </div>
     </div>

@@ -36,7 +36,7 @@ export const RevendaContactStory = ({ data, photo }: RevendaContactStoryProps) =
       {/* Content */}
       <div className="absolute inset-0 flex flex-col items-center justify-center px-12">
         {/* Logo */}
-        <RevendaLogo size="xxl" dark />
+        <RevendaLogo size="xxl" />
 
         {/* Divider */}
         <div 
