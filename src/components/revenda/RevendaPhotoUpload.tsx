@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import { Upload, X, GripVertical, Plus, Image as ImageIcon } from 'lucide-react';
+import { Upload, X, Image as ImageIcon, Loader2, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { 
   CategorizedPhoto, 
@@ -8,6 +8,8 @@ import {
   photoCategoryOrder 
 } from '@/types/revenda';
 import { cn } from '@/lib/utils';
+import { supabase } from '@/integrations/supabase/client';
+import { toast } from 'sonner';
 
 interface RevendaPhotoUploadProps {
   photos: CategorizedPhoto[];
@@ -16,30 +18,87 @@ interface RevendaPhotoUploadProps {
 }
 
 export const RevendaPhotoUpload = ({ photos, onChange, onClear }: RevendaPhotoUploadProps) => {
-  const [activeCategory, setActiveCategory] = useState<PhotoCategory>('fachada');
-  const [draggedPhoto, setDraggedPhoto] = useState<string | null>(null);
+  const [isDetecting, setIsDetecting] = useState(false);
+  const [detectingCount, setDetectingCount] = useState(0);
 
-  const handleFileChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+  const detectPhotoCategory = async (imageBase64: string): Promise<PhotoCategory> => {
+    try {
+      const { data, error } = await supabase.functions.invoke('detect-photo-category', {
+        body: { imageBase64 }
+      });
+      
+      if (error) {
+        console.error('Detection error:', error);
+        return 'outros';
+      }
+      
+      return (data?.category as PhotoCategory) || 'outros';
+    } catch (err) {
+      console.error('Failed to detect category:', err);
+      return 'outros';
+    }
+  };
+
+  const handleFileChange = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
-    if (!files) return;
+    if (!files || files.length === 0) return;
 
-    Array.from(files).forEach((file) => {
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        const result = event.target?.result as string;
-        const newPhoto: CategorizedPhoto = {
-          id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-          url: result,
-          category: activeCategory,
-          order: photos.filter(p => p.category === activeCategory).length,
-        };
-        onChange([...photos, newPhoto]);
-      };
-      reader.readAsDataURL(file);
-    });
+    const fileArray = Array.from(files);
+    setIsDetecting(true);
+    setDetectingCount(fileArray.length);
     
-    e.target.value = '';
-  }, [photos, onChange, activeCategory]);
+    toast.info(`Analisando ${fileArray.length} foto(s) com IA...`, { duration: 2000 });
+
+    const processFile = async (file: File): Promise<CategorizedPhoto> => {
+      return new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onload = async (event) => {
+          const result = event.target?.result as string;
+          const category = await detectPhotoCategory(result);
+          
+          resolve({
+            id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+            url: result,
+            category,
+            order: 0, // Will be set after all photos are processed
+          });
+        };
+        reader.readAsDataURL(file);
+      });
+    };
+
+    try {
+      const newPhotos = await Promise.all(fileArray.map(processFile));
+      
+      // Set correct order for each category
+      const updatedPhotos = [...photos];
+      newPhotos.forEach(photo => {
+        const categoryCount = updatedPhotos.filter(p => p.category === photo.category).length;
+        photo.order = categoryCount;
+        updatedPhotos.push(photo);
+      });
+      
+      onChange(updatedPhotos);
+      
+      const categorySummary = newPhotos.reduce((acc, p) => {
+        acc[p.category] = (acc[p.category] || 0) + 1;
+        return acc;
+      }, {} as Record<string, number>);
+      
+      const summaryText = Object.entries(categorySummary)
+        .map(([cat, count]) => `${count} ${photoCategoryLabels[cat as PhotoCategory]}`)
+        .join(', ');
+      
+      toast.success(`Fotos categorizadas: ${summaryText}`, { duration: 3000 });
+    } catch (err) {
+      console.error('Error processing photos:', err);
+      toast.error('Erro ao processar fotos');
+    } finally {
+      setIsDetecting(false);
+      setDetectingCount(0);
+      e.target.value = '';
+    }
+  }, [photos, onChange]);
 
   const removePhoto = useCallback((id: string) => {
     onChange(photos.filter(p => p.id !== id));
@@ -88,50 +147,35 @@ export const RevendaPhotoUpload = ({ photos, onChange, onClear }: RevendaPhotoUp
 
   return (
     <div className="space-y-4">
-      {/* Category Tabs */}
-      <div className="flex flex-wrap gap-2">
-        {photoCategoryOrder.map((category) => {
-          const count = categoryCount(category);
-          const isActive = activeCategory === category;
-          
-          return (
-            <button
-              key={category}
-              onClick={() => setActiveCategory(category)}
-              className={cn(
-                "px-3 py-1.5 rounded-full text-xs font-medium transition-all flex items-center gap-1.5",
-                isActive 
-                  ? "bg-sky-500 text-white shadow-sm"
-                  : count > 0
-                    ? "bg-sky-100 text-sky-700 hover:bg-sky-200"
-                    : "bg-slate-100 text-slate-500 hover:bg-slate-200"
-              )}
-            >
-              {photoCategoryLabels[category]}
-              {count > 0 && (
-                <span className={cn(
-                  "w-5 h-5 rounded-full flex items-center justify-center text-[10px]",
-                  isActive ? "bg-white/20" : "bg-sky-500/10"
-                )}>
-                  {count}
-                </span>
-              )}
-            </button>
-          );
-        })}
-      </div>
+      {/* AI Detection Status */}
+      {isDetecting && (
+        <div className="flex items-center gap-3 p-4 bg-sky-50 rounded-xl border border-sky-200">
+          <Loader2 className="w-5 h-5 text-sky-600 animate-spin" />
+          <div>
+            <p className="text-sm font-medium text-sky-900">Analisando {detectingCount} foto(s)...</p>
+            <p className="text-xs text-sky-600">A IA está detectando os cômodos automaticamente</p>
+          </div>
+        </div>
+      )}
 
       {/* Upload Area */}
       <label className={cn(
-        "flex flex-col items-center justify-center w-full h-32 rounded-xl border-2 border-dashed cursor-pointer transition-all",
+        "flex flex-col items-center justify-center w-full h-36 rounded-xl border-2 border-dashed cursor-pointer transition-all",
+        isDetecting ? "opacity-50 pointer-events-none" : "",
         "border-slate-200 hover:border-sky-400 hover:bg-sky-50/50"
       )}>
         <div className="flex flex-col items-center gap-2 text-slate-400">
-          <Upload className="w-8 h-8" />
-          <p className="text-sm">
-            Adicionar fotos em <span className="text-sky-600 font-medium">{photoCategoryLabels[activeCategory]}</span>
+          <div className="flex items-center gap-2">
+            <Sparkles className="w-5 h-5 text-sky-500" />
+            <Upload className="w-8 h-8" />
+          </div>
+          <p className="text-sm font-medium text-slate-600">
+            Arraste fotos ou clique para selecionar
           </p>
-          <p className="text-xs text-slate-400">Arraste ou clique para selecionar</p>
+          <p className="text-xs text-sky-600 flex items-center gap-1">
+            <Sparkles className="w-3 h-3" />
+            Detecção automática de cômodos com IA
+          </p>
         </div>
         <input
           type="file"
@@ -139,8 +183,31 @@ export const RevendaPhotoUpload = ({ photos, onChange, onClear }: RevendaPhotoUp
           multiple
           onChange={handleFileChange}
           className="hidden"
+          disabled={isDetecting}
         />
       </label>
+
+      {/* Category Summary Pills */}
+      {totalPhotos > 0 && (
+        <div className="flex flex-wrap gap-2">
+          {photoCategoryOrder.map((category) => {
+            const count = categoryCount(category);
+            if (count === 0) return null;
+            
+            return (
+              <span
+                key={category}
+                className="px-3 py-1.5 rounded-full text-xs font-medium bg-sky-100 text-sky-700 flex items-center gap-1.5"
+              >
+                {photoCategoryLabels[category]}
+                <span className="w-5 h-5 rounded-full bg-sky-500 text-white flex items-center justify-center text-[10px]">
+                  {count}
+                </span>
+              </span>
+            );
+          })}
+        </div>
+      )}
 
       {/* Photos Grid by Category */}
       {photoCategoryOrder.map((category) => {
@@ -220,11 +287,14 @@ export const RevendaPhotoUpload = ({ photos, onChange, onClear }: RevendaPhotoUp
       )}
 
       {/* Empty State */}
-      {totalPhotos === 0 && (
+      {totalPhotos === 0 && !isDetecting && (
         <div className="text-center py-6 text-slate-400">
-          <ImageIcon className="w-12 h-12 mx-auto mb-2 opacity-50" />
-          <p className="text-sm">Nenhuma foto adicionada ainda</p>
-          <p className="text-xs">Adicione fotos por categoria para organizar seu post</p>
+          <div className="flex justify-center gap-2 mb-2">
+            <Sparkles className="w-8 h-8 opacity-50 text-sky-400" />
+            <ImageIcon className="w-12 h-12 opacity-50" />
+          </div>
+          <p className="text-sm font-medium text-slate-600">Nenhuma foto adicionada ainda</p>
+          <p className="text-xs text-slate-400">Adicione fotos e a IA detectará automaticamente cada cômodo</p>
         </div>
       )}
     </div>
