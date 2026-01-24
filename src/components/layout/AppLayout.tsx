@@ -12,7 +12,8 @@ import {
   ChevronDown,
   MoreVertical,
   Crown,
-  Gem
+  Gem,
+  Home
 } from 'lucide-react';
 import {
   DropdownMenu,
@@ -32,6 +33,7 @@ const SUPER_ADMIN_EMAIL = 'neto@vendadiretahoje.com.br';
 const navigation = [
   { name: 'Criar Post', href: '/', icon: Building2 },
   { name: 'Revenda +', href: '/revenda', icon: Gem },
+  { name: 'Locação & Gestão', href: '/locacao', icon: Home },
   { name: 'Biblioteca', href: '/library', icon: Calendar },
 ];
 

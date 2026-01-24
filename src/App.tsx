@@ -14,6 +14,7 @@ import Settings from "./pages/Settings";
 import Imobiliaria from "./pages/Imobiliaria";
 import ElitePostGenerator from "./pages/ElitePostGenerator";
 import RevendaPostGenerator from "./pages/RevendaPostGenerator";
+import LocacaoPostGenerator from "./pages/LocacaoPostGenerator";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -55,6 +56,11 @@ const App = () => (
             <Route path="/revenda" element={
               <ProtectedRoute>
                 <RevendaPostGenerator />
+              </ProtectedRoute>
+            } />
+            <Route path="/locacao" element={
+              <ProtectedRoute>
+                <LocacaoPostGenerator />
               </ProtectedRoute>
             } />
             <Route path="/elite" element={
