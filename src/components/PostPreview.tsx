@@ -95,8 +95,10 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
 
   const storyPosts = [
     { name: 'Capa', component: PostCoverStory, photoIndex: 0 },
-    { name: 'Detalhes', component: PostDetailsStory, photoIndex: 1 },
-    { name: 'Diferenciais', component: PostFeaturesStory, photoIndex: 2 },
+    // Slide 2 (Detalhes) = características do imóvel
+    { name: 'Detalhes', component: PostFeaturesStory, photoIndex: 1 },
+    // Slide 3 (Diferenciais) = gatilhos de conversão
+    { name: 'Diferenciais', component: PostDetailsStory, photoIndex: 2 },
     { name: 'Contato', component: PostContactStory, photoIndex: 3 },
   ];
 
