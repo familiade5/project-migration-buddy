@@ -67,7 +67,7 @@ export const RevendaPhotoFeed = ({ data, photo, label }: RevendaPhotoFeedProps) 
           background: 'linear-gradient(to top, rgba(15,23,42,0.95), rgba(15,23,42,0.7), transparent)',
         }}
       >
-        <RevendaLogo size="md" dark />
+        <RevendaLogo size="md" />
         {data.propertyName && (
           <span 
             className="text-sm font-light tracking-wide"

@@ -1,17 +1,47 @@
-import { RevendaPropertyData } from '@/types/revenda';
+import { RevendaPropertyData, CategorizedPhoto } from '@/types/revenda';
 import { RevendaWatermark } from '../RevendaLogo';
 
 interface RevendaMultiPhotoStoryProps {
   data: RevendaPropertyData;
   photos: string[];
+  photoLabels?: string[]; // Room names for each photo
   label?: string;
   variant?: 'triangle' | 'rounded-boxes';
 }
 
-export const RevendaMultiPhotoStory = ({ data, photos, label, variant = 'triangle' }: RevendaMultiPhotoStoryProps) => {
+// Room label component - elegant typography on images
+const RoomLabel = ({ label }: { label: string }) => (
+  <div 
+    className="absolute bottom-4 left-4 px-4 py-2 rounded-lg"
+    style={{
+      backgroundColor: 'rgba(15, 23, 42, 0.8)',
+      backdropFilter: 'blur(8px)',
+      border: '1px solid rgba(59, 130, 246, 0.3)',
+    }}
+  >
+    <span 
+      className="text-sm font-medium uppercase tracking-widest"
+      style={{ 
+        background: 'linear-gradient(135deg, #60a5fa, #93c5fd)',
+        WebkitBackgroundClip: 'text',
+        WebkitTextFillColor: 'transparent',
+      }}
+    >
+      {label}
+    </span>
+  </div>
+);
+
+export const RevendaMultiPhotoStory = ({ 
+  data, 
+  photos, 
+  photoLabels = ['Sala', 'Quarto', 'Cozinha'],
+  label, 
+  variant = 'triangle' 
+}: RevendaMultiPhotoStoryProps) => {
   const photoCount = photos.length;
   
-  // Triangular layout - modern, organized with premium blue borders
+  // Triangular layout - modern, organized with premium blue borders and room labels
   const renderTriangleLayout = () => {
     if (photoCount < 3) return null;
     
@@ -24,7 +54,7 @@ export const RevendaMultiPhotoStory = ({ data, photos, label, variant = 'triangl
             top: '80px',
             left: '40px',
             right: '40px',
-            height: '42%',
+            height: '44%',
             border: '2px solid rgba(59, 130, 246, 0.5)',
             boxShadow: '0 8px 32px rgba(59, 130, 246, 0.2), 0 4px 16px rgba(0,0,0,0.3)',
           }}
@@ -34,21 +64,24 @@ export const RevendaMultiPhotoStory = ({ data, photos, label, variant = 'triangl
             alt="Property main"
             className="w-full h-full object-cover"
           />
+          <RoomLabel label={photoLabels[0] || 'Sala'} />
+          {/* Watermark on each photo */}
+          <RevendaWatermark position="top-right" size="sm" />
         </div>
         
-        {/* Bottom row - 2 photos side by side with gap */}
+        {/* Bottom row - 2 photos side by side, closer together */}
         <div 
-          className="absolute flex gap-5"
+          className="absolute flex gap-4"
           style={{ 
-            top: '55%',
+            top: '53%',
             left: '40px',
             right: '40px',
-            height: '32%',
+            height: '34%',
           }}
         >
           {/* Left photo */}
           <div 
-            className="flex-1 rounded-2xl overflow-hidden"
+            className="flex-1 rounded-2xl overflow-hidden relative"
             style={{ 
               border: '2px solid rgba(59, 130, 246, 0.5)',
               boxShadow: '0 8px 32px rgba(59, 130, 246, 0.2), 0 4px 16px rgba(0,0,0,0.3)',
@@ -59,11 +92,12 @@ export const RevendaMultiPhotoStory = ({ data, photos, label, variant = 'triangl
               alt="Property 2"
               className="w-full h-full object-cover"
             />
+            <RoomLabel label={photoLabels[1] || 'Quarto'} />
           </div>
           
           {/* Right photo */}
           <div 
-            className="flex-1 rounded-2xl overflow-hidden"
+            className="flex-1 rounded-2xl overflow-hidden relative"
             style={{ 
               border: '2px solid rgba(59, 130, 246, 0.5)',
               boxShadow: '0 8px 32px rgba(59, 130, 246, 0.2), 0 4px 16px rgba(0,0,0,0.3)',
@@ -74,6 +108,7 @@ export const RevendaMultiPhotoStory = ({ data, photos, label, variant = 'triangl
               alt="Property 3"
               className="w-full h-full object-cover"
             />
+            <RoomLabel label={photoLabels[2] || 'Cozinha'} />
           </div>
         </div>
       </div>
@@ -85,10 +120,10 @@ export const RevendaMultiPhotoStory = ({ data, photos, label, variant = 'triangl
     if (photoCount < 3) return null;
     
     return (
-      <div className="absolute inset-0 flex flex-col gap-5 p-10" style={{ paddingTop: '80px', paddingBottom: '200px' }}>
+      <div className="absolute inset-0 flex flex-col gap-4 p-10" style={{ paddingTop: '80px', paddingBottom: '200px' }}>
         {/* Top photo - larger hero */}
         <div 
-          className="w-full rounded-3xl overflow-hidden"
+          className="w-full rounded-3xl overflow-hidden relative"
           style={{ 
             flex: '1.2',
             border: '3px solid rgba(59, 130, 246, 0.5)',
@@ -100,12 +135,14 @@ export const RevendaMultiPhotoStory = ({ data, photos, label, variant = 'triangl
             alt="Property main"
             className="w-full h-full object-cover"
           />
+          <RoomLabel label={photoLabels[0] || 'Sala'} />
+          <RevendaWatermark position="top-right" size="sm" />
         </div>
         
         {/* Bottom row - 2 photos side by side */}
-        <div className="flex gap-5" style={{ flex: '1' }}>
+        <div className="flex gap-4" style={{ flex: '1' }}>
           <div 
-            className="flex-1 rounded-3xl overflow-hidden"
+            className="flex-1 rounded-3xl overflow-hidden relative"
             style={{ 
               border: '3px solid rgba(59, 130, 246, 0.5)',
               boxShadow: '0 12px 40px rgba(59, 130, 246, 0.2), 0 8px 24px rgba(0,0,0,0.3)',
@@ -116,9 +153,10 @@ export const RevendaMultiPhotoStory = ({ data, photos, label, variant = 'triangl
               alt="Property 2"
               className="w-full h-full object-cover"
             />
+            <RoomLabel label={photoLabels[1] || 'Quarto'} />
           </div>
           <div 
-            className="flex-1 rounded-3xl overflow-hidden"
+            className="flex-1 rounded-3xl overflow-hidden relative"
             style={{ 
               border: '3px solid rgba(59, 130, 246, 0.5)',
               boxShadow: '0 12px 40px rgba(59, 130, 246, 0.2), 0 8px 24px rgba(0,0,0,0.3)',
@@ -129,6 +167,7 @@ export const RevendaMultiPhotoStory = ({ data, photos, label, variant = 'triangl
               alt="Property 3"
               className="w-full h-full object-cover"
             />
+            <RoomLabel label={photoLabels[2] || 'Cozinha'} />
           </div>
         </div>
       </div>
@@ -142,11 +181,11 @@ export const RevendaMultiPhotoStory = ({ data, photos, label, variant = 'triangl
         background: 'linear-gradient(180deg, #0f172a 0%, #1e293b 50%, #0f172a 100%)',
       }}
     >
-      {/* Decorative elements */}
+      {/* Decorative elements - blue instead of gold */}
       <div 
         className="absolute inset-0 pointer-events-none"
         style={{
-          background: 'radial-gradient(ellipse at 50% 0%, rgba(212,175,55,0.08) 0%, transparent 50%)',
+          background: 'radial-gradient(ellipse at 50% 0%, rgba(59, 130, 246, 0.08) 0%, transparent 50%)',
         }}
       />
 
@@ -154,7 +193,7 @@ export const RevendaMultiPhotoStory = ({ data, photos, label, variant = 'triangl
       {variant === 'triangle' && renderTriangleLayout()}
       {variant === 'rounded-boxes' && renderRoundedBoxesLayout()}
 
-      {/* Label badge - top center */}
+      {/* Label badge - top center with blue styling */}
       {label && (
         <div className="absolute top-24 left-0 right-0 flex justify-center">
           <div 
@@ -162,13 +201,13 @@ export const RevendaMultiPhotoStory = ({ data, photos, label, variant = 'triangl
             style={{ 
               backgroundColor: 'rgba(15,23,42,0.9)',
               backdropFilter: 'blur(12px)',
-              border: '1px solid rgba(212,175,55,0.4)',
+              border: '1px solid rgba(59, 130, 246, 0.4)',
             }}
           >
             <span 
               className="text-lg font-medium uppercase tracking-[0.3em]"
               style={{ 
-                background: 'linear-gradient(135deg, #d4af37, #f4e5a3)',
+                background: 'linear-gradient(135deg, #60a5fa, #93c5fd)',
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
               }}
@@ -209,7 +248,7 @@ export const RevendaMultiPhotoStory = ({ data, photos, label, variant = 'triangl
         )}
       </div>
 
-      {/* Logo watermark */}
+      {/* Logo watermark - bottom right */}
       <RevendaWatermark position="bottom-right" size="lg" />
     </div>
   );

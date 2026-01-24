@@ -41,7 +41,7 @@ export const RevendaPhotoStory = ({ data, photo, label }: RevendaPhotoStoryProps
         />
       </div>
 
-      {/* Label badge (optional) - top center */}
+      {/* Label badge (optional) - top center with blue styling */}
       {label && (
         <div className="absolute top-12 left-0 right-0 flex justify-center">
           <div 
@@ -49,13 +49,13 @@ export const RevendaPhotoStory = ({ data, photo, label }: RevendaPhotoStoryProps
             style={{ 
               backgroundColor: 'rgba(15,23,42,0.85)',
               backdropFilter: 'blur(8px)',
-              border: '1px solid rgba(212,175,55,0.3)',
+              border: '1px solid rgba(59, 130, 246, 0.3)',
             }}
           >
             <span 
               className="text-xl font-medium uppercase tracking-[0.2em]"
               style={{ 
-                background: 'linear-gradient(135deg, #d4af37, #f4e5a3)',
+                background: 'linear-gradient(135deg, #60a5fa, #93c5fd)',
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
               }}

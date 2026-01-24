@@ -39,7 +39,7 @@ export const RevendaContactFeed = ({ data, photo }: RevendaContactFeedProps) => 
       {/* Content */}
       <div className="absolute inset-0 flex flex-col items-center justify-center px-16 text-center">
         {/* Logo - Large */}
-        <RevendaLogo size="xxl" dark />
+        <RevendaLogo size="xxl" />
 
         {/* Divider */}
         <div 
