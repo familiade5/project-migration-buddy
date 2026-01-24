@@ -255,10 +255,17 @@ export const RevendaPhotoUpload = ({ photos, onChange, onClear }: RevendaPhotoUp
                   <select
                     value={photo.category}
                     onChange={(e) => changeCategory(photo.id, e.target.value as PhotoCategory)}
-                    className="absolute bottom-1 left-1 right-1 text-[10px] bg-white/90 rounded px-1 py-0.5 opacity-0 group-hover:opacity-100 transition-opacity"
+                    className="absolute bottom-1 left-1 right-1 text-[10px] bg-slate-800 text-white rounded px-1 py-0.5 opacity-0 group-hover:opacity-100 transition-opacity border border-slate-600 cursor-pointer"
+                    style={{ 
+                      WebkitAppearance: 'none',
+                      backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E")`,
+                      backgroundRepeat: 'no-repeat',
+                      backgroundPosition: 'right 4px center',
+                      paddingRight: '16px',
+                    }}
                   >
                     {photoCategoryOrder.map(cat => (
-                      <option key={cat} value={cat}>{photoCategoryLabels[cat]}</option>
+                      <option key={cat} value={cat} className="bg-slate-800 text-white">{photoCategoryLabels[cat]}</option>
                     ))}
                   </select>
                 </div>
