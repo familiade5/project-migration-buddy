@@ -9,55 +9,70 @@ interface PostFeaturesStoryProps {
 }
 
 export const PostFeaturesStory = ({ data, photo }: PostFeaturesStoryProps) => {
-  // Features dinâmicas baseadas nas opções - sempre mostra 3 itens
+  // SLIDE 2 STORY - Foco: BENEFÍCIOS E CONDIÇÕES (Gatilhos: Facilidade, Oportunidade)
   const getHighlightFeatures = () => {
     const features: string[] = [];
     
-    // Primeiro: mostrar características do imóvel se disponíveis
-    if (data.bedrooms && data.bedrooms !== '' && data.bedrooms !== '0') {
-      features.push(`${data.bedrooms} quarto${Number(data.bedrooms) > 1 ? 's' : ''} espaçoso${Number(data.bedrooms) > 1 ? 's' : ''}`);
-    }
-    if (data.bathrooms && data.bathrooms !== '' && data.bathrooms !== '0') {
-      features.push(`${data.bathrooms} banheiro${Number(data.bathrooms) > 1 ? 's' : ''} completo${Number(data.bathrooms) > 1 ? 's' : ''}`);
-    }
-    if (data.area && data.area !== '') {
-      features.push(`${data.area}m² de área útil`);
+    // Prioridade 1: Condições de pagamento (maior gatilho de conversão)
+    if (data.discount && parseFloat(data.discount.replace(',', '.')) > 0) {
+      const discountValue = parseFloat(data.discount.replace(',', '.'));
+      if (discountValue >= 40) {
+        features.push(`Economia de ${data.discount}% garantida`);
+      } else if (discountValue >= 20) {
+        features.push(`${data.discount}% abaixo da avaliação`);
+      } else {
+        features.push(`Desconto real de ${data.discount}%`);
+      }
     }
     
-    // Adiciona condições de pagamento se relevantes
-    if (features.length < 3 && data.hasEasyEntry) {
-      features.push('Entrada facilitada e parcelada');
-    }
     if (features.length < 3 && data.canUseFGTS) {
-      features.push('Use seu saldo do FGTS');
-    }
-    if (features.length < 3 && data.acceptsFinancing) {
-      features.push('Financiamento facilitado');
-    }
-    if (features.length < 3 && data.discount && parseFloat(data.discount.replace(',', '.')) > 30) {
-      features.push(`${data.discount}% de desconto`);
+      features.push('FGTS aceito como entrada');
     }
     
-    // Adicionar features selecionadas do imóvel
+    if (features.length < 3 && data.hasEasyEntry) {
+      features.push('Entrada parcelada em até 48x');
+    }
+    
+    if (features.length < 3 && data.acceptsFinancing) {
+      features.push('Financiamento em até 420 meses');
+    }
+    
+    // Prioridade 2: Características transformadas em benefícios
+    if (features.length < 3 && data.area && data.area !== '' && data.area !== '0') {
+      const areaNum = parseFloat(data.area);
+      if (areaNum >= 200) {
+        features.push('Amplo espaço para toda família');
+      } else if (areaNum >= 100) {
+        features.push('Metragem ideal para seu conforto');
+      } else {
+        features.push('Planta otimizada e funcional');
+      }
+    }
+    
+    if (features.length < 3 && data.garageSpaces && data.garageSpaces !== '' && data.garageSpaces !== '0') {
+      features.push('Segurança para seu veículo');
+    }
+    
+    // Prioridade 3: Features selecionadas
     if (features.length < 3 && data.features.length > 0) {
       data.features.forEach(f => {
         if (features.length < 3) features.push(f);
       });
     }
     
-    // Fallback: textos de venda atraentes
-    const sellingPoints = [
-      'Realize o sonho da casa própria',
-      'Oportunidade única de investimento',
-      'Abaixo do valor de mercado',
-      'Documentação regularizada',
-      'Pronto para financiar',
+    // Fallback: Gatilhos de conversão
+    const conversionTriggers = [
+      'Documentação 100% regularizada',
+      'Pronto para escriturar hoje',
+      'Sem burocracia para financiar',
+      'Oportunidade exclusiva de leilão',
+      'Valor abaixo do mercado',
     ];
     
-    let sellingIndex = 0;
-    while (features.length < 3 && sellingIndex < sellingPoints.length) {
-      features.push(sellingPoints[sellingIndex]);
-      sellingIndex++;
+    let triggerIndex = 0;
+    while (features.length < 3 && triggerIndex < conversionTriggers.length) {
+      features.push(conversionTriggers[triggerIndex]);
+      triggerIndex++;
     }
     
     return features.slice(0, 3);

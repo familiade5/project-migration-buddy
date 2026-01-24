@@ -16,43 +16,64 @@ export const PostDetails = ({ data, photo, photos = [] }: PostDetailsProps) => {
     }
     return photo;
   };
-  // Features dinâmicas baseadas nos dados - com fallbacks de venda
+  // SLIDE 3 - Foco: CARACTERÍSTICAS DO IMÓVEL (Gatilhos: Especificidade, Tangibilidade)
   const generateFeatures = () => {
     const features: string[] = [];
     
-    // Primeiro: adiciona dados reais se existirem
+    // Formato: dados concretos que geram confiança
     if (data.bedrooms && data.bedrooms !== '' && data.bedrooms !== '0') {
-      features.push(`${data.bedrooms} quarto${Number(data.bedrooms) > 1 ? 's' : ''} aconchegante${Number(data.bedrooms) > 1 ? 's' : ''}`);
-    }
-    if (data.bathrooms && data.bathrooms !== '' && data.bathrooms !== '0') {
-      features.push(`${data.bathrooms} banheiro${Number(data.bathrooms) > 1 ? 's' : ''}`);
-    }
-    if (data.garageSpaces && data.garageSpaces !== '' && data.garageSpaces !== '0') {
-      features.push(`${data.garageSpaces} vaga${Number(data.garageSpaces) > 1 ? 's' : ''} de garagem`);
-    }
-    if (data.area && data.area !== '' && data.area !== '0') {
-      features.push(`${data.area}m² de área`);
+      const bedroomNum = Number(data.bedrooms);
+      if (bedroomNum >= 4) {
+        features.push(`${bedroomNum} dormitórios privativos`);
+      } else if (bedroomNum >= 2) {
+        features.push(`${bedroomNum} quartos bem distribuídos`);
+      } else {
+        features.push('Quarto amplo e iluminado');
+      }
     }
     
-    // Adicionar features selecionadas
+    if (data.bathrooms && data.bathrooms !== '' && data.bathrooms !== '0') {
+      const bathroomNum = Number(data.bathrooms);
+      if (bathroomNum >= 3) {
+        features.push(`${bathroomNum} banheiros completos`);
+      } else if (bathroomNum === 2) {
+        features.push('Banheiro social + suíte');
+      } else {
+        features.push('Banheiro com acabamento');
+      }
+    }
+    
+    if (data.garageSpaces && data.garageSpaces !== '' && data.garageSpaces !== '0') {
+      const garageNum = Number(data.garageSpaces);
+      if (garageNum >= 2) {
+        features.push(`Garagem para ${garageNum} veículos`);
+      } else {
+        features.push('Vaga de garagem coberta');
+      }
+    }
+    
+    if (features.length < 3 && data.area && data.area !== '' && data.area !== '0') {
+      features.push(`${data.area}m² de área construída`);
+    }
+    
+    // Features do usuário (já são específicas)
     data.features.forEach(f => {
-      if (features.length < 4) features.push(f);
+      if (features.length < 3) features.push(f);
     });
     
-    // Se não tem features suficientes, adiciona textos de venda
-    const sellingPoints = [
-      'Localização privilegiada',
-      'Ótimo custo-benefício',
-      'Pronto para morar',
-      'Excelente oportunidade',
-      'Investimento seguro',
-      'Documentação ok',
+    // Fallback: Diferenciais tangíveis (não repetir os do slide 2)
+    const tangibleBenefits = [
+      'Localização estratégica',
+      'Infraestrutura completa',
+      'Região em valorização',
+      'Vizinhança residencial',
+      'Fácil acesso ao centro',
     ];
     
-    let sellingIndex = 0;
-    while (features.length < 3 && sellingIndex < sellingPoints.length) {
-      features.push(sellingPoints[sellingIndex]);
-      sellingIndex++;
+    let benefitIndex = 0;
+    while (features.length < 3 && benefitIndex < tangibleBenefits.length) {
+      features.push(tangibleBenefits[benefitIndex]);
+      benefitIndex++;
     }
     
     return features.slice(0, 3);
