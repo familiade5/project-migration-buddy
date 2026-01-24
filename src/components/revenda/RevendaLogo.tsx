@@ -113,9 +113,9 @@ export const RevendaWatermark = ({
   size?: 'sm' | 'md' | 'lg';
 }) => {
   const config = {
-    sm: 100,
-    md: 140,
-    lg: 180,
+    sm: 160,
+    md: 220,
+    lg: 280,
   };
 
   // Bottom-center is the default for single-photo slides
@@ -148,7 +148,7 @@ export const RevendaLogoBar = () => {
       className="absolute bottom-0 left-0 right-0 flex items-center justify-center"
       style={{ paddingBottom: '40px' }}
     >
-      <LogoSVG width={180} />
+      <LogoSVG width={280} />
     </div>
   );
 };
@@ -160,7 +160,7 @@ export const RevendaLogoBarStory = () => {
       className="absolute bottom-0 left-0 right-0 flex items-center justify-center"
       style={{ paddingBottom: '60px' }}
     >
-      <LogoSVG width={220} />
+      <LogoSVG width={320} />
     </div>
   );
 };
