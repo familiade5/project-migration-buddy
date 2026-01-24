@@ -13,6 +13,7 @@ import Admin from "./pages/Admin";
 import Settings from "./pages/Settings";
 import Imobiliaria from "./pages/Imobiliaria";
 import ElitePostGenerator from "./pages/ElitePostGenerator";
+import RevendaPostGenerator from "./pages/RevendaPostGenerator";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -49,6 +50,11 @@ const App = () => (
             <Route path="/settings" element={
               <ProtectedRoute>
                 <Settings />
+              </ProtectedRoute>
+            } />
+            <Route path="/revenda" element={
+              <ProtectedRoute>
+                <RevendaPostGenerator />
               </ProtectedRoute>
             } />
             <Route path="/elite" element={
