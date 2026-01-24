@@ -1,4 +1,4 @@
-import { RevendaPropertyData, CategorizedPhoto, photoCategoryOrder } from '@/types/revenda';
+import { RevendaPropertyData, CategorizedPhoto } from '@/types/revenda';
 import { RevendaLogo, RevendaLogoBar, RevendaWatermark } from '../RevendaLogo';
 import { MapPin, Bed, Bath, Car, Maximize } from 'lucide-react';
 
@@ -16,10 +16,10 @@ export const RevendaCoverFeed = ({ data, photo }: RevendaCoverFeedProps) => {
   return (
     <div 
       className="relative w-[1080px] h-[1080px] overflow-hidden"
-      style={{ backgroundColor: '#ffffff' }}
+      style={{ backgroundColor: '#0f172a' }}
     >
-      {/* Main Photo - Top 70% */}
-      <div className="absolute top-0 left-0 right-0 h-[70%]">
+      {/* Full Bleed Photo */}
+      <div className="absolute inset-0">
         {photo ? (
           <img 
             src={photo} 
@@ -29,82 +29,89 @@ export const RevendaCoverFeed = ({ data, photo }: RevendaCoverFeedProps) => {
         ) : (
           <div 
             className="w-full h-full flex items-center justify-center"
-            style={{ backgroundColor: '#f1f5f9' }}
+            style={{ 
+              background: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)',
+            }}
           >
-            <span className="text-slate-400 text-lg">Adicione uma foto de fachada</span>
+            <span className="text-slate-500 text-lg">Adicione uma foto de fachada</span>
           </div>
         )}
         
-        {/* Gradient overlay at bottom of photo */}
+        {/* Elegant gradient overlay - subtle top, stronger bottom */}
         <div 
-          className="absolute bottom-0 left-0 right-0 h-32"
+          className="absolute inset-0"
           style={{
-            background: 'linear-gradient(to top, rgba(255,255,255,1), transparent)',
+            background: 'linear-gradient(to bottom, rgba(15,23,42,0.2) 0%, rgba(15,23,42,0) 30%, rgba(15,23,42,0.4) 60%, rgba(15,23,42,0.95) 100%)',
           }}
         />
       </div>
 
-      {/* Content Area - Bottom 30% */}
-      <div className="absolute bottom-0 left-0 right-0 h-[30%] px-12 py-8 flex flex-col justify-between">
-        {/* Property Info */}
-        <div className="space-y-3">
-          {/* Property Name */}
-          <h1 
-            className="font-display font-bold leading-tight"
-            style={{ 
-              fontSize: '42px',
-              color: '#0f172a',
-            }}
-          >
-            {data.propertyName || `${data.type} em ${data.neighborhood}`}
-          </h1>
-          
-          {/* Location */}
-          <div className="flex items-center gap-2" style={{ color: '#64748b' }}>
-            <MapPin className="w-5 h-5" style={{ color: '#0ea5e9' }} />
-            <span className="text-lg">{getLocationText() || 'Localização'}</span>
-          </div>
+      {/* Top Logo */}
+      <div className="absolute top-10 left-10">
+        <RevendaLogo size="lg" variant="minimal" dark />
+      </div>
 
-          {/* Features Row */}
-          <div className="flex items-center gap-6 pt-2">
-            {data.bedrooms && (
-              <div className="flex items-center gap-2" style={{ color: '#475569' }}>
-                <Bed className="w-5 h-5" style={{ color: '#0ea5e9' }} />
-                <span className="font-medium">{data.bedrooms} quartos</span>
-              </div>
-            )}
-            {data.bathrooms && (
-              <div className="flex items-center gap-2" style={{ color: '#475569' }}>
-                <Bath className="w-5 h-5" style={{ color: '#0ea5e9' }} />
-                <span className="font-medium">{data.bathrooms} banheiros</span>
-              </div>
-            )}
-            {data.garageSpaces && (
-              <div className="flex items-center gap-2" style={{ color: '#475569' }}>
-                <Car className="w-5 h-5" style={{ color: '#0ea5e9' }} />
-                <span className="font-medium">{data.garageSpaces} vagas</span>
-              </div>
-            )}
-            {data.area && (
-              <div className="flex items-center gap-2" style={{ color: '#475569' }}>
-                <Maximize className="w-5 h-5" style={{ color: '#0ea5e9' }} />
-                <span className="font-medium">{data.area} m²</span>
-              </div>
-            )}
-          </div>
+      {/* Bottom Content */}
+      <div className="absolute bottom-0 left-0 right-0 px-12 pb-12">
+        {/* Property Name - Large, editorial */}
+        <h1 
+          className="font-display font-bold leading-[0.95] mb-6"
+          style={{ 
+            fontSize: '72px',
+            color: '#ffffff',
+            textShadow: '0 4px 30px rgba(0,0,0,0.5)',
+          }}
+        >
+          {data.propertyName || data.type}
+        </h1>
+        
+        {/* Location */}
+        <div className="flex items-center gap-3 mb-8">
+          <MapPin className="w-6 h-6" style={{ color: '#0ea5e9' }} />
+          <span 
+            className="text-xl font-light tracking-wide"
+            style={{ color: 'rgba(255,255,255,0.85)' }}
+          >
+            {getLocationText() || 'Localização'}
+          </span>
         </div>
 
-        {/* Bottom Bar */}
-        <div className="flex items-center justify-between pt-4 border-t" style={{ borderColor: '#e2e8f0' }}>
-          <RevendaLogo size="md" variant="minimal" />
+        {/* Specs row - minimal, elegant */}
+        <div 
+          className="flex items-center gap-8 pt-8"
+          style={{ borderTop: '1px solid rgba(255,255,255,0.15)' }}
+        >
+          {data.bedrooms && (
+            <div className="flex items-center gap-3">
+              <Bed className="w-6 h-6" style={{ color: '#0ea5e9' }} />
+              <span className="text-lg font-light" style={{ color: 'rgba(255,255,255,0.9)' }}>
+                {data.bedrooms} quartos
+              </span>
+            </div>
+          )}
+          {data.bathrooms && (
+            <div className="flex items-center gap-3">
+              <Bath className="w-6 h-6" style={{ color: '#0ea5e9' }} />
+              <span className="text-lg font-light" style={{ color: 'rgba(255,255,255,0.9)' }}>
+                {data.bathrooms} banheiros
+              </span>
+            </div>
+          )}
+          {data.area && (
+            <div className="flex items-center gap-3">
+              <Maximize className="w-6 h-6" style={{ color: '#0ea5e9' }} />
+              <span className="text-lg font-light" style={{ color: 'rgba(255,255,255,0.9)' }}>
+                {data.area} m²
+              </span>
+            </div>
+          )}
           
-          {/* Price */}
+          {/* Price - Right aligned */}
           {data.price && (
-            <div className="text-right">
-              <p className="text-sm" style={{ color: '#94a3b8' }}>A partir de</p>
+            <div className="ml-auto text-right">
               <p 
                 className="font-display font-bold"
-                style={{ fontSize: '28px', color: '#0ea5e9' }}
+                style={{ fontSize: '32px', color: '#0ea5e9' }}
               >
                 {data.price}
               </p>
@@ -112,9 +119,6 @@ export const RevendaCoverFeed = ({ data, photo }: RevendaCoverFeedProps) => {
           )}
         </div>
       </div>
-
-      {/* Subtle watermark */}
-      <RevendaWatermark opacity={0.02} />
     </div>
   );
 };

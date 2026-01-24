@@ -11,7 +11,7 @@ export const RevendaPhotoFeed = ({ data, photo, label }: RevendaPhotoFeedProps) 
   return (
     <div 
       className="relative w-[1080px] h-[1080px] overflow-hidden"
-      style={{ backgroundColor: '#ffffff' }}
+      style={{ backgroundColor: '#0f172a' }}
     >
       {/* Full Photo */}
       <div className="absolute inset-0">
@@ -24,32 +24,35 @@ export const RevendaPhotoFeed = ({ data, photo, label }: RevendaPhotoFeedProps) 
         ) : (
           <div 
             className="w-full h-full flex items-center justify-center"
-            style={{ backgroundColor: '#f1f5f9' }}
+            style={{ 
+              background: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)',
+            }}
           >
-            <span className="text-slate-400 text-lg">Foto</span>
+            <span className="text-slate-500 text-lg">Foto</span>
           </div>
         )}
+        
+        {/* Subtle gradient overlay */}
+        <div 
+          className="absolute inset-0"
+          style={{
+            background: 'linear-gradient(to bottom, transparent 0%, transparent 70%, rgba(15,23,42,0.8) 100%)',
+          }}
+        />
       </div>
 
-      {/* Bottom gradient */}
-      <div 
-        className="absolute bottom-0 left-0 right-0 h-24"
-        style={{
-          background: 'linear-gradient(to top, rgba(255,255,255,0.9), transparent)',
-        }}
-      />
-
-      {/* Label badge (optional) */}
+      {/* Label badge (optional) - top left, elegant */}
       {label && (
         <div 
-          className="absolute top-8 left-8 px-4 py-2 rounded-full"
+          className="absolute top-10 left-10 px-6 py-3 rounded-full"
           style={{ 
-            backgroundColor: 'rgba(255,255,255,0.95)',
-            backdropFilter: 'blur(4px)',
+            backgroundColor: 'rgba(15,23,42,0.85)',
+            backdropFilter: 'blur(8px)',
+            border: '1px solid rgba(14,165,233,0.3)',
           }}
         >
           <span 
-            className="text-sm font-medium uppercase tracking-wide"
+            className="text-sm font-medium uppercase tracking-[0.2em]"
             style={{ color: '#0ea5e9' }}
           >
             {label}
@@ -57,9 +60,22 @@ export const RevendaPhotoFeed = ({ data, photo, label }: RevendaPhotoFeedProps) 
         </div>
       )}
 
-      {/* Bottom logo */}
-      <div className="absolute bottom-6 left-8">
-        <RevendaLogo size="sm" variant="minimal" />
+      {/* Bottom logo bar */}
+      <div 
+        className="absolute bottom-0 left-0 right-0 flex items-center justify-between px-10 py-6"
+        style={{
+          background: 'linear-gradient(to top, rgba(15,23,42,0.95), rgba(15,23,42,0.7), transparent)',
+        }}
+      >
+        <RevendaLogo size="md" variant="minimal" dark />
+        {data.propertyName && (
+          <span 
+            className="text-sm font-light tracking-wide"
+            style={{ color: 'rgba(255,255,255,0.6)' }}
+          >
+            {data.propertyName}
+          </span>
+        )}
       </div>
     </div>
   );
