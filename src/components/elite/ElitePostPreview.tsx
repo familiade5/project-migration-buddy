@@ -156,10 +156,10 @@ export const ElitePostPreview = ({ data, photos }: ElitePostPreviewProps) => {
   const CurrentComponent = posts[currentIndex].component;
   const currentPhoto = getPhoto(posts[currentIndex].photoIndex);
 
-  // Calculate scale for preview
-  const templateWidth = format === 'feed' ? 1080 : 1080;
-  const templateHeight = format === 'feed' ? 1080 : 1920;
-  const previewMaxWidth = 400;
+  // Calculate scale for preview - use smaller scale for better fit
+  const templateWidth = 1080;
+  const templateHeight = format === 'feed' ? 1080 : format === 'elite' ? 1920 : 1920;
+  const previewMaxWidth = 360; // Reduced for better containment
   const scale = previewMaxWidth / templateWidth;
 
   return (
@@ -238,25 +238,22 @@ export const ElitePostPreview = ({ data, photos }: ElitePostPreviewProps) => {
         </button>
       </div>
 
-      {/* Preview - Fixed container to prevent cropping */}
+      {/* Preview - Fixed container with proper scaling */}
       <div 
-        className="relative mx-auto rounded-2xl"
+        className="relative mx-auto rounded-2xl bg-[#0a0a0f]"
         style={{ 
-          width: `${templateWidth * scale}px`,
-          height: `${templateHeight * scale}px`,
+          width: Math.floor(templateWidth * scale),
+          height: Math.floor(templateHeight * scale),
           boxShadow: '0 25px 80px rgba(212,175,55,0.2)',
           overflow: 'hidden',
         }}
       >
         <div
           style={{
+            width: templateWidth,
+            height: templateHeight,
             transform: `scale(${scale})`,
             transformOrigin: 'top left',
-            width: `${templateWidth}px`,
-            height: `${templateHeight}px`,
-            position: 'absolute',
-            top: 0,
-            left: 0,
           }}
         >
           <CurrentComponent
