@@ -54,7 +54,17 @@ export const RevendaPostPreview = ({ data, photos }: RevendaPostPreviewProps) =>
 
   // Get category label for a photo URL
   const getCategoryLabelForUrl = (url: string): string => {
-    const photo = photos.find(p => p.url === url);
+    const normalize = (u: string) => {
+      // Evita mismatch por query params (ex: URLs assinadas / cache bust)
+      try {
+        return u.split('?')[0];
+      } catch {
+        return u;
+      }
+    };
+
+    const target = normalize(url);
+    const photo = photos.find(p => normalize(p.url) === target);
     if (photo) {
       return photoCategoryLabels[photo.category as PhotoCategory] || 'Ambiente';
     }
@@ -104,10 +114,18 @@ export const RevendaPostPreview = ({ data, photos }: RevendaPostPreviewProps) =>
           getPhotosByCategory('sala')[1] || getBedroomPhoto(),
           getPhotosByCategory('quarto')[1] || getKitchenPhoto(),
         ].filter(Boolean) as string[];
+
+        const labelsForSlide = photosForSlide.map((url) => getCategoryLabelForUrl(url));
         
         slides.push({
           name: 'Ambientes',
-          component: <RevendaMultiPhotoFeed data={data} photos={photosForSlide.slice(0, 3)} label="Interiores" variant="split" />,
+          component: <RevendaMultiPhotoFeed 
+            data={data} 
+            photos={photosForSlide.slice(0, 3)} 
+            photoLabels={labelsForSlide.slice(0, 3)}
+            label="Interiores" 
+            variant="triangle" 
+          />,
           category: 'sala',
         });
       } else {
@@ -128,10 +146,18 @@ export const RevendaPostPreview = ({ data, photos }: RevendaPostPreviewProps) =>
         const photosForSlide = bedroomPhotos.length >= 2 
           ? [bedroomPhotos[0], bedroomPhotos[1] || getKitchenPhoto(), getBathroomPhoto() || getExternalPhoto()]
           : [bedroomPhoto || allPhotos[2], getKitchenPhoto() || allPhotos[3], getBathroomPhoto() || allPhotos[4]];
+
+        const labelsForSlide = (photosForSlide.filter(Boolean) as string[]).map((url) => getCategoryLabelForUrl(url));
         
         slides.push({
           name: 'Quartos',
-          component: <RevendaMultiPhotoFeed data={data} photos={photosForSlide.filter(Boolean).slice(0, 3) as string[]} label="Acomodações" variant="triangle" />,
+          component: <RevendaMultiPhotoFeed 
+            data={data} 
+            photos={photosForSlide.filter(Boolean).slice(0, 3) as string[]} 
+            photoLabels={labelsForSlide.slice(0, 3)}
+            label="Acomodações" 
+            variant="rounded-boxes" 
+          />,
           category: 'quarto',
         });
       } else {

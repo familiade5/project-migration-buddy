@@ -1,4 +1,5 @@
 import logoVdhRevenda from '@/assets/logo-vdh-revenda.png';
+import logoVdhRevendaTransparent from '@/assets/logo-vdh-revenda-transparent.png';
 
 interface RevendaLogoProps {
   size?: 'sm' | 'md' | 'lg' | 'xl' | 'xxl';
@@ -55,15 +56,14 @@ export const RevendaLogo = ({
       }}
     >
       <img 
-        src={logoVdhRevenda}
+        src={logoVdhRevendaTransparent}
         alt="VDH Revenda+"
         className="w-full h-full object-contain"
         style={{
-          // White color with subtle glow - no background, fully transparent
+          // Assinatura branca, sem fundo (usa PNG transparente)
           filter: `
-            brightness(0) invert(1)
-            drop-shadow(0 0 8px rgba(255, 255, 255, 0.5))
-            drop-shadow(0 2px 10px rgba(0, 0, 0, 0.4))
+            drop-shadow(0 0 8px rgba(255, 255, 255, 0.35))
+            drop-shadow(0 2px 10px rgba(0, 0, 0, 0.45))
           `,
         }}
       />
@@ -101,15 +101,12 @@ export const RevendaWatermark = ({
       }}
     >
       <img 
-        src={logoVdhRevenda}
+        src={logoVdhRevendaTransparent}
         alt="VDH Revenda+"
         className="w-full h-full object-contain"
         style={{
-          // Subtle white watermark - discreet signature
-          filter: `
-            brightness(0) invert(1)
-            drop-shadow(0 0 4px rgba(0, 0, 0, 0.5))
-          `,
+          // Marca d'água discreta, branca e sem fundo
+          filter: `drop-shadow(0 0 4px rgba(0, 0, 0, 0.55))`,
           opacity: 0.5,
         }}
       />
