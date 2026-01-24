@@ -1,5 +1,4 @@
 import logoVdhRevenda from '@/assets/logo-vdh-revenda.png';
-import logoVdhRevendaTransparent from '@/assets/logo-vdh-revenda-transparent.png';
 
 interface RevendaLogoProps {
   size?: 'sm' | 'md' | 'lg' | 'xl' | 'xxl';
@@ -8,11 +7,56 @@ interface RevendaLogoProps {
 }
 
 const sizeConfig = {
-  sm: { width: 80, height: 40 },
-  md: { width: 120, height: 60 },
-  lg: { width: 160, height: 80 },
-  xl: { width: 200, height: 100 },
-  xxl: { width: 280, height: 140 },
+  sm: { width: 80, height: 30 },
+  md: { width: 120, height: 45 },
+  lg: { width: 160, height: 60 },
+  xl: { width: 200, height: 75 },
+  xxl: { width: 280, height: 105 },
+};
+
+// SVG Logo component - pure white, no background, no effects
+const LogoSVG = ({ width = 180 }: { width?: number }) => {
+  const height = width * 0.375; // Maintain aspect ratio (300/800)
+  
+  return (
+    <svg 
+      width={width} 
+      height={height} 
+      viewBox="0 0 800 300" 
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <g fill="#FFFFFF">
+        {/* Roof */}
+        <path d="M200 120 L400 40 L600 120 L585 120 L400 55 L215 120 Z"/>
+        
+        {/* VDH text */}
+        <text 
+          x="400" 
+          y="180"
+          textAnchor="middle"
+          fontFamily="Georgia, Times New Roman, serif"
+          fontSize="120"
+          fontWeight="600"
+          fill="#FFFFFF"
+        >
+          VDH
+        </text>
+        
+        {/* REVENDA + */}
+        <text 
+          x="400" 
+          y="235"
+          textAnchor="middle"
+          fontFamily="Arial, Helvetica, sans-serif"
+          fontSize="42"
+          letterSpacing="6"
+          fill="#FFFFFF"
+        >
+          REVENDA +
+        </text>
+      </g>
+    </svg>
+  );
 };
 
 // Main logo component - uses the uploaded VDH Revenda+ image
@@ -46,7 +90,7 @@ export const RevendaLogo = ({
     );
   }
   
-  // Transparent version - white logo floating on images (for creatives)
+  // Transparent version - white SVG logo for creatives
   return (
     <div 
       className={`flex items-center justify-center ${className}`}
@@ -55,16 +99,12 @@ export const RevendaLogo = ({
         height: config.height,
       }}
     >
-      <img 
-        src={logoVdhRevendaTransparent}
-        alt="VDH Revenda+"
-        className="w-full h-full object-contain"
-      />
+      <LogoSVG width={config.width} />
     </div>
   );
 };
 
-// Watermark overlay - subtle white logo in corner or center for all images
+// Watermark overlay - white SVG logo for all images
 export const RevendaWatermark = ({ 
   position = 'bottom-center',
   size = 'md',
@@ -73,25 +113,16 @@ export const RevendaWatermark = ({
   size?: 'sm' | 'md' | 'lg';
 }) => {
   const config = {
-    sm: { width: 100, height: 50 },
-    md: { width: 140, height: 70 },
-    lg: { width: 180, height: 90 },
+    sm: 100,
+    md: 140,
+    lg: 180,
   };
 
-  // Bottom-center is the default for single-photo slides (like reference image)
+  // Bottom-center is the default for single-photo slides
   if (position === 'bottom-center') {
     return (
-      <div 
-        className="absolute bottom-8 left-0 right-0 flex justify-center pointer-events-none"
-      >
-        <img 
-          src={logoVdhRevendaTransparent}
-          alt="VDH Revenda+"
-          style={{
-            width: config[size].width,
-            height: 'auto',
-          }}
-        />
+      <div className="absolute bottom-8 left-0 right-0 flex justify-center pointer-events-none">
+        <LogoSVG width={config[size]} />
       </div>
     );
   }
@@ -104,39 +135,20 @@ export const RevendaWatermark = ({
   };
 
   return (
-    <div 
-      className={`absolute ${positionStyles[position]} pointer-events-none`}
-      style={{
-        width: config[size].width,
-        height: config[size].height,
-      }}
-    >
-      <img 
-        src={logoVdhRevendaTransparent}
-        alt="VDH Revenda+"
-        className="w-full h-full object-contain"
-      />
+    <div className={`absolute ${positionStyles[position]} pointer-events-none`}>
+      <LogoSVG width={config[size]} />
     </div>
   );
 };
 
-// Logo bar for bottom of feed posts - centered at bottom like reference image
+// Logo bar for bottom of feed posts - centered at bottom
 export const RevendaLogoBar = () => {
   return (
     <div 
       className="absolute bottom-0 left-0 right-0 flex items-center justify-center"
-      style={{
-        paddingBottom: '40px',
-      }}
+      style={{ paddingBottom: '40px' }}
     >
-      <img 
-        src={logoVdhRevendaTransparent}
-        alt="VDH Revenda+"
-        style={{
-          width: '180px',
-          height: 'auto',
-        }}
-      />
+      <LogoSVG width={180} />
     </div>
   );
 };
@@ -146,18 +158,9 @@ export const RevendaLogoBarStory = () => {
   return (
     <div 
       className="absolute bottom-0 left-0 right-0 flex items-center justify-center"
-      style={{
-        paddingBottom: '60px',
-      }}
+      style={{ paddingBottom: '60px' }}
     >
-      <img 
-        src={logoVdhRevendaTransparent}
-        alt="VDH Revenda+"
-        style={{
-          width: '220px',
-          height: 'auto',
-        }}
-      />
+      <LogoSVG width={220} />
     </div>
   );
 };
