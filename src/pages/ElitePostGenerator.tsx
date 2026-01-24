@@ -39,7 +39,7 @@ const ElitePostGenerator = () => {
           </div>
           <div className="hidden sm:flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-amber-500/10 to-yellow-500/10 border border-amber-500/20">
             <Sparkles className="w-4 h-4 text-amber-400" />
-            <span className="text-sm font-medium text-amber-400">8 posts + legenda</span>
+            <span className="text-sm font-medium text-amber-400">10 posts + legenda</span>
           </div>
         </div>
 
@@ -89,7 +89,7 @@ const ElitePostGenerator = () => {
                     address={propertyData.fullAddress || `${propertyData.street}, ${propertyData.neighborhood}, ${propertyData.city} - ${propertyData.state}`}
                     propertyType={propertyData.type}
                     onPhotosSelected={(selectedPhotos) => {
-                      setPhotos(prev => [...prev, ...selectedPhotos].slice(0, 4));
+                      setPhotos(prev => [...prev, ...selectedPhotos].slice(0, 10));
                     }}
                     onCondominiumFound={(name) => {
                       setPropertyData(prev => ({
@@ -151,7 +151,7 @@ const ElitePostGenerator = () => {
               <div className="px-4 py-2 rounded-full bg-gradient-to-r from-amber-500/10 to-yellow-500/10 border border-amber-500/20">
                 <div className="flex items-center gap-2">
                   <Sparkles className="w-4 h-4 text-amber-400" />
-                  <span className="text-sm font-medium text-amber-400">8 posts + legenda</span>
+                  <span className="text-sm font-medium text-amber-400">10 posts + legenda</span>
                 </div>
               </div>
             </div>

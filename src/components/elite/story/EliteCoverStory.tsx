@@ -11,15 +11,29 @@ interface EliteCoverStoryProps {
 export const EliteCoverStory = ({ data, photo }: EliteCoverStoryProps) => {
   return (
     <div className="post-template-story relative overflow-hidden" style={{ background: '#0a0a0f' }}>
-      {/* Full bleed photo */}
+      {/* Full bleed photo - clean, minimal overlays */}
       {photo ? (
         <>
           <div 
             className="absolute inset-0 bg-cover bg-center"
             style={{ backgroundImage: `url(${photo})` }}
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent" />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-transparent to-transparent" />
+          {/* Minimal gradient only at bottom for text readability */}
+          <div 
+            className="absolute inset-x-0 bottom-0"
+            style={{ 
+              height: '55%',
+              background: 'linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.4) 60%, transparent 100%)'
+            }}
+          />
+          {/* Minimal gradient at top for logo */}
+          <div 
+            className="absolute inset-x-0 top-0"
+            style={{ 
+              height: '25%',
+              background: 'linear-gradient(to bottom, rgba(0,0,0,0.5) 0%, transparent 100%)'
+            }}
+          />
         </>
       ) : (
         <div className="absolute inset-0 bg-gradient-to-br from-[#1a1a1f] via-[#0f0f14] to-[#0a0a0f]" />

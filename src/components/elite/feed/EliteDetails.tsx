@@ -86,13 +86,7 @@ export const EliteDetails = ({ data, photo, photos = [] }: EliteDetailsProps) =>
               }}
             />
           </div>
-          {/* Subtle gradient overlay */}
-          <div 
-            className="absolute inset-0 pointer-events-none"
-            style={{ 
-              background: 'linear-gradient(90deg, transparent 70%, #0a0a0f 100%)'
-            }}
-          />
+          {/* Removed gradient overlay for cleaner photos */}
         </div>
 
         {/* Right - Details panel */}
