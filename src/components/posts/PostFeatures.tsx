@@ -25,65 +25,58 @@ export const PostFeatures = ({ data, photo }: PostFeaturesProps) => {
   const generateAutoTexts = () => {
     const features: string[] = [];
     
-    // Prioridade 1: Condições de pagamento (maior gatilho de conversão)
-    if (data.discount && parseFloat(data.discount.replace(',', '.')) > 0) {
-      const discountValue = parseFloat(data.discount.replace(',', '.'));
-      if (discountValue >= 40) {
-        features.push(`Economia de ${data.discount}% garantida`);
-      } else if (discountValue >= 20) {
-        features.push(`${data.discount}% abaixo da avaliação`);
+    // Características do imóvel (dados concretos)
+    if (data.bedrooms && data.bedrooms !== '' && data.bedrooms !== '0') {
+      const bedroomNum = Number(data.bedrooms);
+      if (bedroomNum >= 4) {
+        features.push(`${bedroomNum} dormitórios privativos`);
+      } else if (bedroomNum >= 2) {
+        features.push(`${bedroomNum} quartos bem distribuídos`);
       } else {
-        features.push(`Desconto real de ${data.discount}%`);
+        features.push('Quarto amplo e iluminado');
       }
     }
     
-    if (features.length < 3 && data.canUseFGTS) {
-      features.push('FGTS aceito como entrada');
+    if (data.bathrooms && data.bathrooms !== '' && data.bathrooms !== '0') {
+      const bathroomNum = Number(data.bathrooms);
+      if (bathroomNum >= 3) {
+        features.push(`${bathroomNum} banheiros completos`);
+      } else if (bathroomNum === 2) {
+        features.push('Banheiro social + suíte');
+      } else {
+        features.push('Banheiro com acabamento');
+      }
     }
     
-    if (features.length < 3 && data.hasEasyEntry) {
-      features.push('Entrada parcelada em até 48x');
+    if (data.garageSpaces && data.garageSpaces !== '' && data.garageSpaces !== '0') {
+      const garageNum = Number(data.garageSpaces);
+      if (garageNum >= 2) {
+        features.push(`Garagem para ${garageNum} veículos`);
+      } else {
+        features.push('Vaga de garagem coberta');
+      }
     }
     
-    if (features.length < 3 && data.acceptsFinancing) {
-      features.push('Financiamento em até 420 meses');
-    }
-    
-    // Prioridade 2: Características transformadas em benefícios
     if (features.length < 3 && data.area && data.area !== '' && data.area !== '0') {
-      const areaNum = parseFloat(data.area);
-      if (areaNum >= 200) {
-        features.push('Amplo espaço para toda família');
-      } else if (areaNum >= 100) {
-        features.push('Metragem ideal para seu conforto');
-      } else {
-        features.push('Planta otimizada e funcional');
-      }
+      features.push(`${data.area}m² de área construída`);
     }
     
-    if (features.length < 3 && data.garageSpaces && data.garageSpaces !== '' && data.garageSpaces !== '0') {
-      features.push('Segurança para seu veículo');
-    }
+    // Features do usuário
+    data.features.forEach(f => {
+      if (features.length < 3) features.push(f);
+    });
     
-    // Prioridade 3: Features selecionadas pelo usuário
-    if (features.length < 3 && data.features.length > 0) {
-      data.features.forEach(f => {
-        if (features.length < 3) features.push(f);
-      });
-    }
-    
-    // Fallback: Gatilhos universais para Venda Direta Caixa
-    const conversionTriggers = [
-      'Documentação 100% regularizada',
-      'Abaixo do valor de mercado',
-      'Patrimônio com escritura pública',
-      'Condições exclusivas de compra',
+    // Fallback: características genéricas
+    const propertyFeatures = [
+      'Localização estratégica',
+      'Infraestrutura completa',
+      'Região em valorização',
     ];
     
-    let triggerIndex = 0;
-    while (features.length < 3 && triggerIndex < conversionTriggers.length) {
-      features.push(conversionTriggers[triggerIndex]);
-      triggerIndex++;
+    let featureIndex = 0;
+    while (features.length < 3 && featureIndex < propertyFeatures.length) {
+      features.push(propertyFeatures[featureIndex]);
+      featureIndex++;
     }
     
     return features.slice(0, 3);
