@@ -67,9 +67,9 @@ export const PostFeaturesStory = ({ data, photo }: PostFeaturesStoryProps) => {
     
     // Fallback: características genéricas
     const propertyFeatures = [
-      'Localização estratégica',
       'Infraestrutura completa',
       'Região em valorização',
+      'Pronto para morar',
     ];
     
     let featureIndex = 0;

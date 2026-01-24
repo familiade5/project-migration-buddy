@@ -41,7 +41,7 @@ export const PostDetails = ({ data, photo, photos = [] }: PostDetailsProps) => {
     
     // Adiciona condições específicas se disponíveis
     if (data.discount && parseFloat(data.discount.replace(',', '.')) > 0) {
-      features.push(`Economia de ${data.discount}% garantida`);
+      features.push(`Economia de ${data.discount}%`);
     }
     
     if (data.canUseFGTS) {
