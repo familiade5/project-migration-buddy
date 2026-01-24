@@ -85,8 +85,8 @@ export const PhotoSearcher = ({
       if (prev.includes(photoUrl)) {
         return prev.filter(p => p !== photoUrl);
       }
-      if (prev.length >= 4) {
-        toast.warning('Você pode selecionar no máximo 4 fotos');
+      if (prev.length >= 10) {
+        toast.warning('Você pode selecionar no máximo 10 fotos');
         return prev;
       }
       return [...prev, photoUrl];
@@ -161,10 +161,10 @@ export const PhotoSearcher = ({
         <div className="space-y-3">
           <div className="flex items-center justify-between">
             <p className="text-sm text-muted-foreground">
-              Selecione até 4 fotos (clique para selecionar na ordem)
+              Selecione até 10 fotos (clique para selecionar na ordem)
             </p>
             <span className="text-sm font-medium text-gold">
-              {selectedPhotos.length}/4 selecionadas
+              {selectedPhotos.length}/10 selecionadas
             </span>
           </div>
 
