@@ -48,7 +48,7 @@ export const RevendaCoverFeed = ({ data, photo }: RevendaCoverFeedProps) => {
 
       {/* Top Logo */}
       <div className="absolute top-10 left-10">
-        <RevendaLogo size="lg" />
+        <RevendaLogo size="xxl" />
       </div>
 
       {/* Bottom Content */}

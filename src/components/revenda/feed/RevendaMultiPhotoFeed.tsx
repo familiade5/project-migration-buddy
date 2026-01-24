@@ -239,8 +239,7 @@ export const RevendaMultiPhotoFeed = ({ data, photos, photoLabels = [], label, v
         </div>
       )}
 
-      {/* Logo watermark - bottom right, subtle */}
-      <RevendaWatermark position="bottom-right" size="md" />
+      {/* Remove logo watermark from bottom - logos are now on individual photos */}
     </div>
   );
 };
