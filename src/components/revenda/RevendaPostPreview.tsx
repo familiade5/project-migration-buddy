@@ -5,6 +5,7 @@ import { RevendaPhotoFeed } from './feed/RevendaPhotoFeed';
 import { RevendaMultiPhotoFeed } from './feed/RevendaMultiPhotoFeed';
 import { RevendaFeaturesFeed } from './feed/RevendaFeaturesFeed';
 import { RevendaContactFeed } from './feed/RevendaContactFeed';
+import { RevendaDescriptionFeed } from './feed/RevendaDescriptionFeed';
 import { RevendaCoverStory } from './story/RevendaCoverStory';
 import { RevendaLifestyleStory } from './story/RevendaLifestyleStory';
 import { RevendaMultiPhotoStory } from './story/RevendaMultiPhotoStory';
@@ -200,13 +201,19 @@ export const RevendaPostPreview = ({ data, photos }: RevendaPostPreviewProps) =>
       component: <RevendaFeaturesFeed data={data} photo={getBedroomPhoto() || getKitchenPhoto()} />,
     });
 
-    // Slide 7: Contact
+    // Slide 7: Description (emotional text)
+    slides.push({
+      name: 'Descrição',
+      component: <RevendaDescriptionFeed data={data} photo={getFacadePhoto()} />,
+    });
+
+    // Slide 8: Contact
     slides.push({
       name: 'Contato',
       component: <RevendaContactFeed data={data} photo={getFacadePhoto()} />,
     });
 
-    return slides.slice(0, 7);
+    return slides.slice(0, 8);
   };
 
   // Build slides for Story (5 slides - fixed sequence with multi-photo support)

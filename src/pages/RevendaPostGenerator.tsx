@@ -4,10 +4,11 @@ import { RevendaPropertyForm } from '@/components/revenda/RevendaPropertyForm';
 import { RevendaPhotoUpload } from '@/components/revenda/RevendaPhotoUpload';
 import { RevendaPostPreview } from '@/components/revenda/RevendaPostPreview';
 import { RevendaDetailLevelSelector } from '@/components/revenda/RevendaDetailLevelSelector';
+import { RevendaCaptionGenerator } from '@/components/revenda/RevendaCaptionGenerator';
 import { RevendaLogo } from '@/components/revenda/RevendaLogo';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Image, FileText, Settings2, Gem } from 'lucide-react';
+import { Image, FileText, Settings2, Gem, MessageSquareText } from 'lucide-react';
 
 const RevendaPostGenerator = () => {
   const [propertyData, setPropertyData] = useState<RevendaPropertyData>(defaultRevendaData);
@@ -113,8 +114,9 @@ const RevendaPostGenerator = () => {
             </div>
           </div>
 
-          {/* Right Column - Preview */}
+          {/* Right Column - Preview & Caption */}
           <div className="lg:sticky lg:top-4 space-y-6 min-w-0">
+            {/* Post Preview */}
             <div 
               className="rounded-2xl p-6 shadow-sm"
               style={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0' }}
@@ -127,6 +129,14 @@ const RevendaPostGenerator = () => {
                 data={propertyData}
                 photos={photos}
               />
+            </div>
+
+            {/* Caption Generator */}
+            <div 
+              className="rounded-2xl p-6 shadow-sm"
+              style={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0' }}
+            >
+              <RevendaCaptionGenerator data={propertyData} />
             </div>
           </div>
         </div>

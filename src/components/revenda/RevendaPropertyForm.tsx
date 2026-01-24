@@ -275,17 +275,100 @@ export const RevendaPropertyForm = ({ data, onChange }: RevendaPropertyFormProps
             </div>
             
             <div>
-              <Label className="text-slate-600">Descrição Livre</Label>
+              <Label className="text-slate-600">Descrição Livre (gerada automaticamente se vazia)</Label>
               <Textarea
                 value={data.descricaoLivre}
                 onChange={(e) => updateField('descricaoLivre', e.target.value)}
-                placeholder="Descreva os diferenciais únicos do imóvel..."
+                placeholder="Descreva os diferenciais únicos do imóvel... (deixe vazio para gerar automaticamente)"
                 className="bg-white border-slate-200 focus:border-sky-400 min-h-[80px] text-slate-900"
               />
             </div>
           </div>
         </div>
       )}
+
+      {/* Legenda Fields */}
+      <Collapsible>
+        <CollapsibleTrigger className="flex items-center justify-between w-full py-2 text-sm font-medium text-slate-600 hover:text-slate-900">
+          <span>Dados para Legenda (Instagram/Facebook)</span>
+          <ChevronDown className="w-4 h-4" />
+        </CollapsibleTrigger>
+        <CollapsibleContent>
+          <div className="space-y-4 pt-3">
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label className="text-slate-600 text-xs">Andar / Tipo</Label>
+                <Input
+                  value={data.andarOuTipo}
+                  onChange={(e) => updateField('andarOuTipo', e.target.value)}
+                  placeholder="Ex: 2º andar, Térreo, Cobertura"
+                  className="bg-white border-slate-200 focus:border-sky-400 text-slate-900"
+                />
+              </div>
+              <div>
+                <Label className="text-slate-600 text-xs">Condição de Financiamento</Label>
+                <Input
+                  value={data.condicaoFinanciamento}
+                  onChange={(e) => updateField('condicaoFinanciamento', e.target.value)}
+                  placeholder="Aceita financiamento e FGTS"
+                  className="bg-white border-slate-200 focus:border-sky-400 text-slate-900"
+                />
+              </div>
+            </div>
+            
+            <div>
+              <Label className="text-slate-600 text-xs">Subsídio / Entrada (texto livre)</Label>
+              <Input
+                value={data.subsidioOuEntrada}
+                onChange={(e) => updateField('subsidioOuEntrada', e.target.value)}
+                placeholder="Ex: Entrada a partir de R$ 5.000"
+                className="bg-white border-slate-200 focus:border-sky-400 text-slate-900"
+              />
+            </div>
+            
+            <div>
+              <Label className="text-slate-600 text-xs">Itens de Lazer (separados por vírgula)</Label>
+              <Input
+                value={data.itensLazer?.join(', ') || ''}
+                onChange={(e) => updateField('itensLazer', e.target.value.split(',').map(s => s.trim()).filter(Boolean))}
+                placeholder="Piscina, Academia, Churrasqueira, Playground"
+                className="bg-white border-slate-200 focus:border-sky-400 text-slate-900"
+              />
+            </div>
+            
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label className="text-slate-600 text-xs">CEP</Label>
+                <Input
+                  value={data.cep}
+                  onChange={(e) => updateField('cep', e.target.value)}
+                  placeholder="79000-000"
+                  className="bg-white border-slate-200 focus:border-sky-400 text-slate-900"
+                />
+              </div>
+              <div>
+                <Label className="text-slate-600 text-xs">Facebook URL</Label>
+                <Input
+                  value={data.facebookUrl}
+                  onChange={(e) => updateField('facebookUrl', e.target.value)}
+                  placeholder="https://facebook.com/..."
+                  className="bg-white border-slate-200 focus:border-sky-400 text-slate-900"
+                />
+              </div>
+            </div>
+            
+            <div>
+              <Label className="text-slate-600 text-xs">Site URL</Label>
+              <Input
+                value={data.siteUrl}
+                onChange={(e) => updateField('siteUrl', e.target.value)}
+                placeholder="https://seusite.com.br"
+                className="bg-white border-slate-200 focus:border-sky-400 text-slate-900"
+              />
+            </div>
+          </div>
+        </CollapsibleContent>
+      </Collapsible>
 
       {/* Features */}
       <Collapsible>

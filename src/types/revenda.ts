@@ -30,6 +30,7 @@ export interface RevendaPropertyData {
   city: string;
   state: string;
   fullAddress: string;
+  cep: string;
   
   // Size & Layout
   bedrooms: string;
@@ -38,12 +39,15 @@ export interface RevendaPropertyData {
   garageSpaces: string;
   area: string;
   areaTerreno: string;
+  andarOuTipo: string; // Ex: "2º andar", "Térreo", "Cobertura"
   
   // Price
   price: string;
   pricePerMeter: string;
   condominiumFee: string;
   iptu: string;
+  condicaoFinanciamento: string; // Ex: "Aceita financiamento e FGTS"
+  subsidioOuEntrada: string; // Texto livre sobre entrada/subsídio
   
   // Comfort Details (DetailLevel: conforto)
   hasNaturalLight: boolean;
@@ -54,15 +58,18 @@ export interface RevendaPropertyData {
   // Premium Details (DetailLevel: premium)
   acabamentos: string;         // Finishing quality
   diferenciais: string[];      // Unique features
-  descricaoLivre: string;      // Free description
+  descricaoLivre: string;      // Free description (auto-generated or manual)
   
   // Lifestyle Features
   features: string[];
+  itensLazer: string[]; // Lista de itens de lazer para legenda
   
   // Contact
   contactPhone: string;
   contactName: string;
   creci: string;
+  facebookUrl: string;
+  siteUrl: string;
   
   // Detail level selected
   detailLevel: DetailLevel;
@@ -76,6 +83,7 @@ export const defaultRevendaData: RevendaPropertyData = {
   city: '',
   state: '',
   fullAddress: '',
+  cep: '',
   
   bedrooms: '',
   bathrooms: '',
@@ -83,11 +91,14 @@ export const defaultRevendaData: RevendaPropertyData = {
   garageSpaces: '',
   area: '',
   areaTerreno: '',
+  andarOuTipo: '',
   
   price: '',
   pricePerMeter: '',
   condominiumFee: '',
   iptu: '',
+  condicaoFinanciamento: 'Aceita financiamento e FGTS',
+  subsidioOuEntrada: '',
   
   hasNaturalLight: false,
   hasVaranda: false,
@@ -99,10 +110,13 @@ export const defaultRevendaData: RevendaPropertyData = {
   descricaoLivre: '',
   
   features: [],
+  itensLazer: [],
   
   contactPhone: '(92) 98839-1098',
   contactName: 'Iury Sampaio',
   creci: 'CRECI 14851 MS PJ',
+  facebookUrl: '',
+  siteUrl: '',
   
   detailLevel: 'conforto',
 };
