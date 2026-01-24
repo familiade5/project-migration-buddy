@@ -104,38 +104,17 @@ export const RevendaCaptionGenerator = ({ data }: RevendaCaptionGeneratorProps) 
 
   return (
     <div className="space-y-4 w-full max-w-full overflow-hidden">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-        <div className="flex items-center gap-2">
-          <FileText className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0" style={{ color: '#0ea5e9' }} />
-          <h3 className="font-semibold text-sm sm:text-base" style={{ color: '#0f172a' }}>
-            Legenda Instagram/Facebook
-          </h3>
-        </div>
-        <div className="flex gap-1 sm:gap-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={handleCopy}
-            className="border-slate-200 text-slate-600 hover:bg-slate-50 text-xs sm:text-sm px-2 sm:px-3"
-          >
-            <Copy className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
-            Copiar
-          </Button>
-          <Button
-            size="sm"
-            onClick={handleDownload}
-            className="bg-sky-500 hover:bg-sky-600 text-white text-xs sm:text-sm px-2 sm:px-3"
-          >
-            <Download className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
-            Baixar
-          </Button>
-        </div>
+      {/* Header - Title only */}
+      <div className="flex items-center gap-2">
+        <FileText className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0" style={{ color: '#0ea5e9' }} />
+        <h3 className="font-semibold text-sm sm:text-base" style={{ color: '#0f172a' }}>
+          Legenda Instagram/Facebook
+        </h3>
       </div>
 
       {/* Caption Preview */}
       <div 
-        className="p-4 rounded-xl font-mono text-sm whitespace-pre-wrap"
+        className="p-4 rounded-xl font-mono text-sm whitespace-pre-wrap max-h-64 overflow-y-auto"
         style={{ 
           backgroundColor: '#f8fafc',
           border: '1px solid #e2e8f0',
@@ -144,6 +123,27 @@ export const RevendaCaptionGenerator = ({ data }: RevendaCaptionGeneratorProps) 
         }}
       >
         {caption}
+      </div>
+
+      {/* Action Buttons - at bottom for better visibility */}
+      <div className="flex flex-wrap gap-2">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={handleCopy}
+          className="border-slate-200 text-slate-600 hover:bg-slate-50 text-xs sm:text-sm px-3 sm:px-4 flex-1 sm:flex-none"
+        >
+          <Copy className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
+          Copiar
+        </Button>
+        <Button
+          size="sm"
+          onClick={handleDownload}
+          className="bg-sky-500 hover:bg-sky-600 text-white text-xs sm:text-sm px-3 sm:px-4 flex-1 sm:flex-none"
+        >
+          <Download className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
+          Baixar
+        </Button>
       </div>
 
       {/* Tip */}
