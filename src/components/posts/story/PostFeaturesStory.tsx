@@ -8,8 +8,15 @@ interface PostFeaturesStoryProps {
   photos?: string[];
 }
 
-export const PostFeaturesStory = ({ data, photo }: PostFeaturesStoryProps) => {
-  // SLIDE 2 STORY - Foco: BENEFÍCIOS E CONDIÇÕES
+export const PostFeaturesStory = ({ data, photo, photos = [] }: PostFeaturesStoryProps) => {
+  const getPhoto = (index: number) => {
+    if (photos.length > 0) {
+      return photos[index % photos.length] || photo;
+    }
+    return photo;
+  };
+
+  // SLIDE 2 STORY - Foco: DETALHES DO IMÓVEL (Quartos, Garagem, Banheiros)
   const getHighlightFeatures = () => {
     // Se tem textos personalizados, usa eles
     if (data.customSlide2Texts && data.customSlide2Texts.some(t => t && t.trim() !== '')) {
@@ -53,47 +60,59 @@ export const PostFeaturesStory = ({ data, photo }: PostFeaturesStoryProps) => {
 
   return (
     <div className="post-template-story bg-[#1a1f2e] relative overflow-hidden">
-      {/* Foto no topo - 55% da altura */}
-      <div className="absolute top-0 left-0 right-0 h-[55%]">
-        {photo ? (
+      {/* Foto grande no topo - 50% da altura */}
+      <div className="absolute top-0 left-0 right-0 h-[50%]">
+        {getPhoto(0) ? (
           <div
             className="absolute inset-0 bg-cover bg-center brightness-110"
-            style={{ backgroundImage: `url(${photo})` }}
+            style={{ backgroundImage: `url(${getPhoto(0)})` }}
           />
         ) : (
           <div className="absolute inset-0 bg-gradient-to-br from-[#2a3142] to-[#1a1f2e]" />
         )}
         <div className="absolute inset-0 flex items-center justify-center">
-          <p className="text-white/15 font-bold tracking-wider" style={{ fontSize: '180px' }}>VDH</p>
+          <p className="text-white/15 font-bold tracking-wider" style={{ fontSize: '160px' }}>VDH</p>
         </div>
       </div>
 
-      {/* Painel de diferenciais na parte inferior */}
-      <div className="absolute bottom-0 left-0 right-0 h-[45%] bg-[#2a3142] flex flex-col justify-center" style={{ padding: '60px' }}>
-        {/* Marca d'água VDH sutil */}
-        <div className="absolute opacity-5" style={{ top: '40px', right: '40px' }}>
-          <p className="font-bold tracking-wider text-white" style={{ fontSize: '120px' }}>VDH</p>
-        </div>
-        
-        <div className="relative z-10" style={{ display: 'flex', flexDirection: 'column', gap: '50px' }}>
-          {highlightFeatures.map((feature, index) => (
-            <div
-              key={index}
-              className="flex items-start"
-              style={{ gap: '40px' }}
-            >
-              <div className="rounded bg-[#d4a44c] flex items-center justify-center flex-shrink-0" style={{ width: '80px', height: '80px', marginTop: '4px' }}>
-                <Check className="text-[#1a1f2e]" style={{ width: '50px', height: '50px' }} />
-              </div>
-              <span className="text-white font-semibold leading-tight" style={{ fontSize: '48px' }}>{feature}</span>
+      {/* Duas fotos menores no meio */}
+      <div className="absolute top-[50%] left-0 right-0 h-[20%] flex" style={{ gap: '24px', padding: '0 24px' }}>
+        {[1, 2].map((photoIndex) => (
+          <div key={photoIndex} className="flex-1 relative overflow-hidden rounded-lg">
+            {getPhoto(photoIndex) ? (
+              <div
+                className="absolute inset-0 bg-cover bg-center brightness-110"
+                style={{ backgroundImage: `url(${getPhoto(photoIndex)})` }}
+              />
+            ) : (
+              <div className="absolute inset-0 bg-gradient-to-br from-[#2a3142] to-[#1a1f2e]" />
+            )}
+            <div className="absolute inset-0 flex items-center justify-center">
+              <p className="text-white/15 font-bold tracking-wider" style={{ fontSize: '70px' }}>VDH</p>
             </div>
-          ))}
-        </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Painel de características na parte inferior */}
+      <div className="absolute bottom-0 left-0 right-0 h-[30%] bg-[#2a3142] flex flex-col justify-center" style={{ padding: '40px' }}>
+        {highlightFeatures.map((feature, index) => (
+          <div
+            key={index}
+            className="flex items-center border-b border-white/10 last:border-b-0"
+            style={{ gap: '32px', padding: '24px 0' }}
+          >
+            <div className="rounded bg-[#d4a44c] flex items-center justify-center flex-shrink-0" style={{ width: '60px', height: '60px' }}>
+              <Check className="text-[#1a1f2e]" style={{ width: '40px', height: '40px' }} />
+            </div>
+            <span className="text-white font-medium" style={{ fontSize: '40px' }}>{feature}</span>
+          </div>
+        ))}
       </div>
 
       {/* Logo VDH */}
-      <div className="absolute z-10" style={{ bottom: '40px', right: '40px' }}>
-        <img src={logoVDH} alt="VDH" className="rounded" style={{ height: '100px' }} />
+      <div className="absolute z-10" style={{ bottom: '32px', right: '32px' }}>
+        <img src={logoVDH} alt="VDH" className="rounded" style={{ height: '80px' }} />
       </div>
     </div>
   );

@@ -8,15 +8,8 @@ interface PostDetailsProps {
   photos?: string[];
 }
 
-export const PostDetails = ({ data, photo, photos = [] }: PostDetailsProps) => {
-  // Usar fotos alternadas: foto principal, ou fallback para as disponíveis
-  const getPhoto = (index: number) => {
-    if (photos.length > 0) {
-      return photos[index % photos.length] || photo;
-    }
-    return photo;
-  };
-  // SLIDE 3 - Foco: CARACTERÍSTICAS DO IMÓVEL (Gatilhos: Especificidade, Tangibilidade)
+export const PostDetails = ({ data, photo }: PostDetailsProps) => {
+  // SLIDE 3 - Foco: DIFERENCIAIS (Gatilhos de conversão)
   const generateFeatures = () => {
     // Se tem textos personalizados, usa eles
     if (data.customSlide3Texts && data.customSlide3Texts.some(t => t && t.trim() !== '')) {
@@ -42,59 +35,45 @@ export const PostDetails = ({ data, photo, photos = [] }: PostDetailsProps) => {
 
   return (
     <div className="post-template bg-[#1a1f2e] relative overflow-hidden">
-      {/* Layout dividido - Fotos à esquerda em triângulo, conteúdo à direita */}
+      {/* Layout dividido - Texto à esquerda, foto à direita */}
       <div className="absolute inset-0 flex">
-        {/* Grid de 3 fotos em triângulo à esquerda */}
-        <div className="w-[55%] h-full flex flex-col" style={{ padding: '24px', gap: '24px' }}>
-          {/* Foto grande no topo - usa primeira foto disponível */}
-          <div className="flex-1 relative overflow-hidden rounded-lg">
-            {getPhoto(0) ? (
-              <div
-                className="absolute inset-0 bg-cover bg-center brightness-110"
-                style={{ backgroundImage: `url(${getPhoto(0)})` }}
-              />
-            ) : (
-              <div className="absolute inset-0 bg-gradient-to-br from-[#2a3142] to-[#1a1f2e]" />
-            )}
-            <div className="absolute inset-0 flex items-center justify-center">
-              <p className="text-white/15 font-bold tracking-wider" style={{ fontSize: '100px' }}>VDH</p>
-            </div>
+        {/* Painel de texto à esquerda */}
+        <div className="w-[50%] h-full flex flex-col justify-center bg-[#2a3142]" style={{ padding: '80px' }}>
+          {/* Marca d'água VDH sutil no fundo */}
+          <div className="absolute opacity-5" style={{ top: '25%', left: '80px' }}>
+            <p className="font-bold tracking-wider text-white" style={{ fontSize: '160px' }}>VDH</p>
           </div>
           
-          {/* Duas fotos menores embaixo - usa fotos alternadas */}
-          <div className="flex h-[40%]" style={{ gap: '24px' }}>
-            {[1, 2].map((photoIndex) => (
-              <div key={photoIndex} className="flex-1 relative overflow-hidden rounded-lg">
-                {getPhoto(photoIndex) ? (
-                  <div
-                    className="absolute inset-0 bg-cover bg-center brightness-110"
-                    style={{ backgroundImage: `url(${getPhoto(photoIndex)})` }}
-                  />
-                ) : (
-                  <div className="absolute inset-0 bg-gradient-to-br from-[#2a3142] to-[#1a1f2e]" />
-                )}
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <p className="text-white/15 font-bold tracking-wider" style={{ fontSize: '60px' }}>VDH</p>
+          <div className="relative z-10" style={{ display: 'flex', flexDirection: 'column', gap: '60px' }}>
+            {displayFeatures.map((feature, index) => (
+              <div
+                key={index}
+                className="flex items-start"
+                style={{ gap: '40px' }}
+              >
+                <div className="rounded bg-[#d4a44c] flex items-center justify-center flex-shrink-0" style={{ width: '80px', height: '80px', marginTop: '4px' }}>
+                  <Check className="text-[#1a1f2e]" style={{ width: '50px', height: '50px' }} />
                 </div>
+                <span className="text-white font-semibold leading-tight" style={{ fontSize: '52px' }}>{feature}</span>
               </div>
             ))}
           </div>
         </div>
 
-        {/* Painel de características à direita */}
-        <div className="w-[45%] h-full flex flex-col justify-center bg-[#2a3142]" style={{ padding: '60px' }}>
-          {displayFeatures.map((feature, index) => (
+        {/* Foto à direita */}
+        <div className="w-[50%] h-full relative">
+          {photo ? (
             <div
-              key={index}
-              className="flex items-center border-b border-white/10 last:border-b-0"
-              style={{ gap: '32px', padding: '48px 0' }}
-            >
-              <div className="rounded bg-[#d4a44c] flex items-center justify-center flex-shrink-0" style={{ width: '72px', height: '72px' }}>
-                <Check className="text-[#1a1f2e]" style={{ width: '44px', height: '44px' }} />
-              </div>
-              <span className="text-white font-medium" style={{ fontSize: '44px' }}>{feature}</span>
-            </div>
-          ))}
+              className="absolute inset-0 bg-cover bg-center brightness-110"
+              style={{ backgroundImage: `url(${photo})` }}
+            />
+          ) : (
+            <div className="absolute inset-0 bg-gradient-to-br from-[#2a3142] to-[#1a1f2e]" />
+          )}
+          {/* Marca d'água VDH sutil */}
+          <div className="absolute inset-0 flex items-center justify-center">
+            <p className="text-white/15 font-bold tracking-wider" style={{ fontSize: '140px' }}>VDH</p>
+          </div>
         </div>
       </div>
 
