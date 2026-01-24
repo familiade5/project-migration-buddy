@@ -3,6 +3,7 @@ import logoVdhRevenda from '@/assets/logo-vdh-revenda.png';
 interface RevendaLogoProps {
   size?: 'sm' | 'md' | 'lg' | 'xl' | 'xxl';
   className?: string;
+  variant?: 'transparent' | 'with-background';
 }
 
 const sizeConfig = {
@@ -14,13 +15,37 @@ const sizeConfig = {
 };
 
 // Main logo component - uses the uploaded VDH Revenda+ image
-// White/transparent version for overlay on images - NO background
+// variant: 'transparent' = white logo on transparent (for creatives)
+// variant: 'with-background' = logo with grey background (for app UI)
 export const RevendaLogo = ({ 
   size = 'md', 
   className = '',
+  variant = 'transparent',
 }: RevendaLogoProps) => {
   const config = sizeConfig[size];
   
+  if (variant === 'with-background') {
+    // Version with grey background for app UI/presentation
+    return (
+      <div 
+        className={`flex items-center justify-center rounded-xl ${className}`}
+        style={{
+          width: config.width,
+          height: config.height,
+          backgroundColor: '#e2e8f0',
+          padding: '8px',
+        }}
+      >
+        <img 
+          src={logoVdhRevenda}
+          alt="VDH Revenda+"
+          className="w-full h-full object-contain"
+        />
+      </div>
+    );
+  }
+  
+  // Transparent version - white logo floating on images (for creatives)
   return (
     <div 
       className={`flex items-center justify-center ${className}`}
@@ -37,8 +62,8 @@ export const RevendaLogo = ({
           // White color with subtle glow - no background, fully transparent
           filter: `
             brightness(0) invert(1)
-            drop-shadow(0 0 6px rgba(255, 255, 255, 0.4))
-            drop-shadow(0 2px 8px rgba(0, 0, 0, 0.3))
+            drop-shadow(0 0 8px rgba(255, 255, 255, 0.5))
+            drop-shadow(0 2px 10px rgba(0, 0, 0, 0.4))
           `,
         }}
       />
@@ -101,7 +126,7 @@ export const RevendaLogoBar = () => {
         background: 'linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.3) 50%, transparent 100%)',
       }}
     >
-      <RevendaLogo size="lg" />
+      <RevendaLogo size="lg" variant="transparent" />
     </div>
   );
 };
@@ -115,7 +140,7 @@ export const RevendaLogoBarStory = () => {
         background: 'linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.4) 50%, transparent 100%)',
       }}
     >
-      <RevendaLogo size="xl" />
+      <RevendaLogo size="xl" variant="transparent" />
     </div>
   );
 };
