@@ -68,10 +68,7 @@ export const RevendaPhotoStory = ({ data, photo, label }: RevendaPhotoStoryProps
 
       {/* Bottom info */}
       <div 
-        className="absolute bottom-0 left-0 right-0 px-12 pb-24 pt-32"
-        style={{
-          background: 'linear-gradient(to top, rgba(15,23,42,0.95), transparent)',
-        }}
+        className="absolute bottom-32 left-0 right-0 px-12"
       >
         {/* Property name */}
         {data.propertyName && (
@@ -98,8 +95,8 @@ export const RevendaPhotoStory = ({ data, photo, label }: RevendaPhotoStoryProps
         )}
       </div>
 
-      {/* Logo watermark - bottom right */}
-      <RevendaWatermark position="bottom-right" size="lg" />
+      {/* Logo centered at bottom - like reference image */}
+      <RevendaWatermark position="bottom-center" size="lg" />
     </div>
   );
 };
