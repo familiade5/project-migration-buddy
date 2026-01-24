@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react';
-import { RevendaPropertyData, CategorizedPhoto } from '@/types/revenda';
+import { RevendaPropertyData, CategorizedPhoto, photoCategoryLabels, PhotoCategory } from '@/types/revenda';
 import { RevendaCoverFeed } from './feed/RevendaCoverFeed';
 import { RevendaPhotoFeed } from './feed/RevendaPhotoFeed';
 import { RevendaMultiPhotoFeed } from './feed/RevendaMultiPhotoFeed';
@@ -40,12 +40,25 @@ export const RevendaPostPreview = ({ data, photos }: RevendaPostPreviewProps) =>
     return photos.sort((a, b) => a.order - b.order).map(p => p.url);
   };
 
-  // Get photos organized by category
-  const getPhotosByCategory = (category: string): string[] => {
+  // Get photos organized by category - returns CategorizedPhoto array
+  const getPhotosByCategoryFull = (category: string): CategorizedPhoto[] => {
     return photos
       .filter(p => p.category === category)
-      .sort((a, b) => a.order - b.order)
-      .map(p => p.url);
+      .sort((a, b) => a.order - b.order);
+  };
+
+  // Get photos organized by category - returns URLs only
+  const getPhotosByCategory = (category: string): string[] => {
+    return getPhotosByCategoryFull(category).map(p => p.url);
+  };
+
+  // Get category label for a photo URL
+  const getCategoryLabelForUrl = (url: string): string => {
+    const photo = photos.find(p => p.url === url);
+    if (photo) {
+      return photoCategoryLabels[photo.category as PhotoCategory] || 'Ambiente';
+    }
+    return 'Ambiente';
   };
 
   // Get best photo for each purpose
@@ -188,11 +201,15 @@ export const RevendaPostPreview = ({ data, photos }: RevendaPostPreviewProps) =>
       getPhotosByCategory('sala')[1] || getKitchenPhoto() || allPhotos[3],
     ].filter(Boolean) as string[];
     
+    // Get the correct labels based on actual photo categories
+    const labelsForSlide2 = photosForSlide2.map(url => getCategoryLabelForUrl(url));
+    
     slides.push({
       name: 'Tour Visual',
       component: <RevendaMultiPhotoStory 
         data={data} 
         photos={photosForSlide2.slice(0, 3)} 
+        photoLabels={labelsForSlide2.slice(0, 3)}
         label="Conheça" 
         variant="triangle" 
       />,
@@ -205,11 +222,15 @@ export const RevendaPostPreview = ({ data, photos }: RevendaPostPreviewProps) =>
       getBathroomPhoto() || getExternalPhoto() || allPhotos[4],
     ].filter(Boolean) as string[];
     
+    // Get the correct labels based on actual photo categories
+    const labelsForSlide3 = photosForSlide3.map(url => getCategoryLabelForUrl(url));
+    
     slides.push({
       name: 'Ambientes',
       component: <RevendaMultiPhotoStory 
         data={data} 
         photos={photosForSlide3.slice(0, 3)} 
+        photoLabels={labelsForSlide3.slice(0, 3)}
         label="Lifestyle" 
         variant="rounded-boxes" 
       />,

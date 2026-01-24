@@ -35,11 +35,19 @@ const RoomLabel = ({ label }: { label: string }) => (
 export const RevendaMultiPhotoStory = ({ 
   data, 
   photos, 
-  photoLabels = ['Sala', 'Quarto', 'Cozinha'],
+  photoLabels = [],
   label, 
   variant = 'triangle' 
 }: RevendaMultiPhotoStoryProps) => {
   const photoCount = photos.length;
+  
+  // Get label for each photo - use passed labels or defaults
+  const getLabel = (index: number): string => {
+    if (photoLabels[index]) return photoLabels[index];
+    // Fallback defaults
+    const defaults = ['Sala', 'Quarto', 'Cozinha'];
+    return defaults[index] || 'Ambiente';
+  };
   
   // Triangular layout - modern, organized with premium blue borders and room labels
   const renderTriangleLayout = () => {
@@ -64,7 +72,7 @@ export const RevendaMultiPhotoStory = ({
             alt="Property main"
             className="w-full h-full object-cover"
           />
-          <RoomLabel label={photoLabels[0] || 'Sala'} />
+          <RoomLabel label={getLabel(0)} />
           {/* Watermark on each photo */}
           <RevendaWatermark position="top-right" size="sm" />
         </div>
@@ -92,7 +100,7 @@ export const RevendaMultiPhotoStory = ({
               alt="Property 2"
               className="w-full h-full object-cover"
             />
-            <RoomLabel label={photoLabels[1] || 'Quarto'} />
+            <RoomLabel label={getLabel(1)} />
           </div>
           
           {/* Right photo */}
@@ -108,7 +116,7 @@ export const RevendaMultiPhotoStory = ({
               alt="Property 3"
               className="w-full h-full object-cover"
             />
-            <RoomLabel label={photoLabels[2] || 'Cozinha'} />
+            <RoomLabel label={getLabel(2)} />
           </div>
         </div>
       </div>
@@ -135,7 +143,7 @@ export const RevendaMultiPhotoStory = ({
             alt="Property main"
             className="w-full h-full object-cover"
           />
-          <RoomLabel label={photoLabels[0] || 'Sala'} />
+          <RoomLabel label={getLabel(0)} />
           <RevendaWatermark position="top-right" size="sm" />
         </div>
         
@@ -153,7 +161,7 @@ export const RevendaMultiPhotoStory = ({
               alt="Property 2"
               className="w-full h-full object-cover"
             />
-            <RoomLabel label={photoLabels[1] || 'Quarto'} />
+            <RoomLabel label={getLabel(1)} />
           </div>
           <div 
             className="flex-1 rounded-3xl overflow-hidden relative"
@@ -167,7 +175,7 @@ export const RevendaMultiPhotoStory = ({
               alt="Property 3"
               className="w-full h-full object-cover"
             />
-            <RoomLabel label={photoLabels[2] || 'Cozinha'} />
+            <RoomLabel label={getLabel(2)} />
           </div>
         </div>
       </div>
