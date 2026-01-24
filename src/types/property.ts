@@ -31,6 +31,11 @@ export interface PropertyData {
   
   // Slide 2, 3, 4 - Mantidos
   features: string[];
+  
+  // Textos personalizados dos slides (editáveis)
+  customSlide2Texts: string[]; // 3 textos para slide 2 (benefícios)
+  customSlide3Texts: string[]; // 3 textos para slide 3 (características)
+  
   contactPhone: string;
   contactName: string;
   
@@ -90,6 +95,8 @@ export const defaultPropertyData: PropertyData = {
   creci: 'CRECI 14851 MS PJ',
   
   features: [],
+  customSlide2Texts: ['', '', ''], // Vazios = usa automático
+  customSlide3Texts: ['', '', ''], // Vazios = usa automático
   contactPhone: '(92) 98839-1098',
   contactName: 'Iury Sampaio',
   

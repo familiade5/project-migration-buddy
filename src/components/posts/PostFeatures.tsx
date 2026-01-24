@@ -9,8 +9,20 @@ interface PostFeaturesProps {
 }
 
 export const PostFeatures = ({ data, photo }: PostFeaturesProps) => {
-  // SLIDE 2 - Foco: BENEFÍCIOS E CONDIÇÕES DE PAGAMENTO (Gatilhos: Facilidade, Oportunidade)
+  // SLIDE 2 - Foco: BENEFÍCIOS E CONDIÇÕES (Gatilhos: Facilidade, Oportunidade)
   const getHighlightFeatures = () => {
+    // Se tem textos personalizados, usa eles
+    if (data.customSlide2Texts && data.customSlide2Texts.some(t => t && t.trim() !== '')) {
+      const customTexts = data.customSlide2Texts.filter(t => t && t.trim() !== '');
+      if (customTexts.length >= 3) return customTexts.slice(0, 3);
+      // Preenche o resto com automáticos
+      const autoTexts = generateAutoTexts();
+      return [...customTexts, ...autoTexts].slice(0, 3);
+    }
+    return generateAutoTexts();
+  };
+
+  const generateAutoTexts = () => {
     const features: string[] = [];
     
     // Prioridade 1: Condições de pagamento (maior gatilho de conversão)
@@ -60,19 +72,14 @@ export const PostFeatures = ({ data, photo }: PostFeaturesProps) => {
       });
     }
     
-    // Fallback: Gatilhos de conversão para Venda Direta Caixa
+    // Fallback: Gatilhos universais para Venda Direta Caixa
     const conversionTriggers = [
       'Documentação 100% regularizada',
-      'Imóvel pronto para ocupar',
-      'Oportunidade de Venda Direta',
+      'Aquisição direta com a Caixa',
       'Abaixo do valor de mercado',
       'Patrimônio com escritura pública',
+      'Condições exclusivas de compra',
     ];
-    
-    // Adiciona texto de financiamento APENAS se aceitar
-    if (data.acceptsFinancing) {
-      conversionTriggers.unshift('Aprovação de crédito facilitada');
-    }
     
     let triggerIndex = 0;
     while (features.length < 3 && triggerIndex < conversionTriggers.length) {

@@ -9,11 +9,21 @@ interface PostFeaturesStoryProps {
 }
 
 export const PostFeaturesStory = ({ data, photo }: PostFeaturesStoryProps) => {
-  // SLIDE 2 STORY - Foco: BENEFÍCIOS E CONDIÇÕES (Gatilhos: Facilidade, Oportunidade)
+  // SLIDE 2 STORY - Foco: BENEFÍCIOS E CONDIÇÕES
   const getHighlightFeatures = () => {
+    // Se tem textos personalizados, usa eles
+    if (data.customSlide2Texts && data.customSlide2Texts.some(t => t && t.trim() !== '')) {
+      const customTexts = data.customSlide2Texts.filter(t => t && t.trim() !== '');
+      if (customTexts.length >= 3) return customTexts.slice(0, 3);
+      const autoTexts = generateAutoTexts();
+      return [...customTexts, ...autoTexts].slice(0, 3);
+    }
+    return generateAutoTexts();
+  };
+
+  const generateAutoTexts = () => {
     const features: string[] = [];
     
-    // Prioridade 1: Condições de pagamento (maior gatilho de conversão)
     if (data.discount && parseFloat(data.discount.replace(',', '.')) > 0) {
       const discountValue = parseFloat(data.discount.replace(',', '.'));
       if (discountValue >= 40) {
@@ -37,7 +47,6 @@ export const PostFeaturesStory = ({ data, photo }: PostFeaturesStoryProps) => {
       features.push('Financiamento em até 420 meses');
     }
     
-    // Prioridade 2: Características transformadas em benefícios
     if (features.length < 3 && data.area && data.area !== '' && data.area !== '0') {
       const areaNum = parseFloat(data.area);
       if (areaNum >= 200) {
@@ -53,26 +62,19 @@ export const PostFeaturesStory = ({ data, photo }: PostFeaturesStoryProps) => {
       features.push('Segurança para seu veículo');
     }
     
-    // Prioridade 3: Features selecionadas
     if (features.length < 3 && data.features.length > 0) {
       data.features.forEach(f => {
         if (features.length < 3) features.push(f);
       });
     }
     
-    // Fallback: Gatilhos de conversão para Venda Direta Caixa
     const conversionTriggers = [
       'Documentação 100% regularizada',
-      'Imóvel pronto para ocupar',
-      'Oportunidade de Venda Direta',
+      'Aquisição direta com a Caixa',
       'Abaixo do valor de mercado',
       'Patrimônio com escritura pública',
+      'Condições exclusivas de compra',
     ];
-    
-    // Adiciona texto de financiamento APENAS se aceitar
-    if (data.acceptsFinancing) {
-      conversionTriggers.unshift('Aprovação de crédito facilitada');
-    }
     
     let triggerIndex = 0;
     while (features.length < 3 && triggerIndex < conversionTriggers.length) {
