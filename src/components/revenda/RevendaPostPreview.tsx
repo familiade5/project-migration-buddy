@@ -124,7 +124,7 @@ export const RevendaPostPreview = ({ data, photos }: RevendaPostPreviewProps) =>
             photos={photosForSlide.slice(0, 3)} 
             photoLabels={labelsForSlide.slice(0, 3)}
             label="Interiores" 
-            variant="triangle" 
+            variant="rounded-boxes" 
           />,
           category: 'sala',
         });
@@ -156,7 +156,7 @@ export const RevendaPostPreview = ({ data, photos }: RevendaPostPreviewProps) =>
             photos={photosForSlide.filter(Boolean).slice(0, 3) as string[]} 
             photoLabels={labelsForSlide.slice(0, 3)}
             label="Acomodações" 
-            variant="rounded-boxes" 
+            variant="split-left" 
           />,
           category: 'quarto',
         });
@@ -237,7 +237,7 @@ export const RevendaPostPreview = ({ data, photos }: RevendaPostPreviewProps) =>
         photos={photosForSlide2.slice(0, 3)} 
         photoLabels={labelsForSlide2.slice(0, 3)}
         label="Conheça" 
-        variant="triangle" 
+        variant="rounded-boxes" 
       />,
     });
 
@@ -258,7 +258,7 @@ export const RevendaPostPreview = ({ data, photos }: RevendaPostPreviewProps) =>
         photos={photosForSlide3.slice(0, 3)} 
         photoLabels={labelsForSlide3.slice(0, 3)}
         label="Lifestyle" 
-        variant="rounded-boxes" 
+        variant="split-left" 
       />,
     });
 

@@ -6,7 +6,7 @@ interface RevendaMultiPhotoStoryProps {
   photos: string[];
   photoLabels?: string[]; // Room names for each photo
   label?: string;
-  variant?: 'triangle' | 'rounded-boxes';
+  variant?: 'rounded-boxes' | 'split-left';
 }
 
 // Room label component - elegant typography on images
@@ -37,7 +37,7 @@ export const RevendaMultiPhotoStory = ({
   photos, 
   photoLabels = [],
   label, 
-  variant = 'triangle' 
+  variant = 'rounded-boxes' 
 }: RevendaMultiPhotoStoryProps) => {
   const photoCount = photos.length;
   
@@ -49,86 +49,12 @@ export const RevendaMultiPhotoStory = ({
     return defaults[index] || 'Ambiente';
   };
   
-  // Triangular layout - modern, organized with premium blue borders and room labels
-  const renderTriangleLayout = () => {
-    if (photoCount < 3) return null;
-    
-    return (
-      <div className="absolute inset-0 p-10">
-        {/* Main large photo at top - hero shot */}
-        <div 
-          className="absolute rounded-2xl overflow-hidden"
-          style={{ 
-            top: '80px',
-            left: '40px',
-            right: '40px',
-            height: '44%',
-            border: '2px solid rgba(59, 130, 246, 0.5)',
-            boxShadow: '0 8px 32px rgba(59, 130, 246, 0.2), 0 4px 16px rgba(0,0,0,0.3)',
-          }}
-        >
-          <img 
-            src={photos[0]} 
-            alt="Property main"
-            className="w-full h-full object-cover"
-          />
-          <RoomLabel label={getLabel(0)} />
-          {/* Watermark on each photo */}
-          <RevendaWatermark position="top-right" size="sm" />
-        </div>
-        
-        {/* Bottom row - 2 photos side by side, closer together */}
-        <div 
-          className="absolute flex gap-4"
-          style={{ 
-            top: '53%',
-            left: '40px',
-            right: '40px',
-            height: '34%',
-          }}
-        >
-          {/* Left photo */}
-          <div 
-            className="flex-1 rounded-2xl overflow-hidden relative"
-            style={{ 
-              border: '2px solid rgba(59, 130, 246, 0.5)',
-              boxShadow: '0 8px 32px rgba(59, 130, 246, 0.2), 0 4px 16px rgba(0,0,0,0.3)',
-            }}
-          >
-            <img 
-              src={photos[1]} 
-              alt="Property 2"
-              className="w-full h-full object-cover"
-            />
-            <RoomLabel label={getLabel(1)} />
-          </div>
-          
-          {/* Right photo */}
-          <div 
-            className="flex-1 rounded-2xl overflow-hidden relative"
-            style={{ 
-              border: '2px solid rgba(59, 130, 246, 0.5)',
-              boxShadow: '0 8px 32px rgba(59, 130, 246, 0.2), 0 4px 16px rgba(0,0,0,0.3)',
-            }}
-          >
-            <img 
-              src={photos[2]} 
-              alt="Property 3"
-              className="w-full h-full object-cover"
-            />
-            <RoomLabel label={getLabel(2)} />
-          </div>
-        </div>
-      </div>
-    );
-  };
-
-  // Rounded boxes layout - 3 photos in elegant boxes with blue accents
+  // Rounded boxes layout - 1 hero em cima, 2 embaixo (usado no Slide 2)
   const renderRoundedBoxesLayout = () => {
     if (photoCount < 3) return null;
     
     return (
-      <div className="absolute inset-0 flex flex-col gap-4 p-10" style={{ paddingTop: '80px', paddingBottom: '200px' }}>
+      <div className="absolute inset-0 flex flex-col gap-4 p-10" style={{ paddingTop: '100px', paddingBottom: '220px' }}>
         {/* Top photo - larger hero */}
         <div 
           className="w-full rounded-3xl overflow-hidden relative"
@@ -182,6 +108,65 @@ export const RevendaMultiPhotoStory = ({
     );
   };
 
+  // Split-left layout - 1 grande à esquerda, 2 empilhadas à direita (usado no Slide 3)
+  const renderSplitLeftLayout = () => {
+    if (photoCount < 3) return null;
+    
+    return (
+      <div className="absolute inset-0 flex gap-4 p-10" style={{ paddingTop: '100px', paddingBottom: '220px' }}>
+        {/* Left - large photo */}
+        <div 
+          className="rounded-3xl overflow-hidden relative"
+          style={{ 
+            flex: '1.2',
+            border: '3px solid rgba(59, 130, 246, 0.5)',
+            boxShadow: '0 12px 40px rgba(59, 130, 246, 0.2), 0 8px 24px rgba(0,0,0,0.3)',
+          }}
+        >
+          <img 
+            src={photos[0]} 
+            alt="Property main"
+            className="w-full h-full object-cover"
+          />
+          <RoomLabel label={getLabel(0)} />
+          <RevendaWatermark position="top-right" size="sm" />
+        </div>
+        
+        {/* Right column - 2 stacked photos */}
+        <div className="flex flex-col gap-4" style={{ flex: '1' }}>
+          <div 
+            className="flex-1 rounded-3xl overflow-hidden relative"
+            style={{ 
+              border: '3px solid rgba(59, 130, 246, 0.5)',
+              boxShadow: '0 12px 40px rgba(59, 130, 246, 0.2), 0 8px 24px rgba(0,0,0,0.3)',
+            }}
+          >
+            <img 
+              src={photos[1]} 
+              alt="Property 2"
+              className="w-full h-full object-cover"
+            />
+            <RoomLabel label={getLabel(1)} />
+          </div>
+          <div 
+            className="flex-1 rounded-3xl overflow-hidden relative"
+            style={{ 
+              border: '3px solid rgba(59, 130, 246, 0.5)',
+              boxShadow: '0 12px 40px rgba(59, 130, 246, 0.2), 0 8px 24px rgba(0,0,0,0.3)',
+            }}
+          >
+            <img 
+              src={photos[2]} 
+              alt="Property 3"
+              className="w-full h-full object-cover"
+            />
+            <RoomLabel label={getLabel(2)} />
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div 
       className="relative w-[1080px] h-[1920px] overflow-hidden"
@@ -198,8 +183,8 @@ export const RevendaMultiPhotoStory = ({
       />
 
       {/* Photos layout */}
-      {variant === 'triangle' && renderTriangleLayout()}
       {variant === 'rounded-boxes' && renderRoundedBoxesLayout()}
+      {variant === 'split-left' && renderSplitLeftLayout()}
 
       {/* Label badge - top center with blue styling */}
       {label && (

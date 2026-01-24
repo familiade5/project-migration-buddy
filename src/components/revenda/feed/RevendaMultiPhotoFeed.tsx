@@ -6,7 +6,7 @@ interface RevendaMultiPhotoFeedProps {
   photos: string[];
   photoLabels?: string[];
   label?: string;
-  variant?: 'triangle' | 'rounded-boxes' | 'split';
+  variant?: 'rounded-boxes' | 'split-left';
 }
 
 // Room label component - elegante e consistente com o Story
@@ -32,7 +32,7 @@ const RoomLabel = ({ label }: { label: string }) => (
   </div>
 );
 
-export const RevendaMultiPhotoFeed = ({ data, photos, photoLabels = [], label, variant = 'triangle' }: RevendaMultiPhotoFeedProps) => {
+export const RevendaMultiPhotoFeed = ({ data, photos, photoLabels = [], label, variant = 'rounded-boxes' }: RevendaMultiPhotoFeedProps) => {
   const photoCount = photos.length;
 
   const getLabel = (index: number): string => {
@@ -97,14 +97,14 @@ export const RevendaMultiPhotoFeed = ({ data, photos, photoLabels = [], label, v
     
     // 3 photos layouts
     if (photoCount >= 3) {
-      if (variant === 'rounded-boxes') {
-        // Mesmo espírito do Story 3, adaptado para 1:1 (1080x1080)
+      // Slide 3: split-left - 1 grande à esquerda, 2 empilhadas à direita
+      if (variant === 'split-left') {
         return (
           <div className="absolute inset-0 p-10" style={{ paddingTop: '90px', paddingBottom: '90px' }}>
-            <div className="w-full h-full flex flex-col gap-4">
-              {/* Top hero */}
+            <div className="w-full h-full flex gap-4">
+              {/* Left - large photo */}
               <div
-                className="w-full rounded-3xl overflow-hidden relative"
+                className="rounded-3xl overflow-hidden relative"
                 style={{
                   flex: '1.15',
                   border: '3px solid rgba(59, 130, 246, 0.5)',
@@ -116,8 +116,8 @@ export const RevendaMultiPhotoFeed = ({ data, photos, photoLabels = [], label, v
                 <RevendaWatermark position="top-right" size="sm" />
               </div>
 
-              {/* Bottom row */}
-              <div className="flex gap-4" style={{ flex: '1' }}>
+              {/* Right column - 2 stacked photos */}
+              <div className="flex flex-col gap-4" style={{ flex: '1' }}>
                 <div
                   className="flex-1 rounded-3xl overflow-hidden relative"
                   style={{
@@ -146,20 +146,18 @@ export const RevendaMultiPhotoFeed = ({ data, photos, photoLabels = [], label, v
         );
       }
 
-      if (variant === 'triangle') {
-        // Mesmo espírito do Story 2, adaptado para 1:1 (1080x1080)
-        return (
-          <div className="absolute inset-0 p-10">
-            {/* Main hero */}
+      // Slide 2: rounded-boxes - mesmo layout do slide 3 do story (hero em cima, 2 embaixo)
+      // Padrão
+      return (
+        <div className="absolute inset-0 p-10" style={{ paddingTop: '90px', paddingBottom: '90px' }}>
+          <div className="w-full h-full flex flex-col gap-4">
+            {/* Top hero */}
             <div
-              className="absolute rounded-2xl overflow-hidden"
+              className="w-full rounded-3xl overflow-hidden relative"
               style={{
-                top: '90px',
-                left: '40px',
-                right: '40px',
-                height: '50%',
-                border: '2px solid rgba(59, 130, 246, 0.5)',
-                boxShadow: '0 8px 32px rgba(59, 130, 246, 0.2), 0 4px 16px rgba(0,0,0,0.3)',
+                flex: '1.15',
+                border: '3px solid rgba(59, 130, 246, 0.5)',
+                boxShadow: '0 12px 40px rgba(59, 130, 246, 0.2), 0 8px 24px rgba(0,0,0,0.3)',
               }}
             >
               <img src={photos[0]} alt="Property main" className="w-full h-full object-cover" />
@@ -168,20 +166,12 @@ export const RevendaMultiPhotoFeed = ({ data, photos, photoLabels = [], label, v
             </div>
 
             {/* Bottom row */}
-            <div
-              className="absolute flex gap-4"
-              style={{
-                top: '62%',
-                left: '40px',
-                right: '40px',
-                height: '30%',
-              }}
-            >
+            <div className="flex gap-4" style={{ flex: '1' }}>
               <div
-                className="flex-1 rounded-2xl overflow-hidden relative"
+                className="flex-1 rounded-3xl overflow-hidden relative"
                 style={{
-                  border: '2px solid rgba(59, 130, 246, 0.5)',
-                  boxShadow: '0 8px 32px rgba(59, 130, 246, 0.2), 0 4px 16px rgba(0,0,0,0.3)',
+                  border: '3px solid rgba(59, 130, 246, 0.5)',
+                  boxShadow: '0 12px 40px rgba(59, 130, 246, 0.2), 0 8px 24px rgba(0,0,0,0.3)',
                 }}
               >
                 <img src={photos[1]} alt="Property 2" className="w-full h-full object-cover" />
@@ -189,10 +179,10 @@ export const RevendaMultiPhotoFeed = ({ data, photos, photoLabels = [], label, v
                 <RevendaWatermark position="top-right" size="sm" />
               </div>
               <div
-                className="flex-1 rounded-2xl overflow-hidden relative"
+                className="flex-1 rounded-3xl overflow-hidden relative"
                 style={{
-                  border: '2px solid rgba(59, 130, 246, 0.5)',
-                  boxShadow: '0 8px 32px rgba(59, 130, 246, 0.2), 0 4px 16px rgba(0,0,0,0.3)',
+                  border: '3px solid rgba(59, 130, 246, 0.5)',
+                  boxShadow: '0 12px 40px rgba(59, 130, 246, 0.2), 0 8px 24px rgba(0,0,0,0.3)',
                 }}
               >
                 <img src={photos[2]} alt="Property 3" className="w-full h-full object-cover" />
@@ -200,30 +190,6 @@ export const RevendaMultiPhotoFeed = ({ data, photos, photoLabels = [], label, v
                 <RevendaWatermark position="top-right" size="sm" />
               </div>
             </div>
-          </div>
-        );
-      }
-
-      // Fallback split (mantido)
-      return (
-        <div className="w-full h-full flex">
-          <div className="w-[60%] h-full relative">
-            <img src={photos[0]} alt="Property main" className="w-full h-full object-cover" />
-            <RoomLabel label={getLabel(0)} />
-            <RevendaWatermark position="top-right" size="sm" />
-            <div className="absolute top-0 right-0 bottom-0 w-[3px]" style={{ backgroundColor: '#0f172a' }} />
-          </div>
-          <div className="w-[40%] h-full flex flex-col">
-            {photos.slice(1, 3).map((photo, i) => (
-              <div key={i} className="w-full h-1/2 relative">
-                <img src={photo} alt={`Property ${i + 2}`} className="w-full h-full object-cover" />
-                <RoomLabel label={getLabel(i + 1)} />
-                <RevendaWatermark position="top-right" size="sm" />
-                {i === 0 && (
-                  <div className="absolute left-0 right-0 bottom-0 h-[3px]" style={{ backgroundColor: '#0f172a' }} />
-                )}
-              </div>
-            ))}
           </div>
         </div>
       );
