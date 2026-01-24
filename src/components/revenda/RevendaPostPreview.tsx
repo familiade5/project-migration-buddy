@@ -258,7 +258,7 @@ export const RevendaPostPreview = ({ data, photos }: RevendaPostPreviewProps) =>
         photos={photosForSlide3.slice(0, 3)} 
         photoLabels={labelsForSlide3.slice(0, 3)}
         label="Lifestyle" 
-        variant="split-left" 
+        variant="split-bottom" 
       />,
     });
 
