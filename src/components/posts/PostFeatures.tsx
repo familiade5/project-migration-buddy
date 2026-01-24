@@ -75,7 +75,6 @@ export const PostFeatures = ({ data, photo }: PostFeaturesProps) => {
     // Fallback: Gatilhos universais para Venda Direta Caixa
     const conversionTriggers = [
       'Documentação 100% regularizada',
-      'Aquisição direta com a Caixa',
       'Abaixo do valor de mercado',
       'Patrimônio com escritura pública',
       'Condições exclusivas de compra',
