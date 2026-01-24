@@ -103,31 +103,31 @@ export const RevendaCaptionGenerator = ({ data }: RevendaCaptionGeneratorProps) 
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 w-full max-w-full overflow-hidden">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
         <div className="flex items-center gap-2">
-          <FileText className="w-5 h-5" style={{ color: '#0ea5e9' }} />
-          <h3 className="font-semibold" style={{ color: '#0f172a' }}>
+          <FileText className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0" style={{ color: '#0ea5e9' }} />
+          <h3 className="font-semibold text-sm sm:text-base" style={{ color: '#0f172a' }}>
             Legenda Instagram/Facebook
           </h3>
         </div>
-        <div className="flex gap-2">
+        <div className="flex gap-1 sm:gap-2">
           <Button
             variant="outline"
             size="sm"
             onClick={handleCopy}
-            className="border-slate-200 text-slate-600 hover:bg-slate-50"
+            className="border-slate-200 text-slate-600 hover:bg-slate-50 text-xs sm:text-sm px-2 sm:px-3"
           >
-            <Copy className="w-4 h-4 mr-1" />
+            <Copy className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
             Copiar
           </Button>
           <Button
             size="sm"
             onClick={handleDownload}
-            className="bg-sky-500 hover:bg-sky-600 text-white"
+            className="bg-sky-500 hover:bg-sky-600 text-white text-xs sm:text-sm px-2 sm:px-3"
           >
-            <Download className="w-4 h-4 mr-1" />
+            <Download className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
             Baixar
           </Button>
         </div>
