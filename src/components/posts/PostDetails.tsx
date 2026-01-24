@@ -32,58 +32,31 @@ export const PostDetails = ({ data, photo, photos = [] }: PostDetailsProps) => {
   const generateAutoTexts = () => {
     const features: string[] = [];
     
-    // Formato: dados concretos que geram confiança
-    if (data.bedrooms && data.bedrooms !== '' && data.bedrooms !== '0') {
-      const bedroomNum = Number(data.bedrooms);
-      if (bedroomNum >= 4) {
-        features.push(`${bedroomNum} dormitórios privativos`);
-      } else if (bedroomNum >= 2) {
-        features.push(`${bedroomNum} quartos bem distribuídos`);
-      } else {
-        features.push('Quarto amplo e iluminado');
-      }
-    }
-    
-    if (data.bathrooms && data.bathrooms !== '' && data.bathrooms !== '0') {
-      const bathroomNum = Number(data.bathrooms);
-      if (bathroomNum >= 3) {
-        features.push(`${bathroomNum} banheiros completos`);
-      } else if (bathroomNum === 2) {
-        features.push('Banheiro social + suíte');
-      } else {
-        features.push('Banheiro com acabamento');
-      }
-    }
-    
-    if (data.garageSpaces && data.garageSpaces !== '' && data.garageSpaces !== '0') {
-      const garageNum = Number(data.garageSpaces);
-      if (garageNum >= 2) {
-        features.push(`Garagem para ${garageNum} veículos`);
-      } else {
-        features.push('Vaga de garagem coberta');
-      }
-    }
-    
-    if (features.length < 3 && data.area && data.area !== '' && data.area !== '0') {
-      features.push(`${data.area}m² de área construída`);
-    }
-    
-    // Features do usuário (já são específicas)
-    data.features.forEach(f => {
-      if (features.length < 3) features.push(f);
-    });
-    
-    // Fallback: Diferenciais universais (não repetir os do slide 2)
-    const tangibleBenefits = [
+    // Diferenciais de venda (benefícios)
+    const conversionTriggers = [
       'Preço abaixo do mercado',
       'Processo simples e seguro',
       'Excelente custo-benefício',
     ];
     
-    let benefitIndex = 0;
-    while (features.length < 3 && benefitIndex < tangibleBenefits.length) {
-      features.push(tangibleBenefits[benefitIndex]);
-      benefitIndex++;
+    // Adiciona condições específicas se disponíveis
+    if (data.discount && parseFloat(data.discount.replace(',', '.')) > 0) {
+      features.push(`Economia de ${data.discount}% garantida`);
+    }
+    
+    if (data.canUseFGTS) {
+      features.push('FGTS aceito como entrada');
+    }
+    
+    if (data.acceptsFinancing) {
+      features.push('Financiamento facilitado');
+    }
+    
+    // Preenche com gatilhos de conversão
+    let triggerIndex = 0;
+    while (features.length < 3 && triggerIndex < conversionTriggers.length) {
+      features.push(conversionTriggers[triggerIndex]);
+      triggerIndex++;
     }
     
     return features.slice(0, 3);
