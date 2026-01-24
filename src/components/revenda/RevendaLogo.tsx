@@ -1,6 +1,5 @@
 import logoVdhRevenda from '@/assets/logo-vdh-revenda.png';
 import logoVdhRevendaTransparent from '@/assets/logo-vdh-revenda-transparent.png';
-import logoVdhRevendaWhiteAlpha from '@/assets/logo-vdh-revenda-white-alpha.png';
 
 interface RevendaLogoProps {
   size?: 'sm' | 'md' | 'lg' | 'xl' | 'xxl';
@@ -57,7 +56,7 @@ export const RevendaLogo = ({
       }}
     >
       <img 
-        src={logoVdhRevendaWhiteAlpha}
+        src={logoVdhRevendaTransparent}
         alt="VDH Revenda+"
         className="w-full h-full object-contain"
       />
@@ -86,7 +85,7 @@ export const RevendaWatermark = ({
         className="absolute bottom-8 left-0 right-0 flex justify-center pointer-events-none"
       >
         <img 
-          src={logoVdhRevendaWhiteAlpha}
+          src={logoVdhRevendaTransparent}
           alt="VDH Revenda+"
           style={{
             width: config[size].width,
@@ -113,7 +112,7 @@ export const RevendaWatermark = ({
       }}
     >
       <img 
-        src={logoVdhRevendaWhiteAlpha}
+        src={logoVdhRevendaTransparent}
         alt="VDH Revenda+"
         className="w-full h-full object-contain"
       />
@@ -131,7 +130,7 @@ export const RevendaLogoBar = () => {
       }}
     >
       <img 
-        src={logoVdhRevendaWhiteAlpha}
+        src={logoVdhRevendaTransparent}
         alt="VDH Revenda+"
         style={{
           width: '180px',
@@ -152,7 +151,7 @@ export const RevendaLogoBarStory = () => {
       }}
     >
       <img 
-        src={logoVdhRevendaWhiteAlpha}
+        src={logoVdhRevendaTransparent}
         alt="VDH Revenda+"
         style={{
           width: '220px',
