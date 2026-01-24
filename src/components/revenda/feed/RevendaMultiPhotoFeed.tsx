@@ -1,16 +1,17 @@
 import { RevendaPropertyData } from '@/types/revenda';
-import { RevendaLogo } from '../RevendaLogo';
+import { RevendaWatermark } from '../RevendaLogo';
 
 interface RevendaMultiPhotoFeedProps {
   data: RevendaPropertyData;
   photos: string[];
   label?: string;
+  variant?: 'split' | 'triangle';
 }
 
-export const RevendaMultiPhotoFeed = ({ data, photos, label }: RevendaMultiPhotoFeedProps) => {
+export const RevendaMultiPhotoFeed = ({ data, photos, label, variant = 'split' }: RevendaMultiPhotoFeedProps) => {
   const photoCount = photos.length;
   
-  // Layouts based on photo count
+  // Layout variants
   const renderLayout = () => {
     if (photoCount === 0) {
       return (
@@ -36,7 +37,7 @@ export const RevendaMultiPhotoFeed = ({ data, photos, label }: RevendaMultiPhoto
     }
     
     if (photoCount === 2) {
-      // 2 photos: side by side
+      // 2 photos: side by side with elegant divider
       return (
         <div className="w-full h-full flex">
           {photos.slice(0, 2).map((photo, i) => (
@@ -48,7 +49,7 @@ export const RevendaMultiPhotoFeed = ({ data, photos, label }: RevendaMultiPhoto
               />
               {i === 0 && (
                 <div 
-                  className="absolute top-0 right-0 bottom-0 w-1"
+                  className="absolute top-0 right-0 bottom-0 w-[3px]"
                   style={{ backgroundColor: '#0f172a' }}
                 />
               )}
@@ -58,8 +59,51 @@ export const RevendaMultiPhotoFeed = ({ data, photos, label }: RevendaMultiPhoto
       );
     }
     
-    if (photoCount === 3) {
-      // 3 photos: 1 large left, 2 stacked right
+    // 3 photos layouts
+    if (photoCount >= 3) {
+      if (variant === 'triangle') {
+        // Triangular layout - modern and dynamic
+        return (
+          <div className="w-full h-full relative">
+            {/* Top photo - full width, shorter height */}
+            <div className="absolute top-0 left-0 right-0 h-[45%]">
+              <img 
+                src={photos[0]} 
+                alt="Property main"
+                className="w-full h-full object-cover"
+              />
+              <div 
+                className="absolute left-0 right-0 bottom-0 h-[3px]"
+                style={{ backgroundColor: '#0f172a' }}
+              />
+            </div>
+            
+            {/* Bottom left photo - takes left side */}
+            <div className="absolute bottom-0 left-0 w-[55%] h-[55%]">
+              <img 
+                src={photos[1]} 
+                alt="Property 2"
+                className="w-full h-full object-cover"
+              />
+              <div 
+                className="absolute top-0 right-0 bottom-0 w-[3px]"
+                style={{ backgroundColor: '#0f172a' }}
+              />
+            </div>
+            
+            {/* Bottom right photo - takes right side */}
+            <div className="absolute bottom-0 right-0 w-[45%] h-[55%]">
+              <img 
+                src={photos[2]} 
+                alt="Property 3"
+                className="w-full h-full object-cover"
+              />
+            </div>
+          </div>
+        );
+      }
+      
+      // Default split layout: 1 large left, 2 stacked right
       return (
         <div className="w-full h-full flex">
           <div className="w-[60%] h-full relative">
@@ -69,7 +113,7 @@ export const RevendaMultiPhotoFeed = ({ data, photos, label }: RevendaMultiPhoto
               className="w-full h-full object-cover"
             />
             <div 
-              className="absolute top-0 right-0 bottom-0 w-1"
+              className="absolute top-0 right-0 bottom-0 w-[3px]"
               style={{ backgroundColor: '#0f172a' }}
             />
           </div>
@@ -83,7 +127,7 @@ export const RevendaMultiPhotoFeed = ({ data, photos, label }: RevendaMultiPhoto
                 />
                 {i === 0 && (
                   <div 
-                    className="absolute left-0 right-0 bottom-0 h-1"
+                    className="absolute left-0 right-0 bottom-0 h-[3px]"
                     style={{ backgroundColor: '#0f172a' }}
                   />
                 )}
@@ -94,33 +138,7 @@ export const RevendaMultiPhotoFeed = ({ data, photos, label }: RevendaMultiPhoto
       );
     }
     
-    // 4+ photos: 2x2 grid
-    return (
-      <div className="w-full h-full grid grid-cols-2 grid-rows-2">
-        {photos.slice(0, 4).map((photo, i) => (
-          <div key={i} className="relative">
-            <img 
-              src={photo} 
-              alt={`Property ${i + 1}`}
-              className="w-full h-full object-cover"
-            />
-            {/* Divider lines */}
-            {(i === 0 || i === 2) && (
-              <div 
-                className="absolute top-0 right-0 bottom-0 w-0.5"
-                style={{ backgroundColor: '#0f172a' }}
-              />
-            )}
-            {(i === 0 || i === 1) && (
-              <div 
-                className="absolute left-0 right-0 bottom-0 h-0.5"
-                style={{ backgroundColor: '#0f172a' }}
-              />
-            )}
-          </div>
-        ))}
-      </div>
-    );
+    return null;
   };
 
   return (
@@ -132,11 +150,11 @@ export const RevendaMultiPhotoFeed = ({ data, photos, label }: RevendaMultiPhoto
       <div className="absolute inset-0">
         {renderLayout()}
         
-        {/* Subtle gradient overlay */}
+        {/* Subtle gradient overlay at bottom */}
         <div 
-          className="absolute inset-0"
+          className="absolute inset-0 pointer-events-none"
           style={{
-            background: 'linear-gradient(to bottom, transparent 0%, transparent 70%, rgba(15,23,42,0.8) 100%)',
+            background: 'linear-gradient(to bottom, transparent 0%, transparent 60%, rgba(15,23,42,0.5) 100%)',
           }}
         />
       </div>
@@ -148,54 +166,24 @@ export const RevendaMultiPhotoFeed = ({ data, photos, label }: RevendaMultiPhoto
           style={{ 
             backgroundColor: 'rgba(15,23,42,0.85)',
             backdropFilter: 'blur(8px)',
-            border: '1px solid rgba(14,165,233,0.3)',
+            border: '1px solid rgba(212,175,55,0.3)',
           }}
         >
           <span 
             className="text-sm font-medium uppercase tracking-[0.2em]"
-            style={{ color: '#0ea5e9' }}
+            style={{ 
+              background: 'linear-gradient(135deg, #d4af37, #f4e5a3)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+            }}
           >
             {label}
           </span>
         </div>
       )}
 
-      {/* Photo count badge - top right */}
-      {photoCount > 1 && (
-        <div 
-          className="absolute top-10 right-10 px-5 py-3 rounded-full"
-          style={{ 
-            backgroundColor: 'rgba(15,23,42,0.85)',
-            backdropFilter: 'blur(8px)',
-            border: '1px solid rgba(255,255,255,0.1)',
-          }}
-        >
-          <span 
-            className="text-sm font-medium"
-            style={{ color: 'rgba(255,255,255,0.8)' }}
-          >
-            {photoCount} fotos
-          </span>
-        </div>
-      )}
-
-      {/* Bottom logo bar */}
-      <div 
-        className="absolute bottom-0 left-0 right-0 flex items-center justify-between px-10 py-6"
-        style={{
-          background: 'linear-gradient(to top, rgba(15,23,42,0.95), rgba(15,23,42,0.7), transparent)',
-        }}
-      >
-        <RevendaLogo size="md" variant="minimal" dark />
-        {data.propertyName && (
-          <span 
-            className="text-sm font-light tracking-wide"
-            style={{ color: 'rgba(255,255,255,0.6)' }}
-          >
-            {data.propertyName}
-          </span>
-        )}
-      </div>
+      {/* Logo watermark - bottom right, subtle */}
+      <RevendaWatermark position="bottom-right" size="md" />
     </div>
   );
 };
