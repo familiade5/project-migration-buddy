@@ -14,8 +14,8 @@ const sizeConfig = {
   xxl: { width: 280, height: 105 },
 };
 
-// SVG Logo component - pure white, no background, no effects
-const LogoSVG = ({ width = 180 }: { width?: number }) => {
+// SVG Logo component - pure white version for creatives
+const LogoSVG = ({ width = 180, color = '#FFFFFF' }: { width?: number; color?: string }) => {
   const height = width * 0.375; // Maintain aspect ratio (300/800)
   
   return (
@@ -25,7 +25,7 @@ const LogoSVG = ({ width = 180 }: { width?: number }) => {
       viewBox="0 0 800 300" 
       xmlns="http://www.w3.org/2000/svg"
     >
-      <g fill="#FFFFFF">
+      <g fill={color}>
         {/* Roof */}
         <path d="M200 120 L400 40 L600 120 L585 120 L400 55 L215 120 Z"/>
         
@@ -37,7 +37,7 @@ const LogoSVG = ({ width = 180 }: { width?: number }) => {
           fontFamily="Georgia, Times New Roman, serif"
           fontSize="120"
           fontWeight="600"
-          fill="#FFFFFF"
+          fill={color}
         >
           VDH
         </text>
@@ -50,7 +50,7 @@ const LogoSVG = ({ width = 180 }: { width?: number }) => {
           fontFamily="Arial, Helvetica, sans-serif"
           fontSize="42"
           letterSpacing="6"
-          fill="#FFFFFF"
+          fill={color}
         >
           REVENDA +
         </text>
@@ -70,22 +70,16 @@ export const RevendaLogo = ({
   const config = sizeConfig[size];
   
   if (variant === 'with-background') {
-    // Version with grey background for app UI/presentation
+    // Version for app UI - black logo, no background
     return (
       <div 
-        className={`flex items-center justify-center rounded-xl ${className}`}
+        className={`flex items-center justify-center ${className}`}
         style={{
           width: config.width,
           height: config.height,
-          backgroundColor: '#e2e8f0',
-          padding: '8px',
         }}
       >
-        <img 
-          src={logoVdhRevenda}
-          alt="VDH Revenda+"
-          className="w-full h-full object-contain"
-        />
+        <LogoSVG width={config.width} color="#000000" />
       </div>
     );
   }
@@ -99,7 +93,7 @@ export const RevendaLogo = ({
         height: config.height,
       }}
     >
-      <LogoSVG width={config.width} />
+      <LogoSVG width={config.width} color="#FFFFFF" />
     </div>
   );
 };

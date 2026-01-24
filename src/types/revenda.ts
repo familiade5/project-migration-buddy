@@ -63,6 +63,7 @@ export interface RevendaPropertyData {
   // Lifestyle Features
   features: string[];
   itensLazer: string[]; // Lista de itens de lazer para legenda
+  itensLazerText: string; // Raw text input for leisure items
   
   // Contact
   contactPhone: string;
@@ -111,6 +112,7 @@ export const defaultRevendaData: RevendaPropertyData = {
   
   features: [],
   itensLazer: [],
+  itensLazerText: '',
   
   contactPhone: '(92) 98839-1098',
   contactName: 'Iury Sampaio',
