@@ -23,63 +23,31 @@ export const PostFeatures = ({ data, photo }: PostFeaturesProps) => {
   };
 
   const generateAutoTexts = () => {
-    const features: string[] = [];
-    
-    // Características do imóvel (dados concretos)
-    if (data.bedrooms && data.bedrooms !== '' && data.bedrooms !== '0') {
-      const bedroomNum = Number(data.bedrooms);
-      if (bedroomNum >= 4) {
-        features.push(`${bedroomNum} dormitórios privativos`);
-      } else if (bedroomNum >= 2) {
-        features.push(`${bedroomNum} quartos bem distribuídos`);
-      } else {
-        features.push('Quarto amplo e iluminado');
-      }
-    }
-    
-    if (data.bathrooms && data.bathrooms !== '' && data.bathrooms !== '0') {
-      const bathroomNum = Number(data.bathrooms);
-      if (bathroomNum >= 3) {
-        features.push(`${bathroomNum} banheiros completos`);
-      } else if (bathroomNum === 2) {
-        features.push('Banheiro social + suíte');
-      } else {
-        features.push('Banheiro com acabamento');
-      }
-    }
-    
-    if (data.garageSpaces && data.garageSpaces !== '' && data.garageSpaces !== '0') {
-      const garageNum = Number(data.garageSpaces);
-      if (garageNum >= 2) {
-        features.push(`Garagem para ${garageNum} veículos`);
-      } else {
-        features.push('Vaga de garagem coberta');
-      }
-    }
-    
-    if (features.length < 3 && data.area && data.area !== '' && data.area !== '0') {
-      features.push(`${data.area}m² de área construída`);
-    }
-    
-    // Features do usuário
-    data.features.forEach(f => {
-      if (features.length < 3) features.push(f);
-    });
-    
-    // Fallback: características genéricas
-    const propertyFeatures = [
-      'Infraestrutura completa',
-      'Região em valorização',
-      'Pronto para morar',
-    ];
-    
-    let featureIndex = 0;
-    while (features.length < 3 && featureIndex < propertyFeatures.length) {
-      features.push(propertyFeatures[featureIndex]);
-      featureIndex++;
-    }
-    
-    return features.slice(0, 3);
+    // Slide 2 (Detalhes) - ORDEM FIXA:
+    // 1) Quartos
+    // 2) Garagem
+    // 3) Banheiros (se for 1 banheiro, troca por Área construída)
+
+    const bedroomsNum = Number(data.bedrooms || 0);
+    const garageNum = Number(data.garageSpaces || 0);
+    const bathroomsNum = Number(data.bathrooms || 0);
+    const areaValue = (data.area || '').trim();
+
+    const bedroomsText = bedroomsNum > 0
+      ? `${bedroomsNum} quarto${bedroomsNum === 1 ? '' : 's'}`
+      : 'Quartos';
+
+    const garageText = garageNum > 0
+      ? `Garagem: ${garageNum} vaga${garageNum === 1 ? '' : 's'}`
+      : 'Garagem';
+
+    const thirdLineText = bathroomsNum === 1
+      ? (areaValue && areaValue !== '0' ? `${areaValue}m² de área construída` : 'Área construída')
+      : (bathroomsNum > 0
+        ? `${bathroomsNum} banheiro${bathroomsNum === 1 ? '' : 's'}`
+        : 'Banheiros');
+
+    return [bedroomsText, garageText, thirdLineText];
   };
 
   const highlightFeatures = getHighlightFeatures();

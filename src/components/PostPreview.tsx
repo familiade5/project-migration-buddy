@@ -86,8 +86,10 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
 
   const feedPosts = [
     { name: 'Capa', component: PostCover, photoIndex: 0 },
-    { name: 'Detalhes', component: PostDetails, photoIndex: 1 },
-    { name: 'Diferenciais', component: PostFeatures, photoIndex: 2 },
+    // Slide 2 (Detalhes) = características do imóvel
+    { name: 'Detalhes', component: PostFeatures, photoIndex: 1 },
+    // Slide 3 (Diferenciais) = gatilhos de conversão
+    { name: 'Diferenciais', component: PostDetails, photoIndex: 2 },
     { name: 'Contato', component: PostContact, photoIndex: 3 },
   ];
 
