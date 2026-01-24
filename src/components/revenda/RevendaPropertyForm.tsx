@@ -62,14 +62,14 @@ export const RevendaPropertyForm = ({ data, onChange }: RevendaPropertyFormProps
               value={data.propertyName}
               onChange={(e) => updateField('propertyName', e.target.value)}
               placeholder="Ex: Residencial Vista Verde"
-              className="bg-white border-slate-200 focus:border-sky-400"
+              className="bg-white border-slate-200 focus:border-sky-400 text-slate-900"
             />
           </div>
           
           <div>
             <Label className="text-slate-600">Tipo do Imóvel</Label>
             <Select value={data.type} onValueChange={(value) => updateField('type', value)}>
-              <SelectTrigger className="bg-white border-slate-200">
+              <SelectTrigger className="bg-white border-slate-200 text-slate-900">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -86,7 +86,7 @@ export const RevendaPropertyForm = ({ data, onChange }: RevendaPropertyFormProps
               value={data.price}
               onChange={(e) => updateField('price', e.target.value)}
               placeholder="R$ 450.000"
-              className="bg-white border-slate-200 focus:border-sky-400"
+              className="bg-white border-slate-200 focus:border-sky-400 text-slate-900"
             />
           </div>
         </div>
@@ -106,7 +106,7 @@ export const RevendaPropertyForm = ({ data, onChange }: RevendaPropertyFormProps
               value={data.fullAddress}
               onChange={(e) => updateField('fullAddress', e.target.value)}
               placeholder="Rua das Flores, 123 - Bairro"
-              className="bg-white border-slate-200 focus:border-sky-400"
+              className="bg-white border-slate-200 focus:border-sky-400 text-slate-900"
             />
           </div>
           
@@ -116,7 +116,7 @@ export const RevendaPropertyForm = ({ data, onChange }: RevendaPropertyFormProps
               value={data.neighborhood}
               onChange={(e) => updateField('neighborhood', e.target.value)}
               placeholder="Centro"
-              className="bg-white border-slate-200 focus:border-sky-400"
+              className="bg-white border-slate-200 focus:border-sky-400 text-slate-900"
             />
           </div>
           
@@ -126,7 +126,7 @@ export const RevendaPropertyForm = ({ data, onChange }: RevendaPropertyFormProps
               value={data.city}
               onChange={(e) => updateField('city', e.target.value)}
               placeholder="Campo Grande"
-              className="bg-white border-slate-200 focus:border-sky-400"
+              className="bg-white border-slate-200 focus:border-sky-400 text-slate-900"
             />
           </div>
           
@@ -136,7 +136,7 @@ export const RevendaPropertyForm = ({ data, onChange }: RevendaPropertyFormProps
               value={data.state}
               onChange={(e) => updateField('state', e.target.value)}
               placeholder="MS"
-              className="bg-white border-slate-200 focus:border-sky-400"
+              className="bg-white border-slate-200 focus:border-sky-400 text-slate-900"
             />
           </div>
         </div>
@@ -156,7 +156,7 @@ export const RevendaPropertyForm = ({ data, onChange }: RevendaPropertyFormProps
               value={data.bedrooms}
               onChange={(e) => updateField('bedrooms', e.target.value)}
               placeholder="3"
-              className="bg-white border-slate-200 focus:border-sky-400"
+              className="bg-white border-slate-200 focus:border-sky-400 text-slate-900"
             />
           </div>
           <div>
@@ -165,7 +165,7 @@ export const RevendaPropertyForm = ({ data, onChange }: RevendaPropertyFormProps
               value={data.suites}
               onChange={(e) => updateField('suites', e.target.value)}
               placeholder="1"
-              className="bg-white border-slate-200 focus:border-sky-400"
+              className="bg-white border-slate-200 focus:border-sky-400 text-slate-900"
             />
           </div>
           <div>
@@ -174,7 +174,7 @@ export const RevendaPropertyForm = ({ data, onChange }: RevendaPropertyFormProps
               value={data.bathrooms}
               onChange={(e) => updateField('bathrooms', e.target.value)}
               placeholder="2"
-              className="bg-white border-slate-200 focus:border-sky-400"
+              className="bg-white border-slate-200 focus:border-sky-400 text-slate-900"
             />
           </div>
           <div>
@@ -183,7 +183,7 @@ export const RevendaPropertyForm = ({ data, onChange }: RevendaPropertyFormProps
               value={data.garageSpaces}
               onChange={(e) => updateField('garageSpaces', e.target.value)}
               placeholder="2"
-              className="bg-white border-slate-200 focus:border-sky-400"
+              className="bg-white border-slate-200 focus:border-sky-400 text-slate-900"
             />
           </div>
           <div className="col-span-2">
@@ -192,7 +192,7 @@ export const RevendaPropertyForm = ({ data, onChange }: RevendaPropertyFormProps
               value={data.area}
               onChange={(e) => updateField('area', e.target.value)}
               placeholder="120"
-              className="bg-white border-slate-200 focus:border-sky-400"
+              className="bg-white border-slate-200 focus:border-sky-400 text-slate-900"
             />
           </div>
           <div className="col-span-2">
@@ -201,7 +201,7 @@ export const RevendaPropertyForm = ({ data, onChange }: RevendaPropertyFormProps
               value={data.areaTerreno}
               onChange={(e) => updateField('areaTerreno', e.target.value)}
               placeholder="250"
-              className="bg-white border-slate-200 focus:border-sky-400"
+              className="bg-white border-slate-200 focus:border-sky-400 text-slate-900"
             />
           </div>
         </div>
@@ -270,7 +270,7 @@ export const RevendaPropertyForm = ({ data, onChange }: RevendaPropertyFormProps
                 value={data.acabamentos}
                 onChange={(e) => updateField('acabamentos', e.target.value)}
                 placeholder="Ex: Porcelanato, granito, marcenaria planejada..."
-                className="bg-white border-slate-200 focus:border-sky-400"
+                className="bg-white border-slate-200 focus:border-sky-400 text-slate-900"
               />
             </div>
             
@@ -280,7 +280,7 @@ export const RevendaPropertyForm = ({ data, onChange }: RevendaPropertyFormProps
                 value={data.descricaoLivre}
                 onChange={(e) => updateField('descricaoLivre', e.target.value)}
                 placeholder="Descreva os diferenciais únicos do imóvel..."
-                className="bg-white border-slate-200 focus:border-sky-400 min-h-[80px]"
+                className="bg-white border-slate-200 focus:border-sky-400 min-h-[80px] text-slate-900"
               />
             </div>
           </div>
@@ -321,7 +321,7 @@ export const RevendaPropertyForm = ({ data, onChange }: RevendaPropertyFormProps
             <Input
               value={data.contactName}
               onChange={(e) => updateField('contactName', e.target.value)}
-              className="bg-white border-slate-200 focus:border-sky-400"
+              className="bg-white border-slate-200 focus:border-sky-400 text-slate-900"
             />
           </div>
           
@@ -330,7 +330,7 @@ export const RevendaPropertyForm = ({ data, onChange }: RevendaPropertyFormProps
             <Input
               value={data.contactPhone}
               onChange={(e) => updateField('contactPhone', e.target.value)}
-              className="bg-white border-slate-200 focus:border-sky-400"
+              className="bg-white border-slate-200 focus:border-sky-400 text-slate-900"
             />
           </div>
           
@@ -338,7 +338,7 @@ export const RevendaPropertyForm = ({ data, onChange }: RevendaPropertyFormProps
             <Label className="text-slate-600">CRECI</Label>
             {crecis && crecis.length > 0 ? (
               <Select value={data.creci} onValueChange={(value) => updateField('creci', value)}>
-                <SelectTrigger className="bg-white border-slate-200">
+                <SelectTrigger className="bg-white border-slate-200 text-slate-900">
                   <SelectValue placeholder="Selecione o CRECI" />
                 </SelectTrigger>
                 <SelectContent>
@@ -353,7 +353,7 @@ export const RevendaPropertyForm = ({ data, onChange }: RevendaPropertyFormProps
               <Input
                 value={data.creci}
                 onChange={(e) => updateField('creci', e.target.value)}
-                className="bg-white border-slate-200 focus:border-sky-400"
+                className="bg-white border-slate-200 focus:border-sky-400 text-slate-900"
               />
             )}
           </div>

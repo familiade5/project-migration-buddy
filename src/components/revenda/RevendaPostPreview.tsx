@@ -4,6 +4,10 @@ import { RevendaCoverFeed } from './feed/RevendaCoverFeed';
 import { RevendaPhotoFeed } from './feed/RevendaPhotoFeed';
 import { RevendaFeaturesFeed } from './feed/RevendaFeaturesFeed';
 import { RevendaContactFeed } from './feed/RevendaContactFeed';
+import { RevendaCoverStory } from './story/RevendaCoverStory';
+import { RevendaLifestyleStory } from './story/RevendaLifestyleStory';
+import { RevendaPriceStory } from './story/RevendaPriceStory';
+import { RevendaContactStory } from './story/RevendaContactStory';
 import { Button } from '@/components/ui/button';
 import { ChevronLeft, ChevronRight, Download, Layers, Image as ImageIcon } from 'lucide-react';
 import { toPng } from 'html-to-image';
@@ -42,6 +46,7 @@ export const RevendaPostPreview = ({ data, photos }: RevendaPostPreviewProps) =>
   const getLivingPhoto = () => getPhotosByCategory('sala')[0] || getPhotosByCategory('outros')[0] || null;
   const getBedroomPhoto = () => getPhotosByCategory('quarto')[0] || null;
   const getKitchenPhoto = () => getPhotosByCategory('cozinha')[0] || null;
+  const getBathroomPhoto = () => getPhotosByCategory('banheiro')[0] || null;
 
   // Build slides for Feed (5 slides max)
   const buildFeedSlides = (): SlideDefinition[] => {
@@ -89,13 +94,50 @@ export const RevendaPostPreview = ({ data, photos }: RevendaPostPreviewProps) =>
     return slides;
   };
 
-  const slides = buildFeedSlides();
+  // Build slides for Story (4 slides - fixed sequence)
+  const buildStorySlides = (): SlideDefinition[] => {
+    const slides: SlideDefinition[] = [];
+    
+    // Story 1: Cover - Introduction, create interest
+    slides.push({
+      name: 'Introdução',
+      component: <RevendaCoverStory data={data} photo={getFacadePhoto()} />,
+    });
+
+    // Story 2: Lifestyle - Benefits, comfort, minimal text
+    slides.push({
+      name: 'Lifestyle',
+      component: <RevendaLifestyleStory data={data} photo={getLivingPhoto() || getBedroomPhoto()} />,
+    });
+
+    // Story 3: Price - Decision making elements
+    slides.push({
+      name: 'Detalhes',
+      component: <RevendaPriceStory data={data} photo={getKitchenPhoto() || getBathroomPhoto() || getFacadePhoto()} />,
+    });
+
+    // Story 4: Contact - CTA
+    slides.push({
+      name: 'Contato',
+      component: <RevendaContactStory data={data} photo={getFacadePhoto()} />,
+    });
+
+    return slides;
+  };
+
+  const slides = format === 'feed' ? buildFeedSlides() : buildStorySlides();
   const totalSlides = slides.length;
 
   const goToSlide = (index: number) => {
     if (index >= 0 && index < totalSlides) {
       setCurrentSlide(index);
     }
+  };
+
+  // Reset slide when format changes
+  const handleFormatChange = (newFormat: PostFormat) => {
+    setFormat(newFormat);
+    setCurrentSlide(0);
   };
 
   const handleExportSingle = async (index: number) => {
@@ -156,10 +198,10 @@ export const RevendaPostPreview = ({ data, photos }: RevendaPostPreviewProps) =>
     }
   };
 
-  // Scale for preview
-  const previewScale = 0.35;
+  // Scale and dimensions based on format
   const templateWidth = 1080;
-  const templateHeight = 1080;
+  const templateHeight = format === 'feed' ? 1080 : 1920;
+  const previewScale = format === 'feed' ? 0.35 : 0.22;
 
   return (
     <div className="space-y-4">
@@ -169,7 +211,7 @@ export const RevendaPostPreview = ({ data, photos }: RevendaPostPreviewProps) =>
           <Button
             variant={format === 'feed' ? 'default' : 'outline'}
             size="sm"
-            onClick={() => setFormat('feed')}
+            onClick={() => handleFormatChange('feed')}
             className={cn(
               format === 'feed' 
                 ? 'bg-sky-500 hover:bg-sky-600 text-white' 
@@ -182,12 +224,15 @@ export const RevendaPostPreview = ({ data, photos }: RevendaPostPreviewProps) =>
           <Button
             variant={format === 'story' ? 'default' : 'outline'}
             size="sm"
-            onClick={() => setFormat('story')}
-            disabled
-            className="border-slate-200 text-slate-400"
+            onClick={() => handleFormatChange('story')}
+            className={cn(
+              format === 'story' 
+                ? 'bg-sky-500 hover:bg-sky-600 text-white' 
+                : 'border-slate-200 text-slate-600'
+            )}
           >
             <ImageIcon className="w-4 h-4 mr-2" />
-            Stories (em breve)
+            Stories
           </Button>
         </div>
 
@@ -217,25 +262,28 @@ export const RevendaPostPreview = ({ data, photos }: RevendaPostPreviewProps) =>
       <div 
         className="relative rounded-xl overflow-hidden mx-auto"
         style={{ 
-          backgroundColor: '#f8fafc',
-          border: '1px solid #e2e8f0',
+          backgroundColor: '#1e293b',
+          border: '1px solid #334155',
         }}
       >
         {/* Navigation */}
-        <div className="flex items-center justify-between px-4 py-2 border-b" style={{ borderColor: '#e2e8f0' }}>
+        <div 
+          className="flex items-center justify-between px-4 py-2"
+          style={{ borderBottom: '1px solid #334155' }}
+        >
           <button
             onClick={() => goToSlide(currentSlide - 1)}
             disabled={currentSlide === 0}
-            className="p-2 rounded-full hover:bg-slate-100 disabled:opacity-30 transition-colors"
+            className="p-2 rounded-full hover:bg-slate-700 disabled:opacity-30 transition-colors"
           >
-            <ChevronLeft className="w-5 h-5 text-slate-600" />
+            <ChevronLeft className="w-5 h-5 text-slate-300" />
           </button>
           
           <div className="flex items-center gap-2">
-            <span className="text-sm font-medium text-slate-700">
+            <span className="text-sm font-medium text-slate-200">
               {slides[currentSlide]?.name}
             </span>
-            <span className="text-xs text-slate-400">
+            <span className="text-xs text-slate-500">
               {currentSlide + 1} / {totalSlides}
             </span>
           </div>
@@ -243,9 +291,9 @@ export const RevendaPostPreview = ({ data, photos }: RevendaPostPreviewProps) =>
           <button
             onClick={() => goToSlide(currentSlide + 1)}
             disabled={currentSlide === totalSlides - 1}
-            className="p-2 rounded-full hover:bg-slate-100 disabled:opacity-30 transition-colors"
+            className="p-2 rounded-full hover:bg-slate-700 disabled:opacity-30 transition-colors"
           >
-            <ChevronRight className="w-5 h-5 text-slate-600" />
+            <ChevronRight className="w-5 h-5 text-slate-300" />
           </button>
         </div>
 
@@ -272,34 +320,40 @@ export const RevendaPostPreview = ({ data, photos }: RevendaPostPreviewProps) =>
 
       {/* Thumbnails */}
       <div className="flex gap-2 overflow-x-auto pb-2">
-        {slides.map((slide, index) => (
-          <button
-            key={index}
-            onClick={() => goToSlide(index)}
-            className={cn(
-              "flex-shrink-0 rounded-lg overflow-hidden transition-all",
-              currentSlide === index 
-                ? "ring-2 ring-sky-500 ring-offset-2" 
-                : "opacity-70 hover:opacity-100"
-            )}
-            style={{ 
-              width: 64, 
-              height: 64,
-              backgroundColor: '#f1f5f9',
-            }}
-          >
-            <div
-              style={{
-                transform: 'scale(0.059)',
-                transformOrigin: 'top left',
-                width: templateWidth,
-                height: templateHeight,
+        {slides.map((slide, index) => {
+          const thumbHeight = format === 'feed' ? 64 : 80;
+          const thumbWidth = format === 'feed' ? 64 : 45;
+          const thumbScale = format === 'feed' ? 0.059 : 0.042;
+          
+          return (
+            <button
+              key={index}
+              onClick={() => goToSlide(index)}
+              className={cn(
+                "flex-shrink-0 rounded-lg overflow-hidden transition-all",
+                currentSlide === index 
+                  ? "ring-2 ring-sky-500 ring-offset-2 ring-offset-slate-900" 
+                  : "opacity-70 hover:opacity-100"
+              )}
+              style={{ 
+                width: thumbWidth, 
+                height: thumbHeight,
+                backgroundColor: '#1e293b',
               }}
             >
-              {slide.component}
-            </div>
-          </button>
-        ))}
+              <div
+                style={{
+                  transform: `scale(${thumbScale})`,
+                  transformOrigin: 'top left',
+                  width: templateWidth,
+                  height: templateHeight,
+                }}
+              >
+                {slide.component}
+              </div>
+            </button>
+          );
+        })}
       </div>
 
       {/* Hidden refs for export */}

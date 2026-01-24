@@ -1,17 +1,18 @@
 import { Gem } from 'lucide-react';
 
 interface RevendaLogoProps {
-  size?: 'sm' | 'md' | 'lg' | 'xl';
+  size?: 'sm' | 'md' | 'lg' | 'xl' | 'xxl';
   variant?: 'full' | 'icon' | 'minimal';
   className?: string;
   dark?: boolean;
 }
 
 const sizeConfig = {
-  sm: { icon: 16, text: '14px', subtitle: '8px', gap: 6 },
-  md: { icon: 20, text: '18px', subtitle: '10px', gap: 8 },
-  lg: { icon: 28, text: '24px', subtitle: '12px', gap: 10 },
-  xl: { icon: 36, text: '32px', subtitle: '14px', gap: 12 },
+  sm: { icon: 20, text: '16px', subtitle: '9px', gap: 8 },
+  md: { icon: 28, text: '22px', subtitle: '11px', gap: 10 },
+  lg: { icon: 36, text: '28px', subtitle: '13px', gap: 12 },
+  xl: { icon: 48, text: '36px', subtitle: '16px', gap: 14 },
+  xxl: { icon: 64, text: '48px', subtitle: '20px', gap: 18 },
 };
 
 export const RevendaLogo = ({ 
@@ -23,13 +24,13 @@ export const RevendaLogo = ({
   const config = sizeConfig[size];
   
   // Colors based on theme
-  const primaryColor = dark ? '#1a1a1a' : '#0f172a';
+  const primaryColor = dark ? '#ffffff' : '#0f172a';
   const accentColor = '#0ea5e9'; // Sky blue - elegant and modern
   
   if (variant === 'icon') {
     return (
       <div 
-        className={`flex items-center justify-center rounded-full ${className}`}
+        className={`flex items-center justify-center rounded-xl ${className}`}
         style={{
           width: config.icon * 2,
           height: config.icon * 2,
@@ -50,13 +51,22 @@ export const RevendaLogo = ({
   if (variant === 'minimal') {
     return (
       <div className={`flex items-center ${className}`} style={{ gap: config.gap }}>
-        <Gem 
-          style={{ 
-            width: config.icon, 
-            height: config.icon,
-            color: accentColor,
-          }} 
-        />
+        <div 
+          className="flex items-center justify-center rounded-lg"
+          style={{
+            width: config.icon * 1.3,
+            height: config.icon * 1.3,
+            background: `linear-gradient(135deg, ${accentColor}, #0284c7)`,
+          }}
+        >
+          <Gem 
+            style={{ 
+              width: config.icon * 0.7, 
+              height: config.icon * 0.7,
+              color: '#ffffff',
+            }} 
+          />
+        </div>
         <span 
           className="font-display font-bold tracking-wide"
           style={{ 
@@ -64,7 +74,7 @@ export const RevendaLogo = ({
             color: primaryColor,
           }}
         >
-          VDH
+          VDH Premium
         </span>
       </div>
     );
@@ -74,7 +84,7 @@ export const RevendaLogo = ({
   return (
     <div className={`flex items-center ${className}`} style={{ gap: config.gap }}>
       <div 
-        className="flex items-center justify-center rounded-lg"
+        className="flex items-center justify-center rounded-xl"
         style={{
           width: config.icon * 1.5,
           height: config.icon * 1.5,
@@ -131,24 +141,42 @@ export const RevendaWatermark = ({ opacity = 0.03 }: { opacity?: number }) => {
   );
 };
 
-// Logo bar for bottom of posts
-export const RevendaLogoBar = () => {
+// Logo bar for bottom of posts - LARGER and more prominent
+export const RevendaLogoBar = ({ dark = false }: { dark?: boolean }) => {
   return (
     <div 
-      className="absolute bottom-0 left-0 right-0 flex items-center justify-between px-8 py-5"
+      className="absolute bottom-0 left-0 right-0 flex items-center justify-between px-10 py-6"
       style={{
-        background: 'linear-gradient(to top, rgba(255,255,255,0.98), rgba(255,255,255,0.9))',
+        background: dark 
+          ? 'linear-gradient(to top, rgba(15,23,42,0.98), rgba(15,23,42,0.8))'
+          : 'linear-gradient(to top, rgba(255,255,255,0.98), rgba(255,255,255,0.9))',
         backdropFilter: 'blur(8px)',
-        borderTop: '1px solid rgba(14,165,233,0.1)',
+        borderTop: '1px solid rgba(14,165,233,0.15)',
       }}
     >
-      <RevendaLogo size="md" variant="minimal" />
+      <RevendaLogo size="lg" variant="minimal" dark={dark} />
       <div 
-        className="text-xs font-medium tracking-wide uppercase"
-        style={{ color: '#64748b' }}
+        className="text-sm font-medium tracking-wide uppercase"
+        style={{ color: dark ? '#94a3b8' : '#64748b' }}
       >
         Mercado Premium
       </div>
+    </div>
+  );
+};
+
+// Story logo bar - vertical format
+export const RevendaLogoBarStory = ({ dark = false }: { dark?: boolean }) => {
+  return (
+    <div 
+      className="absolute bottom-0 left-0 right-0 flex items-center justify-center px-8 py-8"
+      style={{
+        background: dark 
+          ? 'linear-gradient(to top, rgba(15,23,42,0.98), rgba(15,23,42,0.7), transparent)'
+          : 'linear-gradient(to top, rgba(255,255,255,0.98), rgba(255,255,255,0.85), transparent)',
+      }}
+    >
+      <RevendaLogo size="xl" variant="minimal" dark={dark} />
     </div>
   );
 };
