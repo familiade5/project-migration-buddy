@@ -29,37 +29,13 @@ export const PostDetailsStory = ({ data, photo, photos = [] }: PostDetailsStoryP
   };
 
   const generateAutoTexts = () => {
-    const features: string[] = [];
-    
-    // Diferenciais de venda (benefícios)
-    const conversionTriggers = [
+    // Slide 3 Story - SEMPRE mostra estes 4 gatilhos fixos
+    return [
       'Preço abaixo do mercado',
       'Processo simples e seguro',
       'Excelente custo-benefício',
       'Documentação regularizada',
     ];
-    
-    // Adiciona condições específicas se disponíveis
-    if (data.discount && parseFloat(data.discount.replace(',', '.')) > 0) {
-      features.push(`Economia de ${data.discount}%`);
-    }
-    
-    if (data.canUseFGTS) {
-      features.push('FGTS aceito como entrada');
-    }
-    
-    if (data.acceptsFinancing) {
-      features.push('Financiamento facilitado');
-    }
-    
-    // Preenche com gatilhos de conversão
-    let triggerIndex = 0;
-    while (features.length < 4 && triggerIndex < conversionTriggers.length) {
-      features.push(conversionTriggers[triggerIndex]);
-      triggerIndex++;
-    }
-    
-    return features.slice(0, 4);
   };
 
   const displayFeatures = generateFeatures();
