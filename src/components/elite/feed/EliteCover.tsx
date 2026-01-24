@@ -17,7 +17,8 @@ export const EliteCover = ({ data, photo }: EliteCoverProps) => {
           className="absolute inset-0"
           style={{ 
             backgroundImage: `url(${photo})`,
-            backgroundSize: 'cover',
+            backgroundSize: 'contain',
+            backgroundRepeat: 'no-repeat',
             backgroundPosition: 'center top',
           }}
         />
