@@ -128,14 +128,14 @@ export const EliteFeatures = ({ data, photo }: EliteFeaturesProps) => {
           </div>
         </div>
 
-        {/* Right - Full bleed photo */}
+        {/* Right - Full bleed photo - clean, no overlays */}
         <div className="relative" style={{ width: '50%', height: '100%' }}>
           {photo ? (
             <div 
               className="absolute inset-0 bg-cover bg-center"
               style={{ 
                 backgroundImage: `url(${photo})`,
-                clipPath: 'polygon(10% 0, 100% 0, 100% 100%, 0 100%)'
+                clipPath: 'polygon(8% 0, 100% 0, 100% 100%, 0 100%)'
               }}
             />
           ) : (
@@ -143,16 +143,17 @@ export const EliteFeatures = ({ data, photo }: EliteFeaturesProps) => {
               className="absolute inset-0"
               style={{ 
                 background: 'linear-gradient(135deg, #1a1a1f, #0f0f14)',
-                clipPath: 'polygon(10% 0, 100% 0, 100% 100%, 0 100%)'
+                clipPath: 'polygon(8% 0, 100% 0, 100% 100%, 0 100%)'
               }}
             />
           )}
-          {/* Overlay for depth */}
+          {/* Minimal edge blend */}
           <div 
-            className="absolute inset-0"
+            className="absolute inset-y-0 left-0 pointer-events-none"
             style={{ 
-              background: 'linear-gradient(270deg, transparent 70%, #0a0a0f 100%)',
-              clipPath: 'polygon(10% 0, 100% 0, 100% 100%, 0 100%)'
+              width: '60px',
+              background: 'linear-gradient(90deg, #0a0a0f, transparent)',
+              clipPath: 'polygon(0 0, 100% 0, 100% 100%, 0 100%)'
             }}
           />
         </div>

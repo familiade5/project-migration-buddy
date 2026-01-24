@@ -15,16 +15,21 @@ export const EliteCover = ({ data, photo }: EliteCoverProps) => {
 
   return (
     <div className="post-template relative overflow-hidden" style={{ background: '#0a0a0f' }}>
-      {/* Full bleed photo with premium overlay */}
+      {/* Full bleed photo - clean, no heavy overlays */}
       {photo ? (
         <>
           <div 
             className="absolute inset-0 bg-cover bg-center"
             style={{ backgroundImage: `url(${photo})` }}
           />
-          {/* Sophisticated gradient overlay */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
-          <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-transparent to-transparent" />
+          {/* Minimal gradient only at bottom for text readability */}
+          <div 
+            className="absolute inset-x-0 bottom-0"
+            style={{ 
+              height: '50%',
+              background: 'linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.5) 50%, transparent 100%)'
+            }}
+          />
         </>
       ) : (
         <div className="absolute inset-0 bg-gradient-to-br from-[#1a1a1f] via-[#0f0f14] to-[#0a0a0f]" />

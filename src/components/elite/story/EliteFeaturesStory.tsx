@@ -17,7 +17,7 @@ export const EliteFeaturesStory = ({ data, photo }: EliteFeaturesStoryProps) => 
 
   return (
     <div className="post-template-story relative overflow-hidden" style={{ background: '#0a0a0f' }}>
-      {/* Top photo section */}
+      {/* Top photo section - clean, no heavy overlays */}
       {photo ? (
         <div 
           className="absolute bg-cover bg-center"
@@ -29,7 +29,14 @@ export const EliteFeaturesStory = ({ data, photo }: EliteFeaturesStoryProps) => 
             backgroundImage: `url(${photo})`
           }}
         >
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#0a0a0f]" />
+          {/* Minimal fade to content area */}
+          <div 
+            className="absolute inset-x-0 bottom-0"
+            style={{ 
+              height: '40%',
+              background: 'linear-gradient(to top, #0a0a0f 0%, transparent 100%)'
+            }}
+          />
         </div>
       ) : (
         <div 

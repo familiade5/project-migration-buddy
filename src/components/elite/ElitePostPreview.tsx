@@ -11,12 +11,14 @@ import { EliteCover } from './feed/EliteCover';
 import { EliteDetails } from './feed/EliteDetails';
 import { EliteFeatures } from './feed/EliteFeatures';
 import { EliteContact } from './feed/EliteContact';
+import { ElitePhotoSlide } from './feed/ElitePhotoSlide';
 
 // Story components
 import { EliteCoverStory } from './story/EliteCoverStory';
 import { EliteDetailsStory } from './story/EliteDetailsStory';
 import { EliteFeaturesStory } from './story/EliteFeaturesStory';
 import { EliteContactStory } from './story/EliteContactStory';
+import { ElitePhotoStory } from './story/ElitePhotoStory';
 
 // VDH components
 import { EliteVDH1 } from './vdh/EliteVDH1';
@@ -36,18 +38,32 @@ export const ElitePostPreview = ({ data, photos }: ElitePostPreviewProps) => {
   const postRefs = useRef<(HTMLDivElement | null)[]>([]);
   const { toast } = useToast();
 
+  // 10 slides for Feed: Capa, Detalhes, Diferenciais, 6 photo-only slides, Contato
   const feedPosts = [
     { name: 'Capa', component: EliteCover, photoIndex: 0 },
-    { name: 'Detalhes', component: EliteDetails, photoIndex: 1 },
-    { name: 'Diferenciais', component: EliteFeatures, photoIndex: 2 },
-    { name: 'Contato', component: EliteContact, photoIndex: 3 },
+    { name: 'Detalhes', component: EliteDetails, photoIndex: 0 },
+    { name: 'Diferenciais', component: EliteFeatures, photoIndex: 3 },
+    { name: 'Galeria 1', component: ElitePhotoSlide, photoIndex: 4 },
+    { name: 'Galeria 2', component: ElitePhotoSlide, photoIndex: 5 },
+    { name: 'Galeria 3', component: ElitePhotoSlide, photoIndex: 6 },
+    { name: 'Galeria 4', component: ElitePhotoSlide, photoIndex: 7 },
+    { name: 'Galeria 5', component: ElitePhotoSlide, photoIndex: 8 },
+    { name: 'Galeria 6', component: ElitePhotoSlide, photoIndex: 9 },
+    { name: 'Contato', component: EliteContact, photoIndex: 0 },
   ];
 
+  // 10 slides for Story
   const storyPosts = [
     { name: 'Capa', component: EliteCoverStory, photoIndex: 0 },
-    { name: 'Detalhes', component: EliteDetailsStory, photoIndex: 1 },
-    { name: 'Diferenciais', component: EliteFeaturesStory, photoIndex: 2 },
-    { name: 'Contato', component: EliteContactStory, photoIndex: 3 },
+    { name: 'Detalhes', component: EliteDetailsStory, photoIndex: 0 },
+    { name: 'Diferenciais', component: EliteFeaturesStory, photoIndex: 3 },
+    { name: 'Galeria 1', component: ElitePhotoStory, photoIndex: 4 },
+    { name: 'Galeria 2', component: ElitePhotoStory, photoIndex: 5 },
+    { name: 'Galeria 3', component: ElitePhotoStory, photoIndex: 6 },
+    { name: 'Galeria 4', component: ElitePhotoStory, photoIndex: 7 },
+    { name: 'Galeria 5', component: ElitePhotoStory, photoIndex: 8 },
+    { name: 'Galeria 6', component: ElitePhotoStory, photoIndex: 9 },
+    { name: 'Contato', component: EliteContactStory, photoIndex: 0 },
   ];
 
   const elitePosts = [
@@ -61,7 +77,7 @@ export const ElitePostPreview = ({ data, photos }: ElitePostPreviewProps) => {
 
   const getPhoto = (index: number) => {
     if (photos.length === 0) return null;
-    return photos[index % photos.length];
+    return photos[index % photos.length] || photos[0];
   };
 
   const handleExportSingle = async (index: number) => {
@@ -247,31 +263,33 @@ export const ElitePostPreview = ({ data, photos }: ElitePostPreviewProps) => {
         </div>
       </div>
 
-      {/* Thumbnails */}
-      <div className="flex gap-2 justify-center">
-        {posts.map((post, index) => (
-          <button
-            key={index}
-            onClick={() => setCurrentIndex(index)}
-            className={`
-              w-16 h-16 rounded-lg overflow-hidden transition-all
-              ${currentIndex === index 
-                ? 'ring-2 ring-amber-400 ring-offset-2 ring-offset-[#0a0a0f]' 
-                : 'opacity-50 hover:opacity-80'
-              }
-            `}
-          >
-            <div 
-              className="w-full h-full flex items-center justify-center text-[8px] font-medium"
-              style={{ 
-                background: 'linear-gradient(135deg, #1a1a1f, #0f0f14)',
-                color: '#d4af37'
-              }}
+      {/* Thumbnails - Scrollable for 10 slides */}
+      <div className="overflow-x-auto pb-2">
+        <div className="flex gap-2 justify-start min-w-min px-1">
+          {posts.map((post, index) => (
+            <button
+              key={index}
+              onClick={() => setCurrentIndex(index)}
+              className={`
+                flex-shrink-0 w-12 h-12 rounded-lg overflow-hidden transition-all
+                ${currentIndex === index 
+                  ? 'ring-2 ring-amber-400 ring-offset-2 ring-offset-[#0a0a0f] scale-110' 
+                  : 'opacity-50 hover:opacity-80'
+                }
+              `}
             >
-              {post.name}
-            </div>
-          </button>
-        ))}
+              <div 
+                className="w-full h-full flex items-center justify-center text-[7px] font-medium text-center leading-tight p-1"
+                style={{ 
+                  background: 'linear-gradient(135deg, #1a1a1f, #0f0f14)',
+                  color: '#d4af37'
+                }}
+              >
+                {post.name}
+              </div>
+            </button>
+          ))}
+        </div>
       </div>
 
       {/* Hidden export containers */}
