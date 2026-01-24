@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { RevendaPropertyData, CategorizedPhoto, photoCategoryLabels, PhotoCategory } from '@/types/revenda';
 import { RevendaCoverFeed } from './feed/RevendaCoverFeed';
 import { RevendaPhotoFeed } from './feed/RevendaPhotoFeed';
@@ -17,6 +17,7 @@ import { toPng } from 'html-to-image';
 import JSZip from 'jszip';
 import { toast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface RevendaPostPreviewProps {
   data: RevendaPropertyData;
@@ -35,6 +36,7 @@ export const RevendaPostPreview = ({ data, photos }: RevendaPostPreviewProps) =>
   const [format, setFormat] = useState<PostFormat>('feed');
   const [currentSlide, setCurrentSlide] = useState(0);
   const postRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const isMobile = useIsMobile();
 
   // Get all photos as URLs in order
   const getAllPhotos = (): string[] => {
@@ -357,29 +359,31 @@ export const RevendaPostPreview = ({ data, photos }: RevendaPostPreviewProps) =>
     }
   };
 
-  // Scale and dimensions based on format
+  // Scale and dimensions based on format - responsive for mobile
   const templateWidth = 1080;
   const templateHeight = format === 'feed' ? 1080 : 1920;
-  const maxPreviewWidth = 380;
+  // Use smaller preview on mobile
+  const maxPreviewWidth = isMobile ? 260 : 380;
   const previewScale = maxPreviewWidth / templateWidth;
   const previewHeight = templateHeight * previewScale;
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 w-full max-w-full overflow-hidden">
       {/* Format Selector */}
-      <div className="flex items-center justify-between">
-        <div className="flex gap-2">
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <div className="flex gap-1 sm:gap-2">
           <Button
             variant={format === 'feed' ? 'default' : 'outline'}
             size="sm"
             onClick={() => handleFormatChange('feed')}
             className={cn(
+              "text-xs sm:text-sm px-2 sm:px-3",
               format === 'feed' 
                 ? 'bg-sky-500 hover:bg-sky-600 text-white' 
                 : 'border-slate-200 text-slate-600'
             )}
           >
-            <Layers className="w-4 h-4 mr-2" />
+            <Layers className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
             Feed
           </Button>
           <Button
@@ -387,45 +391,45 @@ export const RevendaPostPreview = ({ data, photos }: RevendaPostPreviewProps) =>
             size="sm"
             onClick={() => handleFormatChange('story')}
             className={cn(
+              "text-xs sm:text-sm px-2 sm:px-3",
               format === 'story' 
                 ? 'bg-sky-500 hover:bg-sky-600 text-white' 
                 : 'border-slate-200 text-slate-600'
             )}
           >
-            <ImageIcon className="w-4 h-4 mr-2" />
+            <ImageIcon className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
             Stories
           </Button>
         </div>
 
         {/* Export Buttons */}
-        <div className="flex gap-2">
+        <div className="flex gap-1 sm:gap-2">
           <Button
             variant="outline"
             size="sm"
             onClick={() => handleExportSingle(currentSlide)}
-            className="border-slate-200 text-slate-600 hover:bg-slate-50"
+            className="border-slate-200 text-slate-600 hover:bg-slate-50 text-xs sm:text-sm px-2 sm:px-3"
           >
-            <Download className="w-4 h-4 mr-1" />
-            Slide
+            <Download className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
+            <span className="hidden sm:inline">Slide</span>
           </Button>
           <Button
             size="sm"
             onClick={handleExportAll}
-            className="bg-sky-500 hover:bg-sky-600 text-white"
+            className="bg-sky-500 hover:bg-sky-600 text-white text-xs sm:text-sm px-2 sm:px-3"
           >
-            <Download className="w-4 h-4 mr-1" />
-            Exportar Tudo
+            <Download className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
+            <span className="hidden sm:inline">Exportar</span>
           </Button>
         </div>
       </div>
 
       {/* Preview Container */}
       <div 
-        className="relative rounded-xl overflow-hidden"
+        className="relative rounded-xl overflow-hidden w-full max-w-full mx-auto"
         style={{ 
           backgroundColor: '#1e293b',
           border: '1px solid #334155',
-          width: maxPreviewWidth + 32,
         }}
       >
         {/* Navigation */}
@@ -481,9 +485,11 @@ export const RevendaPostPreview = ({ data, photos }: RevendaPostPreviewProps) =>
       </div>
 
       {/* Thumbnails */}
-      <div className="flex gap-2 overflow-x-auto pb-2">
+      <div className="flex gap-1 sm:gap-2 overflow-x-auto pb-2 -mx-2 px-2">
         {slides.map((slide, index) => {
-          const thumbScale = format === 'feed' ? 0.059 : 0.035;
+          const thumbScale = isMobile 
+            ? (format === 'feed' ? 0.045 : 0.028)
+            : (format === 'feed' ? 0.059 : 0.035);
           const thumbWidth = templateWidth * thumbScale;
           const thumbHeight = templateHeight * thumbScale;
           
@@ -494,7 +500,7 @@ export const RevendaPostPreview = ({ data, photos }: RevendaPostPreviewProps) =>
               className={cn(
                 "flex-shrink-0 rounded-lg overflow-hidden transition-all",
                 currentSlide === index 
-                  ? "ring-2 ring-sky-500 ring-offset-2 ring-offset-slate-900" 
+                  ? "ring-2 ring-sky-500 ring-offset-1 sm:ring-offset-2 ring-offset-slate-900" 
                   : "opacity-70 hover:opacity-100"
               )}
               style={{ 
