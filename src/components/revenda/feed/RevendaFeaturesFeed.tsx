@@ -1,6 +1,6 @@
 import { RevendaPropertyData } from '@/types/revenda';
-import { RevendaLogo } from '../RevendaLogo';
-import { Sun, Mountain, LayoutDashboard, Sparkles, Check } from 'lucide-react';
+import { RevendaWatermark } from '../RevendaLogo';
+import { Sun, Mountain, LayoutDashboard, Sparkles, Check, Shield, TrendingDown, Clock, Home, Wallet } from 'lucide-react';
 
 interface RevendaFeaturesFeedProps {
   data: RevendaPropertyData;
@@ -25,22 +25,45 @@ export const RevendaFeaturesFeed = ({ data, photo }: RevendaFeaturesFeedProps) =
     }
     
     // Add from features array if we need more
-    if (features.length < 4) {
-      data.features.slice(0, 4 - features.length).forEach(f => {
+    if (features.length < 8) {
+      data.features.slice(0, 8 - features.length).forEach(f => {
         features.push({ icon: Check, text: f });
       });
     }
     
-    // Fallback defaults
+    // Default 8 features for conversion
     if (features.length === 0) {
       features.push(
         { icon: Sparkles, text: 'Pronto para morar' },
         { icon: Sun, text: 'Ambientes arejados' },
         { icon: LayoutDashboard, text: 'Ótima distribuição' },
+        { icon: TrendingDown, text: 'Preço abaixo do mercado' },
+        { icon: Shield, text: 'Processo seguro e transparente' },
+        { icon: Wallet, text: 'Excelente custo-benefício' },
+        { icon: Clock, text: 'Oportunidade única' },
+        { icon: Home, text: 'Ideal para família' },
       );
     }
     
-    return features.slice(0, 4);
+    // If we have some but less than 8, add defaults
+    const defaultExtras = [
+      { icon: TrendingDown, text: 'Preço abaixo do mercado' },
+      { icon: Shield, text: 'Processo seguro e transparente' },
+      { icon: Wallet, text: 'Excelente custo-benefício' },
+      { icon: Clock, text: 'Oportunidade única' },
+      { icon: Home, text: 'Ideal para família' },
+    ];
+    
+    let extraIndex = 0;
+    while (features.length < 8 && extraIndex < defaultExtras.length) {
+      const existing = features.find(f => f.text === defaultExtras[extraIndex].text);
+      if (!existing) {
+        features.push(defaultExtras[extraIndex]);
+      }
+      extraIndex++;
+    }
+    
+    return features.slice(0, 8);
   };
 
   const features = getFeatures();
@@ -51,7 +74,7 @@ export const RevendaFeaturesFeed = ({ data, photo }: RevendaFeaturesFeedProps) =
       style={{ backgroundColor: '#0f172a' }}
     >
       {/* Photo on left - 55% */}
-      <div className="absolute top-0 left-0 w-[55%] h-full">
+      <div className="absolute top-0 left-0 w-[55%] h-full relative">
         {photo ? (
           <img 
             src={photo} 
@@ -61,26 +84,19 @@ export const RevendaFeaturesFeed = ({ data, photo }: RevendaFeaturesFeedProps) =
         ) : (
           <div 
             className="w-full h-full flex items-center justify-center"
-            style={{ 
-              background: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)',
-            }}
+            style={{ backgroundColor: '#1e293b' }}
           >
             <span className="text-slate-500">Foto</span>
           </div>
         )}
         
-        {/* Right edge gradient */}
-        <div 
-          className="absolute top-0 right-0 bottom-0 w-32"
-          style={{
-            background: 'linear-gradient(to left, #0f172a, transparent)',
-          }}
-        />
+        {/* Logo on the photo */}
+        <RevendaWatermark position="top-right" size="sm" />
       </div>
 
       {/* Content on right - 45% */}
       <div 
-        className="absolute top-0 right-0 w-[45%] h-full flex flex-col justify-center px-14"
+        className="absolute top-0 right-0 w-[45%] h-full flex flex-col justify-center px-12"
       >
         {/* Section label */}
         <p 
@@ -92,29 +108,29 @@ export const RevendaFeaturesFeed = ({ data, photo }: RevendaFeaturesFeedProps) =
         
         {/* Headline */}
         <h2 
-          className="font-display font-bold leading-tight mb-12"
-          style={{ fontSize: '42px', color: '#ffffff' }}
+          className="font-display font-bold leading-tight mb-10"
+          style={{ fontSize: '36px', color: '#ffffff' }}
         >
           Conforto e qualidade em cada detalhe
         </h2>
 
-        {/* Features list - elegant, spacious */}
-        <div className="space-y-6">
+        {/* Features list - 8 items, more compact */}
+        <div className="space-y-4">
           {features.map((feature, index) => {
             const Icon = feature.icon;
             return (
-              <div key={index} className="flex items-center gap-5">
+              <div key={index} className="flex items-center gap-4">
                 <div 
-                  className="w-14 h-14 rounded-xl flex items-center justify-center"
+                  className="w-11 h-11 rounded-lg flex items-center justify-center flex-shrink-0"
                   style={{ 
                     background: 'linear-gradient(135deg, rgba(14,165,233,0.2), rgba(14,165,233,0.1))',
                     border: '1px solid rgba(14,165,233,0.3)',
                   }}
                 >
-                  <Icon className="w-7 h-7" style={{ color: '#0ea5e9' }} />
+                  <Icon className="w-5 h-5" style={{ color: '#0ea5e9' }} />
                 </div>
                 <span 
-                  className="text-xl font-light"
+                  className="text-lg font-light"
                   style={{ color: 'rgba(255,255,255,0.9)' }}
                 >
                   {feature.text}
@@ -122,11 +138,6 @@ export const RevendaFeaturesFeed = ({ data, photo }: RevendaFeaturesFeedProps) =
               </div>
             );
           })}
-        </div>
-
-        {/* Logo at bottom */}
-        <div className="mt-auto pt-12">
-          <RevendaLogo size="md" />
         </div>
       </div>
     </div>
