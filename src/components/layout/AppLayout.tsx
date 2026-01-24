@@ -31,7 +31,7 @@ const SUPER_ADMIN_EMAIL = 'neto@vendadiretahoje.com.br';
 
 const navigation = [
   { name: 'Criar Post', href: '/', icon: Building2 },
-  { name: 'Revenda', href: '/revenda', icon: Gem },
+  { name: 'Revenda +', href: '/revenda', icon: Gem },
   { name: 'Biblioteca', href: '/library', icon: Calendar },
 ];
 
