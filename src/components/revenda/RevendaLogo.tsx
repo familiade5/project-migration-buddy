@@ -71,19 +71,38 @@ export const RevendaLogo = ({
   );
 };
 
-// Watermark overlay - subtle white logo in corner for all images
+// Watermark overlay - subtle white logo in corner or center for all images
 export const RevendaWatermark = ({ 
-  position = 'bottom-right',
-  size = 'sm',
+  position = 'bottom-center',
+  size = 'md',
 }: { 
-  position?: 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
+  position?: 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right' | 'bottom-center';
   size?: 'sm' | 'md' | 'lg';
 }) => {
   const config = {
-    sm: { width: 60, height: 30 },
-    md: { width: 80, height: 40 },
-    lg: { width: 100, height: 50 },
+    sm: { width: 100, height: 50 },
+    md: { width: 140, height: 70 },
+    lg: { width: 180, height: 90 },
   };
+
+  // Bottom-center is the default for single-photo slides (like reference image)
+  if (position === 'bottom-center') {
+    return (
+      <div 
+        className="absolute bottom-8 left-0 right-0 flex justify-center pointer-events-none"
+      >
+        <img 
+          src={logoVdhRevendaTransparent}
+          alt="VDH Revenda+"
+          style={{
+            width: config[size].width,
+            height: 'auto',
+            filter: 'drop-shadow(0 2px 8px rgba(0, 0, 0, 0.6)) drop-shadow(0 4px 16px rgba(0, 0, 0, 0.4))',
+          }}
+        />
+      </div>
+    );
+  }
 
   const positionStyles = {
     'top-left': 'top-6 left-6',
@@ -105,39 +124,53 @@ export const RevendaWatermark = ({
         alt="VDH Revenda+"
         className="w-full h-full object-contain"
         style={{
-          // Marca d'água discreta, branca e sem fundo
-          filter: `drop-shadow(0 0 4px rgba(0, 0, 0, 0.55))`,
-          opacity: 0.5,
+          filter: 'drop-shadow(0 2px 6px rgba(0, 0, 0, 0.5))',
         }}
       />
     </div>
   );
 };
 
-// Logo bar for bottom of feed posts - elegant gradient fade
+// Logo bar for bottom of feed posts - centered at bottom like reference image
 export const RevendaLogoBar = () => {
   return (
     <div 
-      className="absolute bottom-0 left-0 right-0 flex items-center justify-center py-8"
+      className="absolute bottom-0 left-0 right-0 flex items-center justify-center"
       style={{
-        background: 'linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.3) 50%, transparent 100%)',
+        paddingBottom: '40px',
       }}
     >
-      <RevendaLogo size="lg" variant="transparent" />
+      <img 
+        src={logoVdhRevendaTransparent}
+        alt="VDH Revenda+"
+        style={{
+          width: '180px',
+          height: 'auto',
+          filter: 'drop-shadow(0 2px 8px rgba(0, 0, 0, 0.6)) drop-shadow(0 4px 16px rgba(0, 0, 0, 0.4))',
+        }}
+      />
     </div>
   );
 };
 
-// Story logo bar - vertical format
+// Story logo bar - vertical format, centered at bottom
 export const RevendaLogoBarStory = () => {
   return (
     <div 
-      className="absolute bottom-0 left-0 right-0 flex items-center justify-center py-12"
+      className="absolute bottom-0 left-0 right-0 flex items-center justify-center"
       style={{
-        background: 'linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.4) 50%, transparent 100%)',
+        paddingBottom: '60px',
       }}
     >
-      <RevendaLogo size="xl" variant="transparent" />
+      <img 
+        src={logoVdhRevendaTransparent}
+        alt="VDH Revenda+"
+        style={{
+          width: '220px',
+          height: 'auto',
+          filter: 'drop-shadow(0 2px 8px rgba(0, 0, 0, 0.6)) drop-shadow(0 4px 16px rgba(0, 0, 0, 0.4))',
+        }}
+      />
     </div>
   );
 };

@@ -1,5 +1,5 @@
 import { RevendaPropertyData } from '@/types/revenda';
-import { RevendaLogo } from '../RevendaLogo';
+import { RevendaWatermark } from '../RevendaLogo';
 
 interface RevendaPhotoFeedProps {
   data: RevendaPropertyData;
@@ -31,14 +31,6 @@ export const RevendaPhotoFeed = ({ data, photo, label }: RevendaPhotoFeedProps) 
             <span className="text-slate-500 text-lg">Foto</span>
           </div>
         )}
-        
-        {/* Subtle gradient overlay */}
-        <div 
-          className="absolute inset-0"
-          style={{
-            background: 'linear-gradient(to bottom, transparent 0%, transparent 70%, rgba(15,23,42,0.8) 100%)',
-          }}
-        />
       </div>
 
       {/* Label badge (optional) - top left, elegant */}
@@ -60,23 +52,8 @@ export const RevendaPhotoFeed = ({ data, photo, label }: RevendaPhotoFeedProps) 
         </div>
       )}
 
-      {/* Bottom logo bar */}
-      <div 
-        className="absolute bottom-0 left-0 right-0 flex items-center justify-between px-10 py-6"
-        style={{
-          background: 'linear-gradient(to top, rgba(15,23,42,0.95), rgba(15,23,42,0.7), transparent)',
-        }}
-      >
-        <RevendaLogo size="md" />
-        {data.propertyName && (
-          <span 
-            className="text-sm font-light tracking-wide"
-            style={{ color: 'rgba(255,255,255,0.6)' }}
-          >
-            {data.propertyName}
-          </span>
-        )}
-      </div>
+      {/* Logo centered at bottom - like reference image */}
+      <RevendaWatermark position="bottom-center" size="lg" />
     </div>
   );
 };
