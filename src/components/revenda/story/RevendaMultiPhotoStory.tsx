@@ -88,6 +88,7 @@ export const RevendaMultiPhotoStory = ({
               className="w-full h-full object-cover"
             />
             <RoomLabel label={getLabel(1)} />
+            <RevendaWatermark position="top-right" size="sm" />
           </div>
           <div 
             className="flex-1 rounded-3xl overflow-hidden relative"
@@ -102,6 +103,7 @@ export const RevendaMultiPhotoStory = ({
               className="w-full h-full object-cover"
             />
             <RoomLabel label={getLabel(2)} />
+            <RevendaWatermark position="top-right" size="sm" />
           </div>
         </div>
       </div>
@@ -144,6 +146,7 @@ export const RevendaMultiPhotoStory = ({
               className="w-full h-full object-cover"
             />
             <RoomLabel label={getLabel(1)} />
+            <RevendaWatermark position="top-right" size="sm" />
           </div>
         </div>
         
@@ -162,6 +165,7 @@ export const RevendaMultiPhotoStory = ({
             className="w-full h-full object-cover"
           />
           <RoomLabel label={getLabel(2)} />
+          <RevendaWatermark position="top-right" size="sm" />
         </div>
       </div>
     );
@@ -241,8 +245,7 @@ export const RevendaMultiPhotoStory = ({
         )}
       </div>
 
-      {/* Logo watermark - bottom right */}
-      <RevendaWatermark position="bottom-right" size="lg" />
+      {/* Remove logo watermark from bottom - logos are now on individual photos */}
     </div>
   );
 };

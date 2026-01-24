@@ -1,5 +1,5 @@
 import { RevendaPropertyData } from '@/types/revenda';
-import { RevendaLogo } from '../RevendaLogo';
+import { RevendaLogo, RevendaWatermark } from '../RevendaLogo';
 import { Bed, Bath, Car, Maximize, MapPin } from 'lucide-react';
 
 interface RevendaPriceStoryProps {
@@ -19,13 +19,16 @@ export const RevendaPriceStory = ({ data, photo }: RevendaPriceStoryProps) => {
       style={{ backgroundColor: '#fafafa' }}
     >
       {/* Top Photo - 40% */}
-      <div className="absolute top-0 left-0 right-0 h-[40%]">
+      <div className="absolute top-0 left-0 right-0 h-[40%] relative">
         {photo ? (
-          <img 
-            src={photo} 
-            alt="Property"
-            className="w-full h-full object-cover"
-          />
+          <>
+            <img 
+              src={photo} 
+              alt="Property"
+              className="w-full h-full object-cover"
+            />
+            <RevendaWatermark position="top-right" size="md" />
+          </>
         ) : (
           <div 
             className="w-full h-full"
