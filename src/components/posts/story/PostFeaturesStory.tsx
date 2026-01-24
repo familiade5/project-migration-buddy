@@ -60,14 +60,19 @@ export const PostFeaturesStory = ({ data, photo }: PostFeaturesStoryProps) => {
       });
     }
     
-    // Fallback: Gatilhos de conversão
+    // Fallback: Gatilhos de conversão para Venda Direta Caixa
     const conversionTriggers = [
       'Documentação 100% regularizada',
-      'Pronto para escriturar hoje',
-      'Sem burocracia para financiar',
-      'Oportunidade exclusiva de leilão',
-      'Valor abaixo do mercado',
+      'Imóvel pronto para ocupar',
+      'Oportunidade de Venda Direta',
+      'Abaixo do valor de mercado',
+      'Patrimônio com escritura pública',
     ];
+    
+    // Adiciona texto de financiamento APENAS se aceitar
+    if (data.acceptsFinancing) {
+      conversionTriggers.unshift('Aprovação de crédito facilitada');
+    }
     
     let triggerIndex = 0;
     while (features.length < 3 && triggerIndex < conversionTriggers.length) {
