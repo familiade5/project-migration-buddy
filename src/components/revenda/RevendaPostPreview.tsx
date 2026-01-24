@@ -1,11 +1,13 @@
 import { useState, useRef } from 'react';
-import { RevendaPropertyData, CategorizedPhoto, photoCategoryOrder, photoCategoryLabels } from '@/types/revenda';
+import { RevendaPropertyData, CategorizedPhoto } from '@/types/revenda';
 import { RevendaCoverFeed } from './feed/RevendaCoverFeed';
 import { RevendaPhotoFeed } from './feed/RevendaPhotoFeed';
+import { RevendaMultiPhotoFeed } from './feed/RevendaMultiPhotoFeed';
 import { RevendaFeaturesFeed } from './feed/RevendaFeaturesFeed';
 import { RevendaContactFeed } from './feed/RevendaContactFeed';
 import { RevendaCoverStory } from './story/RevendaCoverStory';
 import { RevendaLifestyleStory } from './story/RevendaLifestyleStory';
+import { RevendaPhotoStory } from './story/RevendaPhotoStory';
 import { RevendaPriceStory } from './story/RevendaPriceStory';
 import { RevendaContactStory } from './story/RevendaContactStory';
 import { Button } from '@/components/ui/button';
@@ -33,6 +35,11 @@ export const RevendaPostPreview = ({ data, photos }: RevendaPostPreviewProps) =>
   const [currentSlide, setCurrentSlide] = useState(0);
   const postRefs = useRef<(HTMLDivElement | null)[]>([]);
 
+  // Get all photos as URLs in order
+  const getAllPhotos = (): string[] => {
+    return photos.sort((a, b) => a.order - b.order).map(p => p.url);
+  };
+
   // Get photos organized by category
   const getPhotosByCategory = (category: string): string[] => {
     return photos
@@ -47,10 +54,13 @@ export const RevendaPostPreview = ({ data, photos }: RevendaPostPreviewProps) =>
   const getBedroomPhoto = () => getPhotosByCategory('quarto')[0] || null;
   const getKitchenPhoto = () => getPhotosByCategory('cozinha')[0] || null;
   const getBathroomPhoto = () => getPhotosByCategory('banheiro')[0] || null;
+  const getExternalPhoto = () => getPhotosByCategory('area-externa')[0] || null;
 
-  // Build slides for Feed (5 slides max)
+  // Build slides for Feed (7 slides - with multi-photo support)
   const buildFeedSlides = (): SlideDefinition[] => {
     const slides: SlideDefinition[] = [];
+    const allPhotos = getAllPhotos();
+    const hasMultiplePhotos = allPhotos.length > 7;
     
     // Slide 1: Cover with facade
     slides.push({
@@ -61,40 +71,94 @@ export const RevendaPostPreview = ({ data, photos }: RevendaPostPreviewProps) =>
 
     // Slide 2: Living room or best interior
     const livingPhoto = getLivingPhoto();
-    if (livingPhoto) {
+    if (livingPhoto || allPhotos.length > 1) {
+      if (hasMultiplePhotos) {
+        // Multi-photo layout for slide 2
+        const photosForSlide = [
+          getLivingPhoto(),
+          getPhotosByCategory('sala')[1],
+          getBedroomPhoto(),
+        ].filter(Boolean) as string[];
+        
+        slides.push({
+          name: 'Ambientes',
+          component: <RevendaMultiPhotoFeed data={data} photos={photosForSlide.slice(0, 3)} label="Interiores" />,
+          category: 'sala',
+        });
+      } else {
+        slides.push({
+          name: 'Sala',
+          component: <RevendaPhotoFeed data={data} photo={livingPhoto || allPhotos[1]} label="Sala de Estar" />,
+          category: 'sala',
+        });
+      }
+    }
+
+    // Slide 3: Bedroom or multi-photo
+    const bedroomPhoto = getBedroomPhoto();
+    if (bedroomPhoto || allPhotos.length > 2) {
+      if (hasMultiplePhotos) {
+        // Multi-photo layout for slide 3
+        const bedroomPhotos = getPhotosByCategory('quarto');
+        const photosForSlide = bedroomPhotos.length >= 2 
+          ? bedroomPhotos.slice(0, 4)
+          : [bedroomPhoto, getKitchenPhoto(), getBathroomPhoto()].filter(Boolean) as string[];
+        
+        slides.push({
+          name: 'Quartos',
+          component: <RevendaMultiPhotoFeed data={data} photos={photosForSlide.slice(0, 4)} label="Acomodações" />,
+          category: 'quarto',
+        });
+      } else {
+        slides.push({
+          name: 'Quarto',
+          component: <RevendaPhotoFeed data={data} photo={bedroomPhoto || allPhotos[2]} label="Quarto" />,
+          category: 'quarto',
+        });
+      }
+    }
+
+    // Slide 4: Kitchen
+    const kitchenPhoto = getKitchenPhoto();
+    if (kitchenPhoto || allPhotos.length > 3) {
       slides.push({
-        name: 'Sala',
-        component: <RevendaPhotoFeed data={data} photo={livingPhoto} label="Sala de Estar" />,
-        category: 'sala',
+        name: 'Cozinha',
+        component: <RevendaPhotoFeed data={data} photo={kitchenPhoto || allPhotos[3]} label="Cozinha" />,
+        category: 'cozinha',
       });
     }
 
-    // Slide 3: Features
+    // Slide 5: Bathroom or external area
+    const bathroomPhoto = getBathroomPhoto();
+    const externalPhoto = getExternalPhoto();
+    if (bathroomPhoto || externalPhoto || allPhotos.length > 4) {
+      slides.push({
+        name: externalPhoto ? 'Área Externa' : 'Banheiro',
+        component: <RevendaPhotoFeed 
+          data={data} 
+          photo={externalPhoto || bathroomPhoto || allPhotos[4]} 
+          label={externalPhoto ? 'Área Externa' : 'Banheiro'} 
+        />,
+        category: externalPhoto ? 'area-externa' : 'banheiro',
+      });
+    }
+
+    // Slide 6: Features
     slides.push({
       name: 'Diferenciais',
       component: <RevendaFeaturesFeed data={data} photo={getBedroomPhoto() || getKitchenPhoto()} />,
     });
 
-    // Slide 4: Another interior photo
-    const kitchenPhoto = getKitchenPhoto();
-    if (kitchenPhoto) {
-      slides.push({
-        name: 'Cozinha',
-        component: <RevendaPhotoFeed data={data} photo={kitchenPhoto} label="Cozinha" />,
-        category: 'cozinha',
-      });
-    }
-
-    // Slide 5: Contact
+    // Slide 7: Contact
     slides.push({
       name: 'Contato',
       component: <RevendaContactFeed data={data} photo={getFacadePhoto()} />,
     });
 
-    return slides;
+    return slides.slice(0, 7);
   };
 
-  // Build slides for Story (4 slides - fixed sequence)
+  // Build slides for Story (5 slides - fixed sequence)
   const buildStorySlides = (): SlideDefinition[] => {
     const slides: SlideDefinition[] = [];
     
@@ -104,19 +168,25 @@ export const RevendaPostPreview = ({ data, photos }: RevendaPostPreviewProps) =>
       component: <RevendaCoverStory data={data} photo={getFacadePhoto()} />,
     });
 
-    // Story 2: Lifestyle - Benefits, comfort, minimal text
+    // Story 2: Photo slide - Show the best interior
     slides.push({
-      name: 'Lifestyle',
-      component: <RevendaLifestyleStory data={data} photo={getLivingPhoto() || getBedroomPhoto()} />,
+      name: 'Tour',
+      component: <RevendaPhotoStory data={data} photo={getLivingPhoto() || getBedroomPhoto()} label="Conheça" />,
     });
 
-    // Story 3: Price - Decision making elements
+    // Story 3: Lifestyle - Benefits, comfort, minimal text
+    slides.push({
+      name: 'Lifestyle',
+      component: <RevendaLifestyleStory data={data} photo={getBedroomPhoto() || getKitchenPhoto()} />,
+    });
+
+    // Story 4: Price - Decision making elements
     slides.push({
       name: 'Detalhes',
       component: <RevendaPriceStory data={data} photo={getKitchenPhoto() || getBathroomPhoto() || getFacadePhoto()} />,
     });
 
-    // Story 4: Contact - CTA
+    // Story 5: Contact - CTA
     slides.push({
       name: 'Contato',
       component: <RevendaContactStory data={data} photo={getFacadePhoto()} />,
@@ -198,10 +268,12 @@ export const RevendaPostPreview = ({ data, photos }: RevendaPostPreviewProps) =>
     }
   };
 
-  // Scale and dimensions based on format
+  // Scale and dimensions based on format - FIXED to not crop
   const templateWidth = 1080;
   const templateHeight = format === 'feed' ? 1080 : 1920;
-  const previewScale = format === 'feed' ? 0.35 : 0.22;
+  const maxPreviewWidth = 380;
+  const previewScale = maxPreviewWidth / templateWidth;
+  const previewHeight = templateHeight * previewScale;
 
   return (
     <div className="space-y-4">
@@ -258,12 +330,13 @@ export const RevendaPostPreview = ({ data, photos }: RevendaPostPreviewProps) =>
         </div>
       </div>
 
-      {/* Preview Container */}
+      {/* Preview Container - FIXED sizing */}
       <div 
-        className="relative rounded-xl overflow-hidden mx-auto"
+        className="relative rounded-xl overflow-hidden"
         style={{ 
           backgroundColor: '#1e293b',
           border: '1px solid #334155',
+          width: maxPreviewWidth + 32,
         }}
       >
         {/* Navigation */}
@@ -297,20 +370,20 @@ export const RevendaPostPreview = ({ data, photos }: RevendaPostPreviewProps) =>
           </button>
         </div>
 
-        {/* Preview Area */}
+        {/* Preview Area - FIXED to show full canvas */}
         <div 
-          className="flex items-center justify-center p-4"
+          className="flex items-start justify-center p-4 overflow-hidden"
           style={{ 
-            width: templateWidth * previewScale + 32, 
-            height: templateHeight * previewScale + 32,
+            height: previewHeight + 32,
           }}
         >
           <div
             style={{
               transform: `scale(${previewScale})`,
-              transformOrigin: 'center',
+              transformOrigin: 'top center',
               width: templateWidth,
               height: templateHeight,
+              flexShrink: 0,
             }}
           >
             {slides[currentSlide]?.component}
@@ -321,9 +394,9 @@ export const RevendaPostPreview = ({ data, photos }: RevendaPostPreviewProps) =>
       {/* Thumbnails */}
       <div className="flex gap-2 overflow-x-auto pb-2">
         {slides.map((slide, index) => {
-          const thumbHeight = format === 'feed' ? 64 : 80;
-          const thumbWidth = format === 'feed' ? 64 : 45;
-          const thumbScale = format === 'feed' ? 0.059 : 0.042;
+          const thumbScale = format === 'feed' ? 0.059 : 0.035;
+          const thumbWidth = templateWidth * thumbScale;
+          const thumbHeight = templateHeight * thumbScale;
           
           return (
             <button
