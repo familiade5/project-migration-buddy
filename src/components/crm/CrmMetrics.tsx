@@ -47,27 +47,27 @@ export function CrmMetrics({ properties }: CrmMetricsProps) {
   return (
     <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
       {/* Total Properties */}
-      <div className="bg-[#0d0d0d] border border-[#1a1a1a] rounded-xl p-4">
+      <div className="bg-white border border-gray-200 rounded-xl p-4 shadow-sm">
         <div className="flex items-center gap-3">
-          <div className="p-2 rounded-lg bg-[#1a1a1a]">
-            <Home className="w-4 h-4 text-[#8b5cf6]" />
+          <div className="p-2 rounded-lg bg-gray-100">
+            <Home className="w-4 h-4 text-gray-600" />
           </div>
           <div>
-            <p className="text-[11px] text-[#666] uppercase tracking-wider">Imóveis</p>
-            <p className="text-xl font-semibold text-[#e0e0e0]">{metrics.totalProperties}</p>
+            <p className="text-[11px] text-gray-500 uppercase tracking-wider">Imóveis</p>
+            <p className="text-xl font-semibold text-gray-900">{metrics.totalProperties}</p>
           </div>
         </div>
       </div>
 
       {/* Total Value */}
-      <div className="bg-[#0d0d0d] border border-[#1a1a1a] rounded-xl p-4">
+      <div className="bg-white border border-gray-200 rounded-xl p-4 shadow-sm">
         <div className="flex items-center gap-3">
-          <div className="p-2 rounded-lg bg-[#1a1a1a]">
-            <TrendingUp className="w-4 h-4 text-[#22c55e]" />
+          <div className="p-2 rounded-lg bg-gray-100">
+            <TrendingUp className="w-4 h-4 text-gray-600" />
           </div>
           <div>
-            <p className="text-[11px] text-[#666] uppercase tracking-wider">Valor Total</p>
-            <p className="text-lg font-semibold text-[#22c55e]">
+            <p className="text-[11px] text-gray-500 uppercase tracking-wider">Valor Total</p>
+            <p className="text-lg font-semibold text-gray-900">
               {formatCurrency(metrics.totalValue)}
             </p>
           </div>
@@ -75,14 +75,14 @@ export function CrmMetrics({ properties }: CrmMetricsProps) {
       </div>
 
       {/* Pending Commission */}
-      <div className="bg-[#0d0d0d] border border-[#1a1a1a] rounded-xl p-4">
+      <div className="bg-white border border-gray-200 rounded-xl p-4 shadow-sm">
         <div className="flex items-center gap-3">
-          <div className="p-2 rounded-lg bg-[#1a1a1a]">
-            <DollarSign className="w-4 h-4 text-[#f59e0b]" />
+          <div className="p-2 rounded-lg bg-gray-100">
+            <DollarSign className="w-4 h-4 text-gray-600" />
           </div>
           <div>
-            <p className="text-[11px] text-[#666] uppercase tracking-wider">Comissões Pendentes</p>
-            <p className="text-lg font-semibold text-[#f59e0b]">
+            <p className="text-[11px] text-gray-500 uppercase tracking-wider">Comissões Pendentes</p>
+            <p className="text-lg font-semibold text-gray-900">
               {formatCurrency(metrics.pendingCommission)}
             </p>
           </div>
@@ -90,14 +90,14 @@ export function CrmMetrics({ properties }: CrmMetricsProps) {
       </div>
 
       {/* Average Days */}
-      <div className="bg-[#0d0d0d] border border-[#1a1a1a] rounded-xl p-4">
+      <div className="bg-white border border-gray-200 rounded-xl p-4 shadow-sm">
         <div className="flex items-center gap-3">
-          <div className="p-2 rounded-lg bg-[#1a1a1a]">
-            <Clock className="w-4 h-4 text-[#06b6d4]" />
+          <div className="p-2 rounded-lg bg-gray-100">
+            <Clock className="w-4 h-4 text-gray-600" />
           </div>
           <div>
-            <p className="text-[11px] text-[#666] uppercase tracking-wider">Tempo Médio</p>
-            <p className="text-xl font-semibold text-[#e0e0e0]">
+            <p className="text-[11px] text-gray-500 uppercase tracking-wider">Tempo Médio</p>
+            <p className="text-xl font-semibold text-gray-900">
               {metrics.avgDaysTotal > 0 ? `${metrics.avgDaysTotal}d` : '-'}
             </p>
           </div>
@@ -105,11 +105,11 @@ export function CrmMetrics({ properties }: CrmMetricsProps) {
       </div>
 
       {/* Stage breakdown - compact bar */}
-      <div className="col-span-2 lg:col-span-4 bg-[#0d0d0d] border border-[#1a1a1a] rounded-xl p-4">
-        <p className="text-[11px] text-[#666] uppercase tracking-wider mb-3">
+      <div className="col-span-2 lg:col-span-4 bg-white border border-gray-200 rounded-xl p-4 shadow-sm">
+        <p className="text-[11px] text-gray-500 uppercase tracking-wider mb-3">
           Distribuição por Etapa
         </p>
-        <div className="flex gap-1 h-3 rounded-full overflow-hidden bg-[#1a1a1a]">
+        <div className="flex gap-1 h-3 rounded-full overflow-hidden bg-gray-200">
           {STAGE_ORDER.map((stage) => {
             const count = metrics.byStage[stage] || 0;
             const percentage = metrics.totalProperties > 0 
@@ -142,7 +142,7 @@ export function CrmMetrics({ properties }: CrmMetricsProps) {
                   className="w-2 h-2 rounded-full"
                   style={{ backgroundColor: STAGE_CONFIG[stage].color }}
                 />
-                <span className="text-[10px] text-[#888]">
+                <span className="text-[10px] text-gray-600">
                   {STAGE_CONFIG[stage].label}: {count}
                 </span>
               </div>

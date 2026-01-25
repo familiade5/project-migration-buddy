@@ -119,14 +119,14 @@ export default function CRM() {
 
   return (
     <AppLayout>
-      <div className="p-6 min-h-screen bg-[#080808]">
+      <div className="p-6 min-h-screen bg-white">
         {/* Header */}
         <div className="mb-6">
           <div className="flex items-center gap-3 mb-1">
-            <LayoutDashboard className="w-6 h-6 text-[#3b82f6]" />
-            <h1 className="text-2xl font-semibold text-[#e0e0e0]">CRM Imóveis</h1>
+            <LayoutDashboard className="w-6 h-6 text-gray-700" />
+            <h1 className="text-2xl font-semibold text-gray-900">CRM Imóveis</h1>
           </div>
-          <p className="text-sm text-[#666]">
+          <p className="text-sm text-gray-500">
             Controle operacional de imóveis e comissões
           </p>
         </div>
@@ -174,19 +174,19 @@ export default function CRM() {
           open={!!deleteConfirmProperty}
           onOpenChange={() => setDeleteConfirmProperty(null)}
         >
-          <AlertDialogContent className="bg-[#0d0d0d] border-[#1a1a1a]">
+          <AlertDialogContent className="bg-white border-gray-200">
             <AlertDialogHeader>
-              <AlertDialogTitle className="text-[#e0e0e0]">
+              <AlertDialogTitle className="text-gray-900">
                 Excluir imóvel?
               </AlertDialogTitle>
-              <AlertDialogDescription className="text-[#888]">
+              <AlertDialogDescription className="text-gray-600">
                 Tem certeza que deseja excluir o imóvel{' '}
-                <strong className="text-[#e0e0e0]">{deleteConfirmProperty?.code}</strong>?
+                <strong className="text-gray-900">{deleteConfirmProperty?.code}</strong>?
                 Esta ação não pode ser desfeita.
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
-              <AlertDialogCancel className="bg-transparent border-[#2a2a2a] text-[#888] hover:bg-[#1a1a1a] hover:text-[#e0e0e0]">
+              <AlertDialogCancel className="bg-white border-gray-200 text-gray-600 hover:bg-gray-50 hover:text-gray-900">
                 Cancelar
               </AlertDialogCancel>
               <AlertDialogAction
