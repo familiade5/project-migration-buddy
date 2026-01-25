@@ -50,6 +50,162 @@ export type Database = {
         }
         Relationships: []
       }
+      broker_documents: {
+        Row: {
+          broker_id: string
+          created_at: string
+          document_type: string
+          file_url: string
+          id: string
+          name: string
+          uploaded_by_user_id: string | null
+        }
+        Insert: {
+          broker_id: string
+          created_at?: string
+          document_type: string
+          file_url: string
+          id?: string
+          name: string
+          uploaded_by_user_id?: string | null
+        }
+        Update: {
+          broker_id?: string
+          created_at?: string
+          document_type?: string
+          file_url?: string
+          id?: string
+          name?: string
+          uploaded_by_user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "broker_documents_broker_id_fkey"
+            columns: ["broker_id"]
+            isOneToOne: false
+            referencedRelation: "broker_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      broker_profiles: {
+        Row: {
+          agency_id: string | null
+          commission_percentage: number
+          contract_url: string | null
+          created_at: string
+          creci_number: string | null
+          creci_state: string | null
+          hired_at: string | null
+          id: string
+          photo_url: string | null
+          resume_url: string | null
+          specializations: string[] | null
+          status: string
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          agency_id?: string | null
+          commission_percentage?: number
+          contract_url?: string | null
+          created_at?: string
+          creci_number?: string | null
+          creci_state?: string | null
+          hired_at?: string | null
+          id?: string
+          photo_url?: string | null
+          resume_url?: string | null
+          specializations?: string[] | null
+          status?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          agency_id?: string | null
+          commission_percentage?: number
+          contract_url?: string | null
+          created_at?: string
+          creci_number?: string | null
+          creci_state?: string | null
+          hired_at?: string | null
+          id?: string
+          photo_url?: string | null
+          resume_url?: string | null
+          specializations?: string[] | null
+          status?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "broker_profiles_agency_id_fkey"
+            columns: ["agency_id"]
+            isOneToOne: false
+            referencedRelation: "real_estate_agency"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      broker_questionnaire: {
+        Row: {
+          additional_notes: string | null
+          availability: string | null
+          broker_id: string
+          career_goals: string | null
+          created_at: string
+          experience_years: number | null
+          id: string
+          improvement_areas: string | null
+          monthly_sales_goal: number | null
+          motivation: string | null
+          previous_experience: string | null
+          referral_source: string | null
+          strengths: string | null
+          updated_at: string
+        }
+        Insert: {
+          additional_notes?: string | null
+          availability?: string | null
+          broker_id: string
+          career_goals?: string | null
+          created_at?: string
+          experience_years?: number | null
+          id?: string
+          improvement_areas?: string | null
+          monthly_sales_goal?: number | null
+          motivation?: string | null
+          previous_experience?: string | null
+          referral_source?: string | null
+          strengths?: string | null
+          updated_at?: string
+        }
+        Update: {
+          additional_notes?: string | null
+          availability?: string | null
+          broker_id?: string
+          career_goals?: string | null
+          created_at?: string
+          experience_years?: number | null
+          id?: string
+          improvement_areas?: string | null
+          monthly_sales_goal?: number | null
+          motivation?: string | null
+          previous_experience?: string | null
+          referral_source?: string | null
+          strengths?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "broker_questionnaire_broker_id_fkey"
+            columns: ["broker_id"]
+            isOneToOne: false
+            referencedRelation: "broker_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       creatives: {
         Row: {
           created_at: string | null
