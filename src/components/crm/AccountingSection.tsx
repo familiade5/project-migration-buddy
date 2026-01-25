@@ -160,8 +160,8 @@ export function AccountingSection({ properties, isEmbedded = false }: Accounting
         )}
         
         <Select value={periodFilter} onValueChange={(v) => setPeriodFilter(v as PeriodFilter)}>
-          <SelectTrigger className="w-[160px] h-8 text-xs bg-white border-gray-200">
-            <Calendar className="w-3 h-3 mr-1.5 text-gray-400" />
+          <SelectTrigger className="w-[160px] h-8 text-xs bg-white border-gray-200 text-gray-700">
+            <Calendar className="w-3 h-3 mr-1.5 text-gray-500" />
             <SelectValue />
           </SelectTrigger>
           <SelectContent className="bg-white border-gray-200">
