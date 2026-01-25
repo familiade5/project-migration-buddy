@@ -7,9 +7,17 @@ interface KanbanColumnProps {
   stage: PropertyStage;
   properties: CrmProperty[];
   onCardClick: (property: CrmProperty) => void;
+  onShowCover?: (imageUrl: string) => void;
+  onShowProposal?: (propertyId: string) => void;
 }
 
-export function KanbanColumn({ stage, properties, onCardClick }: KanbanColumnProps) {
+export function KanbanColumn({ 
+  stage, 
+  properties, 
+  onCardClick,
+  onShowCover,
+  onShowProposal,
+}: KanbanColumnProps) {
   const { setNodeRef, isOver } = useDroppable({
     id: stage,
   });
@@ -57,6 +65,8 @@ export function KanbanColumn({ stage, properties, onCardClick }: KanbanColumnPro
             key={property.id}
             property={property}
             onClick={() => onCardClick(property)}
+            onShowCover={onShowCover}
+            onShowProposal={onShowProposal}
           />
         ))}
 

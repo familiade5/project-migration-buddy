@@ -5,9 +5,11 @@ import { useCrmPermissions } from '@/hooks/useCrmPermissions';
 import { KanbanBoard } from '@/components/crm/KanbanBoard';
 import { CrmMetrics } from '@/components/crm/CrmMetrics';
 import { CrmFilters } from '@/components/crm/CrmFilters';
+import { AccountingSection } from '@/components/crm/AccountingSection';
 import { PropertyDetailModal } from '@/components/crm/PropertyDetailModal';
 import { PropertyFormModal } from '@/components/crm/PropertyFormModal';
 import { EditPermissionsModal } from '@/components/crm/EditPermissionsModal';
+import { ImagePreviewModal } from '@/components/crm/ImagePreviewModal';
 import { CrmProperty, PropertyStage } from '@/types/crm';
 import { useAuth } from '@/contexts/AuthContext';
 import { Loader2, LayoutDashboard, Shield } from 'lucide-react';
@@ -48,6 +50,10 @@ export default function CRM() {
   const [editingProperty, setEditingProperty] = useState<CrmProperty | null>(null);
   const [deleteConfirmProperty, setDeleteConfirmProperty] = useState<CrmProperty | null>(null);
   const [isPermissionsOpen, setIsPermissionsOpen] = useState(false);
+
+  // Image preview modal
+  const [coverPreviewUrl, setCoverPreviewUrl] = useState<string | null>(null);
+  const [isCoverPreviewOpen, setIsCoverPreviewOpen] = useState(false);
 
   // Filtered properties
   const filteredProperties = useMemo(() => {
@@ -158,6 +164,9 @@ export default function CRM() {
           )}
         </div>
 
+        {/* Accounting Section */}
+        <AccountingSection properties={properties} />
+
         {/* Metrics Dashboard */}
         <CrmMetrics properties={properties} />
 
@@ -179,6 +188,18 @@ export default function CRM() {
           properties={filteredProperties}
           onMoveProperty={moveProperty}
           onCardClick={handleCardClick}
+          onShowCover={(url) => {
+            setCoverPreviewUrl(url);
+            setIsCoverPreviewOpen(true);
+          }}
+          onShowProposal={(propertyId) => {
+            // Open detail modal on proposals tab
+            const prop = properties.find(p => p.id === propertyId);
+            if (prop) {
+              setSelectedProperty(prop);
+              setIsDetailOpen(true);
+            }
+          }}
         />
 
         {/* Detail Modal */}
@@ -202,6 +223,14 @@ export default function CRM() {
         <EditPermissionsModal
           isOpen={isPermissionsOpen}
           onClose={() => setIsPermissionsOpen(false)}
+        />
+
+        {/* Image Preview Modal */}
+        <ImagePreviewModal
+          isOpen={isCoverPreviewOpen}
+          onClose={() => setIsCoverPreviewOpen(false)}
+          imageUrl={coverPreviewUrl}
+          title="Capa do Imóvel"
         />
 
         {/* Delete Confirmation */}

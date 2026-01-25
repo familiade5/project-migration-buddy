@@ -19,9 +19,17 @@ interface KanbanBoardProps {
   properties: CrmProperty[];
   onMoveProperty: (propertyId: string, fromStage: PropertyStage, toStage: PropertyStage) => void;
   onCardClick: (property: CrmProperty) => void;
+  onShowCover?: (imageUrl: string) => void;
+  onShowProposal?: (propertyId: string) => void;
 }
 
-export function KanbanBoard({ properties, onMoveProperty, onCardClick }: KanbanBoardProps) {
+export function KanbanBoard({ 
+  properties, 
+  onMoveProperty, 
+  onCardClick,
+  onShowCover,
+  onShowProposal,
+}: KanbanBoardProps) {
   const [activeProperty, setActiveProperty] = useState<CrmProperty | null>(null);
 
   const sensors = useSensors(
@@ -92,6 +100,8 @@ export function KanbanBoard({ properties, onMoveProperty, onCardClick }: KanbanB
             stage={stage}
             properties={propertiesByStage[stage]}
             onCardClick={onCardClick}
+            onShowCover={onShowCover}
+            onShowProposal={onShowProposal}
           />
         ))}
       </div>
