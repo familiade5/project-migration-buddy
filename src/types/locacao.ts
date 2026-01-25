@@ -1,8 +1,6 @@
 // Locação & Gestão Types
 // Professional, calm, trustworthy - NOT sales-focused
 
-import managementBackgroundDefault from '@/assets/management-background.jpg';
-
 export type LocacaoCreativeType = 'property' | 'management';
 
 export type LocacaoPhotoCategory = 
@@ -130,7 +128,7 @@ export const defaultLocacaoManagementData: LocacaoManagementData = {
   yearsExperience: '10+',
   propertiesManaged: '200+',
   
-  backgroundPhoto: managementBackgroundDefault,
+  backgroundPhoto: null, // Will be set by component with default image
   useBackgroundPhoto: true,
   
   contactPhone: '(92) 98839-1098',

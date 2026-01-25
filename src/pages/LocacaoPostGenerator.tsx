@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { 
   LocacaoCreativeType, 
   LocacaoPropertyData, 
@@ -17,11 +17,15 @@ import { LocacaoManagementCaptionGenerator } from '@/components/locacao/LocacaoM
 import { LocacaoLogo } from '@/components/locacao/LocacaoLogo';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { Settings2, Image, FileText, Home, Building2 } from 'lucide-react';
+import managementBackgroundDefault from '@/assets/management-background.jpg';
 
 const LocacaoPostGenerator = () => {
   const [creativeType, setCreativeType] = useState<LocacaoCreativeType | null>(null);
   const [propertyData, setPropertyData] = useState<LocacaoPropertyData>(defaultLocacaoPropertyData);
-  const [managementData, setManagementData] = useState<LocacaoManagementData>(defaultLocacaoManagementData);
+  const [managementData, setManagementData] = useState<LocacaoManagementData>({
+    ...defaultLocacaoManagementData,
+    backgroundPhoto: managementBackgroundDefault,
+  });
   const [photos, setPhotos] = useState<LocacaoCategorizedPhoto[]>([]);
 
   const handleClearPhotos = useCallback(() => {
