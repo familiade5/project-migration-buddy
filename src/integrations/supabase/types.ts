@@ -91,15 +91,25 @@ export type Database = {
       broker_profiles: {
         Row: {
           agency_id: string | null
+          bank_account: string | null
+          bank_agency: string | null
+          bank_name: string | null
+          birth_date: string | null
           commission_percentage: number
           contract_url: string | null
+          cpf: string | null
           created_at: string
           creci_number: string | null
           creci_state: string | null
           hired_at: string | null
           id: string
+          job_title: string
+          personal_email: string | null
+          personal_phone: string | null
           photo_url: string | null
+          pix_key: string | null
           resume_url: string | null
+          rg: string | null
           specializations: string[] | null
           status: string
           updated_at: string
@@ -107,15 +117,25 @@ export type Database = {
         }
         Insert: {
           agency_id?: string | null
+          bank_account?: string | null
+          bank_agency?: string | null
+          bank_name?: string | null
+          birth_date?: string | null
           commission_percentage?: number
           contract_url?: string | null
+          cpf?: string | null
           created_at?: string
           creci_number?: string | null
           creci_state?: string | null
           hired_at?: string | null
           id?: string
+          job_title?: string
+          personal_email?: string | null
+          personal_phone?: string | null
           photo_url?: string | null
+          pix_key?: string | null
           resume_url?: string | null
+          rg?: string | null
           specializations?: string[] | null
           status?: string
           updated_at?: string
@@ -123,15 +143,25 @@ export type Database = {
         }
         Update: {
           agency_id?: string | null
+          bank_account?: string | null
+          bank_agency?: string | null
+          bank_name?: string | null
+          birth_date?: string | null
           commission_percentage?: number
           contract_url?: string | null
+          cpf?: string | null
           created_at?: string
           creci_number?: string | null
           creci_state?: string | null
           hired_at?: string | null
           id?: string
+          job_title?: string
+          personal_email?: string | null
+          personal_phone?: string | null
           photo_url?: string | null
+          pix_key?: string | null
           resume_url?: string | null
+          rg?: string | null
           specializations?: string[] | null
           status?: string
           updated_at?: string
