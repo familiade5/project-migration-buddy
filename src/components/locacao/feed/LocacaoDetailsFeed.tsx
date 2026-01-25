@@ -1,4 +1,4 @@
-// Feed slide 4: Details - practical info
+// Feed slide: Details - practical info (light theme)
 import { LocacaoPropertyData } from '@/types/locacao';
 import { LocacaoLogoBar } from '../LocacaoLogo';
 import { Bed, Bath, Car, Maximize } from 'lucide-react';
@@ -25,13 +25,13 @@ export const LocacaoDetailsFeed = ({ data }: LocacaoDetailsFeedProps) => {
         {/* Header */}
         <div className="text-center mb-16">
           <h2 
-            className="text-4xl font-semibold mb-4"
+            className="text-5xl font-semibold mb-4"
             style={{ color: '#111827', fontFamily: 'Georgia, serif' }}
           >
             Características do Imóvel
           </h2>
           <p 
-            className="text-xl"
+            className="text-2xl"
             style={{ color: '#6b7280' }}
           >
             {data.type} • {data.neighborhood || 'Localização'}
@@ -43,28 +43,28 @@ export const LocacaoDetailsFeed = ({ data }: LocacaoDetailsFeedProps) => {
           {specs.map((spec, i) => (
             <div 
               key={i}
-              className="flex items-center gap-4 p-6 rounded-xl"
+              className="flex items-center gap-6 p-8 rounded-2xl"
               style={{ backgroundColor: '#ffffff', border: '1px solid #e5e7eb' }}
             >
               <div 
-                className="w-14 h-14 rounded-lg flex items-center justify-center"
+                className="w-16 h-16 rounded-xl flex items-center justify-center"
                 style={{ backgroundColor: '#f3f4f6' }}
               >
-                <spec.icon className="w-7 h-7" style={{ color: '#374151' }} />
+                <spec.icon className="w-8 h-8" style={{ color: '#374151' }} />
               </div>
               <div>
-                <p className="text-lg" style={{ color: '#6b7280' }}>{spec.label}</p>
-                <p className="text-3xl font-semibold" style={{ color: '#111827' }}>{spec.value}</p>
+                <p className="text-xl" style={{ color: '#6b7280' }}>{spec.label}</p>
+                <p className="text-4xl font-semibold" style={{ color: '#111827' }}>{spec.value}</p>
               </div>
             </div>
           ))}
         </div>
 
         {/* Additional Info */}
-        <div className="flex justify-center gap-8">
+        <div className="flex justify-center gap-6">
           {data.furnished && (
             <span 
-              className="px-4 py-2 rounded-full text-sm"
+              className="px-6 py-3 rounded-full text-lg"
               style={{ backgroundColor: '#e5e7eb', color: '#374151' }}
             >
               Mobiliado
@@ -72,7 +72,7 @@ export const LocacaoDetailsFeed = ({ data }: LocacaoDetailsFeedProps) => {
           )}
           {data.acceptsPets && (
             <span 
-              className="px-4 py-2 rounded-full text-sm"
+              className="px-6 py-3 rounded-full text-lg"
               style={{ backgroundColor: '#e5e7eb', color: '#374151' }}
             >
               Aceita Pets
@@ -83,8 +83,8 @@ export const LocacaoDetailsFeed = ({ data }: LocacaoDetailsFeedProps) => {
 
       {/* Logo */}
       <div className="absolute bottom-8 left-0 right-0 flex justify-center">
-        <div className="opacity-60">
-          <svg width="160" height="60" viewBox="0 0 800 300" xmlns="http://www.w3.org/2000/svg">
+        <div style={{ opacity: 0.6 }}>
+          <svg width="220" height="82" viewBox="0 0 800 300" xmlns="http://www.w3.org/2000/svg">
             <g fill="#374151">
               <path d="M200 120 L400 40 L600 120 L585 120 L400 55 L215 120 Z"/>
               <text x="400" y="180" textAnchor="middle" fontFamily="Georgia, serif" fontSize="120" fontWeight="600">VDH</text>

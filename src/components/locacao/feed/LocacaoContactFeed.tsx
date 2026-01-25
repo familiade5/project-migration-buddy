@@ -1,7 +1,7 @@
-// Feed slide 6: Contact - simple CTA
+// Feed slide: Contact - simple CTA
 import { LocacaoPropertyData } from '@/types/locacao';
 import { LocacaoLogoBar } from '../LocacaoLogo';
-import { Phone, MessageCircle } from 'lucide-react';
+import { MessageCircle } from 'lucide-react';
 
 interface LocacaoContactFeedProps {
   data: LocacaoPropertyData;
@@ -18,8 +18,8 @@ export const LocacaoContactFeed = ({ data, photo }: LocacaoContactFeedProps) => 
       {photo && (
         <>
           <div 
-            className="absolute inset-0 bg-cover bg-center opacity-30"
-            style={{ backgroundImage: `url(${photo})` }}
+            className="absolute inset-0 bg-cover bg-center"
+            style={{ backgroundImage: `url(${photo})`, opacity: 0.3 }}
           />
           <div 
             className="absolute inset-0"
@@ -32,14 +32,14 @@ export const LocacaoContactFeed = ({ data, photo }: LocacaoContactFeedProps) => 
       <div className="relative h-full flex flex-col items-center justify-center px-16 text-center">
         {/* Header */}
         <p 
-          className="text-2xl mb-4"
+          className="text-3xl mb-6"
           style={{ color: '#9ca3af' }}
         >
           Agende uma visita
         </p>
 
         <h2 
-          className="text-5xl font-semibold mb-12"
+          className="text-6xl font-semibold mb-16"
           style={{ color: '#ffffff', fontFamily: 'Georgia, serif' }}
         >
           Entre em Contato
@@ -47,14 +47,15 @@ export const LocacaoContactFeed = ({ data, photo }: LocacaoContactFeedProps) => 
 
         {/* Contact Card */}
         <div 
-          className="p-10 rounded-2xl"
+          className="p-12 rounded-2xl"
           style={{ 
-            backgroundColor: 'rgba(255,255,255,0.08)',
-            border: '1px solid rgba(255,255,255,0.1)',
+            backgroundColor: 'rgba(255,255,255,0.1)',
+            border: '1px solid rgba(255,255,255,0.15)',
+            backdropFilter: 'blur(10px)',
           }}
         >
           <p 
-            className="text-2xl font-medium mb-2"
+            className="text-3xl font-medium mb-3"
             style={{ color: '#ffffff' }}
           >
             {data.contactName || 'Consultor'}
@@ -62,17 +63,17 @@ export const LocacaoContactFeed = ({ data, photo }: LocacaoContactFeedProps) => 
           
           {data.creci && (
             <p 
-              className="text-sm mb-6"
+              className="text-lg mb-8"
               style={{ color: '#9ca3af' }}
             >
               {data.creci}
             </p>
           )}
 
-          <div className="flex items-center justify-center gap-3">
-            <MessageCircle className="w-6 h-6" style={{ color: '#d1d5db' }} />
+          <div className="flex items-center justify-center gap-4">
+            <MessageCircle className="w-8 h-8" style={{ color: '#d1d5db' }} />
             <span 
-              className="text-3xl font-semibold"
+              className="text-4xl font-semibold"
               style={{ color: '#ffffff' }}
             >
               {data.contactPhone || '(00) 00000-0000'}
@@ -83,7 +84,7 @@ export const LocacaoContactFeed = ({ data, photo }: LocacaoContactFeedProps) => 
         {/* Availability */}
         {data.availableFrom && (
           <p 
-            className="mt-8 text-lg"
+            className="mt-12 text-xl"
             style={{ color: '#6b7280' }}
           >
             {data.availableFrom}

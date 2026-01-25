@@ -2,20 +2,21 @@
 // Same logo but styled more subtly - flat, neutral, professional
 
 interface LocacaoLogoProps {
-  size?: 'sm' | 'md' | 'lg' | 'xl';
+  size?: 'sm' | 'md' | 'lg' | 'xl' | 'xxl';
   className?: string;
-  variant?: 'dark' | 'light'; // dark = black text, light = white text
+  variant?: 'dark' | 'light';
 }
 
 const sizeConfig = {
-  sm: 100,
-  md: 140,
-  lg: 180,
-  xl: 220,
+  sm: 120,
+  md: 160,
+  lg: 200,
+  xl: 260,
+  xxl: 320,
 };
 
 // SVG Logo component - clean and flat
-const LogoSVG = ({ width = 140, color = '#374151' }: { width?: number; color?: string }) => {
+const LogoSVG = ({ width = 180, color = '#374151' }: { width?: number; color?: string }) => {
   const height = width * 0.375;
   
   return (
@@ -74,7 +75,7 @@ export const LocacaoLogo = ({
   );
 };
 
-// Subtle watermark for creatives - very light opacity
+// Watermark for creatives - matching Revenda+ sizes
 export const LocacaoWatermark = ({ 
   position = 'bottom-center',
   size = 'md',
@@ -84,56 +85,57 @@ export const LocacaoWatermark = ({
   size?: 'sm' | 'md' | 'lg';
   variant?: 'dark' | 'light';
 }) => {
+  // Match Revenda+ sizes
   const config = {
-    sm: 120,
-    md: 160,
-    lg: 200,
+    sm: 160,
+    md: 220,
+    lg: 280,
   };
   
   const color = variant === 'dark' ? '#374151' : '#ffffff';
 
   if (position === 'bottom-center') {
     return (
-      <div className="absolute bottom-6 left-0 right-0 flex justify-center pointer-events-none opacity-80">
+      <div className="absolute bottom-8 left-0 right-0 flex justify-center pointer-events-none">
         <LogoSVG width={config[size]} color={color} />
       </div>
     );
   }
 
   const positionStyles = {
-    'top-left': 'top-4 left-4',
-    'top-right': 'top-4 right-4',
-    'bottom-left': 'bottom-4 left-4',
-    'bottom-right': 'bottom-4 right-4',
+    'top-left': 'top-10 left-10',
+    'top-right': 'top-6 right-6',
+    'bottom-left': 'bottom-6 left-6',
+    'bottom-right': 'bottom-6 right-6',
   };
 
   return (
-    <div className={`absolute ${positionStyles[position]} pointer-events-none opacity-80`}>
+    <div className={`absolute ${positionStyles[position]} pointer-events-none`}>
       <LogoSVG width={config[size]} color={color} />
     </div>
   );
 };
 
-// Logo bar for bottom of posts
+// Logo bar for bottom of posts - matching Revenda+ sizes
 export const LocacaoLogoBar = () => {
   return (
     <div 
       className="absolute bottom-0 left-0 right-0 flex items-center justify-center"
-      style={{ paddingBottom: '32px' }}
+      style={{ paddingBottom: '40px' }}
     >
-      <LogoSVG width={200} color="#ffffff" />
+      <LogoSVG width={280} color="#ffffff" />
     </div>
   );
 };
 
-// Story logo bar
+// Story logo bar - larger for stories
 export const LocacaoLogoBarStory = () => {
   return (
     <div 
       className="absolute bottom-0 left-0 right-0 flex items-center justify-center"
-      style={{ paddingBottom: '48px' }}
+      style={{ paddingBottom: '60px' }}
     >
-      <LogoSVG width={240} color="#ffffff" />
+      <LogoSVG width={320} color="#ffffff" />
     </div>
   );
 };

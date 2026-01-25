@@ -1,7 +1,7 @@
-// Feed slide 1: Cover - Clean, professional intro
+// Feed slide 1: Cover - Clean, professional intro (no shadow at top)
 import { LocacaoPropertyData } from '@/types/locacao';
-import { LocacaoWatermark } from '../LocacaoLogo';
-import { MapPin } from 'lucide-react';
+import { LocacaoLogo } from '../LocacaoLogo';
+import { MapPin, Bed, Bath, Maximize } from 'lucide-react';
 
 interface LocacaoCoverFeedProps {
   data: LocacaoPropertyData;
@@ -19,60 +19,110 @@ export const LocacaoCoverFeed = ({ data, photo }: LocacaoCoverFeedProps) => {
       className="relative w-[1080px] h-[1080px] overflow-hidden"
       style={{ backgroundColor: '#1f2937' }}
     >
-      {/* Background Photo with subtle overlay */}
+      {/* Background Photo - full bleed, clean */}
       {photo && (
         <>
           <div 
             className="absolute inset-0 bg-cover bg-center"
-            style={{ 
-              backgroundImage: `url(${photo})`,
-            }}
+            style={{ backgroundImage: `url(${photo})` }}
           />
+          {/* Gradient only at bottom where text is */}
           <div 
             className="absolute inset-0"
             style={{ 
-              background: 'linear-gradient(to bottom, rgba(17,24,39,0.5) 0%, rgba(17,24,39,0.7) 50%, rgba(17,24,39,0.9) 100%)'
+              background: 'linear-gradient(to bottom, transparent 0%, transparent 40%, rgba(17,24,39,0.6) 70%, rgba(17,24,39,0.95) 100%)'
             }}
           />
         </>
       )}
 
-      {/* Logo - top left, subtle */}
-      <LocacaoWatermark position="top-left" size="sm" variant="light" />
+      {/* Logo - top left, matching Revenda+ size */}
+      <div className="absolute top-10 left-10">
+        <LocacaoLogo size="xxl" variant="light" />
+      </div>
 
-      {/* Content */}
-      <div className="absolute bottom-0 left-0 right-0 p-16">
-        {/* Badge - simple, no color */}
+      {/* Content at bottom */}
+      <div className="absolute bottom-0 left-0 right-0 px-12 pb-12">
+        {/* Badge - larger, more visible */}
         <div 
-          className="inline-block px-4 py-2 rounded-md text-sm font-medium mb-6"
+          className="inline-block px-6 py-3 rounded-lg text-lg font-medium mb-6"
           style={{ 
-            backgroundColor: 'rgba(255,255,255,0.15)',
+            backgroundColor: 'rgba(255,255,255,0.2)',
+            backdropFilter: 'blur(8px)',
             color: '#ffffff',
           }}
         >
           Disponível para Locação
         </div>
 
-        {/* Title */}
+        {/* Title - large, editorial */}
         <h1 
-          className="text-6xl font-semibold leading-tight mb-4"
+          className="font-bold leading-[0.95] mb-6"
           style={{ 
+            fontSize: '72px',
             color: '#ffffff',
             fontFamily: 'Georgia, serif',
+            textShadow: '0 4px 30px rgba(0,0,0,0.5)',
           }}
         >
           {title}
         </h1>
 
         {/* Location */}
-        <div className="flex items-center gap-2">
-          <MapPin className="w-5 h-5" style={{ color: '#9ca3af' }} />
+        <div className="flex items-center gap-3 mb-8">
+          <MapPin className="w-6 h-6" style={{ color: '#9ca3af' }} />
           <span 
-            className="text-xl"
-            style={{ color: '#d1d5db' }}
+            className="text-xl font-light tracking-wide"
+            style={{ color: 'rgba(255,255,255,0.85)' }}
           >
             {location}
           </span>
+        </div>
+
+        {/* Specs row */}
+        <div 
+          className="flex items-center gap-8 pt-8"
+          style={{ borderTop: '1px solid rgba(255,255,255,0.15)' }}
+        >
+          {data.bedrooms && (
+            <div className="flex items-center gap-3">
+              <Bed className="w-6 h-6" style={{ color: '#9ca3af' }} />
+              <span className="text-lg font-light" style={{ color: 'rgba(255,255,255,0.9)' }}>
+                {data.bedrooms} quartos
+              </span>
+            </div>
+          )}
+          {data.bathrooms && (
+            <div className="flex items-center gap-3">
+              <Bath className="w-6 h-6" style={{ color: '#9ca3af' }} />
+              <span className="text-lg font-light" style={{ color: 'rgba(255,255,255,0.9)' }}>
+                {data.bathrooms} banheiros
+              </span>
+            </div>
+          )}
+          {data.area && (
+            <div className="flex items-center gap-3">
+              <Maximize className="w-6 h-6" style={{ color: '#9ca3af' }} />
+              <span className="text-lg font-light" style={{ color: 'rgba(255,255,255,0.9)' }}>
+                {data.area} m²
+              </span>
+            </div>
+          )}
+          
+          {/* Rent Price */}
+          {data.rentPrice && (
+            <div className="ml-auto text-right">
+              <p 
+                className="font-bold"
+                style={{ fontSize: '32px', color: '#ffffff' }}
+              >
+                {data.rentPrice}
+              </p>
+              <p className="text-sm" style={{ color: 'rgba(255,255,255,0.6)' }}>
+                /mês
+              </p>
+            </div>
+          )}
         </div>
       </div>
     </div>
