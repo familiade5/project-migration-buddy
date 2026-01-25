@@ -40,7 +40,7 @@ export const LocacaoManagementFeed = ({ data, slide }: LocacaoManagementFeedProp
         )}
 
         {/* Content */}
-        <div className="relative h-full flex flex-col items-center justify-center px-16 text-center">
+        <div className="relative z-10 h-full flex flex-col items-center justify-center px-16 text-center">
           {/* Logo */}
           <div className="mb-12 opacity-80">
             <svg width="200" height="75" viewBox="0 0 800 300" xmlns="http://www.w3.org/2000/svg">
@@ -95,7 +95,7 @@ export const LocacaoManagementFeed = ({ data, slide }: LocacaoManagementFeedProp
           </>
         )}
 
-        <div className="px-16">
+        <div className="relative z-10 px-16">
           <h2 
             className="text-4xl font-semibold text-center mb-16"
             style={{ color: '#111827', fontFamily: 'Georgia, serif' }}
@@ -123,7 +123,7 @@ export const LocacaoManagementFeed = ({ data, slide }: LocacaoManagementFeedProp
         </div>
 
         {/* Logo - larger to match other slides */}
-        <div className="absolute bottom-12 left-0 right-0 flex justify-center opacity-70">
+        <div className="absolute bottom-12 left-0 right-0 flex justify-center opacity-70 z-10">
           <svg width="220" height="82" viewBox="0 0 800 300" xmlns="http://www.w3.org/2000/svg">
             <g fill="#374151">
               <path d="M200 120 L400 40 L600 120 L585 120 L400 55 L215 120 Z"/>
@@ -161,7 +161,7 @@ export const LocacaoManagementFeed = ({ data, slide }: LocacaoManagementFeedProp
           </>
         )}
 
-        <div className="text-center">
+        <div className="relative z-10 text-center">
           <p 
             className="text-xl mb-8"
             style={{ color: '#6b7280' }}
@@ -198,7 +198,9 @@ export const LocacaoManagementFeed = ({ data, slide }: LocacaoManagementFeedProp
           </p>
         </div>
 
-        <LocacaoLogoBar />
+        <div className="relative z-10 w-full">
+          <LocacaoLogoBar />
+        </div>
       </div>
     );
   }
@@ -228,7 +230,7 @@ export const LocacaoManagementFeed = ({ data, slide }: LocacaoManagementFeedProp
         </>
       )}
 
-      <div className="text-center px-16">
+      <div className="relative z-10 text-center px-16">
         <p 
           className="text-xl mb-4"
           style={{ color: '#9ca3af' }}
@@ -262,7 +264,7 @@ export const LocacaoManagementFeed = ({ data, slide }: LocacaoManagementFeedProp
         </div>
       </div>
 
-      <div className="relative w-full">
+      <div className="relative z-10 w-full">
         <LocacaoLogoBar />
       </div>
     </div>
