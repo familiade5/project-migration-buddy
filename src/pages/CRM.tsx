@@ -39,6 +39,7 @@ export default function CRM() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedStage, setSelectedStage] = useState<PropertyStage | 'all'>('all');
   const [selectedUser, setSelectedUser] = useState('');
+  const [selectedState, setSelectedState] = useState('');
 
   // Modals
   const [selectedProperty, setSelectedProperty] = useState<CrmProperty | null>(null);
@@ -67,6 +68,11 @@ export default function CRM() {
         return false;
       }
 
+      // State filter
+      if (selectedState && selectedState !== 'all' && property.state !== selectedState) {
+        return false;
+      }
+
       // User filter
       if (selectedUser && selectedUser !== 'all' && property.responsible_user_id !== selectedUser) {
         return false;
@@ -74,7 +80,7 @@ export default function CRM() {
 
       return true;
     });
-  }, [properties, searchQuery, selectedStage, selectedUser]);
+  }, [properties, searchQuery, selectedStage, selectedUser, selectedState]);
 
   const handleCardClick = (property: CrmProperty) => {
     setSelectedProperty(property);
@@ -163,6 +169,8 @@ export default function CRM() {
           onStageChange={setSelectedStage}
           selectedUser={selectedUser}
           onUserChange={setSelectedUser}
+          selectedState={selectedState}
+          onStateChange={setSelectedState}
           onAddProperty={handleAddProperty}
         />
 
