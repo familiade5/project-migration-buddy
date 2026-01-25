@@ -2,6 +2,7 @@
 import { LocacaoManagementData } from '@/types/locacao';
 import { LocacaoLogoBar } from '../LocacaoLogo';
 import { Check } from 'lucide-react';
+import { managementDefaultBackgroundBySlide } from '../management/managementBackgrounds';
 
 interface LocacaoManagementFeedProps {
   data: LocacaoManagementData;
@@ -9,6 +10,10 @@ interface LocacaoManagementFeedProps {
 }
 
 export const LocacaoManagementFeed = ({ data, slide }: LocacaoManagementFeedProps) => {
+  const backgroundUrl = data.useBackgroundPhoto
+    ? (data.backgroundPhoto || managementDefaultBackgroundBySlide[slide])
+    : null;
+
   if (slide === 'intro') {
     return (
       <div 
@@ -16,15 +21,20 @@ export const LocacaoManagementFeed = ({ data, slide }: LocacaoManagementFeedProp
         style={{ backgroundColor: '#111827' }}
       >
         {/* Background subtle pattern */}
-        {data.backgroundPhoto && data.useBackgroundPhoto && (
+        {backgroundUrl && (
           <>
             <div 
-              className="absolute inset-0 bg-cover bg-center opacity-20"
-              style={{ backgroundImage: `url(${data.backgroundPhoto})` }}
+              className="absolute inset-0 bg-cover bg-center"
+              style={{
+                backgroundImage: `url(${backgroundUrl})`,
+                opacity: 0.35,
+                filter: 'blur(10px)',
+                transform: 'scale(1.05)',
+              }}
             />
             <div 
               className="absolute inset-0"
-              style={{ backgroundColor: 'rgba(17,24,39,0.9)' }}
+              style={{ backgroundColor: 'rgba(17,24,39,0.72)' }}
             />
           </>
         )}
@@ -66,6 +76,25 @@ export const LocacaoManagementFeed = ({ data, slide }: LocacaoManagementFeedProp
         className="relative w-[1080px] h-[1080px] overflow-hidden flex flex-col justify-center"
         style={{ backgroundColor: '#f9fafb' }}
       >
+        {/* Background (light) */}
+        {backgroundUrl && (
+          <>
+            <div
+              className="absolute inset-0 bg-cover bg-center"
+              style={{
+                backgroundImage: `url(${backgroundUrl})`,
+                opacity: 0.18,
+                filter: 'blur(10px)',
+                transform: 'scale(1.05)',
+              }}
+            />
+            <div
+              className="absolute inset-0"
+              style={{ backgroundColor: 'rgba(249,250,251,0.90)' }}
+            />
+          </>
+        )}
+
         <div className="px-16">
           <h2 
             className="text-4xl font-semibold text-center mb-16"
@@ -113,6 +142,25 @@ export const LocacaoManagementFeed = ({ data, slide }: LocacaoManagementFeedProp
         className="relative w-[1080px] h-[1080px] overflow-hidden flex flex-col items-center justify-center"
         style={{ backgroundColor: '#111827' }}
       >
+        {/* Background (dark) */}
+        {backgroundUrl && (
+          <>
+            <div
+              className="absolute inset-0 bg-cover bg-center"
+              style={{
+                backgroundImage: `url(${backgroundUrl})`,
+                opacity: 0.32,
+                filter: 'blur(10px)',
+                transform: 'scale(1.05)',
+              }}
+            />
+            <div
+              className="absolute inset-0"
+              style={{ backgroundColor: 'rgba(17,24,39,0.75)' }}
+            />
+          </>
+        )}
+
         <div className="text-center">
           <p 
             className="text-xl mb-8"
@@ -161,6 +209,25 @@ export const LocacaoManagementFeed = ({ data, slide }: LocacaoManagementFeedProp
       className="relative w-[1080px] h-[1080px] overflow-hidden flex flex-col items-center justify-center"
       style={{ backgroundColor: '#1f2937' }}
     >
+      {/* Background (dark) */}
+      {backgroundUrl && (
+        <>
+          <div
+            className="absolute inset-0 bg-cover bg-center"
+            style={{
+              backgroundImage: `url(${backgroundUrl})`,
+              opacity: 0.32,
+              filter: 'blur(10px)',
+              transform: 'scale(1.05)',
+            }}
+          />
+          <div
+            className="absolute inset-0"
+            style={{ backgroundColor: 'rgba(31,41,55,0.75)' }}
+          />
+        </>
+      )}
+
       <div className="text-center px-16">
         <p 
           className="text-xl mb-4"
@@ -195,7 +262,9 @@ export const LocacaoManagementFeed = ({ data, slide }: LocacaoManagementFeedProp
         </div>
       </div>
 
-      <LocacaoLogoBar />
+      <div className="relative w-full">
+        <LocacaoLogoBar />
+      </div>
     </div>
   );
 };
