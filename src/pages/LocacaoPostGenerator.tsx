@@ -12,6 +12,7 @@ import { LocacaoPropertyForm } from '@/components/locacao/LocacaoPropertyForm';
 import { LocacaoManagementForm } from '@/components/locacao/LocacaoManagementForm';
 import { LocacaoPhotoUpload } from '@/components/locacao/LocacaoPhotoUpload';
 import { LocacaoPostPreview } from '@/components/locacao/LocacaoPostPreview';
+import { LocacaoCaptionGenerator } from '@/components/locacao/LocacaoCaptionGenerator';
 import { LocacaoLogo } from '@/components/locacao/LocacaoLogo';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { Settings2, Image, FileText, Home, Building2 } from 'lucide-react';
@@ -166,6 +167,16 @@ const LocacaoPostGenerator = () => {
                 photos={photos}
               />
             </div>
+
+            {/* Caption Generator - only for property */}
+            {isProperty && (
+              <div 
+                className="rounded-2xl p-4 sm:p-6 shadow-sm"
+                style={{ backgroundColor: '#ffffff', border: '1px solid #e5e7eb' }}
+              >
+                <LocacaoCaptionGenerator data={propertyData} />
+              </div>
+            )}
           </div>
         </div>
       </div>

@@ -1,11 +1,12 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { LocacaoPropertyData, LocacaoCategorizedPhoto, locacaoPropertyTypes, locacaoFeatureOptions } from '@/types/locacao';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
-import { ChevronDown, MapPin, Home, DollarSign, Phone, CheckSquare } from 'lucide-react';
+import { ChevronDown, MapPin, Home, DollarSign, Phone, CheckSquare, Calendar } from 'lucide-react';
+import { parseCurrencyValue, formatCurrency, autoFormatToCurrency } from '@/lib/formatCurrency';
 
 interface LocacaoPropertyFormProps {
   data: LocacaoPropertyData;
@@ -22,8 +23,54 @@ export const LocacaoPropertyForm = ({ data, onChange }: LocacaoPropertyFormProps
     contact: false,
   });
 
+  const [immediateAvailability, setImmediateAvailability] = useState(
+    data.availableFrom === 'Disponível imediatamente' || data.availableFrom === ''
+  );
+
   const updateField = (field: keyof LocacaoPropertyData, value: any) => {
     onChange({ ...data, [field]: value });
+  };
+
+  // Handle currency input with auto-formatting
+  const handleCurrencyChange = (field: 'rentPrice' | 'condominiumFee' | 'iptu', rawValue: string) => {
+    // Remove R$ and formatting to get raw number
+    const numericOnly = rawValue.replace(/\D/g, '');
+    
+    if (!numericOnly) {
+      updateField(field, '');
+      return;
+    }
+
+    // Parse as cents and convert to reais
+    const valueInCents = parseInt(numericOnly, 10);
+    const valueInReais = valueInCents / 100;
+    
+    // Format and update
+    const formatted = formatCurrency(valueInReais);
+    updateField(field, formatted);
+  };
+
+  // Auto-calculate total monthly
+  useEffect(() => {
+    const rent = parseCurrencyValue(data.rentPrice);
+    const condo = parseCurrencyValue(data.condominiumFee);
+    const iptu = parseCurrencyValue(data.iptu);
+    
+    const total = rent + condo + iptu;
+    
+    if (total > 0) {
+      updateField('totalMonthly', formatCurrency(total));
+    }
+  }, [data.rentPrice, data.condominiumFee, data.iptu]);
+
+  // Handle availability toggle
+  const handleImmediateAvailabilityChange = (checked: boolean) => {
+    setImmediateAvailability(checked);
+    if (checked) {
+      updateField('availableFrom', 'Disponível imediatamente');
+    } else {
+      updateField('availableFrom', '');
+    }
   };
 
   const toggleSection = (section: keyof typeof openSections) => {
@@ -85,31 +132,49 @@ export const LocacaoPropertyForm = ({ data, onChange }: LocacaoPropertyFormProps
               style={{ borderColor: '#e5e7eb' }}
             />
           </div>
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <Label className="text-xs" style={{ color: '#6b7280' }}>Tipo de Imóvel</Label>
-              <Select value={data.type} onValueChange={(value) => updateField('type', value)}>
-                <SelectTrigger className="mt-1" style={{ borderColor: '#e5e7eb' }}>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {locacaoPropertyTypes.map((type) => (
-                    <SelectItem key={type} value={type}>{type}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            <div>
-              <Label className="text-xs" style={{ color: '#6b7280' }}>Disponibilidade</Label>
+          <div>
+            <Label className="text-xs" style={{ color: '#6b7280' }}>Tipo de Imóvel</Label>
+            <Select value={data.type} onValueChange={(value) => updateField('type', value)}>
+              <SelectTrigger className="mt-1" style={{ borderColor: '#e5e7eb' }}>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {locacaoPropertyTypes.map((type) => (
+                  <SelectItem key={type} value={type}>{type}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          
+          {/* Availability Section */}
+          <div className="space-y-3 pt-2">
+            <Label className="text-xs flex items-center gap-2" style={{ color: '#6b7280' }}>
+              <Calendar className="w-3 h-3" />
+              Disponibilidade
+            </Label>
+            <label className="flex items-center gap-3 cursor-pointer p-3 rounded-lg" style={{ backgroundColor: '#f9fafb', border: '1px solid #e5e7eb' }}>
+              <Checkbox
+                checked={immediateAvailability}
+                onCheckedChange={handleImmediateAvailabilityChange}
+              />
+              <span className="text-sm font-medium" style={{ color: '#374151' }}>Disponível imediatamente</span>
+            </label>
+            {!immediateAvailability && (
               <Input
-                placeholder="Disponível imediatamente"
-                value={data.availableFrom}
-                onChange={(e) => updateField('availableFrom', e.target.value)}
+                type="date"
+                placeholder="Selecione a data"
+                value={data.availableFrom.includes('/') || data.availableFrom.includes('-') ? data.availableFrom : ''}
+                onChange={(e) => {
+                  const date = new Date(e.target.value);
+                  const formatted = date.toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' });
+                  updateField('availableFrom', `Disponível a partir de ${formatted}`);
+                }}
                 className="mt-1"
                 style={{ borderColor: '#e5e7eb' }}
               />
-            </div>
+            )}
           </div>
+
           <div className="flex gap-6 pt-2">
             <label className="flex items-center gap-2 cursor-pointer">
               <Checkbox
@@ -240,9 +305,9 @@ export const LocacaoPropertyForm = ({ data, onChange }: LocacaoPropertyFormProps
             <div>
               <Label className="text-xs" style={{ color: '#6b7280' }}>Aluguel Mensal</Label>
               <Input
-                placeholder="R$ 2.500"
+                placeholder="R$ 2.500,00"
                 value={data.rentPrice}
-                onChange={(e) => updateField('rentPrice', e.target.value)}
+                onChange={(e) => handleCurrencyChange('rentPrice', e.target.value)}
                 className="mt-1"
                 style={{ borderColor: '#e5e7eb' }}
               />
@@ -250,9 +315,9 @@ export const LocacaoPropertyForm = ({ data, onChange }: LocacaoPropertyFormProps
             <div>
               <Label className="text-xs" style={{ color: '#6b7280' }}>Condomínio</Label>
               <Input
-                placeholder="R$ 500"
+                placeholder="R$ 500,00"
                 value={data.condominiumFee}
-                onChange={(e) => updateField('condominiumFee', e.target.value)}
+                onChange={(e) => handleCurrencyChange('condominiumFee', e.target.value)}
                 className="mt-1"
                 style={{ borderColor: '#e5e7eb' }}
               />
@@ -262,29 +327,29 @@ export const LocacaoPropertyForm = ({ data, onChange }: LocacaoPropertyFormProps
             <div>
               <Label className="text-xs" style={{ color: '#6b7280' }}>IPTU Mensal</Label>
               <Input
-                placeholder="R$ 150"
+                placeholder="R$ 150,00"
                 value={data.iptu}
-                onChange={(e) => updateField('iptu', e.target.value)}
+                onChange={(e) => handleCurrencyChange('iptu', e.target.value)}
                 className="mt-1"
                 style={{ borderColor: '#e5e7eb' }}
               />
             </div>
             <div>
-              <Label className="text-xs" style={{ color: '#6b7280' }}>Total Mensal</Label>
+              <Label className="text-xs" style={{ color: '#6b7280' }}>Total Mensal (automático)</Label>
               <Input
-                placeholder="R$ 3.150"
+                placeholder="R$ 3.150,00"
                 value={data.totalMonthly}
-                onChange={(e) => updateField('totalMonthly', e.target.value)}
-                className="mt-1"
-                style={{ borderColor: '#e5e7eb' }}
+                readOnly
+                className="mt-1 bg-gray-50"
+                style={{ borderColor: '#e5e7eb', color: '#374151' }}
               />
             </div>
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <Label className="text-xs" style={{ color: '#6b7280' }}>Caução</Label>
+              <Label className="text-xs" style={{ color: '#6b7280' }}>Caução (meses)</Label>
               <Input
-                placeholder="2 meses"
+                placeholder="2"
                 value={data.depositMonths}
                 onChange={(e) => updateField('depositMonths', e.target.value)}
                 className="mt-1"

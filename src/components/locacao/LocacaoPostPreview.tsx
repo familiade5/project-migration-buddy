@@ -2,11 +2,14 @@ import { useState, useRef } from 'react';
 import { LocacaoPropertyData, LocacaoManagementData, LocacaoCategorizedPhoto, LocacaoCreativeType, locacaoPhotoCategoryLabels, LocacaoPhotoCategory } from '@/types/locacao';
 import { LocacaoCoverFeed } from './feed/LocacaoCoverFeed';
 import { LocacaoPhotoFeed } from './feed/LocacaoPhotoFeed';
+import { LocacaoMultiPhotoFeed } from './feed/LocacaoMultiPhotoFeed';
 import { LocacaoDetailsFeed } from './feed/LocacaoDetailsFeed';
+import { LocacaoFeaturesFeed } from './feed/LocacaoFeaturesFeed';
 import { LocacaoPricingFeed } from './feed/LocacaoPricingFeed';
 import { LocacaoContactFeed } from './feed/LocacaoContactFeed';
 import { LocacaoManagementFeed } from './feed/LocacaoManagementFeed';
 import { LocacaoCoverStory } from './story/LocacaoCoverStory';
+import { LocacaoMultiPhotoStory } from './story/LocacaoMultiPhotoStory';
 import { LocacaoDetailsStory } from './story/LocacaoDetailsStory';
 import { LocacaoPricingStory } from './story/LocacaoPricingStory';
 import { LocacaoContactStory } from './story/LocacaoContactStory';
@@ -44,32 +47,46 @@ export const LocacaoPostPreview = ({
   const postRefs = useRef<(HTMLDivElement | null)[]>([]);
   const isMobile = useIsMobile();
 
-  // Photo helpers
+  // Photo helpers with labels
   const getPhotoByCategory = (category: LocacaoPhotoCategory): string | null => {
     const photo = photos.find(p => p.category === category);
     return photo?.url || null;
   };
 
-  const getFacadePhoto = () => getPhotoByCategory('fachada') || photos[0]?.url || null;
-  const getLivingPhoto = () => getPhotoByCategory('sala') || photos[1]?.url || null;
-  const getBedroomPhoto = () => getPhotoByCategory('quarto') || photos[2]?.url || null;
+  const getPhotoLabel = (index: number): string => {
+    const photo = photos[index];
+    if (!photo) return 'Ambiente';
+    return locacaoPhotoCategoryLabels[photo.category] || 'Ambiente';
+  };
 
-  // Build slides for Property rental
+  const getFacadePhoto = () => getPhotoByCategory('fachada') || photos[0]?.url || null;
+  const getPhotosForSlide = (startIndex: number, count: number): string[] => {
+    return photos.slice(startIndex, startIndex + count).map(p => p.url);
+  };
+  const getLabelsForSlide = (startIndex: number, count: number): string[] => {
+    return photos.slice(startIndex, startIndex + count).map(p => locacaoPhotoCategoryLabels[p.category] || 'Ambiente');
+  };
+
+  // Build 7 slides for Property Feed
   const buildPropertyFeedSlides = (): SlideDefinition[] => {
     return [
       { name: 'Capa', component: <LocacaoCoverFeed data={propertyData} photo={getFacadePhoto()} /> },
-      { name: 'Ambiente 1', component: <LocacaoPhotoFeed data={propertyData} photo={getLivingPhoto()} label="Sala" /> },
-      { name: 'Ambiente 2', component: <LocacaoPhotoFeed data={propertyData} photo={getBedroomPhoto()} label="Quarto" /> },
+      { name: 'Fotos 1', component: <LocacaoMultiPhotoFeed data={propertyData} photos={getPhotosForSlide(0, 2)} photoLabels={getLabelsForSlide(0, 2)} /> },
+      { name: 'Fotos 2', component: <LocacaoMultiPhotoFeed data={propertyData} photos={getPhotosForSlide(2, 2)} photoLabels={getLabelsForSlide(2, 2)} /> },
       { name: 'Detalhes', component: <LocacaoDetailsFeed data={propertyData} /> },
+      { name: 'Diferenciais', component: <LocacaoFeaturesFeed data={propertyData} /> },
       { name: 'Valores', component: <LocacaoPricingFeed data={propertyData} /> },
       { name: 'Contato', component: <LocacaoContactFeed data={propertyData} photo={getFacadePhoto()} /> },
     ];
   };
 
+  // Build 6 slides for Property Story
   const buildPropertyStorySlides = (): SlideDefinition[] => {
     return [
       { name: 'Capa', component: <LocacaoCoverStory data={propertyData} photo={getFacadePhoto()} /> },
-      { name: 'Detalhes', component: <LocacaoDetailsStory data={propertyData} photo={getLivingPhoto()} /> },
+      { name: 'Fotos 1', component: <LocacaoMultiPhotoStory data={propertyData} photos={getPhotosForSlide(0, 4)} photoLabels={getLabelsForSlide(0, 4)} /> },
+      { name: 'Fotos 2', component: <LocacaoMultiPhotoStory data={propertyData} photos={getPhotosForSlide(4, 4)} photoLabels={getLabelsForSlide(4, 4)} /> },
+      { name: 'Detalhes', component: <LocacaoDetailsStory data={propertyData} photo={photos[1]?.url || null} /> },
       { name: 'Valores', component: <LocacaoPricingStory data={propertyData} /> },
       { name: 'Contato', component: <LocacaoContactStory data={propertyData} photo={getFacadePhoto()} /> },
     ];
@@ -153,7 +170,7 @@ export const LocacaoPostPreview = ({
 
   const templateWidth = 1080;
   const templateHeight = format === 'feed' ? 1080 : 1920;
-  const maxPreviewWidth = isMobile ? 260 : 380;
+  const maxPreviewWidth = isMobile ? 280 : 360;
   const previewScale = maxPreviewWidth / templateWidth;
   const previewHeight = templateHeight * previewScale;
 
@@ -174,7 +191,7 @@ export const LocacaoPostPreview = ({
             )}
           >
             <Layers className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
-            Feed
+            Feed ({creativeType === 'property' ? '7' : '4'})
           </Button>
           <Button
             variant={format === 'story' ? 'default' : 'outline'}
@@ -188,7 +205,7 @@ export const LocacaoPostPreview = ({
             )}
           >
             <ImageIcon className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
-            Stories
+            Stories ({creativeType === 'property' ? '6' : '4'})
           </Button>
         </div>
 
@@ -272,8 +289,8 @@ export const LocacaoPostPreview = ({
       <div className="flex gap-1 sm:gap-2 overflow-x-auto pb-2 -mx-2 px-2">
         {slides.map((slide, index) => {
           const thumbScale = isMobile 
-            ? (format === 'feed' ? 0.045 : 0.028)
-            : (format === 'feed' ? 0.059 : 0.035);
+            ? (format === 'feed' ? 0.04 : 0.025)
+            : (format === 'feed' ? 0.055 : 0.032);
           const thumbWidth = templateWidth * thumbScale;
           const thumbHeight = templateHeight * thumbScale;
           
