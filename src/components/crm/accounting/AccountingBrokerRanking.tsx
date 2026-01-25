@@ -44,6 +44,18 @@ export function AccountingBrokerRanking({ properties }: AccountingBrokerRankingP
     },
   });
 
+  // Fetch broker profiles to get commission rates
+  const { data: brokerProfiles = [] } = useQuery({
+    queryKey: ['broker-profiles-for-ranking'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('broker_profiles')
+        .select('user_id, commission_percentage');
+      if (error) throw error;
+      return data;
+    },
+  });
+
   const brokerStats = useMemo(() => {
     const stats: Record<string, {
       name: string;
@@ -54,6 +66,7 @@ export function AccountingBrokerRanking({ properties }: AccountingBrokerRankingP
       pendingCommission: number;
       propertiesCount: number;
       avgCommission: number;
+      commissionRate: number;
     }> = {};
 
     // Calculate from commissions
@@ -61,6 +74,7 @@ export function AccountingBrokerRanking({ properties }: AccountingBrokerRankingP
       const key = c.user_id || c.user_name;
       if (!stats[key]) {
         const profile = profiles.find(p => p.id === c.user_id);
+        const brokerProfile = brokerProfiles.find(bp => bp.user_id === c.user_id);
         stats[key] = {
           name: profile?.full_name || c.user_name,
           userId: c.user_id,
@@ -70,6 +84,7 @@ export function AccountingBrokerRanking({ properties }: AccountingBrokerRankingP
           pendingCommission: 0,
           propertiesCount: 0,
           avgCommission: 0,
+          commissionRate: brokerProfile?.commission_percentage || 3,
         };
       }
       stats[key].totalCommission += c.value || 0;
@@ -84,6 +99,7 @@ export function AccountingBrokerRanking({ properties }: AccountingBrokerRankingP
     properties.forEach(p => {
       if (p.responsible_user_id) {
         const profile = profiles.find(pr => pr.id === p.responsible_user_id);
+        const brokerProfile = brokerProfiles.find(bp => bp.user_id === p.responsible_user_id);
         const key = p.responsible_user_id;
         
         if (!stats[key]) {
@@ -96,6 +112,7 @@ export function AccountingBrokerRanking({ properties }: AccountingBrokerRankingP
             pendingCommission: 0,
             propertiesCount: 0,
             avgCommission: 0,
+            commissionRate: brokerProfile?.commission_percentage || 3,
           };
         }
         
@@ -116,7 +133,7 @@ export function AccountingBrokerRanking({ properties }: AccountingBrokerRankingP
     return Object.values(stats)
       .filter(s => s.totalCommission > 0 || s.propertiesCount > 0)
       .sort((a, b) => b.totalCommission - a.totalCommission);
-  }, [commissions, properties, profiles]);
+  }, [commissions, properties, profiles, brokerProfiles]);
 
   const getRankIcon = (index: number) => {
     switch (index) {

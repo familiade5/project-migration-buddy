@@ -2,11 +2,12 @@ import { useState, useEffect } from 'react';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import { Building2, Plus, Trash2, Edit2, Check, X, Star } from 'lucide-react';
+import { Building2, Plus, Trash2, Edit2, Check, X, Star, Users, FileText } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
   Dialog,
   DialogContent,
@@ -22,6 +23,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { BrokerManagement } from '@/components/imobiliaria/BrokerManagement';
 
 interface Agency {
   id: string;
@@ -222,7 +224,7 @@ const Imobiliaria = () => {
 
   return (
     <AppLayout>
-      <div className="p-4 sm:p-6 lg:p-8 max-w-4xl mx-auto space-y-6">
+      <div className="p-4 sm:p-6 lg:p-8 max-w-5xl mx-auto space-y-6">
         {/* Header */}
         <div className="flex items-center gap-3">
           <div className="p-3 rounded-xl bg-gold/20">
@@ -230,214 +232,241 @@ const Imobiliaria = () => {
           </div>
           <div>
             <h1 className="font-display text-xl sm:text-2xl font-semibold text-foreground">Imobiliária</h1>
-            <p className="text-sm text-muted-foreground">Gerencie os dados da imobiliária e CRECIs</p>
+            <p className="text-sm text-muted-foreground">Gerencie dados da imobiliária, CRECIs e corretores</p>
           </div>
         </div>
 
-        {/* Agency Info Card */}
-        <Card className="glass-card">
-          <CardHeader className="flex flex-row items-center justify-between">
-            <CardTitle className="text-gold flex items-center gap-2">
-              <Building2 className="w-5 h-5" />
-              Dados da Imobiliária
-            </CardTitle>
-            {!editingAgency ? (
-              <Button variant="outline" size="sm" onClick={() => setEditingAgency(true)}>
-                <Edit2 className="w-4 h-4 mr-2" />
-                Editar
-              </Button>
-            ) : (
-              <div className="flex gap-2">
-                <Button variant="outline" size="sm" onClick={() => setEditingAgency(false)}>
-                  <X className="w-4 h-4" />
-                </Button>
-                <Button size="sm" className="bg-gold hover:bg-gold-dark" onClick={handleSaveAgency}>
-                  <Check className="w-4 h-4" />
-                </Button>
-              </div>
-            )}
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {editingAgency ? (
-              <div className="grid gap-4 sm:grid-cols-2">
-                <div>
-                  <Label>Nome da Imobiliária</Label>
-                  <Input
-                    value={agencyForm.name}
-                    onChange={(e) => setAgencyForm({ ...agencyForm, name: e.target.value })}
-                    className="input-premium mt-1"
-                  />
-                </div>
-                <div>
-                  <Label>Telefone</Label>
-                  <Input
-                    value={agencyForm.phone}
-                    onChange={(e) => setAgencyForm({ ...agencyForm, phone: e.target.value })}
-                    className="input-premium mt-1"
-                  />
-                </div>
-                <div>
-                  <Label>E-mail</Label>
-                  <Input
-                    value={agencyForm.email}
-                    onChange={(e) => setAgencyForm({ ...agencyForm, email: e.target.value })}
-                    className="input-premium mt-1"
-                  />
-                </div>
-                <div>
-                  <Label>Website</Label>
-                  <Input
-                    value={agencyForm.website}
-                    onChange={(e) => setAgencyForm({ ...agencyForm, website: e.target.value })}
-                    className="input-premium mt-1"
-                  />
-                </div>
-                <div className="sm:col-span-2">
-                  <Label>Endereço</Label>
-                  <Input
-                    value={agencyForm.address}
-                    onChange={(e) => setAgencyForm({ ...agencyForm, address: e.target.value })}
-                    className="input-premium mt-1"
-                  />
-                </div>
-              </div>
-            ) : (
-              <div className="grid gap-3 sm:grid-cols-2">
-                <div>
-                  <p className="text-xs text-muted-foreground">Nome</p>
-                  <p className="text-foreground font-medium">{agency?.name || '-'}</p>
-                </div>
-                <div>
-                  <p className="text-xs text-muted-foreground">Telefone</p>
-                  <p className="text-foreground">{agency?.phone || '-'}</p>
-                </div>
-                <div>
-                  <p className="text-xs text-muted-foreground">E-mail</p>
-                  <p className="text-foreground">{agency?.email || '-'}</p>
-                </div>
-                <div>
-                  <p className="text-xs text-muted-foreground">Website</p>
-                  <p className="text-foreground">{agency?.website || '-'}</p>
-                </div>
-                <div className="sm:col-span-2">
-                  <p className="text-xs text-muted-foreground">Endereço</p>
-                  <p className="text-foreground">{agency?.address || '-'}</p>
-                </div>
-              </div>
-            )}
-          </CardContent>
-        </Card>
+        {/* Main Tabs */}
+        <Tabs defaultValue="agency" className="w-full">
+          <TabsList className="grid w-full grid-cols-3">
+            <TabsTrigger value="agency" className="flex items-center gap-2">
+              <Building2 className="w-4 h-4" />
+              Dados
+            </TabsTrigger>
+            <TabsTrigger value="crecis" className="flex items-center gap-2">
+              <FileText className="w-4 h-4" />
+              CRECIs
+            </TabsTrigger>
+            <TabsTrigger value="brokers" className="flex items-center gap-2">
+              <Users className="w-4 h-4" />
+              Corretores
+            </TabsTrigger>
+          </TabsList>
 
-        {/* CRECIs Card */}
-        <Card className="glass-card">
-          <CardHeader className="flex flex-row items-center justify-between">
-            <CardTitle className="text-gold">CRECIs Cadastrados</CardTitle>
-            <Dialog open={isAddingCreci} onOpenChange={setIsAddingCreci}>
-              <DialogTrigger asChild>
-                <Button size="sm" className="bg-gold hover:bg-gold-dark">
-                  <Plus className="w-4 h-4 mr-2" />
-                  Adicionar
-                </Button>
-              </DialogTrigger>
-              <DialogContent className="bg-card">
-                <DialogHeader>
-                  <DialogTitle>Adicionar CRECI</DialogTitle>
-                </DialogHeader>
-                <div className="space-y-4 py-4">
-                  <div>
-                    <Label>Número do CRECI</Label>
-                    <Input
-                      placeholder="Ex: CRECI 14851"
-                      value={newCreci.creci_number}
-                      onChange={(e) => setNewCreci({ ...newCreci, creci_number: e.target.value })}
-                      className="input-premium mt-1"
-                    />
+          {/* Agency Tab */}
+          <TabsContent value="agency" className="mt-6">
+            <Card className="glass-card">
+              <CardHeader className="flex flex-row items-center justify-between">
+                <CardTitle className="text-gold flex items-center gap-2">
+                  <Building2 className="w-5 h-5" />
+                  Dados da Imobiliária
+                </CardTitle>
+                {!editingAgency ? (
+                  <Button variant="outline" size="sm" onClick={() => setEditingAgency(true)}>
+                    <Edit2 className="w-4 h-4 mr-2" />
+                    Editar
+                  </Button>
+                ) : (
+                  <div className="flex gap-2">
+                    <Button variant="outline" size="sm" onClick={() => setEditingAgency(false)}>
+                      <X className="w-4 h-4" />
+                    </Button>
+                    <Button size="sm" className="bg-gold hover:bg-gold-dark" onClick={handleSaveAgency}>
+                      <Check className="w-4 h-4" />
+                    </Button>
                   </div>
-                  <div>
-                    <Label>Estado</Label>
-                    <Select 
-                      value={newCreci.state} 
-                      onValueChange={(v) => setNewCreci({ ...newCreci, state: v })}
-                    >
-                      <SelectTrigger className="input-premium mt-1">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {states.map(state => (
-                          <SelectItem key={state} value={state}>{state}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                )}
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {editingAgency ? (
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <div>
+                      <Label>Nome da Imobiliária</Label>
+                      <Input
+                        value={agencyForm.name}
+                        onChange={(e) => setAgencyForm({ ...agencyForm, name: e.target.value })}
+                        className="input-premium mt-1"
+                      />
+                    </div>
+                    <div>
+                      <Label>Telefone</Label>
+                      <Input
+                        value={agencyForm.phone}
+                        onChange={(e) => setAgencyForm({ ...agencyForm, phone: e.target.value })}
+                        className="input-premium mt-1"
+                      />
+                    </div>
+                    <div>
+                      <Label>E-mail</Label>
+                      <Input
+                        value={agencyForm.email}
+                        onChange={(e) => setAgencyForm({ ...agencyForm, email: e.target.value })}
+                        className="input-premium mt-1"
+                      />
+                    </div>
+                    <div>
+                      <Label>Website</Label>
+                      <Input
+                        value={agencyForm.website}
+                        onChange={(e) => setAgencyForm({ ...agencyForm, website: e.target.value })}
+                        className="input-premium mt-1"
+                      />
+                    </div>
+                    <div className="sm:col-span-2">
+                      <Label>Endereço</Label>
+                      <Input
+                        value={agencyForm.address}
+                        onChange={(e) => setAgencyForm({ ...agencyForm, address: e.target.value })}
+                        className="input-premium mt-1"
+                      />
+                    </div>
                   </div>
-                  <div>
-                    <Label>Nome/Descrição (opcional)</Label>
-                    <Input
-                      placeholder="Ex: PJ, João Silva"
-                      value={newCreci.name}
-                      onChange={(e) => setNewCreci({ ...newCreci, name: e.target.value })}
-                      className="input-premium mt-1"
-                    />
+                ) : (
+                  <div className="grid gap-3 sm:grid-cols-2">
+                    <div>
+                      <p className="text-xs text-muted-foreground">Nome</p>
+                      <p className="text-foreground font-medium">{agency?.name || '-'}</p>
+                    </div>
+                    <div>
+                      <p className="text-xs text-muted-foreground">Telefone</p>
+                      <p className="text-foreground">{agency?.phone || '-'}</p>
+                    </div>
+                    <div>
+                      <p className="text-xs text-muted-foreground">E-mail</p>
+                      <p className="text-foreground">{agency?.email || '-'}</p>
+                    </div>
+                    <div>
+                      <p className="text-xs text-muted-foreground">Website</p>
+                      <p className="text-foreground">{agency?.website || '-'}</p>
+                    </div>
+                    <div className="sm:col-span-2">
+                      <p className="text-xs text-muted-foreground">Endereço</p>
+                      <p className="text-foreground">{agency?.address || '-'}</p>
+                    </div>
                   </div>
-                </div>
-                <DialogFooter>
-                  <Button variant="outline" onClick={() => setIsAddingCreci(false)}>Cancelar</Button>
-                  <Button className="bg-gold hover:bg-gold-dark" onClick={handleAddCreci}>Adicionar</Button>
-                </DialogFooter>
-              </DialogContent>
-            </Dialog>
-          </CardHeader>
-          <CardContent>
-            {crecis.length === 0 ? (
-              <p className="text-muted-foreground text-center py-8">Nenhum CRECI cadastrado</p>
-            ) : (
-              <div className="space-y-2">
-                {crecis.map((creci) => (
-                  <div 
-                    key={creci.id}
-                    className={`flex items-center justify-between p-3 rounded-lg ${
-                      creci.is_default ? 'bg-gold/10 border border-gold/30' : 'bg-surface'
-                    }`}
-                  >
-                    <div className="flex items-center gap-3">
-                      {creci.is_default && (
-                        <Star className="w-4 h-4 text-gold fill-gold" />
-                      )}
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* CRECIs Tab */}
+          <TabsContent value="crecis" className="mt-6">
+            <Card className="glass-card">
+              <CardHeader className="flex flex-row items-center justify-between">
+                <CardTitle className="text-gold">CRECIs Cadastrados</CardTitle>
+                <Dialog open={isAddingCreci} onOpenChange={setIsAddingCreci}>
+                  <DialogTrigger asChild>
+                    <Button size="sm" className="bg-gold hover:bg-gold-dark">
+                      <Plus className="w-4 h-4 mr-2" />
+                      Adicionar
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="bg-card">
+                    <DialogHeader>
+                      <DialogTitle>Adicionar CRECI</DialogTitle>
+                    </DialogHeader>
+                    <div className="space-y-4 py-4">
                       <div>
-                        <p className="font-medium text-foreground">
-                          {creci.creci_number} {creci.state}
-                          {creci.name && <span className="text-muted-foreground ml-2">({creci.name})</span>}
-                        </p>
-                        {creci.is_default && (
-                          <p className="text-xs text-gold">CRECI Padrão</p>
-                        )}
+                        <Label>Número do CRECI</Label>
+                        <Input
+                          placeholder="Ex: CRECI 14851"
+                          value={newCreci.creci_number}
+                          onChange={(e) => setNewCreci({ ...newCreci, creci_number: e.target.value })}
+                          className="input-premium mt-1"
+                        />
+                      </div>
+                      <div>
+                        <Label>Estado</Label>
+                        <Select 
+                          value={newCreci.state} 
+                          onValueChange={(v) => setNewCreci({ ...newCreci, state: v })}
+                        >
+                          <SelectTrigger className="input-premium mt-1">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent className="bg-card">
+                            {states.map(state => (
+                              <SelectItem key={state} value={state}>{state}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div>
+                        <Label>Nome/Descrição (opcional)</Label>
+                        <Input
+                          placeholder="Ex: PJ, João Silva"
+                          value={newCreci.name}
+                          onChange={(e) => setNewCreci({ ...newCreci, name: e.target.value })}
+                          className="input-premium mt-1"
+                        />
                       </div>
                     </div>
-                    <div className="flex items-center gap-2">
-                      {!creci.is_default && (
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => handleSetDefault(creci.id)}
-                          className="text-muted-foreground hover:text-gold"
-                        >
-                          <Star className="w-4 h-4" />
-                        </Button>
-                      )}
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => handleDeleteCreci(creci.id)}
-                        className="text-destructive hover:text-destructive"
+                    <DialogFooter>
+                      <Button variant="outline" onClick={() => setIsAddingCreci(false)}>Cancelar</Button>
+                      <Button className="bg-gold hover:bg-gold-dark" onClick={handleAddCreci}>Adicionar</Button>
+                    </DialogFooter>
+                  </DialogContent>
+                </Dialog>
+              </CardHeader>
+              <CardContent>
+                {crecis.length === 0 ? (
+                  <p className="text-muted-foreground text-center py-8">Nenhum CRECI cadastrado</p>
+                ) : (
+                  <div className="space-y-2">
+                    {crecis.map((creci) => (
+                      <div 
+                        key={creci.id}
+                        className={`flex items-center justify-between p-3 rounded-lg ${
+                          creci.is_default ? 'bg-gold/10 border border-gold/30' : 'bg-surface'
+                        }`}
                       >
-                        <Trash2 className="w-4 h-4" />
-                      </Button>
-                    </div>
+                        <div className="flex items-center gap-3">
+                          {creci.is_default && (
+                            <Star className="w-4 h-4 text-gold fill-gold" />
+                          )}
+                          <div>
+                            <p className="font-medium text-foreground">
+                              {creci.creci_number} {creci.state}
+                              {creci.name && <span className="text-muted-foreground ml-2">({creci.name})</span>}
+                            </p>
+                            {creci.is_default && (
+                              <p className="text-xs text-gold">CRECI Padrão</p>
+                            )}
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          {!creci.is_default && (
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => handleSetDefault(creci.id)}
+                              className="text-muted-foreground hover:text-gold"
+                            >
+                              <Star className="w-4 h-4" />
+                            </Button>
+                          )}
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleDeleteCreci(creci.id)}
+                            className="text-destructive hover:text-destructive"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      </div>
+                    ))}
                   </div>
-                ))}
-              </div>
-            )}
-          </CardContent>
-        </Card>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Brokers Tab */}
+          <TabsContent value="brokers" className="mt-6">
+            <BrokerManagement />
+          </TabsContent>
+        </Tabs>
       </div>
     </AppLayout>
   );

@@ -58,15 +58,34 @@ export function CommissionsTab({ property }: CommissionsTabProps) {
   const [isSaving, setIsSaving] = useState(false);
   const [selectedMethod, setSelectedMethod] = useState('pix');
   const [isUploading, setIsUploading] = useState(false);
+  const [brokerCommissionRate, setBrokerCommissionRate] = useState<number>(3); // Default 3%
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { isAdmin } = useAuth();
   const { toast } = useToast();
 
-  // Calculate commissions based on 5% agency / 3% broker rules
+  // Fetch broker commission rate if broker is assigned
+  useEffect(() => {
+    const fetchBrokerRate = async () => {
+      if (property.responsible_user_id) {
+        const { data: brokerProfile } = await supabase
+          .from('broker_profiles')
+          .select('commission_percentage')
+          .eq('user_id', property.responsible_user_id)
+          .maybeSingle();
+        
+        if (brokerProfile?.commission_percentage) {
+          setBrokerCommissionRate(brokerProfile.commission_percentage);
+        }
+      }
+    };
+    fetchBrokerRate();
+  }, [property.responsible_user_id]);
+
+  // Calculate commissions based on 5% agency and broker's configured rate
   const saleValue = property.sale_value || 0;
   const agencyCommission = saleValue * 0.05; // 5% of sale value
-  const brokerCommission = saleValue * 0.03; // 3% of sale value (from agency's 5%)
-  const agencyNet = agencyCommission - brokerCommission; // Agency keeps 2%
+  const brokerCommission = saleValue * (brokerCommissionRate / 100); // Broker's configured rate
+  const agencyNet = agencyCommission - brokerCommission; // Agency keeps the difference
 
   useEffect(() => {
     fetchCommissions();
@@ -220,7 +239,7 @@ export function CommissionsTab({ property }: CommissionsTabProps) {
           <div className="bg-white rounded-lg p-3 border border-gray-200">
             <div className="flex items-center gap-1 mb-1">
               <User className="w-3 h-3 text-gray-400" />
-              <p className="text-xs text-gray-500">Corretor (3%)</p>
+              <p className="text-xs text-gray-500">Corretor ({brokerCommissionRate}%)</p>
             </div>
             <p className="text-lg font-semibold text-gray-900">
               {formatCurrency(brokerCommission)}
@@ -229,7 +248,7 @@ export function CommissionsTab({ property }: CommissionsTabProps) {
           <div className="bg-white rounded-lg p-3 border border-gray-200">
             <div className="flex items-center gap-1 mb-1">
               <Building2 className="w-3 h-3 text-gray-400" />
-              <p className="text-xs text-gray-500">Imobiliária (2%)</p>
+              <p className="text-xs text-gray-500">Imobiliária ({(5 - brokerCommissionRate).toFixed(1)}%)</p>
             </div>
             <p className="text-lg font-semibold text-gray-900">
               {formatCurrency(agencyNet)}
