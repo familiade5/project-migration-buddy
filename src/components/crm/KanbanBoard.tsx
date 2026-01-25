@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import {
   DndContext,
   DragEndEvent,
@@ -13,7 +13,7 @@ import {
 import { CrmProperty, PropertyStage, STAGE_ORDER } from '@/types/crm';
 import { KanbanColumn } from './KanbanColumn';
 import { KanbanCard } from './KanbanCard';
-import { useState } from 'react';
+import { PropertyReminder } from '@/types/reminder';
 
 interface KanbanBoardProps {
   properties: CrmProperty[];
@@ -21,6 +21,9 @@ interface KanbanBoardProps {
   onCardClick: (property: CrmProperty) => void;
   onShowCover?: (imageUrl: string) => void;
   onShowProposal?: (propertyId: string) => void;
+  getReminderForProperty?: (propertyId: string) => PropertyReminder | undefined;
+  onUpdateReminderInterval?: (propertyId: string, stage: PropertyStage, hours: number) => void;
+  onSnoozeReminder?: (reminderId: string, hours: number) => void;
 }
 
 export function KanbanBoard({ 
@@ -29,6 +32,9 @@ export function KanbanBoard({
   onCardClick,
   onShowCover,
   onShowProposal,
+  getReminderForProperty,
+  onUpdateReminderInterval,
+  onSnoozeReminder,
 }: KanbanBoardProps) {
   const [activeProperty, setActiveProperty] = useState<CrmProperty | null>(null);
 
@@ -102,6 +108,9 @@ export function KanbanBoard({
             onCardClick={onCardClick}
             onShowCover={onShowCover}
             onShowProposal={onShowProposal}
+            getReminderForProperty={getReminderForProperty}
+            onUpdateReminderInterval={onUpdateReminderInterval}
+            onSnoozeReminder={onSnoozeReminder}
           />
         ))}
       </div>

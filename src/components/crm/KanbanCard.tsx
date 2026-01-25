@@ -1,19 +1,31 @@
 import { useDraggable } from '@dnd-kit/core';
 import { CSS } from '@dnd-kit/utilities';
-import { CrmProperty, PROPERTY_TYPE_LABELS } from '@/types/crm';
+import { CrmProperty, PROPERTY_TYPE_LABELS, PropertyStage } from '@/types/crm';
 import { formatCurrency } from '@/lib/formatCurrency';
 import { Image, FileText, MapPin, User, Calendar } from 'lucide-react';
 import { differenceInDays } from 'date-fns';
-import { useState } from 'react';
+import { PropertyReminder } from '@/types/reminder';
+import { ReminderIndicator } from './ReminderIndicator';
 
 interface KanbanCardProps {
   property: CrmProperty;
   onClick: () => void;
   onShowCover?: (imageUrl: string) => void;
   onShowProposal?: (propertyId: string) => void;
+  reminder?: PropertyReminder;
+  onUpdateReminderInterval?: (propertyId: string, stage: PropertyStage, hours: number) => void;
+  onSnoozeReminder?: (reminderId: string, hours: number) => void;
 }
 
-export function KanbanCard({ property, onClick, onShowCover, onShowProposal }: KanbanCardProps) {
+export function KanbanCard({ 
+  property, 
+  onClick, 
+  onShowCover, 
+  onShowProposal,
+  reminder,
+  onUpdateReminderInterval,
+  onSnoozeReminder,
+}: KanbanCardProps) {
   const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
     id: property.id,
     data: { property },
@@ -114,7 +126,7 @@ export function KanbanCard({ property, onClick, onShowCover, onShowProposal }: K
         )}
       </div>
 
-      {/* Footer: Responsible & Days */}
+      {/* Footer: Responsible & Days & Reminder */}
       <div className="flex items-center justify-between pt-2 border-t border-gray-100">
         <div className="flex items-center gap-1.5 min-w-0 flex-1">
           {property.responsible_user_name ? (
@@ -129,12 +141,25 @@ export function KanbanCard({ property, onClick, onShowCover, onShowProposal }: K
           )}
         </div>
 
-        {/* Days in stage */}
-        <div className="flex items-center gap-0.5" title={`${daysInStage} dias nesta etapa`}>
-          <Calendar className="w-3 h-3 text-gray-400" />
-          <span className={`text-[10px] ${daysInStage > 7 ? 'text-gray-700 font-medium' : 'text-gray-500'}`}>
-            {daysInStage}d
-          </span>
+        <div className="flex items-center gap-2">
+          {/* Reminder indicator */}
+          {onUpdateReminderInterval && onSnoozeReminder && (
+            <ReminderIndicator
+              reminder={reminder}
+              propertyId={property.id}
+              currentStage={property.current_stage}
+              onUpdateInterval={onUpdateReminderInterval}
+              onSnooze={onSnoozeReminder}
+            />
+          )}
+
+          {/* Days in stage */}
+          <div className="flex items-center gap-0.5" title={`${daysInStage} dias nesta etapa`}>
+            <Calendar className="w-3 h-3 text-gray-400" />
+            <span className={`text-[10px] ${daysInStage > 7 ? 'text-gray-700 font-medium' : 'text-gray-500'}`}>
+              {daysInStage}d
+            </span>
+          </div>
         </div>
       </div>
     </div>
