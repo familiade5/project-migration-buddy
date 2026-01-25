@@ -10,7 +10,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
-import { Calculator, Lock, TrendingUp } from 'lucide-react';
+import { Lock, TrendingUp, X } from 'lucide-react';
 
 interface AccountingModalProps {
   properties: CrmProperty[];
@@ -32,8 +32,20 @@ export function AccountingModal({ properties }: AccountingModalProps) {
         </Button>
       </DialogTrigger>
       <DialogContent className="bg-gray-50 border-gray-200 max-w-[95vw] w-[1400px] max-h-[90vh] overflow-y-auto">
-        <DialogHeader className="sr-only">
-          <DialogTitle>Contabilidade</DialogTitle>
+        <DialogHeader className="flex flex-row items-center justify-between border-b border-gray-200 pb-4 mb-4">
+          <DialogTitle className="text-xl font-semibold text-gray-900 flex items-center gap-2">
+            <TrendingUp className="w-5 h-5 text-emerald-600" />
+            Contabilidade
+          </DialogTitle>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setIsOpen(false)}
+            className="h-8 w-8 rounded-full hover:bg-gray-200"
+          >
+            <X className="h-4 w-4 text-gray-500" />
+            <span className="sr-only">Fechar</span>
+          </Button>
         </DialogHeader>
 
         {isAdmin ? (
