@@ -8,29 +8,8 @@ interface LocacaoFeaturesFeedProps {
 }
 
 export const LocacaoFeaturesFeed = ({ data }: LocacaoFeaturesFeedProps) => {
-  // Get features, fill to 8 items if needed
-  const features = [...data.features];
-  const defaultFeatures = [
-    'Portaria 24h',
-    'Elevador',
-    'Área de Serviço',
-    'Vaga de Garagem',
-    'Pronto para morar',
-    'Localização privilegiada',
-    'Armários embutidos',
-    'Fácil acesso',
-  ];
-
-  while (features.length < 8) {
-    const defaultFeature = defaultFeatures.find(f => !features.includes(f));
-    if (defaultFeature) {
-      features.push(defaultFeature);
-    } else {
-      break;
-    }
-  }
-
-  const displayFeatures = features.slice(0, 8);
+  // Only show features that were actually selected - NO defaults
+  const displayFeatures = data.features.slice(0, 8);
 
   return (
     <div 

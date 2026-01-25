@@ -38,19 +38,20 @@ export const LocacaoCoverStory = ({ data, photo }: LocacaoCoverStoryProps) => {
         <LocacaoLogo size="xxl" variant="light" />
       </div>
 
+      {/* Badge - top right, solid gray box like "Imóvel Caixa" */}
+      <div className="absolute z-20" style={{ top: '40px', right: '40px' }}>
+        <div className="relative overflow-hidden rounded-xl shadow-2xl">
+          <div className="absolute inset-0 bg-gradient-to-br from-[#4b5563] via-[#374151] to-[#1f2937]" />
+          <div className="absolute inset-0 bg-gradient-to-b from-white/20 to-transparent h-1/2" />
+          <div className="relative text-center" style={{ padding: '24px 40px' }}>
+            <p className="text-white font-semibold leading-tight" style={{ fontSize: '28px' }}>Disponível para</p>
+            <p className="text-white font-black leading-none tracking-tight" style={{ fontSize: '56px' }}>Locação</p>
+          </div>
+        </div>
+      </div>
+
       {/* Content at bottom */}
       <div className="absolute bottom-0 left-0 right-0 p-16 text-center">
-        {/* Badge - larger */}
-        <div 
-          className="inline-block px-8 py-4 rounded-lg text-xl mb-8"
-          style={{ 
-            backgroundColor: 'rgba(255,255,255,0.2)',
-            backdropFilter: 'blur(8px)',
-            color: '#ffffff',
-          }}
-        >
-          Disponível para Locação
-        </div>
 
         {/* Title - larger */}
         <h1 
