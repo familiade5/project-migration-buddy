@@ -23,6 +23,7 @@ import { ptBR } from 'date-fns/locale';
 
 interface AccountingSectionProps {
   properties: CrmProperty[];
+  isEmbedded?: boolean;
 }
 
 interface CommissionRecord {
@@ -46,7 +47,7 @@ const PERIOD_LABELS: Record<PeriodFilter, string> = {
   last_6_months: 'Últimos 6 meses',
 };
 
-export function AccountingSection({ properties }: AccountingSectionProps) {
+export function AccountingSection({ properties, isEmbedded = false }: AccountingSectionProps) {
   const [periodFilter, setPeriodFilter] = useState<PeriodFilter>('all');
 
   // Fetch all commissions
@@ -149,12 +150,14 @@ export function AccountingSection({ properties }: AccountingSectionProps) {
   }, [properties, commissions, periodFilter]);
 
   return (
-    <div className="bg-white border border-gray-200 rounded-xl p-4 shadow-sm mb-6">
+    <div className={isEmbedded ? '' : 'bg-white border border-gray-200 rounded-xl p-4 shadow-sm mb-6'}>
       <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center gap-2">
-          <DollarSign className="w-5 h-5 text-gray-700" />
-          <h3 className="text-sm font-semibold text-gray-900">Contabilidade</h3>
-        </div>
+        {!isEmbedded && (
+          <div className="flex items-center gap-2">
+            <DollarSign className="w-5 h-5 text-gray-700" />
+            <h3 className="text-sm font-semibold text-gray-900">Contabilidade</h3>
+          </div>
+        )}
         
         <Select value={periodFilter} onValueChange={(v) => setPeriodFilter(v as PeriodFilter)}>
           <SelectTrigger className="w-[160px] h-8 text-xs bg-white border-gray-200">
@@ -174,6 +177,8 @@ export function AccountingSection({ properties }: AccountingSectionProps) {
           </SelectContent>
         </Select>
       </div>
+
+      {isEmbedded && <div className="h-px bg-gray-200 mb-4" />}
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         {/* Total Earnings */}
