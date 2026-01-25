@@ -11,6 +11,7 @@ import { Search, Filter, X, Plus } from 'lucide-react';
 import { PropertyStage, STAGE_CONFIG, STAGE_ORDER } from '@/types/crm';
 import { supabase } from '@/integrations/supabase/client';
 import { useState, useEffect } from 'react';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface Profile {
   id: string;
@@ -37,6 +38,7 @@ export function CrmFilters({
   onAddProperty,
 }: CrmFiltersProps) {
   const [users, setUsers] = useState<Profile[]>([]);
+  const { isAdmin } = useAuth();
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -141,14 +143,16 @@ export function CrmFilters({
       {/* Spacer */}
       <div className="flex-1" />
 
-      {/* Add Property Button */}
-      <Button
-        onClick={onAddProperty}
-        className="bg-gray-900 text-white hover:bg-gray-800"
-      >
-        <Plus className="w-4 h-4 mr-2" />
-        Novo Imóvel
-      </Button>
+      {/* Add Property Button - Admin only */}
+      {isAdmin && (
+        <Button
+          onClick={onAddProperty}
+          className="bg-gray-900 text-white hover:bg-gray-800"
+        >
+          <Plus className="w-4 h-4 mr-2" />
+          Novo Imóvel
+        </Button>
+      )}
     </div>
   );
 }

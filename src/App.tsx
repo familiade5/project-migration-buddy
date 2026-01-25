@@ -50,7 +50,7 @@ const App = () => (
               </ProtectedRoute>
             } />
             <Route path="/crm" element={
-              <ProtectedRoute requireAdmin>
+              <ProtectedRoute>
                 <CRM />
               </ProtectedRoute>
             } />
