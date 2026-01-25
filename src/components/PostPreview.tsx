@@ -20,6 +20,7 @@ import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { useActivityLog } from '@/hooks/useActivityLog';
+import { createCrmPropertyFromCreative, copyImageToCrmStorage } from '@/services/crmIntegration';
 import type { Json } from '@/integrations/supabase/types';
 
 // Helper to convert data URL to Blob
@@ -185,11 +186,52 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
         format: exportFormat,
       });
 
+      // CRM Integration: Create property entry with cover image
+      if (uploadedUrls[0]) {
+        // Generate a property code
+        const propertyCode = `VDH-${creative.id.slice(0, 8).toUpperCase()}`;
+        
+        // Copy the cover image to permanent CRM storage
+        const crmCoverUrl = await copyImageToCrmStorage(uploadedUrls[0], propertyCode);
+        
+        // Parse sale value from minimumValue
+        const parseValue = (val: string): number => {
+          if (!val) return 0;
+          const numericStr = val.replace(/\D/g, '');
+          return numericStr ? parseInt(numericStr, 10) / 100 : 0;
+        };
+        
+        // Create CRM property entry
+        await createCrmPropertyFromCreative({
+          code: propertyCode,
+          propertyType: mapPropertyType(data.type),
+          city: data.city || 'Campo Grande',
+          state: data.state || 'MS',
+          neighborhood: data.neighborhood || undefined,
+          saleValue: parseValue(data.minimumValue),
+          coverImageUrl: crmCoverUrl || uploadedUrls[0],
+          sourceCreativeId: creative.id,
+          createdByUserId: user.id,
+        });
+      }
+
       return creative;
     } catch (error) {
       console.error('Error saving creative:', error);
       throw error;
     }
+  };
+
+  // Helper to map property type from PropertyData to CRM type
+  const mapPropertyType = (type?: string): 'casa' | 'apartamento' | 'terreno' | 'comercial' | 'rural' | 'outro' => {
+    if (!type) return 'casa';
+    const lower = type.toLowerCase();
+    if (lower.includes('casa')) return 'casa';
+    if (lower.includes('apart')) return 'apartamento';
+    if (lower.includes('terr') || lower.includes('lote')) return 'terreno';
+    if (lower.includes('comercial') || lower.includes('sala') || lower.includes('loja')) return 'comercial';
+    if (lower.includes('rural') || lower.includes('chac') || lower.includes('sitio') || lower.includes('fazenda')) return 'rural';
+    return 'outro';
   };
 
   const handleExportSingle = async (index: number) => {

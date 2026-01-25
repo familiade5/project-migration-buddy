@@ -2,11 +2,14 @@ import { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
-import { CrmProperty, STAGE_CONFIG, PROPERTY_TYPE_LABELS, CrmPropertyHistory } from '@/types/crm';
+import { CrmProperty, STAGE_CONFIG, PROPERTY_TYPE_LABELS } from '@/types/crm';
 import { useCrmPropertyHistory } from '@/hooks/useCrmProperties';
+import { useCrmPermissions } from '@/hooks/useCrmPermissions';
+import { useAuth } from '@/contexts/AuthContext';
 import { formatCurrency } from '@/lib/formatCurrency';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
+import { CommissionsTab } from './CommissionsTab';
 import {
   MapPin,
   User,
@@ -36,54 +39,73 @@ export function PropertyDetailModal({
   onDelete,
 }: PropertyDetailModalProps) {
   const { history, isLoading: historyLoading } = useCrmPropertyHistory(property?.id || null);
+  const { canEditProperty } = useCrmPermissions();
+  const { isAdmin } = useAuth();
 
   if (!property) return null;
 
   const stageConfig = STAGE_CONFIG[property.current_stage];
+  const canEdit = isAdmin || canEditProperty(property.id);
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-2xl bg-white border-gray-200 text-gray-900 max-h-[90vh] overflow-y-auto">
         <DialogHeader className="border-b border-gray-200 pb-4">
           <div className="flex items-center justify-between">
-            <div>
-              <DialogTitle className="text-lg font-semibold text-gray-900 flex items-center gap-3">
-                <span className="font-mono text-gray-600 bg-gray-100 px-2 py-1 rounded text-sm">
-                  {property.code}
-                </span>
-                <span>{PROPERTY_TYPE_LABELS[property.property_type]}</span>
-              </DialogTitle>
-              <div className="flex items-center gap-2 mt-2">
-                <div
-                  className="px-2 py-0.5 rounded text-xs font-medium"
-                  style={{
-                    backgroundColor: stageConfig.bgColor,
-                    color: stageConfig.color,
-                  }}
-                >
-                  {stageConfig.label}
+            <div className="flex gap-4">
+              {/* Cover Image */}
+              {(property as any).cover_image_url && (
+                <div className="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0 border border-gray-200">
+                  <img
+                    src={(property as any).cover_image_url}
+                    alt={property.code}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              )}
+              <div>
+                <DialogTitle className="text-lg font-semibold text-gray-900 flex items-center gap-3">
+                  <span className="font-mono text-gray-600 bg-gray-100 px-2 py-1 rounded text-sm">
+                    {property.code}
+                  </span>
+                  <span>{PROPERTY_TYPE_LABELS[property.property_type]}</span>
+                </DialogTitle>
+                <div className="flex items-center gap-2 mt-2">
+                  <div
+                    className="px-2 py-0.5 rounded text-xs font-medium"
+                    style={{
+                      backgroundColor: stageConfig.bgColor,
+                      color: stageConfig.color,
+                    }}
+                  >
+                    {stageConfig.label}
+                  </div>
                 </div>
               </div>
             </div>
             <div className="flex gap-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => onEdit(property)}
-                className="bg-white border-gray-200 text-gray-600 hover:bg-gray-50 hover:text-gray-900"
-              >
-                <Pencil className="w-4 h-4 mr-1" />
-                Editar
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => onDelete(property)}
-                className="bg-white border-gray-200 text-red-500 hover:bg-red-50 hover:text-red-600"
-              >
-                <Trash2 className="w-4 h-4 mr-1" />
-                Excluir
-              </Button>
+              {canEdit && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => onEdit(property)}
+                  className="bg-white border-gray-200 text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+                >
+                  <Pencil className="w-4 h-4 mr-1" />
+                  Editar
+                </Button>
+              )}
+              {isAdmin && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => onDelete(property)}
+                  className="bg-white border-gray-200 text-red-500 hover:bg-red-50 hover:text-red-600"
+                >
+                  <Trash2 className="w-4 h-4 mr-1" />
+                  Excluir
+                </Button>
+              )}
             </div>
           </div>
         </DialogHeader>
@@ -148,15 +170,10 @@ export function PropertyDetailModal({
               <div className="bg-gray-50 rounded-lg p-4 border border-gray-100">
                 <div className="flex items-center gap-2 mb-2">
                   <DollarSign className="w-4 h-4 text-gray-400" />
-                  <h4 className="text-sm font-medium text-gray-500">Comissão</h4>
+                  <h4 className="text-sm font-medium text-gray-500">Comissão Total (5%)</h4>
                 </div>
                 <p className="text-lg font-semibold text-gray-900">
-                  {property.commission_value ? formatCurrency(property.commission_value) : '-'}
-                  {property.commission_percentage && (
-                    <span className="text-xs text-gray-500 ml-2">
-                      ({property.commission_percentage}%)
-                    </span>
-                  )}
+                  {property.sale_value ? formatCurrency(property.sale_value * 0.05) : '-'}
                 </p>
               </div>
             </div>
@@ -292,10 +309,7 @@ export function PropertyDetailModal({
           </TabsContent>
 
           <TabsContent value="commissions" className="mt-4">
-            <div className="text-center py-8 text-gray-500">
-              <DollarSign className="w-8 h-8 mx-auto mb-2 opacity-50" />
-              <p className="text-sm">Comissões em breve</p>
-            </div>
+            <CommissionsTab property={property} />
           </TabsContent>
         </Tabs>
       </DialogContent>

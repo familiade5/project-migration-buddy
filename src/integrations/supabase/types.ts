@@ -133,6 +133,38 @@ export type Database = {
           },
         ]
       }
+      crm_edit_permissions: {
+        Row: {
+          granted_at: string
+          granted_by_user_id: string
+          id: string
+          property_id: string | null
+          user_id: string
+        }
+        Insert: {
+          granted_at?: string
+          granted_by_user_id: string
+          id?: string
+          property_id?: string | null
+          user_id: string
+        }
+        Update: {
+          granted_at?: string
+          granted_by_user_id?: string
+          id?: string
+          property_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "crm_edit_permissions_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "crm_properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       crm_properties: {
         Row: {
           address: string | null
@@ -140,7 +172,9 @@ export type Database = {
           code: string
           commission_percentage: number | null
           commission_value: number | null
+          cover_image_url: string | null
           created_at: string
+          created_by_user_id: string | null
           current_stage: Database["public"]["Enums"]["property_stage"]
           expected_payment_date: string | null
           has_creatives: boolean
@@ -151,6 +185,7 @@ export type Database = {
           property_type: Database["public"]["Enums"]["property_type"]
           responsible_user_id: string | null
           sale_value: number | null
+          source_creative_id: string | null
           stage_entered_at: string
           state: string
           updated_at: string
@@ -161,7 +196,9 @@ export type Database = {
           code: string
           commission_percentage?: number | null
           commission_value?: number | null
+          cover_image_url?: string | null
           created_at?: string
+          created_by_user_id?: string | null
           current_stage?: Database["public"]["Enums"]["property_stage"]
           expected_payment_date?: string | null
           has_creatives?: boolean
@@ -172,6 +209,7 @@ export type Database = {
           property_type?: Database["public"]["Enums"]["property_type"]
           responsible_user_id?: string | null
           sale_value?: number | null
+          source_creative_id?: string | null
           stage_entered_at?: string
           state?: string
           updated_at?: string
@@ -182,7 +220,9 @@ export type Database = {
           code?: string
           commission_percentage?: number | null
           commission_value?: number | null
+          cover_image_url?: string | null
           created_at?: string
+          created_by_user_id?: string | null
           current_stage?: Database["public"]["Enums"]["property_stage"]
           expected_payment_date?: string | null
           has_creatives?: boolean
@@ -193,6 +233,7 @@ export type Database = {
           property_type?: Database["public"]["Enums"]["property_type"]
           responsible_user_id?: string | null
           sale_value?: number | null
+          source_creative_id?: string | null
           stage_entered_at?: string
           state?: string
           updated_at?: string
@@ -205,6 +246,8 @@ export type Database = {
           id: string
           is_paid: boolean
           paid_at: string | null
+          payment_method: string | null
+          payment_proof_url: string | null
           percentage: number
           property_id: string
           user_id: string | null
@@ -216,6 +259,8 @@ export type Database = {
           id?: string
           is_paid?: boolean
           paid_at?: string | null
+          payment_method?: string | null
+          payment_proof_url?: string | null
           percentage: number
           property_id: string
           user_id?: string | null
@@ -227,6 +272,8 @@ export type Database = {
           id?: string
           is_paid?: boolean
           paid_at?: string | null
+          payment_method?: string | null
+          payment_proof_url?: string | null
           percentage?: number
           property_id?: string
           user_id?: string | null
@@ -414,6 +461,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      can_edit_crm_property: {
+        Args: { _property_id: string; _user_id: string }
+        Returns: boolean
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]

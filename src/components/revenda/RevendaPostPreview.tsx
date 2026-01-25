@@ -12,12 +12,17 @@ import { RevendaMultiPhotoStory } from './story/RevendaMultiPhotoStory';
 import { RevendaPriceStory } from './story/RevendaPriceStory';
 import { RevendaContactStory } from './story/RevendaContactStory';
 import { Button } from '@/components/ui/button';
-import { ChevronLeft, ChevronRight, Download, Layers, Image as ImageIcon } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Download, Layers, Image as ImageIcon, Save } from 'lucide-react';
 import { toPng } from 'html-to-image';
 import JSZip from 'jszip';
 import { toast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { useAuth } from '@/contexts/AuthContext';
+import { supabase } from '@/integrations/supabase/client';
+import { createCrmPropertyFromCreative, copyImageToCrmStorage } from '@/services/crmIntegration';
+import { useActivityLog } from '@/hooks/useActivityLog';
+import type { Json } from '@/integrations/supabase/types';
 
 interface RevendaPostPreviewProps {
   data: RevendaPropertyData;
@@ -35,8 +40,11 @@ interface SlideDefinition {
 export const RevendaPostPreview = ({ data, photos }: RevendaPostPreviewProps) => {
   const [format, setFormat] = useState<PostFormat>('feed');
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [isSaving, setIsSaving] = useState(false);
   const postRefs = useRef<(HTMLDivElement | null)[]>([]);
   const isMobile = useIsMobile();
+  const { user } = useAuth();
+  const { logActivity } = useActivityLog();
 
   // Get all photos as URLs in order
   const getAllPhotos = (): string[] => {
@@ -330,12 +338,15 @@ export const RevendaPostPreview = ({ data, photos }: RevendaPostPreviewProps) =>
     const zip = new JSZip();
     
     try {
+      const exportedImages: { dataUrl: string; index: number }[] = [];
+      
       for (let i = 0; i < slides.length; i++) {
         const ref = postRefs.current[i];
         if (ref) {
           const dataUrl = await toPng(ref, { quality: 1, pixelRatio: 2 });
           const base64Data = dataUrl.split(',')[1];
           zip.file(`revenda-${format}-${i + 1}.png`, base64Data, { base64: true });
+          exportedImages.push({ dataUrl, index: i });
         }
       }
 
@@ -345,9 +356,14 @@ export const RevendaPostPreview = ({ data, photos }: RevendaPostPreviewProps) =>
       link.href = URL.createObjectURL(content);
       link.click();
 
+      // Save to library and CRM
+      if (user && exportedImages.length > 0) {
+        await saveCreativeAndCrm(exportedImages);
+      }
+
       toast({
         title: 'Exportado!',
-        description: `${slides.length} slides exportados com sucesso.`,
+        description: `${slides.length} slides exportados e salvos na biblioteca.`,
       });
     } catch (err) {
       console.error('Export all error:', err);
@@ -357,6 +373,103 @@ export const RevendaPostPreview = ({ data, photos }: RevendaPostPreviewProps) =>
         variant: 'destructive',
       });
     }
+  };
+
+  // Helper to save creative to database and create CRM entry
+  const saveCreativeAndCrm = async (exportedImages: { dataUrl: string; index: number }[]) => {
+    if (!user) return;
+    
+    setIsSaving(true);
+    try {
+      const title = `${data.type} - ${data.neighborhood || data.city || 'Revenda'}`;
+      
+      // Convert data URLs to blobs and upload
+      const uploadedUrls: string[] = [];
+      for (const img of exportedImages) {
+        const blob = await (await fetch(img.dataUrl)).blob();
+        const fileName = `${user.id}/${Date.now()}-${img.index}.png`;
+        
+        const { error: uploadError } = await supabase.storage
+          .from('exported-creatives')
+          .upload(fileName, blob, { contentType: 'image/png' });
+        
+        if (uploadError) throw uploadError;
+        
+        const { data: urlData } = supabase.storage
+          .from('exported-creatives')
+          .getPublicUrl(fileName);
+        
+        uploadedUrls.push(urlData.publicUrl);
+      }
+      
+      // Create creative entry
+      const { data: creative, error } = await supabase
+        .from('creatives')
+        .insert({
+          user_id: user.id,
+          title,
+          property_data: data as unknown as Json,
+          photos: photos.map(p => p.url),
+          thumbnail_url: uploadedUrls[0] || null,
+          exported_images: uploadedUrls,
+          format,
+        })
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      // Log activity
+      await logActivity('create_creative', 'creative', creative.id, {
+        title,
+        type: data.type,
+        city: data.city,
+        neighborhood: data.neighborhood,
+        photos_count: photos.length,
+        exported_count: uploadedUrls.length,
+        format,
+      });
+
+      // CRM Integration
+      if (uploadedUrls[0]) {
+        const propertyCode = `REV-${creative.id.slice(0, 8).toUpperCase()}`;
+        const crmCoverUrl = await copyImageToCrmStorage(uploadedUrls[0], propertyCode);
+        
+        const parsePrice = (priceStr: string): number => {
+          if (!priceStr) return 0;
+          const numericStr = priceStr.replace(/\D/g, '');
+          return numericStr ? parseInt(numericStr, 10) / 100 : 0;
+        };
+
+        await createCrmPropertyFromCreative({
+          code: propertyCode,
+          propertyType: mapPropertyType(data.type),
+          city: data.city || 'Campo Grande',
+          state: data.state || 'MS',
+          neighborhood: data.neighborhood || undefined,
+          saleValue: parsePrice(data.price),
+          coverImageUrl: crmCoverUrl || uploadedUrls[0],
+          sourceCreativeId: creative.id,
+          createdByUserId: user.id,
+        });
+      }
+    } catch (error) {
+      console.error('Error saving creative:', error);
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  // Helper to map property type
+  const mapPropertyType = (type?: string): 'casa' | 'apartamento' | 'terreno' | 'comercial' | 'rural' | 'outro' => {
+    if (!type) return 'casa';
+    const lower = type.toLowerCase();
+    if (lower.includes('casa') || lower.includes('sobrado')) return 'casa';
+    if (lower.includes('apart') || lower.includes('cobertura') || lower.includes('duplex') || lower.includes('loft') || lower.includes('studio')) return 'apartamento';
+    if (lower.includes('terr') || lower.includes('lote')) return 'terreno';
+    if (lower.includes('comercial') || lower.includes('sala') || lower.includes('loja')) return 'comercial';
+    if (lower.includes('rural') || lower.includes('chac') || lower.includes('sitio') || lower.includes('fazenda')) return 'rural';
+    return 'outro';
   };
 
   // Scale and dimensions based on format - responsive for mobile

@@ -36,6 +36,9 @@ export interface CrmProperty {
   has_proposal: boolean;
   notes: string | null;
   expected_payment_date: string | null;
+  cover_image_url: string | null;
+  source_creative_id: string | null;
+  created_by_user_id: string | null;
   created_at: string;
   updated_at: string;
   stage_entered_at: string;

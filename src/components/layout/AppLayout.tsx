@@ -36,10 +36,10 @@ const navigation = [
   { name: 'Revenda +', href: '/revenda', icon: Gem },
   { name: 'Locação & Gestão', href: '/locacao', icon: Home },
   { name: 'Biblioteca', href: '/library', icon: Calendar },
+  { name: 'CRM Imóveis', href: '/crm', icon: LayoutDashboard },
 ];
 
 const adminNavigation = [
-  { name: 'CRM Imóveis', href: '/crm', icon: LayoutDashboard },
   { name: 'Imobiliária', href: '/imobiliaria', icon: Building2 },
   { name: 'Admin', href: '/admin', icon: Shield },
 ];

@@ -1,14 +1,17 @@
 import { useState, useMemo } from 'react';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { useCrmProperties } from '@/hooks/useCrmProperties';
+import { useCrmPermissions } from '@/hooks/useCrmPermissions';
 import { KanbanBoard } from '@/components/crm/KanbanBoard';
 import { CrmMetrics } from '@/components/crm/CrmMetrics';
 import { CrmFilters } from '@/components/crm/CrmFilters';
 import { PropertyDetailModal } from '@/components/crm/PropertyDetailModal';
 import { PropertyFormModal } from '@/components/crm/PropertyFormModal';
+import { EditPermissionsModal } from '@/components/crm/EditPermissionsModal';
 import { CrmProperty, PropertyStage } from '@/types/crm';
 import { useAuth } from '@/contexts/AuthContext';
-import { Loader2, LayoutDashboard } from 'lucide-react';
+import { Loader2, LayoutDashboard, Shield } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -22,6 +25,7 @@ import {
 
 export default function CRM() {
   const { isAdmin } = useAuth();
+  const { canEditProperty } = useCrmPermissions();
   const {
     properties,
     isLoading,
@@ -42,6 +46,7 @@ export default function CRM() {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingProperty, setEditingProperty] = useState<CrmProperty | null>(null);
   const [deleteConfirmProperty, setDeleteConfirmProperty] = useState<CrmProperty | null>(null);
+  const [isPermissionsOpen, setIsPermissionsOpen] = useState(false);
 
   // Filtered properties
   const filteredProperties = useMemo(() => {
@@ -82,6 +87,10 @@ export default function CRM() {
   };
 
   const handleEditProperty = (property: CrmProperty) => {
+    // Check if user can edit
+    if (!isAdmin && !canEditProperty(property.id)) {
+      return; // Silently prevent edit if no permission
+    }
     setIsDetailOpen(false);
     setEditingProperty(property);
     setIsFormOpen(true);
@@ -121,14 +130,26 @@ export default function CRM() {
     <AppLayout>
       <div className="p-6 min-h-screen bg-white">
         {/* Header */}
-        <div className="mb-6">
-          <div className="flex items-center gap-3 mb-1">
-            <LayoutDashboard className="w-6 h-6 text-gray-700" />
-            <h1 className="text-2xl font-semibold text-gray-900">CRM Imóveis</h1>
+        <div className="mb-6 flex items-center justify-between">
+          <div>
+            <div className="flex items-center gap-3 mb-1">
+              <LayoutDashboard className="w-6 h-6 text-gray-700" />
+              <h1 className="text-2xl font-semibold text-gray-900">CRM Imóveis</h1>
+            </div>
+            <p className="text-sm text-gray-500">
+              Controle operacional de imóveis e comissões
+            </p>
           </div>
-          <p className="text-sm text-gray-500">
-            Controle operacional de imóveis e comissões
-          </p>
+          {isAdmin && (
+            <Button
+              variant="outline"
+              onClick={() => setIsPermissionsOpen(true)}
+              className="bg-white border-gray-200 text-gray-600 hover:bg-gray-50"
+            >
+              <Shield className="w-4 h-4 mr-2" />
+              Permissões
+            </Button>
+          )}
         </div>
 
         {/* Metrics Dashboard */}
@@ -167,6 +188,12 @@ export default function CRM() {
           isOpen={isFormOpen}
           onClose={() => setIsFormOpen(false)}
           onSave={handleSaveProperty}
+        />
+
+        {/* Edit Permissions Modal */}
+        <EditPermissionsModal
+          isOpen={isPermissionsOpen}
+          onClose={() => setIsPermissionsOpen(false)}
         />
 
         {/* Delete Confirmation */}
