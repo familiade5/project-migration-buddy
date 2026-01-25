@@ -6,7 +6,7 @@ import { useCrmReminders } from '@/hooks/useCrmReminders';
 import { KanbanBoard } from '@/components/crm/KanbanBoard';
 import { CrmMetrics } from '@/components/crm/CrmMetrics';
 import { CrmFilters } from '@/components/crm/CrmFilters';
-import { AccountingSection } from '@/components/crm/AccountingSection';
+import { AccountingModal } from '@/components/crm/AccountingModal';
 import { PropertyDetailModal } from '@/components/crm/PropertyDetailModal';
 import { PropertyFormModal } from '@/components/crm/PropertyFormModal';
 import { EditPermissionsModal } from '@/components/crm/EditPermissionsModal';
@@ -180,6 +180,9 @@ export default function CRM() {
               onPropertyClick={handleCardClick}
               onSnooze={snoozeReminder}
             />
+
+            {/* Accounting Modal */}
+            <AccountingModal properties={properties} />
             
             {isAdmin && (
               <Button
@@ -193,9 +196,6 @@ export default function CRM() {
             )}
           </div>
         </div>
-
-        {/* Accounting Section */}
-        <AccountingSection properties={properties} />
 
         {/* Metrics Dashboard */}
         <CrmMetrics properties={properties} />
