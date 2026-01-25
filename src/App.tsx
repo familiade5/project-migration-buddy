@@ -12,6 +12,7 @@ import Library from "./pages/Library";
 import Admin from "./pages/Admin";
 import Settings from "./pages/Settings";
 import Imobiliaria from "./pages/Imobiliaria";
+import CRM from "./pages/CRM";
 import ElitePostGenerator from "./pages/ElitePostGenerator";
 import RevendaPostGenerator from "./pages/RevendaPostGenerator";
 import LocacaoPostGenerator from "./pages/LocacaoPostGenerator";
@@ -46,6 +47,11 @@ const App = () => (
             <Route path="/imobiliaria" element={
               <ProtectedRoute requireAdmin>
                 <Imobiliaria />
+              </ProtectedRoute>
+            } />
+            <Route path="/crm" element={
+              <ProtectedRoute requireAdmin>
+                <CRM />
               </ProtectedRoute>
             } />
             <Route path="/settings" element={

@@ -13,7 +13,8 @@ import {
   MoreVertical,
   Crown,
   Gem,
-  Home
+  Home,
+  LayoutDashboard
 } from 'lucide-react';
 import {
   DropdownMenu,
@@ -38,6 +39,7 @@ const navigation = [
 ];
 
 const adminNavigation = [
+  { name: 'CRM Imóveis', href: '/crm', icon: LayoutDashboard },
   { name: 'Imobiliária', href: '/imobiliaria', icon: Building2 },
   { name: 'Admin', href: '/admin', icon: Shield },
 ];
