@@ -2,6 +2,7 @@ import { useDroppable } from '@dnd-kit/core';
 import { CrmProperty, PropertyStage, STAGE_CONFIG } from '@/types/crm';
 import { KanbanCard } from './KanbanCard';
 import { formatCurrency } from '@/lib/formatCurrency';
+import { PropertyReminder } from '@/types/reminder';
 
 interface KanbanColumnProps {
   stage: PropertyStage;
@@ -9,6 +10,9 @@ interface KanbanColumnProps {
   onCardClick: (property: CrmProperty) => void;
   onShowCover?: (imageUrl: string) => void;
   onShowProposal?: (propertyId: string) => void;
+  getReminderForProperty?: (propertyId: string) => PropertyReminder | undefined;
+  onUpdateReminderInterval?: (propertyId: string, stage: PropertyStage, hours: number) => void;
+  onSnoozeReminder?: (reminderId: string, hours: number) => void;
 }
 
 export function KanbanColumn({ 
@@ -17,6 +21,9 @@ export function KanbanColumn({
   onCardClick,
   onShowCover,
   onShowProposal,
+  getReminderForProperty,
+  onUpdateReminderInterval,
+  onSnoozeReminder,
 }: KanbanColumnProps) {
   const { setNodeRef, isOver } = useDroppable({
     id: stage,
@@ -67,6 +74,9 @@ export function KanbanColumn({
             onClick={() => onCardClick(property)}
             onShowCover={onShowCover}
             onShowProposal={onShowProposal}
+            reminder={getReminderForProperty?.(property.id)}
+            onUpdateReminderInterval={onUpdateReminderInterval}
+            onSnoozeReminder={onSnoozeReminder}
           />
         ))}
 

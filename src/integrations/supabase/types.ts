@@ -366,6 +366,80 @@ export type Database = {
           },
         ]
       }
+      crm_property_reminders: {
+        Row: {
+          created_at: string
+          created_by_user_id: string | null
+          id: string
+          interval_hours: number
+          is_active: boolean
+          is_custom: boolean
+          next_reminder_at: string
+          property_id: string
+          stage: Database["public"]["Enums"]["property_stage"]
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by_user_id?: string | null
+          id?: string
+          interval_hours?: number
+          is_active?: boolean
+          is_custom?: boolean
+          next_reminder_at: string
+          property_id: string
+          stage: Database["public"]["Enums"]["property_stage"]
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by_user_id?: string | null
+          id?: string
+          interval_hours?: number
+          is_active?: boolean
+          is_custom?: boolean
+          next_reminder_at?: string
+          property_id?: string
+          stage?: Database["public"]["Enums"]["property_stage"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "crm_property_reminders_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "crm_properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      crm_stage_reminder_defaults: {
+        Row: {
+          created_at: string
+          default_interval_hours: number
+          id: string
+          is_enabled: boolean
+          stage: Database["public"]["Enums"]["property_stage"]
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          default_interval_hours?: number
+          id?: string
+          is_enabled?: boolean
+          stage: Database["public"]["Enums"]["property_stage"]
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          default_interval_hours?: number
+          id?: string
+          is_enabled?: boolean
+          stage?: Database["public"]["Enums"]["property_stage"]
+          updated_at?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           address: string | null

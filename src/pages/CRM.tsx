@@ -1,7 +1,8 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { useCrmProperties } from '@/hooks/useCrmProperties';
 import { useCrmPermissions } from '@/hooks/useCrmPermissions';
+import { useCrmReminders } from '@/hooks/useCrmReminders';
 import { KanbanBoard } from '@/components/crm/KanbanBoard';
 import { CrmMetrics } from '@/components/crm/CrmMetrics';
 import { CrmFilters } from '@/components/crm/CrmFilters';
@@ -10,6 +11,7 @@ import { PropertyDetailModal } from '@/components/crm/PropertyDetailModal';
 import { PropertyFormModal } from '@/components/crm/PropertyFormModal';
 import { EditPermissionsModal } from '@/components/crm/EditPermissionsModal';
 import { ImagePreviewModal } from '@/components/crm/ImagePreviewModal';
+import { RemindersPanel } from '@/components/crm/RemindersPanel';
 import { CrmProperty, PropertyStage } from '@/types/crm';
 import { useAuth } from '@/contexts/AuthContext';
 import { Loader2, LayoutDashboard, Shield } from 'lucide-react';
@@ -36,6 +38,14 @@ export default function CRM() {
     updateProperty,
     deleteProperty,
   } = useCrmProperties();
+
+  const {
+    reminders,
+    getReminderForProperty,
+    handleStageChange,
+    updateReminderInterval,
+    snoozeReminder,
+  } = useCrmReminders();
 
   // Filters
   const [searchQuery, setSearchQuery] = useState('');
@@ -87,6 +97,16 @@ export default function CRM() {
       return true;
     });
   }, [properties, searchQuery, selectedStage, selectedUser, selectedState]);
+
+  // Handle property move with reminder management
+  const handleMoveProperty = useCallback(
+    async (propertyId: string, fromStage: PropertyStage, toStage: PropertyStage) => {
+      await moveProperty(propertyId, fromStage, toStage);
+      // Handle reminder changes for the new stage
+      await handleStageChange(propertyId, toStage);
+    },
+    [moveProperty, handleStageChange]
+  );
 
   const handleCardClick = (property: CrmProperty) => {
     setSelectedProperty(property);
@@ -152,16 +172,26 @@ export default function CRM() {
               Controle operacional de imóveis e comissões
             </p>
           </div>
-          {isAdmin && (
-            <Button
-              variant="outline"
-              onClick={() => setIsPermissionsOpen(true)}
-              className="bg-white border-gray-200 text-gray-600 hover:bg-gray-50"
-            >
-              <Shield className="w-4 h-4 mr-2" />
-              Permissões
-            </Button>
-          )}
+          <div className="flex items-center gap-2">
+            {/* Reminders Panel */}
+            <RemindersPanel
+              reminders={reminders}
+              properties={properties}
+              onPropertyClick={handleCardClick}
+              onSnooze={snoozeReminder}
+            />
+            
+            {isAdmin && (
+              <Button
+                variant="outline"
+                onClick={() => setIsPermissionsOpen(true)}
+                className="bg-white border-gray-200 text-gray-600 hover:bg-gray-50"
+              >
+                <Shield className="w-4 h-4 mr-2" />
+                Permissões
+              </Button>
+            )}
+          </div>
         </div>
 
         {/* Accounting Section */}
@@ -186,7 +216,7 @@ export default function CRM() {
         {/* Kanban Board */}
         <KanbanBoard
           properties={filteredProperties}
-          onMoveProperty={moveProperty}
+          onMoveProperty={handleMoveProperty}
           onCardClick={handleCardClick}
           onShowCover={(url) => {
             setCoverPreviewUrl(url);
@@ -200,6 +230,9 @@ export default function CRM() {
               setIsDetailOpen(true);
             }
           }}
+          getReminderForProperty={getReminderForProperty}
+          onUpdateReminderInterval={updateReminderInterval}
+          onSnoozeReminder={snoozeReminder}
         />
 
         {/* Detail Modal */}
