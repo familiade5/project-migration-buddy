@@ -7,7 +7,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
-import { Search, Filter, X, Plus } from 'lucide-react';
+import { Search, Filter, X, Plus, MapPin } from 'lucide-react';
 import { PropertyStage, STAGE_CONFIG, STAGE_ORDER } from '@/types/crm';
 import { supabase } from '@/integrations/supabase/client';
 import { useState, useEffect } from 'react';
@@ -18,6 +18,13 @@ interface Profile {
   full_name: string;
 }
 
+// Brazilian states
+const BRAZILIAN_STATES = [
+  'AC', 'AL', 'AP', 'AM', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA',
+  'MT', 'MS', 'MG', 'PA', 'PB', 'PR', 'PE', 'PI', 'RJ', 'RN',
+  'RS', 'RO', 'RR', 'SC', 'SP', 'SE', 'TO'
+];
+
 interface CrmFiltersProps {
   searchQuery: string;
   onSearchChange: (query: string) => void;
@@ -25,6 +32,8 @@ interface CrmFiltersProps {
   onStageChange: (stage: PropertyStage | 'all') => void;
   selectedUser: string;
   onUserChange: (userId: string) => void;
+  selectedState: string;
+  onStateChange: (state: string) => void;
   onAddProperty: () => void;
 }
 
@@ -35,6 +44,8 @@ export function CrmFilters({
   onStageChange,
   selectedUser,
   onUserChange,
+  selectedState,
+  onStateChange,
   onAddProperty,
 }: CrmFiltersProps) {
   const [users, setUsers] = useState<Profile[]>([]);
@@ -51,12 +62,13 @@ export function CrmFilters({
     fetchUsers();
   }, []);
 
-  const hasFilters = searchQuery || selectedStage !== 'all' || selectedUser;
+  const hasFilters = searchQuery || selectedStage !== 'all' || selectedUser || selectedState;
 
   const clearFilters = () => {
     onSearchChange('');
     onStageChange('all');
     onUserChange('');
+    onStateChange('');
   };
 
   return (
@@ -98,6 +110,31 @@ export function CrmFilters({
                 />
                 {STAGE_CONFIG[stage].label}
               </div>
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+
+      {/* State Filter */}
+      <Select value={selectedState} onValueChange={onStateChange}>
+        <SelectTrigger className="w-[120px] bg-white border-gray-200 text-gray-700">
+          <MapPin className="w-4 h-4 mr-2 text-gray-400" />
+          <SelectValue placeholder="Estado" />
+        </SelectTrigger>
+        <SelectContent className="bg-white border-gray-200 max-h-[300px]">
+          <SelectItem
+            value="all"
+            className="text-gray-700 focus:bg-gray-100 focus:text-gray-900"
+          >
+            Todos
+          </SelectItem>
+          {BRAZILIAN_STATES.map((state) => (
+            <SelectItem
+              key={state}
+              value={state}
+              className="text-gray-700 focus:bg-gray-100 focus:text-gray-900"
+            >
+              {state}
             </SelectItem>
           ))}
         </SelectContent>
