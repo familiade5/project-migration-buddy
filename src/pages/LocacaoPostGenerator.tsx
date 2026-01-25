@@ -13,6 +13,7 @@ import { LocacaoManagementForm } from '@/components/locacao/LocacaoManagementFor
 import { LocacaoPhotoUpload } from '@/components/locacao/LocacaoPhotoUpload';
 import { LocacaoPostPreview } from '@/components/locacao/LocacaoPostPreview';
 import { LocacaoCaptionGenerator } from '@/components/locacao/LocacaoCaptionGenerator';
+import { LocacaoManagementCaptionGenerator } from '@/components/locacao/LocacaoManagementCaptionGenerator';
 import { LocacaoLogo } from '@/components/locacao/LocacaoLogo';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { Settings2, Image, FileText, Home, Building2 } from 'lucide-react';
@@ -91,8 +92,8 @@ const LocacaoPostGenerator = () => {
         <div className="grid lg:grid-cols-2 gap-6 lg:gap-8">
           {/* Left Column - Input */}
           <div className="space-y-6 min-w-0">
-            {/* Photos Upload (only for property or if management wants background) */}
-            {(isProperty || managementData.useBackgroundPhoto) && (
+            {/* Photos Upload - Property: all photos, Management: background photo */}
+            {isProperty && (
               <div 
                 className="rounded-2xl p-4 sm:p-6 shadow-sm"
                 style={{ backgroundColor: '#ffffff', border: '1px solid #e5e7eb' }}
@@ -100,23 +101,58 @@ const LocacaoPostGenerator = () => {
                 <div className="flex items-center gap-2 mb-4">
                   <Image className="w-5 h-5" style={{ color: '#6b7280' }} />
                   <h2 className="font-semibold" style={{ color: '#111827' }}>
-                    {isProperty ? 'Fotos do Imóvel' : 'Foto de Fundo (opcional)'}
+                    Fotos do Imóvel
+                  </h2>
+                </div>
+                <LocacaoPhotoUpload
+                  photos={photos}
+                  onChange={setPhotos}
+                  onClear={handleClearPhotos}
+                />
+              </div>
+            )}
+
+            {/* Background Photo for Management */}
+            {!isProperty && managementData.useBackgroundPhoto && (
+              <div 
+                className="rounded-2xl p-4 sm:p-6 shadow-sm"
+                style={{ backgroundColor: '#ffffff', border: '1px solid #e5e7eb' }}
+              >
+                <div className="flex items-center gap-2 mb-4">
+                  <Image className="w-5 h-5" style={{ color: '#6b7280' }} />
+                  <h2 className="font-semibold" style={{ color: '#111827' }}>
+                    Foto de Fundo (opcional)
                   </h2>
                 </div>
                 <LocacaoPhotoUpload
                   photos={photos}
                   onChange={(newPhotos) => {
                     setPhotos(newPhotos);
-                    // If management, also set the background photo
-                    if (!isProperty && newPhotos.length > 0) {
+                    // Set the first photo as background photo
+                    if (newPhotos.length > 0) {
                       setManagementData(prev => ({
                         ...prev,
                         backgroundPhoto: newPhotos[0].url
                       }));
+                    } else {
+                      setManagementData(prev => ({
+                        ...prev,
+                        backgroundPhoto: null
+                      }));
                     }
                   }}
-                  onClear={handleClearPhotos}
+                  onClear={() => {
+                    handleClearPhotos();
+                    setManagementData(prev => ({
+                      ...prev,
+                      backgroundPhoto: null
+                    }));
+                  }}
+                  maxPhotos={1}
                 />
+                <p className="text-xs mt-2" style={{ color: '#9ca3af' }}>
+                  A foto aparecerá desfocada como fundo sutil nos criativos de gestão.
+                </p>
               </div>
             )}
 
@@ -168,15 +204,17 @@ const LocacaoPostGenerator = () => {
               />
             </div>
 
-            {/* Caption Generator - only for property */}
-            {isProperty && (
-              <div 
-                className="rounded-2xl p-4 sm:p-6 shadow-sm"
-                style={{ backgroundColor: '#ffffff', border: '1px solid #e5e7eb' }}
-              >
+            {/* Caption Generator - for property and management */}
+            <div 
+              className="rounded-2xl p-4 sm:p-6 shadow-sm"
+              style={{ backgroundColor: '#ffffff', border: '1px solid #e5e7eb' }}
+            >
+              {isProperty ? (
                 <LocacaoCaptionGenerator data={propertyData} />
-              </div>
-            )}
+              ) : (
+                <LocacaoManagementCaptionGenerator data={managementData} />
+              )}
+            </div>
           </div>
         </div>
       </div>
