@@ -93,9 +93,9 @@ export const LocacaoManagementFeed = ({ data, slide }: LocacaoManagementFeedProp
           </div>
         </div>
 
-        {/* Logo */}
-        <div className="absolute bottom-8 left-0 right-0 flex justify-center opacity-60">
-          <svg width="160" height="60" viewBox="0 0 800 300" xmlns="http://www.w3.org/2000/svg">
+        {/* Logo - larger to match other slides */}
+        <div className="absolute bottom-12 left-0 right-0 flex justify-center opacity-70">
+          <svg width="220" height="82" viewBox="0 0 800 300" xmlns="http://www.w3.org/2000/svg">
             <g fill="#374151">
               <path d="M200 120 L400 40 L600 120 L585 120 L400 55 L215 120 Z"/>
               <text x="400" y="180" textAnchor="middle" fontFamily="Georgia, serif" fontSize="120" fontWeight="600">VDH</text>
