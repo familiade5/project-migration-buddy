@@ -125,9 +125,9 @@ export function PropertyFormModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-lg bg-[#0d0d0d] border-[#1a1a1a] text-[#e0e0e0]">
+      <DialogContent className="max-w-lg bg-white border-gray-200 text-gray-900">
         <DialogHeader>
-          <DialogTitle className="text-lg font-semibold text-[#e0e0e0]">
+          <DialogTitle className="text-lg font-semibold text-gray-900">
             {property ? 'Editar Imóvel' : 'Novo Imóvel'}
           </DialogTitle>
         </DialogHeader>
@@ -135,7 +135,7 @@ export function PropertyFormModal({
         <form onSubmit={handleSubmit} className="space-y-4 mt-4">
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="code" className="text-[#888]">
+              <Label htmlFor="code" className="text-gray-600">
                 Código *
               </Label>
               <Input
@@ -144,11 +144,11 @@ export function PropertyFormModal({
                 onChange={(e) => setFormData({ ...formData, code: e.target.value })}
                 placeholder="Ex: VDH-001"
                 required
-                className="bg-[#1a1a1a] border-[#2a2a2a] text-[#e0e0e0] placeholder:text-[#555]"
+                className="bg-white border-gray-200 text-gray-900 placeholder:text-gray-400"
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="type" className="text-[#888]">
+              <Label htmlFor="type" className="text-gray-600">
                 Tipo *
               </Label>
               <Select
@@ -157,15 +157,15 @@ export function PropertyFormModal({
                   setFormData({ ...formData, property_type: value })
                 }
               >
-                <SelectTrigger className="bg-[#1a1a1a] border-[#2a2a2a] text-[#e0e0e0]">
+                <SelectTrigger className="bg-white border-gray-200 text-gray-900">
                   <SelectValue />
                 </SelectTrigger>
-                <SelectContent className="bg-[#1a1a1a] border-[#2a2a2a]">
+                <SelectContent className="bg-white border-gray-200">
                   {Object.entries(PROPERTY_TYPE_LABELS).map(([value, label]) => (
                     <SelectItem
                       key={value}
                       value={value}
-                      className="text-[#e0e0e0] focus:bg-[#2a2a2a] focus:text-[#e0e0e0]"
+                      className="text-gray-900 focus:bg-gray-100 focus:text-gray-900"
                     >
                       {label}
                     </SelectItem>
@@ -177,7 +177,7 @@ export function PropertyFormModal({
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="city" className="text-[#888]">
+              <Label htmlFor="city" className="text-gray-600">
                 Cidade *
               </Label>
               <Input
@@ -185,26 +185,26 @@ export function PropertyFormModal({
                 value={formData.city}
                 onChange={(e) => setFormData({ ...formData, city: e.target.value })}
                 required
-                className="bg-[#1a1a1a] border-[#2a2a2a] text-[#e0e0e0] placeholder:text-[#555]"
+                className="bg-white border-gray-200 text-gray-900 placeholder:text-gray-400"
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="state" className="text-[#888]">
+              <Label htmlFor="state" className="text-gray-600">
                 Estado *
               </Label>
               <Select
                 value={formData.state}
                 onValueChange={(value) => setFormData({ ...formData, state: value })}
               >
-                <SelectTrigger className="bg-[#1a1a1a] border-[#2a2a2a] text-[#e0e0e0]">
+                <SelectTrigger className="bg-white border-gray-200 text-gray-900">
                   <SelectValue />
                 </SelectTrigger>
-                <SelectContent className="bg-[#1a1a1a] border-[#2a2a2a] max-h-60">
+                <SelectContent className="bg-white border-gray-200 max-h-60">
                   {states.map((state) => (
                     <SelectItem
                       key={state}
                       value={state}
-                      className="text-[#e0e0e0] focus:bg-[#2a2a2a] focus:text-[#e0e0e0]"
+                      className="text-gray-900 focus:bg-gray-100 focus:text-gray-900"
                     >
                       {state}
                     </SelectItem>
@@ -215,32 +215,32 @@ export function PropertyFormModal({
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="neighborhood" className="text-[#888]">
+            <Label htmlFor="neighborhood" className="text-gray-600">
               Bairro
             </Label>
             <Input
               id="neighborhood"
               value={formData.neighborhood}
               onChange={(e) => setFormData({ ...formData, neighborhood: e.target.value })}
-              className="bg-[#1a1a1a] border-[#2a2a2a] text-[#e0e0e0] placeholder:text-[#555]"
+              className="bg-white border-gray-200 text-gray-900 placeholder:text-gray-400"
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="address" className="text-[#888]">
+            <Label htmlFor="address" className="text-gray-600">
               Endereço
             </Label>
             <Input
               id="address"
               value={formData.address}
               onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-              className="bg-[#1a1a1a] border-[#2a2a2a] text-[#e0e0e0] placeholder:text-[#555]"
+              className="bg-white border-gray-200 text-gray-900 placeholder:text-gray-400"
             />
           </div>
 
           <div className="grid grid-cols-3 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="sale_value" className="text-[#888]">
+              <Label htmlFor="sale_value" className="text-gray-600">
                 Valor de Venda
               </Label>
               <Input
@@ -249,11 +249,11 @@ export function PropertyFormModal({
                 step="0.01"
                 value={formData.sale_value}
                 onChange={(e) => setFormData({ ...formData, sale_value: e.target.value })}
-                className="bg-[#1a1a1a] border-[#2a2a2a] text-[#e0e0e0] placeholder:text-[#555]"
+                className="bg-white border-gray-200 text-gray-900 placeholder:text-gray-400"
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="commission_value" className="text-[#888]">
+              <Label htmlFor="commission_value" className="text-gray-600">
                 Comissão (R$)
               </Label>
               <Input
@@ -264,11 +264,11 @@ export function PropertyFormModal({
                 onChange={(e) =>
                   setFormData({ ...formData, commission_value: e.target.value })
                 }
-                className="bg-[#1a1a1a] border-[#2a2a2a] text-[#e0e0e0] placeholder:text-[#555]"
+                className="bg-white border-gray-200 text-gray-900 placeholder:text-gray-400"
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="commission_percentage" className="text-[#888]">
+              <Label htmlFor="commission_percentage" className="text-gray-600">
                 Comissão (%)
               </Label>
               <Input
@@ -279,13 +279,13 @@ export function PropertyFormModal({
                 onChange={(e) =>
                   setFormData({ ...formData, commission_percentage: e.target.value })
                 }
-                className="bg-[#1a1a1a] border-[#2a2a2a] text-[#e0e0e0] placeholder:text-[#555]"
+                className="bg-white border-gray-200 text-gray-900 placeholder:text-gray-400"
               />
             </div>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="responsible" className="text-[#888]">
+            <Label htmlFor="responsible" className="text-gray-600">
               Corretor Responsável
             </Label>
             <Select
@@ -294,13 +294,13 @@ export function PropertyFormModal({
                 setFormData({ ...formData, responsible_user_id: value === 'none' ? '' : value })
               }
             >
-              <SelectTrigger className="bg-[#1a1a1a] border-[#2a2a2a] text-[#e0e0e0]">
+              <SelectTrigger className="bg-white border-gray-200 text-gray-900">
                 <SelectValue placeholder="Selecione..." />
               </SelectTrigger>
-              <SelectContent className="bg-[#1a1a1a] border-[#2a2a2a]">
+              <SelectContent className="bg-white border-gray-200">
                 <SelectItem
                   value="none"
-                  className="text-[#888] focus:bg-[#2a2a2a] focus:text-[#e0e0e0]"
+                  className="text-gray-500 focus:bg-gray-100 focus:text-gray-900"
                 >
                   Nenhum
                 </SelectItem>
@@ -308,7 +308,7 @@ export function PropertyFormModal({
                   <SelectItem
                     key={user.id}
                     value={user.id}
-                    className="text-[#e0e0e0] focus:bg-[#2a2a2a] focus:text-[#e0e0e0]"
+                    className="text-gray-900 focus:bg-gray-100 focus:text-gray-900"
                   >
                     {user.full_name}
                   </SelectItem>
@@ -318,7 +318,7 @@ export function PropertyFormModal({
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="notes" className="text-[#888]">
+            <Label htmlFor="notes" className="text-gray-600">
               Observações
             </Label>
             <Textarea
@@ -326,23 +326,23 @@ export function PropertyFormModal({
               value={formData.notes}
               onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
               rows={3}
-              className="bg-[#1a1a1a] border-[#2a2a2a] text-[#e0e0e0] placeholder:text-[#555] resize-none"
+              className="bg-white border-gray-200 text-gray-900 placeholder:text-gray-400 resize-none"
             />
           </div>
 
-          <div className="flex justify-end gap-3 pt-4 border-t border-[#1a1a1a]">
+          <div className="flex justify-end gap-3 pt-4 border-t border-gray-200">
             <Button
               type="button"
               variant="outline"
               onClick={onClose}
-              className="bg-transparent border-[#2a2a2a] text-[#888] hover:bg-[#1a1a1a] hover:text-[#e0e0e0]"
+              className="bg-white border-gray-200 text-gray-600 hover:bg-gray-50 hover:text-gray-900"
             >
               Cancelar
             </Button>
             <Button
               type="submit"
               disabled={isLoading}
-              className="bg-[#3b82f6] text-white hover:bg-[#2563eb]"
+              className="bg-gray-900 text-white hover:bg-gray-800"
             >
               {isLoading ? 'Salvando...' : 'Salvar'}
             </Button>

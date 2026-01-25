@@ -61,25 +61,25 @@ export function CrmFilters({
     <div className="flex flex-wrap items-center gap-3 mb-6">
       {/* Search */}
       <div className="relative flex-1 min-w-[200px] max-w-sm">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#555]" />
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
         <Input
           placeholder="Buscar por código, endereço..."
           value={searchQuery}
           onChange={(e) => onSearchChange(e.target.value)}
-          className="pl-9 bg-[#0d0d0d] border-[#1a1a1a] text-[#e0e0e0] placeholder:text-[#555]"
+          className="pl-9 bg-white border-gray-200 text-gray-900 placeholder:text-gray-400"
         />
       </div>
 
       {/* Stage Filter */}
       <Select value={selectedStage} onValueChange={onStageChange as any}>
-        <SelectTrigger className="w-[180px] bg-[#0d0d0d] border-[#1a1a1a] text-[#e0e0e0]">
-          <Filter className="w-4 h-4 mr-2 text-[#555]" />
+        <SelectTrigger className="w-[180px] bg-white border-gray-200 text-gray-700">
+          <Filter className="w-4 h-4 mr-2 text-gray-400" />
           <SelectValue placeholder="Filtrar etapa" />
         </SelectTrigger>
-        <SelectContent className="bg-[#0d0d0d] border-[#1a1a1a]">
+        <SelectContent className="bg-white border-gray-200">
           <SelectItem
             value="all"
-            className="text-[#e0e0e0] focus:bg-[#1a1a1a] focus:text-[#e0e0e0]"
+            className="text-gray-700 focus:bg-gray-100 focus:text-gray-900"
           >
             Todas as etapas
           </SelectItem>
@@ -87,7 +87,7 @@ export function CrmFilters({
             <SelectItem
               key={stage}
               value={stage}
-              className="text-[#e0e0e0] focus:bg-[#1a1a1a] focus:text-[#e0e0e0]"
+              className="text-gray-700 focus:bg-gray-100 focus:text-gray-900"
             >
               <div className="flex items-center gap-2">
                 <div
@@ -103,13 +103,13 @@ export function CrmFilters({
 
       {/* User Filter */}
       <Select value={selectedUser} onValueChange={onUserChange}>
-        <SelectTrigger className="w-[180px] bg-[#0d0d0d] border-[#1a1a1a] text-[#e0e0e0]">
+        <SelectTrigger className="w-[180px] bg-white border-gray-200 text-gray-700">
           <SelectValue placeholder="Filtrar corretor" />
         </SelectTrigger>
-        <SelectContent className="bg-[#0d0d0d] border-[#1a1a1a]">
+        <SelectContent className="bg-white border-gray-200">
           <SelectItem
             value="all"
-            className="text-[#e0e0e0] focus:bg-[#1a1a1a] focus:text-[#e0e0e0]"
+            className="text-gray-700 focus:bg-gray-100 focus:text-gray-900"
           >
             Todos os corretores
           </SelectItem>
@@ -117,7 +117,7 @@ export function CrmFilters({
             <SelectItem
               key={user.id}
               value={user.id}
-              className="text-[#e0e0e0] focus:bg-[#1a1a1a] focus:text-[#e0e0e0]"
+              className="text-gray-700 focus:bg-gray-100 focus:text-gray-900"
             >
               {user.full_name}
             </SelectItem>
@@ -131,7 +131,7 @@ export function CrmFilters({
           variant="ghost"
           size="sm"
           onClick={clearFilters}
-          className="text-[#888] hover:text-[#e0e0e0] hover:bg-[#1a1a1a]"
+          className="text-gray-500 hover:text-gray-900 hover:bg-gray-100"
         >
           <X className="w-4 h-4 mr-1" />
           Limpar
@@ -144,7 +144,7 @@ export function CrmFilters({
       {/* Add Property Button */}
       <Button
         onClick={onAddProperty}
-        className="bg-[#3b82f6] text-white hover:bg-[#2563eb]"
+        className="bg-gray-900 text-white hover:bg-gray-800"
       >
         <Plus className="w-4 h-4 mr-2" />
         Novo Imóvel

@@ -74,16 +74,16 @@ export interface CrmPropertyCommission {
 }
 
 export const STAGE_CONFIG: Record<PropertyStage, { label: string; color: string; bgColor: string }> = {
-  novo_imovel: { label: 'Novo Imóvel', color: '#64748b', bgColor: '#1e293b' },
-  em_anuncio: { label: 'Em Anúncio', color: '#8b5cf6', bgColor: '#1e1b4b' },
-  proposta_recebida: { label: 'Proposta Recebida', color: '#f59e0b', bgColor: '#451a03' },
-  proposta_aceita: { label: 'Proposta Aceita', color: '#22c55e', bgColor: '#052e16' },
-  documentacao_enviada: { label: 'Documentação Enviada', color: '#06b6d4', bgColor: '#083344' },
-  registro_em_andamento: { label: 'Registro em Andamento', color: '#3b82f6', bgColor: '#172554' },
-  registro_concluido: { label: 'Registro Concluído', color: '#10b981', bgColor: '#022c22' },
-  aguardando_pagamento: { label: 'Aguardando Pagamento', color: '#eab308', bgColor: '#422006' },
-  pago: { label: 'Pago', color: '#22d3ee', bgColor: '#164e63' },
-  comissao_liberada: { label: 'Comissão Liberada', color: '#a855f7', bgColor: '#3b0764' },
+  novo_imovel: { label: 'Novo Imóvel', color: '#6b7280', bgColor: '#f9fafb' },
+  em_anuncio: { label: 'Em Anúncio', color: '#4b5563', bgColor: '#f3f4f6' },
+  proposta_recebida: { label: 'Proposta Recebida', color: '#374151', bgColor: '#f3f4f6' },
+  proposta_aceita: { label: 'Proposta Aceita', color: '#1f2937', bgColor: '#e5e7eb' },
+  documentacao_enviada: { label: 'Documentação Enviada', color: '#374151', bgColor: '#f3f4f6' },
+  registro_em_andamento: { label: 'Registro em Andamento', color: '#4b5563', bgColor: '#f3f4f6' },
+  registro_concluido: { label: 'Registro Concluído', color: '#1f2937', bgColor: '#e5e7eb' },
+  aguardando_pagamento: { label: 'Aguardando Pagamento', color: '#374151', bgColor: '#f3f4f6' },
+  pago: { label: 'Pago', color: '#111827', bgColor: '#d1d5db' },
+  comissao_liberada: { label: 'Comissão Liberada', color: '#111827', bgColor: '#d1d5db' },
 };
 
 export const STAGE_ORDER: PropertyStage[] = [

@@ -43,12 +43,12 @@ export function PropertyDetailModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-2xl bg-[#0d0d0d] border-[#1a1a1a] text-[#e0e0e0] max-h-[90vh] overflow-y-auto">
-        <DialogHeader className="border-b border-[#1a1a1a] pb-4">
+      <DialogContent className="max-w-2xl bg-white border-gray-200 text-gray-900 max-h-[90vh] overflow-y-auto">
+        <DialogHeader className="border-b border-gray-200 pb-4">
           <div className="flex items-center justify-between">
             <div>
-              <DialogTitle className="text-lg font-semibold text-[#e0e0e0] flex items-center gap-3">
-                <span className="font-mono text-[#888] bg-[#1a1a1a] px-2 py-1 rounded text-sm">
+              <DialogTitle className="text-lg font-semibold text-gray-900 flex items-center gap-3">
+                <span className="font-mono text-gray-600 bg-gray-100 px-2 py-1 rounded text-sm">
                   {property.code}
                 </span>
                 <span>{PROPERTY_TYPE_LABELS[property.property_type]}</span>
@@ -70,7 +70,7 @@ export function PropertyDetailModal({
                 variant="outline"
                 size="sm"
                 onClick={() => onEdit(property)}
-                className="bg-transparent border-[#2a2a2a] text-[#888] hover:bg-[#1a1a1a] hover:text-[#e0e0e0]"
+                className="bg-white border-gray-200 text-gray-600 hover:bg-gray-50 hover:text-gray-900"
               >
                 <Pencil className="w-4 h-4 mr-1" />
                 Editar
@@ -79,7 +79,7 @@ export function PropertyDetailModal({
                 variant="outline"
                 size="sm"
                 onClick={() => onDelete(property)}
-                className="bg-transparent border-[#2a2a2a] text-red-400 hover:bg-red-500/10 hover:text-red-400"
+                className="bg-white border-gray-200 text-red-500 hover:bg-red-50 hover:text-red-600"
               >
                 <Trash2 className="w-4 h-4 mr-1" />
                 Excluir
@@ -89,28 +89,28 @@ export function PropertyDetailModal({
         </DialogHeader>
 
         <Tabs defaultValue="info" className="mt-4">
-          <TabsList className="bg-[#1a1a1a] border-[#2a2a2a]">
+          <TabsList className="bg-gray-100 border-gray-200">
             <TabsTrigger
               value="info"
-              className="data-[state=active]:bg-[#2a2a2a] text-[#888] data-[state=active]:text-[#e0e0e0]"
+              className="data-[state=active]:bg-white text-gray-500 data-[state=active]:text-gray-900"
             >
               Informações
             </TabsTrigger>
             <TabsTrigger
               value="history"
-              className="data-[state=active]:bg-[#2a2a2a] text-[#888] data-[state=active]:text-[#e0e0e0]"
+              className="data-[state=active]:bg-white text-gray-500 data-[state=active]:text-gray-900"
             >
               Histórico
             </TabsTrigger>
             <TabsTrigger
               value="documents"
-              className="data-[state=active]:bg-[#2a2a2a] text-[#888] data-[state=active]:text-[#e0e0e0]"
+              className="data-[state=active]:bg-white text-gray-500 data-[state=active]:text-gray-900"
             >
               Documentos
             </TabsTrigger>
             <TabsTrigger
               value="commissions"
-              className="data-[state=active]:bg-[#2a2a2a] text-[#888] data-[state=active]:text-[#e0e0e0]"
+              className="data-[state=active]:bg-white text-gray-500 data-[state=active]:text-gray-900"
             >
               Comissões
             </TabsTrigger>
@@ -118,16 +118,16 @@ export function PropertyDetailModal({
 
           <TabsContent value="info" className="mt-4 space-y-4">
             {/* Location */}
-            <div className="bg-[#1a1a1a] rounded-lg p-4">
+            <div className="bg-gray-50 rounded-lg p-4 border border-gray-100">
               <div className="flex items-center gap-2 mb-3">
-                <MapPin className="w-4 h-4 text-[#555]" />
-                <h4 className="text-sm font-medium text-[#888]">Localização</h4>
+                <MapPin className="w-4 h-4 text-gray-400" />
+                <h4 className="text-sm font-medium text-gray-500">Localização</h4>
               </div>
               <div className="space-y-1">
                 {property.address && (
-                  <p className="text-sm text-[#e0e0e0]">{property.address}</p>
+                  <p className="text-sm text-gray-900">{property.address}</p>
                 )}
-                <p className="text-sm text-[#888]">
+                <p className="text-sm text-gray-600">
                   {property.neighborhood && `${property.neighborhood}, `}
                   {property.city}/{property.state}
                 </p>
@@ -136,24 +136,24 @@ export function PropertyDetailModal({
 
             {/* Values */}
             <div className="grid grid-cols-2 gap-4">
-              <div className="bg-[#1a1a1a] rounded-lg p-4">
+              <div className="bg-gray-50 rounded-lg p-4 border border-gray-100">
                 <div className="flex items-center gap-2 mb-2">
-                  <DollarSign className="w-4 h-4 text-[#22c55e]" />
-                  <h4 className="text-sm font-medium text-[#888]">Valor de Venda</h4>
+                  <DollarSign className="w-4 h-4 text-gray-400" />
+                  <h4 className="text-sm font-medium text-gray-500">Valor de Venda</h4>
                 </div>
-                <p className="text-lg font-semibold text-[#22c55e]">
+                <p className="text-lg font-semibold text-gray-900">
                   {property.sale_value ? formatCurrency(property.sale_value) : '-'}
                 </p>
               </div>
-              <div className="bg-[#1a1a1a] rounded-lg p-4">
+              <div className="bg-gray-50 rounded-lg p-4 border border-gray-100">
                 <div className="flex items-center gap-2 mb-2">
-                  <DollarSign className="w-4 h-4 text-[#f59e0b]" />
-                  <h4 className="text-sm font-medium text-[#888]">Comissão</h4>
+                  <DollarSign className="w-4 h-4 text-gray-400" />
+                  <h4 className="text-sm font-medium text-gray-500">Comissão</h4>
                 </div>
-                <p className="text-lg font-semibold text-[#f59e0b]">
+                <p className="text-lg font-semibold text-gray-900">
                   {property.commission_value ? formatCurrency(property.commission_value) : '-'}
                   {property.commission_percentage && (
-                    <span className="text-xs text-[#666] ml-2">
+                    <span className="text-xs text-gray-500 ml-2">
                       ({property.commission_percentage}%)
                     </span>
                   )}
@@ -163,21 +163,21 @@ export function PropertyDetailModal({
 
             {/* Responsible & Dates */}
             <div className="grid grid-cols-2 gap-4">
-              <div className="bg-[#1a1a1a] rounded-lg p-4">
+              <div className="bg-gray-50 rounded-lg p-4 border border-gray-100">
                 <div className="flex items-center gap-2 mb-2">
-                  <User className="w-4 h-4 text-[#555]" />
-                  <h4 className="text-sm font-medium text-[#888]">Responsável</h4>
+                  <User className="w-4 h-4 text-gray-400" />
+                  <h4 className="text-sm font-medium text-gray-500">Responsável</h4>
                 </div>
-                <p className="text-sm text-[#e0e0e0]">
+                <p className="text-sm text-gray-900">
                   {property.responsible_user_name || 'Não atribuído'}
                 </p>
               </div>
-              <div className="bg-[#1a1a1a] rounded-lg p-4">
+              <div className="bg-gray-50 rounded-lg p-4 border border-gray-100">
                 <div className="flex items-center gap-2 mb-2">
-                  <Calendar className="w-4 h-4 text-[#555]" />
-                  <h4 className="text-sm font-medium text-[#888]">Entrada</h4>
+                  <Calendar className="w-4 h-4 text-gray-400" />
+                  <h4 className="text-sm font-medium text-gray-500">Entrada</h4>
                 </div>
-                <p className="text-sm text-[#e0e0e0]">
+                <p className="text-sm text-gray-900">
                   {format(new Date(property.created_at), "dd 'de' MMM, yyyy", { locale: ptBR })}
                 </p>
               </div>
@@ -186,10 +186,10 @@ export function PropertyDetailModal({
             {/* Status Icons */}
             <div className="flex gap-4">
               <div
-                className={`flex items-center gap-2 px-3 py-2 rounded-lg ${
+                className={`flex items-center gap-2 px-3 py-2 rounded-lg border ${
                   property.has_creatives
-                    ? 'bg-[#8b5cf6]/10 text-[#8b5cf6]'
-                    : 'bg-[#1a1a1a] text-[#555]'
+                    ? 'bg-gray-100 text-gray-700 border-gray-200'
+                    : 'bg-gray-50 text-gray-400 border-gray-100'
                 }`}
               >
                 <Image className="w-4 h-4" />
@@ -198,10 +198,10 @@ export function PropertyDetailModal({
                 </span>
               </div>
               <div
-                className={`flex items-center gap-2 px-3 py-2 rounded-lg ${
+                className={`flex items-center gap-2 px-3 py-2 rounded-lg border ${
                   property.has_proposal
-                    ? 'bg-[#f59e0b]/10 text-[#f59e0b]'
-                    : 'bg-[#1a1a1a] text-[#555]'
+                    ? 'bg-gray-100 text-gray-700 border-gray-200'
+                    : 'bg-gray-50 text-gray-400 border-gray-100'
                 }`}
               >
                 <FileText className="w-4 h-4" />
@@ -213,27 +213,27 @@ export function PropertyDetailModal({
 
             {/* Notes */}
             {property.notes && (
-              <div className="bg-[#1a1a1a] rounded-lg p-4">
-                <h4 className="text-sm font-medium text-[#888] mb-2">Observações</h4>
-                <p className="text-sm text-[#e0e0e0] whitespace-pre-wrap">{property.notes}</p>
+              <div className="bg-gray-50 rounded-lg p-4 border border-gray-100">
+                <h4 className="text-sm font-medium text-gray-500 mb-2">Observações</h4>
+                <p className="text-sm text-gray-900 whitespace-pre-wrap">{property.notes}</p>
               </div>
             )}
           </TabsContent>
 
           <TabsContent value="history" className="mt-4">
             {historyLoading ? (
-              <div className="text-center py-8 text-[#666]">Carregando...</div>
+              <div className="text-center py-8 text-gray-500">Carregando...</div>
             ) : history.length === 0 ? (
-              <div className="text-center py-8 text-[#666]">Nenhum histórico</div>
+              <div className="text-center py-8 text-gray-500">Nenhum histórico</div>
             ) : (
               <div className="space-y-3">
                 {history.map((item) => (
                   <div
                     key={item.id}
-                    className="bg-[#1a1a1a] rounded-lg p-4 flex items-start gap-4"
+                    className="bg-gray-50 rounded-lg p-4 flex items-start gap-4 border border-gray-100"
                   >
                     <div className="flex-shrink-0 mt-1">
-                      <Clock className="w-4 h-4 text-[#555]" />
+                      <Clock className="w-4 h-4 text-gray-400" />
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 flex-wrap">
@@ -248,7 +248,7 @@ export function PropertyDetailModal({
                             >
                               {STAGE_CONFIG[item.from_stage].label}
                             </span>
-                            <ArrowRight className="w-3 h-3 text-[#555]" />
+                            <ArrowRight className="w-3 h-3 text-gray-400" />
                           </>
                         )}
                         <span
@@ -261,7 +261,7 @@ export function PropertyDetailModal({
                           {STAGE_CONFIG[item.to_stage].label}
                         </span>
                       </div>
-                      <div className="flex items-center gap-2 mt-2 text-[11px] text-[#666]">
+                      <div className="flex items-center gap-2 mt-2 text-[11px] text-gray-500">
                         <span>
                           {format(new Date(item.created_at), "dd/MM/yyyy 'às' HH:mm", {
                             locale: ptBR,
@@ -275,7 +275,7 @@ export function PropertyDetailModal({
                         )}
                       </div>
                       {item.notes && (
-                        <p className="text-xs text-[#888] mt-2">{item.notes}</p>
+                        <p className="text-xs text-gray-600 mt-2">{item.notes}</p>
                       )}
                     </div>
                   </div>
@@ -285,14 +285,14 @@ export function PropertyDetailModal({
           </TabsContent>
 
           <TabsContent value="documents" className="mt-4">
-            <div className="text-center py-8 text-[#666]">
+            <div className="text-center py-8 text-gray-500">
               <FileText className="w-8 h-8 mx-auto mb-2 opacity-50" />
               <p className="text-sm">Documentos em breve</p>
             </div>
           </TabsContent>
 
           <TabsContent value="commissions" className="mt-4">
-            <div className="text-center py-8 text-[#666]">
+            <div className="text-center py-8 text-gray-500">
               <DollarSign className="w-8 h-8 mx-auto mb-2 opacity-50" />
               <p className="text-sm">Comissões em breve</p>
             </div>
