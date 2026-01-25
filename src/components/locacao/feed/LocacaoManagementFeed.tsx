@@ -1,7 +1,7 @@
 // Management service creative - institutional, authority-building
 import { LocacaoManagementData } from '@/types/locacao';
 import { LocacaoLogoBar } from '../LocacaoLogo';
-import { Check, Shield, Clock, Users, Phone } from 'lucide-react';
+import { Check, Shield, Clock, Users, Phone, FileText, Headphones } from 'lucide-react';
 import { managementDefaultBackgroundBySlide } from '../management/managementBackgrounds';
 
 interface LocacaoManagementFeedProps {
@@ -133,38 +133,29 @@ export const LocacaoManagementFeed = ({ data, slide }: LocacaoManagementFeedProp
           }}
         />
 
-        {/* Decorative elements */}
-        <div 
-          className="absolute top-0 right-0 w-96 h-96 rounded-full"
-          style={{ 
-            background: 'radial-gradient(circle, rgba(17,24,39,0.03) 0%, transparent 70%)',
-            transform: 'translate(30%, -30%)'
-          }}
-        />
-
         {/* Header */}
-        <div className="relative z-10 pt-14 px-16">
-          <p className="text-center text-sm font-medium tracking-widest uppercase mb-3" style={{ color: '#6b7280' }}>
+        <div className="relative z-10 pt-10 px-12">
+          <p className="text-center text-sm font-medium tracking-widest uppercase mb-2" style={{ color: '#6b7280' }}>
             O que fazemos por você
           </p>
           <h2 
-            className="text-4xl font-semibold text-center mb-2"
+            className="text-3xl font-semibold text-center mb-1"
             style={{ color: '#111827', fontFamily: 'Georgia, serif' }}
           >
             Nossos Serviços
           </h2>
-          <div className="w-16 h-1 mx-auto rounded-full" style={{ backgroundColor: '#374151' }} />
+          <div className="w-12 h-0.5 mx-auto rounded-full" style={{ backgroundColor: '#374151' }} />
         </div>
 
-        {/* Benefits grid */}
-        <div className="relative z-10 px-14 mt-10">
-          <div className="grid grid-cols-2 gap-4">
+        {/* Benefits grid - compact */}
+        <div className="relative z-10 px-10 mt-6">
+          <div className="grid grid-cols-2 gap-3">
             {data.benefits.map((benefit, i) => {
               const IconComponent = benefitIcons[i] || Check;
               return (
                 <div 
                   key={i}
-                  className="flex items-center gap-4 p-5 rounded-xl transition-all"
+                  className="flex items-center gap-3 p-4 rounded-xl"
                   style={{ 
                     backgroundColor: '#ffffff',
                     border: '1px solid #e5e7eb',
@@ -172,22 +163,68 @@ export const LocacaoManagementFeed = ({ data, slide }: LocacaoManagementFeedProp
                   }}
                 >
                   <div 
-                    className="w-11 h-11 rounded-full flex items-center justify-center flex-shrink-0"
+                    className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0"
                     style={{ backgroundColor: '#111827' }}
                   >
-                    <IconComponent className="w-5 h-5 text-white" strokeWidth={2} />
+                    <IconComponent className="w-4 h-4 text-white" strokeWidth={2} />
                   </div>
-                  <p className="text-lg font-medium" style={{ color: '#374151' }}>{benefit}</p>
+                  <p className="text-base font-medium leading-tight" style={{ color: '#374151' }}>{benefit}</p>
                 </div>
               );
             })}
           </div>
         </div>
 
-        {/* Bottom section */}
+        {/* Trust triggers section */}
+        <div className="relative z-10 px-10 mt-6">
+          <div className="grid grid-cols-3 gap-4">
+            <div 
+              className="text-center p-4 rounded-xl"
+              style={{ backgroundColor: '#f3f4f6' }}
+            >
+              <div className="w-10 h-10 mx-auto mb-2 rounded-full flex items-center justify-center" style={{ backgroundColor: '#22c55e' }}>
+                <Check className="w-5 h-5 text-white" strokeWidth={3} />
+              </div>
+              <p className="text-sm font-semibold" style={{ color: '#111827' }}>Contrato</p>
+              <p className="text-xs" style={{ color: '#6b7280' }}>Transparente</p>
+            </div>
+            <div 
+              className="text-center p-4 rounded-xl"
+              style={{ backgroundColor: '#f3f4f6' }}
+            >
+              <div className="w-10 h-10 mx-auto mb-2 rounded-full flex items-center justify-center" style={{ backgroundColor: '#3b82f6' }}>
+                <Shield className="w-5 h-5 text-white" strokeWidth={2} />
+              </div>
+              <p className="text-sm font-semibold" style={{ color: '#111827' }}>Seguro</p>
+              <p className="text-xs" style={{ color: '#6b7280' }}>Garantido</p>
+            </div>
+            <div 
+              className="text-center p-4 rounded-xl"
+              style={{ backgroundColor: '#f3f4f6' }}
+            >
+              <div className="w-10 h-10 mx-auto mb-2 rounded-full flex items-center justify-center" style={{ backgroundColor: '#f59e0b' }}>
+                <Clock className="w-5 h-5 text-white" strokeWidth={2} />
+              </div>
+              <p className="text-sm font-semibold" style={{ color: '#111827' }}>Suporte</p>
+              <p className="text-xs" style={{ color: '#6b7280' }}>24 horas</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Bottom guarantee */}
         <div className="absolute bottom-0 left-0 right-0 z-10">
-          <div className="flex justify-center pb-4 opacity-60">
-            <svg width="180" height="67" viewBox="0 0 800 300" xmlns="http://www.w3.org/2000/svg">
+          <div 
+            className="mx-10 mb-4 p-4 rounded-xl text-center"
+            style={{ 
+              background: 'linear-gradient(135deg, #111827 0%, #1f2937 100%)'
+            }}
+          >
+            <p className="text-white text-sm font-medium">
+              ✓ Sem taxas escondidas • ✓ Relatórios mensais • ✓ Repasse garantido
+            </p>
+          </div>
+          <div className="flex justify-center pb-3 opacity-50">
+            <svg width="140" height="52" viewBox="0 0 800 300" xmlns="http://www.w3.org/2000/svg">
               <g fill="#374151">
                 <path d="M200 120 L400 40 L600 120 L585 120 L400 55 L215 120 Z"/>
                 <text x="400" y="180" textAnchor="middle" fontFamily="Georgia, serif" fontSize="120" fontWeight="600">VDH</text>
@@ -226,71 +263,100 @@ export const LocacaoManagementFeed = ({ data, slide }: LocacaoManagementFeedProp
         )}
 
         {/* Header */}
-        <div className="relative z-10 pt-16 text-center">
+        <div className="relative z-10 pt-12 text-center">
           <p className="text-sm font-medium tracking-widest uppercase mb-2" style={{ color: '#6b7280' }}>
-            Credibilidade comprovada
+            Compromisso com você
           </p>
           <h2 
             className="text-3xl font-semibold"
             style={{ color: '#ffffff', fontFamily: 'Georgia, serif' }}
           >
-            Por que confiar na VDH Revenda+
+            Nossa Garantia
           </h2>
         </div>
 
-        {/* Main stats */}
-        <div className="relative z-10 h-full flex flex-col items-center justify-center -mt-10">
-          <div className="flex gap-20 mb-12">
-            <div className="text-center">
+        {/* Main content - Guarantees grid */}
+        <div className="relative z-10 flex flex-col items-center justify-center h-full -mt-16 px-12">
+          <div className="grid grid-cols-2 gap-6 mb-10">
+            <div 
+              className="text-center p-6 rounded-2xl"
+              style={{ 
+                background: 'linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.02) 100%)',
+                border: '1px solid rgba(255,255,255,0.1)'
+              }}
+            >
               <div 
-                className="w-32 h-32 rounded-full flex items-center justify-center mx-auto mb-4"
-                style={{ 
-                  background: 'linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.02) 100%)',
-                  border: '2px solid rgba(255,255,255,0.15)'
-                }}
+                className="w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-3"
+                style={{ backgroundColor: '#22c55e' }}
               >
-                <p 
-                  className="text-6xl font-bold"
-                  style={{ color: '#ffffff', fontFamily: 'Georgia, serif' }}
-                >
-                  {data.yearsExperience}
-                </p>
+                <Check className="w-7 h-7 text-white" strokeWidth={3} />
               </div>
-              <p className="text-lg" style={{ color: '#9ca3af' }}>anos de<br />experiência</p>
+              <p className="text-lg font-semibold mb-1" style={{ color: '#ffffff' }}>Repasse Pontual</p>
+              <p className="text-sm" style={{ color: '#9ca3af' }}>Aluguel na sua conta todo mês, sem atrasos</p>
             </div>
             
-            <div className="text-center">
+            <div 
+              className="text-center p-6 rounded-2xl"
+              style={{ 
+                background: 'linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.02) 100%)',
+                border: '1px solid rgba(255,255,255,0.1)'
+              }}
+            >
               <div 
-                className="w-32 h-32 rounded-full flex items-center justify-center mx-auto mb-4"
-                style={{ 
-                  background: 'linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.02) 100%)',
-                  border: '2px solid rgba(255,255,255,0.15)'
-                }}
+                className="w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-3"
+                style={{ backgroundColor: '#3b82f6' }}
               >
-                <p 
-                  className="text-5xl font-bold"
-                  style={{ color: '#ffffff', fontFamily: 'Georgia, serif' }}
-                >
-                  {data.propertiesManaged}
-                </p>
+                <Shield className="w-7 h-7 text-white" strokeWidth={2} />
               </div>
-              <p className="text-lg" style={{ color: '#9ca3af' }}>imóveis<br />administrados</p>
+              <p className="text-lg font-semibold mb-1" style={{ color: '#ffffff' }}>Inquilino Qualificado</p>
+              <p className="text-sm" style={{ color: '#9ca3af' }}>Análise criteriosa de crédito e referências</p>
+            </div>
+            
+            <div 
+              className="text-center p-6 rounded-2xl"
+              style={{ 
+                background: 'linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.02) 100%)',
+                border: '1px solid rgba(255,255,255,0.1)'
+              }}
+            >
+              <div 
+                className="w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-3"
+                style={{ backgroundColor: '#f59e0b' }}
+              >
+                <FileText className="w-7 h-7 text-white" strokeWidth={2} />
+              </div>
+              <p className="text-lg font-semibold mb-1" style={{ color: '#ffffff' }}>Transparência Total</p>
+              <p className="text-sm" style={{ color: '#9ca3af' }}>Relatórios detalhados todo mês</p>
+            </div>
+            
+            <div 
+              className="text-center p-6 rounded-2xl"
+              style={{ 
+                background: 'linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.02) 100%)',
+                border: '1px solid rgba(255,255,255,0.1)'
+              }}
+            >
+              <div 
+                className="w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-3"
+                style={{ backgroundColor: '#8b5cf6' }}
+              >
+                <Headphones className="w-7 h-7 text-white" strokeWidth={2} />
+              </div>
+              <p className="text-lg font-semibold mb-1" style={{ color: '#ffffff' }}>Suporte Dedicado</p>
+              <p className="text-sm" style={{ color: '#9ca3af' }}>Atendimento exclusivo para proprietários</p>
             </div>
           </div>
 
-          {/* Trust message */}
+          {/* Trust quote */}
           <div 
-            className="max-w-2xl mx-auto text-center p-6 rounded-xl"
+            className="max-w-2xl text-center p-5 rounded-xl"
             style={{ 
-              background: 'linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.02) 100%)',
-              border: '1px solid rgba(255,255,255,0.1)'
+              background: 'linear-gradient(135deg, rgba(34,197,94,0.15) 0%, rgba(34,197,94,0.05) 100%)',
+              border: '1px solid rgba(34,197,94,0.2)'
             }}
           >
-            <p 
-              className="text-xl"
-              style={{ color: '#d1d5db' }}
-            >
-              "Profissionalismo e transparência em cada etapa da administração do seu imóvel."
+            <p className="text-base" style={{ color: '#d1d5db' }}>
+              "Seu imóvel em boas mãos. Cuide do que importa, nós cuidamos do resto."
             </p>
           </div>
         </div>
