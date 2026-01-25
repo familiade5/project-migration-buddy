@@ -133,6 +133,192 @@ export type Database = {
           },
         ]
       }
+      crm_properties: {
+        Row: {
+          address: string | null
+          city: string
+          code: string
+          commission_percentage: number | null
+          commission_value: number | null
+          created_at: string
+          current_stage: Database["public"]["Enums"]["property_stage"]
+          expected_payment_date: string | null
+          has_creatives: boolean
+          has_proposal: boolean
+          id: string
+          neighborhood: string | null
+          notes: string | null
+          property_type: Database["public"]["Enums"]["property_type"]
+          responsible_user_id: string | null
+          sale_value: number | null
+          stage_entered_at: string
+          state: string
+          updated_at: string
+        }
+        Insert: {
+          address?: string | null
+          city: string
+          code: string
+          commission_percentage?: number | null
+          commission_value?: number | null
+          created_at?: string
+          current_stage?: Database["public"]["Enums"]["property_stage"]
+          expected_payment_date?: string | null
+          has_creatives?: boolean
+          has_proposal?: boolean
+          id?: string
+          neighborhood?: string | null
+          notes?: string | null
+          property_type?: Database["public"]["Enums"]["property_type"]
+          responsible_user_id?: string | null
+          sale_value?: number | null
+          stage_entered_at?: string
+          state?: string
+          updated_at?: string
+        }
+        Update: {
+          address?: string | null
+          city?: string
+          code?: string
+          commission_percentage?: number | null
+          commission_value?: number | null
+          created_at?: string
+          current_stage?: Database["public"]["Enums"]["property_stage"]
+          expected_payment_date?: string | null
+          has_creatives?: boolean
+          has_proposal?: boolean
+          id?: string
+          neighborhood?: string | null
+          notes?: string | null
+          property_type?: Database["public"]["Enums"]["property_type"]
+          responsible_user_id?: string | null
+          sale_value?: number | null
+          stage_entered_at?: string
+          state?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      crm_property_commissions: {
+        Row: {
+          created_at: string
+          id: string
+          is_paid: boolean
+          paid_at: string | null
+          percentage: number
+          property_id: string
+          user_id: string | null
+          user_name: string
+          value: number | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_paid?: boolean
+          paid_at?: string | null
+          percentage: number
+          property_id: string
+          user_id?: string | null
+          user_name: string
+          value?: number | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_paid?: boolean
+          paid_at?: string | null
+          percentage?: number
+          property_id?: string
+          user_id?: string | null
+          user_name?: string
+          value?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "crm_property_commissions_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "crm_properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      crm_property_documents: {
+        Row: {
+          created_at: string
+          file_url: string
+          id: string
+          name: string
+          property_id: string
+          uploaded_by_user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          file_url: string
+          id?: string
+          name: string
+          property_id: string
+          uploaded_by_user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          file_url?: string
+          id?: string
+          name?: string
+          property_id?: string
+          uploaded_by_user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "crm_property_documents_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "crm_properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      crm_property_history: {
+        Row: {
+          created_at: string
+          from_stage: Database["public"]["Enums"]["property_stage"] | null
+          id: string
+          moved_by_name: string | null
+          moved_by_user_id: string | null
+          notes: string | null
+          property_id: string
+          to_stage: Database["public"]["Enums"]["property_stage"]
+        }
+        Insert: {
+          created_at?: string
+          from_stage?: Database["public"]["Enums"]["property_stage"] | null
+          id?: string
+          moved_by_name?: string | null
+          moved_by_user_id?: string | null
+          notes?: string | null
+          property_id: string
+          to_stage: Database["public"]["Enums"]["property_stage"]
+        }
+        Update: {
+          created_at?: string
+          from_stage?: Database["public"]["Enums"]["property_stage"] | null
+          id?: string
+          moved_by_name?: string | null
+          moved_by_user_id?: string | null
+          notes?: string | null
+          property_id?: string
+          to_stage?: Database["public"]["Enums"]["property_stage"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "crm_property_history_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "crm_properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           address: string | null
@@ -247,6 +433,24 @@ export type Database = {
     }
     Enums: {
       app_role: "admin" | "user"
+      property_stage:
+        | "novo_imovel"
+        | "em_anuncio"
+        | "proposta_recebida"
+        | "proposta_aceita"
+        | "documentacao_enviada"
+        | "registro_em_andamento"
+        | "registro_concluido"
+        | "aguardando_pagamento"
+        | "pago"
+        | "comissao_liberada"
+      property_type:
+        | "casa"
+        | "apartamento"
+        | "terreno"
+        | "comercial"
+        | "rural"
+        | "outro"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -375,6 +579,26 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["admin", "user"],
+      property_stage: [
+        "novo_imovel",
+        "em_anuncio",
+        "proposta_recebida",
+        "proposta_aceita",
+        "documentacao_enviada",
+        "registro_em_andamento",
+        "registro_concluido",
+        "aguardando_pagamento",
+        "pago",
+        "comissao_liberada",
+      ],
+      property_type: [
+        "casa",
+        "apartamento",
+        "terreno",
+        "comercial",
+        "rural",
+        "outro",
+      ],
     },
   },
 } as const
