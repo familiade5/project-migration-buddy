@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { CrmProperty } from '@/types/crm';
-import { AccountingSection } from './AccountingSection';
+import { AccountingDashboard } from './accounting/AccountingDashboard';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -10,7 +10,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
-import { Calculator, Lock } from 'lucide-react';
+import { Calculator, Lock, TrendingUp } from 'lucide-react';
 
 interface AccountingModalProps {
   properties: CrmProperty[];
@@ -25,35 +25,33 @@ export function AccountingModal({ properties }: AccountingModalProps) {
       <DialogTrigger asChild>
         <Button
           variant="outline"
-          className="bg-white border-gray-200 text-gray-600 hover:bg-gray-50"
+          className="bg-gradient-to-r from-emerald-50 to-teal-50 border-emerald-200 text-emerald-700 hover:from-emerald-100 hover:to-teal-100 hover:border-emerald-300 transition-all"
         >
-          <Calculator className="w-4 h-4 mr-2" />
+          <TrendingUp className="w-4 h-4 mr-2" />
           Contabilidade
         </Button>
       </DialogTrigger>
-      <DialogContent className="bg-white border-gray-200 max-w-4xl max-h-[85vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle className="text-gray-900 flex items-center gap-2">
-            <Calculator className="w-5 h-5" />
-            Contabilidade
-          </DialogTitle>
+      <DialogContent className="bg-gray-50 border-gray-200 max-w-[95vw] w-[1400px] max-h-[90vh] overflow-y-auto">
+        <DialogHeader className="sr-only">
+          <DialogTitle>Contabilidade</DialogTitle>
         </DialogHeader>
 
         {isAdmin ? (
-          <div className="mt-2">
-            <AccountingSection properties={properties} isEmbedded />
-          </div>
+          <AccountingDashboard properties={properties} />
         ) : (
-          <div className="flex flex-col items-center justify-center py-12 text-center">
-            <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center mb-4">
-              <Lock className="w-8 h-8 text-gray-400" />
+          <div className="flex flex-col items-center justify-center py-16 text-center">
+            <div className="w-20 h-20 rounded-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center mb-6 shadow-inner">
+              <Lock className="w-10 h-10 text-gray-400" />
             </div>
-            <h3 className="text-lg font-medium text-gray-900 mb-2">
+            <h3 className="text-xl font-semibold text-gray-900 mb-3">
               Acesso Restrito
             </h3>
-            <p className="text-sm text-gray-500 max-w-sm">
-              Somente administradores podem acessar as informações de contabilidade.
-              Entre em contato com um administrador caso precise de acesso.
+            <p className="text-sm text-gray-500 max-w-md leading-relaxed">
+              O dashboard de contabilidade contém informações financeiras sensíveis 
+              e está disponível apenas para administradores do sistema.
+              <br /><br />
+              Entre em contato com um administrador caso precise de acesso 
+              a relatórios ou informações específicas.
             </p>
           </div>
         )}
