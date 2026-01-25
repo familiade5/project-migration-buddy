@@ -195,8 +195,8 @@ export const LocacaoManagementFeed = ({ data, slide }: LocacaoManagementFeedProp
               <div className="w-10 h-10 mx-auto mb-2 rounded-full flex items-center justify-center" style={{ backgroundColor: '#3b82f6' }}>
                 <Shield className="w-5 h-5 text-white" strokeWidth={2} />
               </div>
-              <p className="text-sm font-semibold" style={{ color: '#111827' }}>Seguro</p>
-              <p className="text-xs" style={{ color: '#6b7280' }}>Garantido</p>
+              <p className="text-sm font-semibold" style={{ color: '#111827' }}>Documentação</p>
+              <p className="text-xs" style={{ color: '#6b7280' }}>Completa</p>
             </div>
             <div 
               className="text-center p-4 rounded-xl"

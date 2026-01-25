@@ -196,8 +196,8 @@ export const LocacaoManagementStory = ({ data, slide }: LocacaoManagementStoryPr
               <div className="w-12 h-12 mx-auto mb-2 rounded-full flex items-center justify-center" style={{ backgroundColor: '#3b82f6' }}>
                 <Shield className="w-6 h-6 text-white" strokeWidth={2} />
               </div>
-              <p className="text-base font-semibold" style={{ color: '#111827' }}>Seguro</p>
-              <p className="text-sm" style={{ color: '#6b7280' }}>Garantido</p>
+              <p className="text-base font-semibold" style={{ color: '#111827' }}>Documentação</p>
+              <p className="text-sm" style={{ color: '#6b7280' }}>Completa</p>
             </div>
             <div 
               className="text-center p-5 rounded-xl"
