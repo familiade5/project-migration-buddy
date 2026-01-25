@@ -38,7 +38,7 @@ export const LocacaoManagementStory = ({ data, slide }: LocacaoManagementStoryPr
           </>
         )}
 
-        <div className="relative h-full flex flex-col items-center justify-center px-12 text-center">
+        <div className="relative z-10 h-full flex flex-col items-center justify-center px-12 text-center">
           {/* Logo */}
           <div className="mb-16 opacity-80">
             <svg width="240" height="90" viewBox="0 0 800 300" xmlns="http://www.w3.org/2000/svg">
@@ -93,7 +93,7 @@ export const LocacaoManagementStory = ({ data, slide }: LocacaoManagementStoryPr
           </>
         )}
 
-        <div className="px-12">
+        <div className="relative z-10 px-12">
           <h2 
             className="text-5xl font-semibold text-center mb-16"
             style={{ color: '#111827', fontFamily: 'Georgia, serif' }}
@@ -121,7 +121,7 @@ export const LocacaoManagementStory = ({ data, slide }: LocacaoManagementStoryPr
         </div>
 
         {/* Logo - larger to match other slides */}
-        <div className="absolute bottom-20 left-0 right-0 flex justify-center opacity-70">
+        <div className="absolute bottom-20 left-0 right-0 flex justify-center opacity-70 z-10">
           <svg width="240" height="90" viewBox="0 0 800 300" xmlns="http://www.w3.org/2000/svg">
             <g fill="#374151">
               <path d="M200 120 L400 40 L600 120 L585 120 L400 55 L215 120 Z"/>
@@ -159,7 +159,7 @@ export const LocacaoManagementStory = ({ data, slide }: LocacaoManagementStoryPr
           </>
         )}
 
-        <div className="text-center px-12">
+        <div className="relative z-10 text-center px-12">
           <p className="text-xl mb-12" style={{ color: '#6b7280' }}>
             Confie em quem entende
           </p>
@@ -186,7 +186,9 @@ export const LocacaoManagementStory = ({ data, slide }: LocacaoManagementStoryPr
           </div>
         </div>
 
-        <LocacaoLogoBarStory />
+        <div className="relative z-10 w-full">
+          <LocacaoLogoBarStory />
+        </div>
       </div>
     );
   }
@@ -216,7 +218,7 @@ export const LocacaoManagementStory = ({ data, slide }: LocacaoManagementStoryPr
         </>
       )}
 
-      <div className="text-center px-12">
+      <div className="relative z-10 text-center px-12">
         <p className="text-xl mb-4" style={{ color: '#9ca3af' }}>
           Fale conosco
         </p>
@@ -247,7 +249,7 @@ export const LocacaoManagementStory = ({ data, slide }: LocacaoManagementStoryPr
         </div>
       </div>
 
-      <div className="relative w-full">
+      <div className="relative z-10 w-full">
         <LocacaoLogoBarStory />
       </div>
     </div>
