@@ -1,7 +1,7 @@
-// Management service Story slides
+// Management service Story slides - Professional funnel
 import { LocacaoManagementData } from '@/types/locacao';
 import { LocacaoLogoBarStory } from '../LocacaoLogo';
-import { Check } from 'lucide-react';
+import { Check, Shield, Clock, Users, Phone, ArrowRight } from 'lucide-react';
 import { managementDefaultBackgroundBySlide } from '../management/managementBackgrounds';
 
 interface LocacaoManagementStoryProps {
@@ -71,9 +71,7 @@ export const LocacaoManagementStory = ({ data, slide }: LocacaoManagementStoryPr
               border: '2px solid rgba(255,255,255,0.2)'
             }}
           >
-            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.5">
-              <path d="M3 21h18M5 21V7l7-4 7 4v14M9 21v-6h6v6M9 10h.01M15 10h.01M9 14h.01M15 14h.01" />
-            </svg>
+            <Shield className="w-14 h-14 text-white" strokeWidth={1.5} />
           </div>
 
           <h1 
@@ -109,75 +107,110 @@ export const LocacaoManagementStory = ({ data, slide }: LocacaoManagementStoryPr
         </div>
 
         {/* Bottom CTA hint */}
-        <div className="absolute bottom-20 left-0 right-0 flex flex-col items-center z-10">
-          <p className="text-lg mb-3" style={{ color: '#9ca3af' }}>Arraste para saber mais</p>
-          <div className="w-12 h-1 rounded-full" style={{ backgroundColor: 'rgba(255,255,255,0.3)' }} />
+        <div className="absolute bottom-24 left-0 right-0 flex flex-col items-center z-10">
+          <div className="flex items-center gap-3 mb-4" style={{ color: '#9ca3af' }}>
+            <span className="text-lg">Deslize para cima</span>
+            <ArrowRight className="w-5 h-5 rotate-[-90deg]" />
+          </div>
+          <div className="w-16 h-1 rounded-full" style={{ backgroundColor: 'rgba(255,255,255,0.3)' }} />
         </div>
       </div>
     );
   }
 
   if (slide === 'benefits') {
+    const benefitIcons = [Clock, Shield, Users, Check, Check, Check];
+    
     return (
       <div 
-        className="relative w-[1080px] h-[1920px] overflow-hidden flex flex-col justify-center"
-        style={{ backgroundColor: '#f9fafb' }}
+        className="relative w-[1080px] h-[1920px] overflow-hidden"
+        style={{ backgroundColor: '#ffffff' }}
       >
-        {/* Background (light) */}
-        {backgroundUrl && (
-          <>
-            <div
-              className="absolute inset-0 bg-cover bg-center"
-              style={{
-                backgroundImage: `url(${backgroundUrl})`,
-                opacity: 0.18,
-                filter: 'blur(10px)',
-                transform: 'scale(1.05)',
-              }}
-            />
-            <div
-              className="absolute inset-0"
-              style={{ backgroundColor: 'rgba(249,250,251,0.90)' }}
-            />
-          </>
-        )}
+        {/* Subtle background pattern */}
+        <div 
+          className="absolute inset-0"
+          style={{ 
+            background: 'linear-gradient(180deg, #f9fafb 0%, #ffffff 30%, #ffffff 70%, #f9fafb 100%)'
+          }}
+        />
 
-        <div className="relative z-10 px-12">
+        {/* Decorative circle */}
+        <div 
+          className="absolute top-0 right-0 w-[600px] h-[600px] rounded-full"
+          style={{ 
+            background: 'radial-gradient(circle, rgba(17,24,39,0.04) 0%, transparent 70%)',
+            transform: 'translate(30%, -30%)'
+          }}
+        />
+
+        {/* Header */}
+        <div className="relative z-10 pt-20 px-12">
+          <p className="text-center text-base font-medium tracking-widest uppercase mb-4" style={{ color: '#6b7280' }}>
+            O que fazemos por você
+          </p>
           <h2 
-            className="text-5xl font-semibold text-center mb-16"
+            className="text-5xl font-semibold text-center mb-3"
             style={{ color: '#111827', fontFamily: 'Georgia, serif' }}
           >
             Nossos Serviços
           </h2>
+          <div className="w-20 h-1 mx-auto rounded-full" style={{ backgroundColor: '#374151' }} />
+        </div>
 
-          <div className="space-y-6">
-            {data.benefits.map((benefit, i) => (
-              <div 
-                key={i}
-                className="flex items-center gap-6 p-6 rounded-xl"
-                style={{ backgroundColor: '#ffffff', border: '1px solid #e5e7eb' }}
-              >
+        {/* Benefits list */}
+        <div className="relative z-10 px-12 mt-14">
+          <div className="space-y-5">
+            {data.benefits.map((benefit, i) => {
+              const IconComponent = benefitIcons[i] || Check;
+              return (
                 <div 
-                  className="w-14 h-14 rounded-full flex items-center justify-center flex-shrink-0"
-                  style={{ backgroundColor: '#e5e7eb' }}
+                  key={i}
+                  className="flex items-center gap-5 p-6 rounded-2xl"
+                  style={{ 
+                    backgroundColor: '#ffffff',
+                    border: '1px solid #e5e7eb',
+                    boxShadow: '0 4px 12px rgba(0,0,0,0.04)'
+                  }}
                 >
-                  <Check className="w-7 h-7" style={{ color: '#374151' }} />
+                  <div 
+                    className="w-14 h-14 rounded-full flex items-center justify-center flex-shrink-0"
+                    style={{ backgroundColor: '#111827' }}
+                  >
+                    <IconComponent className="w-7 h-7 text-white" strokeWidth={2} />
+                  </div>
+                  <p className="text-2xl font-medium" style={{ color: '#374151' }}>{benefit}</p>
                 </div>
-                <p className="text-2xl" style={{ color: '#374151' }}>{benefit}</p>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
 
-        {/* Logo - larger to match other slides */}
-        <div className="absolute bottom-20 left-0 right-0 flex justify-center opacity-70 z-10">
-          <svg width="240" height="90" viewBox="0 0 800 300" xmlns="http://www.w3.org/2000/svg">
-            <g fill="#374151">
-              <path d="M200 120 L400 40 L600 120 L585 120 L400 55 L215 120 Z"/>
-              <text x="400" y="180" textAnchor="middle" fontFamily="Georgia, serif" fontSize="120" fontWeight="600">VDH</text>
-              <text x="400" y="235" textAnchor="middle" fontFamily="Arial, sans-serif" fontSize="42" letterSpacing="6">REVENDA +</text>
-            </g>
-          </svg>
+        {/* Trust badge at bottom */}
+        <div className="absolute bottom-24 left-0 right-0 z-10">
+          <div className="flex justify-center gap-8 mb-8">
+            <div className="text-center">
+              <p className="text-3xl font-bold" style={{ color: '#111827', fontFamily: 'Georgia, serif' }}>
+                {data.yearsExperience}
+              </p>
+              <p className="text-sm" style={{ color: '#6b7280' }}>anos</p>
+            </div>
+            <div className="w-px bg-gray-300" />
+            <div className="text-center">
+              <p className="text-3xl font-bold" style={{ color: '#111827', fontFamily: 'Georgia, serif' }}>
+                {data.propertiesManaged}
+              </p>
+              <p className="text-sm" style={{ color: '#6b7280' }}>imóveis</p>
+            </div>
+          </div>
+          <div className="flex justify-center opacity-60">
+            <svg width="200" height="75" viewBox="0 0 800 300" xmlns="http://www.w3.org/2000/svg">
+              <g fill="#374151">
+                <path d="M200 120 L400 40 L600 120 L585 120 L400 55 L215 120 Z"/>
+                <text x="400" y="180" textAnchor="middle" fontFamily="Georgia, serif" fontSize="120" fontWeight="600">VDH</text>
+                <text x="400" y="235" textAnchor="middle" fontFamily="Arial, sans-serif" fontSize="42" letterSpacing="6">REVENDA +</text>
+              </g>
+            </svg>
+          </div>
         </div>
       </div>
     );
@@ -196,43 +229,87 @@ export const LocacaoManagementStory = ({ data, slide }: LocacaoManagementStoryPr
               className="absolute inset-0 bg-cover bg-center"
               style={{
                 backgroundImage: `url(${backgroundUrl})`,
-                opacity: 0.30,
-                filter: 'blur(10px)',
-                transform: 'scale(1.05)',
+                opacity: 0.35,
               }}
             />
             <div
               className="absolute inset-0"
-              style={{ backgroundColor: 'rgba(17,24,39,0.78)' }}
+              style={{ 
+                background: 'linear-gradient(180deg, rgba(17,24,39,0.9) 0%, rgba(17,24,39,0.7) 50%, rgba(17,24,39,0.9) 100%)'
+              }}
             />
           </>
         )}
 
-        {/* Main content centered */}
-        <div className="relative z-10 h-full flex flex-col items-center justify-center px-12">
-          <p className="text-xl mb-12" style={{ color: '#6b7280' }}>
-            Confie em quem entende
+        {/* Header */}
+        <div className="relative z-10 pt-20 text-center px-12">
+          <p className="text-base font-medium tracking-widest uppercase mb-3" style={{ color: '#6b7280' }}>
+            Credibilidade comprovada
           </p>
+          <h2 
+            className="text-4xl font-semibold"
+            style={{ color: '#ffffff', fontFamily: 'Georgia, serif' }}
+          >
+            Por que confiar na<br />VDH Revenda+
+          </h2>
+        </div>
 
-          <div className="space-y-12 mb-16 text-center">
-            <div>
-              <p 
-                className="text-8xl font-bold"
-                style={{ color: '#ffffff', fontFamily: 'Georgia, serif' }}
+        {/* Main stats */}
+        <div className="relative z-10 flex flex-col items-center justify-center h-full -mt-20 px-12">
+          <div className="space-y-10 mb-16">
+            {/* Years */}
+            <div className="text-center">
+              <div 
+                className="w-40 h-40 rounded-full flex items-center justify-center mx-auto mb-4"
+                style={{ 
+                  background: 'linear-gradient(135deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.03) 100%)',
+                  border: '2px solid rgba(255,255,255,0.15)'
+                }}
               >
-                {data.yearsExperience}
-              </p>
-              <p className="text-2xl mt-2" style={{ color: '#9ca3af' }}>anos de experiência</p>
+                <p 
+                  className="text-7xl font-bold"
+                  style={{ color: '#ffffff', fontFamily: 'Georgia, serif' }}
+                >
+                  {data.yearsExperience}
+                </p>
+              </div>
+              <p className="text-xl" style={{ color: '#9ca3af' }}>anos de experiência</p>
             </div>
-            <div>
-              <p 
-                className="text-8xl font-bold"
-                style={{ color: '#ffffff', fontFamily: 'Georgia, serif' }}
+            
+            {/* Properties */}
+            <div className="text-center">
+              <div 
+                className="w-40 h-40 rounded-full flex items-center justify-center mx-auto mb-4"
+                style={{ 
+                  background: 'linear-gradient(135deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.03) 100%)',
+                  border: '2px solid rgba(255,255,255,0.15)'
+                }}
               >
-                {data.propertiesManaged}
-              </p>
-              <p className="text-2xl mt-2" style={{ color: '#9ca3af' }}>imóveis administrados</p>
+                <p 
+                  className="text-6xl font-bold"
+                  style={{ color: '#ffffff', fontFamily: 'Georgia, serif' }}
+                >
+                  {data.propertiesManaged}
+                </p>
+              </div>
+              <p className="text-xl" style={{ color: '#9ca3af' }}>imóveis administrados</p>
             </div>
+          </div>
+
+          {/* Trust message */}
+          <div 
+            className="max-w-3xl mx-auto text-center p-8 rounded-2xl"
+            style={{ 
+              background: 'linear-gradient(135deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.02) 100%)',
+              border: '1px solid rgba(255,255,255,0.1)'
+            }}
+          >
+            <p 
+              className="text-2xl italic"
+              style={{ color: '#d1d5db' }}
+            >
+              "Profissionalismo e transparência em cada etapa da administração do seu imóvel."
+            </p>
           </div>
         </div>
 
@@ -244,7 +321,7 @@ export const LocacaoManagementStory = ({ data, slide }: LocacaoManagementStoryPr
     );
   }
 
-  // Contact
+  // Contact - Strong CTA
   return (
     <div 
       className="relative w-[1080px] h-[1920px] overflow-hidden"
@@ -257,36 +334,52 @@ export const LocacaoManagementStory = ({ data, slide }: LocacaoManagementStoryPr
             className="absolute inset-0 bg-cover bg-center"
             style={{
               backgroundImage: `url(${backgroundUrl})`,
-              opacity: 0.30,
-              filter: 'blur(10px)',
-              transform: 'scale(1.05)',
+              opacity: 0.35,
             }}
           />
           <div
             className="absolute inset-0"
-            style={{ backgroundColor: 'rgba(31,41,55,0.78)' }}
+            style={{ 
+              background: 'linear-gradient(180deg, rgba(31,41,55,0.9) 0%, rgba(31,41,55,0.7) 50%, rgba(31,41,55,0.9) 100%)'
+            }}
           />
         </>
       )}
 
       {/* Main content centered */}
       <div className="relative z-10 h-full flex flex-col items-center justify-center px-12">
-        <p className="text-xl mb-4" style={{ color: '#9ca3af' }}>
-          Fale conosco
+        {/* Icon */}
+        <div 
+          className="w-28 h-28 rounded-full flex items-center justify-center mb-10"
+          style={{ 
+            background: 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)',
+            boxShadow: '0 12px 40px rgba(34,197,94,0.35)'
+          }}
+        >
+          <Phone className="w-14 h-14 text-white" strokeWidth={2} />
+        </div>
+
+        <p 
+          className="text-xl font-medium tracking-widest uppercase mb-4"
+          style={{ color: '#9ca3af' }}
+        >
+          Próximo passo
         </p>
 
         <h2 
-          className="text-5xl font-semibold mb-16"
+          className="text-5xl font-semibold mb-12 text-center leading-tight"
           style={{ color: '#ffffff', fontFamily: 'Georgia, serif' }}
         >
-          Solicite uma proposta
+          Fale com um<br />especialista agora
         </h2>
 
+        {/* Contact card */}
         <div 
-          className="p-10 rounded-2xl text-center"
+          className="p-12 rounded-3xl text-center w-full max-w-lg"
           style={{ 
-            backgroundColor: 'rgba(255,255,255,0.08)',
-            border: '1px solid rgba(255,255,255,0.1)',
+            background: 'linear-gradient(135deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.05) 100%)',
+            border: '1px solid rgba(255,255,255,0.15)',
+            boxShadow: '0 12px 40px rgba(0,0,0,0.25)'
           }}
         >
           <p className="text-3xl font-medium mb-2" style={{ color: '#ffffff' }}>
@@ -295,8 +388,26 @@ export const LocacaoManagementStory = ({ data, slide }: LocacaoManagementStoryPr
           {data.creci && (
             <p className="text-base mb-8" style={{ color: '#9ca3af' }}>{data.creci}</p>
           )}
-          <p className="text-4xl font-semibold" style={{ color: '#ffffff' }}>
-            {data.contactPhone}
+          <div 
+            className="inline-block px-10 py-5 rounded-xl"
+            style={{ 
+              background: 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)',
+              boxShadow: '0 8px 24px rgba(34,197,94,0.3)'
+            }}
+          >
+            <p className="text-4xl font-bold" style={{ color: '#ffffff' }}>
+              {data.contactPhone}
+            </p>
+          </div>
+        </div>
+
+        {/* Urgency text */}
+        <div className="mt-10 text-center">
+          <p className="text-lg" style={{ color: '#6b7280' }}>
+            Atendimento personalizado
+          </p>
+          <p className="text-lg" style={{ color: '#6b7280' }}>
+            Resposta em até 24h
           </p>
         </div>
       </div>
