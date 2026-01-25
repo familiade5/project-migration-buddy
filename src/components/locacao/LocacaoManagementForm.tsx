@@ -33,7 +33,7 @@ export const LocacaoManagementForm = ({ data, onChange }: LocacaoManagementFormP
   const toggleBenefit = (benefit: string) => {
     const benefits = data.benefits.includes(benefit)
       ? data.benefits.filter(b => b !== benefit)
-      : data.benefits.length < 4 
+      : data.benefits.length < 6 
         ? [...data.benefits, benefit]
         : data.benefits;
     updateField('benefits', benefits);
@@ -105,7 +105,7 @@ export const LocacaoManagementForm = ({ data, onChange }: LocacaoManagementFormP
         <SectionHeader icon={Award} title="Benefícios do Serviço" section="benefits" number={2} />
         <CollapsibleContent className="pt-3 pb-4 px-1">
           <p className="text-xs mb-3" style={{ color: '#9ca3af' }}>
-            Selecione até 4 benefícios ({data.benefits.length}/4)
+            Selecione até 6 benefícios ({data.benefits.length}/6)
           </p>
           <div className="grid grid-cols-1 gap-2">
             {managementBenefitOptions.map((benefit) => (
@@ -113,12 +113,12 @@ export const LocacaoManagementForm = ({ data, onChange }: LocacaoManagementFormP
                 key={benefit}
                 className={`flex items-center gap-2 p-2 rounded-lg cursor-pointer transition-colors ${
                   data.benefits.includes(benefit) ? 'bg-gray-100' : 'hover:bg-gray-50'
-                } ${data.benefits.length >= 4 && !data.benefits.includes(benefit) ? 'opacity-50 cursor-not-allowed' : ''}`}
+                } ${data.benefits.length >= 6 && !data.benefits.includes(benefit) ? 'opacity-50 cursor-not-allowed' : ''}`}
               >
                 <Checkbox
                   checked={data.benefits.includes(benefit)}
                   onCheckedChange={() => toggleBenefit(benefit)}
-                  disabled={data.benefits.length >= 4 && !data.benefits.includes(benefit)}
+                  disabled={data.benefits.length >= 6 && !data.benefits.includes(benefit)}
                 />
                 <span className="text-sm" style={{ color: '#374151' }}>{benefit}</span>
               </label>

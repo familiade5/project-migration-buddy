@@ -14,11 +14,14 @@ interface LocacaoPhotoUploadProps {
   photos: LocacaoCategorizedPhoto[];
   onChange: (photos: LocacaoCategorizedPhoto[]) => void;
   onClear: () => void;
+  maxPhotos?: number;
 }
 
-export const LocacaoPhotoUpload = ({ photos, onChange, onClear }: LocacaoPhotoUploadProps) => {
+export const LocacaoPhotoUpload = ({ photos, onChange, onClear, maxPhotos }: LocacaoPhotoUploadProps) => {
   const [isDetecting, setIsDetecting] = useState(false);
   const [detectingCount, setDetectingCount] = useState(0);
+
+  const isMaxReached = maxPhotos !== undefined && photos.length >= maxPhotos;
 
   const detectPhotoCategory = async (imageBase64: string): Promise<LocacaoPhotoCategory> => {
     try {
@@ -104,7 +107,7 @@ export const LocacaoPhotoUpload = ({ photos, onChange, onClear }: LocacaoPhotoUp
       <label 
         className={cn(
           "relative flex flex-col items-center justify-center h-32 border-2 border-dashed rounded-xl cursor-pointer transition-all",
-          isDetecting ? "opacity-50 pointer-events-none" : "hover:border-gray-400"
+          isDetecting || isMaxReached ? "opacity-50 pointer-events-none" : "hover:border-gray-400"
         )}
         style={{ borderColor: '#d1d5db', backgroundColor: '#f9fafb' }}
       >
@@ -114,9 +117,16 @@ export const LocacaoPhotoUpload = ({ photos, onChange, onClear }: LocacaoPhotoUp
           multiple
           onChange={handleFileChange}
           className="hidden"
-          disabled={isDetecting}
+          disabled={isDetecting || isMaxReached}
         />
-        {isDetecting ? (
+        {isMaxReached ? (
+          <div className="flex flex-col items-center gap-2">
+            <ImageIcon className="w-8 h-8" style={{ color: '#9ca3af' }} />
+            <span className="text-sm" style={{ color: '#6b7280' }}>
+              Limite de {maxPhotos} foto(s) atingido
+            </span>
+          </div>
+        ) : isDetecting ? (
           <div className="flex flex-col items-center gap-2">
             <Loader2 className="w-8 h-8 animate-spin" style={{ color: '#6b7280' }} />
             <span className="text-sm" style={{ color: '#6b7280' }}>
