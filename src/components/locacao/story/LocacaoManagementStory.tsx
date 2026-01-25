@@ -2,6 +2,7 @@
 import { LocacaoManagementData } from '@/types/locacao';
 import { LocacaoLogoBarStory } from '../LocacaoLogo';
 import { Check } from 'lucide-react';
+import { managementDefaultBackgroundBySlide } from '../management/managementBackgrounds';
 
 interface LocacaoManagementStoryProps {
   data: LocacaoManagementData;
@@ -9,21 +10,30 @@ interface LocacaoManagementStoryProps {
 }
 
 export const LocacaoManagementStory = ({ data, slide }: LocacaoManagementStoryProps) => {
+  const backgroundUrl = data.useBackgroundPhoto
+    ? (data.backgroundPhoto || managementDefaultBackgroundBySlide[slide])
+    : null;
+
   if (slide === 'intro') {
     return (
       <div 
         className="relative w-[1080px] h-[1920px] overflow-hidden"
         style={{ backgroundColor: '#111827' }}
       >
-        {data.backgroundPhoto && data.useBackgroundPhoto && (
+        {backgroundUrl && (
           <>
             <div 
-              className="absolute inset-0 bg-cover bg-center opacity-20"
-              style={{ backgroundImage: `url(${data.backgroundPhoto})` }}
+              className="absolute inset-0 bg-cover bg-center"
+              style={{
+                backgroundImage: `url(${backgroundUrl})`,
+                opacity: 0.35,
+                filter: 'blur(10px)',
+                transform: 'scale(1.05)',
+              }}
             />
             <div 
               className="absolute inset-0"
-              style={{ backgroundColor: 'rgba(17,24,39,0.9)' }}
+              style={{ backgroundColor: 'rgba(17,24,39,0.72)' }}
             />
           </>
         )}
@@ -64,6 +74,25 @@ export const LocacaoManagementStory = ({ data, slide }: LocacaoManagementStoryPr
         className="relative w-[1080px] h-[1920px] overflow-hidden flex flex-col justify-center"
         style={{ backgroundColor: '#f9fafb' }}
       >
+        {/* Background (light) */}
+        {backgroundUrl && (
+          <>
+            <div
+              className="absolute inset-0 bg-cover bg-center"
+              style={{
+                backgroundImage: `url(${backgroundUrl})`,
+                opacity: 0.18,
+                filter: 'blur(10px)',
+                transform: 'scale(1.05)',
+              }}
+            />
+            <div
+              className="absolute inset-0"
+              style={{ backgroundColor: 'rgba(249,250,251,0.90)' }}
+            />
+          </>
+        )}
+
         <div className="px-12">
           <h2 
             className="text-5xl font-semibold text-center mb-16"
@@ -111,6 +140,25 @@ export const LocacaoManagementStory = ({ data, slide }: LocacaoManagementStoryPr
         className="relative w-[1080px] h-[1920px] overflow-hidden flex flex-col items-center justify-center"
         style={{ backgroundColor: '#111827' }}
       >
+        {/* Background (dark) */}
+        {backgroundUrl && (
+          <>
+            <div
+              className="absolute inset-0 bg-cover bg-center"
+              style={{
+                backgroundImage: `url(${backgroundUrl})`,
+                opacity: 0.30,
+                filter: 'blur(10px)',
+                transform: 'scale(1.05)',
+              }}
+            />
+            <div
+              className="absolute inset-0"
+              style={{ backgroundColor: 'rgba(17,24,39,0.78)' }}
+            />
+          </>
+        )}
+
         <div className="text-center px-12">
           <p className="text-xl mb-12" style={{ color: '#6b7280' }}>
             Confie em quem entende
@@ -149,6 +197,25 @@ export const LocacaoManagementStory = ({ data, slide }: LocacaoManagementStoryPr
       className="relative w-[1080px] h-[1920px] overflow-hidden flex flex-col items-center justify-center"
       style={{ backgroundColor: '#1f2937' }}
     >
+      {/* Background (dark) */}
+      {backgroundUrl && (
+        <>
+          <div
+            className="absolute inset-0 bg-cover bg-center"
+            style={{
+              backgroundImage: `url(${backgroundUrl})`,
+              opacity: 0.30,
+              filter: 'blur(10px)',
+              transform: 'scale(1.05)',
+            }}
+          />
+          <div
+            className="absolute inset-0"
+            style={{ backgroundColor: 'rgba(31,41,55,0.78)' }}
+          />
+        </>
+      )}
+
       <div className="text-center px-12">
         <p className="text-xl mb-4" style={{ color: '#9ca3af' }}>
           Fale conosco
@@ -180,7 +247,9 @@ export const LocacaoManagementStory = ({ data, slide }: LocacaoManagementStoryPr
         </div>
       </div>
 
-      <LocacaoLogoBarStory />
+      <div className="relative w-full">
+        <LocacaoLogoBarStory />
+      </div>
     </div>
   );
 };
