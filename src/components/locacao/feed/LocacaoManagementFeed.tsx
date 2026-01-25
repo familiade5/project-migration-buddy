@@ -139,7 +139,7 @@ export const LocacaoManagementFeed = ({ data, slide }: LocacaoManagementFeedProp
   if (slide === 'trust') {
     return (
       <div 
-        className="relative w-[1080px] h-[1080px] overflow-hidden flex flex-col items-center justify-center"
+        className="relative w-[1080px] h-[1080px] overflow-hidden"
         style={{ backgroundColor: '#111827' }}
       >
         {/* Background (dark) */}
@@ -161,7 +161,8 @@ export const LocacaoManagementFeed = ({ data, slide }: LocacaoManagementFeedProp
           </>
         )}
 
-        <div className="relative z-10 text-center">
+        {/* Main content centered */}
+        <div className="relative z-10 h-full flex flex-col items-center justify-center">
           <p 
             className="text-xl mb-8"
             style={{ color: '#6b7280' }}
@@ -170,7 +171,7 @@ export const LocacaoManagementFeed = ({ data, slide }: LocacaoManagementFeedProp
           </p>
 
           <div className="flex gap-16 mb-16">
-            <div>
+            <div className="text-center">
               <p 
                 className="text-7xl font-bold"
                 style={{ color: '#ffffff', fontFamily: 'Georgia, serif' }}
@@ -179,7 +180,7 @@ export const LocacaoManagementFeed = ({ data, slide }: LocacaoManagementFeedProp
               </p>
               <p className="text-xl mt-2" style={{ color: '#9ca3af' }}>anos de experiência</p>
             </div>
-            <div>
+            <div className="text-center">
               <p 
                 className="text-7xl font-bold"
                 style={{ color: '#ffffff', fontFamily: 'Georgia, serif' }}
@@ -191,14 +192,15 @@ export const LocacaoManagementFeed = ({ data, slide }: LocacaoManagementFeedProp
           </div>
 
           <p 
-            className="text-2xl max-w-2xl mx-auto"
+            className="text-2xl max-w-2xl mx-auto text-center"
             style={{ color: '#d1d5db' }}
           >
             Profissionalismo e transparência em cada etapa da administração do seu imóvel.
           </p>
         </div>
 
-        <div className="relative z-10 w-full">
+        {/* Logo bar fixed at bottom */}
+        <div className="absolute bottom-0 left-0 right-0 z-10">
           <LocacaoLogoBar />
         </div>
       </div>
@@ -208,7 +210,7 @@ export const LocacaoManagementFeed = ({ data, slide }: LocacaoManagementFeedProp
   // Contact slide
   return (
     <div 
-      className="relative w-[1080px] h-[1080px] overflow-hidden flex flex-col items-center justify-center"
+      className="relative w-[1080px] h-[1080px] overflow-hidden"
       style={{ backgroundColor: '#1f2937' }}
     >
       {/* Background (dark) */}
@@ -230,7 +232,8 @@ export const LocacaoManagementFeed = ({ data, slide }: LocacaoManagementFeedProp
         </>
       )}
 
-      <div className="relative z-10 text-center px-16">
+      {/* Main content centered */}
+      <div className="relative z-10 h-full flex flex-col items-center justify-center px-16">
         <p 
           className="text-xl mb-4"
           style={{ color: '#9ca3af' }}
@@ -246,7 +249,7 @@ export const LocacaoManagementFeed = ({ data, slide }: LocacaoManagementFeedProp
         </h2>
 
         <div 
-          className="inline-block p-10 rounded-2xl"
+          className="inline-block p-10 rounded-2xl text-center"
           style={{ 
             backgroundColor: 'rgba(255,255,255,0.08)',
             border: '1px solid rgba(255,255,255,0.1)',
@@ -264,7 +267,8 @@ export const LocacaoManagementFeed = ({ data, slide }: LocacaoManagementFeedProp
         </div>
       </div>
 
-      <div className="relative z-10 w-full">
+      {/* Logo bar fixed at bottom */}
+      <div className="absolute bottom-0 left-0 right-0 z-10">
         <LocacaoLogoBar />
       </div>
     </div>

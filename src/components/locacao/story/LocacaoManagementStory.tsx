@@ -20,49 +20,98 @@ export const LocacaoManagementStory = ({ data, slide }: LocacaoManagementStoryPr
         className="relative w-[1080px] h-[1920px] overflow-hidden"
         style={{ backgroundColor: '#111827' }}
       >
+        {/* Background with elegant gradient */}
         {backgroundUrl && (
           <>
             <div 
               className="absolute inset-0 bg-cover bg-center"
               style={{
                 backgroundImage: `url(${backgroundUrl})`,
-                opacity: 0.35,
-                filter: 'blur(10px)',
-                transform: 'scale(1.05)',
+                opacity: 0.45,
               }}
             />
             <div 
               className="absolute inset-0"
-              style={{ backgroundColor: 'rgba(17,24,39,0.72)' }}
+              style={{ 
+                background: 'linear-gradient(180deg, rgba(17,24,39,0.85) 0%, rgba(17,24,39,0.5) 40%, rgba(17,24,39,0.7) 70%, rgba(17,24,39,0.95) 100%)'
+              }}
             />
           </>
         )}
 
-        <div className="relative z-10 h-full flex flex-col items-center justify-center px-12 text-center">
+        {/* Top section - Logo and badge */}
+        <div className="absolute top-16 left-0 right-0 flex justify-between items-start px-12 z-10">
           {/* Logo */}
-          <div className="mb-16 opacity-80">
-            <svg width="240" height="90" viewBox="0 0 800 300" xmlns="http://www.w3.org/2000/svg">
-              <g fill="#ffffff">
-                <path d="M200 120 L400 40 L600 120 L585 120 L400 55 L215 120 Z"/>
-                <text x="400" y="180" textAnchor="middle" fontFamily="Georgia, serif" fontSize="120" fontWeight="600">VDH</text>
-                <text x="400" y="235" textAnchor="middle" fontFamily="Arial, sans-serif" fontSize="42" letterSpacing="6">REVENDA +</text>
-              </g>
+          <svg width="200" height="75" viewBox="0 0 800 300" xmlns="http://www.w3.org/2000/svg">
+            <g fill="#ffffff">
+              <path d="M200 120 L400 40 L600 120 L585 120 L400 55 L215 120 Z"/>
+              <text x="400" y="180" textAnchor="middle" fontFamily="Georgia, serif" fontSize="120" fontWeight="600">VDH</text>
+              <text x="400" y="235" textAnchor="middle" fontFamily="Arial, sans-serif" fontSize="42" letterSpacing="6">REVENDA +</text>
+            </g>
+          </svg>
+
+          {/* Badge */}
+          <div className="relative overflow-hidden rounded-xl shadow-2xl">
+            <div className="absolute inset-0 bg-gradient-to-br from-[#4b5563] via-[#374151] to-[#1f2937]" />
+            <div className="absolute inset-0 bg-gradient-to-b from-white/20 to-transparent h-1/2" />
+            <div className="relative text-center py-4 px-8">
+              <p className="text-white font-semibold leading-tight text-xl">Gestão</p>
+              <p className="text-white font-black leading-none tracking-tight text-3xl">Profissional</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Center content */}
+        <div className="relative z-10 h-full flex flex-col items-center justify-center px-12 text-center">
+          {/* Icon/Symbol */}
+          <div 
+            className="w-28 h-28 rounded-full flex items-center justify-center mb-10"
+            style={{ 
+              background: 'linear-gradient(135deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.05) 100%)',
+              border: '2px solid rgba(255,255,255,0.2)'
+            }}
+          >
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.5">
+              <path d="M3 21h18M5 21V7l7-4 7 4v14M9 21v-6h6v6M9 10h.01M15 10h.01M9 14h.01M15 14h.01" />
             </svg>
           </div>
 
           <h1 
-            className="text-6xl font-semibold mb-8 leading-tight"
+            className="text-6xl font-semibold mb-6 leading-tight max-w-4xl"
             style={{ color: '#ffffff', fontFamily: 'Georgia, serif' }}
           >
             {data.headline}
           </h1>
 
           <p 
-            className="text-2xl"
-            style={{ color: '#9ca3af' }}
+            className="text-2xl max-w-3xl mb-12"
+            style={{ color: '#d1d5db' }}
           >
             {data.subheadline}
           </p>
+
+          {/* Trust indicators */}
+          <div className="flex gap-12 mt-4">
+            <div className="text-center">
+              <p className="text-5xl font-bold" style={{ color: '#ffffff', fontFamily: 'Georgia, serif' }}>
+                {data.yearsExperience}
+              </p>
+              <p className="text-base mt-1" style={{ color: '#9ca3af' }}>anos de mercado</p>
+            </div>
+            <div className="w-px bg-white/20" />
+            <div className="text-center">
+              <p className="text-5xl font-bold" style={{ color: '#ffffff', fontFamily: 'Georgia, serif' }}>
+                {data.propertiesManaged}
+              </p>
+              <p className="text-base mt-1" style={{ color: '#9ca3af' }}>imóveis gerenciados</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Bottom CTA hint */}
+        <div className="absolute bottom-20 left-0 right-0 flex flex-col items-center z-10">
+          <p className="text-lg mb-3" style={{ color: '#9ca3af' }}>Arraste para saber mais</p>
+          <div className="w-12 h-1 rounded-full" style={{ backgroundColor: 'rgba(255,255,255,0.3)' }} />
         </div>
       </div>
     );
@@ -137,7 +186,7 @@ export const LocacaoManagementStory = ({ data, slide }: LocacaoManagementStoryPr
   if (slide === 'trust') {
     return (
       <div 
-        className="relative w-[1080px] h-[1920px] overflow-hidden flex flex-col items-center justify-center"
+        className="relative w-[1080px] h-[1920px] overflow-hidden"
         style={{ backgroundColor: '#111827' }}
       >
         {/* Background (dark) */}
@@ -159,12 +208,13 @@ export const LocacaoManagementStory = ({ data, slide }: LocacaoManagementStoryPr
           </>
         )}
 
-        <div className="relative z-10 text-center px-12">
+        {/* Main content centered */}
+        <div className="relative z-10 h-full flex flex-col items-center justify-center px-12">
           <p className="text-xl mb-12" style={{ color: '#6b7280' }}>
             Confie em quem entende
           </p>
 
-          <div className="space-y-12 mb-16">
+          <div className="space-y-12 mb-16 text-center">
             <div>
               <p 
                 className="text-8xl font-bold"
@@ -186,7 +236,8 @@ export const LocacaoManagementStory = ({ data, slide }: LocacaoManagementStoryPr
           </div>
         </div>
 
-        <div className="relative z-10 w-full">
+        {/* Logo bar fixed at bottom */}
+        <div className="absolute bottom-0 left-0 right-0 z-10">
           <LocacaoLogoBarStory />
         </div>
       </div>
@@ -196,7 +247,7 @@ export const LocacaoManagementStory = ({ data, slide }: LocacaoManagementStoryPr
   // Contact
   return (
     <div 
-      className="relative w-[1080px] h-[1920px] overflow-hidden flex flex-col items-center justify-center"
+      className="relative w-[1080px] h-[1920px] overflow-hidden"
       style={{ backgroundColor: '#1f2937' }}
     >
       {/* Background (dark) */}
@@ -218,7 +269,8 @@ export const LocacaoManagementStory = ({ data, slide }: LocacaoManagementStoryPr
         </>
       )}
 
-      <div className="relative z-10 text-center px-12">
+      {/* Main content centered */}
+      <div className="relative z-10 h-full flex flex-col items-center justify-center px-12">
         <p className="text-xl mb-4" style={{ color: '#9ca3af' }}>
           Fale conosco
         </p>
@@ -231,7 +283,7 @@ export const LocacaoManagementStory = ({ data, slide }: LocacaoManagementStoryPr
         </h2>
 
         <div 
-          className="p-10 rounded-2xl"
+          className="p-10 rounded-2xl text-center"
           style={{ 
             backgroundColor: 'rgba(255,255,255,0.08)',
             border: '1px solid rgba(255,255,255,0.1)',
@@ -249,7 +301,8 @@ export const LocacaoManagementStory = ({ data, slide }: LocacaoManagementStoryPr
         </div>
       </div>
 
-      <div className="relative z-10 w-full">
+      {/* Logo bar fixed at bottom */}
+      <div className="absolute bottom-0 left-0 right-0 z-10">
         <LocacaoLogoBarStory />
       </div>
     </div>
