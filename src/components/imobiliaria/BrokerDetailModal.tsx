@@ -1,8 +1,10 @@
+import { useRef } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { 
   User, Briefcase, Target, FileText, Calendar, Percent, 
-  Phone, Mail, MapPin, Award, TrendingUp, Edit2, X
+  Phone, Mail, MapPin, Award, TrendingUp, Edit2, X, Printer,
+  CreditCard, Building
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -16,8 +18,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { formatCurrency } from '@/lib/formatCurrency';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
+import { PrintableQuestionnaire } from './PrintableQuestionnaire';
+import { toast } from 'sonner';
 
-interface BrokerProfile {
+interface StaffProfile {
   id: string;
   user_id: string | null;
   commission_percentage: number;
@@ -27,6 +31,16 @@ interface BrokerProfile {
   creci_number: string | null;
   creci_state: string | null;
   specializations: string[] | null;
+  job_title?: string;
+  personal_phone?: string | null;
+  personal_email?: string | null;
+  birth_date?: string | null;
+  cpf?: string | null;
+  rg?: string | null;
+  bank_name?: string | null;
+  bank_agency?: string | null;
+  bank_account?: string | null;
+  pix_key?: string | null;
   created_at: string;
   profile?: {
     id: string;
@@ -38,10 +52,10 @@ interface BrokerProfile {
   questionnaire?: any;
 }
 
-interface BrokerDetailModalProps {
+interface StaffDetailModalProps {
   isOpen: boolean;
   onClose: () => void;
-  broker: BrokerProfile | null;
+  broker: StaffProfile | null;
   onEdit: () => void;
 }
 
@@ -53,7 +67,21 @@ const specializationLabels: Record<string, string> = {
   rental: 'Locação',
 };
 
-export function BrokerDetailModal({ isOpen, onClose, broker, onEdit }: BrokerDetailModalProps) {
+const jobTitleLabels: Record<string, string> = {
+  corretor: 'Corretor de Imóveis',
+  gestor_trafego: 'Gestor de Tráfego',
+  editor_video: 'Editor de Vídeo',
+  rh: 'Recursos Humanos',
+  administrativo: 'Administrativo',
+  gerente: 'Gerente',
+  diretor: 'Diretor',
+  assistente: 'Assistente',
+  outros: 'Outros',
+};
+
+export function BrokerDetailModal({ isOpen, onClose, broker, onEdit }: StaffDetailModalProps) {
+  const printRef = useRef<HTMLDivElement>(null);
+  const isBroker = broker?.job_title === 'corretor' || !broker?.job_title;
   // Fetch questionnaire if not loaded
   const { data: questionnaire } = useQuery({
     queryKey: ['broker-questionnaire', broker?.id],
@@ -109,14 +137,44 @@ export function BrokerDetailModal({ isOpen, onClose, broker, onEdit }: BrokerDet
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'active':
-        return <Badge className="bg-emerald-100 text-emerald-700 border-emerald-200">Ativo</Badge>;
+        return <Badge className="bg-emerald-500/10 text-emerald-500 border-emerald-500/30">Ativo</Badge>;
       case 'inactive':
-        return <Badge className="bg-gray-100 text-gray-600 border-gray-200">Inativo</Badge>;
+        return <Badge className="bg-muted text-muted-foreground border-muted-foreground/30">Inativo</Badge>;
       case 'pending':
-        return <Badge className="bg-amber-100 text-amber-700 border-amber-200">Pendente</Badge>;
+        return <Badge className="bg-amber-500/10 text-amber-500 border-amber-500/30">Pendente</Badge>;
       default:
         return null;
     }
+  };
+
+  const handlePrint = () => {
+    const printContent = printRef.current;
+    if (!printContent) return;
+
+    const printWindow = window.open('', '_blank');
+    if (!printWindow) {
+      toast.error('Por favor, permita pop-ups para imprimir');
+      return;
+    }
+
+    printWindow.document.write(`
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <title>Formulário de Admissão</title>
+        <style>
+          * { margin: 0; padding: 0; box-sizing: border-box; }
+          body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.4; }
+          @page { margin: 1cm; }
+        </style>
+      </head>
+      <body>
+        ${printContent.innerHTML}
+      </body>
+      </html>
+    `);
+    printWindow.document.close();
+    printWindow.print();
   };
 
   return (
@@ -138,11 +196,14 @@ export function BrokerDetailModal({ isOpen, onClose, broker, onEdit }: BrokerDet
               )}
             </div>
             <div>
-              <DialogTitle className="text-xl text-foreground flex items-center gap-2">
-                {broker.profile?.full_name || 'Corretor'}
+              <DialogTitle className="text-xl text-foreground flex items-center gap-2 flex-wrap">
+                {broker.profile?.full_name || 'Funcionário'}
+                <Badge variant="outline" className="text-xs border-gold/50 text-gold">
+                  {jobTitleLabels[broker.job_title || 'corretor'] || broker.job_title}
+                </Badge>
                 {getStatusBadge(broker.status)}
               </DialogTitle>
-              {broker.creci_number && (
+              {isBroker && broker.creci_number && (
                 <p className="text-sm text-muted-foreground mt-1">
                   CRECI {broker.creci_number} {broker.creci_state}
                 </p>
@@ -150,6 +211,12 @@ export function BrokerDetailModal({ isOpen, onClose, broker, onEdit }: BrokerDet
             </div>
           </div>
           <div className="flex gap-2">
+            {isBroker && (
+              <Button variant="outline" size="sm" onClick={handlePrint}>
+                <Printer className="w-4 h-4 mr-2" />
+                Imprimir
+              </Button>
+            )}
             <Button variant="outline" size="sm" onClick={onEdit}>
               <Edit2 className="w-4 h-4 mr-2" />
               Editar
@@ -161,10 +228,11 @@ export function BrokerDetailModal({ isOpen, onClose, broker, onEdit }: BrokerDet
         </DialogHeader>
 
         <Tabs defaultValue="overview" className="w-full mt-4">
-          <TabsList className="grid w-full grid-cols-3">
+          <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="overview">Visão Geral</TabsTrigger>
-            <TabsTrigger value="questionnaire">Questionário</TabsTrigger>
-            <TabsTrigger value="performance">Desempenho</TabsTrigger>
+            <TabsTrigger value="personal">Dados Pessoais</TabsTrigger>
+            <TabsTrigger value="questionnaire" disabled={!isBroker}>Questionário</TabsTrigger>
+            <TabsTrigger value="performance" disabled={!isBroker}>Desempenho</TabsTrigger>
           </TabsList>
 
           {/* Overview Tab */}
@@ -252,9 +320,81 @@ export function BrokerDetailModal({ isOpen, onClose, broker, onEdit }: BrokerDet
             </div>
           </TabsContent>
 
+          {/* Personal Data Tab */}
+          <TabsContent value="personal" className="space-y-4 mt-4">
+            <div className="bg-surface p-4 rounded-lg border border-border">
+              <h4 className="font-medium text-foreground flex items-center gap-2 mb-3">
+                <CreditCard className="w-4 h-4 text-gold" />
+                Dados Pessoais
+              </h4>
+              <div className="grid gap-3 sm:grid-cols-2">
+                {broker.personal_phone && (
+                  <div className="flex items-center gap-2 text-sm">
+                    <Phone className="w-4 h-4 text-muted-foreground" />
+                    <span>{broker.personal_phone}</span>
+                  </div>
+                )}
+                {broker.personal_email && (
+                  <div className="flex items-center gap-2 text-sm">
+                    <Mail className="w-4 h-4 text-muted-foreground" />
+                    <span>{broker.personal_email}</span>
+                  </div>
+                )}
+                {broker.birth_date && (
+                  <div className="text-sm">
+                    <span className="text-muted-foreground">Nascimento: </span>
+                    {format(new Date(broker.birth_date), "dd/MM/yyyy")}
+                  </div>
+                )}
+                {broker.cpf && (
+                  <div className="text-sm">
+                    <span className="text-muted-foreground">CPF: </span>{broker.cpf}
+                  </div>
+                )}
+                {broker.rg && (
+                  <div className="text-sm">
+                    <span className="text-muted-foreground">RG: </span>{broker.rg}
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <div className="bg-surface p-4 rounded-lg border border-border">
+              <h4 className="font-medium text-foreground flex items-center gap-2 mb-3">
+                <Building className="w-4 h-4 text-gold" />
+                Dados Bancários
+              </h4>
+              <div className="grid gap-3 sm:grid-cols-2">
+                {broker.bank_name && (
+                  <div className="text-sm">
+                    <span className="text-muted-foreground">Banco: </span>{broker.bank_name}
+                  </div>
+                )}
+                {broker.bank_agency && (
+                  <div className="text-sm">
+                    <span className="text-muted-foreground">Agência: </span>{broker.bank_agency}
+                  </div>
+                )}
+                {broker.bank_account && (
+                  <div className="text-sm">
+                    <span className="text-muted-foreground">Conta: </span>{broker.bank_account}
+                  </div>
+                )}
+                {broker.pix_key && (
+                  <div className="text-sm">
+                    <span className="text-muted-foreground">PIX: </span>{broker.pix_key}
+                  </div>
+                )}
+              </div>
+              {!broker.bank_name && !broker.pix_key && (
+                <p className="text-sm text-muted-foreground">Nenhum dado bancário cadastrado</p>
+              )}
+            </div>
+          </TabsContent>
+
           {/* Questionnaire Tab */}
           <TabsContent value="questionnaire" className="space-y-4 mt-4">
-            {q ? (
+            {isBroker && q ? (
               <div className="space-y-4">
                 {q.motivation && (
                   <div className="bg-surface p-4 rounded-lg border border-border">
@@ -399,6 +539,13 @@ export function BrokerDetailModal({ isOpen, onClose, broker, onEdit }: BrokerDet
             )}
           </TabsContent>
         </Tabs>
+
+        {/* Hidden print content */}
+        <div className="hidden">
+          <div ref={printRef}>
+            <PrintableQuestionnaire jobTitle={broker.job_title || 'corretor'} />
+          </div>
+        </div>
       </DialogContent>
     </Dialog>
   );

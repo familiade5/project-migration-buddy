@@ -4,17 +4,29 @@ import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { 
   Users, Plus, Search, UserCheck, UserX, Clock, 
-  Percent, FileText, Eye, Trash2, Edit2, ChevronRight
+  Percent, FileText, Eye, Trash2, Edit2, ChevronRight, Briefcase
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { formatCurrency } from '@/lib/formatCurrency';
-import { BrokerFormModal } from './BrokerFormModal';
+import { StaffFormModal } from './StaffFormModal';
 import { BrokerDetailModal } from './BrokerDetailModal';
 
-interface BrokerProfile {
+const jobTitleLabels: Record<string, string> = {
+  corretor: 'Corretor',
+  gestor_trafego: 'Gestor de Tráfego',
+  editor_video: 'Editor de Vídeo',
+  rh: 'RH',
+  administrativo: 'Administrativo',
+  gerente: 'Gerente',
+  diretor: 'Diretor',
+  assistente: 'Assistente',
+  outros: 'Outros',
+};
+
+interface StaffProfile {
   id: string;
   user_id: string | null;
   agency_id: string | null;
@@ -27,9 +39,18 @@ interface BrokerProfile {
   creci_number: string | null;
   creci_state: string | null;
   specializations: string[] | null;
+  job_title: string;
   created_at: string;
   updated_at: string;
-  // Joined data
+  personal_phone?: string | null;
+  personal_email?: string | null;
+  birth_date?: string | null;
+  cpf?: string | null;
+  rg?: string | null;
+  bank_name?: string | null;
+  bank_agency?: string | null;
+  bank_account?: string | null;
+  pix_key?: string | null;
   profile?: {
     id: string;
     full_name: string;
@@ -50,13 +71,14 @@ export function BrokerManagement() {
   const queryClient = useQueryClient();
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<'all' | 'active' | 'inactive' | 'pending'>('all');
+  const [jobFilter, setJobFilter] = useState<string>('all');
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [isDetailOpen, setIsDetailOpen] = useState(false);
-  const [selectedBroker, setSelectedBroker] = useState<BrokerProfile | null>(null);
-  const [editingBroker, setEditingBroker] = useState<BrokerProfile | null>(null);
+  const [selectedStaff, setSelectedStaff] = useState<StaffProfile | null>(null);
+  const [editingStaff, setEditingStaff] = useState<StaffProfile | null>(null);
 
-  // Fetch brokers with profiles
-  const { data: brokers = [], isLoading } = useQuery({
+  // Fetch staff with profiles
+  const { data: staff = [], isLoading } = useQuery({
     queryKey: ['broker-profiles'],
     queryFn: async () => {
       const { data: brokerData, error } = await supabase
@@ -93,11 +115,11 @@ export function BrokerManagement() {
         ...broker,
         profile: profiles.find(p => p.id === broker.user_id),
         questionnaire: questionnaires.find(q => q.broker_id === broker.id),
-      })) as BrokerProfile[];
+      })) as StaffProfile[];
     },
   });
 
-  // Fetch sales stats for each broker
+  // Fetch sales stats for each staff
   const { data: salesStats = {} } = useQuery({
     queryKey: ['broker-sales-stats'],
     queryFn: async () => {
@@ -120,33 +142,34 @@ export function BrokerManagement() {
     },
   });
 
-  // Delete broker mutation
+  // Delete staff mutation
   const deleteMutation = useMutation({
-    mutationFn: async (brokerId: string) => {
+    mutationFn: async (staffId: string) => {
       const { error } = await supabase
         .from('broker_profiles')
         .delete()
-        .eq('id', brokerId);
+        .eq('id', staffId);
       if (error) throw error;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['broker-profiles'] });
-      toast.success('Corretor removido com sucesso');
+      toast.success('Funcionário removido com sucesso');
     },
     onError: () => {
-      toast.error('Erro ao remover corretor');
+      toast.error('Erro ao remover funcionário');
     },
   });
 
-  const filteredBrokers = brokers.filter(broker => {
+  const filteredStaff = staff.filter(member => {
     const matchesSearch = 
-      broker.profile?.full_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      broker.profile?.email?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      broker.creci_number?.toLowerCase().includes(searchQuery.toLowerCase());
+      member.profile?.full_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      member.profile?.email?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      member.creci_number?.toLowerCase().includes(searchQuery.toLowerCase());
     
-    const matchesStatus = statusFilter === 'all' || broker.status === statusFilter;
+    const matchesStatus = statusFilter === 'all' || member.status === statusFilter;
+    const matchesJob = jobFilter === 'all' || member.job_title === jobFilter;
     
-    return matchesSearch && matchesStatus;
+    return matchesSearch && matchesStatus && matchesJob;
   });
 
   const getStatusBadge = (status: string) => {
@@ -162,27 +185,34 @@ export function BrokerManagement() {
     }
   };
 
-  const handleOpenDetail = (broker: BrokerProfile) => {
-    setSelectedBroker(broker);
+  const handleOpenDetail = (member: StaffProfile) => {
+    setSelectedStaff(member);
     setIsDetailOpen(true);
   };
 
-  const handleEdit = (broker: BrokerProfile) => {
-    setEditingBroker(broker);
+  const handleEdit = (member: StaffProfile) => {
+    setEditingStaff(member);
     setIsFormOpen(true);
   };
 
   const handleAddNew = () => {
-    setEditingBroker(null);
+    setEditingStaff(null);
     setIsFormOpen(true);
   };
 
   const statsCount = {
-    total: brokers.length,
-    active: brokers.filter(b => b.status === 'active').length,
-    inactive: brokers.filter(b => b.status === 'inactive').length,
-    pending: brokers.filter(b => b.status === 'pending').length,
+    total: staff.length,
+    active: staff.filter(b => b.status === 'active').length,
+    inactive: staff.filter(b => b.status === 'inactive').length,
+    pending: staff.filter(b => b.status === 'pending').length,
   };
+
+  // Count by job
+  const jobCounts = staff.reduce((acc, member) => {
+    const job = member.job_title || 'corretor';
+    acc[job] = (acc[job] || 0) + 1;
+    return acc;
+  }, {} as Record<string, number>);
 
   return (
     <Card className="glass-card">
@@ -190,11 +220,11 @@ export function BrokerManagement() {
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <CardTitle className="text-gold flex items-center gap-2">
             <Users className="w-5 h-5" />
-            Corretores Cadastrados
+            Equipe da Imobiliária
           </CardTitle>
           <Button size="sm" className="bg-gold hover:bg-gold-dark" onClick={handleAddNew}>
             <Plus className="w-4 h-4 mr-2" />
-            Novo Corretor
+            Novo Funcionário
           </Button>
         </div>
       </CardHeader>
@@ -219,44 +249,75 @@ export function BrokerManagement() {
             onClick={() => setStatusFilter('active')}
             className={`p-3 rounded-lg border transition-all ${
               statusFilter === 'active' 
-                ? 'bg-emerald-50 border-emerald-300' 
-                : 'bg-surface border-border hover:border-emerald-300'
+                ? 'bg-emerald-500/10 border-emerald-500/30' 
+                : 'bg-surface border-border hover:border-emerald-500/30'
             }`}
           >
             <div className="flex items-center gap-2 mb-1">
-              <UserCheck className="w-4 h-4 text-emerald-600" />
+              <UserCheck className="w-4 h-4 text-emerald-500" />
               <span className="text-xs text-muted-foreground">Ativos</span>
             </div>
-            <p className="text-lg font-semibold text-emerald-600">{statsCount.active}</p>
+            <p className="text-lg font-semibold text-emerald-500">{statsCount.active}</p>
           </button>
           <button
             onClick={() => setStatusFilter('pending')}
             className={`p-3 rounded-lg border transition-all ${
               statusFilter === 'pending' 
-                ? 'bg-amber-50 border-amber-300' 
-                : 'bg-surface border-border hover:border-amber-300'
+                ? 'bg-amber-500/10 border-amber-500/30' 
+                : 'bg-surface border-border hover:border-amber-500/30'
             }`}
           >
             <div className="flex items-center gap-2 mb-1">
-              <Clock className="w-4 h-4 text-amber-600" />
+              <Clock className="w-4 h-4 text-amber-500" />
               <span className="text-xs text-muted-foreground">Pendentes</span>
             </div>
-            <p className="text-lg font-semibold text-amber-600">{statsCount.pending}</p>
+            <p className="text-lg font-semibold text-amber-500">{statsCount.pending}</p>
           </button>
           <button
             onClick={() => setStatusFilter('inactive')}
             className={`p-3 rounded-lg border transition-all ${
               statusFilter === 'inactive' 
-                ? 'bg-gray-100 border-gray-300' 
-                : 'bg-surface border-border hover:border-gray-300'
+                ? 'bg-muted border-muted-foreground/30' 
+                : 'bg-surface border-border hover:border-muted-foreground/30'
             }`}
           >
             <div className="flex items-center gap-2 mb-1">
-              <UserX className="w-4 h-4 text-gray-500" />
+              <UserX className="w-4 h-4 text-muted-foreground" />
               <span className="text-xs text-muted-foreground">Inativos</span>
             </div>
-            <p className="text-lg font-semibold text-gray-500">{statsCount.inactive}</p>
+            <p className="text-lg font-semibold text-muted-foreground">{statsCount.inactive}</p>
           </button>
+        </div>
+
+        {/* Job Filter */}
+        <div className="flex flex-wrap gap-2">
+          <button
+            onClick={() => setJobFilter('all')}
+            className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all ${
+              jobFilter === 'all'
+                ? 'bg-gold text-white'
+                : 'bg-surface border border-border text-muted-foreground hover:border-gold'
+            }`}
+          >
+            Todos ({statsCount.total})
+          </button>
+          {Object.entries(jobTitleLabels).map(([key, label]) => {
+            const count = jobCounts[key] || 0;
+            if (count === 0) return null;
+            return (
+              <button
+                key={key}
+                onClick={() => setJobFilter(key)}
+                className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all ${
+                  jobFilter === key
+                    ? 'bg-gold text-white'
+                    : 'bg-surface border border-border text-muted-foreground hover:border-gold'
+                }`}
+              >
+                {label} ({count})
+              </button>
+            );
+          })}
         </div>
 
         {/* Search */}
@@ -270,40 +331,41 @@ export function BrokerManagement() {
           />
         </div>
 
-        {/* Broker List */}
+        {/* Staff List */}
         {isLoading ? (
           <div className="flex justify-center py-8">
             <div className="animate-spin h-6 w-6 border-2 border-gold border-t-transparent rounded-full" />
           </div>
-        ) : filteredBrokers.length === 0 ? (
+        ) : filteredStaff.length === 0 ? (
           <div className="text-center py-8 text-muted-foreground">
-            {searchQuery || statusFilter !== 'all' 
-              ? 'Nenhum corretor encontrado com os filtros aplicados'
-              : 'Nenhum corretor cadastrado ainda'
+            {searchQuery || statusFilter !== 'all' || jobFilter !== 'all'
+              ? 'Nenhum funcionário encontrado com os filtros aplicados'
+              : 'Nenhum funcionário cadastrado ainda'
             }
           </div>
         ) : (
           <div className="space-y-2">
-            {filteredBrokers.map((broker) => {
-              const stats = broker.user_id ? salesStats[broker.user_id] : null;
+            {filteredStaff.map((member) => {
+              const stats = member.user_id ? salesStats[member.user_id] : null;
+              const isBroker = member.job_title === 'corretor';
               
               return (
                 <div
-                  key={broker.id}
+                  key={member.id}
                   className="flex items-center justify-between p-4 rounded-lg bg-surface border border-border hover:border-gold/30 transition-all group"
                 >
                   <div className="flex items-center gap-4 flex-1 min-w-0">
                     {/* Avatar */}
                     <div className="w-12 h-12 rounded-full bg-gold/20 flex items-center justify-center flex-shrink-0 overflow-hidden">
-                      {broker.photo_url || broker.profile?.avatar_url ? (
+                      {member.photo_url || member.profile?.avatar_url ? (
                         <img 
-                          src={broker.photo_url || broker.profile?.avatar_url || ''} 
+                          src={member.photo_url || member.profile?.avatar_url || ''} 
                           alt="" 
                           className="w-full h-full object-cover"
                         />
                       ) : (
                         <span className="text-gold font-semibold text-lg">
-                          {broker.profile?.full_name?.charAt(0) || '?'}
+                          {member.profile?.full_name?.charAt(0) || '?'}
                         </span>
                       )}
                     </div>
@@ -312,20 +374,26 @@ export function BrokerManagement() {
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 flex-wrap">
                         <h3 className="font-medium text-foreground truncate">
-                          {broker.profile?.full_name || 'Corretor sem usuário vinculado'}
+                          {member.profile?.full_name || 'Funcionário sem usuário vinculado'}
                         </h3>
-                        {getStatusBadge(broker.status)}
+                        <Badge variant="outline" className="text-xs border-gold/50 text-gold">
+                          <Briefcase className="w-3 h-3 mr-1" />
+                          {jobTitleLabels[member.job_title] || member.job_title}
+                        </Badge>
+                        {getStatusBadge(member.status)}
                       </div>
                       <div className="flex items-center gap-3 text-sm text-muted-foreground mt-1 flex-wrap">
-                        {broker.creci_number && (
-                          <span>CRECI {broker.creci_number} {broker.creci_state}</span>
+                        {isBroker && member.creci_number && (
+                          <span>CRECI {member.creci_number} {member.creci_state}</span>
                         )}
-                        <span className="flex items-center gap-1">
-                          <Percent className="w-3 h-3" />
-                          {broker.commission_percentage}% comissão
-                        </span>
-                        {stats && (
-                          <span className="text-emerald-600 font-medium">
+                        {isBroker && (
+                          <span className="flex items-center gap-1">
+                            <Percent className="w-3 h-3" />
+                            {member.commission_percentage}% comissão
+                          </span>
+                        )}
+                        {isBroker && stats && (
+                          <span className="text-emerald-500 font-medium">
                             {stats.count} vendas • {formatCurrency(stats.totalSales)}
                           </span>
                         )}
@@ -335,11 +403,11 @@ export function BrokerManagement() {
 
                   {/* Actions */}
                   <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                    {broker.resume_url && (
+                    {member.resume_url && (
                       <Button
                         variant="ghost"
                         size="sm"
-                        onClick={() => window.open(broker.resume_url!, '_blank')}
+                        onClick={() => window.open(member.resume_url!, '_blank')}
                         className="text-muted-foreground hover:text-gold"
                       >
                         <FileText className="w-4 h-4" />
@@ -348,7 +416,7 @@ export function BrokerManagement() {
                     <Button
                       variant="ghost"
                       size="sm"
-                      onClick={() => handleOpenDetail(broker)}
+                      onClick={() => handleOpenDetail(member)}
                       className="text-muted-foreground hover:text-gold"
                     >
                       <Eye className="w-4 h-4" />
@@ -356,7 +424,7 @@ export function BrokerManagement() {
                     <Button
                       variant="ghost"
                       size="sm"
-                      onClick={() => handleEdit(broker)}
+                      onClick={() => handleEdit(member)}
                       className="text-muted-foreground hover:text-gold"
                     >
                       <Edit2 className="w-4 h-4" />
@@ -365,8 +433,8 @@ export function BrokerManagement() {
                       variant="ghost"
                       size="sm"
                       onClick={() => {
-                        if (confirm('Tem certeza que deseja remover este corretor?')) {
-                          deleteMutation.mutate(broker.id);
+                        if (confirm('Tem certeza que deseja remover este funcionário?')) {
+                          deleteMutation.mutate(member.id);
                         }
                       }}
                       className="text-destructive hover:text-destructive"
@@ -382,13 +450,13 @@ export function BrokerManagement() {
         )}
 
         {/* Form Modal */}
-        <BrokerFormModal
+        <StaffFormModal
           isOpen={isFormOpen}
           onClose={() => {
             setIsFormOpen(false);
-            setEditingBroker(null);
+            setEditingStaff(null);
           }}
-          broker={editingBroker}
+          staff={editingStaff}
         />
 
         {/* Detail Modal */}
@@ -396,13 +464,13 @@ export function BrokerManagement() {
           isOpen={isDetailOpen}
           onClose={() => {
             setIsDetailOpen(false);
-            setSelectedBroker(null);
+            setSelectedStaff(null);
           }}
-          broker={selectedBroker}
+          broker={selectedStaff}
           onEdit={() => {
             setIsDetailOpen(false);
-            if (selectedBroker) {
-              handleEdit(selectedBroker);
+            if (selectedStaff) {
+              handleEdit(selectedStaff);
             }
           }}
         />
