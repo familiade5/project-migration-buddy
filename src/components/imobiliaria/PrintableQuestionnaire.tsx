@@ -21,7 +21,7 @@ export const PrintableQuestionnaire = forwardRef<HTMLDivElement, PrintableQuesti
     const isBroker = jobTitle === 'corretor';
     
     return (
-      <div ref={ref} className="bg-white p-8 max-w-[210mm] mx-auto print:p-0">
+      <div ref={ref} className="bg-white p-8 max-w-[210mm] mx-auto print:p-0 print:bg-white [&_*]:!text-black [&_h1]:!text-black [&_h2]:!text-black [&_p]:!text-black [&_label]:!text-black [&_.text-gray-900]:!text-black [&_.text-gray-700]:!text-gray-800 [&_.text-gray-500]:!text-gray-600 print:[&_*]:!text-black">
         {/* Header */}
         <div className="text-center mb-8 border-b-2 border-gray-800 pb-4">
           <h1 className="text-2xl font-bold text-gray-900 mb-2">
