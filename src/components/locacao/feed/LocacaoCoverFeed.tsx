@@ -41,19 +41,20 @@ export const LocacaoCoverFeed = ({ data, photo }: LocacaoCoverFeedProps) => {
         <LocacaoLogo size="xxl" variant="light" />
       </div>
 
+      {/* Badge - top right, solid gray box like "Imóvel Caixa" */}
+      <div className="absolute z-20" style={{ top: '20px', right: '20px' }}>
+        <div className="relative overflow-hidden rounded-lg shadow-2xl">
+          <div className="absolute inset-0 bg-gradient-to-br from-[#4b5563] via-[#374151] to-[#1f2937]" />
+          <div className="absolute inset-0 bg-gradient-to-b from-white/20 to-transparent h-1/2" />
+          <div className="relative text-center" style={{ padding: '16px 28px' }}>
+            <p className="text-white font-semibold leading-tight" style={{ fontSize: '20px' }}>Disponível para</p>
+            <p className="text-white font-black leading-none tracking-tight" style={{ fontSize: '42px' }}>Locação</p>
+          </div>
+        </div>
+      </div>
+
       {/* Content at bottom */}
       <div className="absolute bottom-0 left-0 right-0 px-12 pb-12">
-        {/* Badge - larger, more visible */}
-        <div 
-          className="inline-block px-6 py-3 rounded-lg text-lg font-medium mb-6"
-          style={{ 
-            backgroundColor: 'rgba(255,255,255,0.2)',
-            backdropFilter: 'blur(8px)',
-            color: '#ffffff',
-          }}
-        >
-          Disponível para Locação
-        </div>
 
         {/* Title - large, editorial */}
         <h1 

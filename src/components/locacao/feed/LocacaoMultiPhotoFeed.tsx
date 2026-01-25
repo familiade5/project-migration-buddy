@@ -8,19 +8,19 @@ interface LocacaoMultiPhotoFeedProps {
   photoLabels?: string[];
 }
 
-// Room label component - matching Revenda+ style
+// Room label component - matching Revenda+ style (larger size)
 const RoomLabel = ({ label }: { label: string }) => (
   <div 
-    className="absolute bottom-4 left-4 px-4 py-2 rounded-lg"
+    className="absolute bottom-6 left-6 px-6 py-3 rounded-xl"
     style={{
-      backgroundColor: 'rgba(31, 41, 55, 0.85)',
+      backgroundColor: 'rgba(31, 41, 55, 0.9)',
       backdropFilter: 'blur(8px)',
       border: '1px solid rgba(156, 163, 175, 0.3)',
     }}
   >
     <span 
-      className="text-sm font-medium uppercase tracking-widest"
-      style={{ color: '#d1d5db' }}
+      className="text-lg font-semibold uppercase tracking-widest"
+      style={{ color: '#e5e7eb' }}
     >
       {label}
     </span>
