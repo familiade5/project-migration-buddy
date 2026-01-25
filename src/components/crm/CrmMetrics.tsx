@@ -12,8 +12,15 @@ export function CrmMetrics({ properties }: CrmMetricsProps) {
   const metrics = useMemo(() => {
     const totalProperties = properties.length;
     const totalValue = properties.reduce((sum, p) => sum + (p.sale_value || 0), 0);
+    
+    // Comissões pendentes: apenas imóveis na etapa "pago" (venda concluída, comissão ainda não liberada)
     const pendingCommission = properties
-      .filter((p) => p.current_stage !== 'comissao_liberada')
+      .filter((p) => p.current_stage === 'pago')
+      .reduce((sum, p) => sum + (p.commission_value || 0), 0);
+
+    // Comissões liberadas: imóveis na etapa final
+    const releasedCommission = properties
+      .filter((p) => p.current_stage === 'comissao_liberada')
       .reduce((sum, p) => sum + (p.commission_value || 0), 0);
 
     // Calculate average days per stage for completed properties
