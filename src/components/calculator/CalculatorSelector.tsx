@@ -19,10 +19,10 @@ interface CalculatorSelectorProps {
 
 export function CalculatorSelector({ onSelect }: CalculatorSelectorProps) {
   return (
-    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-5 duration-500 bg-white">
+    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-5 duration-500">
       {/* Header */}
       <div className="text-center max-w-2xl mx-auto">
-        <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-600 to-blue-700 flex items-center justify-center mx-auto mb-4">
+        <div className="w-16 h-16 rounded-2xl bg-gray-900 flex items-center justify-center mx-auto mb-4">
           <Calculator className="w-8 h-8 text-white" />
         </div>
         <h1 className="text-3xl font-bold text-gray-900 mb-3">
@@ -37,24 +37,24 @@ export function CalculatorSelector({ onSelect }: CalculatorSelectorProps) {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
         {/* Client Calculator */}
         <Card 
-          className="group border-2 border-gray-200 hover:border-blue-500 transition-all duration-300 cursor-pointer bg-white shadow-sm hover:shadow-lg"
+          className="group border-2 border-gray-200 hover:border-gray-900 transition-all duration-300 cursor-pointer bg-white shadow-sm hover:shadow-lg"
           onClick={() => onSelect('client')}
         >
-          <CardHeader className="pb-4">
+          <CardHeader className="pb-4 bg-white">
             <div className="flex items-center justify-between mb-4">
-              <div className="w-14 h-14 rounded-xl bg-blue-50 flex items-center justify-center group-hover:bg-blue-100 transition-colors">
-                <Users className="w-7 h-7 text-blue-600" />
+              <div className="w-14 h-14 rounded-xl bg-gray-100 flex items-center justify-center group-hover:bg-gray-200 transition-colors">
+                <Users className="w-7 h-7 text-gray-700" />
               </div>
-              <ArrowRight className="w-5 h-5 text-gray-400 group-hover:text-blue-600 group-hover:translate-x-1 transition-all" />
+              <ArrowRight className="w-5 h-5 text-gray-400 group-hover:text-gray-900 group-hover:translate-x-1 transition-all" />
             </div>
-            <CardTitle className="text-xl text-gray-900 group-hover:text-blue-600 transition-colors">
+            <CardTitle className="text-xl text-gray-900 group-hover:text-gray-700 transition-colors">
               Simulador de Financiamento
             </CardTitle>
             <CardDescription className="text-gray-500 text-base">
               Para apresentar ao cliente
             </CardDescription>
           </CardHeader>
-          <CardContent className="pt-0">
+          <CardContent className="pt-0 bg-white">
             <div className="space-y-4">
               <p className="text-gray-600 text-sm">
                 Calcule as parcelas do financiamento Caixa de forma simples e visual, 
@@ -63,21 +63,21 @@ export function CalculatorSelector({ onSelect }: CalculatorSelectorProps) {
               
               <div className="space-y-2">
                 <div className="flex items-center gap-2 text-sm text-gray-600">
-                  <Building2 className="w-4 h-4 text-blue-500" />
+                  <Building2 className="w-4 h-4 text-gray-500" />
                   <span>Simulação SAC e PRICE</span>
                 </div>
                 <div className="flex items-center gap-2 text-sm text-gray-600">
-                  <PiggyBank className="w-4 h-4 text-blue-500" />
+                  <PiggyBank className="w-4 h-4 text-gray-500" />
                   <span>Cálculo de entrada e parcelas</span>
                 </div>
                 <div className="flex items-center gap-2 text-sm text-gray-600">
-                  <BarChart3 className="w-4 h-4 text-blue-500" />
+                  <BarChart3 className="w-4 h-4 text-gray-500" />
                   <span>Tabela de amortização</span>
                 </div>
               </div>
 
               <Button 
-                className="w-full mt-4 bg-blue-600 hover:bg-blue-700 text-white"
+                className="w-full mt-4 bg-gray-900 hover:bg-gray-800 text-white"
               >
                 <Calculator className="w-4 h-4 mr-2" />
                 Acessar Simulador
@@ -88,29 +88,29 @@ export function CalculatorSelector({ onSelect }: CalculatorSelectorProps) {
 
         {/* Investor Calculator */}
         <Card 
-          className="group border-2 border-gray-200 hover:border-emerald-500 transition-all duration-300 cursor-pointer bg-white shadow-sm hover:shadow-lg"
+          className="group border-2 border-gray-200 hover:border-gray-900 transition-all duration-300 cursor-pointer bg-white shadow-sm hover:shadow-lg"
           onClick={() => onSelect('investor')}
         >
-          <CardHeader className="pb-4">
+          <CardHeader className="pb-4 bg-white">
             <div className="flex items-center justify-between mb-4">
-              <div className="w-14 h-14 rounded-xl bg-emerald-50 flex items-center justify-center group-hover:bg-emerald-100 transition-colors">
-                <TrendingUp className="w-7 h-7 text-emerald-600" />
+              <div className="w-14 h-14 rounded-xl bg-gray-100 flex items-center justify-center group-hover:bg-gray-200 transition-colors">
+                <TrendingUp className="w-7 h-7 text-gray-700" />
               </div>
               <div className="flex items-center gap-2">
-                <span className="text-xs bg-emerald-100 text-emerald-700 px-2 py-1 rounded-full font-medium">
+                <span className="text-xs bg-gray-200 text-gray-700 px-2 py-1 rounded-full font-medium">
                   Novo
                 </span>
-                <ArrowRight className="w-5 h-5 text-gray-400 group-hover:text-emerald-600 group-hover:translate-x-1 transition-all" />
+                <ArrowRight className="w-5 h-5 text-gray-400 group-hover:text-gray-900 group-hover:translate-x-1 transition-all" />
               </div>
             </div>
-            <CardTitle className="text-xl text-gray-900 group-hover:text-emerald-600 transition-colors">
+            <CardTitle className="text-xl text-gray-900 group-hover:text-gray-700 transition-colors">
               Análise de Investimento
             </CardTitle>
             <CardDescription className="text-gray-500 text-base">
               Para investidores imobiliários
             </CardDescription>
           </CardHeader>
-          <CardContent className="pt-0">
+          <CardContent className="pt-0 bg-white">
             <div className="space-y-4">
               <p className="text-gray-600 text-sm">
                 Analise a viabilidade de investimentos em leilões e venda direta Caixa, 
@@ -119,21 +119,21 @@ export function CalculatorSelector({ onSelect }: CalculatorSelectorProps) {
               
               <div className="space-y-2">
                 <div className="flex items-center gap-2 text-sm text-gray-600">
-                  <Target className="w-4 h-4 text-emerald-500" />
+                  <Target className="w-4 h-4 text-gray-500" />
                   <span>Cálculo de ROI e lucro estimado</span>
                 </div>
                 <div className="flex items-center gap-2 text-sm text-gray-600">
-                  <BarChart3 className="w-4 h-4 text-emerald-500" />
+                  <BarChart3 className="w-4 h-4 text-gray-500" />
                   <span>Gráficos de evolução</span>
                 </div>
                 <div className="flex items-center gap-2 text-sm text-gray-600">
-                  <TrendingUp className="w-4 h-4 text-emerald-500" />
+                  <TrendingUp className="w-4 h-4 text-gray-500" />
                   <span>Comparativo de prazos de revenda</span>
                 </div>
               </div>
 
               <Button 
-                className="w-full mt-4 bg-emerald-600 hover:bg-emerald-700 text-white"
+                className="w-full mt-4 bg-gray-900 hover:bg-gray-800 text-white"
               >
                 <Target className="w-4 h-4 mr-2" />
                 Analisar Investimento
