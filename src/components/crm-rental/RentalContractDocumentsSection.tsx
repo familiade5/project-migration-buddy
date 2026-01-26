@@ -138,6 +138,41 @@ export function RentalContractDocumentsSection({ contract }: RentalContractDocum
     }
   };
 
+  const handleDownload = async (doc: RentalContractDocument) => {
+    try {
+      // Fetch the file as blob to avoid cross-origin issues
+      const response = await fetch(doc.file_url);
+      if (!response.ok) throw new Error('Failed to fetch file');
+      
+      const blob = await response.blob();
+      const blobUrl = URL.createObjectURL(blob);
+      
+      const link = document.createElement('a');
+      link.href = blobUrl;
+      link.download = doc.name;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
+      // Clean up the blob URL
+      setTimeout(() => URL.revokeObjectURL(blobUrl), 100);
+    } catch (error) {
+      console.error('Error downloading file:', error);
+      // Fallback: open in new tab
+      window.open(doc.file_url, '_blank');
+    }
+  };
+
+  const handleView = (url: string) => {
+    // Use Google Docs viewer as fallback for PDFs to avoid blocking issues
+    const isPdf = url.toLowerCase().endsWith('.pdf');
+    if (isPdf) {
+      window.open(`https://docs.google.com/viewer?url=${encodeURIComponent(url)}&embedded=true`, '_blank');
+    } else {
+      window.open(url, '_blank');
+    }
+  };
+
   const handleDelete = async (doc: RentalContractDocument) => {
     try {
       // Extract file path from URL
@@ -283,7 +318,7 @@ export function RentalContractDocumentsSection({ contract }: RentalContractDocum
                         <Button
                           variant="ghost"
                           size="sm"
-                          onClick={() => window.open(doc.file_url, '_blank')}
+                          onClick={() => handleView(doc.file_url)}
                           title="Visualizar"
                         >
                           <Eye className="w-4 h-4" />
@@ -291,12 +326,7 @@ export function RentalContractDocumentsSection({ contract }: RentalContractDocum
                         <Button
                           variant="ghost"
                           size="sm"
-                          onClick={() => {
-                            const link = document.createElement('a');
-                            link.href = doc.file_url;
-                            link.download = doc.name;
-                            link.click();
-                          }}
+                          onClick={() => handleDownload(doc)}
                           title="Baixar"
                         >
                           <Download className="w-4 h-4" />
