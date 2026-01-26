@@ -401,7 +401,7 @@ export function InvestmentCalculator({ onBack }: InvestmentCalculatorProps) {
     const analysisText = generateAnalysisText(result);
     
     return (
-      <div className="space-y-6 animate-in fade-in slide-in-from-right-5 duration-300">
+      <div className="space-y-6 animate-in fade-in slide-in-from-right-5 duration-300 bg-white">
         {/* Header */}
         <div className="flex items-center justify-between">
           <Button
@@ -729,7 +729,7 @@ export function InvestmentCalculator({ onBack }: InvestmentCalculatorProps) {
   }
 
   return (
-    <div className="space-y-6 animate-in fade-in slide-in-from-left-5 duration-300">
+    <div className="space-y-6 animate-in fade-in slide-in-from-left-5 duration-300 bg-white">
       {/* Header */}
       <div className="flex items-center justify-between">
         {onBack && (
