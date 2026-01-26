@@ -51,9 +51,22 @@ export async function exportInvestmentPDF(result: InvestmentResult, analysisText
   const pdf = new jsPDF('p', 'mm', 'a4');
   const pageWidth = pdf.internal.pageSize.getWidth();
   const pageHeight = pdf.internal.pageSize.getHeight();
-  const margin = 20;
+  const margin = 15;
   const contentWidth = pageWidth - (margin * 2);
   let y = margin;
+
+  // Color palette - modern professional
+  const colors = {
+    primary: [17, 24, 39] as [number, number, number],      // gray-900
+    secondary: [75, 85, 99] as [number, number, number],    // gray-600
+    muted: [156, 163, 175] as [number, number, number],     // gray-400
+    light: [243, 244, 246] as [number, number, number],     // gray-100
+    white: [255, 255, 255] as [number, number, number],
+    success: [34, 197, 94] as [number, number, number],     // green-500
+    danger: [239, 68, 68] as [number, number, number],      // red-500
+    accent: [59, 130, 246] as [number, number, number],     // blue-500
+    gold: [245, 158, 11] as [number, number, number],       // amber-500
+  };
 
   // Helper functions
   const addText = (text: string, x: number, yPos: number, options?: { 
@@ -62,7 +75,7 @@ export async function exportInvestmentPDF(result: InvestmentResult, analysisText
     color?: [number, number, number];
     align?: 'left' | 'center' | 'right';
   }) => {
-    const { fontSize = 10, fontStyle = 'normal', color = [0, 0, 0], align = 'left' } = options || {};
+    const { fontSize = 10, fontStyle = 'normal', color = colors.primary, align = 'left' } = options || {};
     pdf.setFontSize(fontSize);
     pdf.setFont('helvetica', fontStyle);
     pdf.setTextColor(color[0], color[1], color[2]);
@@ -74,164 +87,365 @@ export async function exportInvestmentPDF(result: InvestmentResult, analysisText
     pdf.text(text, alignX, yPos, { align });
   };
 
-  const addLine = (y: number, color: [number, number, number] = [229, 231, 235]) => {
-    pdf.setDrawColor(color[0], color[1], color[2]);
-    pdf.setLineWidth(0.3);
-    pdf.line(margin, y, pageWidth - margin, y);
-  };
-
   const checkNewPage = (neededSpace: number) => {
     if (y + neededSpace > pageHeight - margin) {
       pdf.addPage();
-      y = margin;
+      y = margin + 10;
       return true;
     }
     return false;
   };
 
-  const addTableRow = (label: string, value: string, isHighlight: boolean = false) => {
-    checkNewPage(8);
-    if (isHighlight) {
-      pdf.setFillColor(249, 250, 251);
-      pdf.rect(margin, y - 4, contentWidth, 8, 'F');
+  const drawRoundedRect = (x: number, yPos: number, w: number, h: number, r: number, fill: [number, number, number], stroke?: [number, number, number]) => {
+    pdf.setFillColor(fill[0], fill[1], fill[2]);
+    if (stroke) {
+      pdf.setDrawColor(stroke[0], stroke[1], stroke[2]);
+      pdf.setLineWidth(0.3);
+      pdf.roundedRect(x, yPos, w, h, r, r, 'FD');
+    } else {
+      pdf.roundedRect(x, yPos, w, h, r, r, 'F');
     }
-    addText(label, margin, y, { fontSize: 9, color: [107, 114, 128] });
-    addText(value, pageWidth - margin, y, { fontSize: 9, fontStyle: 'bold', align: 'right' });
-    y += 8;
   };
 
-  // === HEADER ===
-  pdf.setFillColor(31, 41, 55); // gray-800
-  pdf.rect(0, 0, pageWidth, 45, 'F');
+  // === MODERN HEADER WITH GRADIENT EFFECT ===
+  // Dark header bar
+  pdf.setFillColor(17, 24, 39);
+  pdf.rect(0, 0, pageWidth, 50, 'F');
   
-  addText('ANÁLISE DE INVESTIMENTO IMOBILIÁRIO', margin, 18, { 
-    fontSize: 16, fontStyle: 'bold', color: [255, 255, 255] 
+  // Subtle accent line
+  pdf.setFillColor(59, 130, 246);
+  pdf.rect(0, 50, pageWidth, 2, 'F');
+  
+  // Header content
+  addText('ANÁLISE DE INVESTIMENTO', margin, 20, { 
+    fontSize: 22, fontStyle: 'bold', color: colors.white 
   });
-  addText(`Período: ${result.holdingPeriod} meses | Sistema: ${result.table}`, margin, 26, { 
-    fontSize: 10, color: [209, 213, 219] 
+  addText('IMOBILIÁRIO', margin, 30, { 
+    fontSize: 22, fontStyle: 'bold', color: [156, 163, 175]
   });
-  addText(`Gerado em ${new Date().toLocaleDateString('pt-BR')} às ${new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`, margin, 34, { 
-    fontSize: 8, color: [156, 163, 175] 
+  
+  // Header badges
+  const badgeY = 18;
+  const badgeX = pageWidth - margin - 75;
+  
+  // Period badge
+  drawRoundedRect(badgeX, badgeY - 5, 35, 14, 2, [31, 41, 55]);
+  addText(`${result.holdingPeriod}m`, badgeX + 17.5, badgeY + 4, { 
+    fontSize: 10, fontStyle: 'bold', color: colors.white, align: 'center' 
+  });
+  
+  // System badge
+  drawRoundedRect(badgeX + 40, badgeY - 5, 35, 14, 2, [59, 130, 246]);
+  addText(result.table, badgeX + 57.5, badgeY + 4, { 
+    fontSize: 10, fontStyle: 'bold', color: colors.white, align: 'center' 
+  });
+  
+  // Date
+  addText(`Gerado em ${new Date().toLocaleDateString('pt-BR')}`, pageWidth - margin, 42, { 
+    fontSize: 8, color: colors.muted, align: 'right' 
   });
 
-  y = 55;
+  y = 65;
 
-  // === KEY METRICS (4 boxes) ===
-  const boxWidth = (contentWidth - 15) / 4;
-  const boxHeight = 28;
+  // === MAIN KPI CARDS ===
+  const cardWidth = (contentWidth - 12) / 4;
+  const cardHeight = 38;
   const isPositive = result.totalROI > 0;
   
-  // Profit box
-  pdf.setFillColor(249, 250, 251);
-  pdf.roundedRect(margin, y, boxWidth, boxHeight, 2, 2, 'F');
-  addText('Lucro Estimado', margin + 4, y + 8, { fontSize: 7, color: [107, 114, 128] });
-  addText(formatCurrency(result.estimatedProfit), margin + 4, y + 18, { 
-    fontSize: 12, fontStyle: 'bold', color: isPositive ? [34, 197, 94] : [239, 68, 68] 
+  // Card 1: Lucro Estimado
+  drawRoundedRect(margin, y, cardWidth, cardHeight, 4, isPositive ? [240, 253, 244] : [254, 242, 242]);
+  addText('LUCRO ESTIMADO', margin + 6, y + 10, { fontSize: 7, fontStyle: 'bold', color: colors.secondary });
+  addText(formatCurrency(result.estimatedProfit), margin + 6, y + 24, { 
+    fontSize: 14, fontStyle: 'bold', color: isPositive ? colors.success : colors.danger 
   });
-
-  // ROI Total box
-  pdf.setFillColor(249, 250, 251);
-  pdf.roundedRect(margin + boxWidth + 5, y, boxWidth, boxHeight, 2, 2, 'F');
-  addText('ROI Total', margin + boxWidth + 9, y + 8, { fontSize: 7, color: [107, 114, 128] });
-  addText(`${result.totalROI.toFixed(1)}%`, margin + boxWidth + 9, y + 18, { 
-    fontSize: 12, fontStyle: 'bold', color: isPositive ? [34, 197, 94] : [239, 68, 68] 
-  });
-
-  // ROI Monthly box
-  pdf.setFillColor(249, 250, 251);
-  pdf.roundedRect(margin + (boxWidth + 5) * 2, y, boxWidth, boxHeight, 2, 2, 'F');
-  addText('ROI Mensal', margin + (boxWidth + 5) * 2 + 4, y + 8, { fontSize: 7, color: [107, 114, 128] });
-  addText(`${result.monthlyROI.toFixed(2)}%`, margin + (boxWidth + 5) * 2 + 4, y + 18, { 
-    fontSize: 12, fontStyle: 'bold', color: [31, 41, 55] 
-  });
-
-  // Discount box
-  pdf.setFillColor(249, 250, 251);
-  pdf.roundedRect(margin + (boxWidth + 5) * 3, y, boxWidth, boxHeight, 2, 2, 'F');
-  addText('Desconto', margin + (boxWidth + 5) * 3 + 4, y + 8, { fontSize: 7, color: [107, 114, 128] });
-  addText(`${result.discountPercentage.toFixed(1)}%`, margin + (boxWidth + 5) * 3 + 4, y + 18, { 
-    fontSize: 12, fontStyle: 'bold', color: [31, 41, 55] 
-  });
-
-  y += boxHeight + 15;
-
-  // === TWO COLUMNS: Investment Summary & Costs ===
-  const colWidth = (contentWidth - 10) / 2;
+  // Mini icon indicator
+  pdf.setFillColor(isPositive ? 34 : 239, isPositive ? 197 : 68, isPositive ? 94 : 68);
+  pdf.circle(margin + cardWidth - 10, y + 10, 3, 'F');
   
-  // Investment Summary
-  addText('RESUMO DO INVESTIMENTO', margin, y, { fontSize: 10, fontStyle: 'bold', color: [31, 41, 55] });
-  y += 8;
-  addLine(y);
-  y += 6;
+  // Card 2: ROI Total
+  drawRoundedRect(margin + cardWidth + 4, y, cardWidth, cardHeight, 4, [239, 246, 255]);
+  addText('ROI TOTAL', margin + cardWidth + 10, y + 10, { fontSize: 7, fontStyle: 'bold', color: colors.secondary });
+  addText(`${result.totalROI.toFixed(1)}%`, margin + cardWidth + 10, y + 24, { 
+    fontSize: 14, fontStyle: 'bold', color: colors.accent 
+  });
+  
+  // Card 3: ROI Mensal
+  drawRoundedRect(margin + (cardWidth + 4) * 2, y, cardWidth, cardHeight, 4, colors.light);
+  addText('ROI MENSAL', margin + (cardWidth + 4) * 2 + 6, y + 10, { fontSize: 7, fontStyle: 'bold', color: colors.secondary });
+  addText(`${result.monthlyROI.toFixed(2)}%`, margin + (cardWidth + 4) * 2 + 6, y + 24, { 
+    fontSize: 14, fontStyle: 'bold', color: colors.primary 
+  });
+  
+  // Card 4: Desconto
+  drawRoundedRect(margin + (cardWidth + 4) * 3, y, cardWidth, cardHeight, 4, [255, 251, 235]);
+  addText('DESCONTO', margin + (cardWidth + 4) * 3 + 6, y + 10, { fontSize: 7, fontStyle: 'bold', color: colors.secondary });
+  addText(`${result.discountPercentage.toFixed(1)}%`, margin + (cardWidth + 4) * 3 + 6, y + 24, { 
+    fontSize: 14, fontStyle: 'bold', color: colors.gold 
+  });
 
+  y += cardHeight + 15;
+
+  // === VISUAL CHARTS SECTION ===
+  // Profit Timeline Chart (Bar chart visualization)
+  const chartWidth = (contentWidth - 8) / 2;
+  const chartHeight = 55;
+  
+  // Chart 1: Profit by Timeline
+  drawRoundedRect(margin, y, chartWidth, chartHeight + 25, 4, colors.white, [229, 231, 235]);
+  addText('LUCRO POR PRAZO', margin + 8, y + 12, { fontSize: 9, fontStyle: 'bold', color: colors.primary });
+  
+  // Draw bars
+  const barChartY = y + 20;
+  const barChartHeight = 40;
+  const barWidth = (chartWidth - 30) / result.timelineComparison.length;
+  const maxProfit = Math.max(...result.timelineComparison.map(t => Math.abs(t.profit)));
+  
+  result.timelineComparison.forEach((item, idx) => {
+    const barX = margin + 15 + (idx * barWidth);
+    const barH = Math.abs(item.profit) / maxProfit * (barChartHeight - 10);
+    const barY = barChartY + barChartHeight - barH - 5;
+    
+    const isSelected = item.month === result.holdingPeriod;
+    const barColor = item.profit >= 0 ? (isSelected ? colors.success : [134, 239, 172] as [number, number, number]) : colors.danger;
+    
+    pdf.setFillColor(barColor[0], barColor[1], barColor[2]);
+    pdf.roundedRect(barX + 2, barY, barWidth - 4, barH, 1, 1, 'F');
+    
+    // Month label
+    addText(`${item.month}m`, barX + barWidth/2, barChartY + barChartHeight + 3, { 
+      fontSize: 6, color: isSelected ? colors.primary : colors.muted, fontStyle: isSelected ? 'bold' : 'normal', align: 'center' 
+    });
+    
+    // Selected indicator
+    if (isSelected) {
+      pdf.setFillColor(17, 24, 39);
+      pdf.circle(barX + barWidth/2, barY - 3, 1.5, 'F');
+    }
+  });
+
+  // Chart 2: Investment Breakdown (Donut visualization)
+  const donutX = margin + chartWidth + 12;
+  drawRoundedRect(donutX, y, chartWidth, chartHeight + 25, 4, colors.white, [229, 231, 235]);
+  addText('COMPOSIÇÃO DO INVESTIMENTO', donutX + 8, y + 12, { fontSize: 9, fontStyle: 'bold', color: colors.primary });
+  
+  // Draw pie/donut segments
+  const centerX = donutX + 35;
+  const centerY = y + 50;
+  const radius = 18;
+  const innerRadius = 10;
+  
+  const totalCosts = result.entryValue + result.itbi + result.documentation + result.renovation + (result.monthlyExpenses * result.holdingPeriod);
+  const segments = [
+    { label: 'Entrada', value: result.entryValue, color: [59, 130, 246] as [number, number, number] },
+    { label: 'ITBI', value: result.itbi, color: [147, 51, 234] as [number, number, number] },
+    { label: 'Documentação', value: result.documentation, color: [236, 72, 153] as [number, number, number] },
+    { label: 'Reforma', value: result.renovation, color: [245, 158, 11] as [number, number, number] },
+    { label: 'Despesas', value: result.monthlyExpenses * result.holdingPeriod, color: [34, 197, 94] as [number, number, number] },
+  ].filter(s => s.value > 0);
+  
+  let currentAngle = -Math.PI / 2;
+  segments.forEach((seg) => {
+    const angle = (seg.value / totalCosts) * 2 * Math.PI;
+    
+    // Draw segment
+    pdf.setFillColor(seg.color[0], seg.color[1], seg.color[2]);
+    
+    // Create arc path (simplified as filled wedge)
+    const startX = centerX + Math.cos(currentAngle) * radius;
+    const startY = centerY + Math.sin(currentAngle) * radius;
+    const endAngle = currentAngle + angle;
+    const endX = centerX + Math.cos(endAngle) * radius;
+    const endY = centerY + Math.sin(endAngle) * radius;
+    
+    // Draw wedge approximation
+    const steps = Math.ceil(angle / 0.1);
+    const points: Array<{x: number, y: number}> = [];
+    for (let i = 0; i <= steps; i++) {
+      const a = currentAngle + (angle * i / steps);
+      points.push({ x: centerX + Math.cos(a) * radius, y: centerY + Math.sin(a) * radius });
+    }
+    
+    // Draw as polygon
+    if (points.length > 1) {
+      pdf.setFillColor(seg.color[0], seg.color[1], seg.color[2]);
+      // Simple filled arc using triangle fan from center
+      for (let i = 0; i < points.length - 1; i++) {
+        pdf.triangle(centerX, centerY, points[i].x, points[i].y, points[i+1].x, points[i+1].y, 'F');
+      }
+    }
+    
+    currentAngle += angle;
+  });
+  
+  // Inner circle (donut hole)
+  pdf.setFillColor(255, 255, 255);
+  pdf.circle(centerX, centerY, innerRadius, 'F');
+  
+  // Center text
+  addText('TOTAL', centerX, centerY - 1, { fontSize: 5, color: colors.muted, align: 'center' });
+  addText(formatCurrency(totalCosts).replace('R$', '').trim().split(',')[0], centerX, centerY + 4, { 
+    fontSize: 7, fontStyle: 'bold', color: colors.primary, align: 'center' 
+  });
+  
+  // Legend
+  let legendY = y + 22;
+  const legendX = donutX + 70;
+  segments.forEach((seg, idx) => {
+    if (idx < 4) {
+      pdf.setFillColor(seg.color[0], seg.color[1], seg.color[2]);
+      pdf.circle(legendX, legendY, 2, 'F');
+      addText(seg.label, legendX + 5, legendY + 1.5, { fontSize: 7, color: colors.secondary });
+      addText(formatCurrency(seg.value), legendX + 5, legendY + 7, { fontSize: 6, color: colors.muted });
+      legendY += 14;
+    }
+  });
+
+  y += chartHeight + 35;
+
+  // === DEBT EVOLUTION CHART ===
+  checkNewPage(70);
+  drawRoundedRect(margin, y, contentWidth, 60, 4, colors.white, [229, 231, 235]);
+  addText('EVOLUÇÃO DA DÍVIDA VS PAGAMENTOS', margin + 8, y + 12, { fontSize: 9, fontStyle: 'bold', color: colors.primary });
+  
+  const lineChartX = margin + 15;
+  const lineChartY = y + 22;
+  const lineChartW = contentWidth - 30;
+  const lineChartH = 30;
+  
+  // Draw axes
+  pdf.setDrawColor(229, 231, 235);
+  pdf.setLineWidth(0.3);
+  pdf.line(lineChartX, lineChartY + lineChartH, lineChartX + lineChartW, lineChartY + lineChartH);
+  pdf.line(lineChartX, lineChartY, lineChartX, lineChartY + lineChartH);
+  
+  // Draw data points and lines
+  const debtData = result.debtEvolution.slice(0, Math.min(24, result.holdingPeriod));
+  if (debtData.length > 1) {
+    const maxDebt = Math.max(...debtData.map(d => d.debt));
+    const maxPaid = Math.max(...debtData.map(d => d.paid));
+    const maxVal = Math.max(maxDebt, maxPaid);
+    
+    // Debt line (gray)
+    pdf.setDrawColor(107, 114, 128);
+    pdf.setLineWidth(1);
+    for (let i = 0; i < debtData.length - 1; i++) {
+      const x1 = lineChartX + (i / (debtData.length - 1)) * lineChartW;
+      const y1 = lineChartY + lineChartH - (debtData[i].debt / maxVal * lineChartH);
+      const x2 = lineChartX + ((i + 1) / (debtData.length - 1)) * lineChartW;
+      const y2 = lineChartY + lineChartH - (debtData[i + 1].debt / maxVal * lineChartH);
+      pdf.line(x1, y1, x2, y2);
+    }
+    
+    // Paid line (blue)
+    pdf.setDrawColor(59, 130, 246);
+    for (let i = 0; i < debtData.length - 1; i++) {
+      const x1 = lineChartX + (i / (debtData.length - 1)) * lineChartW;
+      const y1 = lineChartY + lineChartH - (debtData[i].paid / maxVal * lineChartH);
+      const x2 = lineChartX + ((i + 1) / (debtData.length - 1)) * lineChartW;
+      const y2 = lineChartY + lineChartH - (debtData[i + 1].paid / maxVal * lineChartH);
+      pdf.line(x1, y1, x2, y2);
+    }
+    
+    // Data point dots
+    const lastIdx = debtData.length - 1;
+    pdf.setFillColor(107, 114, 128);
+    pdf.circle(lineChartX + lineChartW, lineChartY + lineChartH - (debtData[lastIdx].debt / maxVal * lineChartH), 2, 'F');
+    pdf.setFillColor(59, 130, 246);
+    pdf.circle(lineChartX + lineChartW, lineChartY + lineChartH - (debtData[lastIdx].paid / maxVal * lineChartH), 2, 'F');
+  }
+  
+  // Chart legend
+  pdf.setFillColor(107, 114, 128);
+  pdf.circle(lineChartX + lineChartW - 60, y + 12, 2, 'F');
+  addText('Saldo Devedor', lineChartX + lineChartW - 55, y + 13.5, { fontSize: 7, color: colors.secondary });
+  pdf.setFillColor(59, 130, 246);
+  pdf.circle(lineChartX + lineChartW - 15, y + 12, 2, 'F');
+  addText('Pago', lineChartX + lineChartW - 10, y + 13.5, { fontSize: 7, color: colors.secondary });
+
+  y += 70;
+
+  // === DETAILED DATA SECTION ===
+  checkNewPage(80);
+  
+  const colWidth = (contentWidth - 8) / 2;
+  
+  // Left column: Investment Summary
+  drawRoundedRect(margin, y, colWidth, 75, 4, colors.light);
+  addText('RESUMO DO INVESTIMENTO', margin + 8, y + 12, { fontSize: 9, fontStyle: 'bold', color: colors.primary });
+  
   const summaryItems = [
     ['Valor de Compra', formatCurrency(result.purchasePrice)],
     ['Valor de Mercado', formatCurrency(result.marketValue)],
     ['Entrada', formatCurrency(result.entryValue)],
     ['Valor Financiado', formatCurrency(result.financedAmount)],
-    ['Total Investido', formatCurrency(result.totalInvestment)]
+    ['Total Investido', formatCurrency(result.totalInvestment)],
   ];
-
-  summaryItems.forEach(([label, value], i) => {
-    addTableRow(label, value, i === summaryItems.length - 1);
+  
+  let itemY = y + 22;
+  summaryItems.forEach(([label, value], idx) => {
+    const isLast = idx === summaryItems.length - 1;
+    if (isLast) {
+      drawRoundedRect(margin + 4, itemY - 3, colWidth - 8, 12, 2, colors.white);
+    }
+    addText(label, margin + 8, itemY + 4, { fontSize: 8, color: colors.secondary });
+    addText(value, margin + colWidth - 8, itemY + 4, { fontSize: 8, fontStyle: isLast ? 'bold' : 'normal', color: colors.primary, align: 'right' });
+    itemY += 11;
   });
-
-  y += 8;
-
-  // Costs Details
-  addText('CUSTOS DETALHADOS', margin, y, { fontSize: 10, fontStyle: 'bold', color: [31, 41, 55] });
-  y += 8;
-  addLine(y);
-  y += 6;
-
+  
+  // Right column: Costs
+  drawRoundedRect(margin + colWidth + 8, y, colWidth, 75, 4, colors.light);
+  addText('CUSTOS DETALHADOS', margin + colWidth + 16, y + 12, { fontSize: 9, fontStyle: 'bold', color: colors.primary });
+  
   const costItems = [
     [`Parcelas Pagas (${result.holdingPeriod}x)`, formatCurrency(result.totalPaidUntilResale)],
     ['Juros Pagos', formatCurrency(result.totalInterestPaid)],
+    ['ITBI + Documentação', formatCurrency(result.itbi + result.documentation)],
+    ['Reforma + Despesas', formatCurrency(result.renovation + (result.monthlyExpenses * result.holdingPeriod))],
+    ['Saldo Devedor Revenda', formatCurrency(result.remainingDebtAtResale)],
   ];
-
-  if (result.itbi > 0) costItems.push(['ITBI', formatCurrency(result.itbi)]);
-  if (result.documentation > 0) costItems.push(['Documentação', formatCurrency(result.documentation)]);
-  if (result.brokerage > 0) costItems.push(['Corretagem (Revenda)', formatCurrency(result.brokerage)]);
-  if (result.renovation > 0) costItems.push(['Reforma', formatCurrency(result.renovation)]);
-  if (result.monthlyExpenses > 0) costItems.push([`Despesas Mensais (${result.holdingPeriod}x)`, formatCurrency(result.monthlyExpenses * result.holdingPeriod)]);
-  costItems.push(['Saldo Devedor na Revenda', formatCurrency(result.remainingDebtAtResale)]);
-
-  costItems.forEach(([label, value], i) => {
-    addTableRow(label, value, i === costItems.length - 1);
+  
+  itemY = y + 22;
+  costItems.forEach(([label, value], idx) => {
+    const isLast = idx === costItems.length - 1;
+    if (isLast) {
+      drawRoundedRect(margin + colWidth + 12, itemY - 3, colWidth - 8, 12, 2, colors.white);
+    }
+    addText(label, margin + colWidth + 16, itemY + 4, { fontSize: 8, color: colors.secondary });
+    addText(value, margin + colWidth + colWidth, itemY + 4, { fontSize: 8, fontStyle: isLast ? 'bold' : 'normal', color: colors.primary, align: 'right' });
+    itemY += 11;
   });
 
-  y += 12;
+  y += 85;
 
   // === TIMELINE COMPARISON TABLE ===
-  checkNewPage(60);
-  addText('COMPARATIVO DE PRAZOS DE REVENDA', margin, y, { fontSize: 10, fontStyle: 'bold', color: [31, 41, 55] });
-  y += 8;
-  addLine(y);
-  y += 6;
-
+  checkNewPage(70);
+  drawRoundedRect(margin, y, contentWidth, 8 + (result.timelineComparison.length * 9) + 5, 4, colors.white, [229, 231, 235]);
+  
   // Table header
-  pdf.setFillColor(249, 250, 251);
-  pdf.rect(margin, y - 4, contentWidth, 8, 'F');
-  const colWidths = [25, 35, 25, 40, 40];
-  let xPos = margin;
-  ['Prazo', 'Lucro', 'ROI', 'Saldo Devedor', 'Total Pago'].forEach((header, i) => {
-    addText(header, xPos + 2, y, { fontSize: 8, fontStyle: 'bold', color: [75, 85, 99] });
+  const tableY = y + 5;
+  pdf.setFillColor(243, 244, 246);
+  pdf.rect(margin + 2, tableY, contentWidth - 4, 10, 'F');
+  
+  const colWidths = [28, 38, 28, 38, 38];
+  let xPos = margin + 6;
+  ['PRAZO', 'LUCRO', 'ROI', 'SALDO DEV.', 'TOTAL PAGO'].forEach((header, i) => {
+    addText(header, xPos, tableY + 6.5, { fontSize: 7, fontStyle: 'bold', color: colors.secondary });
     xPos += colWidths[i];
   });
-  y += 8;
-
+  
   // Table rows
+  let rowY = tableY + 14;
   result.timelineComparison.forEach((row) => {
-    checkNewPage(8);
     const isSelected = row.month === result.holdingPeriod;
+    
     if (isSelected) {
-      pdf.setFillColor(243, 244, 246);
-      pdf.rect(margin, y - 4, contentWidth, 8, 'F');
+      pdf.setFillColor(239, 246, 255);
+      pdf.rect(margin + 2, rowY - 4, contentWidth - 4, 9, 'F');
     }
     
-    xPos = margin;
+    xPos = margin + 6;
     const values = [
-      `${row.month} meses${isSelected ? ' ●' : ''}`,
+      `${row.month} meses`,
       formatCurrency(row.profit),
       `${row.roi.toFixed(1)}%`,
       formatCurrency(row.remainingDebt),
@@ -239,132 +453,78 @@ export async function exportInvestmentPDF(result: InvestmentResult, analysisText
     ];
     
     values.forEach((val, i) => {
-      const color: [number, number, number] = (i === 1 || i === 2) && row.profit < 0 
-        ? [220, 38, 38] 
-        : isSelected ? [17, 24, 39] : [107, 114, 128];
-      addText(val, xPos + 2, y, { fontSize: 8, color, fontStyle: isSelected ? 'bold' : 'normal' });
+      const isProfit = i === 1 || i === 2;
+      let color = isSelected ? colors.primary : colors.secondary;
+      if (isProfit && row.profit < 0) color = colors.danger;
+      if (isProfit && row.profit > 0 && isSelected) color = colors.success;
+      
+      addText(val, xPos, rowY, { 
+        fontSize: 7.5, 
+        fontStyle: isSelected ? 'bold' : 'normal', 
+        color 
+      });
       xPos += colWidths[i];
     });
-    y += 8;
+    
+    if (isSelected) {
+      // Selection indicator
+      pdf.setFillColor(59, 130, 246);
+      pdf.circle(margin + contentWidth - 8, rowY - 1.5, 2, 'F');
+    }
+    
+    rowY += 9;
   });
 
-  y += 12;
+  y = rowY + 10;
 
   // === ANALYSIS TEXT ===
-  checkNewPage(40);
-  addText('ANÁLISE DO INVESTIMENTO', margin, y, { fontSize: 10, fontStyle: 'bold', color: [31, 41, 55] });
-  y += 8;
-  addLine(y);
-  y += 8;
-
-  // Split and wrap analysis text
-  pdf.setFontSize(9);
-  pdf.setFont('helvetica', 'normal');
-  pdf.setTextColor(55, 65, 81);
+  checkNewPage(60);
+  drawRoundedRect(margin, y, contentWidth, 50, 4, colors.light);
+  addText('ANÁLISE DO INVESTIMENTO', margin + 8, y + 12, { fontSize: 9, fontStyle: 'bold', color: colors.primary });
   
-  const lines = pdf.splitTextToSize(analysisText.replace(/\n\n/g, '\n'), contentWidth);
-  lines.forEach((line: string) => {
-    checkNewPage(6);
-    pdf.text(line, margin, y);
-    y += 5;
-  });
-
-  y += 12;
-
-  // === DEBT EVOLUTION MINI TABLE ===
-  if (result.debtEvolution.length > 0) {
-    checkNewPage(50);
-    addText('EVOLUÇÃO DA DÍVIDA (PRIMEIROS MESES)', margin, y, { fontSize: 10, fontStyle: 'bold', color: [31, 41, 55] });
-    y += 8;
-    addLine(y);
-    y += 6;
-
-    // Header
-    pdf.setFillColor(249, 250, 251);
-    pdf.rect(margin, y - 4, contentWidth, 8, 'F');
-    const debtColWidths = [30, 55, 55];
-    xPos = margin;
-    ['Mês', 'Saldo Devedor', 'Total Pago'].forEach((header, i) => {
-      addText(header, xPos + 2, y, { fontSize: 8, fontStyle: 'bold', color: [75, 85, 99] });
-      xPos += debtColWidths[i];
-    });
-    y += 8;
-
-    // Show first 6 months
-    result.debtEvolution.slice(0, 6).forEach((row) => {
-      checkNewPage(8);
-      xPos = margin;
-      const values = [`${row.month}º`, formatCurrency(row.debt), formatCurrency(row.paid)];
-      values.forEach((val, i) => {
-        addText(val, xPos + 2, y, { fontSize: 8, color: [107, 114, 128] });
-        xPos += debtColWidths[i];
-      });
-      y += 7;
-    });
+  // Truncate and wrap text
+  pdf.setFontSize(8);
+  pdf.setFont('helvetica', 'normal');
+  pdf.setTextColor(75, 85, 99);
+  
+  const truncatedText = analysisText.length > 600 ? analysisText.substring(0, 600) + '...' : analysisText;
+  const lines = pdf.splitTextToSize(truncatedText.replace(/\n\n/g, ' '), contentWidth - 16);
+  const maxLines = Math.min(lines.length, 6);
+  
+  for (let i = 0; i < maxLines; i++) {
+    pdf.text(lines[i], margin + 8, y + 22 + (i * 5));
   }
 
-  y += 12;
-
-  // === PAYMENT BREAKDOWN MINI TABLE ===
-  if (result.paymentBreakdown.length > 0) {
-    checkNewPage(50);
-    addText('COMPOSIÇÃO DAS PARCELAS (PRIMEIROS MESES)', margin, y, { fontSize: 10, fontStyle: 'bold', color: [31, 41, 55] });
-    y += 8;
-    addLine(y);
-    y += 6;
-
-    // Header
-    pdf.setFillColor(249, 250, 251);
-    pdf.rect(margin, y - 4, contentWidth, 8, 'F');
-    const payColWidths = [25, 40, 40, 40];
-    xPos = margin;
-    ['Mês', 'Amortização', 'Juros', 'Parcela'].forEach((header, i) => {
-      addText(header, xPos + 2, y, { fontSize: 8, fontStyle: 'bold', color: [75, 85, 99] });
-      xPos += payColWidths[i];
-    });
-    y += 8;
-
-    // Show first 6 months
-    result.paymentBreakdown.slice(0, 6).forEach((row) => {
-      checkNewPage(8);
-      xPos = margin;
-      const values = [
-        `${row.month}º`, 
-        formatCurrency(row.amortization), 
-        formatCurrency(row.interest), 
-        formatCurrency(row.installment)
-      ];
-      values.forEach((val, i) => {
-        addText(val, xPos + 2, y, { fontSize: 8, color: [107, 114, 128] });
-        xPos += payColWidths[i];
-      });
-      y += 7;
-    });
-  }
+  y += 60;
 
   // === DISCLAIMER ===
-  checkNewPage(30);
-  y += 10;
-  pdf.setFillColor(254, 252, 232); // yellow-50
-  pdf.roundedRect(margin, y - 4, contentWidth, 28, 2, 2, 'F');
+  checkNewPage(35);
+  drawRoundedRect(margin, y, contentWidth, 22, 4, [254, 252, 232]);
+  pdf.setFillColor(245, 158, 11);
+  pdf.circle(margin + 10, y + 11, 3, 'F');
+  addText('!', margin + 10, y + 13, { fontSize: 8, fontStyle: 'bold', color: colors.white, align: 'center' });
   
-  addText('⚠ AVISO LEGAL', margin + 4, y + 4, { fontSize: 8, fontStyle: 'bold', color: [161, 98, 7] });
-  
-  const disclaimerText = 'Esta análise é uma estimativa baseada nos dados fornecidos e não substitui orientação financeira, jurídica ou contábil profissional. Os valores reais podem variar conforme condições de mercado, taxas, impostos e outros fatores não considerados nesta simulação.';
-  pdf.setFontSize(7);
-  pdf.setFont('helvetica', 'normal');
-  pdf.setTextColor(161, 98, 7);
-  const disclaimerLines = pdf.splitTextToSize(disclaimerText, contentWidth - 8);
-  disclaimerLines.forEach((line: string, i: number) => {
-    pdf.text(line, margin + 4, y + 12 + (i * 4));
-  });
+  addText('AVISO LEGAL', margin + 18, y + 8, { fontSize: 7, fontStyle: 'bold', color: [161, 98, 7] });
+  const disclaimerText = 'Esta análise é uma estimativa e não substitui orientação financeira profissional. Valores podem variar.';
+  addText(disclaimerText, margin + 18, y + 15, { fontSize: 7, color: [161, 98, 7] });
+
+  y += 30;
 
   // === FOOTER ===
-  const footerY = pageHeight - 10;
+  const footerY = pageHeight - 12;
   pdf.setDrawColor(229, 231, 235);
   pdf.line(margin, footerY - 5, pageWidth - margin, footerY - 5);
-  addText('Análise gerada automaticamente • VDH Imobiliária', pageWidth / 2, footerY, { 
-    fontSize: 7, color: [156, 163, 175], align: 'center' 
+  
+  // Logo placeholder
+  pdf.setFillColor(17, 24, 39);
+  pdf.roundedRect(margin, footerY - 3, 25, 8, 2, 2, 'F');
+  addText('VDH', margin + 12.5, footerY + 1.5, { fontSize: 6, fontStyle: 'bold', color: colors.white, align: 'center' });
+  
+  addText('Análise gerada automaticamente', pageWidth / 2, footerY, { 
+    fontSize: 7, color: colors.muted, align: 'center' 
+  });
+  addText(`Página 1 de 1`, pageWidth - margin, footerY, { 
+    fontSize: 7, color: colors.muted, align: 'right' 
   });
 
   // Save
