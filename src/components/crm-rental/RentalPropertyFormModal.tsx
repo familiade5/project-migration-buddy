@@ -195,9 +195,9 @@ export function RentalPropertyFormModal({
                                 <SelectValue />
                               </SelectTrigger>
                             </FormControl>
-                            <SelectContent className="bg-white border-gray-200">
+                            <SelectContent className="bg-white border-gray-200 text-gray-900">
                               {RENTAL_PROPERTY_TYPES.map((type) => (
-                                <SelectItem key={type} value={type}>
+                                <SelectItem key={type} value={type} className="text-gray-900 focus:bg-gray-100 focus:text-gray-900">
                                   {type}
                                 </SelectItem>
                               ))}
@@ -277,10 +277,10 @@ export function RentalPropertyFormModal({
                               <SelectValue placeholder="Selecione o proprietário" />
                             </SelectTrigger>
                           </FormControl>
-                          <SelectContent className="bg-white border-gray-200">
-                            <SelectItem value="none">Nenhum</SelectItem>
+                          <SelectContent className="bg-white border-gray-200 text-gray-900">
+                            <SelectItem value="none" className="text-gray-900 focus:bg-gray-100 focus:text-gray-900">Nenhum</SelectItem>
                             {owners.map((owner) => (
-                              <SelectItem key={owner.id} value={owner.id}>
+                              <SelectItem key={owner.id} value={owner.id} className="text-gray-900 focus:bg-gray-100 focus:text-gray-900">
                                 {owner.full_name}
                               </SelectItem>
                             ))}
@@ -628,7 +628,7 @@ export function RentalPropertyFormModal({
                   type="button"
                   variant="outline"
                   onClick={() => onOpenChange(false)}
-                  className="text-gray-700 border-gray-200 hover:bg-gray-100"
+                  className="bg-white text-gray-900 border-gray-300 hover:bg-gray-100 hover:text-gray-900"
                 >
                   Cancelar
                 </Button>
