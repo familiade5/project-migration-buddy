@@ -139,12 +139,19 @@ export function PropertyDetailModal({
         </DialogHeader>
 
         <Tabs defaultValue="info" className="mt-4">
-          <TabsList className="bg-gray-100 border-gray-200">
+          <TabsList className="bg-gray-100 border-gray-200 flex-wrap h-auto gap-1">
             <TabsTrigger
               value="info"
               className="data-[state=active]:bg-white text-gray-500 data-[state=active]:text-gray-900"
             >
               Informações
+            </TabsTrigger>
+            <TabsTrigger
+              value="financing"
+              className="data-[state=active]:bg-white text-gray-500 data-[state=active]:text-gray-900"
+            >
+              <Calculator className="w-3 h-3 mr-1" />
+              Simulação
             </TabsTrigger>
             <TabsTrigger
               value="history"
@@ -273,6 +280,13 @@ export function PropertyDetailModal({
                 <p className="text-sm text-gray-900 whitespace-pre-wrap">{property.notes}</p>
               </div>
             )}
+          </TabsContent>
+
+          <TabsContent value="financing" className="mt-4">
+            <EmbeddedFinancingCalculator 
+              propertyValue={property.sale_value || undefined}
+              propertyCode={property.code}
+            />
           </TabsContent>
 
           <TabsContent value="history" className="mt-4">
