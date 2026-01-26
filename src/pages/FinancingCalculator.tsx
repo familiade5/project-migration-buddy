@@ -270,7 +270,7 @@ export default function FinancingCalculator() {
 
           {/* Simulation Tab */}
           <TabsContent value="simulation" className="space-y-4">
-            <Card className="border-gray-200 shadow-sm">
+            <Card className="border-gray-200 shadow-sm bg-white">
               <CardHeader className="pb-4">
                 <CardTitle className="text-lg text-gray-900">Simular Financiamento</CardTitle>
                 <CardDescription className="text-gray-500">
@@ -285,7 +285,7 @@ export default function FinancingCalculator() {
                     Valor do Imóvel
                   </Label>
                   <div className="relative">
-                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm">R$</span>
+                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-sm">R$</span>
                     <Input
                       id="propertyValue"
                       type="text"
@@ -293,7 +293,7 @@ export default function FinancingCalculator() {
                       placeholder="500.000,00"
                       value={propertyValue}
                       onChange={(e) => handleCurrencyInput(e.target.value, setPropertyValue)}
-                      className="pl-10 border-gray-200 focus:border-gray-400 focus:ring-gray-400"
+                      className="pl-10 bg-white border-gray-200 text-gray-900 placeholder:text-gray-400 focus:border-gray-400 focus:ring-gray-400"
                     />
                   </div>
                 </div>
@@ -305,7 +305,7 @@ export default function FinancingCalculator() {
                     Entrada
                   </Label>
                   <div className="relative">
-                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm">R$</span>
+                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-sm">R$</span>
                     <Input
                       id="downPayment"
                       type="text"
@@ -313,7 +313,7 @@ export default function FinancingCalculator() {
                       placeholder="100.000,00"
                       value={downPayment}
                       onChange={(e) => handleCurrencyInput(e.target.value, setDownPayment)}
-                      className="pl-10 border-gray-200 focus:border-gray-400 focus:ring-gray-400"
+                      className="pl-10 bg-white border-gray-200 text-gray-900 placeholder:text-gray-400 focus:border-gray-400 focus:ring-gray-400"
                     />
                   </div>
                 </div>
@@ -332,9 +332,9 @@ export default function FinancingCalculator() {
                       placeholder="10,99"
                       value={interestRate}
                       onChange={(e) => setInterestRate(e.target.value.replace(/[^\d,]/g, ''))}
-                      className="pr-8 border-gray-300 focus:border-gray-500 focus:ring-gray-500"
+                      className="pr-8 bg-white border-gray-200 text-gray-900 placeholder:text-gray-400 focus:border-gray-400 focus:ring-gray-400"
                     />
-                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm">%</span>
+                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 text-sm">%</span>
                   </div>
                   <div className="flex items-center gap-2 text-xs">
                     <Lightbulb className="w-3 h-3 text-amber-500" />
@@ -357,7 +357,7 @@ export default function FinancingCalculator() {
                     placeholder="360"
                     value={termMonths}
                     onChange={(e) => setTermMonths(e.target.value)}
-                    className="border-gray-200 focus:border-gray-400 focus:ring-gray-400"
+                    className="bg-white border-gray-200 text-gray-900 placeholder:text-gray-400 focus:border-gray-400 focus:ring-gray-400"
                   />
                   {termMonths && (
                     <p className="text-xs text-gray-400">
@@ -375,12 +375,12 @@ export default function FinancingCalculator() {
                     className="grid grid-cols-2 gap-3"
                   >
                     <div className={`
-                      flex items-center space-x-3 p-4 rounded-lg border-2 cursor-pointer transition-all
+                      flex items-center space-x-3 p-4 rounded-lg border-2 cursor-pointer transition-all bg-white
                       ${financingTable === 'PRICE' 
                         ? 'border-gray-900 bg-gray-50' 
                         : 'border-gray-200 hover:border-gray-300'}
                     `}>
-                      <RadioGroupItem value="PRICE" id="price" className="border-gray-400" />
+                      <RadioGroupItem value="PRICE" id="price" className="border-gray-400 text-gray-900" />
                       <div>
                         <Label htmlFor="price" className="cursor-pointer font-medium text-gray-900">
                           PRICE
@@ -389,12 +389,12 @@ export default function FinancingCalculator() {
                       </div>
                     </div>
                     <div className={`
-                      flex items-center space-x-3 p-4 rounded-lg border-2 cursor-pointer transition-all
+                      flex items-center space-x-3 p-4 rounded-lg border-2 cursor-pointer transition-all bg-white
                       ${financingTable === 'SAC' 
                         ? 'border-gray-900 bg-gray-50' 
                         : 'border-gray-200 hover:border-gray-300'}
                     `}>
-                      <RadioGroupItem value="SAC" id="sac" className="border-gray-400" />
+                      <RadioGroupItem value="SAC" id="sac" className="border-gray-400 text-gray-900" />
                       <div>
                         <Label htmlFor="sac" className="cursor-pointer font-medium text-gray-900">
                           SAC
@@ -427,7 +427,7 @@ export default function FinancingCalculator() {
 
             {/* Simulation Result */}
             {simulationResult && (
-              <Card className="border-gray-200 shadow-sm bg-gradient-to-br from-gray-50 to-white">
+              <Card className="border-gray-200 shadow-sm bg-white">
                 <CardHeader className="pb-3">
                   <CardTitle className="text-lg text-gray-900 flex items-center gap-2">
                     Resultado da Simulação
@@ -500,7 +500,7 @@ export default function FinancingCalculator() {
 
           {/* Balance Tab */}
           <TabsContent value="balance" className="space-y-4">
-            <Card className="border-gray-200 shadow-sm">
+            <Card className="border-gray-200 shadow-sm bg-white">
               <CardHeader className="pb-4">
                 <CardTitle className="text-lg text-gray-900">Simular Saldo Devedor</CardTitle>
                 <CardDescription className="text-gray-500">
@@ -515,7 +515,7 @@ export default function FinancingCalculator() {
                     Valor Financiado Original
                   </Label>
                   <div className="relative">
-                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm">R$</span>
+                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-sm">R$</span>
                     <Input
                       id="financedAmount"
                       type="text"
@@ -523,7 +523,7 @@ export default function FinancingCalculator() {
                       placeholder="400.000,00"
                       value={financedAmount}
                       onChange={(e) => handleCurrencyInput(e.target.value, setFinancedAmount)}
-                      className="pl-10 border-gray-200 focus:border-gray-400 focus:ring-gray-400"
+                      className="pl-10 bg-white border-gray-200 text-gray-900 placeholder:text-gray-400 focus:border-gray-400 focus:ring-gray-400"
                     />
                   </div>
                 </div>
@@ -535,7 +535,7 @@ export default function FinancingCalculator() {
                     Valor da Parcela Atual
                   </Label>
                   <div className="relative">
-                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm">R$</span>
+                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-sm">R$</span>
                     <Input
                       id="currentInstallment"
                       type="text"
@@ -543,7 +543,7 @@ export default function FinancingCalculator() {
                       placeholder="3.500,00"
                       value={currentInstallment}
                       onChange={(e) => handleCurrencyInput(e.target.value, setCurrentInstallment)}
-                      className="pl-10 border-gray-200 focus:border-gray-400 focus:ring-gray-400"
+                      className="pl-10 bg-white border-gray-200 text-gray-900 placeholder:text-gray-400 focus:border-gray-400 focus:ring-gray-400"
                     />
                   </div>
                 </div>
@@ -561,7 +561,7 @@ export default function FinancingCalculator() {
                     placeholder="24"
                     value={paidInstallments}
                     onChange={(e) => setPaidInstallments(e.target.value)}
-                    className="border-gray-200 focus:border-gray-400 focus:ring-gray-400"
+                    className="bg-white border-gray-200 text-gray-900 placeholder:text-gray-400 focus:border-gray-400 focus:ring-gray-400"
                   />
                 </div>
 
@@ -579,9 +579,9 @@ export default function FinancingCalculator() {
                       placeholder="10,99"
                       value={balanceInterestRate}
                       onChange={(e) => setBalanceInterestRate(e.target.value.replace(/[^\d,]/g, ''))}
-                      className="pr-8 border-gray-300 focus:border-gray-500 focus:ring-gray-500"
+                      className="pr-8 bg-white border-gray-200 text-gray-900 placeholder:text-gray-400 focus:border-gray-400 focus:ring-gray-400"
                     />
-                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm">%</span>
+                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 text-sm">%</span>
                   </div>
                   <div className="flex items-center gap-2 text-xs">
                     <Lightbulb className="w-3 h-3 text-amber-500" />
@@ -600,12 +600,12 @@ export default function FinancingCalculator() {
                     className="grid grid-cols-2 gap-3"
                   >
                     <div className={`
-                      flex items-center space-x-3 p-4 rounded-lg border-2 cursor-pointer transition-all
+                      flex items-center space-x-3 p-4 rounded-lg border-2 cursor-pointer transition-all bg-white
                       ${balanceTable === 'PRICE' 
                         ? 'border-gray-900 bg-gray-50' 
                         : 'border-gray-200 hover:border-gray-300'}
                     `}>
-                      <RadioGroupItem value="PRICE" id="balance-price" className="border-gray-400" />
+                      <RadioGroupItem value="PRICE" id="balance-price" className="border-gray-400 text-gray-900" />
                       <div>
                         <Label htmlFor="balance-price" className="cursor-pointer font-medium text-gray-900">
                           PRICE
@@ -614,12 +614,12 @@ export default function FinancingCalculator() {
                       </div>
                     </div>
                     <div className={`
-                      flex items-center space-x-3 p-4 rounded-lg border-2 cursor-pointer transition-all
+                      flex items-center space-x-3 p-4 rounded-lg border-2 cursor-pointer transition-all bg-white
                       ${balanceTable === 'SAC' 
                         ? 'border-gray-900 bg-gray-50' 
                         : 'border-gray-200 hover:border-gray-300'}
                     `}>
-                      <RadioGroupItem value="SAC" id="balance-sac" className="border-gray-400" />
+                      <RadioGroupItem value="SAC" id="balance-sac" className="border-gray-400 text-gray-900" />
                       <div>
                         <Label htmlFor="balance-sac" className="cursor-pointer font-medium text-gray-900">
                           SAC
@@ -652,7 +652,7 @@ export default function FinancingCalculator() {
 
             {/* Balance Result */}
             {balanceResult && (
-              <Card className="border-gray-200 shadow-sm bg-gradient-to-br from-gray-50 to-white">
+              <Card className="border-gray-200 shadow-sm bg-white">
                 <CardHeader className="pb-3">
                   <CardTitle className="text-lg text-gray-900 flex items-center gap-2">
                     Saldo Devedor Estimado
