@@ -344,14 +344,14 @@ export function RentalContractFormModal({
               <div>
                 <Label>Inquilino</Label>
                 <Select
-                  value={formData.tenant_id || ''}
-                  onValueChange={(v) => updateField('tenant_id', v || null)}
+                  value={formData.tenant_id || 'none'}
+                  onValueChange={(v) => updateField('tenant_id', v === 'none' ? null : v)}
                 >
                   <SelectTrigger className="bg-gray-800 border-gray-700">
                     <SelectValue placeholder="Selecione um cliente" />
                   </SelectTrigger>
                   <SelectContent className="bg-gray-800 border-gray-700">
-                    <SelectItem value="">Nenhum</SelectItem>
+                    <SelectItem value="none">Nenhum</SelectItem>
                     {clients.map((client) => (
                       <SelectItem key={client.id} value={client.id}>
                         {client.full_name} {client.cpf && `(${client.cpf})`}
@@ -367,14 +367,14 @@ export function RentalContractFormModal({
               <div>
                 <Label>Responsável Interno</Label>
                 <Select
-                  value={formData.responsible_user_id || ''}
-                  onValueChange={(v) => updateField('responsible_user_id', v || null)}
+                  value={formData.responsible_user_id || 'none'}
+                  onValueChange={(v) => updateField('responsible_user_id', v === 'none' ? null : v)}
                 >
                   <SelectTrigger className="bg-gray-800 border-gray-700">
                     <SelectValue placeholder="Selecione um responsável" />
                   </SelectTrigger>
                   <SelectContent className="bg-gray-800 border-gray-700">
-                    <SelectItem value="">Nenhum</SelectItem>
+                    <SelectItem value="none">Nenhum</SelectItem>
                     {users.map((user) => (
                       <SelectItem key={user.id} value={user.id}>
                         {user.full_name}
