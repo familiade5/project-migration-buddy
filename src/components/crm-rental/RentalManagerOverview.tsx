@@ -13,43 +13,43 @@ export function RentalManagerOverview({ metrics }: RentalManagerOverviewProps) {
   );
 
   return (
-    <div className="bg-gray-900 border border-gray-800 rounded-xl overflow-hidden">
-      <div className="p-4 border-b border-gray-800">
-        <h3 className="text-lg font-semibold text-white flex items-center gap-2">
+    <div className="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm">
+      <div className="p-4 border-b border-gray-200">
+        <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
           <User className="w-5 h-5" />
           Visão Gerencial por Responsável
         </h3>
-        <p className="text-sm text-gray-400 mt-1">
+        <p className="text-sm text-gray-500 mt-1">
           Controle de inadimplência e valores por membro da equipe
         </p>
       </div>
 
       {responsibleList.length === 0 ? (
         <div className="p-8 text-center">
-          <User className="w-12 h-12 text-gray-600 mx-auto mb-3" />
-          <p className="text-gray-400">Nenhum responsável atribuído</p>
-          <p className="text-sm text-gray-500 mt-1">
+          <User className="w-12 h-12 text-gray-300 mx-auto mb-3" />
+          <p className="text-gray-500">Nenhum responsável atribuído</p>
+          <p className="text-sm text-gray-400 mt-1">
             Atribua responsáveis aos contratos para ver métricas
           </p>
         </div>
       ) : (
-        <div className="divide-y divide-gray-800">
+        <div className="divide-y divide-gray-100">
           {responsibleList.map((item) => (
-            <div key={item.userId} className="p-4 hover:bg-gray-800/50 transition-colors">
+            <div key={item.userId} className="p-4 hover:bg-gray-50 transition-colors">
               <div className="flex items-center justify-between mb-3">
                 <div className="flex items-center gap-3">
                   <div className={cn(
                     "w-10 h-10 rounded-lg flex items-center justify-center",
-                    item.overdueCount > 0 ? "bg-red-500/20" : "bg-gray-800"
+                    item.overdueCount > 0 ? "bg-red-100" : "bg-gray-100"
                   )}>
                     <User className={cn(
                       "w-5 h-5",
-                      item.overdueCount > 0 ? "text-red-400" : "text-gray-400"
+                      item.overdueCount > 0 ? "text-red-600" : "text-gray-500"
                     )} />
                   </div>
                   <div>
-                    <p className="text-white font-medium">{item.userName}</p>
-                    <p className="text-sm text-gray-400">
+                    <p className="text-gray-900 font-medium">{item.userName}</p>
+                    <p className="text-sm text-gray-500">
                       {item.contractCount} {item.contractCount === 1 ? 'contrato' : 'contratos'}
                     </p>
                   </div>
@@ -57,57 +57,57 @@ export function RentalManagerOverview({ metrics }: RentalManagerOverviewProps) {
               </div>
 
               <div className="grid grid-cols-3 gap-3">
-                <div className="bg-gray-800 rounded-lg p-3">
+                <div className="bg-gray-50 rounded-lg p-3 border border-gray-200">
                   <div className="flex items-center gap-2 mb-1">
                     <Building2 className="w-3 h-3 text-gray-500" />
-                    <span className="text-xs text-gray-400">Carteira</span>
+                    <span className="text-xs text-gray-500">Carteira</span>
                   </div>
-                  <p className="text-white font-medium">{formatCurrency(item.totalValue)}</p>
+                  <p className="text-gray-900 font-medium">{formatCurrency(item.totalValue)}</p>
                 </div>
                 
                 <div className={cn(
-                  "rounded-lg p-3",
-                  item.overdueCount > 0 ? "bg-red-500/10" : "bg-gray-800"
+                  "rounded-lg p-3 border",
+                  item.overdueCount > 0 ? "bg-red-50 border-red-200" : "bg-gray-50 border-gray-200"
                 )}>
                   <div className="flex items-center gap-2 mb-1">
                     <AlertTriangle className={cn(
                       "w-3 h-3",
-                      item.overdueCount > 0 ? "text-red-400" : "text-gray-500"
+                      item.overdueCount > 0 ? "text-red-600" : "text-gray-500"
                     )} />
                     <span className={cn(
                       "text-xs",
-                      item.overdueCount > 0 ? "text-red-400" : "text-gray-400"
+                      item.overdueCount > 0 ? "text-red-700" : "text-gray-500"
                     )}>
                       Em Atraso
                     </span>
                   </div>
                   <p className={cn(
                     "font-medium",
-                    item.overdueCount > 0 ? "text-red-400" : "text-white"
+                    item.overdueCount > 0 ? "text-red-600" : "text-gray-900"
                   )}>
                     {item.overdueCount} parcelas
                   </p>
                 </div>
 
                 <div className={cn(
-                  "rounded-lg p-3",
-                  item.overdueValue > 0 ? "bg-red-500/10" : "bg-gray-800"
+                  "rounded-lg p-3 border",
+                  item.overdueValue > 0 ? "bg-red-50 border-red-200" : "bg-gray-50 border-gray-200"
                 )}>
                   <div className="flex items-center gap-2 mb-1">
                     <DollarSign className={cn(
                       "w-3 h-3",
-                      item.overdueValue > 0 ? "text-red-400" : "text-gray-500"
+                      item.overdueValue > 0 ? "text-red-600" : "text-gray-500"
                     )} />
                     <span className={cn(
                       "text-xs",
-                      item.overdueValue > 0 ? "text-red-400" : "text-gray-400"
+                      item.overdueValue > 0 ? "text-red-700" : "text-gray-500"
                     )}>
                       Valor
                     </span>
                   </div>
                   <p className={cn(
                     "font-medium",
-                    item.overdueValue > 0 ? "text-red-400" : "text-white"
+                    item.overdueValue > 0 ? "text-red-600" : "text-gray-900"
                   )}>
                     {formatCurrency(item.overdueValue)}
                   </p>
