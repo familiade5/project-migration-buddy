@@ -1085,7 +1085,7 @@ export type Database = {
             foreignKeyName: "rental_contracts_tenant_id_fkey"
             columns: ["tenant_id"]
             isOneToOne: false
-            referencedRelation: "crm_clients"
+            referencedRelation: "rental_tenants"
             referencedColumns: ["id"]
           },
         ]
