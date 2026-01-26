@@ -19,7 +19,7 @@ interface CalculatorSelectorProps {
 
 export function CalculatorSelector({ onSelect }: CalculatorSelectorProps) {
   return (
-    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-5 duration-500">
+    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-5 duration-500 bg-white">
       {/* Header */}
       <div className="text-center max-w-2xl mx-auto">
         <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-600 to-blue-700 flex items-center justify-center mx-auto mb-4">
