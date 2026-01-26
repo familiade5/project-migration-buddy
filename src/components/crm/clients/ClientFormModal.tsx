@@ -302,6 +302,13 @@ export function ClientFormModal({
               className="bg-white border-gray-300 text-gray-900 min-h-[80px]"
               placeholder="Observações sobre o cliente..."
             />
+
+            {/* Info about documents */}
+            {!client && (
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 text-sm text-blue-700">
+                <strong>Dica:</strong> Após salvar o cliente, você poderá anexar documentos (RG, CPF, comprovantes, etc.) na tela de detalhes do cliente.
+              </div>
+            )}
           </div>
 
           {/* Actions */}

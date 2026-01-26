@@ -229,12 +229,18 @@ export default function CRM() {
 
         {/* Main Tabs */}
         <Tabs defaultValue="kanban" className="space-y-4">
-          <TabsList className="bg-gray-100">
-            <TabsTrigger value="kanban" className="data-[state=active]:bg-white">
+          <TabsList className="bg-gray-100 border border-gray-200">
+            <TabsTrigger 
+              value="kanban" 
+              className="data-[state=active]:bg-gray-900 data-[state=active]:text-white data-[state=inactive]:bg-transparent data-[state=inactive]:text-gray-600 hover:bg-gray-200"
+            >
               <LayoutDashboard className="w-4 h-4 mr-2" />
               Kanban
             </TabsTrigger>
-            <TabsTrigger value="clientes" className="data-[state=active]:bg-white">
+            <TabsTrigger 
+              value="clientes" 
+              className="data-[state=active]:bg-gray-900 data-[state=active]:text-white data-[state=inactive]:bg-transparent data-[state=inactive]:text-gray-600 hover:bg-gray-200"
+            >
               <Users className="w-4 h-4 mr-2" />
               Clientes
             </TabsTrigger>

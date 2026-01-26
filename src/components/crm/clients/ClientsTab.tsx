@@ -80,7 +80,14 @@ export function ClientsTab() {
     if (editingClient) {
       return await updateClient(editingClient.id, data);
     } else {
-      return await createClient(data);
+      const newClient = await createClient(data);
+      // After creating, open the detail modal so user can add documents
+      if (newClient) {
+        setIsFormOpen(false);
+        setSelectedClient(newClient);
+        setIsDetailOpen(true);
+      }
+      return newClient;
     }
   };
 
