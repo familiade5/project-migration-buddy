@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { RentalContract, propertyTypes, guaranteeTypes, getTotalMonthly } from '@/types/rental';
 import { formatCurrency } from '@/lib/formatCurrency';
 import { useRentalTenants } from '@/hooks/useRentalTenants';
+import { useRentalProperties } from '@/hooks/useRentalProperties';
+import { useRentalOwners } from '@/hooks/useRentalOwners';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import {
@@ -31,6 +33,7 @@ import {
   Calendar,
   Save,
   Loader2,
+  Home,
 } from 'lucide-react';
 
 interface RentalContractFormModalProps {
@@ -48,7 +51,10 @@ export function RentalContractFormModal({
 }: RentalContractFormModalProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [users, setUsers] = useState<{ id: string; full_name: string }[]>([]);
+  const [selectedPropertyId, setSelectedPropertyId] = useState<string | null>(null);
   const { tenants } = useRentalTenants();
+  const { properties } = useRentalProperties();
+  const { owners } = useRentalOwners();
   const { toast } = useToast();
 
   // Form state
@@ -79,6 +85,8 @@ export function RentalContractFormModal({
     management_fee_percentage: 10,
     notes: '',
     responsible_user_id: null,
+    rental_property_id: null,
+    owner_id: null,
   });
 
   // Load users
@@ -123,7 +131,10 @@ export function RentalContractFormModal({
         management_fee_percentage: contract.management_fee_percentage,
         notes: contract.notes || '',
         responsible_user_id: contract.responsible_user_id,
+        rental_property_id: contract.rental_property_id,
+        owner_id: contract.owner_id,
       });
+      setSelectedPropertyId(contract.rental_property_id);
     } else {
       // Reset to defaults
       setFormData({
@@ -153,9 +164,65 @@ export function RentalContractFormModal({
         management_fee_percentage: 10,
         notes: '',
         responsible_user_id: null,
+        rental_property_id: null,
+        owner_id: null,
       });
+      setSelectedPropertyId(null);
     }
   }, [contract, isOpen]);
+
+  // Handle property selection - auto-populate all fields
+  const handlePropertySelect = (propertyId: string) => {
+    if (propertyId === 'none') {
+      setSelectedPropertyId(null);
+      setFormData(prev => ({
+        ...prev,
+        rental_property_id: null,
+        owner_id: null,
+      }));
+      return;
+    }
+
+    const selectedProperty = properties.find(p => p.id === propertyId);
+    if (selectedProperty) {
+      setSelectedPropertyId(propertyId);
+      
+      // Build address string
+      const addressParts = [selectedProperty.address];
+      if (selectedProperty.number) addressParts[0] += `, ${selectedProperty.number}`;
+      if (selectedProperty.complement) addressParts.push(selectedProperty.complement);
+      const fullAddress = addressParts.join(' - ');
+
+      // Get owner data from the property's linked owner
+      const owner = selectedProperty.owner;
+      const bankInfo = owner 
+        ? [owner.bank_name, owner.bank_agency, owner.bank_account].filter(Boolean).join(' - ')
+        : '';
+
+      // Auto-populate all fields and set deposit = rent value
+      setFormData(prev => ({
+        ...prev,
+        rental_property_id: propertyId,
+        property_code: selectedProperty.code,
+        property_type: selectedProperty.property_type,
+        property_address: fullAddress,
+        property_neighborhood: selectedProperty.neighborhood || '',
+        property_city: selectedProperty.city,
+        property_state: selectedProperty.state,
+        rent_value: selectedProperty.rent_value,
+        condominium_fee: selectedProperty.condominium_fee || 0,
+        iptu_value: selectedProperty.iptu_value || 0,
+        other_fees: selectedProperty.other_fees || 0,
+        deposit_value: selectedProperty.rent_value, // Auto-set deposit = rent
+        owner_id: selectedProperty.owner_id || null,
+        owner_name: owner?.full_name || '',
+        owner_phone: owner?.phone || '',
+        owner_email: owner?.email || '',
+        owner_pix_key: owner?.pix_key || '',
+        owner_bank_info: bankInfo,
+      }));
+    }
+  };
 
   const handleSubmit = async () => {
     if (!formData.property_code || !formData.property_address || !formData.owner_name) {
@@ -222,28 +289,63 @@ export function RentalContractFormModal({
           <ScrollArea className="h-[400px] mt-4 pr-4">
             {/* Property Tab */}
             <TabsContent value="property" className="space-y-4 mt-0">
+              {/* Property Selector - NEW */}
+              <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-lg">
+                <div className="flex items-center gap-2 mb-2">
+                  <Home className="w-5 h-5 text-emerald-600" />
+                  <Label className="text-emerald-700 font-medium">Selecionar Imóvel Cadastrado</Label>
+                </div>
+                <Select
+                  value={selectedPropertyId || 'none'}
+                  onValueChange={handlePropertySelect}
+                >
+                  <SelectTrigger className="bg-white border-emerald-200 text-gray-900">
+                    <SelectValue placeholder="Escolha um imóvel para preencher automaticamente" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-white border-gray-200 text-gray-900 z-50">
+                    <SelectItem value="none" className="text-gray-900 focus:bg-gray-100 focus:text-gray-900">
+                      Nenhum (preencher manualmente)
+                    </SelectItem>
+                    {properties.map((property) => (
+                      <SelectItem 
+                        key={property.id} 
+                        value={property.id}
+                        className="text-gray-900 focus:bg-gray-100 focus:text-gray-900"
+                      >
+                        {property.code} - {property.address} ({property.property_type})
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <p className="text-xs text-emerald-600 mt-1">
+                  Ao selecionar um imóvel, os dados do imóvel, proprietário e valores serão preenchidos automaticamente.
+                </p>
+              </div>
+
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <Label>Código do Imóvel *</Label>
+                  <Label className="text-gray-700">Código do Imóvel *</Label>
                   <Input
                     value={formData.property_code || ''}
                     onChange={(e) => updateField('property_code', e.target.value)}
                     placeholder="Ex: LOC-001"
-                    className="bg-white border-gray-200"
+                    className="bg-white border-gray-200 text-gray-900"
                   />
                 </div>
                 <div>
-                  <Label>Tipo</Label>
+                  <Label className="text-gray-700">Tipo</Label>
                   <Select
                     value={formData.property_type}
                     onValueChange={(v) => updateField('property_type', v)}
                   >
-                    <SelectTrigger className="bg-white border-gray-200">
+                    <SelectTrigger className="bg-white border-gray-200 text-gray-900">
                       <SelectValue />
                     </SelectTrigger>
-                    <SelectContent className="bg-white border-gray-200">
+                    <SelectContent className="bg-white border-gray-200 text-gray-900 z-50">
                       {propertyTypes.map((type) => (
-                        <SelectItem key={type} value={type}>{type}</SelectItem>
+                        <SelectItem key={type} value={type} className="text-gray-900 focus:bg-gray-100 focus:text-gray-900">
+                          {type}
+                        </SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
@@ -251,34 +353,34 @@ export function RentalContractFormModal({
               </div>
 
               <div>
-                <Label>Endereço Completo *</Label>
+                <Label className="text-gray-700">Endereço Completo *</Label>
                 <Input
                   value={formData.property_address || ''}
                   onChange={(e) => updateField('property_address', e.target.value)}
                   placeholder="Rua, número, complemento"
-                  className="bg-white border-gray-200"
+                  className="bg-white border-gray-200 text-gray-900"
                 />
               </div>
 
               <div className="grid grid-cols-3 gap-4">
                 <div>
-                  <Label>Bairro</Label>
+                  <Label className="text-gray-700">Bairro</Label>
                   <Input
                     value={formData.property_neighborhood || ''}
                     onChange={(e) => updateField('property_neighborhood', e.target.value)}
-                    className="bg-white border-gray-200"
+                    className="bg-white border-gray-200 text-gray-900"
                   />
                 </div>
                 <div>
-                  <Label>Cidade</Label>
+                  <Label className="text-gray-700">Cidade</Label>
                   <Input
                     value={formData.property_city || ''}
                     onChange={(e) => updateField('property_city', e.target.value)}
-                    className="bg-white border-gray-200"
+                    className="bg-white border-gray-200 text-gray-900"
                   />
                 </div>
                 <div>
-                  <Label>Estado</Label>
+                  <Label className="text-gray-700">Estado</Label>
                   <Input
                     value={formData.property_state || ''}
                     onChange={(e) => updateField('property_state', e.target.value)}
@@ -290,53 +392,61 @@ export function RentalContractFormModal({
 
             {/* Owner Tab */}
             <TabsContent value="owner" className="space-y-4 mt-0">
+              {selectedPropertyId && formData.owner_name && (
+                <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-lg">
+                  <p className="text-sm text-emerald-700">
+                    ✓ Proprietário preenchido automaticamente do imóvel selecionado
+                  </p>
+                </div>
+              )}
+              
               <div>
-                <Label>Nome do Proprietário *</Label>
+                <Label className="text-gray-700">Nome do Proprietário *</Label>
                 <Input
                   value={formData.owner_name || ''}
                   onChange={(e) => updateField('owner_name', e.target.value)}
-                  className="bg-white border-gray-200"
+                  className="bg-white border-gray-200 text-gray-900"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <Label>Telefone</Label>
+                  <Label className="text-gray-700">Telefone</Label>
                   <Input
                     value={formData.owner_phone || ''}
                     onChange={(e) => updateField('owner_phone', e.target.value)}
                     placeholder="(00) 00000-0000"
-                    className="bg-white border-gray-200"
+                    className="bg-white border-gray-200 text-gray-900"
                   />
                 </div>
                 <div>
-                  <Label>E-mail</Label>
+                  <Label className="text-gray-700">E-mail</Label>
                   <Input
                     type="email"
                     value={formData.owner_email || ''}
                     onChange={(e) => updateField('owner_email', e.target.value)}
-                    className="bg-white border-gray-200"
+                    className="bg-white border-gray-200 text-gray-900"
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <Label>Chave PIX</Label>
+                  <Label className="text-gray-700">Chave PIX</Label>
                   <Input
                     value={formData.owner_pix_key || ''}
                     onChange={(e) => updateField('owner_pix_key', e.target.value)}
                     placeholder="CPF, telefone, e-mail ou chave aleatória"
-                    className="bg-white border-gray-200"
+                    className="bg-white border-gray-200 text-gray-900"
                   />
                 </div>
                 <div>
-                  <Label>Dados Bancários</Label>
+                  <Label className="text-gray-700">Dados Bancários</Label>
                   <Input
                     value={formData.owner_bank_info || ''}
                     onChange={(e) => updateField('owner_bank_info', e.target.value)}
                     placeholder="Banco, agência, conta"
-                    className="bg-white border-gray-200"
+                    className="bg-white border-gray-200 text-gray-900"
                   />
                 </div>
               </div>

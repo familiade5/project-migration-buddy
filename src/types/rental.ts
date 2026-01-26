@@ -27,12 +27,26 @@ export interface RentalContract {
   property_city: string;
   property_state: string;
   
+  // Linked property (optional)
+  rental_property_id: string | null;
+  
   // Owner Info
   owner_name: string;
   owner_phone: string | null;
   owner_email: string | null;
   owner_pix_key: string | null;
   owner_bank_info: string | null;
+  
+  // Linked owner (optional)
+  owner_id: string | null;
+  owner?: {
+    id: string;
+    full_name: string;
+    cpf?: string | null;
+    email?: string | null;
+    phone?: string | null;
+    pix_key?: string | null;
+  };
   
   // Tenant
   tenant_id: string | null;
