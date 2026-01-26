@@ -16,6 +16,16 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -30,12 +40,13 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useRentalProperties } from '@/hooks/useRentalProperties';
 import { useRentalOwners } from '@/hooks/useRentalOwners';
+import { useAuth } from '@/contexts/AuthContext';
 import { RentalProperty, RENTAL_PROPERTY_TYPES, RENTAL_PROPERTY_FEATURES } from '@/types/rentalProperty';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { RentalOwnerQuickForm } from './RentalOwnerQuickForm';
-import { Plus } from 'lucide-react';
+import { Plus, Trash2 } from 'lucide-react';
 
 const formSchema = z.object({
   code: z.string().min(1, 'Código obrigatório'),
@@ -79,17 +90,23 @@ interface RentalPropertyFormModalProps {
   property?: RentalProperty | null;
 }
 
+const SUPER_ADMIN_EMAIL = 'neto@vendadiretahoje.com.br';
+
 export function RentalPropertyFormModal({
   open,
   onOpenChange,
   property,
 }: RentalPropertyFormModalProps) {
-  const { createProperty, updateProperty } = useRentalProperties();
+  const { createProperty, updateProperty, deleteProperty } = useRentalProperties();
   const { owners } = useRentalOwners();
+  const { user } = useAuth();
   const [selectedFeatures, setSelectedFeatures] = useState<string[]>(
     property?.features || []
   );
   const [showOwnerForm, setShowOwnerForm] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  
+  const isSuperAdmin = user?.email === SUPER_ADMIN_EMAIL;
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
@@ -181,6 +198,14 @@ export function RentalPropertyFormModal({
       await createProperty.mutateAsync(propertyData);
     }
     onOpenChange(false);
+  };
+
+  const handleDelete = async () => {
+    if (property) {
+      await deleteProperty.mutateAsync(property.id);
+      setShowDeleteConfirm(false);
+      onOpenChange(false);
+    }
   };
 
   const toggleFeature = (feature: string) => {
@@ -681,22 +706,37 @@ export function RentalPropertyFormModal({
                 </TabsContent>
               </Tabs>
 
-              <div className="flex justify-end gap-2 pt-4 border-t border-gray-200">
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => onOpenChange(false)}
-                  className="bg-white text-gray-900 border-gray-300 hover:bg-gray-100 hover:text-gray-900"
-                >
-                  Cancelar
-                </Button>
-                <Button
-                  type="submit"
-                  disabled={createProperty.isPending || updateProperty.isPending}
-                  className="bg-gray-900 text-white hover:bg-gray-800"
-                >
-                  {property ? 'Salvar' : 'Cadastrar'}
-                </Button>
+              <div className="flex justify-between gap-2 pt-4 border-t border-gray-200">
+                <div>
+                  {property && isSuperAdmin && (
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => setShowDeleteConfirm(true)}
+                      className="text-red-600 border-red-200 hover:bg-red-50 hover:text-red-700"
+                    >
+                      <Trash2 className="w-4 h-4 mr-2" />
+                      Excluir
+                    </Button>
+                  )}
+                </div>
+                <div className="flex gap-2">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => onOpenChange(false)}
+                    className="bg-white text-gray-900 border-gray-300 hover:bg-gray-100 hover:text-gray-900"
+                  >
+                    Cancelar
+                  </Button>
+                  <Button
+                    type="submit"
+                    disabled={createProperty.isPending || updateProperty.isPending}
+                    className="bg-gray-900 text-white hover:bg-gray-800"
+                  >
+                    {property ? 'Salvar' : 'Cadastrar'}
+                  </Button>
+                </div>
               </div>
             </form>
           </Form>
@@ -711,6 +751,28 @@ export function RentalPropertyFormModal({
           form.setValue('owner_id', ownerId);
         }}
       />
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={showDeleteConfirm} onOpenChange={setShowDeleteConfirm}>
+        <AlertDialogContent className="bg-white">
+          <AlertDialogHeader>
+            <AlertDialogTitle>Excluir Imóvel</AlertDialogTitle>
+            <AlertDialogDescription>
+              Tem certeza que deseja excluir o imóvel "{property?.code}"? 
+              Esta ação não pode ser desfeita e todos os contratos vinculados serão afetados.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleDelete}
+              className="bg-red-600 hover:bg-red-700 text-white"
+            >
+              Excluir
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </Dialog>
   );
 }
