@@ -10,12 +10,13 @@ export function useRentalContracts() {
 
   const fetchContracts = useCallback(async () => {
     try {
-      // Fetch contracts with tenant info from rental_tenants table
+      // Fetch contracts with tenant and owner info
       const { data, error } = await supabase
         .from('rental_contracts')
         .select(`
           *,
-          tenant:rental_tenants(id, full_name, phone, whatsapp, email, cpf)
+          tenant:rental_tenants(id, full_name, phone, whatsapp, email, cpf),
+          owner:rental_owners(id, full_name, cpf, email, phone, pix_key)
         `)
         .order('created_at', { ascending: false });
 
