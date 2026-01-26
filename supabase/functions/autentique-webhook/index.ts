@@ -67,8 +67,8 @@ Deno.serve(async (req) => {
 
     console.log('Found contract:', contract.id);
 
-    // Handle document.signed event - all signers have signed
-    if (payload.event === 'document.signed' && payload.document?.files?.signed) {
+    // Handle document.signed or document.finished event - all signers have signed
+    if ((payload.event === 'document.signed' || payload.event === 'document.finished') && payload.document?.files?.signed) {
       console.log('Document fully signed, downloading and archiving...');
       
       const signedFileUrl = payload.document.files.signed;
