@@ -16,12 +16,24 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useRentalOwners } from '@/hooks/useRentalOwners';
+import { useAuth } from '@/contexts/AuthContext';
 import { RentalOwner } from '@/types/rentalProperty';
+import { Trash2 } from 'lucide-react';
 
 const formSchema = z.object({
   full_name: z.string().min(1, 'Nome obrigatório'),
@@ -50,12 +62,18 @@ interface RentalOwnerFormModalProps {
   owner?: RentalOwner | null;
 }
 
+const SUPER_ADMIN_EMAIL = 'neto@vendadiretahoje.com.br';
+
 export function RentalOwnerFormModal({
   open,
   onOpenChange,
   owner,
 }: RentalOwnerFormModalProps) {
-  const { createOwner, updateOwner } = useRentalOwners();
+  const { createOwner, updateOwner, deleteOwner } = useRentalOwners();
+  const { user } = useAuth();
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  
+  const isSuperAdmin = user?.email === SUPER_ADMIN_EMAIL;
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
@@ -88,8 +106,17 @@ export function RentalOwnerFormModal({
     onOpenChange(false);
   };
 
+  const handleDelete = async () => {
+    if (owner) {
+      await deleteOwner.mutateAsync(owner.id);
+      setShowDeleteConfirm(false);
+      onOpenChange(false);
+    }
+  };
+
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <>
+      <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-lg max-h-[90vh] overflow-hidden bg-white border-gray-200 text-gray-900">
         <DialogHeader>
           <DialogTitle className="text-gray-900">
@@ -319,27 +346,65 @@ export function RentalOwnerFormModal({
                 )}
               />
 
-              <div className="flex justify-end gap-2 pt-4 border-t border-gray-200">
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => onOpenChange(false)}
-                  className="text-gray-700 border-gray-200 hover:bg-gray-100"
-                >
-                  Cancelar
-                </Button>
-                <Button
-                  type="submit"
-                  disabled={createOwner.isPending || updateOwner.isPending}
-                  className="bg-gray-900 text-white hover:bg-gray-800"
-                >
-                  {owner ? 'Salvar' : 'Cadastrar'}
-                </Button>
+              <div className="flex justify-between gap-2 pt-4 border-t border-gray-200">
+                <div>
+                  {owner && isSuperAdmin && (
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => setShowDeleteConfirm(true)}
+                      className="text-red-600 border-red-200 hover:bg-red-50 hover:text-red-700"
+                    >
+                      <Trash2 className="w-4 h-4 mr-2" />
+                      Excluir
+                    </Button>
+                  )}
+                </div>
+                <div className="flex gap-2">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => onOpenChange(false)}
+                    className="text-gray-700 border-gray-200 hover:bg-gray-100"
+                  >
+                    Cancelar
+                  </Button>
+                  <Button
+                    type="submit"
+                    disabled={createOwner.isPending || updateOwner.isPending}
+                    className="bg-gray-900 text-white hover:bg-gray-800"
+                  >
+                    {owner ? 'Salvar' : 'Cadastrar'}
+                  </Button>
+                </div>
               </div>
             </form>
           </Form>
         </ScrollArea>
       </DialogContent>
     </Dialog>
+
+    {/* Delete Confirmation Dialog */}
+    <AlertDialog open={showDeleteConfirm} onOpenChange={setShowDeleteConfirm}>
+      <AlertDialogContent className="bg-white">
+        <AlertDialogHeader>
+          <AlertDialogTitle>Excluir Proprietário</AlertDialogTitle>
+          <AlertDialogDescription>
+            Tem certeza que deseja excluir o proprietário "{owner?.full_name}"? 
+            Esta ação não pode ser desfeita.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Cancelar</AlertDialogCancel>
+          <AlertDialogAction
+            onClick={handleDelete}
+            className="bg-red-600 hover:bg-red-700 text-white"
+          >
+            Excluir
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+    </>
   );
 }
