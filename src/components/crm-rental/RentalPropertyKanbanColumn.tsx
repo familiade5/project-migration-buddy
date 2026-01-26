@@ -27,15 +27,15 @@ export function RentalPropertyKanbanColumn({
       )}
     >
       {/* Header */}
-      <div className="p-3 border-b bg-white rounded-t-lg">
+      <div className="p-3 border-b border-gray-200 bg-white rounded-t-lg">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div className={cn('w-3 h-3 rounded-full', RENTAL_PROPERTY_STAGE_COLORS[stage])} />
-            <span className="font-medium text-sm text-gray-700">
+            <span className="font-medium text-sm text-gray-900">
               {RENTAL_PROPERTY_STAGE_LABELS[stage]}
             </span>
           </div>
-          <span className="text-xs bg-gray-200 px-2 py-1 rounded-full font-medium">
+          <span className="text-xs bg-gray-200 text-gray-700 px-2 py-1 rounded-full font-medium">
             {properties.length}
           </span>
         </div>
