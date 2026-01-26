@@ -301,9 +301,9 @@ export default function CRMLocacao() {
           {/* Properties/Imóveis Tab - Kanban */}
           <TabsContent value="imoveis" className="mt-4 space-y-4">
             <div className="flex items-center justify-between">
-              <h2 className="text-lg font-medium">Kanban de Imóveis</h2>
+              <h2 className="text-lg font-medium text-gray-900">Kanban de Imóveis</h2>
               {isAdmin && (
-                <Button onClick={handleAddProperty} className="gap-2">
+                <Button onClick={handleAddProperty} className="gap-2 bg-gray-900 text-white hover:bg-gray-800">
                   <Plus className="w-4 h-4" />
                   Novo Imóvel
                 </Button>
@@ -346,7 +346,7 @@ export default function CRMLocacao() {
                 </Select>
               </div>
               {isAdmin && (
-                <Button onClick={handleAddContract} className="gap-2">
+                <Button onClick={handleAddContract} className="gap-2 bg-gray-900 text-white hover:bg-gray-800">
                   <Plus className="w-4 h-4" />
                   Novo Contrato
                 </Button>
@@ -366,7 +366,7 @@ export default function CRMLocacao() {
                     : 'Comece cadastrando seu primeiro contrato de locação'}
                 </p>
                 {isAdmin && !searchQuery && statusFilter === 'all' && (
-                  <Button onClick={handleAddContract} className="gap-2">
+                  <Button onClick={handleAddContract} className="gap-2 bg-gray-900 text-white hover:bg-gray-800">
                     <Plus className="w-4 h-4" />
                     Novo Contrato
                   </Button>
@@ -410,7 +410,7 @@ export default function CRMLocacao() {
                   Proprietários
                 </CardTitle>
                 {isAdmin && (
-                  <Button size="sm" onClick={() => { setEditingOwner(null); setIsOwnerFormOpen(true); }}>
+                  <Button size="sm" onClick={() => { setEditingOwner(null); setIsOwnerFormOpen(true); }} className="bg-gray-900 text-white hover:bg-gray-800">
                     <Plus className="w-4 h-4 mr-2" />
                     Novo
                   </Button>
@@ -481,7 +481,7 @@ export default function CRMLocacao() {
                   Inquilinos
                 </CardTitle>
                 {isAdmin && (
-                  <Button size="sm" onClick={() => { setEditingTenant(null); setIsTenantFormOpen(true); }}>
+                  <Button size="sm" onClick={() => { setEditingTenant(null); setIsTenantFormOpen(true); }} className="bg-gray-900 text-white hover:bg-gray-800">
                     <Plus className="w-4 h-4 mr-2" />
                     Novo
                   </Button>

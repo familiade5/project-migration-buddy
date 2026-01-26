@@ -23,25 +23,25 @@ export function ContractTypeAndGuaranteeSelector({
     <div className="space-y-6">
       {/* Contract Type Selection */}
       <div>
-        <Label className="text-sm font-medium mb-3 block">Tipo de Contrato</Label>
+        <Label className="text-sm font-medium text-gray-900 mb-3 block">Tipo de Contrato</Label>
         <div className="grid grid-cols-2 gap-4">
           <Card
             className={cn(
-              'cursor-pointer transition-all hover:shadow-md',
-              contractType === 'residencial' && 'ring-2 ring-primary border-primary'
+              'cursor-pointer transition-all hover:shadow-md bg-white border-gray-200',
+              contractType === 'residencial' && 'ring-2 ring-gray-900 border-gray-900'
             )}
             onClick={() => onContractTypeChange('residencial')}
           >
             <CardContent className="p-4 flex items-center gap-3">
               <div className={cn(
                 'w-12 h-12 rounded-full flex items-center justify-center',
-                contractType === 'residencial' ? 'bg-primary text-primary-foreground' : 'bg-muted'
+                contractType === 'residencial' ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-600'
               )}>
                 <Home className="w-6 h-6" />
               </div>
               <div>
-                <p className="font-medium">Residencial</p>
-                <p className="text-xs text-muted-foreground">
+                <p className="font-medium text-gray-900">Residencial</p>
+                <p className="text-xs text-gray-500">
                   Para moradia e uso habitacional
                 </p>
               </div>
@@ -50,21 +50,21 @@ export function ContractTypeAndGuaranteeSelector({
 
           <Card
             className={cn(
-              'cursor-pointer transition-all hover:shadow-md',
-              contractType === 'comercial' && 'ring-2 ring-primary border-primary'
+              'cursor-pointer transition-all hover:shadow-md bg-white border-gray-200',
+              contractType === 'comercial' && 'ring-2 ring-gray-900 border-gray-900'
             )}
             onClick={() => onContractTypeChange('comercial')}
           >
             <CardContent className="p-4 flex items-center gap-3">
               <div className={cn(
                 'w-12 h-12 rounded-full flex items-center justify-center',
-                contractType === 'comercial' ? 'bg-primary text-primary-foreground' : 'bg-muted'
+                contractType === 'comercial' ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-600'
               )}>
                 <Building2 className="w-6 h-6" />
               </div>
               <div>
-                <p className="font-medium">Comercial</p>
-                <p className="text-xs text-muted-foreground">
+                <p className="font-medium text-gray-900">Comercial</p>
+                <p className="text-xs text-gray-500">
                   Para atividade empresarial
                 </p>
               </div>
@@ -75,24 +75,24 @@ export function ContractTypeAndGuaranteeSelector({
 
       {/* Guarantee Type Selection */}
       <div>
-        <Label className="text-sm font-medium mb-3 block">Tipo de Garantia</Label>
+        <Label className="text-sm font-medium text-gray-900 mb-3 block">Tipo de Garantia</Label>
         <div className="grid grid-cols-3 gap-4">
           <Card
             className={cn(
-              'cursor-pointer transition-all hover:shadow-md',
-              guaranteeType === 'fiador' && 'ring-2 ring-primary border-primary'
+              'cursor-pointer transition-all hover:shadow-md bg-white border-gray-200',
+              guaranteeType === 'fiador' && 'ring-2 ring-gray-900 border-gray-900'
             )}
             onClick={() => onGuaranteeTypeChange('fiador')}
           >
             <CardContent className="p-4 text-center">
               <div className={cn(
                 'w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-2',
-                guaranteeType === 'fiador' ? 'bg-primary text-primary-foreground' : 'bg-muted'
+                guaranteeType === 'fiador' ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-600'
               )}>
                 <UserCheck className="w-6 h-6" />
               </div>
-              <p className="font-medium text-sm">Fiador</p>
-              <p className="text-xs text-muted-foreground mt-1">
+              <p className="font-medium text-sm text-gray-900">Fiador</p>
+              <p className="text-xs text-gray-500 mt-1">
                 Pessoa física ou jurídica que garante o contrato
               </p>
             </CardContent>
@@ -100,20 +100,20 @@ export function ContractTypeAndGuaranteeSelector({
 
           <Card
             className={cn(
-              'cursor-pointer transition-all hover:shadow-md',
-              guaranteeType === 'caucao' && 'ring-2 ring-primary border-primary'
+              'cursor-pointer transition-all hover:shadow-md bg-white border-gray-200',
+              guaranteeType === 'caucao' && 'ring-2 ring-gray-900 border-gray-900'
             )}
             onClick={() => onGuaranteeTypeChange('caucao')}
           >
             <CardContent className="p-4 text-center">
               <div className={cn(
                 'w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-2',
-                guaranteeType === 'caucao' ? 'bg-primary text-primary-foreground' : 'bg-muted'
+                guaranteeType === 'caucao' ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-600'
               )}>
                 <Wallet className="w-6 h-6" />
               </div>
-              <p className="font-medium text-sm">Caução</p>
-              <p className="text-xs text-muted-foreground mt-1">
+              <p className="font-medium text-sm text-gray-900">Caução</p>
+              <p className="text-xs text-gray-500 mt-1">
                 Depósito em dinheiro (até 3 meses)
               </p>
             </CardContent>
@@ -121,20 +121,20 @@ export function ContractTypeAndGuaranteeSelector({
 
           <Card
             className={cn(
-              'cursor-pointer transition-all hover:shadow-md',
-              guaranteeType === 'seguro_fiador' && 'ring-2 ring-primary border-primary'
+              'cursor-pointer transition-all hover:shadow-md bg-white border-gray-200',
+              guaranteeType === 'seguro_fiador' && 'ring-2 ring-gray-900 border-gray-900'
             )}
             onClick={() => onGuaranteeTypeChange('seguro_fiador')}
           >
             <CardContent className="p-4 text-center">
               <div className={cn(
                 'w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-2',
-                guaranteeType === 'seguro_fiador' ? 'bg-primary text-primary-foreground' : 'bg-muted'
+                guaranteeType === 'seguro_fiador' ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-600'
               )}>
                 <ShieldCheck className="w-6 h-6" />
               </div>
-              <p className="font-medium text-sm">Seguro-Fiador</p>
-              <p className="text-xs text-muted-foreground mt-1">
+              <p className="font-medium text-sm text-gray-900">Seguro-Fiador</p>
+              <p className="text-xs text-gray-500 mt-1">
                 Seguro contratado pelo inquilino
               </p>
             </CardContent>
@@ -143,9 +143,9 @@ export function ContractTypeAndGuaranteeSelector({
       </div>
 
       {/* Summary */}
-      <div className="bg-muted/50 rounded-lg p-4">
-        <p className="text-sm text-muted-foreground">
-          <span className="font-medium text-foreground">Contrato selecionado:</span>{' '}
+      <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
+        <p className="text-sm text-gray-600">
+          <span className="font-medium text-gray-900">Contrato selecionado:</span>{' '}
           {CONTRACT_TYPE_LABELS[contractType]} com {GUARANTEE_TYPE_LABELS[guaranteeType]}
         </p>
       </div>

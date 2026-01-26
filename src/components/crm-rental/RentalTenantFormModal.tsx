@@ -358,17 +358,19 @@ export function RentalTenantFormModal({
                 )}
               />
 
-              <div className="flex justify-end gap-2 pt-4 border-t">
+              <div className="flex justify-end gap-2 pt-4 border-t border-gray-200">
                 <Button
                   type="button"
                   variant="outline"
                   onClick={() => onOpenChange(false)}
+                  className="text-gray-700 border-gray-200 hover:bg-gray-100"
                 >
                   Cancelar
                 </Button>
                 <Button
                   type="submit"
                   disabled={createTenant.isPending || updateTenant.isPending}
+                  className="bg-gray-900 text-white hover:bg-gray-800"
                 >
                   {tenant ? 'Salvar' : 'Cadastrar'}
                 </Button>
