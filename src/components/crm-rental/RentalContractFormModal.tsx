@@ -193,24 +193,24 @@ export function RentalContractFormModal({
         </DialogHeader>
 
         <Tabs defaultValue="property" className="mt-4">
-          <TabsList className="bg-gray-800 border border-gray-700">
-            <TabsTrigger value="property" className="data-[state=active]:bg-gray-700">
+          <TabsList className="bg-gray-100 border border-gray-200">
+            <TabsTrigger value="property" className="data-[state=active]:bg-white data-[state=active]:text-gray-900">
               <Building2 className="w-4 h-4 mr-2" />
               Imóvel
             </TabsTrigger>
-            <TabsTrigger value="owner" className="data-[state=active]:bg-gray-700">
+            <TabsTrigger value="owner" className="data-[state=active]:bg-white data-[state=active]:text-gray-900">
               <User className="w-4 h-4 mr-2" />
               Proprietário
             </TabsTrigger>
-            <TabsTrigger value="tenant" className="data-[state=active]:bg-gray-700">
+            <TabsTrigger value="tenant" className="data-[state=active]:bg-white data-[state=active]:text-gray-900">
               <User className="w-4 h-4 mr-2" />
               Inquilino
             </TabsTrigger>
-            <TabsTrigger value="financial" className="data-[state=active]:bg-gray-700">
+            <TabsTrigger value="financial" className="data-[state=active]:bg-white data-[state=active]:text-gray-900">
               <DollarSign className="w-4 h-4 mr-2" />
               Financeiro
             </TabsTrigger>
-            <TabsTrigger value="contract" className="data-[state=active]:bg-gray-700">
+            <TabsTrigger value="contract" className="data-[state=active]:bg-white data-[state=active]:text-gray-900">
               <Calendar className="w-4 h-4 mr-2" />
               Contrato
             </TabsTrigger>
@@ -226,7 +226,7 @@ export function RentalContractFormModal({
                     value={formData.property_code || ''}
                     onChange={(e) => updateField('property_code', e.target.value)}
                     placeholder="Ex: LOC-001"
-                    className="bg-gray-800 border-gray-700"
+                    className="bg-white border-gray-200"
                   />
                 </div>
                 <div>
@@ -235,10 +235,10 @@ export function RentalContractFormModal({
                     value={formData.property_type}
                     onValueChange={(v) => updateField('property_type', v)}
                   >
-                    <SelectTrigger className="bg-gray-800 border-gray-700">
+                    <SelectTrigger className="bg-white border-gray-200">
                       <SelectValue />
                     </SelectTrigger>
-                    <SelectContent className="bg-gray-800 border-gray-700">
+                    <SelectContent className="bg-white border-gray-200">
                       {propertyTypes.map((type) => (
                         <SelectItem key={type} value={type}>{type}</SelectItem>
                       ))}
@@ -253,7 +253,7 @@ export function RentalContractFormModal({
                   value={formData.property_address || ''}
                   onChange={(e) => updateField('property_address', e.target.value)}
                   placeholder="Rua, número, complemento"
-                  className="bg-gray-800 border-gray-700"
+                  className="bg-white border-gray-200"
                 />
               </div>
 
@@ -263,7 +263,7 @@ export function RentalContractFormModal({
                   <Input
                     value={formData.property_neighborhood || ''}
                     onChange={(e) => updateField('property_neighborhood', e.target.value)}
-                    className="bg-gray-800 border-gray-700"
+                    className="bg-white border-gray-200"
                   />
                 </div>
                 <div>
@@ -271,7 +271,7 @@ export function RentalContractFormModal({
                   <Input
                     value={formData.property_city || ''}
                     onChange={(e) => updateField('property_city', e.target.value)}
-                    className="bg-gray-800 border-gray-700"
+                    className="bg-white border-gray-200"
                   />
                 </div>
                 <div>
@@ -279,7 +279,7 @@ export function RentalContractFormModal({
                   <Input
                     value={formData.property_state || ''}
                     onChange={(e) => updateField('property_state', e.target.value)}
-                    className="bg-gray-800 border-gray-700"
+                    className="bg-white border-gray-200"
                   />
                 </div>
               </div>
@@ -292,7 +292,7 @@ export function RentalContractFormModal({
                 <Input
                   value={formData.owner_name || ''}
                   onChange={(e) => updateField('owner_name', e.target.value)}
-                  className="bg-gray-800 border-gray-700"
+                  className="bg-white border-gray-200"
                 />
               </div>
 
@@ -303,7 +303,7 @@ export function RentalContractFormModal({
                     value={formData.owner_phone || ''}
                     onChange={(e) => updateField('owner_phone', e.target.value)}
                     placeholder="(00) 00000-0000"
-                    className="bg-gray-800 border-gray-700"
+                    className="bg-white border-gray-200"
                   />
                 </div>
                 <div>
@@ -312,7 +312,7 @@ export function RentalContractFormModal({
                     type="email"
                     value={formData.owner_email || ''}
                     onChange={(e) => updateField('owner_email', e.target.value)}
-                    className="bg-gray-800 border-gray-700"
+                    className="bg-white border-gray-200"
                   />
                 </div>
               </div>
@@ -324,7 +324,7 @@ export function RentalContractFormModal({
                     value={formData.owner_pix_key || ''}
                     onChange={(e) => updateField('owner_pix_key', e.target.value)}
                     placeholder="CPF, telefone, e-mail ou chave aleatória"
-                    className="bg-gray-800 border-gray-700"
+                    className="bg-white border-gray-200"
                   />
                 </div>
                 <div>
@@ -333,7 +333,7 @@ export function RentalContractFormModal({
                     value={formData.owner_bank_info || ''}
                     onChange={(e) => updateField('owner_bank_info', e.target.value)}
                     placeholder="Banco, agência, conta"
-                    className="bg-gray-800 border-gray-700"
+                    className="bg-white border-gray-200"
                   />
                 </div>
               </div>
@@ -347,10 +347,10 @@ export function RentalContractFormModal({
                   value={formData.tenant_id || 'none'}
                   onValueChange={(v) => updateField('tenant_id', v === 'none' ? null : v)}
                 >
-                  <SelectTrigger className="bg-gray-800 border-gray-700">
+                  <SelectTrigger className="bg-white border-gray-200">
                     <SelectValue placeholder="Selecione um cliente" />
                   </SelectTrigger>
-                  <SelectContent className="bg-gray-800 border-gray-700">
+                  <SelectContent className="bg-white border-gray-200">
                     <SelectItem value="none">Nenhum</SelectItem>
                     {clients.map((client) => (
                       <SelectItem key={client.id} value={client.id}>
@@ -370,10 +370,10 @@ export function RentalContractFormModal({
                   value={formData.responsible_user_id || 'none'}
                   onValueChange={(v) => updateField('responsible_user_id', v === 'none' ? null : v)}
                 >
-                  <SelectTrigger className="bg-gray-800 border-gray-700">
+                  <SelectTrigger className="bg-white border-gray-200">
                     <SelectValue placeholder="Selecione um responsável" />
                   </SelectTrigger>
-                  <SelectContent className="bg-gray-800 border-gray-700">
+                  <SelectContent className="bg-white border-gray-200">
                     <SelectItem value="none">Nenhum</SelectItem>
                     {users.map((user) => (
                       <SelectItem key={user.id} value={user.id}>
@@ -394,7 +394,7 @@ export function RentalContractFormModal({
                     type="number"
                     value={formData.rent_value || ''}
                     onChange={(e) => updateField('rent_value', parseFloat(e.target.value) || 0)}
-                    className="bg-gray-800 border-gray-700"
+                    className="bg-white border-gray-200"
                   />
                 </div>
                 <div>
@@ -403,7 +403,7 @@ export function RentalContractFormModal({
                     type="number"
                     value={formData.condominium_fee || ''}
                     onChange={(e) => updateField('condominium_fee', parseFloat(e.target.value) || 0)}
-                    className="bg-gray-800 border-gray-700"
+                    className="bg-white border-gray-200"
                   />
                 </div>
               </div>
@@ -415,7 +415,7 @@ export function RentalContractFormModal({
                     type="number"
                     value={formData.iptu_value || ''}
                     onChange={(e) => updateField('iptu_value', parseFloat(e.target.value) || 0)}
-                    className="bg-gray-800 border-gray-700"
+                    className="bg-white border-gray-200"
                   />
                 </div>
                 <div>
@@ -424,15 +424,15 @@ export function RentalContractFormModal({
                     type="number"
                     value={formData.other_fees || ''}
                     onChange={(e) => updateField('other_fees', parseFloat(e.target.value) || 0)}
-                    className="bg-gray-800 border-gray-700"
+                    className="bg-white border-gray-200"
                   />
                 </div>
               </div>
 
-              <div className="p-4 bg-gray-800 rounded-lg border border-gray-700">
+              <div className="p-4 bg-gray-50 rounded-lg border border-gray-200">
                 <div className="flex items-center justify-between">
-                  <span className="text-gray-400">Total Mensal:</span>
-                  <span className="text-2xl font-bold text-emerald-400">
+                  <span className="text-gray-600">Total Mensal:</span>
+                  <span className="text-2xl font-bold text-emerald-600">
                     {formatCurrency(totalMonthly)}
                   </span>
                 </div>
@@ -447,7 +447,7 @@ export function RentalContractFormModal({
                     max={28}
                     value={formData.payment_due_day || 10}
                     onChange={(e) => updateField('payment_due_day', parseInt(e.target.value) || 10)}
-                    className="bg-gray-800 border-gray-700"
+                    className="bg-white border-gray-200"
                   />
                 </div>
                 <div>
@@ -457,7 +457,7 @@ export function RentalContractFormModal({
                     step={0.5}
                     value={formData.management_fee_percentage || 10}
                     onChange={(e) => updateField('management_fee_percentage', parseFloat(e.target.value) || 10)}
-                    className="bg-gray-800 border-gray-700"
+                    className="bg-white border-gray-200"
                   />
                 </div>
               </div>
@@ -472,7 +472,7 @@ export function RentalContractFormModal({
                     type="date"
                     value={formData.start_date || ''}
                     onChange={(e) => updateField('start_date', e.target.value)}
-                    className="bg-gray-800 border-gray-700"
+                    className="bg-white border-gray-200"
                   />
                 </div>
                 <div>
@@ -481,7 +481,7 @@ export function RentalContractFormModal({
                     type="date"
                     value={formData.end_date || ''}
                     onChange={(e) => updateField('end_date', e.target.value)}
-                    className="bg-gray-800 border-gray-700"
+                    className="bg-white border-gray-200"
                   />
                 </div>
               </div>
@@ -493,10 +493,10 @@ export function RentalContractFormModal({
                     value={formData.guarantee_type || ''}
                     onValueChange={(v) => updateField('guarantee_type', v)}
                   >
-                    <SelectTrigger className="bg-gray-800 border-gray-700">
+                    <SelectTrigger className="bg-white border-gray-200">
                       <SelectValue placeholder="Selecione" />
                     </SelectTrigger>
-                    <SelectContent className="bg-gray-800 border-gray-700">
+                    <SelectContent className="bg-white border-gray-200">
                       {guaranteeTypes.map((type) => (
                         <SelectItem key={type.value} value={type.value}>
                           {type.label}
@@ -511,7 +511,7 @@ export function RentalContractFormModal({
                     type="number"
                     value={formData.deposit_months || 2}
                     onChange={(e) => updateField('deposit_months', parseInt(e.target.value) || 2)}
-                    className="bg-gray-800 border-gray-700"
+                    className="bg-white border-gray-200"
                   />
                 </div>
                 <div>
@@ -520,7 +520,7 @@ export function RentalContractFormModal({
                     type="number"
                     value={formData.deposit_value || ''}
                     onChange={(e) => updateField('deposit_value', parseFloat(e.target.value) || 0)}
-                    className="bg-gray-800 border-gray-700"
+                    className="bg-white border-gray-200"
                   />
                 </div>
               </div>
@@ -531,7 +531,7 @@ export function RentalContractFormModal({
                   value={formData.notes || ''}
                   onChange={(e) => updateField('notes', e.target.value)}
                   placeholder="Observações sobre o contrato..."
-                  className="bg-gray-800 border-gray-700 min-h-[100px]"
+                  className="bg-white border-gray-200 min-h-[100px]"
                 />
               </div>
             </TabsContent>
