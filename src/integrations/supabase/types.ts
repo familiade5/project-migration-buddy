@@ -916,21 +916,34 @@ export type Database = {
       }
       rental_contracts: {
         Row: {
+          allowed_activity: string | null
+          commercial_point_clause: boolean | null
           condominium_fee: number | null
           contract_document_url: string | null
+          contract_type:
+            | Database["public"]["Enums"]["rental_contract_type"]
+            | null
           created_at: string
           created_by_user_id: string | null
           deposit_months: number | null
           deposit_value: number | null
           end_date: string
           guarantee_type: string | null
+          guarantee_type_enum:
+            | Database["public"]["Enums"]["rental_guarantee_type"]
+            | null
+          guarantor_id: string | null
           id: string
+          insurance_company: string | null
+          insurance_policy_number: string | null
+          insurance_value: number | null
           iptu_value: number | null
           management_fee_percentage: number | null
           notes: string | null
           other_fees: number | null
           owner_bank_info: string | null
           owner_email: string | null
+          owner_id: string | null
           owner_name: string
           owner_phone: string | null
           owner_pix_key: string | null
@@ -941,7 +954,9 @@ export type Database = {
           property_neighborhood: string | null
           property_state: string
           property_type: string
+          renovation_terms: string | null
           rent_value: number
+          rental_property_id: string | null
           responsible_user_id: string | null
           start_date: string
           status: Database["public"]["Enums"]["rental_contract_status"]
@@ -949,21 +964,34 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          allowed_activity?: string | null
+          commercial_point_clause?: boolean | null
           condominium_fee?: number | null
           contract_document_url?: string | null
+          contract_type?:
+            | Database["public"]["Enums"]["rental_contract_type"]
+            | null
           created_at?: string
           created_by_user_id?: string | null
           deposit_months?: number | null
           deposit_value?: number | null
           end_date: string
           guarantee_type?: string | null
+          guarantee_type_enum?:
+            | Database["public"]["Enums"]["rental_guarantee_type"]
+            | null
+          guarantor_id?: string | null
           id?: string
+          insurance_company?: string | null
+          insurance_policy_number?: string | null
+          insurance_value?: number | null
           iptu_value?: number | null
           management_fee_percentage?: number | null
           notes?: string | null
           other_fees?: number | null
           owner_bank_info?: string | null
           owner_email?: string | null
+          owner_id?: string | null
           owner_name: string
           owner_phone?: string | null
           owner_pix_key?: string | null
@@ -974,7 +1002,9 @@ export type Database = {
           property_neighborhood?: string | null
           property_state?: string
           property_type?: string
+          renovation_terms?: string | null
           rent_value: number
+          rental_property_id?: string | null
           responsible_user_id?: string | null
           start_date: string
           status?: Database["public"]["Enums"]["rental_contract_status"]
@@ -982,21 +1012,34 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          allowed_activity?: string | null
+          commercial_point_clause?: boolean | null
           condominium_fee?: number | null
           contract_document_url?: string | null
+          contract_type?:
+            | Database["public"]["Enums"]["rental_contract_type"]
+            | null
           created_at?: string
           created_by_user_id?: string | null
           deposit_months?: number | null
           deposit_value?: number | null
           end_date?: string
           guarantee_type?: string | null
+          guarantee_type_enum?:
+            | Database["public"]["Enums"]["rental_guarantee_type"]
+            | null
+          guarantor_id?: string | null
           id?: string
+          insurance_company?: string | null
+          insurance_policy_number?: string | null
+          insurance_value?: number | null
           iptu_value?: number | null
           management_fee_percentage?: number | null
           notes?: string | null
           other_fees?: number | null
           owner_bank_info?: string | null
           owner_email?: string | null
+          owner_id?: string | null
           owner_name?: string
           owner_phone?: string | null
           owner_pix_key?: string | null
@@ -1007,7 +1050,9 @@ export type Database = {
           property_neighborhood?: string | null
           property_state?: string
           property_type?: string
+          renovation_terms?: string | null
           rent_value?: number
+          rental_property_id?: string | null
           responsible_user_id?: string | null
           start_date?: string
           status?: Database["public"]["Enums"]["rental_contract_status"]
@@ -1016,6 +1061,27 @@ export type Database = {
         }
         Relationships: [
           {
+            foreignKeyName: "rental_contracts_guarantor_id_fkey"
+            columns: ["guarantor_id"]
+            isOneToOne: false
+            referencedRelation: "rental_guarantors"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "rental_contracts_owner_id_fkey"
+            columns: ["owner_id"]
+            isOneToOne: false
+            referencedRelation: "rental_owners"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "rental_contracts_rental_property_id_fkey"
+            columns: ["rental_property_id"]
+            isOneToOne: false
+            referencedRelation: "rental_properties"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "rental_contracts_tenant_id_fkey"
             columns: ["tenant_id"]
             isOneToOne: false
@@ -1023,6 +1089,144 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      rental_guarantors: {
+        Row: {
+          address: string | null
+          city: string | null
+          cpf: string | null
+          created_at: string
+          created_by_user_id: string | null
+          email: string | null
+          full_name: string
+          id: string
+          monthly_income: number | null
+          neighborhood: string | null
+          notes: string | null
+          phone: string | null
+          profession: string | null
+          property_address: string | null
+          property_registration: string | null
+          rg: string | null
+          state: string | null
+          updated_at: string
+          whatsapp: string | null
+          zip_code: string | null
+        }
+        Insert: {
+          address?: string | null
+          city?: string | null
+          cpf?: string | null
+          created_at?: string
+          created_by_user_id?: string | null
+          email?: string | null
+          full_name: string
+          id?: string
+          monthly_income?: number | null
+          neighborhood?: string | null
+          notes?: string | null
+          phone?: string | null
+          profession?: string | null
+          property_address?: string | null
+          property_registration?: string | null
+          rg?: string | null
+          state?: string | null
+          updated_at?: string
+          whatsapp?: string | null
+          zip_code?: string | null
+        }
+        Update: {
+          address?: string | null
+          city?: string | null
+          cpf?: string | null
+          created_at?: string
+          created_by_user_id?: string | null
+          email?: string | null
+          full_name?: string
+          id?: string
+          monthly_income?: number | null
+          neighborhood?: string | null
+          notes?: string | null
+          phone?: string | null
+          profession?: string | null
+          property_address?: string | null
+          property_registration?: string | null
+          rg?: string | null
+          state?: string | null
+          updated_at?: string
+          whatsapp?: string | null
+          zip_code?: string | null
+        }
+        Relationships: []
+      }
+      rental_owners: {
+        Row: {
+          address: string | null
+          bank_account: string | null
+          bank_agency: string | null
+          bank_name: string | null
+          city: string | null
+          cpf: string | null
+          created_at: string
+          created_by_user_id: string | null
+          email: string | null
+          full_name: string
+          id: string
+          neighborhood: string | null
+          notes: string | null
+          phone: string | null
+          pix_key: string | null
+          rg: string | null
+          state: string | null
+          updated_at: string
+          whatsapp: string | null
+          zip_code: string | null
+        }
+        Insert: {
+          address?: string | null
+          bank_account?: string | null
+          bank_agency?: string | null
+          bank_name?: string | null
+          city?: string | null
+          cpf?: string | null
+          created_at?: string
+          created_by_user_id?: string | null
+          email?: string | null
+          full_name: string
+          id?: string
+          neighborhood?: string | null
+          notes?: string | null
+          phone?: string | null
+          pix_key?: string | null
+          rg?: string | null
+          state?: string | null
+          updated_at?: string
+          whatsapp?: string | null
+          zip_code?: string | null
+        }
+        Update: {
+          address?: string | null
+          bank_account?: string | null
+          bank_agency?: string | null
+          bank_name?: string | null
+          city?: string | null
+          cpf?: string | null
+          created_at?: string
+          created_by_user_id?: string | null
+          email?: string | null
+          full_name?: string
+          id?: string
+          neighborhood?: string | null
+          notes?: string | null
+          phone?: string | null
+          pix_key?: string | null
+          rg?: string | null
+          state?: string | null
+          updated_at?: string
+          whatsapp?: string | null
+          zip_code?: string | null
+        }
+        Relationships: []
       }
       rental_payments: {
         Row: {
@@ -1104,6 +1308,306 @@ export type Database = {
           },
         ]
       }
+      rental_properties: {
+        Row: {
+          accepts_pets: boolean | null
+          address: string
+          bathrooms: number | null
+          bedrooms: number | null
+          city: string
+          code: string
+          complement: string | null
+          condominium_fee: number | null
+          cover_image_url: string | null
+          created_at: string
+          created_by_user_id: string | null
+          current_contract_id: string | null
+          current_stage: Database["public"]["Enums"]["rental_property_stage"]
+          description: string | null
+          features: string[] | null
+          garage_spaces: number | null
+          has_doorman: boolean | null
+          has_elevator: boolean | null
+          has_gym: boolean | null
+          has_pool: boolean | null
+          id: string
+          internal_notes: string | null
+          iptu_registration: string | null
+          iptu_value: number | null
+          is_furnished: boolean | null
+          neighborhood: string | null
+          number: string | null
+          other_fees: number | null
+          owner_id: string | null
+          photos: string[] | null
+          property_type: string
+          registration_number: string | null
+          rent_value: number
+          responsible_user_id: string | null
+          stage_entered_at: string
+          state: string
+          suites: number | null
+          total_area: number | null
+          updated_at: string
+          useful_area: number | null
+          zip_code: string | null
+        }
+        Insert: {
+          accepts_pets?: boolean | null
+          address: string
+          bathrooms?: number | null
+          bedrooms?: number | null
+          city?: string
+          code: string
+          complement?: string | null
+          condominium_fee?: number | null
+          cover_image_url?: string | null
+          created_at?: string
+          created_by_user_id?: string | null
+          current_contract_id?: string | null
+          current_stage?: Database["public"]["Enums"]["rental_property_stage"]
+          description?: string | null
+          features?: string[] | null
+          garage_spaces?: number | null
+          has_doorman?: boolean | null
+          has_elevator?: boolean | null
+          has_gym?: boolean | null
+          has_pool?: boolean | null
+          id?: string
+          internal_notes?: string | null
+          iptu_registration?: string | null
+          iptu_value?: number | null
+          is_furnished?: boolean | null
+          neighborhood?: string | null
+          number?: string | null
+          other_fees?: number | null
+          owner_id?: string | null
+          photos?: string[] | null
+          property_type?: string
+          registration_number?: string | null
+          rent_value?: number
+          responsible_user_id?: string | null
+          stage_entered_at?: string
+          state?: string
+          suites?: number | null
+          total_area?: number | null
+          updated_at?: string
+          useful_area?: number | null
+          zip_code?: string | null
+        }
+        Update: {
+          accepts_pets?: boolean | null
+          address?: string
+          bathrooms?: number | null
+          bedrooms?: number | null
+          city?: string
+          code?: string
+          complement?: string | null
+          condominium_fee?: number | null
+          cover_image_url?: string | null
+          created_at?: string
+          created_by_user_id?: string | null
+          current_contract_id?: string | null
+          current_stage?: Database["public"]["Enums"]["rental_property_stage"]
+          description?: string | null
+          features?: string[] | null
+          garage_spaces?: number | null
+          has_doorman?: boolean | null
+          has_elevator?: boolean | null
+          has_gym?: boolean | null
+          has_pool?: boolean | null
+          id?: string
+          internal_notes?: string | null
+          iptu_registration?: string | null
+          iptu_value?: number | null
+          is_furnished?: boolean | null
+          neighborhood?: string | null
+          number?: string | null
+          other_fees?: number | null
+          owner_id?: string | null
+          photos?: string[] | null
+          property_type?: string
+          registration_number?: string | null
+          rent_value?: number
+          responsible_user_id?: string | null
+          stage_entered_at?: string
+          state?: string
+          suites?: number | null
+          total_area?: number | null
+          updated_at?: string
+          useful_area?: number | null
+          zip_code?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "rental_properties_owner_id_fkey"
+            columns: ["owner_id"]
+            isOneToOne: false
+            referencedRelation: "rental_owners"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      rental_property_documents: {
+        Row: {
+          created_at: string
+          document_type: string
+          file_url: string
+          id: string
+          name: string
+          property_id: string
+          uploaded_by_user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          document_type?: string
+          file_url: string
+          id?: string
+          name: string
+          property_id: string
+          uploaded_by_user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          document_type?: string
+          file_url?: string
+          id?: string
+          name?: string
+          property_id?: string
+          uploaded_by_user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "rental_property_documents_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "rental_properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      rental_property_history: {
+        Row: {
+          created_at: string
+          from_stage:
+            | Database["public"]["Enums"]["rental_property_stage"]
+            | null
+          id: string
+          moved_by_name: string | null
+          moved_by_user_id: string | null
+          notes: string | null
+          property_id: string
+          to_stage: Database["public"]["Enums"]["rental_property_stage"]
+        }
+        Insert: {
+          created_at?: string
+          from_stage?:
+            | Database["public"]["Enums"]["rental_property_stage"]
+            | null
+          id?: string
+          moved_by_name?: string | null
+          moved_by_user_id?: string | null
+          notes?: string | null
+          property_id: string
+          to_stage: Database["public"]["Enums"]["rental_property_stage"]
+        }
+        Update: {
+          created_at?: string
+          from_stage?:
+            | Database["public"]["Enums"]["rental_property_stage"]
+            | null
+          id?: string
+          moved_by_name?: string | null
+          moved_by_user_id?: string | null
+          notes?: string | null
+          property_id?: string
+          to_stage?: Database["public"]["Enums"]["rental_property_stage"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "rental_property_history_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "rental_properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      rental_tenants: {
+        Row: {
+          address: string | null
+          birth_date: string | null
+          city: string | null
+          cpf: string | null
+          created_at: string
+          created_by_user_id: string | null
+          email: string | null
+          emergency_contact_name: string | null
+          emergency_contact_phone: string | null
+          full_name: string
+          id: string
+          monthly_income: number | null
+          neighborhood: string | null
+          notes: string | null
+          phone: string | null
+          profession: string | null
+          rg: string | null
+          state: string | null
+          updated_at: string
+          whatsapp: string | null
+          workplace: string | null
+          zip_code: string | null
+        }
+        Insert: {
+          address?: string | null
+          birth_date?: string | null
+          city?: string | null
+          cpf?: string | null
+          created_at?: string
+          created_by_user_id?: string | null
+          email?: string | null
+          emergency_contact_name?: string | null
+          emergency_contact_phone?: string | null
+          full_name: string
+          id?: string
+          monthly_income?: number | null
+          neighborhood?: string | null
+          notes?: string | null
+          phone?: string | null
+          profession?: string | null
+          rg?: string | null
+          state?: string | null
+          updated_at?: string
+          whatsapp?: string | null
+          workplace?: string | null
+          zip_code?: string | null
+        }
+        Update: {
+          address?: string | null
+          birth_date?: string | null
+          city?: string | null
+          cpf?: string | null
+          created_at?: string
+          created_by_user_id?: string | null
+          email?: string | null
+          emergency_contact_name?: string | null
+          emergency_contact_phone?: string | null
+          full_name?: string
+          id?: string
+          monthly_income?: number | null
+          neighborhood?: string | null
+          notes?: string | null
+          phone?: string | null
+          profession?: string | null
+          rg?: string | null
+          state?: string | null
+          updated_at?: string
+          whatsapp?: string | null
+          workplace?: string | null
+          zip_code?: string | null
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           id: string
@@ -1174,12 +1678,15 @@ export type Database = {
         | "expired"
         | "terminated"
         | "renewed"
+      rental_contract_type: "residencial" | "comercial"
+      rental_guarantee_type: "fiador" | "caucao" | "seguro_fiador"
       rental_payment_status:
         | "pending"
         | "paid"
         | "overdue"
         | "partial"
         | "cancelled"
+      rental_property_stage: "disponivel" | "reservado" | "ocupado" | "catalogo"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -1335,6 +1842,8 @@ export const Constants = {
         "terminated",
         "renewed",
       ],
+      rental_contract_type: ["residencial", "comercial"],
+      rental_guarantee_type: ["fiador", "caucao", "seguro_fiador"],
       rental_payment_status: [
         "pending",
         "paid",
@@ -1342,6 +1851,7 @@ export const Constants = {
         "partial",
         "cancelled",
       ],
+      rental_property_stage: ["disponivel", "reservado", "ocupado", "catalogo"],
     },
   },
 } as const
