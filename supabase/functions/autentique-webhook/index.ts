@@ -24,6 +24,45 @@ interface AutentiqueWebhookPayload {
   };
 }
 
+type ParsedWebhook = {
+  eventType: string;
+  document?: AutentiqueWebhookPayload['document'];
+  signature?: AutentiqueWebhookPayload['signature'];
+};
+
+// Autentique pode enviar diferentes formatos de payload.
+// Normalizamos para { eventType, document, signature }.
+function parseAutentiqueWebhookPayload(rawPayload: any): ParsedWebhook {
+  // 1) { event: 'document.finished', document: {...} }
+  if (typeof rawPayload?.event === 'string') {
+    return {
+      eventType: rawPayload.event,
+      document: rawPayload.document,
+      signature: rawPayload.signature,
+    };
+  }
+
+  // 2) { type: 'document.finished', data: {...} }
+  if (typeof rawPayload?.type === 'string') {
+    return {
+      eventType: rawPayload.type,
+      document: rawPayload.data,
+      signature: rawPayload.signature || rawPayload.data?.signature,
+    };
+  }
+
+  // 3) { event: { type: 'document.finished', data: {...} } }
+  if (typeof rawPayload?.event === 'object' && typeof rawPayload?.event?.type === 'string') {
+    return {
+      eventType: rawPayload.event.type,
+      document: rawPayload.event.data,
+      signature: rawPayload.event.signature || rawPayload.event.data?.signature,
+    };
+  }
+
+  return { eventType: '' };
+}
+
 // Validate HMAC signature from Autentique
 async function validateSignature(payload: string, signature: string, secret: string): Promise<boolean> {
   try {
@@ -78,21 +117,20 @@ Deno.serve(async (req) => {
     
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-    // Autentique pode enviar dois formatos diferentes:
-    // 1) { event: 'document.finished', document: {...} }
-    // 2) { type: 'document.finished', data: {...} }
     const rawPayload = JSON.parse(rawBody) as any;
-    const eventType: string = rawPayload?.event || rawPayload?.type || '';
-    const document = (rawPayload?.document || rawPayload?.data) as AutentiqueWebhookPayload['document'] | undefined;
-    const payloadSignature = (rawPayload?.signature || rawPayload?.data?.signature) as AutentiqueWebhookPayload['signature'] | undefined;
+    const parsed = parseAutentiqueWebhookPayload(rawPayload);
+    const eventType = parsed.eventType;
+    const document = parsed.document;
+    const payloadSignature = parsed.signature;
 
+    console.log('Webhook payload keys:', Object.keys(rawPayload || {}));
     console.log('Received Autentique webhook event:', eventType);
     console.log('Document info:', JSON.stringify(document, null, 2));
 
     // Extract contract code from document name (format: "Contrato de Locação - LOC-001")
     const documentName = document?.name || '';
     const contractCodeMatch = documentName.match(/Contrato de Locação - (.+)$/);
-    const contractCode = contractCodeMatch ? contractCodeMatch[1] : null;
+    const contractCode = contractCodeMatch ? contractCodeMatch[1].trim() : null;
 
     console.log('Extracted contract code:', contractCode);
 
