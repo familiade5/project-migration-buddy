@@ -1,11 +1,13 @@
 import { useDraggable } from '@dnd-kit/core';
 import { CSS } from '@dnd-kit/utilities';
 import { CrmProperty, PROPERTY_TYPE_LABELS, PropertyStage } from '@/types/crm';
+import { PropertyCompletionStatus } from '@/types/stageCompletion';
 import { formatCurrency } from '@/lib/formatCurrency';
 import { Image, FileText, MapPin, User, Calendar } from 'lucide-react';
 import { differenceInDays } from 'date-fns';
 import { PropertyReminder } from '@/types/reminder';
 import { ReminderIndicator } from './ReminderIndicator';
+import { StageCompletionIndicator } from './StageCompletionIndicator';
 
 interface KanbanCardProps {
   property: CrmProperty;
@@ -15,6 +17,7 @@ interface KanbanCardProps {
   reminder?: PropertyReminder;
   onUpdateReminderInterval?: (propertyId: string, stage: PropertyStage, hours: number) => void;
   onSnoozeReminder?: (reminderId: string, hours: number) => void;
+  completionStatus?: PropertyCompletionStatus;
 }
 
 export function KanbanCard({ 
@@ -25,6 +28,7 @@ export function KanbanCard({
   reminder,
   onUpdateReminderInterval,
   onSnoozeReminder,
+  completionStatus,
 }: KanbanCardProps) {
   const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
     id: property.id,
@@ -142,6 +146,9 @@ export function KanbanCard({
         </div>
 
         <div className="flex items-center gap-2">
+          {/* Stage completion indicator */}
+          <StageCompletionIndicator status={completionStatus || null} variant="minimal" />
+
           {/* Reminder indicator */}
           {onUpdateReminderInterval && onSnoozeReminder && (
             <ReminderIndicator

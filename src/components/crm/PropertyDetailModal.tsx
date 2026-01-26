@@ -1,15 +1,20 @@
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { CrmProperty, STAGE_CONFIG, PROPERTY_TYPE_LABELS } from '@/types/crm';
+import { StageCompletionRequirement } from '@/types/stageCompletion';
 import { useCrmPropertyHistory } from '@/hooks/useCrmProperties';
+import { usePropertyDocuments, usePropertyCompletionStatus } from '@/hooks/useStageCompletion';
 import { useCrmPermissions } from '@/hooks/useCrmPermissions';
 import { useAuth } from '@/contexts/AuthContext';
 import { formatCurrency } from '@/lib/formatCurrency';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { CommissionsTab } from './CommissionsTab';
+import { DocumentsSection } from './DocumentsSection';
+import { StageCompletionIndicator } from './StageCompletionIndicator';
+import { supabase } from '@/integrations/supabase/client';
 import {
   MapPin,
   User,
@@ -29,6 +34,7 @@ interface PropertyDetailModalProps {
   onClose: () => void;
   onEdit: (property: CrmProperty) => void;
   onDelete: (property: CrmProperty) => void;
+  requirements?: StageCompletionRequirement[];
 }
 
 export function PropertyDetailModal({
@@ -37,10 +43,30 @@ export function PropertyDetailModal({
   onClose,
   onEdit,
   onDelete,
+  requirements = [],
 }: PropertyDetailModalProps) {
   const { history, isLoading: historyLoading } = useCrmPropertyHistory(property?.id || null);
+  const { documents, isLoading: docsLoading } = usePropertyDocuments(property?.id || null);
+  const [localDocuments, setLocalDocuments] = useState<any[]>([]);
   const { canEditProperty } = useCrmPermissions();
   const { isAdmin } = useAuth();
+
+  // Sync local documents state
+  useEffect(() => {
+    setLocalDocuments(documents);
+  }, [documents]);
+
+  const refetchDocuments = useCallback(async () => {
+    if (!property?.id) return;
+    const { data } = await supabase
+      .from('crm_property_documents')
+      .select('*')
+      .eq('property_id', property.id)
+      .order('created_at', { ascending: false });
+    if (data) setLocalDocuments(data);
+  }, [property?.id]);
+
+  const completionStatus = usePropertyCompletionStatus(property, requirements, localDocuments);
 
   if (!property) return null;
 
@@ -129,6 +155,11 @@ export function PropertyDetailModal({
               className="data-[state=active]:bg-white text-gray-500 data-[state=active]:text-gray-900"
             >
               Documentos
+              {localDocuments.length > 0 && (
+                <span className="ml-1.5 text-[10px] bg-gray-200 text-gray-600 px-1.5 py-0.5 rounded-full">
+                  {localDocuments.length}
+                </span>
+              )}
             </TabsTrigger>
             <TabsTrigger
               value="commissions"
@@ -139,6 +170,11 @@ export function PropertyDetailModal({
           </TabsList>
 
           <TabsContent value="info" className="mt-4 space-y-4">
+            {/* Stage Completion Status */}
+            {completionStatus && !completionStatus.isComplete && completionStatus.isCriticalStage && (
+              <StageCompletionIndicator status={completionStatus} variant="full" />
+            )}
+
             {/* Location */}
             <div className="bg-gray-50 rounded-lg p-4 border border-gray-100">
               <div className="flex items-center gap-2 mb-3">
@@ -302,10 +338,12 @@ export function PropertyDetailModal({
           </TabsContent>
 
           <TabsContent value="documents" className="mt-4">
-            <div className="text-center py-8 text-gray-500">
-              <FileText className="w-8 h-8 mx-auto mb-2 opacity-50" />
-              <p className="text-sm">Documentos em breve</p>
-            </div>
+            <DocumentsSection
+              propertyId={property.id}
+              documents={localDocuments}
+              onDocumentsChange={refetchDocuments}
+              canEdit={canEdit}
+            />
           </TabsContent>
 
           <TabsContent value="commissions" className="mt-4">

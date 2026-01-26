@@ -599,6 +599,45 @@ export type Database = {
           },
         ]
       }
+      crm_stage_completion_requirements: {
+        Row: {
+          created_at: string
+          document_label: string | null
+          id: string
+          is_critical_stage: boolean
+          requires_document: boolean
+          requires_notes: boolean
+          requires_responsible_user: boolean
+          requires_value: boolean
+          stage: Database["public"]["Enums"]["property_stage"]
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          document_label?: string | null
+          id?: string
+          is_critical_stage?: boolean
+          requires_document?: boolean
+          requires_notes?: boolean
+          requires_responsible_user?: boolean
+          requires_value?: boolean
+          stage: Database["public"]["Enums"]["property_stage"]
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          document_label?: string | null
+          id?: string
+          is_critical_stage?: boolean
+          requires_document?: boolean
+          requires_notes?: boolean
+          requires_responsible_user?: boolean
+          requires_value?: boolean
+          stage?: Database["public"]["Enums"]["property_stage"]
+          updated_at?: string
+        }
+        Relationships: []
+      }
       crm_stage_reminder_defaults: {
         Row: {
           created_at: string

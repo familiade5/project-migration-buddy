@@ -1,5 +1,6 @@
 import { useDroppable } from '@dnd-kit/core';
 import { CrmProperty, PropertyStage, STAGE_CONFIG } from '@/types/crm';
+import { PropertyCompletionStatus } from '@/types/stageCompletion';
 import { KanbanCard } from './KanbanCard';
 import { formatCurrency } from '@/lib/formatCurrency';
 import { PropertyReminder } from '@/types/reminder';
@@ -13,6 +14,7 @@ interface KanbanColumnProps {
   getReminderForProperty?: (propertyId: string) => PropertyReminder | undefined;
   onUpdateReminderInterval?: (propertyId: string, stage: PropertyStage, hours: number) => void;
   onSnoozeReminder?: (reminderId: string, hours: number) => void;
+  getCompletionStatus?: (property: CrmProperty) => PropertyCompletionStatus;
 }
 
 export function KanbanColumn({ 
@@ -24,6 +26,7 @@ export function KanbanColumn({
   getReminderForProperty,
   onUpdateReminderInterval,
   onSnoozeReminder,
+  getCompletionStatus,
 }: KanbanColumnProps) {
   const { setNodeRef, isOver } = useDroppable({
     id: stage,
@@ -77,6 +80,7 @@ export function KanbanColumn({
             reminder={getReminderForProperty?.(property.id)}
             onUpdateReminderInterval={onUpdateReminderInterval}
             onSnoozeReminder={onSnoozeReminder}
+            completionStatus={getCompletionStatus?.(property)}
           />
         ))}
 

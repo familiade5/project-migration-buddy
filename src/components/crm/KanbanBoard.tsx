@@ -11,6 +11,7 @@ import {
   closestCenter,
 } from '@dnd-kit/core';
 import { CrmProperty, PropertyStage, STAGE_ORDER } from '@/types/crm';
+import { PropertyCompletionStatus } from '@/types/stageCompletion';
 import { KanbanColumn } from './KanbanColumn';
 import { KanbanCard } from './KanbanCard';
 import { PropertyReminder } from '@/types/reminder';
@@ -24,6 +25,7 @@ interface KanbanBoardProps {
   getReminderForProperty?: (propertyId: string) => PropertyReminder | undefined;
   onUpdateReminderInterval?: (propertyId: string, stage: PropertyStage, hours: number) => void;
   onSnoozeReminder?: (reminderId: string, hours: number) => void;
+  getCompletionStatus?: (property: CrmProperty) => PropertyCompletionStatus;
 }
 
 export function KanbanBoard({ 
@@ -35,6 +37,7 @@ export function KanbanBoard({
   getReminderForProperty,
   onUpdateReminderInterval,
   onSnoozeReminder,
+  getCompletionStatus,
 }: KanbanBoardProps) {
   const [activeProperty, setActiveProperty] = useState<CrmProperty | null>(null);
 
@@ -111,6 +114,7 @@ export function KanbanBoard({
             getReminderForProperty={getReminderForProperty}
             onUpdateReminderInterval={onUpdateReminderInterval}
             onSnoozeReminder={onSnoozeReminder}
+            getCompletionStatus={getCompletionStatus}
           />
         ))}
       </div>
