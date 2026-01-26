@@ -13,6 +13,7 @@ import { RentalContractCard } from '@/components/crm-rental/RentalContractCard';
 import { RentalPaymentCalendar } from '@/components/crm-rental/RentalPaymentCalendar';
 import { RentalAlertsPanel } from '@/components/crm-rental/RentalAlertsPanel';
 import { RentalContractFormModal } from '@/components/crm-rental/RentalContractFormModal';
+import { RentalContractDetailModal } from '@/components/crm-rental/RentalContractDetailModal';
 import { RentalPaymentModal } from '@/components/crm-rental/RentalPaymentModal';
 import { RentalManagerOverview } from '@/components/crm-rental/RentalManagerOverview';
 
@@ -80,6 +81,8 @@ export default function CRMLocacao() {
   // Modals
   const [isContractFormOpen, setIsContractFormOpen] = useState(false);
   const [editingContract, setEditingContract] = useState<RentalContract | null>(null);
+  const [viewingContract, setViewingContract] = useState<RentalContract | null>(null);
+  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [selectedPayment, setSelectedPayment] = useState<RentalPayment | null>(null);
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
   const [deleteConfirmContract, setDeleteConfirmContract] = useState<RentalContract | null>(null);
@@ -120,6 +123,11 @@ export default function CRMLocacao() {
   const handleAddContract = () => {
     setEditingContract(null);
     setIsContractFormOpen(true);
+  };
+
+  const handleViewContract = (contract: RentalContract) => {
+    setViewingContract(contract);
+    setIsDetailModalOpen(true);
   };
 
   const handleEditContract = (contract: RentalContract) => {
@@ -302,7 +310,7 @@ export default function CRMLocacao() {
                       contract={contract}
                       overdueCount={stats.overdueCount}
                       pendingCount={stats.pendingCount}
-                      onClick={() => handleEditContract(contract)}
+                      onClick={() => handleViewContract(contract)}
                     />
                   );
                 })}
@@ -327,6 +335,16 @@ export default function CRMLocacao() {
             </TabsContent>
           )}
         </Tabs>
+
+        {/* Contract Detail Modal */}
+        <RentalContractDetailModal
+          contract={viewingContract}
+          isOpen={isDetailModalOpen}
+          onClose={() => {
+            setIsDetailModalOpen(false);
+            setViewingContract(null);
+          }}
+        />
 
         {/* Contract Form Modal */}
         <RentalContractFormModal
