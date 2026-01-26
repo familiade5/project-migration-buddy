@@ -14,6 +14,7 @@ import { ptBR } from 'date-fns/locale';
 import { CommissionsTab } from './CommissionsTab';
 import { DocumentsSection } from './DocumentsSection';
 import { StageCompletionIndicator } from './StageCompletionIndicator';
+import { EmbeddedFinancingCalculator } from './EmbeddedFinancingCalculator';
 import { supabase } from '@/integrations/supabase/client';
 import {
   MapPin,
@@ -26,6 +27,7 @@ import {
   ArrowRight,
   Pencil,
   Trash2,
+  Calculator,
 } from 'lucide-react';
 
 interface PropertyDetailModalProps {
