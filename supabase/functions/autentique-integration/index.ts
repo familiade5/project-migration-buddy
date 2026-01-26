@@ -2,7 +2,8 @@ import { Hono } from 'https://deno.land/x/hono@v3.11.7/mod.ts';
 import { cors } from 'https://deno.land/x/hono@v3.11.7/middleware/cors/index.ts';
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.90.1';
 
-const app = new Hono();
+// Use basePath to handle the function name prefix in routes
+const app = new Hono().basePath('/autentique-integration');
 
 // Enable CORS
 app.use('*', cors({
