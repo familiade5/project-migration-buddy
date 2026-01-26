@@ -106,9 +106,9 @@ export function RentalOwnerFormModal({
                 name="full_name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Nome Completo *</FormLabel>
+                    <FormLabel className="text-gray-700">Nome Completo *</FormLabel>
                     <FormControl>
-                      <Input {...field} />
+                      <Input {...field} className="bg-white border-gray-200 text-gray-900" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -121,9 +121,9 @@ export function RentalOwnerFormModal({
                   name="cpf"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>CPF/CNPJ</FormLabel>
+                      <FormLabel className="text-gray-700">CPF/CNPJ</FormLabel>
                       <FormControl>
-                        <Input {...field} />
+                        <Input {...field} className="bg-white border-gray-200 text-gray-900" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -134,9 +134,9 @@ export function RentalOwnerFormModal({
                   name="rg"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>RG</FormLabel>
+                      <FormLabel className="text-gray-700">RG</FormLabel>
                       <FormControl>
-                        <Input {...field} />
+                        <Input {...field} className="bg-white border-gray-200 text-gray-900" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -151,9 +151,9 @@ export function RentalOwnerFormModal({
                   name="phone"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Telefone</FormLabel>
+                      <FormLabel className="text-gray-700">Telefone</FormLabel>
                       <FormControl>
-                        <Input {...field} />
+                        <Input {...field} className="bg-white border-gray-200 text-gray-900" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -164,9 +164,9 @@ export function RentalOwnerFormModal({
                   name="whatsapp"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>WhatsApp</FormLabel>
+                      <FormLabel className="text-gray-700">WhatsApp</FormLabel>
                       <FormControl>
-                        <Input {...field} />
+                        <Input {...field} className="bg-white border-gray-200 text-gray-900" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -179,9 +179,9 @@ export function RentalOwnerFormModal({
                 name="email"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>E-mail</FormLabel>
+                    <FormLabel className="text-gray-700">E-mail</FormLabel>
                     <FormControl>
-                      <Input type="email" {...field} />
+                      <Input type="email" {...field} className="bg-white border-gray-200 text-gray-900" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -194,9 +194,9 @@ export function RentalOwnerFormModal({
                 name="address"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Endereço</FormLabel>
+                    <FormLabel className="text-gray-700">Endereço</FormLabel>
                     <FormControl>
-                      <Input {...field} />
+                      <Input {...field} className="bg-white border-gray-200 text-gray-900" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -209,9 +209,9 @@ export function RentalOwnerFormModal({
                   name="neighborhood"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Bairro</FormLabel>
+                      <FormLabel className="text-gray-700">Bairro</FormLabel>
                       <FormControl>
-                        <Input {...field} />
+                        <Input {...field} className="bg-white border-gray-200 text-gray-900" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -222,9 +222,9 @@ export function RentalOwnerFormModal({
                   name="city"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Cidade</FormLabel>
+                      <FormLabel className="text-gray-700">Cidade</FormLabel>
                       <FormControl>
-                        <Input {...field} />
+                        <Input {...field} className="bg-white border-gray-200 text-gray-900" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -235,9 +235,9 @@ export function RentalOwnerFormModal({
                   name="state"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Estado</FormLabel>
+                      <FormLabel className="text-gray-700">Estado</FormLabel>
                       <FormControl>
-                        <Input {...field} />
+                        <Input {...field} className="bg-white border-gray-200 text-gray-900" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -246,17 +246,17 @@ export function RentalOwnerFormModal({
               </div>
 
               {/* Bank Info */}
-              <div className="border-t pt-4">
-                <p className="text-sm font-medium mb-3">Dados Bancários</p>
+              <div className="border-t border-gray-200 pt-4">
+                <p className="text-sm font-medium mb-3 text-gray-900">Dados Bancários</p>
                 <div className="grid grid-cols-3 gap-4">
                   <FormField
                     control={form.control}
                     name="bank_name"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Banco</FormLabel>
+                        <FormLabel className="text-gray-700">Banco</FormLabel>
                         <FormControl>
-                          <Input {...field} />
+                          <Input {...field} className="bg-white border-gray-200 text-gray-900" />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -267,9 +267,9 @@ export function RentalOwnerFormModal({
                     name="bank_agency"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Agência</FormLabel>
+                        <FormLabel className="text-gray-700">Agência</FormLabel>
                         <FormControl>
-                          <Input {...field} />
+                          <Input {...field} className="bg-white border-gray-200 text-gray-900" />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -280,9 +280,9 @@ export function RentalOwnerFormModal({
                     name="bank_account"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Conta</FormLabel>
+                        <FormLabel className="text-gray-700">Conta</FormLabel>
                         <FormControl>
-                          <Input {...field} />
+                          <Input {...field} className="bg-white border-gray-200 text-gray-900" />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -294,9 +294,9 @@ export function RentalOwnerFormModal({
                   name="pix_key"
                   render={({ field }) => (
                     <FormItem className="mt-4">
-                      <FormLabel>Chave PIX</FormLabel>
+                      <FormLabel className="text-gray-700">Chave PIX</FormLabel>
                       <FormControl>
-                        <Input {...field} />
+                        <Input {...field} className="bg-white border-gray-200 text-gray-900" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -310,9 +310,9 @@ export function RentalOwnerFormModal({
                 name="notes"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Observações</FormLabel>
+                    <FormLabel className="text-gray-700">Observações</FormLabel>
                     <FormControl>
-                      <Textarea rows={3} {...field} />
+                      <Textarea rows={3} {...field} className="bg-white border-gray-200 text-gray-900" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
