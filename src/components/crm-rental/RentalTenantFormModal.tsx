@@ -94,9 +94,9 @@ export function RentalTenantFormModal({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-lg max-h-[90vh] overflow-hidden">
+      <DialogContent className="max-w-lg max-h-[90vh] overflow-hidden bg-white border-gray-200 text-gray-900">
         <DialogHeader>
-          <DialogTitle>
+          <DialogTitle className="text-gray-900">
             {tenant ? 'Editar Inquilino' : 'Novo Inquilino'}
           </DialogTitle>
         </DialogHeader>

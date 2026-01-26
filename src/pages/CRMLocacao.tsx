@@ -232,15 +232,15 @@ export default function CRMLocacao() {
 
   return (
     <AppLayout>
-      <div className="min-h-screen bg-background p-6">
+      <div className="min-h-screen bg-white p-6">
         {/* Header */}
         <div className="mb-6 flex items-center justify-between">
           <div>
             <div className="flex items-center gap-3 mb-1">
-              <Building2 className="w-6 h-6 text-foreground" />
-              <h1 className="text-2xl font-semibold text-foreground">CRM Locação</h1>
+              <Building2 className="w-6 h-6 text-gray-800" />
+              <h1 className="text-2xl font-semibold text-gray-900">CRM Locação</h1>
             </div>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm text-gray-500">
               Gestão completa de imóveis, contratos e pagamentos
             </p>
           </div>
@@ -258,31 +258,31 @@ export default function CRMLocacao() {
 
         {/* Main Tabs */}
         <Tabs defaultValue="imoveis" className="mt-6">
-          <TabsList className="bg-muted border border-border">
+          <TabsList className="bg-gray-100 border border-gray-200">
             <TabsTrigger 
               value="imoveis" 
-              className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+              className="data-[state=active]:bg-gray-900 data-[state=active]:text-white"
             >
               <Home className="w-4 h-4 mr-2" />
               Imóveis
             </TabsTrigger>
             <TabsTrigger 
               value="contracts" 
-              className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+              className="data-[state=active]:bg-gray-900 data-[state=active]:text-white"
             >
               <FileText className="w-4 h-4 mr-2" />
               Contratos
             </TabsTrigger>
             <TabsTrigger 
               value="calendar" 
-              className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+              className="data-[state=active]:bg-gray-900 data-[state=active]:text-white"
             >
               <Calendar className="w-4 h-4 mr-2" />
               Calendário
             </TabsTrigger>
             <TabsTrigger 
               value="cadastros" 
-              className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+              className="data-[state=active]:bg-gray-900 data-[state=active]:text-white"
             >
               <Users className="w-4 h-4 mr-2" />
               Cadastros
@@ -290,7 +290,7 @@ export default function CRMLocacao() {
             {isAdmin && (
               <TabsTrigger 
                 value="manager" 
-                className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+                className="data-[state=active]:bg-gray-900 data-[state=active]:text-white"
               >
                 <LayoutGrid className="w-4 h-4 mr-2" />
                 Gerencial
@@ -355,8 +355,8 @@ export default function CRMLocacao() {
 
             {/* Contracts Grid */}
             {filteredContracts.length === 0 ? (
-              <div className="bg-card border rounded-xl p-12 text-center">
-                <Building2 className="w-16 h-16 text-muted-foreground/30 mx-auto mb-4" />
+              <div className="bg-gray-50 border border-gray-200 rounded-xl p-12 text-center">
+                <Building2 className="w-16 h-16 text-gray-300 mx-auto mb-4" />
                 <h3 className="text-lg font-medium mb-2">
                   Nenhum contrato encontrado
                 </h3>
