@@ -16,7 +16,8 @@ const AUTENTIQUE_API_URL = 'https://api.autentique.com.br/v2/graphql';
 interface SignerInput {
   email: string;
   name: string;
-  action: 'SIGN' | 'WITNESS' | 'APPROVE';
+  // Autentique ActionEnum não inclui WITNESS (gera erro 400)
+  action: 'SIGN' | 'APPROVE';
 }
 
 interface CreateDocumentInput {
