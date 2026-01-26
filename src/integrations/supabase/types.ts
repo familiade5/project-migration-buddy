@@ -319,6 +319,104 @@ export type Database = {
           },
         ]
       }
+      crm_client_documents: {
+        Row: {
+          client_id: string
+          created_at: string
+          document_type: string
+          file_url: string
+          id: string
+          name: string
+          uploaded_by_user_id: string | null
+        }
+        Insert: {
+          client_id: string
+          created_at?: string
+          document_type?: string
+          file_url: string
+          id?: string
+          name: string
+          uploaded_by_user_id?: string | null
+        }
+        Update: {
+          client_id?: string
+          created_at?: string
+          document_type?: string
+          file_url?: string
+          id?: string
+          name?: string
+          uploaded_by_user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "crm_client_documents_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "crm_clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      crm_clients: {
+        Row: {
+          address: string | null
+          birth_date: string | null
+          city: string | null
+          cpf: string | null
+          created_at: string
+          created_by_user_id: string | null
+          email: string | null
+          full_name: string
+          id: string
+          neighborhood: string | null
+          notes: string | null
+          phone: string | null
+          rg: string | null
+          state: string | null
+          updated_at: string
+          whatsapp: string | null
+          zip_code: string | null
+        }
+        Insert: {
+          address?: string | null
+          birth_date?: string | null
+          city?: string | null
+          cpf?: string | null
+          created_at?: string
+          created_by_user_id?: string | null
+          email?: string | null
+          full_name: string
+          id?: string
+          neighborhood?: string | null
+          notes?: string | null
+          phone?: string | null
+          rg?: string | null
+          state?: string | null
+          updated_at?: string
+          whatsapp?: string | null
+          zip_code?: string | null
+        }
+        Update: {
+          address?: string | null
+          birth_date?: string | null
+          city?: string | null
+          cpf?: string | null
+          created_at?: string
+          created_by_user_id?: string | null
+          email?: string | null
+          full_name?: string
+          id?: string
+          neighborhood?: string | null
+          notes?: string | null
+          phone?: string | null
+          rg?: string | null
+          state?: string | null
+          updated_at?: string
+          whatsapp?: string | null
+          zip_code?: string | null
+        }
+        Relationships: []
+      }
       crm_edit_permissions: {
         Row: {
           granted_at: string
@@ -355,6 +453,7 @@ export type Database = {
         Row: {
           address: string | null
           city: string
+          client_id: string | null
           code: string
           commission_percentage: number | null
           commission_value: number | null
@@ -379,6 +478,7 @@ export type Database = {
         Insert: {
           address?: string | null
           city: string
+          client_id?: string | null
           code: string
           commission_percentage?: number | null
           commission_value?: number | null
@@ -403,6 +503,7 @@ export type Database = {
         Update: {
           address?: string | null
           city?: string
+          client_id?: string | null
           code?: string
           commission_percentage?: number | null
           commission_value?: number | null
@@ -424,7 +525,15 @@ export type Database = {
           state?: string
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "crm_properties_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "crm_clients"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       crm_property_commissions: {
         Row: {
