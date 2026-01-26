@@ -130,10 +130,23 @@ Deno.serve(async (req) => {
       const signedFileUrl = document.files.signed;
       console.log('Signed file URL:', signedFileUrl);
       
-      // Download the signed PDF
-      const pdfResponse = await fetch(signedFileUrl);
+      // Get Autentique API token for authenticated download
+      const autentiqueApiKey = Deno.env.get('AUTENTIQUE_API_KEY');
+      
+      // Download the signed PDF (with auth if needed)
+      const downloadHeaders: Record<string, string> = {};
+      if (autentiqueApiKey && signedFileUrl.includes('autentique')) {
+        downloadHeaders['Authorization'] = `Bearer ${autentiqueApiKey}`;
+      }
+      
+      let pdfResponse = await fetch(signedFileUrl, { headers: downloadHeaders });
       if (!pdfResponse.ok) {
-        throw new Error(`Failed to download signed PDF: ${pdfResponse.status}`);
+        console.error('Failed to download PDF with auth, status:', pdfResponse.status, '- trying without auth');
+        // Try without auth as fallback
+        pdfResponse = await fetch(signedFileUrl);
+        if (!pdfResponse.ok) {
+          throw new Error(`Failed to download signed PDF: ${pdfResponse.status}`);
+        }
       }
       
       const pdfBlob = await pdfResponse.blob();
