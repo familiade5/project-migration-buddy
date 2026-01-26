@@ -94,7 +94,7 @@ export function RentalContractGeneratorInline({ contract }: RentalContractGenera
         throw new Error('Not authenticated');
       }
 
-      // Create signers list - tenant, owner, and agency/broker
+      // Create signers list - tenant and owner only
       const signers = [
         {
           email: contract.tenant.email,
@@ -105,12 +105,6 @@ export function RentalContractGeneratorInline({ contract }: RentalContractGenera
           email: contract.owner_email || 'proprietario@email.com',
           name: contract.owner_name,
           action: 'SIGN' as const,
-        },
-        // Agency/broker (Autentique ActionEnum não suporta WITNESS)
-        {
-          email: 'netoseucorretor@gmail.com',
-          name: 'Venda Direta Hoje',
-          action: 'APPROVE' as const,
         },
       ];
 
