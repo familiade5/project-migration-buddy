@@ -232,42 +232,41 @@ export default function FinancingCalculator() {
 
   return (
     <AppLayout>
-      <div className="p-4 md:p-6 max-w-4xl mx-auto">
-        {/* Header */}
-        <div className="mb-6">
-          <div className="flex items-center gap-3 mb-2">
-            <div className="w-10 h-10 rounded-xl bg-gray-100 flex items-center justify-center">
-              <Calculator className="w-5 h-5 text-gray-700" />
-            </div>
-            <div>
-              <h1 className="text-xl md:text-2xl font-semibold text-gray-900">
+      <div className="p-6 min-h-screen bg-white">
+        {/* Header - Same style as CRM */}
+        <div className="mb-6 flex items-center justify-between">
+          <div>
+            <div className="flex items-center gap-3 mb-1">
+              <Calculator className="w-6 h-6 text-gray-700" />
+              <h1 className="text-2xl font-semibold text-gray-900">
                 Calculadora de Financiamento
               </h1>
-              <p className="text-sm text-gray-500">
-                Simulador comercial para financiamentos Caixa
-              </p>
             </div>
+            <p className="text-sm text-gray-500">
+              Simulador comercial para financiamentos Caixa
+            </p>
           </div>
         </div>
 
         {/* Main Calculator */}
-        <Tabs defaultValue="simulation" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-2 bg-gray-100 p-1">
-            <TabsTrigger 
-              value="simulation" 
-              className="data-[state=active]:bg-white data-[state=active]:text-gray-900 data-[state=active]:shadow-sm text-gray-600"
-            >
-              <Calculator className="w-4 h-4 mr-2" />
-              Simulação
-            </TabsTrigger>
-            <TabsTrigger 
-              value="balance"
-              className="data-[state=active]:bg-white data-[state=active]:text-gray-900 data-[state=active]:shadow-sm text-gray-600"
-            >
-              <TrendingDown className="w-4 h-4 mr-2" />
-              Saldo Devedor
-            </TabsTrigger>
-          </TabsList>
+        <div className="max-w-4xl">
+          <Tabs defaultValue="simulation" className="space-y-4">
+            <TabsList className="bg-gray-100 border border-gray-200">
+              <TabsTrigger 
+                value="simulation" 
+                className="data-[state=active]:bg-gray-900 data-[state=active]:text-white data-[state=inactive]:bg-transparent data-[state=inactive]:text-gray-600 hover:bg-gray-200"
+              >
+                <Calculator className="w-4 h-4 mr-2" />
+                Simulação
+              </TabsTrigger>
+              <TabsTrigger 
+                value="balance"
+                className="data-[state=active]:bg-gray-900 data-[state=active]:text-white data-[state=inactive]:bg-transparent data-[state=inactive]:text-gray-600 hover:bg-gray-200"
+              >
+                <TrendingDown className="w-4 h-4 mr-2" />
+                Saldo Devedor
+              </TabsTrigger>
+            </TabsList>
 
           {/* Simulation Tab */}
           <TabsContent value="simulation" className="space-y-4">
@@ -711,7 +710,8 @@ export default function FinancingCalculator() {
               </Card>
             )}
           </TabsContent>
-        </Tabs>
+          </Tabs>
+        </div>
 
         {/* Info Footer */}
         <div className="mt-6 p-4 bg-gray-50 rounded-xl border border-gray-100">
