@@ -381,6 +381,9 @@ export default function Admin() {
       create_creative: 'Criou post',
       delete_creative: 'Excluiu post',
       update_creative: 'Atualizou post',
+      module_access: 'Acessou módulo',
+      financing_simulation: 'Simulou financiamento',
+      balance_simulation: 'Simulou saldo devedor',
     };
     return labels[action] || action;
   };
@@ -392,8 +395,18 @@ export default function Admin() {
       create_creative: 'bg-blue-500/20 text-blue-400',
       delete_creative: 'bg-red-500/20 text-red-400',
       update_creative: 'bg-yellow-500/20 text-yellow-400',
+      module_access: 'bg-purple-500/20 text-purple-400',
+      financing_simulation: 'bg-cyan-500/20 text-cyan-400',
+      balance_simulation: 'bg-teal-500/20 text-teal-400',
     };
     return colors[action] || 'bg-gray-500/20 text-gray-400';
+  };
+
+  const getModuleName = (log: ActivityLog): string | null => {
+    if (log.details && typeof log.details === 'object' && 'module' in log.details) {
+      return log.details.module as string;
+    }
+    return null;
   };
 
   const isCurrentUser = (userId: string) => currentUser?.id === userId;
@@ -742,45 +755,58 @@ export default function Admin() {
                     <TableRow className="border-border hover:bg-transparent">
                       <TableHead className="text-muted-foreground">Usuário</TableHead>
                       <TableHead className="text-muted-foreground">Ação</TableHead>
+                      <TableHead className="text-muted-foreground">Módulo</TableHead>
                       <TableHead className="text-muted-foreground">Data/Hora</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {logs.map((log) => (
-                      <TableRow key={log.id} className="border-border">
-                        <TableCell>
-                          <div>
-                            <p className="font-medium text-foreground">{log.user_name || 'Usuário'}</p>
-                            <p className="text-sm text-muted-foreground">{log.user_email}</p>
-                          </div>
-                        </TableCell>
-                        <TableCell>
-                          <div className="flex items-center gap-2">
-                            <Badge className={getActionColor(log.action)}>
-                              {getActionLabel(log.action)}
-                            </Badge>
-                            {/* Link to view creative if action is create_creative */}
-                            {log.action === 'create_creative' && log.resource_id && (
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                className="h-7 px-2 text-gold hover:text-gold-dark"
-                                onClick={() => navigate(`/library?post=${log.resource_id}`)}
-                                title="Ver post criado"
-                              >
-                                <ExternalLink className="w-3.5 h-3.5" />
-                              </Button>
+                    {logs.map((log) => {
+                      const moduleName = getModuleName(log);
+                      return (
+                        <TableRow key={log.id} className="border-border">
+                          <TableCell>
+                            <div>
+                              <p className="font-medium text-foreground">{log.user_name || 'Usuário'}</p>
+                              <p className="text-sm text-muted-foreground">{log.user_email}</p>
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <div className="flex items-center gap-2">
+                              <Badge className={getActionColor(log.action)}>
+                                {getActionLabel(log.action)}
+                              </Badge>
+                              {/* Link to view creative if action is create_creative */}
+                              {log.action === 'create_creative' && log.resource_id && (
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  className="h-7 px-2 text-gold hover:text-gold-dark"
+                                  onClick={() => navigate(`/library?post=${log.resource_id}`)}
+                                  title="Ver post criado"
+                                >
+                                  <ExternalLink className="w-3.5 h-3.5" />
+                                </Button>
+                              )}
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            {moduleName ? (
+                              <span className="text-sm text-foreground bg-surface px-2 py-1 rounded-md">
+                                {moduleName}
+                              </span>
+                            ) : (
+                              <span className="text-sm text-muted-foreground">—</span>
                             )}
-                          </div>
-                        </TableCell>
-                        <TableCell className="text-muted-foreground">
-                          <div className="flex items-center gap-2">
-                            <Clock className="w-4 h-4" />
-                            {format(new Date(log.created_at), "dd/MM/yyyy 'às' HH:mm", { locale: ptBR })}
-                          </div>
-                        </TableCell>
-                      </TableRow>
-                    ))}
+                          </TableCell>
+                          <TableCell className="text-muted-foreground">
+                            <div className="flex items-center gap-2">
+                              <Clock className="w-4 h-4" />
+                              {format(new Date(log.created_at), "dd/MM/yyyy 'às' HH:mm", { locale: ptBR })}
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })}
                   </TableBody>
                 </Table>
               </div>

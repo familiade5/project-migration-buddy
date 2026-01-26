@@ -9,8 +9,12 @@ import { PhotoSearcher } from '@/components/PhotoSearcher';
 import { Sparkles, Image, FileText, Upload, Edit3, Search } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { AppLayout } from '@/components/layout/AppLayout';
+import { useModuleActivity } from '@/hooks/useModuleActivity';
 
 const Index = () => {
+  // Log module access
+  useModuleActivity('Criar Post');
+  
   const [propertyData, setPropertyData] = useState<PropertyData>(defaultPropertyData);
   const [photos, setPhotos] = useState<string[]>([]);
 

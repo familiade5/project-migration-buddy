@@ -17,8 +17,12 @@ import { LocacaoManagementCaptionGenerator } from '@/components/locacao/LocacaoM
 import { LocacaoLogo } from '@/components/locacao/LocacaoLogo';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { Settings2, Image, FileText, Home, Building2 } from 'lucide-react';
+import { useModuleActivity } from '@/hooks/useModuleActivity';
 
 const LocacaoPostGenerator = () => {
+  // Log module access
+  useModuleActivity('Locação & Gestão');
+  
   const [creativeType, setCreativeType] = useState<LocacaoCreativeType | null>(null);
   const [propertyData, setPropertyData] = useState<LocacaoPropertyData>(defaultLocacaoPropertyData);
   const [managementData, setManagementData] = useState<LocacaoManagementData>(defaultLocacaoManagementData);

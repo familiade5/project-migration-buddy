@@ -6,8 +6,9 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { Calculator, TrendingDown, AlertCircle, DollarSign, Percent, CalendarDays, Info } from 'lucide-react';
+import { Calculator, TrendingDown, AlertCircle, DollarSign, Percent, CalendarDays, Info, Lightbulb } from 'lucide-react';
 import { formatCurrency } from '@/lib/formatCurrency';
+import { useModuleActivity, useActionLogger } from '@/hooks/useModuleActivity';
 
 type FinancingTable = 'PRICE' | 'SAC';
 
@@ -27,11 +28,22 @@ interface BalanceResult {
   table: FinancingTable;
 }
 
+// Current market reference rates for Caixa (Jan 2026)
+const SUGGESTED_RATES = {
+  min: 10.49,
+  max: 11.49,
+  default: 10.99,
+};
+
 export default function FinancingCalculator() {
+  // Log module access
+  useModuleActivity('Calculadora de Financiamento');
+  const { logAction } = useActionLogger();
+
   // Simulation Mode State
   const [propertyValue, setPropertyValue] = useState('');
   const [downPayment, setDownPayment] = useState('');
-  const [interestRate, setInterestRate] = useState('');
+  const [interestRate, setInterestRate] = useState(SUGGESTED_RATES.default.toString().replace('.', ','));
   const [termMonths, setTermMonths] = useState('');
   const [financingTable, setFinancingTable] = useState<FinancingTable>('PRICE');
   const [simulationResult, setSimulationResult] = useState<SimulationResult | null>(null);
@@ -40,7 +52,7 @@ export default function FinancingCalculator() {
   const [financedAmount, setFinancedAmount] = useState('');
   const [currentInstallment, setCurrentInstallment] = useState('');
   const [paidInstallments, setPaidInstallments] = useState('');
-  const [balanceInterestRate, setBalanceInterestRate] = useState('');
+  const [balanceInterestRate, setBalanceInterestRate] = useState(SUGGESTED_RATES.default.toString().replace('.', ','));
   const [balanceTable, setBalanceTable] = useState<FinancingTable>('PRICE');
   const [balanceResult, setBalanceResult] = useState<BalanceResult | null>(null);
 
@@ -124,6 +136,17 @@ export default function FinancingCalculator() {
       : calculateSAC(principal, monthlyRate, months);
 
     setSimulationResult(result);
+    
+    // Log the simulation action
+    logAction('financing_simulation', 'Calculadora de Financiamento', {
+      property_value: property,
+      down_payment: down,
+      financed_amount: principal,
+      interest_rate: rate * 100,
+      term_months: months,
+      table: financingTable,
+      monthly_installment: result.monthlyInstallment,
+    });
   };
 
   // Calculate remaining balance
@@ -171,11 +194,23 @@ export default function FinancingCalculator() {
       }
     }
 
-    setBalanceResult({
+    const result = {
       remainingBalance: Math.max(0, remainingBalance),
       totalRemaining: Math.max(0, totalRemaining),
       remainingInstallments,
       table: balanceTable
+    };
+
+    setBalanceResult(result);
+
+    // Log the balance calculation action
+    logAction('balance_simulation', 'Calculadora de Financiamento', {
+      financed_amount: principal,
+      current_installment: installment,
+      paid_installments: paid,
+      interest_rate: rate * 100,
+      table: balanceTable,
+      remaining_balance: result.remainingBalance,
     });
   };
 
@@ -284,7 +319,7 @@ export default function FinancingCalculator() {
                   </div>
                 </div>
 
-                {/* Interest Rate */}
+                {/* Interest Rate with Suggestion */}
                 <div className="space-y-2">
                   <Label htmlFor="interestRate" className="text-gray-700 flex items-center gap-2">
                     <Percent className="w-4 h-4 text-gray-400" />
@@ -295,12 +330,18 @@ export default function FinancingCalculator() {
                       id="interestRate"
                       type="text"
                       inputMode="decimal"
-                      placeholder="10,5"
+                      placeholder="10,99"
                       value={interestRate}
                       onChange={(e) => setInterestRate(e.target.value.replace(/[^\d,]/g, ''))}
-                      className="pr-8 border-gray-200 focus:border-gray-400 focus:ring-gray-400"
+                      className="pr-8 border-gray-300 focus:border-gray-500 focus:ring-gray-500"
                     />
                     <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm">%</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-xs">
+                    <Lightbulb className="w-3 h-3 text-amber-500" />
+                    <span className="text-gray-500">
+                      Taxa referência Caixa: <span className="font-medium text-gray-700">{SUGGESTED_RATES.min}% - {SUGGESTED_RATES.max}%</span> a.a.
+                    </span>
                   </div>
                 </div>
 
@@ -525,7 +566,7 @@ export default function FinancingCalculator() {
                   />
                 </div>
 
-                {/* Interest Rate */}
+                {/* Interest Rate with Suggestion */}
                 <div className="space-y-2">
                   <Label htmlFor="balanceInterestRate" className="text-gray-700 flex items-center gap-2">
                     <Percent className="w-4 h-4 text-gray-400" />
@@ -536,12 +577,18 @@ export default function FinancingCalculator() {
                       id="balanceInterestRate"
                       type="text"
                       inputMode="decimal"
-                      placeholder="10,5"
+                      placeholder="10,99"
                       value={balanceInterestRate}
                       onChange={(e) => setBalanceInterestRate(e.target.value.replace(/[^\d,]/g, ''))}
-                      className="pr-8 border-gray-200 focus:border-gray-400 focus:ring-gray-400"
+                      className="pr-8 border-gray-300 focus:border-gray-500 focus:ring-gray-500"
                     />
                     <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm">%</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-xs">
+                    <Lightbulb className="w-3 h-3 text-amber-500" />
+                    <span className="text-gray-500">
+                      Taxa referência Caixa: <span className="font-medium text-gray-700">{SUGGESTED_RATES.min}% - {SUGGESTED_RATES.max}%</span> a.a.
+                    </span>
                   </div>
                 </div>
 
