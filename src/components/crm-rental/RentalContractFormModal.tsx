@@ -184,7 +184,7 @@ export function RentalContractFormModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="bg-gray-900 border-gray-800 text-white max-w-3xl max-h-[90vh]">
+      <DialogContent className="bg-white border-gray-200 text-gray-900 max-w-3xl max-h-[90vh]">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Building2 className="w-5 h-5" />
@@ -538,19 +538,19 @@ export function RentalContractFormModal({
           </ScrollArea>
         </Tabs>
 
-        <div className="flex justify-end gap-3 pt-4 border-t border-gray-800">
+        <div className="flex justify-end gap-3 pt-4 border-t border-gray-200">
           <Button
             variant="ghost"
             onClick={onClose}
             disabled={isLoading}
-            className="text-gray-400 hover:text-white"
+            className="text-gray-600 hover:text-gray-900"
           >
             Cancelar
           </Button>
           <Button
             onClick={handleSubmit}
             disabled={isLoading}
-            className="bg-emerald-600 hover:bg-emerald-700"
+            className="bg-gray-900 hover:bg-gray-800"
           >
             {isLoading ? (
               <>

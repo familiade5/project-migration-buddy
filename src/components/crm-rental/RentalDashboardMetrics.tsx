@@ -6,7 +6,6 @@ import {
   AlertTriangle, 
   TrendingUp,
   Calendar,
-  Users,
   Percent
 } from 'lucide-react';
 
@@ -21,48 +20,48 @@ export function RentalDashboardMetrics({ metrics }: RentalDashboardMetricsProps)
       value: metrics.activeContracts.toString(),
       subtitle: `${metrics.endingSoonContracts} vencendo`,
       icon: Building2,
-      color: 'text-emerald-400',
-      bgColor: 'bg-emerald-500/10',
+      color: 'text-emerald-600',
+      bgColor: 'bg-emerald-50',
     },
     {
       label: 'Receita Mensal Esperada',
       value: formatCurrency(metrics.expectedMonthlyRevenue),
       subtitle: `Taxa: ${formatCurrency(metrics.expectedManagementFees)}`,
       icon: TrendingUp,
-      color: 'text-blue-400',
-      bgColor: 'bg-blue-500/10',
+      color: 'text-blue-600',
+      bgColor: 'bg-blue-50',
     },
     {
       label: 'Recebido Este Mês',
       value: formatCurrency(metrics.totalReceivedThisMonth),
       subtitle: `Pendente: ${formatCurrency(metrics.totalPendingThisMonth)}`,
       icon: DollarSign,
-      color: 'text-green-400',
-      bgColor: 'bg-green-500/10',
+      color: 'text-green-600',
+      bgColor: 'bg-green-50',
     },
     {
       label: 'Inadimplência',
       value: formatCurrency(metrics.totalOverdue),
       subtitle: `${metrics.overdueCount} parcelas em atraso`,
       icon: AlertTriangle,
-      color: metrics.overdueCount > 0 ? 'text-red-400' : 'text-gray-400',
-      bgColor: metrics.overdueCount > 0 ? 'bg-red-500/10' : 'bg-gray-500/10',
+      color: metrics.overdueCount > 0 ? 'text-red-600' : 'text-gray-500',
+      bgColor: metrics.overdueCount > 0 ? 'bg-red-50' : 'bg-gray-50',
     },
     {
       label: 'Taxa de Inadimplência',
       value: `${metrics.delinquencyRate.toFixed(1)}%`,
       subtitle: 'Do total de parcelas',
       icon: Percent,
-      color: metrics.delinquencyRate > 10 ? 'text-orange-400' : 'text-gray-400',
-      bgColor: 'bg-gray-500/10',
+      color: metrics.delinquencyRate > 10 ? 'text-orange-600' : 'text-gray-500',
+      bgColor: 'bg-gray-50',
     },
     {
       label: 'Recebido no Ano',
       value: formatCurrency(metrics.totalReceivedThisYear),
       subtitle: new Date().getFullYear().toString(),
       icon: Calendar,
-      color: 'text-purple-400',
-      bgColor: 'bg-purple-500/10',
+      color: 'text-purple-600',
+      bgColor: 'bg-purple-50',
     },
   ];
 
@@ -71,10 +70,10 @@ export function RentalDashboardMetrics({ metrics }: RentalDashboardMetricsProps)
       {cards.map((card) => (
         <div
           key={card.label}
-          className="bg-gray-900 border border-gray-800 rounded-xl p-4 hover:border-gray-700 transition-colors"
+          className="bg-white border border-gray-200 rounded-xl p-4 hover:border-gray-300 transition-colors shadow-sm"
         >
           <div className="flex items-center justify-between mb-3">
-            <span className="text-xs text-gray-400 font-medium uppercase tracking-wider">
+            <span className="text-xs text-gray-500 font-medium uppercase tracking-wider">
               {card.label}
             </span>
             <div className={`p-2 rounded-lg ${card.bgColor}`}>

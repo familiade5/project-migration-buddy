@@ -8,3 +8,6 @@ verify_jwt = false
 
 [functions.cleanup-old-creatives]
 verify_jwt = false
+
+[functions.autentique-integration]
+verify_jwt = false
