@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -127,6 +127,46 @@ export function RentalPropertyFormModal({
       internal_notes: property?.internal_notes || '',
     },
   });
+
+  // Reset form when property changes or modal opens
+  useEffect(() => {
+    if (open) {
+      form.reset({
+        code: property?.code || '',
+        property_type: property?.property_type || 'Apartamento',
+        address: property?.address || '',
+        number: property?.number || '',
+        complement: property?.complement || '',
+        neighborhood: property?.neighborhood || '',
+        city: property?.city || 'Campo Grande',
+        state: property?.state || 'MS',
+        zip_code: property?.zip_code || '',
+        bedrooms: property?.bedrooms || 0,
+        bathrooms: property?.bathrooms || 0,
+        suites: property?.suites || 0,
+        garage_spaces: property?.garage_spaces || 0,
+        total_area: property?.total_area || undefined,
+        useful_area: property?.useful_area || undefined,
+        rent_value: property?.rent_value || 0,
+        condominium_fee: property?.condominium_fee || 0,
+        iptu_value: property?.iptu_value || 0,
+        other_fees: property?.other_fees || 0,
+        owner_id: property?.owner_id || '',
+        is_furnished: property?.is_furnished || false,
+        accepts_pets: property?.accepts_pets || false,
+        has_pool: property?.has_pool || false,
+        has_gym: property?.has_gym || false,
+        has_elevator: property?.has_elevator || false,
+        has_doorman: property?.has_doorman || false,
+        features: property?.features || [],
+        registration_number: property?.registration_number || '',
+        iptu_registration: property?.iptu_registration || '',
+        description: property?.description || '',
+        internal_notes: property?.internal_notes || '',
+      });
+      setSelectedFeatures(property?.features || []);
+    }
+  }, [open, property, form]);
 
   const onSubmit = async (data: FormData) => {
     const propertyData = {
