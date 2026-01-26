@@ -170,6 +170,13 @@ export default function CRMLocacao() {
     setIsDetailModalOpen(true);
   };
 
+  const handleEditContract = (contract: RentalContract) => {
+    setEditingContract(contract);
+    setIsContractFormOpen(true);
+    setIsDetailModalOpen(false);
+    setViewingContract(null);
+  };
+
   const handleSaveContract = async (data: Partial<RentalContract>) => {
     if (editingContract) {
       await updateContract(editingContract.id, data);
@@ -561,12 +568,16 @@ export default function CRMLocacao() {
             setIsDetailModalOpen(false);
             setViewingContract(null);
           }}
+          onEdit={handleEditContract}
         />
 
         <RentalContractFormModal
           contract={editingContract}
           isOpen={isContractFormOpen}
-          onClose={() => setIsContractFormOpen(false)}
+          onClose={() => {
+            setIsContractFormOpen(false);
+            setEditingContract(null);
+          }}
           onSave={handleSaveContract}
         />
 

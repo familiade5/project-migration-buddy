@@ -15,14 +15,17 @@ import {
   DollarSign,
   Upload,
   Send,
+  Pencil,
 } from 'lucide-react';
 import { RentalContractDocumentsSection } from './RentalContractDocumentsSection';
 import { RentalContractGeneratorInline } from './RentalContractGeneratorInline';
+import { Button } from '@/components/ui/button';
 
 interface RentalContractDetailModalProps {
   contract: RentalContract | null;
   isOpen: boolean;
   onClose: () => void;
+  onEdit?: (contract: RentalContract) => void;
 }
 
 const statusLabels: Record<string, { label: string; color: string }> = {
@@ -36,7 +39,8 @@ const statusLabels: Record<string, { label: string; color: string }> = {
 export function RentalContractDetailModal({ 
   contract, 
   isOpen, 
-  onClose 
+  onClose,
+  onEdit,
 }: RentalContractDetailModalProps) {
   if (!contract) return null;
 
@@ -57,6 +61,18 @@ export function RentalContractDetailModal({
                   {status.label}
                 </Badge>
               </div>
+
+              {onEdit && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="bg-white border-gray-200 text-gray-900 hover:bg-gray-50"
+                  onClick={() => onEdit(contract)}
+                >
+                  <Pencil className="w-4 h-4 mr-2" />
+                  Editar
+                </Button>
+              )}
             </DialogTitle>
           </DialogHeader>
 

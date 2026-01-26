@@ -350,10 +350,10 @@ export function RentalContractFormModal({
                   <SelectTrigger className="bg-white border-gray-200 text-gray-900">
                     <SelectValue placeholder="Selecione um inquilino" />
                   </SelectTrigger>
-                  <SelectContent className="bg-white border-gray-200">
-                    <SelectItem value="none">Nenhum</SelectItem>
+                  <SelectContent className="bg-white border-gray-200 text-gray-900">
+                    <SelectItem value="none" className="text-gray-900 focus:bg-gray-100 focus:text-gray-900">Nenhum</SelectItem>
                     {tenants.map((tenant) => (
-                      <SelectItem key={tenant.id} value={tenant.id}>
+                      <SelectItem key={tenant.id} value={tenant.id} className="text-gray-900 focus:bg-gray-100 focus:text-gray-900">
                         {tenant.full_name} {tenant.cpf && `(${tenant.cpf})`}
                       </SelectItem>
                     ))}
@@ -373,10 +373,10 @@ export function RentalContractFormModal({
                   <SelectTrigger className="bg-white border-gray-200">
                     <SelectValue placeholder="Selecione um responsável" />
                   </SelectTrigger>
-                  <SelectContent className="bg-white border-gray-200">
-                    <SelectItem value="none">Nenhum</SelectItem>
+                  <SelectContent className="bg-white border-gray-200 text-gray-900">
+                    <SelectItem value="none" className="text-gray-900 focus:bg-gray-100 focus:text-gray-900">Nenhum</SelectItem>
                     {users.map((user) => (
-                      <SelectItem key={user.id} value={user.id}>
+                      <SelectItem key={user.id} value={user.id} className="text-gray-900 focus:bg-gray-100 focus:text-gray-900">
                         {user.full_name}
                       </SelectItem>
                     ))}
