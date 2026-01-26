@@ -16,6 +16,7 @@ import {
   Upload,
   Send,
   Pencil,
+  Trash2,
 } from 'lucide-react';
 import { RentalContractDocumentsSection } from './RentalContractDocumentsSection';
 import { RentalContractGeneratorInline } from './RentalContractGeneratorInline';
@@ -26,6 +27,8 @@ interface RentalContractDetailModalProps {
   isOpen: boolean;
   onClose: () => void;
   onEdit?: (contract: RentalContract) => void;
+  onDelete?: (contract: RentalContract) => void;
+  isAdmin?: boolean;
 }
 
 const statusLabels: Record<string, { label: string; color: string }> = {
@@ -41,6 +44,8 @@ export function RentalContractDetailModal({
   isOpen, 
   onClose,
   onEdit,
+  onDelete,
+  isAdmin = false,
 }: RentalContractDetailModalProps) {
   if (!contract) return null;
 
@@ -62,17 +67,30 @@ export function RentalContractDetailModal({
                 </Badge>
               </div>
 
-              {onEdit && (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="bg-white border-gray-200 text-gray-900 hover:bg-gray-50"
-                  onClick={() => onEdit(contract)}
-                >
-                  <Pencil className="w-4 h-4 mr-2" />
-                  Editar
-                </Button>
-              )}
+              <div className="flex items-center gap-2">
+                {onEdit && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="bg-white border-gray-200 text-gray-900 hover:bg-gray-50"
+                    onClick={() => onEdit(contract)}
+                  >
+                    <Pencil className="w-4 h-4 mr-2" />
+                    Editar
+                  </Button>
+                )}
+                {isAdmin && onDelete && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="bg-white border-red-200 text-red-600 hover:bg-red-50 hover:text-red-700"
+                    onClick={() => onDelete(contract)}
+                  >
+                    <Trash2 className="w-4 h-4 mr-2" />
+                    Excluir
+                  </Button>
+                )}
+              </div>
             </DialogTitle>
           </DialogHeader>
 

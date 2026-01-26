@@ -569,6 +569,12 @@ export default function CRMLocacao() {
             setViewingContract(null);
           }}
           onEdit={handleEditContract}
+          onDelete={(contract) => {
+            setIsDetailModalOpen(false);
+            setViewingContract(null);
+            setDeleteConfirmContract(contract);
+          }}
+          isAdmin={isAdmin}
         />
 
         <RentalContractFormModal
