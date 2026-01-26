@@ -22,10 +22,13 @@ import {
   ArrowDown,
   Minus,
   Home,
-  Building2
+  Building2,
+  ArrowLeft
 } from 'lucide-react';
 import { formatCurrency } from '@/lib/formatCurrency';
 import { useModuleActivity, useActionLogger } from '@/hooks/useModuleActivity';
+import { CalculatorSelector, CalculatorType } from '@/components/calculator/CalculatorSelector';
+import { InvestmentCalculator } from '@/components/calculator/InvestmentCalculator';
 
 type FinancingTable = 'PRICE' | 'SAC';
 
@@ -70,6 +73,9 @@ export default function FinancingCalculator() {
   // Log module access
   useModuleActivity('Calculadora de Financiamento');
   const { logAction } = useActionLogger();
+
+  // Calculator selection state
+  const [selectedCalculator, setSelectedCalculator] = useState<CalculatorType | null>(null);
 
   // Active view: 'form' or 'result'
   const [activeView, setActiveView] = useState<'form' | 'result'>('form');
@@ -323,6 +329,12 @@ export default function FinancingCalculator() {
   const handleNewBalanceCalc = () => {
     setBalanceActiveView('form');
     setBalanceResult(null);
+  };
+
+  const handleBackToSelector = () => {
+    setSelectedCalculator(null);
+    setActiveView('form');
+    setSimulationResult(null);
   };
 
   // Render simulation form
@@ -700,9 +712,9 @@ export default function FinancingCalculator() {
             <Button 
               onClick={handleNewSimulation}
               variant="outline"
-              className="w-full h-12 border-gray-200 text-gray-700 hover:bg-gray-50"
+              className="w-full border-gray-200 text-gray-700 hover:bg-gray-50"
             >
-              <Calculator className="w-4 h-4 mr-2" />
+              <ArrowLeft className="w-4 h-4 mr-2" />
               Nova Simulação
             </Button>
           </CardContent>
@@ -716,13 +728,13 @@ export default function FinancingCalculator() {
     <Card className="border-gray-200 shadow-sm bg-white">
       <CardHeader className="pb-4 border-b border-gray-100">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-emerald-50 flex items-center justify-center">
-            <TrendingDown className="w-5 h-5 text-emerald-600" />
+          <div className="w-10 h-10 rounded-xl bg-purple-50 flex items-center justify-center">
+            <TrendingDown className="w-5 h-5 text-purple-600" />
           </div>
           <div>
-            <CardTitle className="text-lg text-gray-900">Calcular Saldo Devedor</CardTitle>
+            <CardTitle className="text-lg text-gray-900">Saldo Devedor</CardTitle>
             <CardDescription className="text-gray-500">
-              Estime quanto falta pagar e economize na quitação
+              Calcule o saldo e economia com quitação antecipada
             </CardDescription>
           </div>
         </div>
@@ -730,72 +742,76 @@ export default function FinancingCalculator() {
       <CardContent className="space-y-5 pt-5">
         {/* Financed Amount */}
         <div className="space-y-2">
-          <Label className="text-gray-700 flex items-center gap-2">
+          <Label htmlFor="financedAmount" className="text-gray-700 flex items-center gap-2">
             <DollarSign className="w-4 h-4 text-gray-400" />
             Valor Financiado Original
           </Label>
           <div className="relative">
             <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-sm font-medium">R$</span>
             <Input
+              id="financedAmount"
               type="text"
               inputMode="numeric"
               placeholder="400.000"
               value={financedAmount}
               onChange={(e) => handleCurrencyInput(e.target.value, setFinancedAmount)}
-              className="pl-10 bg-white border-gray-200 text-gray-900 placeholder:text-gray-400 focus:border-emerald-500 focus:ring-emerald-500 h-12 text-lg"
+              className="pl-10 bg-white border-gray-200 text-gray-900 placeholder:text-gray-400 focus:border-purple-500 focus:ring-purple-500 h-12 text-lg"
             />
           </div>
         </div>
 
         {/* Current Installment */}
         <div className="space-y-2">
-          <Label className="text-gray-700 flex items-center gap-2">
-            <DollarSign className="w-4 h-4 text-gray-400" />
-            Valor da Parcela Atual
+          <Label htmlFor="currentInstallment" className="text-gray-700 flex items-center gap-2">
+            <CalendarDays className="w-4 h-4 text-gray-400" />
+            Parcela Atual
           </Label>
           <div className="relative">
             <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-sm font-medium">R$</span>
             <Input
+              id="currentInstallment"
               type="text"
               inputMode="numeric"
-              placeholder="3.500"
+              placeholder="4.500"
               value={currentInstallment}
               onChange={(e) => handleCurrencyInput(e.target.value, setCurrentInstallment)}
-              className="pl-10 bg-white border-gray-200 text-gray-900 placeholder:text-gray-400 focus:border-emerald-500 focus:ring-emerald-500 h-12 text-lg"
+              className="pl-10 bg-white border-gray-200 text-gray-900 placeholder:text-gray-400 focus:border-purple-500 focus:ring-purple-500 h-12 text-lg"
             />
           </div>
         </div>
 
         {/* Paid Installments */}
         <div className="space-y-2">
-          <Label className="text-gray-700 flex items-center gap-2">
-            <CalendarDays className="w-4 h-4 text-gray-400" />
+          <Label htmlFor="paidInstallments" className="text-gray-700 flex items-center gap-2">
+            <CheckCircle2 className="w-4 h-4 text-gray-400" />
             Parcelas Já Pagas
           </Label>
           <Input
+            id="paidInstallments"
             type="number"
             inputMode="numeric"
-            placeholder="24"
+            placeholder="60"
             value={paidInstallments}
             onChange={(e) => setPaidInstallments(e.target.value)}
-            className="bg-white border-gray-200 text-gray-900 placeholder:text-gray-400 focus:border-emerald-500 focus:ring-emerald-500 h-12 text-lg"
+            className="bg-white border-gray-200 text-gray-900 placeholder:text-gray-400 focus:border-purple-500 focus:ring-purple-500 h-12 text-lg"
           />
         </div>
 
         {/* Interest Rate */}
         <div className="space-y-2">
-          <Label className="text-gray-700 flex items-center gap-2">
+          <Label htmlFor="balanceInterestRate" className="text-gray-700 flex items-center gap-2">
             <Percent className="w-4 h-4 text-gray-400" />
-            Taxa de Juros do Contrato (ao ano)
+            Taxa de Juros (ao ano)
           </Label>
           <div className="relative">
             <Input
+              id="balanceInterestRate"
               type="text"
               inputMode="decimal"
               placeholder="10,99"
               value={balanceInterestRate}
               onChange={(e) => setBalanceInterestRate(e.target.value.replace(/[^\d,]/g, ''))}
-              className="pr-14 bg-white border-gray-200 text-gray-900 placeholder:text-gray-400 focus:border-emerald-500 focus:ring-emerald-500 h-12 text-lg"
+              className="pr-10 bg-white border-gray-200 text-gray-900 placeholder:text-gray-400 focus:border-purple-500 focus:ring-purple-500 h-12 text-lg"
             />
             <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 text-sm font-medium">% a.a.</span>
           </div>
@@ -803,7 +819,7 @@ export default function FinancingCalculator() {
 
         {/* Table Selection */}
         <div className="space-y-3">
-          <Label className="text-gray-700 font-medium">Sistema do seu Contrato</Label>
+          <Label className="text-gray-700 font-medium">Sistema de Amortização</Label>
           <RadioGroup 
             value={balanceTable} 
             onValueChange={(v) => setBalanceTable(v as FinancingTable)}
@@ -811,38 +827,31 @@ export default function FinancingCalculator() {
           >
             <div 
               className={`
-                flex items-center gap-3 p-4 rounded-xl border-2 cursor-pointer transition-all bg-white
+                flex items-center gap-3 p-3 rounded-xl border-2 cursor-pointer transition-all bg-white
                 ${balanceTable === 'SAC' 
-                  ? 'border-emerald-500 bg-emerald-50' 
+                  ? 'border-purple-500 bg-purple-50' 
                   : 'border-gray-200 hover:border-gray-300'}
               `}
               onClick={() => setBalanceTable('SAC')}
             >
-              <RadioGroupItem value="SAC" id="balance-sac" className="border-gray-400 text-emerald-600" />
-              <div>
-                <Label htmlFor="balance-sac" className="cursor-pointer font-semibold text-gray-900">
-                  SAC
-                </Label>
-                <p className="text-xs text-gray-500">Parcelas decrescentes</p>
-              </div>
+              <RadioGroupItem value="SAC" id="balanceSac" className="border-gray-400 text-purple-600" />
+              <Label htmlFor="balanceSac" className="cursor-pointer font-medium text-gray-900">
+                SAC
+              </Label>
             </div>
-            
             <div 
               className={`
-                flex items-center gap-3 p-4 rounded-xl border-2 cursor-pointer transition-all bg-white
+                flex items-center gap-3 p-3 rounded-xl border-2 cursor-pointer transition-all bg-white
                 ${balanceTable === 'PRICE' 
-                  ? 'border-emerald-500 bg-emerald-50' 
+                  ? 'border-purple-500 bg-purple-50' 
                   : 'border-gray-200 hover:border-gray-300'}
               `}
               onClick={() => setBalanceTable('PRICE')}
             >
-              <RadioGroupItem value="PRICE" id="balance-price" className="border-gray-400 text-emerald-600" />
-              <div>
-                <Label htmlFor="balance-price" className="cursor-pointer font-semibold text-gray-900">
-                  PRICE
-                </Label>
-                <p className="text-xs text-gray-500">Parcelas fixas</p>
-              </div>
+              <RadioGroupItem value="PRICE" id="balancePrice" className="border-gray-400 text-purple-600" />
+              <Label htmlFor="balancePrice" className="cursor-pointer font-medium text-gray-900">
+                PRICE
+              </Label>
             </div>
           </RadioGroup>
         </div>
@@ -850,10 +859,10 @@ export default function FinancingCalculator() {
         {/* Calculate Button */}
         <Button 
           onClick={calculateBalance}
-          className="w-full h-14 text-lg font-semibold bg-emerald-600 hover:bg-emerald-700 text-white"
+          className="w-full h-14 text-lg font-semibold bg-purple-600 hover:bg-purple-700 text-white"
         >
-          <TrendingDown className="w-5 h-5 mr-2" />
-          Calcular Saldo Devedor
+          <Calculator className="w-5 h-5 mr-2" />
+          Calcular Saldo
           <ChevronRight className="w-5 h-5 ml-2" />
         </Button>
       </CardContent>
@@ -865,144 +874,134 @@ export default function FinancingCalculator() {
     if (!balanceResult) return null;
 
     return (
-      <Card className="border-gray-200 shadow-lg bg-white overflow-hidden">
-        <div className="bg-gradient-to-r from-emerald-600 to-emerald-700 p-6 text-white">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-2">
-              <TrendingDown className="w-5 h-5" />
-              <span className="font-medium">Saldo Devedor Estimado</span>
-            </div>
-            <span className="px-3 py-1 bg-white/20 rounded-full text-sm font-medium">
-              {balanceResult.table}
-            </span>
-          </div>
-          
-          <div className="text-center">
-            <p className="text-emerald-100 text-sm mb-1">Valor para Quitação</p>
-            <p className="text-4xl md:text-5xl font-bold">
-              {formatCurrency(balanceResult.remainingBalance)}
-            </p>
-          </div>
-        </div>
-
-        <CardContent className="p-6 space-y-6">
-          <div className="grid grid-cols-2 gap-4">
-            <div className="p-4 bg-gray-50 rounded-xl">
-              <p className="text-xs text-gray-500 mb-1">Parcelas Restantes</p>
-              <p className="text-lg font-bold text-gray-900">
-                {balanceResult.remainingInstallments}x
-              </p>
-            </div>
-            <div className="p-4 bg-gray-50 rounded-xl">
-              <p className="text-xs text-gray-500 mb-1">Total se Continuar</p>
-              <p className="text-lg font-bold text-gray-900">
-                {formatCurrency(balanceResult.totalRemaining)}
-              </p>
-            </div>
-          </div>
-
-          {balanceResult.potentialSavings > 0 && (
-            <div className="p-4 bg-green-50 rounded-xl border border-green-100">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center">
-                  <TrendingUp className="w-5 h-5 text-green-600" />
-                </div>
-                <div>
-                  <p className="text-sm text-green-700">Economia potencial na quitação</p>
-                  <p className="text-xl font-bold text-green-700">
-                    {formatCurrency(balanceResult.potentialSavings)}
-                  </p>
-                </div>
+      <div className="space-y-4">
+        <Card className="border-gray-200 shadow-lg bg-white overflow-hidden">
+          <div className="bg-gradient-to-r from-purple-600 to-purple-700 p-6 text-white">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-2">
+                <TrendingDown className="w-5 h-5" />
+                <span className="font-medium">Saldo Devedor Atual</span>
               </div>
+              <span className="px-3 py-1 bg-white/20 rounded-full text-sm font-medium">
+                {balanceResult.table}
+              </span>
             </div>
-          )}
-
-          <div className="flex items-start gap-3 p-4 bg-amber-50 rounded-xl border border-amber-100">
-            <AlertCircle className="w-5 h-5 text-amber-500 flex-shrink-0 mt-0.5" />
-            <div className="text-sm text-amber-700">
-              <p className="font-medium mb-1">Importante</p>
-              <p>
-                Valores estimados. Para quitação, solicite o saldo devedor oficial 
-                diretamente na Caixa Econômica Federal.
+            
+            <div className="text-center">
+              <p className="text-purple-100 text-sm mb-1">Para Quitação Hoje</p>
+              <p className="text-4xl md:text-5xl font-bold">
+                {formatCurrency(balanceResult.remainingBalance)}
               </p>
             </div>
           </div>
 
-          <Button 
-            onClick={handleNewBalanceCalc}
-            variant="outline"
-            className="w-full h-12 border-gray-200 text-gray-700 hover:bg-gray-50"
-          >
-            <Calculator className="w-4 h-4 mr-2" />
-            Novo Cálculo
-          </Button>
-        </CardContent>
-      </Card>
-    );
-  };
-
-  return (
-    <AppLayout>
-      <div className="p-6 min-h-screen bg-white">
-        {/* Header */}
-        <div className="mb-6 flex items-center justify-between">
-          <div>
-            <div className="flex items-center gap-3 mb-1">
-              <Calculator className="w-6 h-6 text-gray-700" />
-              <h1 className="text-2xl font-semibold text-gray-900">
-                Calculadora de Financiamento
-              </h1>
-            </div>
-            <p className="text-sm text-gray-500">
-              Simulador comercial para financiamentos Caixa Econômica Federal
-            </p>
-          </div>
-        </div>
-
-        {/* Main Calculator */}
-        <div className="max-w-2xl">
-          <Tabs defaultValue="simulation" className="space-y-4">
-            <TabsList className="bg-gray-100 border border-gray-200">
-              <TabsTrigger 
-                value="simulation" 
-                className="data-[state=active]:bg-gray-900 data-[state=active]:text-white data-[state=inactive]:bg-transparent data-[state=inactive]:text-gray-600 hover:bg-gray-200"
-              >
-                <Calculator className="w-4 h-4 mr-2" />
-                Simulação
-              </TabsTrigger>
-              <TabsTrigger 
-                value="balance"
-                className="data-[state=active]:bg-gray-900 data-[state=active]:text-white data-[state=inactive]:bg-transparent data-[state=inactive]:text-gray-600 hover:bg-gray-200"
-              >
-                <TrendingDown className="w-4 h-4 mr-2" />
-                Saldo Devedor
-              </TabsTrigger>
-            </TabsList>
-
-            <TabsContent value="simulation" className="space-y-4 mt-0">
-              {activeView === 'form' ? renderSimulationForm() : renderSimulationResult()}
-            </TabsContent>
-
-            <TabsContent value="balance" className="space-y-4 mt-0">
-              {balanceActiveView === 'form' ? renderBalanceForm() : renderBalanceResult()}
-            </TabsContent>
-          </Tabs>
-
-          {/* Info Footer */}
-          <div className="mt-6 p-4 bg-gray-50 rounded-xl border border-gray-100">
-            <div className="flex items-start gap-3">
-              <Info className="w-5 h-5 text-gray-400 flex-shrink-0 mt-0.5" />
-              <div className="space-y-1">
-                <p className="text-sm font-medium text-gray-700">Sobre esta calculadora</p>
-                <p className="text-xs text-gray-500">
-                  Esta ferramenta é um simulador comercial para apoio em negociações. 
-                  Não substitui simulações oficiais da Caixa Econômica Federal. 
-                  Para valores exatos e aprovação de crédito, consulte uma agência Caixa.
+          <CardContent className="p-6 space-y-6">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="p-4 bg-gray-50 rounded-xl">
+                <p className="text-xs text-gray-500 mb-1">Parcelas Restantes</p>
+                <p className="text-lg font-bold text-gray-900">
+                  {balanceResult.remainingInstallments}x
+                </p>
+              </div>
+              <div className="p-4 bg-gray-50 rounded-xl">
+                <p className="text-xs text-gray-500 mb-1">Total se Continuar</p>
+                <p className="text-lg font-bold text-gray-900">
+                  {formatCurrency(balanceResult.totalRemaining)}
                 </p>
               </div>
             </div>
-          </div>
-        </div>
+
+            <div className="p-4 bg-green-50 rounded-xl border border-green-100">
+              <div className="flex items-center gap-2 mb-2">
+                <TrendingUp className="w-5 h-5 text-green-600" />
+                <span className="font-semibold text-green-700">Economia com Quitação</span>
+              </div>
+              <p className="text-2xl font-bold text-green-600">
+                {formatCurrency(balanceResult.potentialSavings)}
+              </p>
+              <p className="text-sm text-green-600 mt-1">
+                Economize quitando agora ao invés de pagar todas as parcelas restantes
+              </p>
+            </div>
+
+            <div className="flex items-start gap-3 p-4 bg-amber-50 rounded-xl border border-amber-100">
+              <AlertCircle className="w-5 h-5 text-amber-500 flex-shrink-0 mt-0.5" />
+              <div className="text-sm text-amber-700">
+                <p>
+                  Esta é uma estimativa. O saldo real deve ser consultado 
+                  diretamente com a Caixa para valores precisos.
+                </p>
+              </div>
+            </div>
+
+            <Button 
+              onClick={handleNewBalanceCalc}
+              variant="outline"
+              className="w-full border-gray-200 text-gray-700 hover:bg-gray-50"
+            >
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              Nova Consulta
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  };
+
+  // Client Calculator Content
+  const renderClientCalculator = () => (
+    <div className="space-y-6">
+      {/* Back Button */}
+      <Button
+        variant="ghost"
+        onClick={handleBackToSelector}
+        className="text-gray-600 hover:text-gray-900"
+      >
+        <ArrowLeft className="w-4 h-4 mr-2" />
+        Voltar às Calculadoras
+      </Button>
+
+      <Tabs defaultValue="simulation" className="w-full">
+        <TabsList className="grid w-full grid-cols-2 bg-gray-100 p-1 rounded-xl">
+          <TabsTrigger 
+            value="simulation"
+            className="rounded-lg data-[state=active]:bg-white data-[state=active]:text-gray-900 data-[state=active]:shadow-sm text-gray-600"
+          >
+            <Calculator className="w-4 h-4 mr-2" />
+            Financiamento
+          </TabsTrigger>
+          <TabsTrigger 
+            value="balance"
+            className="rounded-lg data-[state=active]:bg-white data-[state=active]:text-gray-900 data-[state=active]:shadow-sm text-gray-600"
+          >
+            <TrendingDown className="w-4 h-4 mr-2" />
+            Saldo / Quitação
+          </TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="simulation" className="mt-6">
+          {activeView === 'form' ? renderSimulationForm() : renderSimulationResult()}
+        </TabsContent>
+
+        <TabsContent value="balance" className="mt-6">
+          {balanceActiveView === 'form' ? renderBalanceForm() : renderBalanceResult()}
+        </TabsContent>
+      </Tabs>
+    </div>
+  );
+
+  return (
+    <AppLayout>
+      <div className="p-4 md:p-8 max-w-4xl mx-auto">
+        {selectedCalculator === null && (
+          <CalculatorSelector onSelect={setSelectedCalculator} />
+        )}
+        
+        {selectedCalculator === 'client' && renderClientCalculator()}
+        
+        {selectedCalculator === 'investor' && (
+          <InvestmentCalculator onBack={handleBackToSelector} />
+        )}
       </div>
     </AppLayout>
   );
