@@ -17,10 +17,12 @@ import { EditPermissionsModal } from '@/components/crm/EditPermissionsModal';
 import { ImagePreviewModal } from '@/components/crm/ImagePreviewModal';
 import { RemindersPanel } from '@/components/crm/RemindersPanel';
 import { ManagerOverviewPanel } from '@/components/crm/ManagerOverviewPanel';
+import { ClientsTab } from '@/components/crm/clients/ClientsTab';
 import { CrmProperty, PropertyStage } from '@/types/crm';
 import { useAuth } from '@/contexts/AuthContext';
-import { Loader2, LayoutDashboard, Shield } from 'lucide-react';
+import { Loader2, LayoutDashboard, Shield, Users } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -225,44 +227,63 @@ export default function CRM() {
           </div>
         </div>
 
-        {/* Metrics Dashboard */}
-        <CrmMetrics properties={properties} />
+        {/* Main Tabs */}
+        <Tabs defaultValue="kanban" className="space-y-4">
+          <TabsList className="bg-gray-100">
+            <TabsTrigger value="kanban" className="data-[state=active]:bg-white">
+              <LayoutDashboard className="w-4 h-4 mr-2" />
+              Kanban
+            </TabsTrigger>
+            <TabsTrigger value="clientes" className="data-[state=active]:bg-white">
+              <Users className="w-4 h-4 mr-2" />
+              Clientes
+            </TabsTrigger>
+          </TabsList>
 
-        {/* Filters */}
-        <CrmFilters
-          searchQuery={searchQuery}
-          onSearchChange={setSearchQuery}
-          selectedStage={selectedStage}
-          onStageChange={setSelectedStage}
-          selectedUser={selectedUser}
-          onUserChange={setSelectedUser}
-          selectedState={selectedState}
-          onStateChange={setSelectedState}
-          onAddProperty={handleAddProperty}
-        />
+          <TabsContent value="kanban" className="space-y-4 mt-0">
+            {/* Metrics Dashboard */}
+            <CrmMetrics properties={properties} />
 
-        {/* Kanban Board */}
-        <KanbanBoard
-          properties={filteredProperties}
-          onMoveProperty={handleMoveProperty}
-          onCardClick={handleCardClick}
-          onShowCover={(url) => {
-            setCoverPreviewUrl(url);
-            setIsCoverPreviewOpen(true);
-          }}
-          onShowProposal={(propertyId) => {
-            // Open detail modal on proposals tab
-            const prop = properties.find(p => p.id === propertyId);
-            if (prop) {
-              setSelectedProperty(prop);
-              setIsDetailOpen(true);
-            }
-          }}
-          getReminderForProperty={getReminderForProperty}
-          onUpdateReminderInterval={updateReminderInterval}
-          onSnoozeReminder={snoozeReminder}
-          getCompletionStatus={getCompletionStatus}
-        />
+            {/* Filters */}
+            <CrmFilters
+              searchQuery={searchQuery}
+              onSearchChange={setSearchQuery}
+              selectedStage={selectedStage}
+              onStageChange={setSelectedStage}
+              selectedUser={selectedUser}
+              onUserChange={setSelectedUser}
+              selectedState={selectedState}
+              onStateChange={setSelectedState}
+              onAddProperty={handleAddProperty}
+            />
+
+            {/* Kanban Board */}
+            <KanbanBoard
+              properties={filteredProperties}
+              onMoveProperty={handleMoveProperty}
+              onCardClick={handleCardClick}
+              onShowCover={(url) => {
+                setCoverPreviewUrl(url);
+                setIsCoverPreviewOpen(true);
+              }}
+              onShowProposal={(propertyId) => {
+                const prop = properties.find(p => p.id === propertyId);
+                if (prop) {
+                  setSelectedProperty(prop);
+                  setIsDetailOpen(true);
+                }
+              }}
+              getReminderForProperty={getReminderForProperty}
+              onUpdateReminderInterval={updateReminderInterval}
+              onSnoozeReminder={snoozeReminder}
+              getCompletionStatus={getCompletionStatus}
+            />
+          </TabsContent>
+
+          <TabsContent value="clientes" className="mt-0">
+            <ClientsTab />
+          </TabsContent>
+        </Tabs>
 
         {/* Detail Modal */}
         <PropertyDetailModal

@@ -50,6 +50,21 @@ export function KanbanCard({
     }
   };
 
+  // Determine card background based on completion status
+  const getCardStyles = () => {
+    if (!completionStatus || !completionStatus.isCriticalStage) {
+      return 'bg-white border-gray-200 hover:border-gray-300';
+    }
+    
+    if (completionStatus.isComplete) {
+      // Complete critical stage - subtle green
+      return 'bg-emerald-50/50 border-emerald-200 hover:border-emerald-300';
+    }
+    
+    // Incomplete critical stage - subtle red
+    return 'bg-red-50/50 border-red-200 hover:border-red-300';
+  };
+
   return (
     <div
       ref={setNodeRef}
@@ -58,8 +73,8 @@ export function KanbanCard({
       {...attributes}
       onClick={onClick}
       className={`
-        bg-white border border-gray-200 rounded-lg p-3 cursor-grab active:cursor-grabbing
-        hover:border-gray-300 hover:shadow-md transition-all duration-200 shadow-sm
+        ${getCardStyles()} rounded-lg p-3 cursor-grab active:cursor-grabbing
+        hover:shadow-md transition-all duration-200 shadow-sm border
         ${isDragging ? 'opacity-50 shadow-2xl scale-105 z-50' : ''}
       `}
     >
