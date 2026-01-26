@@ -61,13 +61,13 @@ Deno.serve(async (req) => {
 
     // Get raw body for signature validation
     const rawBody = await req.text();
-    const signature = req.headers.get('x-autentique-signature');
+    const headerSignature = req.headers.get('x-autentique-signature');
     
-    console.log('Webhook received - signature header:', signature ? 'present' : 'absent');
+    console.log('Webhook received - signature header:', headerSignature ? 'present' : 'absent');
     
     // Validate HMAC signature if secret is configured
-    if (webhookSecret && signature) {
-      const isValid = await validateSignature(rawBody, signature, webhookSecret);
+    if (webhookSecret && headerSignature) {
+      const isValid = await validateSignature(rawBody, headerSignature, webhookSecret);
       if (!isValid) {
         // Log but don't reject - Autentique might use different signing methods
         console.log('Signature validation failed, but proceeding (signature format may vary)');
@@ -78,13 +78,19 @@ Deno.serve(async (req) => {
     
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-    const payload: AutentiqueWebhookPayload = JSON.parse(rawBody);
-    
-    console.log('Received Autentique webhook event:', payload.event);
-    console.log('Document info:', JSON.stringify(payload.document, null, 2));
+    // Autentique pode enviar dois formatos diferentes:
+    // 1) { event: 'document.finished', document: {...} }
+    // 2) { type: 'document.finished', data: {...} }
+    const rawPayload = JSON.parse(rawBody) as any;
+    const eventType: string = rawPayload?.event || rawPayload?.type || '';
+    const document = (rawPayload?.document || rawPayload?.data) as AutentiqueWebhookPayload['document'] | undefined;
+    const payloadSignature = (rawPayload?.signature || rawPayload?.data?.signature) as AutentiqueWebhookPayload['signature'] | undefined;
+
+    console.log('Received Autentique webhook event:', eventType);
+    console.log('Document info:', JSON.stringify(document, null, 2));
 
     // Extract contract code from document name (format: "Contrato de Locação - LOC-001")
-    const documentName = payload.document?.name || '';
+    const documentName = document?.name || '';
     const contractCodeMatch = documentName.match(/Contrato de Locação - (.+)$/);
     const contractCode = contractCodeMatch ? contractCodeMatch[1] : null;
 
@@ -118,10 +124,10 @@ Deno.serve(async (req) => {
     console.log('Found contract:', contract.id, 'for code:', contract.property_code);
 
     // Handle document.signed or document.finished event - all signers have signed
-    if ((payload.event === 'document.signed' || payload.event === 'document.finished') && payload.document?.files?.signed) {
+    if ((eventType === 'document.signed' || eventType === 'document.finished') && document?.files?.signed) {
       console.log('Document fully signed, downloading and archiving...');
       
-      const signedFileUrl = payload.document.files.signed;
+      const signedFileUrl = document.files.signed;
       console.log('Signed file URL:', signedFileUrl);
       
       // Download the signed PDF
@@ -189,8 +195,8 @@ Deno.serve(async (req) => {
     }
 
     // Handle signature events for logging
-    if (payload.event === 'signature.signed' && payload.signature) {
-      console.log(`Signature received from ${payload.signature.name} (${payload.signature.email}) at ${payload.signature.signed_at}`);
+    if (eventType === 'signature.signed' && payloadSignature) {
+      console.log(`Signature received from ${payloadSignature.name} (${payloadSignature.email}) at ${payloadSignature.signed_at}`);
     }
 
     return new Response(JSON.stringify({ success: true }), {
