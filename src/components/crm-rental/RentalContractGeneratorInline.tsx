@@ -188,7 +188,7 @@ export function RentalContractGeneratorInline({ contract }: RentalContractGenera
         <Button
           onClick={handleDownloadPDF}
           disabled={isGenerating}
-          className="bg-gray-900 hover:bg-gray-800"
+          className="bg-gray-900 hover:bg-gray-800 text-white"
         >
           {isGenerating ? (
             <Loader2 className="w-4 h-4 mr-2 animate-spin" />
@@ -201,7 +201,7 @@ export function RentalContractGeneratorInline({ contract }: RentalContractGenera
         <Button
           onClick={handlePrint}
           variant="outline"
-          className="border-gray-200"
+          className="border-gray-300 bg-white text-gray-900 hover:bg-gray-100"
         >
           <Printer className="w-4 h-4 mr-2" />
           Imprimir
@@ -210,7 +210,7 @@ export function RentalContractGeneratorInline({ contract }: RentalContractGenera
 
       {/* Digital Signature */}
       <div className="border-t border-gray-200 pt-4">
-        <h4 className="font-medium mb-3 flex items-center gap-2">
+        <h4 className="font-medium mb-3 flex items-center gap-2 text-gray-900">
           <Send className="w-4 h-4" />
           Assinatura Digital (Autentique)
         </h4>
@@ -227,7 +227,7 @@ export function RentalContractGeneratorInline({ contract }: RentalContractGenera
         <Button
           onClick={handleSendForSignature}
           disabled={isSending || !contract.tenant?.email}
-          className="w-full bg-blue-600 hover:bg-blue-700"
+          className="w-full bg-blue-600 hover:bg-blue-700 text-white disabled:bg-blue-300 disabled:text-white"
         >
           {isSending ? (
             <Loader2 className="w-4 h-4 mr-2 animate-spin" />
