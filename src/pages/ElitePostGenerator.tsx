@@ -9,8 +9,12 @@ import { PhotoSearcher } from '@/components/PhotoSearcher';
 import { Crown, Image, FileText, Upload, Edit3, Search, Sparkles } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { EliteLayout } from '@/components/layout/EliteLayout';
+import { useModuleActivity } from '@/hooks/useModuleActivity';
 
 const ElitePostGenerator = () => {
+  // Log module access
+  useModuleActivity('Élite Imóveis');
+  
   const [propertyData, setPropertyData] = useState<PropertyData>(defaultPropertyData);
   const [photos, setPhotos] = useState<string[]>([]);
 

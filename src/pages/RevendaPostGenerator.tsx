@@ -9,8 +9,12 @@ import { RevendaLogo } from '@/components/revenda/RevendaLogo';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Image, FileText, Settings2, Gem, MessageSquareText } from 'lucide-react';
+import { useModuleActivity } from '@/hooks/useModuleActivity';
 
 const RevendaPostGenerator = () => {
+  // Log module access
+  useModuleActivity('Revenda+');
+  
   const [propertyData, setPropertyData] = useState<RevendaPropertyData>(defaultRevendaData);
   const [photos, setPhotos] = useState<CategorizedPhoto[]>([]);
   const [showSetup, setShowSetup] = useState(true);

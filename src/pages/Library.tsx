@@ -3,6 +3,7 @@ import { useSearchParams } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { useActivityLog } from '@/hooks/useActivityLog';
+import { useModuleActivity } from '@/hooks/useModuleActivity';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { toast } from 'sonner';
 import { Calendar } from '@/components/ui/calendar';
@@ -60,6 +61,9 @@ interface Creative {
 }
 
 export default function Library() {
+  // Log module access
+  useModuleActivity('Biblioteca');
+  
   const [searchParams, setSearchParams] = useSearchParams();
   const [creatives, setCreatives] = useState<Creative[]>([]);
   const [isLoading, setIsLoading] = useState(true);

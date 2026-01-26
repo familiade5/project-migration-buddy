@@ -33,8 +33,12 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
+import { useModuleActivity } from '@/hooks/useModuleActivity';
 
 export default function CRM() {
+  // Log module access
+  useModuleActivity('CRM Imóveis');
+  
   const { isAdmin } = useAuth();
   const { canEditProperty } = useCrmPermissions();
   const {
