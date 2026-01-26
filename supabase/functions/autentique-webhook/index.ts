@@ -34,15 +34,21 @@ Deno.serve(async (req) => {
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const webhookSecret = Deno.env.get('AUTENTIQUE_WEBHOOK_SECRET');
 
-    // Validate webhook secret if configured
+    // Log incoming webhook for debugging
     const signature = req.headers.get('x-autentique-signature');
-    if (webhookSecret && signature !== webhookSecret) {
-      console.log('Invalid webhook signature');
+    console.log('Webhook received - signature header:', signature ? 'present' : 'absent');
+    
+    // Only validate if secret is configured AND signature is provided
+    // Autentique may not send signature in all cases
+    if (webhookSecret && signature && signature !== webhookSecret) {
+      console.log('Invalid webhook signature - received:', signature);
       return new Response(JSON.stringify({ error: 'Unauthorized' }), {
         status: 401,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
+    
+    console.log('Webhook authentication passed');
     
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 

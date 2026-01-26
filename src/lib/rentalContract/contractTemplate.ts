@@ -47,7 +47,7 @@ export function formatCurrencyForContract(value: number): string {
 }
 
 export function generateContractData(
-  contract: RentalContract,
+  contract: RentalContract & { owner?: { cpf?: string; full_name?: string } },
   agencyData?: { name: string; cnpj: string }
 ): ContractData {
   const startDate = new Date(contract.start_date);
@@ -59,15 +59,18 @@ export function generateContractData(
   
   const depositValue = contract.deposit_value || (contract.rent_value * (contract.deposit_months || 2));
 
+  // Get owner CPF from linked owner or fallback
+  const ownerCpf = (contract as any).owner?.cpf || '___________________';
+
   return {
     NOME_LOCADOR: contract.owner_name,
-    CPF_CNPJ_LOCADOR: 'CPF/CNPJ: ___________________',
+    CPF_CNPJ_LOCADOR: `CPF/CNPJ: ${ownerCpf}`,
     
     NOME_LOCATARIO: contract.tenant?.full_name || '___________________',
     CPF_LOCATARIO: contract.tenant?.cpf || '___________________',
     
     NOME_IMOBILIARIA: agencyData?.name || 'Venda Direta Hoje',
-    CNPJ_IMOBILIARIA: agencyData?.cnpj || 'CNPJ: ___________________',
+    CNPJ_IMOBILIARIA: agencyData?.cnpj || 'CNPJ: 00.000.000/0001-00',
     
     ENDERECO_IMOVEL: `${contract.property_address}, ${contract.property_neighborhood || ''}, ${contract.property_city} - ${contract.property_state}`.replace(/, ,/g, ','),
     
