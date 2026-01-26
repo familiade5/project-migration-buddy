@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { RentalContract, propertyTypes, guaranteeTypes, getTotalMonthly } from '@/types/rental';
 import { formatCurrency } from '@/lib/formatCurrency';
-import { useCrmClients } from '@/hooks/useCrmClients';
+import { useRentalTenants } from '@/hooks/useRentalTenants';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import {
@@ -48,7 +48,7 @@ export function RentalContractFormModal({
 }: RentalContractFormModalProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [users, setUsers] = useState<{ id: string; full_name: string }[]>([]);
-  const { clients } = useCrmClients();
+  const { tenants } = useRentalTenants();
   const { toast } = useToast();
 
   // Form state
@@ -342,25 +342,25 @@ export function RentalContractFormModal({
             {/* Tenant Tab */}
             <TabsContent value="tenant" className="space-y-4 mt-0">
               <div>
-                <Label>Inquilino</Label>
+                <Label className="text-gray-700">Inquilino</Label>
                 <Select
                   value={formData.tenant_id || 'none'}
                   onValueChange={(v) => updateField('tenant_id', v === 'none' ? null : v)}
                 >
-                  <SelectTrigger className="bg-white border-gray-200">
-                    <SelectValue placeholder="Selecione um cliente" />
+                  <SelectTrigger className="bg-white border-gray-200 text-gray-900">
+                    <SelectValue placeholder="Selecione um inquilino" />
                   </SelectTrigger>
                   <SelectContent className="bg-white border-gray-200">
                     <SelectItem value="none">Nenhum</SelectItem>
-                    {clients.map((client) => (
-                      <SelectItem key={client.id} value={client.id}>
-                        {client.full_name} {client.cpf && `(${client.cpf})`}
+                    {tenants.map((tenant) => (
+                      <SelectItem key={tenant.id} value={tenant.id}>
+                        {tenant.full_name} {tenant.cpf && `(${tenant.cpf})`}
                       </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
                 <p className="text-xs text-gray-500 mt-1">
-                  O inquilino deve estar cadastrado na aba Clientes do CRM
+                  Cadastre inquilinos na aba Clientes do CRM Locação
                 </p>
               </div>
 
