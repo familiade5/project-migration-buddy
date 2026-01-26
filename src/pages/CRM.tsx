@@ -3,6 +3,10 @@ import { AppLayout } from '@/components/layout/AppLayout';
 import { useCrmProperties } from '@/hooks/useCrmProperties';
 import { useCrmPermissions } from '@/hooks/useCrmPermissions';
 import { useCrmReminders } from '@/hooks/useCrmReminders';
+import {
+  useStageCompletionRequirements,
+  useAllPropertiesCompletionStatus,
+} from '@/hooks/useStageCompletion';
 import { KanbanBoard } from '@/components/crm/KanbanBoard';
 import { CrmMetrics } from '@/components/crm/CrmMetrics';
 import { CrmFilters } from '@/components/crm/CrmFilters';
@@ -12,6 +16,7 @@ import { PropertyFormModal } from '@/components/crm/PropertyFormModal';
 import { EditPermissionsModal } from '@/components/crm/EditPermissionsModal';
 import { ImagePreviewModal } from '@/components/crm/ImagePreviewModal';
 import { RemindersPanel } from '@/components/crm/RemindersPanel';
+import { ManagerOverviewPanel } from '@/components/crm/ManagerOverviewPanel';
 import { CrmProperty, PropertyStage } from '@/types/crm';
 import { useAuth } from '@/contexts/AuthContext';
 import { Loader2, LayoutDashboard, Shield } from 'lucide-react';
@@ -46,6 +51,14 @@ export default function CRM() {
     updateReminderInterval,
     snoozeReminder,
   } = useCrmReminders();
+
+  // Stage completion system
+  const { requirements } = useStageCompletionRequirements();
+  const {
+    getCompletionStatus,
+    incompleteProperties,
+    stats: completionStats,
+  } = useAllPropertiesCompletionStatus(properties, requirements);
 
   // Filters
   const [searchQuery, setSearchQuery] = useState('');
@@ -173,6 +186,21 @@ export default function CRM() {
             </p>
           </div>
           <div className="flex items-center gap-2">
+            {/* Manager Overview Panel */}
+            {isAdmin && (
+              <ManagerOverviewPanel
+                incompleteProperties={incompleteProperties}
+                stats={completionStats}
+                onPropertyClick={(propertyId) => {
+                  const prop = properties.find((p) => p.id === propertyId);
+                  if (prop) {
+                    setSelectedProperty(prop);
+                    setIsDetailOpen(true);
+                  }
+                }}
+              />
+            )}
+
             {/* Reminders Panel */}
             <RemindersPanel
               reminders={reminders}
@@ -233,6 +261,7 @@ export default function CRM() {
           getReminderForProperty={getReminderForProperty}
           onUpdateReminderInterval={updateReminderInterval}
           onSnoozeReminder={snoozeReminder}
+          getCompletionStatus={getCompletionStatus}
         />
 
         {/* Detail Modal */}
@@ -242,6 +271,7 @@ export default function CRM() {
           onClose={() => setIsDetailOpen(false)}
           onEdit={handleEditProperty}
           onDelete={handleDeleteProperty}
+          requirements={requirements}
         />
 
         {/* Form Modal */}
