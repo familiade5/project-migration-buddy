@@ -34,6 +34,8 @@ import { RentalProperty, RENTAL_PROPERTY_TYPES, RENTAL_PROPERTY_FEATURES } from 
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { RentalOwnerQuickForm } from './RentalOwnerQuickForm';
+import { Plus } from 'lucide-react';
 
 const formSchema = z.object({
   code: z.string().min(1, 'Código obrigatório'),
@@ -87,6 +89,7 @@ export function RentalPropertyFormModal({
   const [selectedFeatures, setSelectedFeatures] = useState<string[]>(
     property?.features || []
   );
+  const [showOwnerForm, setShowOwnerForm] = useState(false);
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
@@ -270,18 +273,33 @@ export function RentalPropertyFormModal({
                     name="owner_id"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-gray-700">Proprietário</FormLabel>
-                        <Select onValueChange={field.onChange} value={field.value || 'none'}>
+                        <div className="flex items-center justify-between">
+                          <FormLabel className="text-gray-700">Proprietário</FormLabel>
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => setShowOwnerForm(true)}
+                            className="text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50 h-auto py-1 px-2"
+                          >
+                            <Plus className="w-4 h-4 mr-1" />
+                            Novo
+                          </Button>
+                        </div>
+                        <Select 
+                          onValueChange={field.onChange} 
+                          value={field.value || 'none'}
+                        >
                           <FormControl>
                             <SelectTrigger className="bg-white border-gray-200 text-gray-900">
                               <SelectValue placeholder="Selecione o proprietário" />
                             </SelectTrigger>
                           </FormControl>
-                          <SelectContent className="bg-white border-gray-200 text-gray-900">
+                          <SelectContent className="bg-white border-gray-200 text-gray-900 z-50">
                             <SelectItem value="none" className="text-gray-900 focus:bg-gray-100 focus:text-gray-900">Nenhum</SelectItem>
                             {owners.map((owner) => (
                               <SelectItem key={owner.id} value={owner.id} className="text-gray-900 focus:bg-gray-100 focus:text-gray-900">
-                                {owner.full_name}
+                                {owner.full_name} {owner.cpf && `(${owner.cpf})`}
                               </SelectItem>
                             ))}
                           </SelectContent>
@@ -644,6 +662,15 @@ export function RentalPropertyFormModal({
           </Form>
         </ScrollArea>
       </DialogContent>
+
+      {/* Owner Quick Form Modal */}
+      <RentalOwnerQuickForm
+        open={showOwnerForm}
+        onOpenChange={setShowOwnerForm}
+        onOwnerCreated={(ownerId) => {
+          form.setValue('owner_id', ownerId);
+        }}
+      />
     </Dialog>
   );
 }
