@@ -14,7 +14,8 @@ import {
   Crown,
   Gem,
   Home,
-  LayoutDashboard
+  LayoutDashboard,
+  Calculator
 } from 'lucide-react';
 import {
   DropdownMenu,
@@ -36,6 +37,7 @@ const navigation = [
   { name: 'Revenda +', href: '/revenda', icon: Gem },
   { name: 'Locação & Gestão', href: '/locacao', icon: Home },
   { name: 'Biblioteca', href: '/library', icon: Calendar },
+  { name: 'Calculadora', href: '/calculadora', icon: Calculator },
   { name: 'CRM Imóveis', href: '/crm', icon: LayoutDashboard },
 ];
 
