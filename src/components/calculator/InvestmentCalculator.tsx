@@ -27,8 +27,11 @@ import {
   Wallet,
   Home,
   Hammer,
-  Receipt
+  Receipt,
+  Download,
+  Loader2
 } from 'lucide-react';
+import { exportInvestmentPDF } from '@/lib/exportInvestmentPDF';
 import { formatCurrency } from '@/lib/formatCurrency';
 import { useActionLogger } from '@/hooks/useModuleActivity';
 import {
@@ -123,6 +126,7 @@ export function InvestmentCalculator({ onBack }: InvestmentCalculatorProps) {
 
   const [activeView, setActiveView] = useState<'form' | 'result'>('form');
   const [result, setResult] = useState<InvestmentResult | null>(null);
+  const [isExporting, setIsExporting] = useState(false);
 
   // Form state
   const [purchasePrice, setPurchasePrice] = useState('');
@@ -396,6 +400,25 @@ export function InvestmentCalculator({ onBack }: InvestmentCalculatorProps) {
     setResult(null);
   };
 
+  const handleExportPDF = async () => {
+    if (!result) return;
+    
+    setIsExporting(true);
+    try {
+      const analysisText = generateAnalysisText(result);
+      await exportInvestmentPDF(result, analysisText);
+      logAction('export_investment_pdf', 'Calculadora de Investimento', {
+        holding_period: result.holdingPeriod,
+        total_roi: result.totalROI,
+        estimated_profit: result.estimatedProfit
+      });
+    } catch (error) {
+      console.error('Error exporting PDF:', error);
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
   if (activeView === 'result' && result) {
     const isPositiveROI = result.totalROI > 0;
     const analysisText = generateAnalysisText(result);
@@ -403,7 +426,7 @@ export function InvestmentCalculator({ onBack }: InvestmentCalculatorProps) {
     return (
       <div className="space-y-6 animate-in fade-in slide-in-from-right-5 duration-300">
         {/* Header */}
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between flex-wrap gap-3">
           <Button
             variant="ghost"
             onClick={handleNewAnalysis}
@@ -412,11 +435,30 @@ export function InvestmentCalculator({ onBack }: InvestmentCalculatorProps) {
             <ArrowLeft className="w-4 h-4 mr-2" />
             Nova Análise
           </Button>
-          {onBack && (
-            <Button variant="outline" onClick={onBack} className="text-gray-600 border-gray-300">
-              Voltar às Calculadoras
+          <div className="flex items-center gap-2">
+            <Button 
+              onClick={handleExportPDF}
+              disabled={isExporting}
+              className="bg-gray-900 hover:bg-gray-800 text-white"
+            >
+              {isExporting ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  Gerando PDF...
+                </>
+              ) : (
+                <>
+                  <Download className="w-4 h-4 mr-2" />
+                  Exportar PDF
+                </>
+              )}
             </Button>
-          )}
+            {onBack && (
+              <Button variant="outline" onClick={onBack} className="text-gray-600 border-gray-300">
+                Voltar às Calculadoras
+              </Button>
+            )}
+          </div>
         </div>
 
         {/* Main Result Card */}
