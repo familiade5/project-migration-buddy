@@ -119,9 +119,9 @@ export function ClientDocumentsSection({ clientId }: ClientDocumentsSectionProps
               <SelectTrigger className="mt-1 bg-white border-gray-300 text-gray-900 text-sm">
                 <SelectValue />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="bg-white border-gray-200 text-gray-900">
                 {CLIENT_DOCUMENT_TYPES.map(type => (
-                  <SelectItem key={type.value} value={type.value}>
+                  <SelectItem key={type.value} value={type.value} className="text-gray-900 focus:bg-gray-100 focus:text-gray-900">
                     {type.label}
                   </SelectItem>
                 ))}

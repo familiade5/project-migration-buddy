@@ -200,13 +200,13 @@ export function RentalContractDocumentsSection({ contract }: RentalContractDocum
         <h4 className="font-medium text-gray-900 mb-3">Anexar Documento</h4>
         <div className="flex items-center gap-3 flex-wrap">
           <div className="flex-1 min-w-[200px]">
-            <Select value={selectedType} onValueChange={setSelectedType}>
-              <SelectTrigger className="bg-white border-gray-200">
+          <Select value={selectedType} onValueChange={setSelectedType}>
+              <SelectTrigger className="bg-white border-gray-200 text-gray-900">
                 <SelectValue placeholder="Tipo de documento" />
               </SelectTrigger>
-              <SelectContent className="bg-white border-gray-200">
+              <SelectContent className="bg-white border-gray-200 text-gray-900">
                 {Object.entries(documentTypeLabels).map(([value, { label }]) => (
-                  <SelectItem key={value} value={value}>
+                  <SelectItem key={value} value={value} className="text-gray-900 focus:bg-gray-100 focus:text-gray-900">
                     {label}
                   </SelectItem>
                 ))}
