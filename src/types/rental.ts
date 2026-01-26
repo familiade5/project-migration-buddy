@@ -14,6 +14,8 @@ export type RentalContractStatus =
   | 'terminated'
   | 'renewed';
 
+export type RentalContractType = 'residencial' | 'comercial';
+
 export interface RentalContract {
   id: string;
   
@@ -58,6 +60,9 @@ export interface RentalContract {
   deposit_value: number;
   deposit_months: number;
   guarantee_type: string | null;
+  
+  // Contract Type
+  contract_type: RentalContractType | null;
   
   // Status
   status: RentalContractStatus;

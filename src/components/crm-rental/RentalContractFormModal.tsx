@@ -75,6 +75,7 @@ export function RentalContractFormModal({
     deposit_value: 0,
     deposit_months: 2,
     guarantee_type: 'caucao',
+    contract_type: 'residencial',
     management_fee_percentage: 10,
     notes: '',
     responsible_user_id: null,
@@ -117,7 +118,8 @@ export function RentalContractFormModal({
         end_date: contract.end_date,
         deposit_value: contract.deposit_value,
         deposit_months: contract.deposit_months,
-        guarantee_type: contract.guarantee_type || '',
+        guarantee_type: contract.guarantee_type || 'caucao',
+        contract_type: contract.contract_type || 'residencial',
         management_fee_percentage: contract.management_fee_percentage,
         notes: contract.notes || '',
         responsible_user_id: contract.responsible_user_id,
@@ -147,6 +149,7 @@ export function RentalContractFormModal({
         deposit_value: 0,
         deposit_months: 2,
         guarantee_type: 'caucao',
+        contract_type: 'residencial',
         management_fee_percentage: 10,
         notes: '',
         responsible_user_id: null,
@@ -465,40 +468,65 @@ export function RentalContractFormModal({
 
             {/* Contract Tab */}
             <TabsContent value="contract" className="space-y-4 mt-0">
+              {/* Contract Type Selection */}
+              <div>
+                <Label className="text-gray-700">Tipo de Contrato</Label>
+                <Select
+                  value={formData.contract_type || 'residencial'}
+                  onValueChange={(v) => updateField('contract_type', v)}
+                >
+                  <SelectTrigger className="bg-white border-gray-200 text-gray-900">
+                    <SelectValue placeholder="Selecione o tipo" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-white border-gray-200 text-gray-900 z-50">
+                    <SelectItem value="residencial" className="text-gray-900 focus:bg-gray-100 focus:text-gray-900">
+                      Residencial
+                    </SelectItem>
+                    <SelectItem value="comercial" className="text-gray-900 focus:bg-gray-100 focus:text-gray-900">
+                      Comercial
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <Label>Data de Início</Label>
+                  <Label className="text-gray-700">Data de Início</Label>
                   <Input
                     type="date"
                     value={formData.start_date || ''}
                     onChange={(e) => updateField('start_date', e.target.value)}
-                    className="bg-white border-gray-200"
+                    className="bg-white border-gray-200 text-gray-900"
                   />
                 </div>
                 <div>
-                  <Label>Data de Término</Label>
+                  <Label className="text-gray-700">Data de Término</Label>
                   <Input
                     type="date"
                     value={formData.end_date || ''}
                     onChange={(e) => updateField('end_date', e.target.value)}
-                    className="bg-white border-gray-200"
+                    className="bg-white border-gray-200 text-gray-900"
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-3 gap-4">
                 <div>
-                  <Label>Tipo de Garantia</Label>
+                  <Label className="text-gray-700">Tipo de Garantia</Label>
                   <Select
-                    value={formData.guarantee_type || ''}
+                    value={formData.guarantee_type || 'caucao'}
                     onValueChange={(v) => updateField('guarantee_type', v)}
                   >
-                    <SelectTrigger className="bg-white border-gray-200">
+                    <SelectTrigger className="bg-white border-gray-200 text-gray-900">
                       <SelectValue placeholder="Selecione" />
                     </SelectTrigger>
-                    <SelectContent className="bg-white border-gray-200">
+                    <SelectContent className="bg-white border-gray-200 text-gray-900 z-50">
                       {guaranteeTypes.map((type) => (
-                        <SelectItem key={type.value} value={type.value}>
+                        <SelectItem 
+                          key={type.value} 
+                          value={type.value}
+                          className="text-gray-900 focus:bg-gray-100 focus:text-gray-900"
+                        >
                           {type.label}
                         </SelectItem>
                       ))}
@@ -506,32 +534,32 @@ export function RentalContractFormModal({
                   </Select>
                 </div>
                 <div>
-                  <Label>Meses de Caução</Label>
+                  <Label className="text-gray-700">Meses de Caução</Label>
                   <Input
                     type="number"
                     value={formData.deposit_months || 2}
                     onChange={(e) => updateField('deposit_months', parseInt(e.target.value) || 2)}
-                    className="bg-white border-gray-200"
+                    className="bg-white border-gray-200 text-gray-900"
                   />
                 </div>
                 <div>
-                  <Label>Valor da Caução</Label>
+                  <Label className="text-gray-700">Valor da Caução</Label>
                   <Input
                     type="number"
                     value={formData.deposit_value || ''}
                     onChange={(e) => updateField('deposit_value', parseFloat(e.target.value) || 0)}
-                    className="bg-white border-gray-200"
+                    className="bg-white border-gray-200 text-gray-900"
                   />
                 </div>
               </div>
 
               <div>
-                <Label>Observações</Label>
+                <Label className="text-gray-700">Observações</Label>
                 <Textarea
                   value={formData.notes || ''}
                   onChange={(e) => updateField('notes', e.target.value)}
                   placeholder="Observações sobre o contrato..."
-                  className="bg-white border-gray-200 min-h-[100px]"
+                  className="bg-white border-gray-200 text-gray-900 min-h-[100px]"
                 />
               </div>
             </TabsContent>
