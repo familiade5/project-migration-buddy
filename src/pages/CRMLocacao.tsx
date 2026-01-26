@@ -171,8 +171,8 @@ export default function CRMLocacao() {
   if (isLoading) {
     return (
       <AppLayout>
-        <div className="flex items-center justify-center min-h-[60vh] bg-gray-950">
-          <Loader2 className="w-8 h-8 animate-spin text-gray-400" />
+        <div className="flex items-center justify-center min-h-[60vh] bg-white">
+          <Loader2 className="w-8 h-8 animate-spin text-gray-500" />
         </div>
       </AppLayout>
     );
@@ -180,15 +180,15 @@ export default function CRMLocacao() {
 
   return (
     <AppLayout>
-      <div className="min-h-screen bg-gray-950 p-6">
+      <div className="min-h-screen bg-white p-6">
         {/* Header */}
         <div className="mb-6 flex items-center justify-between">
           <div>
             <div className="flex items-center gap-3 mb-1">
-              <Building2 className="w-7 h-7 text-emerald-400" />
-              <h1 className="text-2xl font-bold text-white">CRM Locação</h1>
+              <Building2 className="w-6 h-6 text-gray-700" />
+              <h1 className="text-2xl font-semibold text-gray-900">CRM Locação</h1>
             </div>
-            <p className="text-sm text-gray-400">
+            <p className="text-sm text-gray-500">
               Gestão de contratos, pagamentos e inadimplência
             </p>
           </div>
@@ -202,7 +202,7 @@ export default function CRMLocacao() {
             {isAdmin && (
               <Button
                 onClick={handleAddContract}
-                className="bg-emerald-600 hover:bg-emerald-700 text-white"
+                className="bg-gray-900 hover:bg-gray-800 text-white"
               >
                 <Plus className="w-4 h-4 mr-2" />
                 Novo Contrato
@@ -216,17 +216,17 @@ export default function CRMLocacao() {
 
         {/* Main Tabs */}
         <Tabs defaultValue="contracts" className="mt-6">
-          <TabsList className="bg-gray-900 border border-gray-800">
+          <TabsList className="bg-gray-100 border border-gray-200">
             <TabsTrigger 
               value="contracts" 
-              className="data-[state=active]:bg-gray-800 data-[state=active]:text-white text-gray-400"
+              className="data-[state=active]:bg-gray-900 data-[state=active]:text-white data-[state=inactive]:bg-transparent data-[state=inactive]:text-gray-600 hover:bg-gray-200"
             >
               <LayoutGrid className="w-4 h-4 mr-2" />
               Contratos
             </TabsTrigger>
             <TabsTrigger 
               value="calendar" 
-              className="data-[state=active]:bg-gray-800 data-[state=active]:text-white text-gray-400"
+              className="data-[state=active]:bg-gray-900 data-[state=active]:text-white data-[state=inactive]:bg-transparent data-[state=inactive]:text-gray-600 hover:bg-gray-200"
             >
               <Calendar className="w-4 h-4 mr-2" />
               Calendário
@@ -234,7 +234,7 @@ export default function CRMLocacao() {
             {isAdmin && (
               <TabsTrigger 
                 value="manager" 
-                className="data-[state=active]:bg-gray-800 data-[state=active]:text-white text-gray-400"
+                className="data-[state=active]:bg-gray-900 data-[state=active]:text-white data-[state=inactive]:bg-transparent data-[state=inactive]:text-gray-600 hover:bg-gray-200"
               >
                 <Users className="w-4 h-4 mr-2" />
                 Gerencial
@@ -247,20 +247,20 @@ export default function CRMLocacao() {
             {/* Filters */}
             <div className="flex items-center gap-3 flex-wrap">
               <div className="relative flex-1 min-w-[200px] max-w-md">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-500" />
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
                 <Input
                   placeholder="Buscar por código, endereço, proprietário..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10 bg-gray-900 border-gray-800 text-white placeholder:text-gray-500"
+                  className="pl-10 bg-white border-gray-200 text-gray-900 placeholder:text-gray-400"
                 />
               </div>
               <Select value={statusFilter} onValueChange={setStatusFilter}>
-                <SelectTrigger className="w-[180px] bg-gray-900 border-gray-800 text-white">
-                  <Filter className="w-4 h-4 mr-2 text-gray-500" />
+                <SelectTrigger className="w-[180px] bg-white border-gray-200 text-gray-900">
+                  <Filter className="w-4 h-4 mr-2 text-gray-400" />
                   <SelectValue placeholder="Status" />
                 </SelectTrigger>
-                <SelectContent className="bg-gray-900 border-gray-800">
+                <SelectContent className="bg-white border-gray-200">
                   <SelectItem value="all">Todos os status</SelectItem>
                   <SelectItem value="active">Ativos</SelectItem>
                   <SelectItem value="ending_soon">Vencendo</SelectItem>
@@ -272,12 +272,12 @@ export default function CRMLocacao() {
 
             {/* Contracts Grid */}
             {filteredContracts.length === 0 ? (
-              <div className="bg-gray-900 border border-gray-800 rounded-xl p-12 text-center">
-                <Building2 className="w-16 h-16 text-gray-700 mx-auto mb-4" />
-                <h3 className="text-lg font-medium text-white mb-2">
+              <div className="bg-white border border-gray-200 rounded-xl p-12 text-center shadow-sm">
+                <Building2 className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+                <h3 className="text-lg font-medium text-gray-900 mb-2">
                   Nenhum contrato encontrado
                 </h3>
-                <p className="text-gray-400 mb-4">
+                <p className="text-gray-500 mb-4">
                   {searchQuery || statusFilter !== 'all'
                     ? 'Tente ajustar os filtros'
                     : 'Comece cadastrando seu primeiro contrato de locação'}
@@ -285,7 +285,7 @@ export default function CRMLocacao() {
                 {isAdmin && !searchQuery && statusFilter === 'all' && (
                   <Button
                     onClick={handleAddContract}
-                    className="bg-emerald-600 hover:bg-emerald-700"
+                    className="bg-gray-900 hover:bg-gray-800 text-white"
                   >
                     <Plus className="w-4 h-4 mr-2" />
                     Novo Contrato
@@ -359,25 +359,25 @@ export default function CRMLocacao() {
           open={!!deleteConfirmContract}
           onOpenChange={() => setDeleteConfirmContract(null)}
         >
-          <AlertDialogContent className="bg-gray-900 border-gray-800">
+          <AlertDialogContent className="bg-white border-gray-200">
             <AlertDialogHeader>
-              <AlertDialogTitle className="text-white">
+              <AlertDialogTitle className="text-gray-900">
                 Excluir contrato?
               </AlertDialogTitle>
-              <AlertDialogDescription className="text-gray-400">
+              <AlertDialogDescription className="text-gray-600">
                 Tem certeza que deseja excluir o contrato{' '}
-                <strong className="text-white">{deleteConfirmContract?.property_code}</strong>?
+                <strong className="text-gray-900">{deleteConfirmContract?.property_code}</strong>?
                 Todos os pagamentos vinculados também serão excluídos.
                 Esta ação não pode ser desfeita.
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
-              <AlertDialogCancel className="bg-gray-800 border-gray-700 text-white hover:bg-gray-700">
+              <AlertDialogCancel className="bg-white border-gray-200 text-gray-600 hover:bg-gray-50 hover:text-gray-900">
                 Cancelar
               </AlertDialogCancel>
               <AlertDialogAction
                 onClick={confirmDelete}
-                className="bg-red-600 text-white hover:bg-red-700"
+                className="bg-red-500 text-white hover:bg-red-600"
               >
                 Excluir
               </AlertDialogAction>
