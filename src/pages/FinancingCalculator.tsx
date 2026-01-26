@@ -517,8 +517,6 @@ export default function FinancingCalculator() {
   const renderSimulationResult = () => {
     if (!simulationResult) return null;
 
-    const is30PercentOk = simulationResult.firstInstallment <= (simulationResult.propertyValue * 0.003);
-
     return (
       <div className="space-y-4">
         {/* Main Result Card */}
