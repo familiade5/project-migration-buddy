@@ -13,6 +13,7 @@ import Admin from "./pages/Admin";
 import Settings from "./pages/Settings";
 import Imobiliaria from "./pages/Imobiliaria";
 import CRM from "./pages/CRM";
+import CRMLocacao from "./pages/CRMLocacao";
 import FinancingCalculator from "./pages/FinancingCalculator";
 import ElitePostGenerator from "./pages/ElitePostGenerator";
 import RevendaPostGenerator from "./pages/RevendaPostGenerator";
@@ -53,6 +54,11 @@ const App = () => (
             <Route path="/crm" element={
               <ProtectedRoute>
                 <CRM />
+              </ProtectedRoute>
+            } />
+            <Route path="/crm-locacao" element={
+              <ProtectedRoute>
+                <CRMLocacao />
               </ProtectedRoute>
             } />
             <Route path="/calculadora" element={

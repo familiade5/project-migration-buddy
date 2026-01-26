@@ -846,6 +846,264 @@ export type Database = {
         }
         Relationships: []
       }
+      rental_alert_configs: {
+        Row: {
+          alert_type: string
+          created_at: string
+          days_offset: number
+          id: string
+          is_enabled: boolean
+          message_template: string | null
+          updated_at: string
+        }
+        Insert: {
+          alert_type: string
+          created_at?: string
+          days_offset: number
+          id?: string
+          is_enabled?: boolean
+          message_template?: string | null
+          updated_at?: string
+        }
+        Update: {
+          alert_type?: string
+          created_at?: string
+          days_offset?: number
+          id?: string
+          is_enabled?: boolean
+          message_template?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      rental_contract_documents: {
+        Row: {
+          contract_id: string
+          created_at: string
+          document_type: string
+          file_url: string
+          id: string
+          name: string
+          uploaded_by_user_id: string | null
+        }
+        Insert: {
+          contract_id: string
+          created_at?: string
+          document_type?: string
+          file_url: string
+          id?: string
+          name: string
+          uploaded_by_user_id?: string | null
+        }
+        Update: {
+          contract_id?: string
+          created_at?: string
+          document_type?: string
+          file_url?: string
+          id?: string
+          name?: string
+          uploaded_by_user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "rental_contract_documents_contract_id_fkey"
+            columns: ["contract_id"]
+            isOneToOne: false
+            referencedRelation: "rental_contracts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      rental_contracts: {
+        Row: {
+          condominium_fee: number | null
+          contract_document_url: string | null
+          created_at: string
+          created_by_user_id: string | null
+          deposit_months: number | null
+          deposit_value: number | null
+          end_date: string
+          guarantee_type: string | null
+          id: string
+          iptu_value: number | null
+          management_fee_percentage: number | null
+          notes: string | null
+          other_fees: number | null
+          owner_bank_info: string | null
+          owner_email: string | null
+          owner_name: string
+          owner_phone: string | null
+          owner_pix_key: string | null
+          payment_due_day: number
+          property_address: string
+          property_city: string
+          property_code: string
+          property_neighborhood: string | null
+          property_state: string
+          property_type: string
+          rent_value: number
+          responsible_user_id: string | null
+          start_date: string
+          status: Database["public"]["Enums"]["rental_contract_status"]
+          tenant_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          condominium_fee?: number | null
+          contract_document_url?: string | null
+          created_at?: string
+          created_by_user_id?: string | null
+          deposit_months?: number | null
+          deposit_value?: number | null
+          end_date: string
+          guarantee_type?: string | null
+          id?: string
+          iptu_value?: number | null
+          management_fee_percentage?: number | null
+          notes?: string | null
+          other_fees?: number | null
+          owner_bank_info?: string | null
+          owner_email?: string | null
+          owner_name: string
+          owner_phone?: string | null
+          owner_pix_key?: string | null
+          payment_due_day?: number
+          property_address: string
+          property_city?: string
+          property_code: string
+          property_neighborhood?: string | null
+          property_state?: string
+          property_type?: string
+          rent_value: number
+          responsible_user_id?: string | null
+          start_date: string
+          status?: Database["public"]["Enums"]["rental_contract_status"]
+          tenant_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          condominium_fee?: number | null
+          contract_document_url?: string | null
+          created_at?: string
+          created_by_user_id?: string | null
+          deposit_months?: number | null
+          deposit_value?: number | null
+          end_date?: string
+          guarantee_type?: string | null
+          id?: string
+          iptu_value?: number | null
+          management_fee_percentage?: number | null
+          notes?: string | null
+          other_fees?: number | null
+          owner_bank_info?: string | null
+          owner_email?: string | null
+          owner_name?: string
+          owner_phone?: string | null
+          owner_pix_key?: string | null
+          payment_due_day?: number
+          property_address?: string
+          property_city?: string
+          property_code?: string
+          property_neighborhood?: string | null
+          property_state?: string
+          property_type?: string
+          rent_value?: number
+          responsible_user_id?: string | null
+          start_date?: string
+          status?: Database["public"]["Enums"]["rental_contract_status"]
+          tenant_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "rental_contracts_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "crm_clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      rental_payments: {
+        Row: {
+          condominium_fee: number | null
+          contract_id: string
+          created_at: string
+          discount: number | null
+          due_date: string
+          external_payment_id: string | null
+          external_payment_url: string | null
+          id: string
+          iptu_value: number | null
+          late_fee: number | null
+          notes: string | null
+          other_fees: number | null
+          paid_amount: number | null
+          paid_at: string | null
+          payment_method: string | null
+          payment_proof_url: string | null
+          reference_month: number
+          reference_year: number
+          rent_value: number
+          status: Database["public"]["Enums"]["rental_payment_status"]
+          updated_at: string
+        }
+        Insert: {
+          condominium_fee?: number | null
+          contract_id: string
+          created_at?: string
+          discount?: number | null
+          due_date: string
+          external_payment_id?: string | null
+          external_payment_url?: string | null
+          id?: string
+          iptu_value?: number | null
+          late_fee?: number | null
+          notes?: string | null
+          other_fees?: number | null
+          paid_amount?: number | null
+          paid_at?: string | null
+          payment_method?: string | null
+          payment_proof_url?: string | null
+          reference_month: number
+          reference_year: number
+          rent_value: number
+          status?: Database["public"]["Enums"]["rental_payment_status"]
+          updated_at?: string
+        }
+        Update: {
+          condominium_fee?: number | null
+          contract_id?: string
+          created_at?: string
+          discount?: number | null
+          due_date?: string
+          external_payment_id?: string | null
+          external_payment_url?: string | null
+          id?: string
+          iptu_value?: number | null
+          late_fee?: number | null
+          notes?: string | null
+          other_fees?: number | null
+          paid_amount?: number | null
+          paid_at?: string | null
+          payment_method?: string | null
+          payment_proof_url?: string | null
+          reference_month?: number
+          reference_year?: number
+          rent_value?: number
+          status?: Database["public"]["Enums"]["rental_payment_status"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "rental_payments_contract_id_fkey"
+            columns: ["contract_id"]
+            isOneToOne: false
+            referencedRelation: "rental_contracts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_roles: {
         Row: {
           id: string
@@ -910,6 +1168,18 @@ export type Database = {
         | "comercial"
         | "rural"
         | "outro"
+      rental_contract_status:
+        | "active"
+        | "ending_soon"
+        | "expired"
+        | "terminated"
+        | "renewed"
+      rental_payment_status:
+        | "pending"
+        | "paid"
+        | "overdue"
+        | "partial"
+        | "cancelled"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -1057,6 +1327,20 @@ export const Constants = {
         "comercial",
         "rural",
         "outro",
+      ],
+      rental_contract_status: [
+        "active",
+        "ending_soon",
+        "expired",
+        "terminated",
+        "renewed",
+      ],
+      rental_payment_status: [
+        "pending",
+        "paid",
+        "overdue",
+        "partial",
+        "cancelled",
       ],
     },
   },
