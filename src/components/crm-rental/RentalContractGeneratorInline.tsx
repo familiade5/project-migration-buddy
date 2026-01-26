@@ -106,11 +106,11 @@ export function RentalContractGeneratorInline({ contract }: RentalContractGenera
           name: contract.owner_name,
           action: 'SIGN' as const,
         },
-        // Agency/broker as witness
+        // Agency/broker (Autentique ActionEnum não suporta WITNESS)
         {
           email: 'netoseucorretor@gmail.com',
           name: 'Venda Direta Hoje',
-          action: 'WITNESS' as const,
+          action: 'APPROVE' as const,
         },
       ];
 
