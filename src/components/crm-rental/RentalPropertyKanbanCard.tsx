@@ -31,7 +31,7 @@ export function RentalPropertyKanbanCard({ property, onClick }: RentalPropertyKa
       <Card
         onClick={onClick}
         className={cn(
-          'cursor-pointer transition-all hover:shadow-md border-l-4',
+          'cursor-pointer transition-all hover:shadow-md border-l-4 bg-white border-gray-200',
           isDragging && 'opacity-50 shadow-xl',
           property.current_stage === 'disponivel' && 'border-l-green-500',
           property.current_stage === 'reservado' && 'border-l-yellow-500',
@@ -53,10 +53,10 @@ export function RentalPropertyKanbanCard({ property, onClick }: RentalPropertyKa
 
           {/* Property Code */}
           <div className="flex items-center justify-between mb-2">
-            <Badge variant="outline" className="text-xs font-mono">
+            <Badge variant="outline" className="text-xs font-mono border-gray-300 text-gray-700">
               {property.code}
             </Badge>
-            <Badge variant="secondary" className="text-xs">
+            <Badge variant="secondary" className="text-xs bg-gray-100 text-gray-700">
               {property.property_type}
             </Badge>
           </div>
@@ -110,12 +110,12 @@ export function RentalPropertyKanbanCard({ property, onClick }: RentalPropertyKa
           {/* Features Badges */}
           <div className="flex flex-wrap gap-1 mt-2">
             {property.is_furnished && (
-              <Badge variant="outline" className="text-[10px] px-1">
+              <Badge variant="outline" className="text-[10px] px-1 border-gray-300 text-gray-600">
                 Mobiliado
               </Badge>
             )}
             {property.accepts_pets && (
-              <Badge variant="outline" className="text-[10px] px-1">
+              <Badge variant="outline" className="text-[10px] px-1 border-gray-300 text-gray-600">
                 Aceita Pet
               </Badge>
             )}
@@ -123,7 +123,7 @@ export function RentalPropertyKanbanCard({ property, onClick }: RentalPropertyKa
 
           {/* Owner */}
           {property.owner && (
-            <div className="text-xs text-gray-400 mt-2 truncate">
+            <div className="text-xs text-gray-500 mt-2 truncate">
               Prop: {property.owner.full_name}
             </div>
           )}

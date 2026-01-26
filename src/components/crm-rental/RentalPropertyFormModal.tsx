@@ -150,9 +150,9 @@ export function RentalPropertyFormModal({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-3xl max-h-[90vh] overflow-hidden">
+      <DialogContent className="max-w-3xl max-h-[90vh] overflow-hidden bg-white border-gray-200 text-gray-900">
         <DialogHeader>
-          <DialogTitle>
+          <DialogTitle className="text-gray-900">
             {property ? 'Editar Imóvel' : 'Novo Imóvel para Locação'}
           </DialogTitle>
         </DialogHeader>
@@ -161,11 +161,11 @@ export function RentalPropertyFormModal({
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 p-1">
               <Tabs defaultValue="basic" className="w-full">
-                <TabsList className="grid w-full grid-cols-4">
-                  <TabsTrigger value="basic">Básico</TabsTrigger>
-                  <TabsTrigger value="details">Detalhes</TabsTrigger>
-                  <TabsTrigger value="financial">Financeiro</TabsTrigger>
-                  <TabsTrigger value="features">Características</TabsTrigger>
+                <TabsList className="grid w-full grid-cols-4 bg-gray-100 border border-gray-200">
+                  <TabsTrigger value="basic" className="data-[state=active]:bg-white data-[state=active]:text-gray-900">Básico</TabsTrigger>
+                  <TabsTrigger value="details" className="data-[state=active]:bg-white data-[state=active]:text-gray-900">Detalhes</TabsTrigger>
+                  <TabsTrigger value="financial" className="data-[state=active]:bg-white data-[state=active]:text-gray-900">Financeiro</TabsTrigger>
+                  <TabsTrigger value="features" className="data-[state=active]:bg-white data-[state=active]:text-gray-900">Características</TabsTrigger>
                 </TabsList>
 
                 <TabsContent value="basic" className="space-y-4 mt-4">
