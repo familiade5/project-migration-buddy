@@ -53,12 +53,12 @@ export function RentalPaymentCalendar({
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'paid': return 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30';
-      case 'pending': return 'bg-amber-500/20 text-amber-400 border-amber-500/30';
-      case 'overdue': return 'bg-red-500/20 text-red-400 border-red-500/30';
-      case 'partial': return 'bg-blue-500/20 text-blue-400 border-blue-500/30';
-      case 'cancelled': return 'bg-gray-500/20 text-gray-400 border-gray-500/30';
-      default: return 'bg-gray-500/20 text-gray-400 border-gray-500/30';
+      case 'paid': return 'bg-emerald-100 text-emerald-700 border-emerald-200';
+      case 'pending': return 'bg-amber-100 text-amber-700 border-amber-200';
+      case 'overdue': return 'bg-red-100 text-red-700 border-red-200';
+      case 'partial': return 'bg-blue-100 text-blue-700 border-blue-200';
+      case 'cancelled': return 'bg-gray-100 text-gray-600 border-gray-200';
+      default: return 'bg-gray-100 text-gray-600 border-gray-200';
     }
   };
 
@@ -97,28 +97,28 @@ export function RentalPaymentCalendar({
   }, [monthPayments]);
 
   return (
-    <div className="bg-gray-900 border border-gray-800 rounded-xl overflow-hidden">
+    <div className="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm">
       {/* Header */}
-      <div className="p-4 border-b border-gray-800">
+      <div className="p-4 border-b border-gray-200">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-semibold text-white">Calendário de Pagamentos</h3>
+          <h3 className="text-lg font-semibold text-gray-900">Calendário de Pagamentos</h3>
           <div className="flex items-center gap-2">
             <Button
               variant="ghost"
               size="icon"
               onClick={prevMonth}
-              className="h-8 w-8 text-gray-400 hover:text-white hover:bg-gray-800"
+              className="h-8 w-8 text-gray-600 hover:text-gray-900 hover:bg-gray-100"
             >
               <ChevronLeft className="w-4 h-4" />
             </Button>
-            <span className="text-white font-medium min-w-[140px] text-center">
+            <span className="text-gray-900 font-medium min-w-[140px] text-center">
               {monthNames[currentMonth - 1]} {currentYear}
             </span>
             <Button
               variant="ghost"
               size="icon"
               onClick={nextMonth}
-              className="h-8 w-8 text-gray-400 hover:text-white hover:bg-gray-800"
+              className="h-8 w-8 text-gray-600 hover:text-gray-900 hover:bg-gray-100"
             >
               <ChevronRight className="w-4 h-4" />
             </Button>
@@ -127,29 +127,29 @@ export function RentalPaymentCalendar({
 
         {/* Stats */}
         <div className="grid grid-cols-3 gap-3">
-          <div className="bg-emerald-500/10 rounded-lg p-3 border border-emerald-500/20">
+          <div className="bg-emerald-50 rounded-lg p-3 border border-emerald-200">
             <div className="flex items-center gap-2 mb-1">
-              <Check className="w-4 h-4 text-emerald-400" />
-              <span className="text-xs text-emerald-400 font-medium">Pagos</span>
+              <Check className="w-4 h-4 text-emerald-600" />
+              <span className="text-xs text-emerald-700 font-medium">Pagos</span>
             </div>
-            <p className="text-lg font-bold text-white">{stats.paidCount}</p>
-            <p className="text-xs text-gray-400">{formatCurrency(stats.paidValue)}</p>
+            <p className="text-lg font-bold text-gray-900">{stats.paidCount}</p>
+            <p className="text-xs text-gray-500">{formatCurrency(stats.paidValue)}</p>
           </div>
-          <div className="bg-amber-500/10 rounded-lg p-3 border border-amber-500/20">
+          <div className="bg-amber-50 rounded-lg p-3 border border-amber-200">
             <div className="flex items-center gap-2 mb-1">
-              <Clock className="w-4 h-4 text-amber-400" />
-              <span className="text-xs text-amber-400 font-medium">Pendentes</span>
+              <Clock className="w-4 h-4 text-amber-600" />
+              <span className="text-xs text-amber-700 font-medium">Pendentes</span>
             </div>
-            <p className="text-lg font-bold text-white">{stats.pendingCount}</p>
-            <p className="text-xs text-gray-400">{formatCurrency(stats.pendingValue)}</p>
+            <p className="text-lg font-bold text-gray-900">{stats.pendingCount}</p>
+            <p className="text-xs text-gray-500">{formatCurrency(stats.pendingValue)}</p>
           </div>
-          <div className="bg-red-500/10 rounded-lg p-3 border border-red-500/20">
+          <div className="bg-red-50 rounded-lg p-3 border border-red-200">
             <div className="flex items-center gap-2 mb-1">
-              <AlertTriangle className="w-4 h-4 text-red-400" />
-              <span className="text-xs text-red-400 font-medium">Atrasados</span>
+              <AlertTriangle className="w-4 h-4 text-red-600" />
+              <span className="text-xs text-red-700 font-medium">Atrasados</span>
             </div>
-            <p className="text-lg font-bold text-white">{stats.overdueCount}</p>
-            <p className="text-xs text-gray-400">{formatCurrency(stats.overdueValue)}</p>
+            <p className="text-lg font-bold text-gray-900">{stats.overdueCount}</p>
+            <p className="text-xs text-gray-500">{formatCurrency(stats.overdueValue)}</p>
           </div>
         </div>
       </div>
@@ -158,11 +158,11 @@ export function RentalPaymentCalendar({
       <div className="max-h-[500px] overflow-y-auto">
         {monthPayments.length === 0 ? (
           <div className="p-8 text-center">
-            <Clock className="w-12 h-12 text-gray-600 mx-auto mb-3" />
-            <p className="text-gray-400">Nenhum pagamento para este mês</p>
+            <Clock className="w-12 h-12 text-gray-300 mx-auto mb-3" />
+            <p className="text-gray-500">Nenhum pagamento para este mês</p>
           </div>
         ) : (
-          <div className="divide-y divide-gray-800">
+          <div className="divide-y divide-gray-100">
             {monthPayments.map((payment) => {
               const contract = getContract(payment.contract_id);
               const total = getPaymentTotal(payment);
@@ -172,7 +172,7 @@ export function RentalPaymentCalendar({
                   key={payment.id}
                   onClick={() => onPaymentClick?.(payment)}
                   className={cn(
-                    "p-4 hover:bg-gray-800/50 transition-colors cursor-pointer",
+                    "p-4 hover:bg-gray-50 transition-colors cursor-pointer",
                     "flex items-center justify-between gap-4"
                   )}
                 >
@@ -184,10 +184,10 @@ export function RentalPaymentCalendar({
                       {getStatusIcon(payment.status)}
                     </div>
                     <div className="min-w-0">
-                      <p className="text-white font-medium truncate">
+                      <p className="text-gray-900 font-medium truncate">
                         {contract?.property_code || 'Contrato'}
                       </p>
-                      <p className="text-sm text-gray-400 truncate">
+                      <p className="text-sm text-gray-500 truncate">
                         {contract?.tenant?.full_name || 'Inquilino não definido'}
                       </p>
                     </div>
@@ -195,7 +195,7 @@ export function RentalPaymentCalendar({
 
                   <div className="flex items-center gap-4 flex-shrink-0">
                     <div className="text-right">
-                      <p className="text-white font-medium">{formatCurrency(total)}</p>
+                      <p className="text-gray-900 font-medium">{formatCurrency(total)}</p>
                       <p className="text-xs text-gray-500">
                         Vence: {new Date(payment.due_date).toLocaleDateString('pt-BR')}
                       </p>
@@ -211,7 +211,7 @@ export function RentalPaymentCalendar({
                           e.stopPropagation();
                           onMarkAsPaid?.(payment);
                         }}
-                        className="text-emerald-400 hover:text-emerald-300 hover:bg-emerald-500/10"
+                        className="text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50"
                       >
                         <Check className="w-4 h-4 mr-1" />
                         Pagar

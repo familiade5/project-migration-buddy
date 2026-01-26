@@ -155,20 +155,20 @@ export function RentalPaymentModal({
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'paid': return 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30';
-      case 'pending': return 'bg-amber-500/20 text-amber-400 border-amber-500/30';
-      case 'overdue': return 'bg-red-500/20 text-red-400 border-red-500/30';
-      case 'partial': return 'bg-blue-500/20 text-blue-400 border-blue-500/30';
-      case 'cancelled': return 'bg-gray-500/20 text-gray-400 border-gray-500/30';
-      default: return 'bg-gray-500/20 text-gray-400 border-gray-500/30';
+      case 'paid': return 'bg-emerald-100 text-emerald-700 border-emerald-200';
+      case 'pending': return 'bg-amber-100 text-amber-700 border-amber-200';
+      case 'overdue': return 'bg-red-100 text-red-700 border-red-200';
+      case 'partial': return 'bg-blue-100 text-blue-700 border-blue-200';
+      case 'cancelled': return 'bg-gray-100 text-gray-600 border-gray-200';
+      default: return 'bg-gray-100 text-gray-600 border-gray-200';
     }
   };
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="bg-gray-900 border-gray-800 text-white max-w-lg">
+      <DialogContent className="bg-white border-gray-200 text-gray-900 max-w-lg">
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
+          <DialogTitle className="flex items-center gap-2 text-gray-900">
             <DollarSign className="w-5 h-5" />
             Pagamento - {monthNames[payment.reference_month - 1]} {payment.reference_year}
           </DialogTitle>
@@ -176,14 +176,14 @@ export function RentalPaymentModal({
 
         <div className="space-y-4 mt-4">
           {/* Property & Tenant Info */}
-          <div className="p-3 bg-gray-800 rounded-lg">
-            <p className="text-white font-medium">{propertyCode || 'Imóvel'}</p>
-            <p className="text-sm text-gray-400">{tenantName || 'Inquilino'}</p>
+          <div className="p-3 bg-gray-50 rounded-lg border border-gray-200">
+            <p className="text-gray-900 font-medium">{propertyCode || 'Imóvel'}</p>
+            <p className="text-sm text-gray-500">{tenantName || 'Inquilino'}</p>
           </div>
 
           {/* Status */}
           <div className="flex items-center justify-between">
-            <span className="text-gray-400">Status:</span>
+            <span className="text-gray-600">Status:</span>
             <Badge className={cn("border", getStatusColor(payment.status))}>
               {payment.status === 'overdue' && <AlertTriangle className="w-3 h-3 mr-1" />}
               {payment.status === 'pending' && <Clock className="w-3 h-3 mr-1" />}
@@ -194,39 +194,39 @@ export function RentalPaymentModal({
 
           {/* Due Date */}
           <div className="flex items-center justify-between text-sm">
-            <span className="text-gray-400">Vencimento:</span>
-            <span className="text-white">
+            <span className="text-gray-600">Vencimento:</span>
+            <span className="text-gray-900">
               {new Date(payment.due_date).toLocaleDateString('pt-BR')}
             </span>
           </div>
 
           {/* Values Breakdown */}
-          <div className="p-3 bg-gray-800 rounded-lg space-y-2">
+          <div className="p-3 bg-gray-50 rounded-lg border border-gray-200 space-y-2">
             <div className="flex justify-between text-sm">
-              <span className="text-gray-400">Aluguel:</span>
-              <span className="text-white">{formatCurrency(payment.rent_value)}</span>
+              <span className="text-gray-500">Aluguel:</span>
+              <span className="text-gray-900">{formatCurrency(payment.rent_value)}</span>
             </div>
             {payment.condominium_fee > 0 && (
               <div className="flex justify-between text-sm">
-                <span className="text-gray-400">Condomínio:</span>
-                <span className="text-white">{formatCurrency(payment.condominium_fee)}</span>
+                <span className="text-gray-500">Condomínio:</span>
+                <span className="text-gray-900">{formatCurrency(payment.condominium_fee)}</span>
               </div>
             )}
             {payment.iptu_value > 0 && (
               <div className="flex justify-between text-sm">
-                <span className="text-gray-400">IPTU:</span>
-                <span className="text-white">{formatCurrency(payment.iptu_value)}</span>
+                <span className="text-gray-500">IPTU:</span>
+                <span className="text-gray-900">{formatCurrency(payment.iptu_value)}</span>
               </div>
             )}
             {payment.other_fees > 0 && (
               <div className="flex justify-between text-sm">
-                <span className="text-gray-400">Outras taxas:</span>
-                <span className="text-white">{formatCurrency(payment.other_fees)}</span>
+                <span className="text-gray-500">Outras taxas:</span>
+                <span className="text-gray-900">{formatCurrency(payment.other_fees)}</span>
               </div>
             )}
-            <div className="border-t border-gray-700 pt-2 flex justify-between font-medium">
-              <span className="text-gray-300">Subtotal:</span>
-              <span className="text-white">{formatCurrency(total)}</span>
+            <div className="border-t border-gray-200 pt-2 flex justify-between font-medium">
+              <span className="text-gray-700">Subtotal:</span>
+              <span className="text-gray-900">{formatCurrency(total)}</span>
             </div>
           </div>
 
@@ -234,31 +234,31 @@ export function RentalPaymentModal({
           {(payment.status === 'pending' || payment.status === 'overdue') && (
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <Label className="text-gray-400">Multa/Juros</Label>
+                <Label className="text-gray-700">Multa/Juros</Label>
                 <Input
                   type="number"
                   value={lateFee}
                   onChange={(e) => setLateFee(parseFloat(e.target.value) || 0)}
-                  className="bg-gray-800 border-gray-700"
+                  className="bg-white border-gray-200"
                 />
               </div>
               <div>
-                <Label className="text-gray-400">Desconto</Label>
+                <Label className="text-gray-700">Desconto</Label>
                 <Input
                   type="number"
                   value={discount}
                   onChange={(e) => setDiscount(parseFloat(e.target.value) || 0)}
-                  className="bg-gray-800 border-gray-700"
+                  className="bg-white border-gray-200"
                 />
               </div>
             </div>
           )}
 
           {/* Total */}
-          <div className="p-4 bg-emerald-500/10 border border-emerald-500/20 rounded-lg">
+          <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-lg">
             <div className="flex justify-between items-center">
-              <span className="text-emerald-400 font-medium">Total a Pagar:</span>
-              <span className="text-2xl font-bold text-emerald-400">
+              <span className="text-emerald-700 font-medium">Total a Pagar:</span>
+              <span className="text-2xl font-bold text-emerald-600">
                 {formatCurrency(adjustedTotal)}
               </span>
             </div>
@@ -269,21 +269,21 @@ export function RentalPaymentModal({
             <>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <Label className="text-gray-400">Valor Pago</Label>
+                  <Label className="text-gray-700">Valor Pago</Label>
                   <Input
                     type="number"
                     value={paidAmount}
                     onChange={(e) => setPaidAmount(parseFloat(e.target.value) || 0)}
-                    className="bg-gray-800 border-gray-700"
+                    className="bg-white border-gray-200"
                   />
                 </div>
                 <div>
-                  <Label className="text-gray-400">Método</Label>
+                  <Label className="text-gray-700">Método</Label>
                   <Select value={paymentMethod} onValueChange={setPaymentMethod}>
-                    <SelectTrigger className="bg-gray-800 border-gray-700">
+                    <SelectTrigger className="bg-white border-gray-200">
                       <SelectValue />
                     </SelectTrigger>
-                    <SelectContent className="bg-gray-800 border-gray-700">
+                    <SelectContent className="bg-white border-gray-200">
                       {paymentMethods.map((method) => (
                         <SelectItem key={method.value} value={method.value}>
                           {method.label}
@@ -296,7 +296,7 @@ export function RentalPaymentModal({
 
               {/* Proof upload */}
               <div>
-                <Label className="text-gray-400">Comprovante</Label>
+                <Label className="text-gray-700">Comprovante</Label>
                 <div className="mt-1">
                   {proofUrl ? (
                     <div className="flex items-center gap-2">
@@ -304,7 +304,7 @@ export function RentalPaymentModal({
                         href={proofUrl} 
                         target="_blank" 
                         rel="noopener noreferrer"
-                        className="text-blue-400 hover:text-blue-300 text-sm underline"
+                        className="text-blue-600 hover:text-blue-700 text-sm underline"
                       >
                         Ver comprovante
                       </a>
@@ -312,13 +312,13 @@ export function RentalPaymentModal({
                         variant="ghost"
                         size="sm"
                         onClick={() => setProofUrl('')}
-                        className="text-gray-400 hover:text-white"
+                        className="text-gray-500 hover:text-gray-700"
                       >
                         Remover
                       </Button>
                     </div>
                   ) : (
-                    <label className="flex items-center justify-center w-full h-20 border-2 border-dashed border-gray-700 rounded-lg cursor-pointer hover:border-gray-600 transition-colors">
+                    <label className="flex items-center justify-center w-full h-20 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-gray-400 transition-colors">
                       <input
                         type="file"
                         accept="image/*,application/pdf"
@@ -327,7 +327,7 @@ export function RentalPaymentModal({
                         disabled={isUploading}
                       />
                       {isUploading ? (
-                        <Loader2 className="w-5 h-5 animate-spin text-gray-500" />
+                        <Loader2 className="w-5 h-5 animate-spin text-gray-400" />
                       ) : (
                         <div className="flex items-center gap-2 text-gray-500">
                           <Upload className="w-5 h-5" />
@@ -343,48 +343,48 @@ export function RentalPaymentModal({
 
           {/* Notes */}
           <div>
-            <Label className="text-gray-400">Observações</Label>
+            <Label className="text-gray-700">Observações</Label>
             <Textarea
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
-              className="bg-gray-800 border-gray-700 min-h-[80px]"
+              className="bg-white border-gray-200 min-h-[80px]"
               placeholder="Observações sobre este pagamento..."
             />
           </div>
 
           {/* Paid info */}
           {payment.status === 'paid' && payment.paid_at && (
-            <div className="p-3 bg-gray-800 rounded-lg text-sm">
+            <div className="p-3 bg-gray-50 rounded-lg border border-gray-200 text-sm">
               <div className="flex justify-between">
-                <span className="text-gray-400">Pago em:</span>
-                <span className="text-white">
+                <span className="text-gray-500">Pago em:</span>
+                <span className="text-gray-900">
                   {new Date(payment.paid_at).toLocaleDateString('pt-BR')}
                 </span>
               </div>
               {payment.payment_method && (
                 <div className="flex justify-between mt-1">
-                  <span className="text-gray-400">Método:</span>
-                  <span className="text-white">
+                  <span className="text-gray-500">Método:</span>
+                  <span className="text-gray-900">
                     {paymentMethods.find(m => m.value === payment.payment_method)?.label || payment.payment_method}
                   </span>
                 </div>
               )}
               {payment.paid_amount && (
                 <div className="flex justify-between mt-1">
-                  <span className="text-gray-400">Valor pago:</span>
-                  <span className="text-white">{formatCurrency(payment.paid_amount)}</span>
+                  <span className="text-gray-500">Valor pago:</span>
+                  <span className="text-gray-900">{formatCurrency(payment.paid_amount)}</span>
                 </div>
               )}
             </div>
           )}
         </div>
 
-        <div className="flex justify-end gap-3 pt-4 border-t border-gray-800 mt-4">
+        <div className="flex justify-end gap-3 pt-4 border-t border-gray-200 mt-4">
           <Button
             variant="ghost"
             onClick={onClose}
             disabled={isLoading}
-            className="text-gray-400 hover:text-white"
+            className="text-gray-600 hover:text-gray-900"
           >
             Fechar
           </Button>
@@ -395,7 +395,7 @@ export function RentalPaymentModal({
                 variant="outline"
                 onClick={handleSave}
                 disabled={isLoading}
-                className="border-gray-700 text-gray-300 hover:bg-gray-800"
+                className="border-gray-200 text-gray-700 hover:bg-gray-100"
               >
                 Salvar
               </Button>
