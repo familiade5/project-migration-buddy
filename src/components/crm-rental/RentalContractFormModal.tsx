@@ -678,10 +678,10 @@ export function RentalContractFormModal({
 
         <div className="flex justify-end gap-3 pt-4 border-t border-gray-200">
           <Button
-            variant="ghost"
+            variant="outline"
             onClick={onClose}
             disabled={isLoading}
-            className="text-gray-600 hover:text-gray-900"
+            className="bg-white text-gray-900 border-gray-300 hover:bg-gray-100"
           >
             Cancelar
           </Button>
@@ -692,12 +692,12 @@ export function RentalContractFormModal({
           >
             {isLoading ? (
               <>
-                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                <Loader2 className="w-4 h-4 mr-2 animate-spin text-white" />
                 Salvando...
               </>
             ) : (
               <>
-                <Save className="w-4 h-4 mr-2" />
+                <Save className="w-4 h-4 mr-2 text-white" />
                 {contract ? 'Salvar Alterações' : 'Criar Contrato'}
               </>
             )}

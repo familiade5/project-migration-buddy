@@ -209,9 +209,9 @@ export function RentalContractGenerator({ contract, isOpen, onClose }: RentalCon
               className="bg-gray-900 hover:bg-gray-800 text-white"
             >
               {isGenerating ? (
-                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                <Loader2 className="w-4 h-4 mr-2 animate-spin text-white" />
               ) : (
-                <Download className="w-4 h-4 mr-2" />
+                <Download className="w-4 h-4 mr-2 text-white" />
               )}
               Baixar PDF
             </Button>
@@ -219,9 +219,9 @@ export function RentalContractGenerator({ contract, isOpen, onClose }: RentalCon
             <Button
               onClick={handlePrint}
               variant="outline"
-              className="border-gray-200"
+              className="border-gray-300 bg-white text-gray-900 hover:bg-gray-100"
             >
-              <Printer className="w-4 h-4 mr-2" />
+              <Printer className="w-4 h-4 mr-2 text-gray-900" />
               Imprimir
             </Button>
           </div>
@@ -245,9 +245,9 @@ export function RentalContractGenerator({ contract, isOpen, onClose }: RentalCon
               className="w-full bg-blue-600 hover:bg-blue-700 text-white"
             >
               {isSending ? (
-                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                <Loader2 className="w-4 h-4 mr-2 animate-spin text-white" />
               ) : (
-                <Send className="w-4 h-4 mr-2" />
+                <Send className="w-4 h-4 mr-2 text-white" />
               )}
               Enviar para Assinatura Online
             </Button>
@@ -275,17 +275,19 @@ export function RentalContractGenerator({ contract, isOpen, onClose }: RentalCon
                       <div className="flex items-center gap-2">
                         <Button
                           size="sm"
-                          variant="ghost"
+                          variant="outline"
                           onClick={() => handleCopyLink(signer.link)}
+                          className="bg-white text-gray-900 hover:bg-gray-100 border-gray-300"
                         >
                           Copiar Link
                         </Button>
                         <Button
                           size="sm"
-                          variant="ghost"
+                          variant="outline"
                           onClick={() => window.open(signer.link, '_blank')}
+                          className="bg-white text-gray-900 hover:bg-gray-100 border-gray-300"
                         >
-                          <ExternalLink className="w-4 h-4" />
+                          <ExternalLink className="w-4 h-4 text-gray-900" />
                         </Button>
                       </div>
                     </div>

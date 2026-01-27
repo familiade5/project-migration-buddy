@@ -395,19 +395,19 @@ export function RentalPaymentModal({
                 variant="outline"
                 onClick={handleSave}
                 disabled={isLoading}
-                className="border-gray-200 text-gray-700 hover:bg-gray-100"
+                className="border-gray-200 bg-white text-gray-900 hover:bg-gray-100"
               >
                 Salvar
               </Button>
               <Button
                 onClick={handleMarkAsPaid}
                 disabled={isLoading}
-                className="bg-emerald-600 hover:bg-emerald-700"
+                className="bg-emerald-600 hover:bg-emerald-700 text-white"
               >
                 {isLoading ? (
-                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin text-white" />
                 ) : (
-                  <Check className="w-4 h-4 mr-2" />
+                  <Check className="w-4 h-4 mr-2 text-white" />
                 )}
                 Confirmar Pagamento
               </Button>
