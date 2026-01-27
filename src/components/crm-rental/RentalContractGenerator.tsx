@@ -206,7 +206,7 @@ export function RentalContractGenerator({ contract, isOpen, onClose }: RentalCon
             <Button
               onClick={handleDownloadPDF}
               disabled={isGenerating}
-              className="bg-gray-900 hover:bg-gray-800"
+              className="bg-gray-900 hover:bg-gray-800 text-white"
             >
               {isGenerating ? (
                 <Loader2 className="w-4 h-4 mr-2 animate-spin" />
@@ -242,7 +242,7 @@ export function RentalContractGenerator({ contract, isOpen, onClose }: RentalCon
             <Button
               onClick={handleSendForSignature}
               disabled={isSending || !contract.tenant?.email}
-              className="w-full bg-blue-600 hover:bg-blue-700"
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white"
             >
               {isSending ? (
                 <Loader2 className="w-4 h-4 mr-2 animate-spin" />
