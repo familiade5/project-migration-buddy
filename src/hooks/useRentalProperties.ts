@@ -179,11 +179,14 @@ export function useRentalProperties() {
         description: 'O imóvel foi excluído com sucesso.',
       });
     },
-    onError: (error) => {
+    onError: (error: any) => {
       console.error('Error deleting property:', error);
+      const isConstraintError = error?.code === '23503';
       toast({
         title: 'Erro ao excluir',
-        description: 'Não foi possível excluir o imóvel.',
+        description: isConstraintError 
+          ? 'Este imóvel possui contratos vinculados. Exclua os contratos primeiro.'
+          : 'Não foi possível excluir o imóvel.',
         variant: 'destructive',
       });
     },

@@ -110,11 +110,14 @@ export function useRentalOwners() {
         description: 'O proprietário foi excluído com sucesso.',
       });
     },
-    onError: (error) => {
+    onError: (error: any) => {
       console.error('Error deleting owner:', error);
+      const isConstraintError = error?.code === '23503';
       toast({
         title: 'Erro ao excluir',
-        description: 'Não foi possível excluir o proprietário.',
+        description: isConstraintError 
+          ? 'Este proprietário possui imóveis ou contratos vinculados. Exclua-os primeiro.'
+          : 'Não foi possível excluir o proprietário.',
         variant: 'destructive',
       });
     },
