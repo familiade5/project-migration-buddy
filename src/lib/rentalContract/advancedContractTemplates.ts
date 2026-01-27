@@ -193,19 +193,19 @@ function generateCommercialClauses(data: ContractTemplateData): string {
   return clauses;
 }
 
-export function generateContractHTML(data: ContractTemplateData): string {
-  const contractTypeLabel = data.contractType === 'residencial' ? 'RESIDENCIAL' : 'COMERCIAL';
-  const guaranteeLabel = data.guaranteeType === 'fiador' ? 'COM FIANÇA' : 
-                         data.guaranteeType === 'caucao' ? 'COM CAUÇÃO' : 
-                         'COM SEGURO-FIANÇA';
-  const purposeLabel = data.contractType === 'residencial' ? 'uso residencial' : 'uso comercial';
+function generateCommercialContractHTML(data: ContractTemplateData): string {
+  const guaranteeLabel = data.guaranteeType === 'fiador' ? 'FIANÇA' : 
+                         data.guaranteeType === 'caucao' ? 'CAUÇÃO' : 
+                         'SEGURO-FIANÇA';
   
+  const depositValue = data.depositValue || (data.rentValue * (data.depositMonths || 3));
+
   return `
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>Contrato de Locação ${contractTypeLabel}</title>
+  <title>Contrato de Locação Comercial</title>
   <style>
     body {
       font-family: 'Times New Roman', Times, serif;
@@ -220,7 +220,21 @@ export function generateContractHTML(data: ContractTemplateData): string {
       text-align: center;
       font-size: 14pt;
       font-weight: bold;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+    }
+    h2 {
+      text-align: center;
+      font-size: 12pt;
+      font-weight: bold;
       margin-bottom: 30px;
+      text-transform: uppercase;
+    }
+    .section-title {
+      font-weight: bold;
+      font-size: 11pt;
+      margin-top: 25px;
+      margin-bottom: 15px;
       text-transform: uppercase;
     }
     .intro {
@@ -232,9 +246,7 @@ export function generateContractHTML(data: ContractTemplateData): string {
     }
     .party {
       margin-bottom: 15px;
-      padding: 10px;
-      background: #f9f9f9;
-      border-left: 3px solid #333;
+      text-align: justify;
     }
     .clause {
       margin-bottom: 20px;
@@ -243,15 +255,14 @@ export function generateContractHTML(data: ContractTemplateData): string {
     .clause-title {
       font-weight: bold;
       margin-bottom: 10px;
-      text-transform: uppercase;
-      font-size: 11pt;
     }
     .list-item {
       margin-left: 20px;
       margin-bottom: 5px;
     }
-    .mt-2 {
-      margin-top: 10px;
+    .paragraph {
+      margin-bottom: 10px;
+      text-align: justify;
     }
     .signatures {
       margin-top: 60px;
@@ -272,7 +283,6 @@ export function generateContractHTML(data: ContractTemplateData): string {
     }
     .signature-label {
       font-weight: bold;
-      font-size: 10pt;
     }
     .date-location {
       text-align: right;
@@ -284,172 +294,147 @@ export function generateContractHTML(data: ContractTemplateData): string {
   </style>
 </head>
 <body>
-  <h1>CONTRATO DE LOCAÇÃO ${contractTypeLabel} ${guaranteeLabel}<br>COM ADMINISTRAÇÃO IMOBILIÁRIA</h1>
+  <h1>CONTRATO DE LOCAÇÃO COMERCIAL</h1>
+  <h2>COM ADMINISTRAÇÃO IMOBILIÁRIA E ASSINATURA ELETRÔNICA</h2>
   
-  <p class="intro">Pelo presente instrumento particular, as partes abaixo qualificadas:</p>
+  <p class="section-title">IDENTIFICAÇÃO DAS PARTES</p>
   
   <div class="parties">
-    <div class="party">
-      <p><strong>LOCADOR(A):</strong> ${data.landlordName}</p>
-      <p>CPF/CNPJ: ${data.landlordCpfCnpj}</p>
-      ${data.landlordAddress ? `<p>Endereço: ${data.landlordAddress}</p>` : ''}
-      ${data.landlordEmail ? `<p>E-mail: ${data.landlordEmail}</p>` : ''}
-      ${data.landlordPhone ? `<p>Telefone: ${data.landlordPhone}</p>` : ''}
-    </div>
+    <p class="party"><strong>LOCADOR:</strong> ${data.landlordName}, inscrito no CPF/CNPJ nº ${data.landlordCpfCnpj}${data.landlordAddress ? `, com endereço em ${data.landlordAddress}` : ''}.</p>
     
-    <div class="party">
-      <p><strong>LOCATÁRIO(A):</strong> ${data.tenantName}</p>
-      <p>CPF: ${data.tenantCpf}</p>
-      ${data.tenantRg ? `<p>RG: ${data.tenantRg}</p>` : ''}
-      ${data.tenantProfession ? `<p>Profissão: ${data.tenantProfession}</p>` : ''}
-      ${data.tenantAddress ? `<p>Endereço: ${data.tenantAddress}</p>` : ''}
-      ${data.tenantEmail ? `<p>E-mail: ${data.tenantEmail}</p>` : ''}
-      ${data.tenantPhone ? `<p>Telefone: ${data.tenantPhone}</p>` : ''}
-    </div>
+    <p class="party"><strong>LOCATÁRIO:</strong> ${data.tenantName}, inscrito no CPF/CNPJ nº ${data.tenantCpf}${data.tenantAddress ? `, com endereço em ${data.tenantAddress}` : ''}.</p>
     
-    <div class="party">
-      <p><strong>ADMINISTRADORA:</strong> ${data.agencyName}</p>
-      <p>CNPJ: ${data.agencyCnpj}</p>
-    </div>
-  </div>
-  
-  <p class="intro">têm entre si justo e contratado o seguinte:</p>
-  
-  <div class="clause">
-    <p class="clause-title">CLÁUSULA 1ª – DO OBJETO</p>
-    <p>O LOCADOR dá em locação ao LOCATÁRIO o imóvel ${data.propertyType.toLowerCase()} situado à:</p>
-    <p><strong>${data.propertyAddress}</strong></p>
-    ${data.propertyRegistration ? `<p>Matrícula nº ${data.propertyRegistration}</p>` : ''}
-    <p class="mt-2">O imóvel destina-se exclusivamente para ${purposeLabel}, não podendo ter outra finalidade sem prévia autorização escrita do LOCADOR.</p>
+    <p class="party"><strong>IMOBILIÁRIA ADMINISTRADORA:</strong> ${data.agencyName}, pessoa jurídica de direito privado, inscrita no CNPJ nº ${data.agencyCnpj}, doravante denominada ADMINISTRADORA.</p>
   </div>
   
   <div class="clause">
-    <p class="clause-title">CLÁUSULA 2ª – DO PRAZO</p>
-    <p>O prazo da locação é de <strong>${data.durationMonths} (${data.durationMonths === 12 ? 'doze' : data.durationMonths === 30 ? 'trinta' : data.durationMonths}) meses</strong>, iniciando-se em <strong>${formatDateForContract(data.startDate)}</strong> e terminando em <strong>${formatDateForContract(data.endDate)}</strong>.</p>
-    <p class="mt-2">Findo o prazo e permanecendo o LOCATÁRIO no imóvel por mais de 30 (trinta) dias sem oposição do LOCADOR, a locação prorroga-se automaticamente por prazo indeterminado, mantidas as demais cláusulas e condições deste contrato.</p>
+    <p class="clause-title">CLÁUSULA 1ª – DO OBJETO E DESTINAÇÃO</p>
+    <p>O LOCADOR dá em locação ao LOCATÁRIO o imóvel situado à:</p>
+    <p><strong>${data.propertyAddress}</strong>, destinado exclusivamente ao exercício de atividade comercial, conforme descrita abaixo:</p>
+    <p><strong>${data.allowedActivity || 'Atividade comercial a definir'}</strong></p>
+    <p>É expressamente vedada a alteração da atividade sem autorização prévia e por escrito do LOCADOR e da ADMINISTRADORA.</p>
   </div>
   
   <div class="clause">
-    <p class="clause-title">CLÁUSULA 3ª – DO ALUGUEL E ENCARGOS</p>
-    <p>O aluguel mensal é de <strong>${formatCurrencyForContract(data.rentValue)}</strong>, com vencimento todo dia <strong>10 (dez)</strong> de cada mês.</p>
-    ${data.condominiumFee ? `<p>Condomínio: ${formatCurrencyForContract(data.condominiumFee)}</p>` : ''}
-    ${data.iptuValue ? `<p>IPTU mensal: ${formatCurrencyForContract(data.iptuValue)}</p>` : ''}
-    <p class="mt-2">O pagamento será realizado mediante boleto bancário, PIX ou outro meio indicado pela ADMINISTRADORA.</p>
-    <p class="mt-2">O aluguel será reajustado anualmente pelo índice IGP-M/FGV ou, na sua falta, pelo IPCA/IBGE, aplicando-se o acumulado dos últimos 12 meses.</p>
-    <p class="mt-2">São de responsabilidade do LOCATÁRIO:</p>
-    <p class="list-item">a) Aluguel mensal e encargos</p>
-    <p class="list-item">b) Água, luz, gás e telefone</p>
-    <p class="list-item">c) Taxa de condomínio</p>
-    <p class="list-item">d) IPTU proporcional ao período de locação</p>
-    <p class="list-item">e) Multas e taxas incidentes sobre o imóvel durante a locação</p>
-  </div>
-  
-  ${generateGuarantorClause(data)}
-  ${generateDepositClause(data)}
-  ${generateInsuranceClause(data)}
-  
-  <div class="clause">
-    <p class="clause-title">CLÁUSULA 5ª – DA ADMINISTRAÇÃO</p>
-    <p>A ADMINISTRADORA é responsável pela gestão integral da locação, incluindo:</p>
-    <p class="list-item">a) Emissão e cobrança de boletos</p>
-    <p class="list-item">b) Recebimento de aluguéis e encargos</p>
-    <p class="list-item">c) Repasse mensal ao LOCADOR</p>
-    <p class="list-item">d) Intermediação entre as partes</p>
-    <p class="list-item">e) Vistorias de entrada e saída</p>
-    <p class="list-item">f) Medidas administrativas e judiciais de cobrança</p>
-    <p class="mt-2">O LOCATÁRIO declara ciência e concordância com a atuação da ADMINISTRADORA.</p>
+    <p class="clause-title">CLÁUSULA 2ª – DO PRAZO DA LOCAÇÃO</p>
+    <p>O prazo da locação é de <strong>${data.durationMonths} meses</strong>, iniciando-se em <strong>${formatDateForContract(data.startDate)}</strong> e encerrando-se em <strong>${formatDateForContract(data.endDate)}</strong>, podendo ser renovado mediante novo ajuste entre as partes.</p>
+    <p>As partes reconhecem que não há garantia automática de renovação, nos termos da legislação vigente.</p>
   </div>
   
   <div class="clause">
-    <p class="clause-title">CLÁUSULA 6ª – DA INADIMPLÊNCIA</p>
-    <p>O atraso no pagamento do aluguel ou encargos implicará:</p>
-    <p class="list-item">a) Multa de 2% (dois por cento) sobre o valor devido</p>
-    <p class="list-item">b) Juros de mora de 1% (um por cento) ao mês</p>
-    <p class="list-item">c) Correção monetária pelo IGP-M/FGV</p>
-    <p class="list-item">d) Honorários advocatícios de 10% (dez por cento) em caso de cobrança judicial</p>
-    <p class="mt-2">Após 15 (quinze) dias de atraso, o nome do LOCATÁRIO poderá ser inscrito nos órgãos de proteção ao crédito (SPC/Serasa).</p>
+    <p class="clause-title">CLÁUSULA 3ª – DO VALOR DO ALUGUEL</p>
+    <p>O aluguel mensal é de <strong>${formatCurrencyForContract(data.rentValue)}</strong>, com vencimento todo dia <strong>10</strong>, pago por boleto, Pix ou meio indicado pela ADMINISTRADORA.</p>
+    <p>O não recebimento do aviso de cobrança não isenta o pagamento.</p>
   </div>
   
   <div class="clause">
-    <p class="clause-title">CLÁUSULA 7ª – DAS OBRIGAÇÕES DO LOCATÁRIO</p>
-    <p>O LOCATÁRIO obriga-se a:</p>
-    <p class="list-item">a) Servir-se do imóvel exclusivamente para a finalidade contratada;</p>
-    <p class="list-item">b) Tratar o imóvel com zelo, mantendo-o em perfeitas condições;</p>
-    <p class="list-item">c) Restituir o imóvel nas mesmas condições em que o recebeu;</p>
-    <p class="list-item">d) Levar ao conhecimento do LOCADOR qualquer dano ou irregularidade;</p>
-    <p class="list-item">e) Não modificar a estrutura do imóvel sem autorização escrita;</p>
-    <p class="list-item">f) Realizar às suas expensas os reparos de pequeno porte;</p>
-    <p class="list-item">g) Permitir vistorias periódicas, mediante aviso prévio de 24 horas;</p>
-    <p class="list-item">h) Cumprir as normas do condomínio, quando aplicável;</p>
-    <p class="list-item">i) Não sublocar ou ceder o imóvel sem autorização expressa.</p>
+    <p class="clause-title">CLÁUSULA 4ª – DO REAJUSTE</p>
+    <p>O aluguel será reajustado anualmente, ou no menor período legal permitido, pelo índice IGP-M/FGV, ou outro que venha a substituí-lo.</p>
   </div>
   
   <div class="clause">
-    <p class="clause-title">CLÁUSULA 8ª – DAS OBRIGAÇÕES DO LOCADOR</p>
-    <p>O LOCADOR obriga-se a:</p>
-    <p class="list-item">a) Entregar o imóvel em condições de uso;</p>
-    <p class="list-item">b) Manter a forma e o destino do imóvel durante a locação;</p>
-    <p class="list-item">c) Responder pelos vícios anteriores à locação;</p>
-    <p class="list-item">d) Realizar os reparos estruturais e de grande porte;</p>
-    <p class="list-item">e) Fornecer recibo detalhado dos valores recebidos;</p>
-    <p class="list-item">f) Pagar as taxas de administração imobiliária.</p>
+    <p class="clause-title">CLÁUSULA 5ª – DA GARANTIA LOCATÍCIA</p>
+    <p>A locação será garantida por <strong>${guaranteeLabel}</strong>, conforme opção escolhida:</p>
+    
+    <p class="paragraph"><strong>§1º – Caução</strong></p>
+    <p>O LOCATÁRIO entrega o valor de <strong>${formatCurrencyForContract(depositValue)}</strong>, equivalente a até 03 (três) meses de aluguel, a título de garantia, a ser restituída ao final da locação, descontados débitos e danos.</p>
+    
+    <p class="paragraph"><strong>§2º – Fiador</strong></p>
+    <p>O FIADOR assume responsabilidade solidária e ilimitada por todas as obrigações, renunciando aos benefícios legais, inclusive o benefício de ordem.</p>
+    
+    <p class="paragraph"><strong>§3º – Seguro-fiança</strong></p>
+    <p>O LOCATÁRIO obriga-se a manter seguro-fiança vigente durante toda a locação, sob pena de rescisão imediata.</p>
   </div>
   
   <div class="clause">
-    <p class="clause-title">CLÁUSULA 9ª – DA RESCISÃO</p>
-    <p>O contrato poderá ser rescindido:</p>
-    <p class="list-item">a) Por mútuo acordo entre as partes;</p>
-    <p class="list-item">b) Por descumprimento de qualquer cláusula contratual;</p>
-    <p class="list-item">c) Por falta de pagamento de aluguel ou encargos;</p>
-    <p class="list-item">d) Por uso indevido do imóvel;</p>
-    <p class="list-item">e) Por infração legal ou contratual.</p>
-    <p class="mt-2">A multa por rescisão antecipada será de 03 (três) aluguéis vigentes, proporcional ao tempo restante do contrato.</p>
+    <p class="clause-title">CLÁUSULA 6ª – DOS ENCARGOS E OBRIGAÇÕES</p>
+    <p>São de responsabilidade exclusiva do LOCATÁRIO:</p>
+    <p class="list-item">• Aluguel</p>
+    <p class="list-item">• Condomínio (integral, inclusive taxas extraordinárias, se aplicável)</p>
+    <p class="list-item">• IPTU</p>
+    <p class="list-item">• Taxas municipais</p>
+    <p class="list-item">• Licenças e alvarás</p>
+    <p class="list-item">• Adequações legais do negócio</p>
+    <p class="list-item">• Manutenção interna e estrutural necessária à atividade</p>
   </div>
   
   <div class="clause">
-    <p class="clause-title">CLÁUSULA 10ª – DA VISTORIA</p>
-    <p>No ato da assinatura deste contrato, será realizada vistoria detalhada do imóvel, com descrição de seu estado de conservação, que passa a fazer parte integrante deste instrumento.</p>
-    <p class="mt-2">Na desocupação do imóvel, nova vistoria será realizada, devendo o LOCATÁRIO devolver o imóvel nas mesmas condições em que o recebeu, sob pena de responder pelos danos constatados.</p>
+    <p class="clause-title">CLÁUSULA 7ª – DAS BENFEITORIAS</p>
+    <p>Quaisquer benfeitorias somente poderão ser realizadas com autorização prévia e escrita do LOCADOR.</p>
+    <p>As benfeitorias não serão indenizadas, ainda que necessárias ou úteis, salvo acordo expresso em contrário.</p>
   </div>
-  
-  ${generateCommercialClauses(data)}
   
   <div class="clause">
-    <p class="clause-title">CLÁUSULA ${data.contractType === 'comercial' ? '14' : '11'}ª – DO FORO</p>
-    <p>Fica eleito o foro da comarca de <strong>${data.city}</strong> para dirimir quaisquer questões oriundas deste contrato, renunciando as partes a qualquer outro, por mais privilegiado que seja.</p>
+    <p class="clause-title">CLÁUSULA 8ª – DA ADMINISTRAÇÃO IMOBILIÁRIA</p>
+    <p>A ADMINISTRADORA fica autorizada a:</p>
+    <p class="list-item">• Administrar o contrato</p>
+    <p class="list-item">• Cobrar valores</p>
+    <p class="list-item">• Receber pagamentos</p>
+    <p class="list-item">• Notificar o LOCATÁRIO</p>
+    <p class="list-item">• Promover cobrança extrajudicial e judicial</p>
+    <p class="list-item">• Propor ação de despejo</p>
+    <p class="list-item">• Representar o LOCADOR judicialmente</p>
+    <p>O LOCATÁRIO reconhece e aceita essa representação.</p>
   </div>
   
-  <p class="intro">E por estarem assim justas e contratadas, as partes assinam o presente instrumento em 03 (três) vias de igual teor e forma, na presença de duas testemunhas.</p>
+  <div class="clause">
+    <p class="clause-title">CLÁUSULA 9ª – DA INADIMPLÊNCIA</p>
+    <p>O atraso no pagamento implicará:</p>
+    <p class="list-item">• Multa de 2%</p>
+    <p class="list-item">• Juros de 1% ao mês</p>
+    <p class="list-item">• Correção monetária</p>
+  </div>
+  
+  <div class="clause">
+    <p class="clause-title">CLÁUSULA 10ª – DA NEGATIVAÇÃO E PROTESTO</p>
+    <p>O LOCATÁRIO autoriza expressamente:</p>
+    <p class="list-item">• Inclusão em SPC, Serasa e similares</p>
+    <p class="list-item">• Protesto do débito em cartório</p>
+    <p class="list-item">• Compartilhamento de dados para cobrança</p>
+    <p>Tudo conforme a legislação vigente.</p>
+  </div>
+  
+  <div class="clause">
+    <p class="clause-title">CLÁUSULA 11ª – DA RESCISÃO E DESPEJO</p>
+    <p>O descumprimento contratual autoriza:</p>
+    <p class="list-item">• Rescisão imediata</p>
+    <p class="list-item">• Cobrança judicial</p>
+    <p class="list-item">• Ação de despejo</p>
+    <p>Observado o devido processo legal.</p>
+  </div>
+  
+  <div class="clause">
+    <p class="clause-title">CLÁUSULA 12ª – DA ASSINATURA ELETRÔNICA</p>
+    <p>As partes reconhecem como válida a assinatura eletrônica deste contrato, nos termos da legislação vigente, conferindo-lhe plena validade jurídica.</p>
+  </div>
+  
+  <div class="clause">
+    <p class="clause-title">CLÁUSULA 13ª – DA CONFIDENCIALIDADE</p>
+    <p>As condições comerciais deste contrato são confidenciais, não podendo ser divulgadas sem autorização.</p>
+  </div>
+  
+  <div class="clause">
+    <p class="clause-title">CLÁUSULA 14ª – DO FORO</p>
+    <p>Fica eleito o foro da comarca de <strong>${data.city}</strong>, renunciando a qualquer outro.</p>
+  </div>
+  
+  <p class="intro">E por estarem de pleno acordo, assinam eletronicamente o presente instrumento.</p>
   
   <p class="date-location">${data.city}, ${formatDateForContract(new Date())}</p>
   
   <div class="signature-block">
     <div class="signature-line">
       <hr>
-      <p class="signature-label">LOCADOR(A)</p>
+      <p class="signature-label">LOCADOR</p>
       <p>${data.landlordName}</p>
     </div>
     <div class="signature-line">
       <hr>
-      <p class="signature-label">LOCATÁRIO(A)</p>
+      <p class="signature-label">LOCATÁRIO</p>
       <p>${data.tenantName}</p>
     </div>
   </div>
   
-  ${data.guaranteeType === 'fiador' ? `
-  <div class="signature-block">
-    <div class="signature-line">
-      <hr>
-      <p class="signature-label">FIADOR(A)</p>
-      <p>${data.guarantorName || '___________________'}</p>
-    </div>
-    <div class="signature-line">
-      <hr>
-      <p class="signature-label">ADMINISTRADORA</p>
-      <p>${data.agencyName}</p>
-    </div>
-  </div>
-  ` : `
   <div class="signature-block">
     <div class="signature-line">
       <hr>
@@ -463,18 +448,264 @@ export function generateContractHTML(data: ContractTemplateData): string {
       <p>CPF: ________________________</p>
     </div>
   </div>
-  `}
+</body>
+</html>
+`;
+}
+
+function generateResidentialContractHTML(data: ContractTemplateData): string {
+  const guaranteeLabel = data.guaranteeType === 'fiador' ? 'FIANÇA' : 
+                         data.guaranteeType === 'caucao' ? 'CAUÇÃO' : 
+                         'SEGURO-FIANÇA';
+  
+  const depositValue = data.depositValue || (data.rentValue * (data.depositMonths || 2));
+
+  return `
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Contrato de Locação Residencial</title>
+  <style>
+    body {
+      font-family: 'Times New Roman', Times, serif;
+      font-size: 12pt;
+      line-height: 1.6;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 40px;
+      color: #333;
+    }
+    h1 {
+      text-align: center;
+      font-size: 14pt;
+      font-weight: bold;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+    }
+    h2 {
+      text-align: center;
+      font-size: 12pt;
+      font-weight: bold;
+      margin-bottom: 30px;
+      text-transform: uppercase;
+    }
+    .section-title {
+      font-weight: bold;
+      font-size: 11pt;
+      margin-top: 25px;
+      margin-bottom: 15px;
+      text-transform: uppercase;
+    }
+    .intro {
+      text-align: justify;
+      margin-bottom: 20px;
+    }
+    .parties {
+      margin-bottom: 30px;
+    }
+    .party {
+      margin-bottom: 15px;
+      text-align: justify;
+    }
+    .clause {
+      margin-bottom: 20px;
+      text-align: justify;
+    }
+    .clause-title {
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+    .list-item {
+      margin-left: 20px;
+      margin-bottom: 5px;
+    }
+    .paragraph {
+      margin-bottom: 10px;
+      text-align: justify;
+    }
+    .signatures {
+      margin-top: 60px;
+    }
+    .signature-block {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 80px;
+    }
+    .signature-line {
+      width: 45%;
+      text-align: center;
+    }
+    .signature-line hr {
+      border: none;
+      border-top: 1px solid #333;
+      margin-bottom: 10px;
+    }
+    .signature-label {
+      font-weight: bold;
+    }
+    .date-location {
+      text-align: right;
+      margin-top: 40px;
+    }
+    @media print {
+      body { padding: 20px; }
+    }
+  </style>
+</head>
+<body>
+  <h1>CONTRATO DE LOCAÇÃO RESIDENCIAL</h1>
+  <h2>COM ADMINISTRAÇÃO IMOBILIÁRIA E GARANTIAS</h2>
+  
+  <p class="section-title">IDENTIFICAÇÃO DAS PARTES</p>
+  
+  <div class="parties">
+    <p class="party"><strong>LOCADOR:</strong> ${data.landlordName}, portador do CPF/CNPJ nº ${data.landlordCpfCnpj}, doravante denominado simplesmente LOCADOR.</p>
+    
+    <p class="party"><strong>LOCATÁRIO:</strong> ${data.tenantName}, portador do CPF nº ${data.tenantCpf}, doravante denominado simplesmente LOCATÁRIO.</p>
+    
+    <p class="party"><strong>IMOBILIÁRIA ADMINISTRADORA:</strong> ${data.agencyName}, pessoa jurídica de direito privado, inscrita no CNPJ nº ${data.agencyCnpj}, doravante denominada simplesmente ADMINISTRADORA.</p>
+  </div>
+  
+  <p class="intro">As partes acima identificadas têm entre si justo e contratado o que segue.</p>
+  
+  <div class="clause">
+    <p class="clause-title">CLÁUSULA 1ª – DO OBJETO</p>
+    <p>O LOCADOR dá em locação ao LOCATÁRIO o imóvel de sua propriedade, situado à:</p>
+    <p><strong>${data.propertyAddress}</strong>, doravante denominado simplesmente IMÓVEL, destinado exclusivamente para fins residenciais, sendo expressamente vedada qualquer utilização comercial, profissional, industrial ou diversa da aqui prevista.</p>
+  </div>
+  
+  <div class="clause">
+    <p class="clause-title">CLÁUSULA 2ª – DO PRAZO DA LOCAÇÃO</p>
+    <p>O prazo da locação é de <strong>${data.durationMonths} meses</strong>, iniciando-se em <strong>${formatDateForContract(data.startDate)}</strong> e encerrando-se em <strong>${formatDateForContract(data.endDate)}</strong>, podendo ser prorrogado nos termos da legislação vigente.</p>
+  </div>
+  
+  <div class="clause">
+    <p class="clause-title">CLÁUSULA 3ª – DO VALOR DO ALUGUEL</p>
+    <p>O aluguel mensal ajustado é de <strong>${formatCurrencyForContract(data.rentValue)}</strong>, com vencimento todo dia <strong>10</strong> de cada mês, a ser pago por meio de boleto bancário, Pix ou outro meio indicado pela ADMINISTRADORA.</p>
+    <p>O não recebimento do boleto não exime o LOCATÁRIO da obrigação de pagamento.</p>
+  </div>
+  
+  <div class="clause">
+    <p class="clause-title">CLÁUSULA 4ª – DO REAJUSTE</p>
+    <p>O valor do aluguel será reajustado anualmente, ou no menor período permitido em lei, com base no índice IGP-M/FGV, ou outro que venha a substituí-lo.</p>
+  </div>
+  
+  <div class="clause">
+    <p class="clause-title">CLÁUSULA 5ª – DA GARANTIA LOCATÍCIA</p>
+    <p>A presente locação é garantida por <strong>${guaranteeLabel}</strong>, conforme opção escolhida pelo LOCATÁRIO, nos termos da Lei nº 8.245/91.</p>
+    
+    <p class="paragraph"><strong>§1º – Caução (quando aplicável)</strong></p>
+    <p>O LOCATÁRIO entrega à ADMINISTRADORA o valor correspondente a <strong>${formatCurrencyForContract(depositValue)}</strong>, equivalente a até 02 (dois) meses de aluguel, como garantia, a ser devolvida ao final da locação, descontados eventuais débitos, danos ou encargos.</p>
+    
+    <p class="paragraph"><strong>§2º – Fiador (quando aplicável)</strong></p>
+    <p>O FIADOR identificado no cadastro assume responsabilidade solidária por todas as obrigações do contrato, renunciando expressamente ao benefício de ordem, permanecendo responsável até a efetiva entrega das chaves.</p>
+    
+    <p class="paragraph"><strong>§3º – Seguro-fiança (quando aplicável)</strong></p>
+    <p>O LOCATÁRIO obriga-se a manter o seguro-fiança vigente durante toda a locação, sob pena de rescisão contratual.</p>
+  </div>
+  
+  <div class="clause">
+    <p class="clause-title">CLÁUSULA 6ª – DOS ENCARGOS E DESPESAS</p>
+    <p>São de exclusiva responsabilidade do LOCATÁRIO:</p>
+    <p class="list-item">• Aluguel</p>
+    <p class="list-item">• Condomínio</p>
+    <p class="list-item">• IPTU</p>
+    <p class="list-item">• Água</p>
+    <p class="list-item">• Energia elétrica</p>
+    <p class="list-item">• Gás</p>
+    <p class="list-item">• Taxas ordinárias</p>
+    <p class="list-item">• Multas decorrentes do uso do imóvel</p>
+  </div>
+  
+  <div class="clause">
+    <p class="clause-title">CLÁUSULA 7ª – DA ADMINISTRAÇÃO IMOBILIÁRIA</p>
+    <p>A ADMINISTRADORA fica expressamente autorizada a:</p>
+    <p class="list-item">• Administrar a locação</p>
+    <p class="list-item">• Emitir cobranças</p>
+    <p class="list-item">• Receber valores</p>
+    <p class="list-item">• Enviar notificações</p>
+    <p class="list-item">• Representar o LOCADOR administrativa e judicialmente</p>
+    <p class="list-item">• Promover cobrança extrajudicial e judicial</p>
+    <p class="list-item">• Propor ação de despejo, quando necessário</p>
+    <p>O LOCATÁRIO declara ciência e concordância com a atuação da ADMINISTRADORA, reconhecendo sua legitimidade.</p>
+  </div>
+  
+  <div class="clause">
+    <p class="clause-title">CLÁUSULA 8ª – DA INADIMPLÊNCIA</p>
+    <p>O atraso no pagamento de qualquer obrigação acarretará:</p>
+    <p class="list-item">• Multa de 2%</p>
+    <p class="list-item">• Juros de 1% ao mês</p>
+    <p class="list-item">• Correção monetária</p>
+  </div>
+  
+  <div class="clause">
+    <p class="clause-title">CLÁUSULA 9ª – DA NEGATIVAÇÃO E PROTESTO</p>
+    <p>O LOCATÁRIO autoriza expressamente que, em caso de inadimplência:</p>
+    <p class="list-item">• Seus dados sejam incluídos nos cadastros de proteção ao crédito (SPC, Serasa ou similares)</p>
+    <p class="list-item">• Os débitos sejam protestados em cartório</p>
+    <p class="list-item">• As informações sejam compartilhadas para fins de cobrança</p>
+    <p>Tudo em conformidade com a legislação vigente.</p>
+  </div>
+  
+  <div class="clause">
+    <p class="clause-title">CLÁUSULA 10ª – DO DESPEJO</p>
+    <p>A inadimplência ou descumprimento contratual autoriza o LOCADOR e/ou a ADMINISTRADORA a ingressar com ação de despejo, observados os prazos e procedimentos legais.</p>
+  </div>
+  
+  <div class="clause">
+    <p class="clause-title">CLÁUSULA 11ª – DA RESCISÃO</p>
+    <p>O contrato poderá ser rescindido:</p>
+    <p class="list-item">• Por infração legal ou contratual</p>
+    <p class="list-item">• Por falta de pagamento</p>
+    <p class="list-item">• Por uso indevido do imóvel</p>
+    <p>Aplicando-se as penalidades previstas em lei.</p>
+  </div>
+  
+  <div class="clause">
+    <p class="clause-title">CLÁUSULA 12ª – DA VISTORIA E CONSERVAÇÃO</p>
+    <p>O LOCATÁRIO declara receber o imóvel em perfeito estado, obrigando-se a devolvê-lo nas mesmas condições, ressalvado o desgaste natural.</p>
+  </div>
+  
+  <div class="clause">
+    <p class="clause-title">CLÁUSULA 13ª – DA DEVOLUÇÃO DO IMÓVEL</p>
+    <p>A entrega das chaves somente será considerada válida após:</p>
+    <p class="list-item">• Quitação integral de débitos</p>
+    <p class="list-item">• Vistoria final aprovada</p>
+    <p class="list-item">• Entrega formal à ADMINISTRADORA</p>
+  </div>
+  
+  <div class="clause">
+    <p class="clause-title">CLÁUSULA 14ª – DO FORO</p>
+    <p>Fica eleito o foro da comarca de <strong>${data.city}</strong>, com renúncia a qualquer outro.</p>
+  </div>
+  
+  <p class="intro">E por estarem justas e contratadas, firmam o presente instrumento.</p>
+  
+  <p class="date-location">${data.city}, ${formatDateForContract(new Date())}</p>
   
   <div class="signature-block">
     <div class="signature-line">
       <hr>
-      <p class="signature-label">TESTEMUNHA 1</p>
-      <p>Nome: _______________________</p>
-      <p>CPF: ________________________</p>
+      <p class="signature-label">LOCADOR</p>
+      <p>${data.landlordName}</p>
     </div>
     <div class="signature-line">
       <hr>
-      <p class="signature-label">TESTEMUNHA 2</p>
+      <p class="signature-label">LOCATÁRIO</p>
+      <p>${data.tenantName}</p>
+    </div>
+  </div>
+  
+  <div class="signature-block">
+    <div class="signature-line">
+      <hr>
+      <p class="signature-label">ADMINISTRADORA</p>
+      <p>${data.agencyName}</p>
+    </div>
+    <div class="signature-line">
+      <hr>
+      <p class="signature-label">TESTEMUNHA</p>
       <p>Nome: _______________________</p>
       <p>CPF: ________________________</p>
     </div>
@@ -482,4 +713,11 @@ export function generateContractHTML(data: ContractTemplateData): string {
 </body>
 </html>
 `;
+}
+
+export function generateContractHTML(data: ContractTemplateData): string {
+  if (data.contractType === 'comercial') {
+    return generateCommercialContractHTML(data);
+  }
+  return generateResidentialContractHTML(data);
 }
