@@ -268,9 +268,9 @@ export function RentalContractGeneratorInline({ contract }: RentalContractGenera
             className="bg-gray-900 hover:bg-gray-800 text-white"
           >
             {isGenerating ? (
-              <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+              <Loader2 className="w-4 h-4 mr-2 animate-spin text-white" />
             ) : (
-              <Download className="w-4 h-4 mr-2" />
+              <Download className="w-4 h-4 mr-2 text-white" />
             )}
             Baixar PDF
           </Button>
@@ -278,9 +278,9 @@ export function RentalContractGeneratorInline({ contract }: RentalContractGenera
           <Button
             onClick={handlePrint}
             variant="outline"
-            className="border-gray-300 text-gray-700 hover:bg-gray-100"
+            className="border-gray-300 bg-white text-gray-900 hover:bg-gray-100"
           >
-            <Printer className="w-4 h-4 mr-2" />
+            <Printer className="w-4 h-4 mr-2 text-gray-900" />
             Imprimir
           </Button>
         </div>
@@ -312,9 +312,9 @@ export function RentalContractGeneratorInline({ contract }: RentalContractGenera
               variant="outline"
               onClick={() => handlePrintAnnexOnly('inspection')}
               title="Imprimir apenas este anexo"
-              className="text-gray-700 hover:text-gray-900 hover:bg-gray-100 border-gray-300"
+              className="bg-white text-gray-900 hover:bg-gray-100 border-gray-300"
             >
-              <Printer className="w-4 h-4" />
+              <Printer className="w-4 h-4 text-gray-900" />
             </Button>
           </div>
           
@@ -336,9 +336,9 @@ export function RentalContractGeneratorInline({ contract }: RentalContractGenera
               variant="outline"
               onClick={() => handlePrintAnnexOnly('regulations')}
               title="Imprimir apenas este anexo"
-              className="text-gray-700 hover:text-gray-900 hover:bg-gray-100 border-gray-300"
+              className="bg-white text-gray-900 hover:bg-gray-100 border-gray-300"
             >
-              <Printer className="w-4 h-4" />
+              <Printer className="w-4 h-4 text-gray-900" />
             </Button>
           </div>
           
@@ -361,9 +361,9 @@ export function RentalContractGeneratorInline({ contract }: RentalContractGenera
               variant="outline"
               onClick={() => handlePrintAnnexOnly('lgpd')}
               title="Imprimir apenas este anexo"
-              className="text-gray-700 hover:text-gray-900 hover:bg-gray-100 border-gray-300"
+              className="bg-white text-gray-900 hover:bg-gray-100 border-gray-300"
             >
-              <Printer className="w-4 h-4" />
+              <Printer className="w-4 h-4 text-gray-900" />
             </Button>
           </div>
         </div>
@@ -371,10 +371,10 @@ export function RentalContractGeneratorInline({ contract }: RentalContractGenera
         <Button
           onClick={handlePrintWithAnnexes}
           variant="outline"
-          className="w-full border-gray-300 text-gray-700 hover:bg-gray-100"
+          className="w-full border-gray-300 bg-white text-gray-900 hover:bg-gray-100"
           disabled={!includeInspection && !includeRegulations && !includeLGPD}
         >
-          <FileCheck className="w-4 h-4 mr-2" />
+          <FileCheck className="w-4 h-4 mr-2 text-gray-900" />
           Imprimir Contrato + Anexos Selecionados
         </Button>
       </div>
@@ -410,9 +410,9 @@ export function RentalContractGeneratorInline({ contract }: RentalContractGenera
           className="w-full bg-gray-900 hover:bg-gray-800 text-white"
         >
           {isSending ? (
-            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+            <Loader2 className="w-4 h-4 mr-2 animate-spin text-white" />
           ) : (
-            <Send className="w-4 h-4 mr-2" />
+            <Send className="w-4 h-4 mr-2 text-white" />
           )}
           Enviar para Assinatura Online
         </Button>
@@ -443,7 +443,7 @@ export function RentalContractGeneratorInline({ contract }: RentalContractGenera
                       size="sm"
                       variant="outline"
                       onClick={() => handleCopyLink(signer.link)}
-                      className="text-gray-700 hover:text-gray-900 hover:bg-gray-100 border-gray-300"
+                      className="bg-white text-gray-900 hover:bg-gray-100 border-gray-300"
                     >
                       Copiar Link
                     </Button>
@@ -451,9 +451,9 @@ export function RentalContractGeneratorInline({ contract }: RentalContractGenera
                       size="sm"
                       variant="outline"
                       onClick={() => window.open(signer.link, '_blank')}
-                      className="text-gray-700 hover:text-gray-900 hover:bg-gray-100 border-gray-300"
+                      className="bg-white text-gray-900 hover:bg-gray-100 border-gray-300"
                     >
-                      <ExternalLink className="w-4 h-4" />
+                      <ExternalLink className="w-4 h-4 text-gray-900" />
                     </Button>
                   </div>
                 </div>

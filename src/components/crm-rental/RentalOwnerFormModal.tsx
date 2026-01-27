@@ -365,7 +365,7 @@ export function RentalOwnerFormModal({
                     type="button"
                     variant="outline"
                     onClick={() => onOpenChange(false)}
-                    className="text-gray-700 border-gray-200 hover:bg-gray-100"
+                    className="bg-white text-gray-900 border-gray-300 hover:bg-gray-100"
                   >
                     Cancelar
                   </Button>
