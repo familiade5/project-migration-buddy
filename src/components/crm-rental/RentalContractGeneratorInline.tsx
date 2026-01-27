@@ -1,9 +1,7 @@
 import { useState } from 'react';
 import { RentalContract } from '@/types/rental';
-import { generateContractPDF, downloadContractPDF } from '@/lib/rentalContract/generateContractPDF';
-import { generateContractHTML, generateContractData } from '@/lib/rentalContract/contractTemplate';
+import { generateContractPDF, downloadContractPDF, generateFullContractHTML } from '@/lib/rentalContract/generateContractPDF';
 import { 
-  generateAllAnnexesHTML, 
   createAnnexDataFromContract,
   generateInspectionTermHTML,
   generateInternalRegulationsHTML,
@@ -51,10 +49,16 @@ export function RentalContractGeneratorInline({ contract }: RentalContractGenera
 
   const annexData = createAnnexDataFromContract(contract, agencyData);
 
+  const annexOptions = {
+    includeInspection,
+    includeRegulations,
+    includeLGPD,
+  };
+
   const handleDownloadPDF = async () => {
     setIsGenerating(true);
     try {
-      const blob = await generateContractPDF(contract, agencyData);
+      const blob = await generateContractPDF(contract, agencyData, annexOptions);
       downloadContractPDF(blob, `Contrato_${contract.property_code}.pdf`);
       
       toast({
@@ -74,8 +78,7 @@ export function RentalContractGeneratorInline({ contract }: RentalContractGenera
   };
 
   const handlePrint = async () => {
-    const data = generateContractData(contract, agencyData);
-    const html = generateContractHTML(data);
+    const html = generateFullContractHTML(contract, agencyData);
     
     const printWindow = window.open('', '_blank');
     if (printWindow) {
@@ -89,36 +92,11 @@ export function RentalContractGeneratorInline({ contract }: RentalContractGenera
   };
 
   const handlePrintWithAnnexes = () => {
-    const data = generateContractData(contract, agencyData);
-    let fullHTML = generateContractHTML(data);
-    
-    // Add page break and annexes
-    const annexes: string[] = [];
-    
-    if (includeInspection) {
-      annexes.push(generateInspectionTermHTML(annexData));
-    }
-    if (includeRegulations) {
-      annexes.push(generateInternalRegulationsHTML(annexData));
-    }
-    if (includeLGPD) {
-      annexes.push(generateLGPDConsentHTML(annexData));
-    }
-    
-    if (annexes.length > 0) {
-      // Combine contract with annexes
-      const contractBody = fullHTML.match(/<body[^>]*>([\s\S]*)<\/body>/i)?.[1] || '';
-      const annexBodies = annexes.map(annex => {
-        const body = annex.match(/<body[^>]*>([\s\S]*)<\/body>/i)?.[1] || '';
-        return `<div style="page-break-before: always;"></div>${body}`;
-      }).join('');
-      
-      fullHTML = fullHTML.replace(contractBody, contractBody + annexBodies);
-    }
+    const html = generateFullContractHTML(contract, agencyData, annexOptions);
     
     const printWindow = window.open('', '_blank');
     if (printWindow) {
-      printWindow.document.write(fullHTML);
+      printWindow.document.write(html);
       printWindow.document.close();
       printWindow.focus();
       setTimeout(() => {
@@ -164,8 +142,8 @@ export function RentalContractGeneratorInline({ contract }: RentalContractGenera
 
     setIsSending(true);
     try {
-      // Generate PDF as base64
-      const blob = await generateContractPDF(contract, agencyData);
+      // Generate PDF with annexes as base64
+      const blob = await generateContractPDF(contract, agencyData, annexOptions);
       const arrayBuffer = await blob.arrayBuffer();
       const base64 = btoa(
         new Uint8Array(arrayBuffer).reduce((data, byte) => data + String.fromCharCode(byte), '')
@@ -177,7 +155,7 @@ export function RentalContractGeneratorInline({ contract }: RentalContractGenera
         throw new Error('Not authenticated');
       }
 
-      // Create signers list - tenant and owner only
+      // Create signers list - Tenant, Owner, and Agency
       const signers = [
         {
           email: contract.tenant.email,
@@ -185,8 +163,13 @@ export function RentalContractGeneratorInline({ contract }: RentalContractGenera
           action: 'SIGN' as const,
         },
         {
-          email: contract.owner_email || 'proprietario@email.com',
+          email: contract.owner_email || contract.owner?.email || 'proprietario@email.com',
           name: contract.owner_name,
+          action: 'SIGN' as const,
+        },
+        {
+          email: 'contato@vendadiretahoje.com.br', // Agency email - should come from settings
+          name: agencyData.name,
           action: 'SIGN' as const,
         },
       ];
@@ -218,7 +201,7 @@ export function RentalContractGeneratorInline({ contract }: RentalContractGenera
 
       toast({
         title: 'Contrato enviado para assinatura',
-        description: 'Os links de assinatura foram gerados. Após assinado, o documento será arquivado automaticamente.',
+        description: 'Os links de assinatura foram gerados para Locador, Locatário e Imobiliária. Após assinado, o documento será arquivado automaticamente.',
       });
     } catch (error) {
       console.error('Error sending for signature:', error);
@@ -240,6 +223,8 @@ export function RentalContractGeneratorInline({ contract }: RentalContractGenera
     });
   };
 
+  const contractTypeLabel = contract.contract_type === 'comercial' ? 'Comercial' : 'Residencial';
+
   return (
     <div className="space-y-6">
       {/* Contract Info */}
@@ -250,6 +235,10 @@ export function RentalContractGeneratorInline({ contract }: RentalContractGenera
             <p className="font-medium text-gray-900">{contract.property_code}</p>
           </div>
           <div>
+            <span className="text-gray-500">Tipo:</span>
+            <p className="font-medium text-gray-900">{contractTypeLabel}</p>
+          </div>
+          <div>
             <span className="text-gray-500">Locatário:</span>
             <p className="font-medium text-gray-900">{contract.tenant?.full_name || 'Não definido'}</p>
           </div>
@@ -257,7 +246,7 @@ export function RentalContractGeneratorInline({ contract }: RentalContractGenera
             <span className="text-gray-500">Locador:</span>
             <p className="font-medium text-gray-900">{contract.owner_name}</p>
           </div>
-          <div>
+          <div className="col-span-2">
             <span className="text-gray-500">Vigência:</span>
             <p className="font-medium text-gray-900">
               {new Date(contract.start_date).toLocaleDateString('pt-BR')} - {new Date(contract.end_date).toLocaleDateString('pt-BR')}
@@ -270,7 +259,7 @@ export function RentalContractGeneratorInline({ contract }: RentalContractGenera
       <div className="space-y-3">
         <h4 className="font-medium flex items-center gap-2 text-gray-900">
           <FileText className="w-4 h-4" />
-          Contrato Principal
+          Contrato Principal ({contractTypeLabel} - 14 Cláusulas)
         </h4>
         <div className="grid grid-cols-2 gap-3">
           <Button
@@ -320,10 +309,10 @@ export function RentalContractGeneratorInline({ contract }: RentalContractGenera
             </div>
             <Button
               size="sm"
-              variant="ghost"
+              variant="outline"
               onClick={() => handlePrintAnnexOnly('inspection')}
               title="Imprimir apenas este anexo"
-              className="text-gray-600 hover:text-gray-900 hover:bg-gray-100"
+              className="text-gray-700 hover:text-gray-900 hover:bg-gray-100 border-gray-300"
             >
               <Printer className="w-4 h-4" />
             </Button>
@@ -344,10 +333,10 @@ export function RentalContractGeneratorInline({ contract }: RentalContractGenera
             </div>
             <Button
               size="sm"
-              variant="ghost"
+              variant="outline"
               onClick={() => handlePrintAnnexOnly('regulations')}
               title="Imprimir apenas este anexo"
-              className="text-gray-600 hover:text-gray-900 hover:bg-gray-100"
+              className="text-gray-700 hover:text-gray-900 hover:bg-gray-100 border-gray-300"
             >
               <Printer className="w-4 h-4" />
             </Button>
@@ -369,10 +358,10 @@ export function RentalContractGeneratorInline({ contract }: RentalContractGenera
             </div>
             <Button
               size="sm"
-              variant="ghost"
+              variant="outline"
               onClick={() => handlePrintAnnexOnly('lgpd')}
               title="Imprimir apenas este anexo"
-              className="text-gray-600 hover:text-gray-900 hover:bg-gray-100"
+              className="text-gray-700 hover:text-gray-900 hover:bg-gray-100 border-gray-300"
             >
               <Printer className="w-4 h-4" />
             </Button>
@@ -405,6 +394,15 @@ export function RentalContractGeneratorInline({ contract }: RentalContractGenera
             </p>
           </div>
         )}
+
+        <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg mb-3">
+          <p className="text-sm text-blue-700">
+            <strong>Signatários:</strong> O contrato será enviado para assinatura do <strong>Locador</strong>, <strong>Locatário</strong> e <strong>Imobiliária</strong>.
+            {(includeInspection || includeRegulations || includeLGPD) && (
+              <span> Os anexos selecionados serão incluídos no documento.</span>
+            )}
+          </p>
+        </div>
         
         <Button
           onClick={handleSendForSignature}
@@ -421,7 +419,7 @@ export function RentalContractGeneratorInline({ contract }: RentalContractGenera
         
         <p className="text-xs text-gray-500 mt-2">
           O contrato será enviado para assinatura via Autentique com validade jurídica.
-          Após assinado, o documento será arquivado automaticamente no contrato.
+          Após assinado por todos, o documento será arquivado automaticamente no contrato.
         </p>
       </div>
 
@@ -443,17 +441,17 @@ export function RentalContractGeneratorInline({ contract }: RentalContractGenera
                   <div className="flex items-center gap-2">
                     <Button
                       size="sm"
-                      variant="ghost"
+                      variant="outline"
                       onClick={() => handleCopyLink(signer.link)}
-                      className="text-gray-600 hover:text-gray-900 hover:bg-gray-100"
+                      className="text-gray-700 hover:text-gray-900 hover:bg-gray-100 border-gray-300"
                     >
                       Copiar Link
                     </Button>
                     <Button
                       size="sm"
-                      variant="ghost"
+                      variant="outline"
                       onClick={() => window.open(signer.link, '_blank')}
-                      className="text-gray-600 hover:text-gray-900 hover:bg-gray-100"
+                      className="text-gray-700 hover:text-gray-900 hover:bg-gray-100 border-gray-300"
                     >
                       <ExternalLink className="w-4 h-4" />
                     </Button>
