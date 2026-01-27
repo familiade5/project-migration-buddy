@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { RentalContract } from '@/types/rental';
 import { generateContractPDF, downloadContractPDF, generateFullContractHTML } from '@/lib/rentalContract/generateContractPDF';
 import { 
@@ -41,11 +41,33 @@ export function RentalContractGeneratorInline({ contract }: RentalContractGenera
   const [includeRegulations, setIncludeRegulations] = useState(true);
   const [includeLGPD, setIncludeLGPD] = useState(true);
 
-  // Agency data (could come from settings)
-  const agencyData = {
+  // Agency data from database
+  const [agencyData, setAgencyData] = useState({
     name: 'Venda Direta Hoje',
     cnpj: 'CNPJ: XX.XXX.XXX/0001-XX',
-  };
+    email: '',
+  });
+
+  // Fetch agency data from database
+  useEffect(() => {
+    const fetchAgencyData = async () => {
+      const { data, error } = await supabase
+        .from('real_estate_agency')
+        .select('name, email')
+        .limit(1)
+        .single();
+
+      if (!error && data) {
+        setAgencyData({
+          name: data.name || 'Venda Direta Hoje',
+          cnpj: 'CNPJ: XX.XXX.XXX/0001-XX',
+          email: data.email || '',
+        });
+      }
+    };
+
+    fetchAgencyData();
+  }, []);
 
   const annexData = createAnnexDataFromContract(contract, agencyData);
 
@@ -168,7 +190,7 @@ export function RentalContractGeneratorInline({ contract }: RentalContractGenera
           action: 'SIGN' as const,
         },
         {
-          email: 'contato@vendadiretahoje.com.br', // Agency email - should come from settings
+          email: agencyData.email || 'contato@vendadiretahoje.com.br',
           name: agencyData.name,
           action: 'SIGN' as const,
         },
