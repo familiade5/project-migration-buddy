@@ -245,9 +245,22 @@ Deno.serve(async (req) => {
       console.log('Signed contract archived successfully:', fileName);
     }
 
-    // Handle signature events for logging
+    // Handle signature events - update signed_at in our database
     if (eventType === 'signature.signed' && payloadSignature) {
       console.log(`Signature received from ${payloadSignature.name} (${payloadSignature.email}) at ${payloadSignature.signed_at}`);
+      
+      // Update the signature link record to mark as signed
+      const { error: signUpdateError } = await supabase
+        .from('autentique_signature_links')
+        .update({ signed_at: payloadSignature.signed_at })
+        .eq('contract_id', contract.id)
+        .eq('signer_email', payloadSignature.email);
+      
+      if (signUpdateError) {
+        console.error('Error updating signature status:', signUpdateError);
+      } else {
+        console.log(`Marked signature as signed for ${payloadSignature.email}`);
+      }
     }
 
     return new Response(JSON.stringify({ success: true }), {
