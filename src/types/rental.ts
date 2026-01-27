@@ -57,6 +57,22 @@ export interface RentalContract {
     whatsapp: string | null;
     email: string | null;
     cpf: string | null;
+    rg?: string | null;
+    profession?: string | null;
+    address?: string | null;
+  };
+  
+  // Guarantor (fiador)
+  guarantor_id: string | null;
+  guarantor?: {
+    id: string;
+    full_name: string;
+    cpf?: string | null;
+    rg?: string | null;
+    address?: string | null;
+    property_address?: string | null;
+    property_registration?: string | null;
+    phone?: string | null;
   };
   
   // Contract Terms
@@ -74,9 +90,20 @@ export interface RentalContract {
   deposit_value: number;
   deposit_months: number;
   guarantee_type: string | null;
+  guarantee_type_enum?: 'caucao' | 'fiador' | 'seguro_fiador' | null;
   
   // Contract Type
   contract_type: RentalContractType | null;
+  
+  // Commercial specific
+  allowed_activity?: string | null;
+  renovation_terms?: string | null;
+  commercial_point_clause?: boolean | null;
+  
+  // Insurance (seguro-fiança)
+  insurance_company?: string | null;
+  insurance_policy_number?: string | null;
+  insurance_value?: number | null;
   
   // Status
   status: RentalContractStatus;
