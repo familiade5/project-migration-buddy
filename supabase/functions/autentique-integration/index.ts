@@ -27,6 +27,40 @@ interface CreateDocumentInput {
   sandbox?: boolean;
 }
 
+// Helper: Generate signing link for a signature using createLinkToSignature mutation
+async function generateSigningLink(publicId: string, autentiqueApiKey: string): Promise<string | null> {
+  try {
+    const mutation = `
+      mutation {
+        createLinkToSignature(public_id: "${publicId}") {
+          short_link
+        }
+      }
+    `;
+
+    const response = await fetch(AUTENTIQUE_API_URL, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${autentiqueApiKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ query: mutation }),
+    });
+
+    const result = await response.json();
+    
+    if (result.errors) {
+      console.error(`Error generating link for ${publicId}:`, result.errors);
+      return null;
+    }
+
+    return result.data?.createLinkToSignature?.short_link || null;
+  } catch (error) {
+    console.error(`Error generating link for ${publicId}:`, error);
+    return null;
+  }
+}
+
 // Create document for signature
 app.post('/create-document', async (c) => {
   try {
@@ -64,7 +98,7 @@ app.post('/create-document', async (c) => {
 
     console.log(`Creating document: ${name} with ${signers.length} signers`);
 
-    // GraphQL mutation to create document
+    // GraphQL mutation to create document - request link { short_link }
     const mutation = `
       mutation CreateDocument(
         $document: DocumentInput!,
@@ -138,11 +172,32 @@ app.post('/create-document', async (c) => {
       return c.json({ error: 'Failed to create document', details: result.errors }, 400);
     }
 
-    console.log('Document created successfully:', result.data.createDocument.id);
+    const createdDoc = result.data.createDocument;
+    console.log('Document created successfully:', createdDoc.id);
+
+    // For each signature without a link, generate one using createLinkToSignature
+    if (createdDoc.signatures) {
+      for (const sig of createdDoc.signatures) {
+        const shortLink = sig.link?.short_link;
+        console.log(`Signer: ${sig.name} (${sig.email}) - Link from create: ${shortLink || 'null'}`);
+        
+        // If link is null and signature is not yet signed, generate link
+        if (!shortLink && !sig.signed) {
+          console.log(`Generating link for ${sig.email} using createLinkToSignature...`);
+          const generatedLink = await generateSigningLink(sig.public_id, autentiqueApiKey);
+          if (generatedLink) {
+            sig.link = { short_link: generatedLink };
+            console.log(`Generated link for ${sig.email}: ${generatedLink}`);
+          } else {
+            console.log(`Could not generate link for ${sig.email}`);
+          }
+        }
+      }
+    }
 
     return c.json({
       success: true,
-      document: result.data.createDocument,
+      document: createdDoc,
     });
   } catch (error) {
     console.error('Error creating document:', error);
@@ -150,7 +205,7 @@ app.post('/create-document', async (c) => {
   }
 });
 
-// Get document status
+// Get document status with full details including signature links
 app.get('/document/:id', async (c) => {
   try {
     const authHeader = c.req.header('Authorization');
@@ -165,6 +220,7 @@ app.get('/document/:id', async (c) => {
 
     const documentId = c.req.param('id');
 
+    // Query document with full signature details including link
     const query = `
       query {
         document(id: "${documentId}") {
@@ -202,12 +258,79 @@ app.get('/document/:id', async (c) => {
       return c.json({ error: 'Failed to get document', details: result.errors }, 400);
     }
 
+    const doc = result.data.document;
+
+    // For signatures without a link that haven't signed yet, generate links
+    if (doc?.signatures) {
+      for (const sig of doc.signatures) {
+        if (!sig.link?.short_link && !sig.signed) {
+          console.log(`Generating link for unsigned signer ${sig.email}...`);
+          const generatedLink = await generateSigningLink(sig.public_id, autentiqueApiKey);
+          if (generatedLink) {
+            sig.link = { short_link: generatedLink };
+          }
+        }
+      }
+    }
+
     return c.json({
       success: true,
-      document: result.data.document,
+      document: doc,
     });
   } catch (error) {
     console.error('Error getting document:', error);
+    return c.json({ error: 'Internal server error' }, 500);
+  }
+});
+
+// Resend signature emails
+app.post('/resend-signatures', async (c) => {
+  try {
+    const authHeader = c.req.header('Authorization');
+    if (!authHeader?.startsWith('Bearer ')) {
+      return c.json({ error: 'Unauthorized' }, 401);
+    }
+
+    const autentiqueApiKey = Deno.env.get('AUTENTIQUE_API_KEY');
+    if (!autentiqueApiKey) {
+      return c.json({ error: 'Autentique API key not configured' }, 500);
+    }
+
+    const { public_ids } = await c.req.json();
+
+    if (!public_ids || !Array.isArray(public_ids) || public_ids.length === 0) {
+      return c.json({ error: 'Missing required field: public_ids (array)' }, 400);
+    }
+
+    const idsString = public_ids.map((id: string) => `"${id}"`).join(', ');
+    const mutation = `
+      mutation {
+        resendSignatures(public_ids: [${idsString}])
+      }
+    `;
+
+    const response = await fetch(AUTENTIQUE_API_URL, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${autentiqueApiKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ query: mutation }),
+    });
+
+    const result = await response.json();
+
+    if (result.errors) {
+      console.error('Autentique API errors:', result.errors);
+      return c.json({ error: 'Failed to resend signatures', details: result.errors }, 400);
+    }
+
+    return c.json({
+      success: true,
+      result: result.data?.resendSignatures,
+    });
+  } catch (error) {
+    console.error('Error resending signatures:', error);
     return c.json({ error: 'Internal server error' }, 500);
   }
 });
