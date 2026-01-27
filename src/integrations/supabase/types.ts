@@ -50,6 +50,50 @@ export type Database = {
         }
         Relationships: []
       }
+      autentique_signature_links: {
+        Row: {
+          contract_id: string
+          created_at: string
+          document_id: string
+          id: string
+          public_id: string
+          short_link: string | null
+          signer_email: string | null
+          signer_name: string | null
+          updated_at: string
+        }
+        Insert: {
+          contract_id: string
+          created_at?: string
+          document_id: string
+          id?: string
+          public_id: string
+          short_link?: string | null
+          signer_email?: string | null
+          signer_name?: string | null
+          updated_at?: string
+        }
+        Update: {
+          contract_id?: string
+          created_at?: string
+          document_id?: string
+          id?: string
+          public_id?: string
+          short_link?: string | null
+          signer_email?: string | null
+          signer_name?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "autentique_signature_links_contract_id_fkey"
+            columns: ["contract_id"]
+            isOneToOne: false
+            referencedRelation: "rental_contracts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       broker_documents: {
         Row: {
           broker_id: string

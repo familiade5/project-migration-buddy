@@ -24,6 +24,7 @@ import {
   FileCheck,
   ScrollText,
   Shield,
+  RefreshCw,
 } from 'lucide-react';
 
 interface RentalContractGeneratorInlineProps {
@@ -33,7 +34,8 @@ interface RentalContractGeneratorInlineProps {
 export function RentalContractGeneratorInline({ contract }: RentalContractGeneratorInlineProps) {
   const [isGenerating, setIsGenerating] = useState(false);
   const [isSending, setIsSending] = useState(false);
-  const [signatureLinks, setSignatureLinks] = useState<{ name: string; email: string; link: string }[]>([]);
+  const [isResending, setIsResending] = useState(false);
+  const [signatureLinks, setSignatureLinks] = useState<{ name: string; email: string; link: string; publicId?: string }[]>([]);
   const { toast } = useToast();
 
   // Annex selection state
@@ -212,11 +214,12 @@ export function RentalContractGeneratorInline({ contract }: RentalContractGenera
 
       const { document } = response.data;
 
-      // Extract signature links
+      // Extract signature links - now with publicId for resend functionality
       const links = document.signatures.map((sig: any) => ({
         name: sig.name,
         email: sig.email,
         link: sig.link?.short_link || '',
+        publicId: sig.public_id,
       }));
 
       setSignatureLinks(links);
@@ -238,11 +241,48 @@ export function RentalContractGeneratorInline({ contract }: RentalContractGenera
   };
 
   const handleCopyLink = (link: string) => {
+    if (!link) {
+      toast({
+        title: 'Link não disponível',
+        description: 'O link de assinatura ainda não foi gerado ou já foi utilizado.',
+        variant: 'destructive',
+      });
+      return;
+    }
     navigator.clipboard.writeText(link);
     toast({
       title: 'Link copiado',
       description: 'O link de assinatura foi copiado para a área de transferência.',
     });
+  };
+
+  const handleResendEmail = async (publicId: string, signerName: string) => {
+    if (!publicId) return;
+    
+    setIsResending(true);
+    try {
+      const response = await supabase.functions.invoke('autentique-integration/resend-signatures', {
+        body: { public_ids: [publicId] },
+      });
+
+      if (response.error) {
+        throw response.error;
+      }
+
+      toast({
+        title: 'E-mail reenviado',
+        description: `O e-mail de assinatura foi reenviado para ${signerName}.`,
+      });
+    } catch (error) {
+      console.error('Error resending signature:', error);
+      toast({
+        title: 'Erro ao reenviar',
+        description: 'Não foi possível reenviar o e-mail. Tente novamente.',
+        variant: 'destructive',
+      });
+    } finally {
+      setIsResending(false);
+    }
   };
 
   const contractTypeLabel = contract.contract_type === 'comercial' ? 'Comercial' : 'Residencial';
@@ -459,24 +499,47 @@ export function RentalContractGeneratorInline({ contract }: RentalContractGenera
                   <div>
                     <p className="font-medium text-sm text-gray-900">{signer.name}</p>
                     <p className="text-xs text-gray-500">{signer.email}</p>
+                    {!signer.link && (
+                      <p className="text-xs text-amber-600 mt-1">Link não disponível - reenvie o e-mail</p>
+                    )}
                   </div>
                   <div className="flex items-center gap-2">
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => handleCopyLink(signer.link)}
-                      className="bg-white text-gray-900 hover:bg-gray-100 border-gray-300"
-                    >
-                      Copiar Link
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => window.open(signer.link, '_blank')}
-                      className="bg-white text-gray-900 hover:bg-gray-100 border-gray-300"
-                    >
-                      <ExternalLink className="w-4 h-4 text-gray-900" />
-                    </Button>
+                    {signer.link ? (
+                      <>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => handleCopyLink(signer.link)}
+                          className="bg-white text-gray-900 hover:bg-gray-100 border-gray-300"
+                        >
+                          Copiar Link
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => window.open(signer.link, '_blank')}
+                          className="bg-white text-gray-900 hover:bg-gray-100 border-gray-300"
+                        >
+                          <ExternalLink className="w-4 h-4 text-gray-900" />
+                        </Button>
+                      </>
+                    ) : null}
+                    {signer.publicId && (
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => handleResendEmail(signer.publicId!, signer.name)}
+                        disabled={isResending}
+                        className="bg-white text-gray-900 hover:bg-gray-100 border-gray-300"
+                        title="Reenviar e-mail de assinatura"
+                      >
+                        {isResending ? (
+                          <Loader2 className="w-4 h-4 animate-spin" />
+                        ) : (
+                          <RefreshCw className="w-4 h-4" />
+                        )}
+                      </Button>
+                    )}
                   </div>
                 </div>
               </div>
