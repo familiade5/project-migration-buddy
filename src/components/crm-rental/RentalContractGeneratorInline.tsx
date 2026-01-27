@@ -177,7 +177,7 @@ export function RentalContractGeneratorInline({ contract }: RentalContractGenera
         throw new Error('Not authenticated');
       }
 
-      // Create signers list - Tenant, Owner, and Agency
+      // Create signers list - Only Tenant and Owner (Agency excluded per business rule)
       const signers = [
         {
           email: contract.tenant.email,
@@ -187,11 +187,6 @@ export function RentalContractGeneratorInline({ contract }: RentalContractGenera
         {
           email: contract.owner_email || contract.owner?.email || 'proprietario@email.com',
           name: contract.owner_name,
-          action: 'SIGN' as const,
-        },
-        {
-          email: agencyData.email || 'contato@vendadiretahoje.com.br',
-          name: agencyData.name,
           action: 'SIGN' as const,
         },
       ];
@@ -223,7 +218,7 @@ export function RentalContractGeneratorInline({ contract }: RentalContractGenera
 
       toast({
         title: 'Contrato enviado para assinatura',
-        description: 'Os links de assinatura foram gerados para Locador, Locatário e Imobiliária. Após assinado, o documento será arquivado automaticamente.',
+        description: 'Os links de assinatura foram gerados para Locador e Locatário. Após assinado, o documento será arquivado automaticamente.',
       });
     } catch (error) {
       console.error('Error sending for signature:', error);
@@ -419,7 +414,7 @@ export function RentalContractGeneratorInline({ contract }: RentalContractGenera
 
         <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg mb-3">
           <p className="text-sm text-blue-700">
-            <strong>Signatários:</strong> O contrato será enviado para assinatura do <strong>Locador</strong>, <strong>Locatário</strong> e <strong>Imobiliária</strong>.
+            <strong>Signatários:</strong> O contrato será enviado para assinatura do <strong>Locador</strong> e <strong>Locatário</strong>.
             {(includeInspection || includeRegulations || includeLGPD) && (
               <span> Os anexos selecionados serão incluídos no documento.</span>
             )}
