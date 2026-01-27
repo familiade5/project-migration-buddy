@@ -488,6 +488,7 @@ export function generateAllAnnexesHTML(data: AnnexData): string {
 }
 
 // Helper to create annex data from contract
+// All inspection fields are pre-filled as "OK/Conforme" by default
 export function createAnnexDataFromContract(
   contract: {
     property_code: string;
@@ -502,6 +503,36 @@ export function createAnnexDataFromContract(
 ): AnnexData {
   const fullAddress = `${contract.property_address}${contract.property_neighborhood ? `, ${contract.property_neighborhood}` : ''}, ${contract.property_city} - ${contract.property_state}`;
   
+  // Pre-filled inspection data with all fields as "OK/Conforme"
+  const defaultInspection: InspectionData = {
+    contractNumber: contract.property_code,
+    propertyAddress: fullAddress,
+    generalCondition: 'bom',
+    generalObservations: 'Imóvel em perfeitas condições de uso.',
+    
+    // Room states - all pre-filled as "Conforme"
+    livingRoomState: 'Conforme - Bom estado de conservação',
+    bedroomsState: 'Conforme - Bom estado de conservação',
+    kitchenState: 'Conforme - Bom estado de conservação',
+    bathroomsState: 'Conforme - Bom estado de conservação',
+    externalAreaState: 'Conforme - Bom estado de conservação',
+    
+    // Installations - all pre-filled as OK
+    electricalOk: true,
+    electricalObs: '',
+    plumbingOk: true,
+    plumbingObs: '',
+    paintingOk: true,
+    paintingObs: '',
+    
+    // Photos
+    photos: [],
+    
+    // Location and date
+    city: contract.property_city,
+    date: new Date(),
+  };
+  
   return {
     contractNumber: contract.property_code,
     propertyAddress: fullAddress,
@@ -511,5 +542,6 @@ export function createAnnexDataFromContract(
     agencyCnpj: agencyData.cnpj,
     city: contract.property_city,
     date: new Date(),
+    inspection: defaultInspection,
   };
 }
