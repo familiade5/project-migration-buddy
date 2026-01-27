@@ -58,6 +58,7 @@ export type Database = {
           id: string
           public_id: string
           short_link: string | null
+          signed_at: string | null
           signer_email: string | null
           signer_name: string | null
           updated_at: string
@@ -69,6 +70,7 @@ export type Database = {
           id?: string
           public_id: string
           short_link?: string | null
+          signed_at?: string | null
           signer_email?: string | null
           signer_name?: string | null
           updated_at?: string
@@ -80,6 +82,7 @@ export type Database = {
           id?: string
           public_id?: string
           short_link?: string | null
+          signed_at?: string | null
           signer_email?: string | null
           signer_name?: string | null
           updated_at?: string

@@ -10,6 +10,7 @@ import {
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
 import { 
@@ -35,7 +36,14 @@ export function RentalContractGeneratorInline({ contract }: RentalContractGenera
   const [isGenerating, setIsGenerating] = useState(false);
   const [isSending, setIsSending] = useState(false);
   const [isResending, setIsResending] = useState(false);
-  const [signatureLinks, setSignatureLinks] = useState<{ name: string; email: string; link: string; publicId?: string }[]>([]);
+  const [isLoadingLinks, setIsLoadingLinks] = useState(true);
+  const [signatureLinks, setSignatureLinks] = useState<{ 
+    name: string; 
+    email: string; 
+    link: string; 
+    publicId?: string;
+    signedAt?: string | null;
+  }[]>([]);
   const { toast } = useToast();
 
   // Annex selection state
@@ -70,6 +78,38 @@ export function RentalContractGeneratorInline({ contract }: RentalContractGenera
 
     fetchAgencyData();
   }, []);
+
+  // Load existing signature links from database
+  useEffect(() => {
+    const loadSignatureLinks = async () => {
+      setIsLoadingLinks(true);
+      try {
+        const { data, error } = await supabase
+          .from('autentique_signature_links')
+          .select('*')
+          .eq('contract_id', contract.id)
+          .order('created_at', { ascending: true });
+
+        if (!error && data && data.length > 0) {
+          setSignatureLinks(data.map(link => ({
+            name: link.signer_name || '',
+            email: link.signer_email || '',
+            link: link.short_link || '',
+            publicId: link.public_id,
+            signedAt: link.signed_at,
+          })));
+        }
+      } catch (error) {
+        console.error('Error loading signature links:', error);
+      } finally {
+        setIsLoadingLinks(false);
+      }
+    };
+
+    if (contract.id) {
+      loadSignatureLinks();
+    }
+  }, [contract.id]);
 
   const annexData = createAnnexDataFromContract(contract, agencyData);
 
@@ -198,13 +238,14 @@ export function RentalContractGeneratorInline({ contract }: RentalContractGenera
         },
       ];
 
-      // Call edge function
+      // Call edge function with contract_id to save links
       const response = await supabase.functions.invoke('autentique-integration/create-document', {
         body: {
           name: `Contrato de Locação - ${contract.property_code}`,
           content_base64: base64,
           signers,
           sandbox: false,
+          contract_id: contract.id,
         },
       });
 
@@ -220,6 +261,7 @@ export function RentalContractGeneratorInline({ contract }: RentalContractGenera
         email: sig.email,
         link: sig.link?.short_link || '',
         publicId: sig.public_id,
+        signedAt: null, // Just created, not signed yet
       }));
 
       setSignatureLinks(links);
@@ -486,25 +528,60 @@ export function RentalContractGeneratorInline({ contract }: RentalContractGenera
       </div>
 
       {/* Signature Links */}
-      {signatureLinks.length > 0 && (
+      {isLoadingLinks ? (
         <div className="border-t border-gray-200 pt-4">
-          <h4 className="font-medium mb-3 flex items-center gap-2 text-green-700">
-            <CheckCircle className="w-4 h-4" />
-            Links de Assinatura Gerados
+          <div className="flex items-center gap-2 text-gray-500">
+            <Loader2 className="w-4 h-4 animate-spin" />
+            <span className="text-sm">Carregando links de assinatura...</span>
+          </div>
+        </div>
+      ) : signatureLinks.length > 0 && (
+        <div className="border-t border-gray-200 pt-4">
+          <h4 className="font-medium mb-3 flex items-center gap-2 text-gray-900">
+            <FileCheck className="w-4 h-4" />
+            Links de Assinatura
           </h4>
           <div className="space-y-2">
             {signatureLinks.map((signer, index) => (
-              <div key={index} className="p-3 bg-green-50 border border-green-200 rounded-lg">
+              <div 
+                key={index} 
+                className={`p-3 rounded-lg border ${
+                  signer.signedAt 
+                    ? 'bg-green-50 border-green-200' 
+                    : 'bg-gray-50 border-gray-200'
+                }`}
+              >
                 <div className="flex items-center justify-between">
-                  <div>
-                    <p className="font-medium text-sm text-gray-900">{signer.name}</p>
-                    <p className="text-xs text-gray-500">{signer.email}</p>
-                    {!signer.link && (
-                      <p className="text-xs text-amber-600 mt-1">Link não disponível - reenvie o e-mail</p>
-                    )}
+                  <div className="flex items-center gap-3">
+                    {/* Signature status checkbox */}
+                    <div className={`w-5 h-5 rounded-full flex items-center justify-center ${
+                      signer.signedAt 
+                        ? 'bg-green-500' 
+                        : 'bg-gray-300'
+                    }`}>
+                      {signer.signedAt ? (
+                        <CheckCircle className="w-4 h-4 text-white" />
+                      ) : (
+                        <div className="w-2 h-2 bg-white rounded-full" />
+                      )}
+                    </div>
+                    <div>
+                      <p className="font-medium text-sm text-gray-900">{signer.name}</p>
+                      <p className="text-xs text-gray-500">{signer.email}</p>
+                      {signer.signedAt ? (
+                        <p className="text-xs text-green-600 mt-1 flex items-center gap-1">
+                          <CheckCircle className="w-3 h-3" />
+                          Assinado em {new Date(signer.signedAt).toLocaleDateString('pt-BR')}
+                        </p>
+                      ) : !signer.link ? (
+                        <p className="text-xs text-amber-600 mt-1">Link não disponível - reenvie o e-mail</p>
+                      ) : (
+                        <p className="text-xs text-amber-600 mt-1">Pendente de assinatura</p>
+                      )}
+                    </div>
                   </div>
                   <div className="flex items-center gap-2">
-                    {signer.link ? (
+                    {!signer.signedAt && signer.link && (
                       <>
                         <Button
                           size="sm"
@@ -523,8 +600,8 @@ export function RentalContractGeneratorInline({ contract }: RentalContractGenera
                           <ExternalLink className="w-4 h-4 text-gray-900" />
                         </Button>
                       </>
-                    ) : null}
-                    {signer.publicId && (
+                    )}
+                    {!signer.signedAt && signer.publicId && (
                       <Button
                         size="sm"
                         variant="outline"
@@ -540,10 +617,20 @@ export function RentalContractGeneratorInline({ contract }: RentalContractGenera
                         )}
                       </Button>
                     )}
+                    {signer.signedAt && (
+                      <Badge className="bg-green-100 text-green-700 border-green-200">
+                        Assinado
+                      </Badge>
+                    )}
                   </div>
                 </div>
               </div>
             ))}
+          </div>
+          
+          {/* Summary */}
+          <div className="mt-3 p-2 bg-gray-100 rounded text-sm text-gray-600">
+            {signatureLinks.filter(s => s.signedAt).length} de {signatureLinks.length} assinaturas concluídas
           </div>
         </div>
       )}

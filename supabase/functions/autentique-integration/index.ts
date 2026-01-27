@@ -2,6 +2,15 @@ import { Hono } from 'https://deno.land/x/hono@v3.11.7/mod.ts';
 import { cors } from 'https://deno.land/x/hono@v3.11.7/middleware/cors/index.ts';
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.90.1';
 
+interface SignatureLink {
+  contract_id: string;
+  document_id: string;
+  public_id: string;
+  signer_name: string;
+  signer_email: string;
+  short_link: string | null;
+}
+
 // Use basePath to handle the function name prefix in routes
 const app = new Hono().basePath('/autentique-integration');
 
@@ -89,14 +98,14 @@ app.post('/create-document', async (c) => {
       return c.json({ error: 'Invalid token' }, 401);
     }
 
-    const body: CreateDocumentInput = await c.req.json();
-    const { name, content_base64, signers, sandbox = false } = body;
+    const body: CreateDocumentInput & { contract_id?: string } = await c.req.json();
+    const { name, content_base64, signers, sandbox = false, contract_id } = body;
 
     if (!name || !content_base64 || !signers || signers.length === 0) {
       return c.json({ error: 'Missing required fields: name, content_base64, signers' }, 400);
     }
 
-    console.log(`Creating document: ${name} with ${signers.length} signers`);
+    console.log(`Creating document: ${name} with ${signers.length} signers${contract_id ? ` for contract ${contract_id}` : ''}`);
 
     // GraphQL mutation to create document - request link { short_link }
     const mutation = `
@@ -192,6 +201,38 @@ app.post('/create-document', async (c) => {
             console.log(`Could not generate link for ${sig.email}`);
           }
         }
+      }
+    }
+
+    // Save signature links to database if contract_id provided
+    if (contract_id && createdDoc.signatures) {
+      const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+      const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey);
+      
+      // Delete existing links for this contract
+      await supabaseAdmin
+        .from('autentique_signature_links')
+        .delete()
+        .eq('contract_id', contract_id);
+      
+      // Insert new links
+      const linksToInsert: SignatureLink[] = createdDoc.signatures.map((sig: any) => ({
+        contract_id,
+        document_id: createdDoc.id,
+        public_id: sig.public_id,
+        signer_name: sig.name,
+        signer_email: sig.email,
+        short_link: sig.link?.short_link || null,
+      }));
+      
+      const { error: insertError } = await supabaseAdmin
+        .from('autentique_signature_links')
+        .insert(linksToInsert);
+      
+      if (insertError) {
+        console.error('Error saving signature links:', insertError);
+      } else {
+        console.log(`Saved ${linksToInsert.length} signature links to database`);
       }
     }
 
