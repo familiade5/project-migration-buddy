@@ -2,7 +2,7 @@ import { useState, useRef } from 'react';
 import { PropertyData } from '@/types/property';
 import { toPng } from 'html-to-image';
 import JSZip from 'jszip';
-import { Download, ChevronLeft, ChevronRight, Crown, Sparkles } from 'lucide-react';
+import { Download, ChevronLeft, ChevronRight, Sparkles, LayoutGrid, Smartphone, Crown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 
@@ -93,7 +93,7 @@ export const ElitePostPreview = ({ data, photos }: ElitePostPreviewProps) => {
       });
 
       const link = document.createElement('a');
-      link.download = `elite-${format}-${posts[index].name.toLowerCase()}.png`;
+      link.download = `patrimoniar-${format}-${posts[index].name.toLowerCase()}.png`;
       link.href = dataUrl;
       link.click();
 
@@ -127,14 +127,14 @@ export const ElitePostPreview = ({ data, photos }: ElitePostPreviewProps) => {
             cacheBust: true,
           });
           const base64Data = dataUrl.replace(/^data:image\/png;base64,/, '');
-          zip.file(`elite-${format}-${i + 1}-${posts[i].name.toLowerCase()}.png`, base64Data, { base64: true });
+          zip.file(`patrimoniar-${format}-${i + 1}-${posts[i].name.toLowerCase()}.png`, base64Data, { base64: true });
         }
       }
 
       const zipBlob = await zip.generateAsync({ type: 'blob' });
       const link = document.createElement('a');
       link.href = URL.createObjectURL(zipBlob);
-      link.download = `elite-${format}-completo.zip`;
+      link.download = `patrimoniar-${format}-completo.zip`;
       link.click();
 
       toast({
@@ -156,33 +156,33 @@ export const ElitePostPreview = ({ data, photos }: ElitePostPreviewProps) => {
   const CurrentComponent = posts[currentIndex].component;
   const currentPhoto = getPhoto(posts[currentIndex].photoIndex);
 
-  // Calculate scale for preview - use smaller scale for better fit
+  // Calculate scale for preview
   const templateWidth = 1080;
   const templateHeight = format === 'feed' ? 1080 : format === 'elite' ? 1920 : 1920;
-  const previewMaxWidth = 360; // Reduced for better containment
+  const previewMaxWidth = 360;
   const scale = previewMaxWidth / templateWidth;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
       {/* Format selector */}
-      <div className="flex gap-2">
+      <div className="flex gap-2 p-1 bg-gray-100 rounded-xl">
         {[
-          { id: 'feed', label: 'Feed', icon: '📱' },
-          { id: 'story', label: 'Story', icon: '📖' },
-          { id: 'elite', label: 'Élite', icon: '👑' },
+          { id: 'feed', label: 'Feed', icon: LayoutGrid },
+          { id: 'story', label: 'Story', icon: Smartphone },
+          { id: 'elite', label: 'Premium', icon: Crown },
         ].map((f) => (
           <button
             key={f.id}
             onClick={() => { setFormat(f.id as typeof format); setCurrentIndex(0); }}
             className={`
-              flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-xl text-sm font-medium transition-all
+              flex-1 flex items-center justify-center gap-2 py-2.5 px-3 rounded-lg text-sm font-medium transition-all
               ${format === f.id 
-                ? 'bg-gradient-to-r from-amber-500 to-yellow-500 text-amber-950 shadow-lg shadow-amber-500/30' 
-                : 'bg-white/5 text-white/70 hover:bg-white/10'
+                ? 'bg-gray-900 text-white shadow-md' 
+                : 'text-gray-600 hover:bg-gray-200 hover:text-gray-900'
               }
             `}
           >
-            <span>{f.icon}</span>
+            <f.icon className="w-4 h-4" />
             {f.label}
           </button>
         ))}
@@ -193,7 +193,7 @@ export const ElitePostPreview = ({ data, photos }: ElitePostPreviewProps) => {
         <Button
           onClick={() => handleExportSingle(currentIndex)}
           disabled={isExporting}
-          className="flex-1 bg-gradient-to-r from-amber-500 to-yellow-500 text-amber-950 hover:from-amber-400 hover:to-yellow-400"
+          className="flex-1 bg-gray-900 hover:bg-gray-800 text-white shadow-md"
         >
           <Download className="w-4 h-4 mr-2" />
           {isExporting ? 'Exportando...' : 'Exportar atual'}
@@ -202,7 +202,7 @@ export const ElitePostPreview = ({ data, photos }: ElitePostPreviewProps) => {
           onClick={handleExportAll}
           disabled={isExporting}
           variant="outline"
-          className="flex-1 border-amber-500/30 text-amber-400 hover:bg-amber-500/10"
+          className="flex-1 border-gray-300 text-gray-700 hover:bg-gray-100"
         >
           <Sparkles className="w-4 h-4 mr-2" />
           Exportar todos
@@ -210,21 +210,20 @@ export const ElitePostPreview = ({ data, photos }: ElitePostPreviewProps) => {
       </div>
 
       {/* Navigation */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between bg-gray-100 rounded-xl px-4 py-3">
         <button
           onClick={() => setCurrentIndex(i => Math.max(0, i - 1))}
           disabled={currentIndex === 0}
-          className="p-2 rounded-lg bg-white/5 text-white/70 hover:bg-white/10 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+          className="p-2 rounded-lg bg-white text-gray-600 hover:bg-gray-200 disabled:opacity-30 disabled:cursor-not-allowed transition-all shadow-sm"
         >
           <ChevronLeft className="w-5 h-5" />
         </button>
         
         <div className="flex items-center gap-2">
-          <Crown className="w-5 h-5 text-amber-400" />
-          <span className="text-white font-medium">
+          <span className="font-semibold text-gray-900">
             {posts[currentIndex].name}
           </span>
-          <span className="text-white/50 text-sm">
+          <span className="text-gray-500 text-sm">
             ({currentIndex + 1}/{posts.length})
           </span>
         </div>
@@ -232,20 +231,18 @@ export const ElitePostPreview = ({ data, photos }: ElitePostPreviewProps) => {
         <button
           onClick={() => setCurrentIndex(i => Math.min(posts.length - 1, i + 1))}
           disabled={currentIndex === posts.length - 1}
-          className="p-2 rounded-lg bg-white/5 text-white/70 hover:bg-white/10 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+          className="p-2 rounded-lg bg-white text-gray-600 hover:bg-gray-200 disabled:opacity-30 disabled:cursor-not-allowed transition-all shadow-sm"
         >
           <ChevronRight className="w-5 h-5" />
         </button>
       </div>
 
-      {/* Preview - Fixed container with proper scaling */}
+      {/* Preview */}
       <div 
-        className="relative mx-auto rounded-2xl bg-[#0a0a0f]"
+        className="relative mx-auto rounded-2xl bg-gray-900 shadow-2xl overflow-hidden"
         style={{ 
           width: Math.floor(templateWidth * scale),
           height: Math.floor(templateHeight * scale),
-          boxShadow: '0 25px 80px rgba(212,175,55,0.2)',
-          overflow: 'hidden',
         }}
       >
         <div
@@ -264,27 +261,23 @@ export const ElitePostPreview = ({ data, photos }: ElitePostPreviewProps) => {
         </div>
       </div>
 
-      {/* Thumbnails - Scrollable for 10 slides */}
-      <div className="overflow-x-auto pb-2">
-        <div className="flex gap-2 justify-start min-w-min px-1">
+      {/* Thumbnails */}
+      <div className="overflow-x-auto pb-2 -mx-2 px-2">
+        <div className="flex gap-2 min-w-min">
           {posts.map((post, index) => (
             <button
               key={index}
               onClick={() => setCurrentIndex(index)}
               className={`
-                flex-shrink-0 w-12 h-12 rounded-lg overflow-hidden transition-all
+                flex-shrink-0 w-14 h-14 rounded-xl overflow-hidden transition-all border-2
                 ${currentIndex === index 
-                  ? 'ring-2 ring-amber-400 ring-offset-2 ring-offset-[#0a0a0f] scale-110' 
-                  : 'opacity-50 hover:opacity-80'
+                  ? 'border-gray-900 shadow-lg scale-105' 
+                  : 'border-transparent opacity-60 hover:opacity-100'
                 }
               `}
             >
               <div 
-                className="w-full h-full flex items-center justify-center text-[7px] font-medium text-center leading-tight p-1"
-                style={{ 
-                  background: 'linear-gradient(135deg, #1a1a1f, #0f0f14)',
-                  color: '#d4af37'
-                }}
+                className="w-full h-full flex items-center justify-center text-[8px] font-semibold text-center leading-tight p-1 bg-gray-200 text-gray-700"
               >
                 {post.name}
               </div>
