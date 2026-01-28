@@ -53,6 +53,44 @@
     --font-display: 'Playfair Display', serif;
     --font-body: 'Inter', sans-serif;
   }
+
+  /* Light theme for Patrimoniar/Elite section */
+  .theme-light {
+    --background: 0 0% 98%;
+    --foreground: 220 15% 15%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 220 15% 15%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 220 15% 15%;
+
+    --primary: 220 15% 15%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 220 5% 96%;
+    --secondary-foreground: 220 15% 25%;
+
+    --muted: 220 5% 94%;
+    --muted-foreground: 220 10% 45%;
+
+    --accent: 40 60% 55%;
+    --accent-foreground: 220 15% 8%;
+
+    --destructive: 0 62% 50%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 220 10% 88%;
+    --input: 0 0% 100%;
+    --ring: 220 15% 15%;
+
+    /* Custom tokens - light */
+    --gold: 40 60% 45%;
+    --gold-light: 40 50% 60%;
+    --gold-dark: 40 70% 35%;
+    --surface: 220 5% 96%;
+    --surface-elevated: 0 0% 100%;
+  }
 }
 
 @layer base {
@@ -112,7 +150,29 @@
     border: 1px solid hsl(var(--border) / 0.5);
   }
 
+  /* Light themed inputs */
   .input-premium {
     @apply bg-input border-border focus:border-primary focus:ring-1 focus:ring-primary/30 transition-all duration-200;
+  }
+
+  /* Light form input styling */
+  .input-light {
+    @apply bg-white border border-gray-200 text-gray-900 placeholder:text-gray-400 focus:border-gray-400 focus:ring-1 focus:ring-gray-300 transition-all duration-200 rounded-lg;
+  }
+
+  .select-light {
+    @apply bg-white border border-gray-200 text-gray-900 focus:border-gray-400 focus:ring-1 focus:ring-gray-300 transition-all duration-200 rounded-lg;
+  }
+
+  .switch-light {
+    @apply data-[state=checked]:bg-gray-900 data-[state=unchecked]:bg-gray-200;
+  }
+
+  .switch-light > span {
+    @apply bg-white;
+  }
+
+  .textarea-light {
+    @apply bg-white border border-gray-200 text-gray-900 placeholder:text-gray-400 focus:border-gray-400 focus:ring-1 focus:ring-gray-300 transition-all duration-200 rounded-lg resize-none;
   }
 }
