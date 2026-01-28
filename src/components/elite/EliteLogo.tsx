@@ -84,37 +84,28 @@ export const EliteWatermark = ({ opacity = 0.15 }: { opacity?: number }) => {
   );
 };
 
-// Bottom logo bar for gallery slides - white logo, floating glass effect
-export const EliteLogoBar = ({ showCta = false }: { showCta?: boolean }) => {
+// Bottom logo bar for creative slides - clean, centered, elegant
+export const EliteLogoBar = () => {
   return (
     <div 
-      className="absolute bottom-0 left-0 right-0 z-20 flex items-center justify-center"
-      style={{ padding: '48px' }}
+      className="absolute bottom-0 left-0 right-0 z-20"
+      style={{ 
+        width: '100%',
+        display: 'flex',
+        justifyContent: 'center',
+        marginBottom: '32px',
+      }}
     >
-      <div 
-        className="flex items-center gap-4"
+      <img 
+        src={logoPatrimoniar} 
+        alt="Patrimoniar Imóveis" 
         style={{ 
-          padding: '20px 48px',
-          background: 'rgba(255, 255, 255, 0.95)',
-          backdropFilter: 'blur(24px)',
-          borderRadius: '16px',
-          boxShadow: '0 16px 48px rgba(0,0,0,0.15)',
-        }}
-      >
-        <img src={logoPatrimoniar} alt="Patrimoniar Imóveis" style={{ height: 50, width: 'auto' }} />
-
-        {showCta && (
-          <>
-            <div style={{ width: 1, height: 36, background: 'rgba(45, 43, 77, 0.2)', margin: '0 8px' }} />
-            <span 
-              className="text-sm font-medium uppercase tracking-wider"
-              style={{ color: 'rgba(45, 43, 77, 0.8)' }}
-            >
-              Alto Padrão
-            </span>
-          </>
-        )}
-      </div>
+          width: '90px',
+          height: 'auto',
+          filter: 'brightness(0) invert(1)', // Pure white
+          opacity: 0.9,
+        }} 
+      />
     </div>
   );
 };
