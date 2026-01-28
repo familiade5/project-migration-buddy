@@ -1,6 +1,6 @@
 import { PropertyData } from '@/types/property';
 import { MapPin, Crown } from 'lucide-react';
-import { EliteLogo, EliteWatermark } from '../EliteLogo';
+import { EliteLogoFooter, EliteWatermark } from '../EliteLogo';
 
 interface EliteCoverStoryProps {
   data: PropertyData;
@@ -113,28 +113,28 @@ export const EliteCoverStory = ({ data, photo }: EliteCoverStoryProps) => {
           </span>
         </div>
 
-        {/* Price and logo bar */}
-        <div className="flex items-center justify-between" style={{ paddingTop: '30px', borderTop: '1px solid rgba(212,175,55,0.5)' }}>
-          <EliteLogo size="lg" />
-          <div className="text-right">
-            <p style={{ 
-              fontSize: '18px', 
-              color: 'rgba(255,255,255,0.8)', 
-              marginBottom: '6px',
-              textShadow: '0 2px 8px rgba(0,0,0,0.95)'
-            }}>A partir de</p>
-            <p 
-              className="font-display font-semibold"
-              style={{ 
-                fontSize: '52px', 
-                color: '#d4af37',
-                textShadow: '0 4px 20px rgba(0,0,0,0.95), 0 2px 8px rgba(0,0,0,0.9)'
-              }}
-            >
-              {data.minimumValue || 'Consulte'}
-            </p>
-          </div>
+        {/* Price */}
+        <div className="text-center" style={{ paddingTop: '30px', borderTop: '1px solid rgba(212,175,55,0.5)' }}>
+          <p style={{ 
+            fontSize: '18px', 
+            color: 'rgba(255,255,255,0.8)', 
+            marginBottom: '6px',
+            textShadow: '0 2px 8px rgba(0,0,0,0.95)'
+          }}>A partir de</p>
+          <p 
+            className="font-display font-semibold"
+            style={{ 
+              fontSize: '52px', 
+              color: '#d4af37',
+              textShadow: '0 4px 20px rgba(0,0,0,0.95), 0 2px 8px rgba(0,0,0,0.9)'
+            }}
+          >
+            {data.minimumValue || 'Consulte'}
+          </p>
         </div>
+
+        {/* Logo footer - centered, 90px */}
+        <EliteLogoFooter />
       </div>
     </div>
   );

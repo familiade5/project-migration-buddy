@@ -1,6 +1,6 @@
 import { PropertyData } from '@/types/property';
 import { Bed, Car, Bath, Maximize2 } from 'lucide-react';
-import { EliteLogo } from '../EliteLogo';
+import { EliteLogoFooter } from '../EliteLogo';
 
 interface EliteDetailsProps {
   data: PropertyData;
@@ -166,10 +166,8 @@ export const EliteDetails = ({ data, photo, photos = [] }: EliteDetailsProps) =>
             ))}
           </div>
 
-          {/* Logo */}
-          <div className="flex items-center justify-end">
-            <EliteLogo size="md" variant="minimal" />
-          </div>
+          {/* Logo footer - centered, 90px */}
+          <EliteLogoFooter />
         </div>
       </div>
     </div>

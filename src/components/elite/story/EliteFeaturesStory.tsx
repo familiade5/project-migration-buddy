@@ -1,6 +1,6 @@
 import { PropertyData } from '@/types/property';
 import { TrendingUp, Shield, Sparkles } from 'lucide-react';
-import { EliteLogo } from '../EliteLogo';
+import { EliteLogoFooter } from '../EliteLogo';
 
 interface EliteFeaturesStoryProps {
   data: PropertyData;
@@ -53,12 +53,12 @@ export const EliteFeaturesStory = ({ data, photo }: EliteFeaturesStoryProps) => 
         />
       )}
 
-      {/* Logo at top */}
+      {/* Logo at top - centered, 90px */}
       <div 
         className="absolute z-20"
-        style={{ top: '50px', left: '50px' }}
+        style={{ top: '50px', left: '50px', right: '50px' }}
       >
-        <EliteLogo size="lg" />
+        <EliteLogoFooter />
       </div>
 
       {/* Main content */}

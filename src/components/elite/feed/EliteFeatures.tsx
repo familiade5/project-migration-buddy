@@ -1,6 +1,6 @@
 import { PropertyData } from '@/types/property';
 import { Sparkles, Shield, TrendingUp } from 'lucide-react';
-import { EliteLogo } from '../EliteLogo';
+import { EliteLogoFooter } from '../EliteLogo';
 
 interface EliteFeaturesProps {
   data: PropertyData;
@@ -118,9 +118,9 @@ export const EliteFeatures = ({ data, photo }: EliteFeaturesProps) => {
             )}
           </div>
 
-          {/* Logo at bottom */}
+          {/* Logo footer - centered, 90px */}
           <div style={{ marginTop: 'auto', paddingTop: '40px' }}>
-            <EliteLogo size="md" variant="minimal" />
+            <EliteLogoFooter />
           </div>
         </div>
 

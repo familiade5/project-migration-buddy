@@ -1,6 +1,6 @@
 import { PropertyData } from '@/types/property';
 import { MapPin, Crown } from 'lucide-react';
-import { EliteLogo, EliteWatermark } from '../EliteLogo';
+import { EliteLogoFooter, EliteWatermark } from '../EliteLogo';
 
 interface EliteCoverProps {
   data: PropertyData;
@@ -127,28 +127,28 @@ export const EliteCover = ({ data, photo }: EliteCoverProps) => {
           </span>
         </div>
 
-        {/* Bottom bar with logo and price */}
-        <div className="flex items-center justify-between" style={{ paddingTop: '24px', borderTop: '1px solid rgba(212,175,55,0.4)' }}>
-          <EliteLogo size="md" />
-          <div className="text-right">
-            <p style={{ 
-              fontSize: '14px', 
-              color: 'rgba(255,255,255,0.7)', 
-              marginBottom: '4px',
-              textShadow: '0 2px 6px rgba(0,0,0,0.9)'
-            }}>A partir de</p>
-            <p 
-              className="font-display font-semibold"
-              style={{ 
-                fontSize: '40px', 
-                color: '#d4af37',
-                textShadow: '0 4px 16px rgba(0,0,0,0.9), 0 2px 6px rgba(0,0,0,0.8)'
-              }}
-            >
-              {data.minimumValue || 'Consulte'}
-            </p>
-          </div>
+        {/* Price */}
+        <div className="text-center" style={{ paddingTop: '24px', borderTop: '1px solid rgba(212,175,55,0.4)' }}>
+          <p style={{ 
+            fontSize: '14px', 
+            color: 'rgba(255,255,255,0.7)', 
+            marginBottom: '4px',
+            textShadow: '0 2px 6px rgba(0,0,0,0.9)'
+          }}>A partir de</p>
+          <p 
+            className="font-display font-semibold"
+            style={{ 
+              fontSize: '40px', 
+              color: '#d4af37',
+              textShadow: '0 4px 16px rgba(0,0,0,0.9), 0 2px 6px rgba(0,0,0,0.8)'
+            }}
+          >
+            {data.minimumValue || 'Consulte'}
+          </p>
         </div>
+
+        {/* Logo footer - centered, 90px */}
+        <EliteLogoFooter />
       </div>
     </div>
   );
