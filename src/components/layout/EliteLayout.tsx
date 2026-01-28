@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { 
-  Crown,
+  Home,
   Calendar, 
   Settings, 
   LogOut, 
@@ -21,14 +21,14 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import logoElite from '@/assets/logo-elite.png';
+import logoPatrimoniar from '@/assets/logo-patrimoniar.svg';
 
 interface EliteLayoutProps {
   children: React.ReactNode;
 }
 
 const navigation = [
-  { name: 'Criar Post', href: '/elite', icon: Crown },
+  { name: 'Criar Post', href: '/elite', icon: Home },
   { name: 'Biblioteca', href: '/library', icon: Calendar },
 ];
 
@@ -76,17 +76,16 @@ export function EliteLayout({ children }: EliteLayoutProps) {
       `}>
         <div className="flex flex-col h-full">
           {/* Logo */}
-          <div className="flex items-center gap-4 px-6 py-6 border-b border-amber-500/10">
-            <div className="w-12 h-12 rounded-xl overflow-hidden bg-gradient-to-br from-amber-400 via-yellow-500 to-amber-600 p-0.5">
-              <div className="w-full h-full rounded-[10px] bg-[#0f0f14] flex items-center justify-center">
-                <Crown className="w-6 h-6 text-amber-400" />
-              </div>
-            </div>
-            <div className="min-w-0 flex-1">
-              <h1 className="font-display text-xl font-semibold bg-gradient-to-r from-amber-200 via-yellow-300 to-amber-400 bg-clip-text text-transparent">
-                Élite Imóveis
+          <div className="flex items-center gap-4 px-6 py-6 border-b border-[#2D2B4D]/20">
+            <img 
+              src={logoPatrimoniar} 
+              alt="Patrimoniar" 
+              className="h-12 w-auto"
+            />
+            <div className="min-w-0 flex-1 lg:hidden">
+              <h1 className="font-display text-lg font-semibold text-[#2D2B4D]">
+                Patrimoniar
               </h1>
-              <p className="text-xs text-amber-500/60">Alto Padrão</p>
             </div>
             <button 
               className="lg:hidden text-amber-500/60 hover:text-amber-400 flex-shrink-0 transition-colors"
@@ -207,14 +206,11 @@ export function EliteLayout({ children }: EliteLayoutProps) {
               <Menu className="w-6 h-6" />
             </button>
             <div className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-amber-400 via-yellow-500 to-amber-600 p-0.5">
-                <div className="w-full h-full rounded-[6px] bg-[#0a0a0f] flex items-center justify-center">
-                  <Crown className="w-4 h-4 text-amber-400" />
-                </div>
-              </div>
-              <span className="font-display font-semibold bg-gradient-to-r from-amber-200 to-amber-400 bg-clip-text text-transparent">
-                Élite Imóveis
-              </span>
+              <img 
+                src={logoPatrimoniar} 
+                alt="Patrimoniar" 
+                className="h-9 w-auto"
+              />
             </div>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
