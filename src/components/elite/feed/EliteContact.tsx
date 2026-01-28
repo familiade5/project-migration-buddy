@@ -1,6 +1,6 @@
 import { PropertyData } from '@/types/property';
 import { MessageCircle, Phone, Crown, ArrowRight } from 'lucide-react';
-import logoElite from '@/assets/logo-elite.png';
+import logoPatrimoniar from '@/assets/logo-patrimoniar.svg';
 
 interface EliteContactProps {
   data: PropertyData;
@@ -139,9 +139,14 @@ export const EliteContact = ({ data, photo }: EliteContactProps) => {
         }}
       >
         <img 
-          src={logoElite} 
-          alt="Élite Imóveis" 
-          style={{ height: '50px', objectFit: 'contain' }}
+          src={logoPatrimoniar} 
+          alt="Patrimoniar Imóveis" 
+          style={{ 
+            width: '180px',
+            height: 'auto',
+            filter: 'brightness(0) invert(1)',
+            opacity: 0.9,
+          }}
         />
         <p style={{ fontSize: '14px', color: 'rgba(255,255,255,0.4)' }}>
           {data.creci || 'CRECI-MS'}

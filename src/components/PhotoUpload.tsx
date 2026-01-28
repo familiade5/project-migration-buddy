@@ -55,7 +55,7 @@ export const PhotoUpload = ({ photos, onChange, onClear }: PhotoUploadProps) => 
           </div>
         ))}
         
-        {photos.length < 4 && (
+        {photos.length < 10 && (
           <label className="aspect-square rounded-lg border-2 border-dashed border-muted-foreground/30 flex flex-col items-center justify-center gap-2 cursor-pointer hover:border-gold/50 hover:bg-surface transition-all group">
             <input
               type="file"
@@ -75,14 +75,14 @@ export const PhotoUpload = ({ photos, onChange, onClear }: PhotoUploadProps) => 
       {photos.length === 0 && (
         <div className="flex items-center gap-2 text-muted-foreground text-sm p-3 rounded-lg bg-surface">
           <ImageIcon className="w-4 h-4" />
-          <span>Adicione até 4 fotos do imóvel</span>
+          <span>Adicione até 10 fotos do imóvel</span>
         </div>
       )}
 
       {photos.length > 0 && (
         <div className="flex items-center justify-between">
           <p className="text-muted-foreground text-sm">
-            {photos.length}/4 fotos adicionadas
+            {photos.length}/10 fotos adicionadas
           </p>
           {onClear && (
             <Button
