@@ -59,7 +59,7 @@ export function EliteLayout({ children }: EliteLayoutProps) {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 theme-light">
       {/* Mobile sidebar backdrop */}
       {sidebarOpen && (
         <div 
