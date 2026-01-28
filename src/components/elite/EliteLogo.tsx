@@ -1,5 +1,30 @@
 import logoPatrimoniar from '@/assets/logo-patrimoniar.svg';
 
+// Standardized logo footer for all creative slides - centered, 90px, white
+export const EliteLogoFooter = () => {
+  return (
+    <div 
+      style={{ 
+        width: '100%',
+        display: 'flex',
+        justifyContent: 'center',
+        marginTop: '24px',
+      }}
+    >
+      <img 
+        src={logoPatrimoniar} 
+        alt="Patrimoniar Imóveis" 
+        style={{ 
+          width: '90px',
+          height: 'auto',
+          filter: 'brightness(0) invert(1)',
+          opacity: 0.9,
+        }} 
+      />
+    </div>
+  );
+};
+
 interface EliteLogoProps {
   size?: 'sm' | 'md' | 'lg' | 'xl';
   variant?: 'full' | 'icon' | 'minimal';
