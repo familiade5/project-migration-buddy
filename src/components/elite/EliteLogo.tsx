@@ -15,7 +15,7 @@ export const EliteLogoFooter = () => {
         src={logoPatrimoniar} 
         alt="Patrimoniar Imóveis" 
         style={{ 
-          width: '90px',
+          width: '180px',
           height: 'auto',
           filter: 'brightness(0) invert(1)',
           opacity: 0.9,
