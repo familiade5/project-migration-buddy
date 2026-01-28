@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import { Upload, Loader2, Sparkles, Check, AlertCircle, Image as ImageIcon } from 'lucide-react';
+import { Upload, Loader2, Sparkles, Check, AlertCircle, Image as ImageIcon, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { PropertyData } from '@/types/property';
 import { supabase } from '@/integrations/supabase/client';
@@ -20,7 +20,6 @@ export const ScreenshotExtractor = ({ onExtract }: ScreenshotExtractorProps) => 
       reader.readAsDataURL(file);
       reader.onload = () => {
         const result = reader.result as string;
-        // Remove the data:image/xxx;base64, prefix
         const base64 = result.split(',')[1];
         resolve(base64);
       };
@@ -32,7 +31,6 @@ export const ScreenshotExtractor = ({ onExtract }: ScreenshotExtractorProps) => 
     const file = event.target.files?.[0];
     if (!file) return;
 
-    // Show preview
     const previewUrl = URL.createObjectURL(file);
     setPreview(previewUrl);
     setExtractedFields([]);
@@ -59,7 +57,6 @@ export const ScreenshotExtractor = ({ onExtract }: ScreenshotExtractorProps) => 
       const extractedData = data.data;
       console.log('Extracted data:', extractedData);
 
-      // Map extracted fields to property data
       const propertyUpdate: Partial<PropertyData> = {};
       const fieldsFound: string[] = [];
 
@@ -95,7 +92,6 @@ export const ScreenshotExtractor = ({ onExtract }: ScreenshotExtractorProps) => 
         propertyUpdate.discount = extractedData.discount;
         fieldsFound.push('Desconto');
       }
-      // Só atualiza quartos/banheiros/garagem se houver valor específico (não vazio e não 0)
       if (extractedData.bedrooms && extractedData.bedrooms !== '' && extractedData.bedrooms !== '0') {
         propertyUpdate.bedrooms = extractedData.bedrooms;
         fieldsFound.push('Quartos');
@@ -144,7 +140,6 @@ export const ScreenshotExtractor = ({ onExtract }: ScreenshotExtractorProps) => 
         fieldsFound.push('Forma Pagamento');
       }
       if (extractedData.fullAddress) {
-        // Try to parse the full address if individual fields weren't extracted
         if (!extractedData.street) {
           propertyUpdate.street = extractedData.fullAddress;
         }
@@ -165,14 +160,6 @@ export const ScreenshotExtractor = ({ onExtract }: ScreenshotExtractorProps) => 
       if (extractedData.cep) {
         propertyUpdate.cep = extractedData.cep;
         fieldsFound.push('CEP');
-      }
-      if (extractedData.condominiumRules) {
-        propertyUpdate.condominiumRules = extractedData.condominiumRules;
-        fieldsFound.push('Regras Condomínio');
-      }
-      if (extractedData.taxRules) {
-        propertyUpdate.taxRules = extractedData.taxRules;
-        fieldsFound.push('Regras Tributos');
       }
       if (extractedData.condominiumRules) {
         propertyUpdate.condominiumRules = extractedData.condominiumRules;
@@ -211,7 +198,6 @@ export const ScreenshotExtractor = ({ onExtract }: ScreenshotExtractorProps) => 
       setPreview(null);
     } finally {
       setIsExtracting(false);
-      // Reset the input
       event.target.value = '';
     }
   }, [onExtract]);
@@ -223,28 +209,16 @@ export const ScreenshotExtractor = ({ onExtract }: ScreenshotExtractorProps) => 
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center gap-3 mb-4">
-        <div className="p-2 rounded-lg bg-gold/10">
-          <Sparkles className="w-5 h-5 text-gold" />
-        </div>
-        <div>
-          <h3 className="font-semibold text-foreground">Extração Automática com IA</h3>
-          <p className="text-xs text-muted-foreground">
-            Envie um screenshot do site da Caixa para preencher automaticamente
-          </p>
-        </div>
-      </div>
-
       {!preview ? (
         <label className="block cursor-pointer">
-          <div className="border-2 border-dashed border-gold/30 rounded-xl p-8 text-center hover:border-gold/50 hover:bg-gold/5 transition-all duration-300 group">
+          <div className="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center hover:border-gray-400 hover:bg-gray-50 transition-all duration-200 group">
             <div className="flex flex-col items-center gap-3">
-              <div className="p-4 rounded-full bg-gold/10 group-hover:bg-gold/20 transition-colors">
-                <Upload className="w-8 h-8 text-gold" />
+              <div className="p-4 rounded-full bg-gray-100 group-hover:bg-gray-200 transition-colors">
+                <Upload className="w-8 h-8 text-gray-500" />
               </div>
               <div>
-                <p className="font-medium text-foreground">Clique para enviar screenshot</p>
-                <p className="text-sm text-muted-foreground mt-1">
+                <p className="font-medium text-gray-700">Clique para enviar screenshot</p>
+                <p className="text-sm text-gray-500 mt-1">
                   PNG, JPG ou WEBP (máx. 10MB)
                 </p>
               </div>
@@ -261,17 +235,25 @@ export const ScreenshotExtractor = ({ onExtract }: ScreenshotExtractorProps) => 
       ) : (
         <div className="space-y-4">
           {/* Preview image */}
-          <div className="relative rounded-xl overflow-hidden border border-border">
+          <div className="relative rounded-xl overflow-hidden border border-gray-200 bg-gray-100">
             <img 
               src={preview} 
               alt="Preview" 
               className="w-full h-48 object-cover object-top"
             />
+            {!isExtracting && (
+              <button
+                onClick={clearPreview}
+                className="absolute top-2 right-2 p-1.5 rounded-full bg-white/90 text-gray-600 hover:bg-white hover:text-gray-900 shadow-sm transition-colors"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            )}
             {isExtracting && (
-              <div className="absolute inset-0 bg-background/80 backdrop-blur-sm flex items-center justify-center">
+              <div className="absolute inset-0 bg-white/90 backdrop-blur-sm flex items-center justify-center">
                 <div className="flex flex-col items-center gap-3">
-                  <Loader2 className="w-8 h-8 text-gold animate-spin" />
-                  <p className="text-sm font-medium text-foreground">
+                  <Loader2 className="w-8 h-8 text-gray-600 animate-spin" />
+                  <p className="text-sm font-medium text-gray-700">
                     Analisando imagem com IA...
                   </p>
                 </div>
@@ -281,10 +263,12 @@ export const ScreenshotExtractor = ({ onExtract }: ScreenshotExtractorProps) => 
 
           {/* Extracted fields */}
           {extractedFields.length > 0 && (
-            <div className="bg-green-500/10 border border-green-500/20 rounded-xl p-4">
+            <div className="bg-green-50 border border-green-200 rounded-xl p-4">
               <div className="flex items-center gap-2 mb-3">
-                <Check className="w-5 h-5 text-green-500" />
-                <span className="font-medium text-green-500">
+                <div className="p-1 rounded-full bg-green-100">
+                  <Check className="w-4 h-4 text-green-600" />
+                </div>
+                <span className="font-medium text-green-700">
                   {extractedFields.length} campos extraídos
                 </span>
               </div>
@@ -292,7 +276,7 @@ export const ScreenshotExtractor = ({ onExtract }: ScreenshotExtractorProps) => 
                 {extractedFields.map((field) => (
                   <span
                     key={field}
-                    className="px-2 py-1 bg-green-500/20 text-green-400 text-xs rounded-md font-medium"
+                    className="px-2.5 py-1 bg-green-100 text-green-700 text-xs rounded-full font-medium"
                   >
                     {field}
                   </span>
@@ -306,14 +290,14 @@ export const ScreenshotExtractor = ({ onExtract }: ScreenshotExtractorProps) => 
             <Button
               variant="outline"
               onClick={clearPreview}
-              className="flex-1"
+              className="flex-1 border-gray-300"
               disabled={isExtracting}
             >
               Limpar
             </Button>
             <label className="flex-1">
               <Button
-                className="w-full bg-gold hover:bg-gold/90 text-primary-foreground"
+                className="w-full bg-gray-900 hover:bg-gray-800 text-white"
                 disabled={isExtracting}
                 asChild
               >
@@ -335,9 +319,9 @@ export const ScreenshotExtractor = ({ onExtract }: ScreenshotExtractorProps) => 
       )}
 
       {/* Tips */}
-      <div className="bg-muted/50 rounded-lg p-3 text-xs text-muted-foreground">
+      <div className="bg-gray-100 rounded-xl p-4 text-sm text-gray-600">
         <p className="flex items-start gap-2">
-          <AlertCircle className="w-4 h-4 mt-0.5 flex-shrink-0" />
+          <Sparkles className="w-4 h-4 mt-0.5 flex-shrink-0 text-gray-500" />
           <span>
             Para melhores resultados, capture a tela inteira do imóvel no site da Caixa, 
             incluindo valores, características e formas de pagamento.
