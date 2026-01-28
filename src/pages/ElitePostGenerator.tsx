@@ -6,14 +6,15 @@ import { ElitePostPreview } from '@/components/elite/ElitePostPreview';
 import { CaptionGenerator } from '@/components/CaptionGenerator';
 import { ScreenshotExtractor } from '@/components/ScreenshotExtractor';
 import { PhotoSearcher } from '@/components/PhotoSearcher';
-import { Crown, Image, FileText, Upload, Edit3, Search, Sparkles } from 'lucide-react';
+import { Home, Image, FileText, Upload, Edit3, Search, Sparkles } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { EliteLayout } from '@/components/layout/EliteLayout';
 import { useModuleActivity } from '@/hooks/useModuleActivity';
+import logoPatrimoniar from '@/assets/logo-patrimoniar.svg';
 
 const ElitePostGenerator = () => {
   // Log module access
-  useModuleActivity('Élite Imóveis');
+  useModuleActivity('Patrimoniar Imóveis');
   
   const [propertyData, setPropertyData] = useState<PropertyData>(defaultPropertyData);
   const [photos, setPhotos] = useState<string[]>([]);
@@ -32,18 +33,16 @@ const ElitePostGenerator = () => {
         <div className="flex items-center justify-between mb-8">
           <div>
             <div className="flex items-center gap-3 mb-2">
-              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-amber-400 via-yellow-500 to-amber-600 flex items-center justify-center">
-                <Crown className="w-5 h-5 text-amber-950" />
-              </div>
-              <h1 className="font-display text-2xl sm:text-3xl lg:text-4xl font-semibold text-foreground tracking-tight">
-                Élite Imóveis
+              <img src={logoPatrimoniar} alt="Patrimoniar" className="h-12 w-auto" />
+              <h1 className="font-display text-2xl sm:text-3xl lg:text-4xl font-semibold text-gray-900 tracking-tight">
+                Patrimoniar Imóveis
               </h1>
             </div>
-            <p className="text-sm text-muted-foreground ml-14">Gerador de Posts Premium para Imóveis de Alto Padrão</p>
+            <p className="text-sm text-gray-500 ml-14">Gerador de Posts Premium para Imóveis de Alto Padrão</p>
           </div>
-          <div className="hidden sm:flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-amber-500/10 to-yellow-500/10 border border-amber-500/20">
-            <Sparkles className="w-4 h-4 text-amber-400" />
-            <span className="text-sm font-medium text-amber-400">10 posts + legenda</span>
+          <div className="hidden sm:flex items-center gap-2 px-4 py-2 rounded-full bg-[#2D2B4D]/5 border border-[#2D2B4D]/10">
+            <Sparkles className="w-4 h-4 text-[#BA9E72]" />
+            <span className="text-sm font-medium text-[#2D2B4D]">10 posts + legenda</span>
           </div>
         </div>
 
@@ -52,32 +51,32 @@ const ElitePostGenerator = () => {
           {/* Left Column - Input */}
           <div className="space-y-6 min-w-0">
             {/* 1. Screenshot Extractor */}
-            <div className="rounded-2xl border border-amber-500/20 bg-gradient-to-br from-card to-card/80 p-4 sm:p-6 overflow-hidden shadow-xl shadow-amber-500/5">
+            <div className="rounded-2xl border border-gray-200 bg-white p-4 sm:p-6 overflow-hidden shadow-sm">
               <div className="flex items-center gap-2 mb-4">
-                <Upload className="w-5 h-5 text-amber-400" />
-                <h2 className="font-semibold text-foreground">Extração Automática</h2>
+                <Upload className="w-5 h-5 text-[#BA9E72]" />
+                <h2 className="font-semibold text-gray-900">Extração Automática</h2>
               </div>
               <ScreenshotExtractor onExtract={handleExtractedData} />
             </div>
 
             {/* 2. Photos */}
-            <div className="rounded-2xl border border-amber-500/20 bg-gradient-to-br from-card to-card/80 p-4 sm:p-6 overflow-hidden shadow-xl shadow-amber-500/5">
+            <div className="rounded-2xl border border-gray-200 bg-white p-4 sm:p-6 overflow-hidden shadow-sm">
               <Tabs defaultValue="upload" className="w-full">
                 <div className="flex items-center gap-2 mb-4">
-                  <Image className="w-5 h-5 text-amber-400" />
-                  <h2 className="font-semibold text-foreground">Fotos do Imóvel</h2>
+                  <Image className="w-5 h-5 text-[#BA9E72]" />
+                  <h2 className="font-semibold text-gray-900">Fotos do Imóvel</h2>
                 </div>
-                <TabsList className="grid w-full grid-cols-2 bg-background/50 mb-4">
+                <TabsList className="grid w-full grid-cols-2 bg-gray-100 mb-4">
                   <TabsTrigger 
                     value="upload" 
-                    className="gap-2 text-xs sm:text-sm data-[state=active]:bg-gradient-to-r data-[state=active]:from-amber-500 data-[state=active]:to-yellow-500 data-[state=active]:text-amber-950"
+                    className="gap-2 text-xs sm:text-sm data-[state=active]:bg-[#2D2B4D] data-[state=active]:text-white"
                   >
                     <Upload className="w-4 h-4" />
                     Upload Manual
                   </TabsTrigger>
                   <TabsTrigger 
                     value="search" 
-                    className="gap-2 text-xs sm:text-sm data-[state=active]:bg-gradient-to-r data-[state=active]:from-amber-500 data-[state=active]:to-yellow-500 data-[state=active]:text-amber-950"
+                    className="gap-2 text-xs sm:text-sm data-[state=active]:bg-[#2D2B4D] data-[state=active]:text-white"
                   >
                     <Search className="w-4 h-4" />
                     Buscar Fotos
@@ -108,10 +107,10 @@ const ElitePostGenerator = () => {
             </div>
 
             {/* 3. Manual Form */}
-            <div className="rounded-2xl border border-amber-500/20 bg-gradient-to-br from-card to-card/80 p-4 sm:p-6 overflow-hidden shadow-xl shadow-amber-500/5">
+            <div className="rounded-2xl border border-gray-200 bg-white p-4 sm:p-6 overflow-hidden shadow-sm">
               <div className="flex items-center gap-2 mb-4">
-                <Edit3 className="w-5 h-5 text-amber-400" />
-                <h2 className="font-semibold text-foreground">Preenchimento Manual</h2>
+                <Edit3 className="w-5 h-5 text-[#BA9E72]" />
+                <h2 className="font-semibold text-gray-900">Preenchimento Manual</h2>
               </div>
               <PropertyForm data={propertyData} onChange={setPropertyData} />
             </div>
@@ -120,17 +119,17 @@ const ElitePostGenerator = () => {
           {/* Right Column - Preview */}
           <div className="lg:sticky lg:top-4 space-y-6 min-w-0">
             <Tabs defaultValue="images" className="w-full">
-              <TabsList className="grid w-full grid-cols-2 bg-background/50">
+              <TabsList className="grid w-full grid-cols-2 bg-gray-100">
                 <TabsTrigger 
                   value="images" 
-                  className="gap-2 text-xs sm:text-sm data-[state=active]:bg-gradient-to-r data-[state=active]:from-amber-500 data-[state=active]:to-yellow-500 data-[state=active]:text-amber-950"
+                  className="gap-2 text-xs sm:text-sm data-[state=active]:bg-[#2D2B4D] data-[state=active]:text-white"
                 >
                   <Image className="w-4 h-4" />
                   Imagens
                 </TabsTrigger>
                 <TabsTrigger 
                   value="caption" 
-                  className="gap-2 text-xs sm:text-sm data-[state=active]:bg-gradient-to-r data-[state=active]:from-amber-500 data-[state=active]:to-yellow-500 data-[state=active]:text-amber-950"
+                  className="gap-2 text-xs sm:text-sm data-[state=active]:bg-[#2D2B4D] data-[state=active]:text-white"
                 >
                   <FileText className="w-4 h-4" />
                   Legenda
@@ -138,13 +137,13 @@ const ElitePostGenerator = () => {
               </TabsList>
               
               <TabsContent value="images" className="mt-4 lg:mt-6">
-                <div className="rounded-2xl border border-amber-500/20 bg-gradient-to-br from-card to-card/80 p-4 sm:p-6 overflow-hidden shadow-xl shadow-amber-500/5">
+                <div className="rounded-2xl border border-gray-200 bg-white p-4 sm:p-6 overflow-hidden shadow-sm">
                   <ElitePostPreview data={propertyData} photos={photos} />
                 </div>
               </TabsContent>
               
               <TabsContent value="caption" className="mt-4 lg:mt-6">
-                <div className="rounded-2xl border border-amber-500/20 bg-gradient-to-br from-card to-card/80 p-4 sm:p-6 overflow-hidden shadow-xl shadow-amber-500/5">
+                <div className="rounded-2xl border border-gray-200 bg-white p-4 sm:p-6 overflow-hidden shadow-sm">
                   <CaptionGenerator data={propertyData} />
                 </div>
               </TabsContent>
@@ -152,10 +151,10 @@ const ElitePostGenerator = () => {
             
             {/* Mobile indicator */}
             <div className="sm:hidden flex items-center justify-center gap-2 py-2">
-              <div className="px-4 py-2 rounded-full bg-gradient-to-r from-amber-500/10 to-yellow-500/10 border border-amber-500/20">
+              <div className="px-4 py-2 rounded-full bg-[#2D2B4D]/5 border border-[#2D2B4D]/10">
                 <div className="flex items-center gap-2">
-                  <Sparkles className="w-4 h-4 text-amber-400" />
-                  <span className="text-sm font-medium text-amber-400">10 posts + legenda</span>
+                  <Sparkles className="w-4 h-4 text-[#BA9E72]" />
+                  <span className="text-sm font-medium text-[#2D2B4D]">10 posts + legenda</span>
                 </div>
               </div>
             </div>
