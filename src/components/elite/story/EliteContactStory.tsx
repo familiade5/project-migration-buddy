@@ -1,6 +1,6 @@
 import { PropertyData } from '@/types/property';
 import { MessageCircle, Phone, Crown, ArrowRight } from 'lucide-react';
-import logoElite from '@/assets/logo-elite.png';
+import logoPatrimoniar from '@/assets/logo-patrimoniar.svg';
 
 interface EliteContactStoryProps {
   data: PropertyData;
@@ -57,9 +57,14 @@ export const EliteContactStory = ({ data, photo }: EliteContactStoryProps) => {
         style={{ top: '60px', left: '50px' }}
       >
         <img 
-          src={logoElite} 
-          alt="Élite Imóveis" 
-          style={{ height: '60px', objectFit: 'contain' }}
+          src={logoPatrimoniar} 
+          alt="Patrimoniar Imóveis" 
+          style={{ 
+            width: '180px',
+            height: 'auto',
+            filter: 'brightness(0) invert(1)',
+            opacity: 0.9,
+          }}
         />
       </div>
 
