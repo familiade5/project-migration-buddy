@@ -49,9 +49,13 @@ export const EducationalCaptionGenerator = ({ data }: EducationalCaptionGenerato
     lines.push('📲 Quer saber mais? Chama no Direct ou clica no link da bio!');
     lines.push('');
     
-    // Contact info
+    // Contact info - new format
+    lines.push('📞 Mais informações:');
     if (data.contactName) {
       lines.push(`👤 ${data.contactName}`);
+    }
+    if (data.creci) {
+      lines.push(`📄 ${data.creci}`);
     }
     if (data.contactPhone) {
       lines.push(`📱 ${data.contactPhone}`);
@@ -66,7 +70,7 @@ export const EducationalCaptionGenerator = ({ data }: EducationalCaptionGenerato
   };
 
   const getHashtags = (category: string): string => {
-    const baseHashtags = '#imoveiscaixa #casapropria #investimentoimobiliario';
+    const baseHashtags = '#imoveiscaixa #casapropria #investimentoimobiliario #vendadiretahoje';
     
     const categoryHashtags: Record<string, string> = {
       tips: '#dicasimobiliarias #educacaofinanceira #financiamentoimobiliario',

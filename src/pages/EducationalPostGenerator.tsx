@@ -3,7 +3,9 @@ import {
   EducationalPostData, 
   defaultEducationalPostData, 
   EducationalTopic,
-  EducationalCategory 
+  EducationalCategory,
+  EducationalSlide,
+  defaultTopics 
 } from '@/types/educational';
 import { EducationalTopicSelector } from '@/components/educational/EducationalTopicSelector';
 import { EducationalSlideEditor } from '@/components/educational/EducationalSlideEditor';
@@ -13,11 +15,15 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { 
-  BookOpen, Edit3, LayoutGrid, FileText, User, Phone, BadgeCheck, Sparkles, Save, Check 
+  BookOpen, Edit3, LayoutGrid, FileText, User, Phone, BadgeCheck, Sparkles, Save, Check, RefreshCw, ChevronLeft, ChevronRight 
 } from 'lucide-react';
 import { EliteLayout } from '@/components/layout/EliteLayout';
 import { useModuleActivity } from '@/hooks/useModuleActivity';
+import { useCrecis } from '@/hooks/useCrecis';
+import { useAuth } from '@/contexts/AuthContext';
+import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import logoVDH from '@/assets/logo-vdh-revenda.png';
 
@@ -26,32 +32,46 @@ const STORAGE_KEY = 'educational-contact-defaults';
 const EducationalPostGenerator = () => {
   useModuleActivity('Posts Educativos');
   
+  const { profile } = useAuth();
+  const { crecis, defaultCreci, formatCreci } = useCrecis();
+  
   const [postData, setPostData] = useState<EducationalPostData>(defaultEducationalPostData);
   const [saved, setSaved] = useState(false);
+  const [agencyPhone, setAgencyPhone] = useState('');
+  
+  // History for content generation
+  const [slideHistory, setSlideHistory] = useState<EducationalSlide[][]>([]);
+  const [historyIndex, setHistoryIndex] = useState(-1);
 
-  // Load saved contact info on mount
+  // Fetch agency data for phone
   useEffect(() => {
-    const savedData = localStorage.getItem(STORAGE_KEY);
-    if (savedData) {
-      try {
-        const parsed = JSON.parse(savedData);
-        setPostData(prev => ({
-          ...prev,
-          contactName: parsed.contactName || '',
-          contactPhone: parsed.contactPhone || '',
-          creci: parsed.creci || '',
-        }));
-      } catch (e) {
-        console.error('Error loading saved contact:', e);
-      }
-    }
+    const fetchAgency = async () => {
+      const { data } = await supabase.from('real_estate_agency').select('phone').limit(1).single();
+      if (data?.phone) setAgencyPhone(data.phone);
+    };
+    fetchAgency();
   }, []);
+
+  // Auto-fill contact info from profile, agency and default CRECI
+  useEffect(() => {
+    if (profile?.full_name || agencyPhone || defaultCreci) {
+      setPostData(prev => ({
+        ...prev,
+        contactName: prev.contactName || profile?.full_name?.split(' - ')[0] || '',
+        contactPhone: prev.contactPhone || agencyPhone || '',
+        creci: prev.creci || (defaultCreci ? `CRECI ${defaultCreci}` : ''),
+      }));
+    }
+  }, [profile, agencyPhone, defaultCreci]);
 
   const handleCategoryChange = useCallback((category: EducationalCategory) => {
     setPostData(prev => ({ ...prev, category }));
   }, []);
 
   const handleTopicChange = useCallback((topic: EducationalTopic) => {
+    // Reset history when topic changes
+    setSlideHistory([]);
+    setHistoryIndex(-1);
     setPostData(prev => ({
       ...prev,
       topicId: topic.id,
@@ -69,6 +89,55 @@ const EducationalPostGenerator = () => {
     setSaved(true);
     toast.success('Dados de contato salvos como padrão!');
     setTimeout(() => setSaved(false), 2000);
+  };
+
+  const handleGenerateNewContent = () => {
+    // Save current slides to history before generating new
+    const currentSlides = [...postData.slides];
+    setSlideHistory(prev => [...prev.slice(0, historyIndex + 1), currentSlides]);
+    setHistoryIndex(prev => prev + 1);
+
+    // Find other topics in the same category to rotate content
+    const sameCategoryTopics = defaultTopics.filter(t => t.category === postData.category && t.id !== postData.topicId);
+    
+    if (sameCategoryTopics.length > 0) {
+      // Randomly pick another topic from same category
+      const randomTopic = sameCategoryTopics[Math.floor(Math.random() * sameCategoryTopics.length)];
+      setPostData(prev => ({
+        ...prev,
+        topicId: randomTopic.id,
+        slides: [...randomTopic.defaultSlides],
+      }));
+      toast.success('Novo conteúdo gerado!');
+    } else {
+      toast.info('Não há outros temas nesta categoria');
+    }
+  };
+
+  const handlePreviousContent = () => {
+    if (historyIndex > 0) {
+      // Save current before going back
+      if (historyIndex === slideHistory.length - 1) {
+        setSlideHistory(prev => [...prev, [...postData.slides]]);
+      }
+      setHistoryIndex(prev => prev - 1);
+      setPostData(prev => ({ ...prev, slides: [...slideHistory[historyIndex - 1]] }));
+      toast.success('Conteúdo anterior restaurado');
+    } else if (historyIndex === 0 && slideHistory.length > 0) {
+      setPostData(prev => ({ ...prev, slides: [...slideHistory[0]] }));
+    }
+  };
+
+  const handleNextContent = () => {
+    if (historyIndex < slideHistory.length - 1) {
+      setHistoryIndex(prev => prev + 1);
+      setPostData(prev => ({ ...prev, slides: [...slideHistory[historyIndex + 1]] }));
+      toast.success('Próximo conteúdo restaurado');
+    }
+  };
+
+  const handleCreciChange = (value: string) => {
+    setPostData(prev => ({ ...prev, creci: value }));
   };
 
   return (
@@ -125,13 +194,46 @@ const EducationalPostGenerator = () => {
             {/* Slide Editor */}
             <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
               <div className="px-6 py-4 border-b border-gray-100 bg-gray-50/50">
-                <div className="flex items-center gap-3">
-                  <div className="p-2 rounded-lg bg-gray-900 text-white">
-                    <Edit3 className="w-4 h-4" />
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 rounded-lg bg-gray-900 text-white">
+                      <Edit3 className="w-4 h-4" />
+                    </div>
+                    <div>
+                      <h2 className="font-semibold text-gray-900">Editar Conteúdo</h2>
+                      <p className="text-xs text-gray-500">Personalize os slides do seu post</p>
+                    </div>
                   </div>
-                  <div>
-                    <h2 className="font-semibold text-gray-900">Editar Conteúdo</h2>
-                    <p className="text-xs text-gray-500">Personalize os slides do seu post</p>
+                  <div className="flex items-center gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={handlePreviousContent}
+                      disabled={historyIndex < 0}
+                      className="gap-1 px-2"
+                      title="Conteúdo anterior"
+                    >
+                      <ChevronLeft className="w-4 h-4" />
+                    </Button>
+                    <Button
+                      variant="default"
+                      size="sm"
+                      onClick={handleGenerateNewContent}
+                      className="gap-2 bg-amber-600 hover:bg-amber-700 text-white"
+                    >
+                      <RefreshCw className="w-4 h-4" />
+                      Gerar Novo
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={handleNextContent}
+                      disabled={historyIndex >= slideHistory.length - 1}
+                      className="gap-1 px-2"
+                      title="Próximo conteúdo"
+                    >
+                      <ChevronRight className="w-4 h-4" />
+                    </Button>
                   </div>
                 </div>
               </div>
@@ -208,12 +310,18 @@ const EducationalPostGenerator = () => {
                     <BadgeCheck className="w-3.5 h-3.5" />
                     CRECI
                   </Label>
-                  <Input
-                    value={postData.creci}
-                    onChange={(e) => setPostData(prev => ({ ...prev, creci: e.target.value }))}
-                    placeholder="CRECI-MS 00000"
-                    className="border-gray-300 text-gray-900 placeholder:text-gray-400"
-                  />
+                  <Select value={postData.creci} onValueChange={handleCreciChange}>
+                    <SelectTrigger className="border-gray-300 text-gray-900">
+                      <SelectValue placeholder="Selecione o CRECI" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {crecis.map((creci) => (
+                        <SelectItem key={creci.id} value={`CRECI ${formatCreci(creci)}`}>
+                          CRECI {formatCreci(creci)}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
               </div>
             </div>
