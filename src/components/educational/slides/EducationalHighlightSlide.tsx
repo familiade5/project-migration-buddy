@@ -1,5 +1,5 @@
 import { EducationalSlide } from '@/types/educational';
-import logoPatrimoniar from '@/assets/logo-patrimoniar.svg';
+import logoVDH from '@/assets/logo-vdh-revenda-white-alpha.png';
 import { Sparkles } from 'lucide-react';
 
 interface EducationalHighlightSlideProps {
@@ -65,12 +65,11 @@ export const EducationalHighlightSlide = ({
         }}
       >
         <img 
-          src={logoPatrimoniar} 
+          src={logoVDH} 
           alt=""
           style={{
             width: isStory ? '120px' : '100px',
             height: 'auto',
-            filter: 'brightness(0) invert(1)',
           }}
         />
       </div>

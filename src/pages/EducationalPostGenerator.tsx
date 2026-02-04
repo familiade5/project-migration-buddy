@@ -18,7 +18,7 @@ import {
 } from 'lucide-react';
 import { EliteLayout } from '@/components/layout/EliteLayout';
 import { useModuleActivity } from '@/hooks/useModuleActivity';
-import logoPatrimoniar from '@/assets/logo-patrimoniar.svg';
+import logoVDH from '@/assets/logo-vdh-revenda.png';
 
 const EducationalPostGenerator = () => {
   useModuleActivity('Posts Educativos');
@@ -44,7 +44,7 @@ const EducationalPostGenerator = () => {
         <div className="mb-8">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div className="flex items-center gap-4">
-              <img src={logoPatrimoniar} alt="Patrimoniar" className="h-14 w-auto" />
+              <img src={logoVDH} alt="Venda Direta Hoje" className="h-12 w-auto" />
               <div>
                 <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 tracking-tight">
                   Posts Educativos
