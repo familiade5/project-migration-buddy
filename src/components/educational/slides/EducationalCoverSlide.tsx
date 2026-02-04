@@ -1,5 +1,5 @@
 import { EducationalSlide, EducationalCategory, categoryLabels } from '@/types/educational';
-import logoPatrimoniar from '@/assets/logo-patrimoniar.svg';
+import logoVDH from '@/assets/logo-vdh-revenda-white-alpha.png';
 
 interface EducationalCoverSlideProps {
   slide: EducationalSlide;
@@ -52,12 +52,11 @@ export const EducationalCoverSlide = ({ slide, category, format }: EducationalCo
         }}
       >
         <img 
-          src={logoPatrimoniar} 
-          alt="Patrimoniar Imóveis"
+          src={logoVDH} 
+          alt="Venda Direta Hoje"
           style={{
             width: isStory ? '200px' : '180px',
             height: 'auto',
-            filter: 'brightness(0) invert(1)',
             opacity: 0.9,
           }}
         />

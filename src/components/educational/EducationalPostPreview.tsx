@@ -115,7 +115,7 @@ export const EducationalPostPreview = ({ data }: EducationalPostPreviewProps) =>
     }
   };
 
-  const previewScale = format === 'story' ? 0.19 : 0.33;
+  const previewScale = format === 'story' ? 0.22 : 0.38;
 
   return (
     <div className="space-y-4">
@@ -140,7 +140,7 @@ export const EducationalPostPreview = ({ data }: EducationalPostPreviewProps) =>
       </Tabs>
 
       {/* Preview area */}
-      <div className="relative bg-gray-100 rounded-xl p-4 flex items-center justify-center min-h-[400px]">
+      <div className="relative bg-gray-100 rounded-xl p-4 flex items-center justify-center overflow-hidden" style={{ minHeight: format === 'story' ? '450px' : '420px' }}>
         {/* Navigation arrows */}
         <button
           onClick={prevSlide}

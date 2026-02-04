@@ -1,5 +1,5 @@
 import { EducationalSlide } from '@/types/educational';
-import logoPatrimoniar from '@/assets/logo-patrimoniar.svg';
+import logoVDH from '@/assets/logo-vdh-revenda-white-alpha.png';
 import { MessageCircle, ArrowRight } from 'lucide-react';
 
 interface EducationalCTASlideProps {
@@ -68,12 +68,11 @@ export const EducationalCTASlide = ({
         }}
       >
         <img 
-          src={logoPatrimoniar} 
-          alt="Patrimoniar Imóveis"
+          src={logoVDH} 
+          alt="Venda Direta Hoje"
           style={{
             width: isStory ? '220px' : '180px',
             height: 'auto',
-            filter: 'brightness(0) invert(1)',
             opacity: 0.9,
           }}
         />
