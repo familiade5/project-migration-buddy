@@ -1,4 +1,5 @@
 import { EducationalSlide, EducationalCategory, categoryLabels } from '@/types/educational';
+import bgCover from '@/assets/educational/bg-cover.jpg';
 
 interface EducationalCoverSlideProps {
   slide: EducationalSlide;
@@ -15,22 +16,31 @@ export const EducationalCoverSlide = ({ slide, category, format }: EducationalCo
       style={{ 
         width: isStory ? '1080px' : '1080px',
         height: isStory ? '1920px' : '1080px',
-        background: 'linear-gradient(135deg, #0a0a14 0%, #12121f 50%, #0a0a14 100%)',
         position: 'relative',
         overflow: 'hidden',
       }}
     >
-      {/* Subtle geometric pattern */}
+      {/* Background image */}
       <div 
         style={{
           position: 'absolute',
           inset: 0,
-          backgroundImage: `radial-gradient(circle at 20% 80%, rgba(186, 158, 114, 0.08) 0%, transparent 50%),
-                           radial-gradient(circle at 80% 20%, rgba(186, 158, 114, 0.05) 0%, transparent 40%)`,
+          backgroundImage: `url(${bgCover})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
         }}
       />
 
-      {/* Top accent line */}
+      {/* Dark overlay with gradient */}
+      <div 
+        style={{
+          position: 'absolute',
+          inset: 0,
+          background: 'linear-gradient(180deg, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.7) 50%, rgba(0,0,0,0.85) 100%)',
+        }}
+      />
+
+      {/* Top gold accent line */}
       <div 
         style={{
           position: 'absolute',
@@ -38,7 +48,7 @@ export const EducationalCoverSlide = ({ slide, category, format }: EducationalCo
           left: 0,
           right: 0,
           height: '4px',
-          background: 'linear-gradient(90deg, transparent, #BA9E72, transparent)',
+          background: 'linear-gradient(90deg, transparent 10%, #D4AF37 50%, transparent 90%)',
         }}
       />
 
@@ -53,14 +63,15 @@ export const EducationalCoverSlide = ({ slide, category, format }: EducationalCo
         <span 
           style={{
             display: 'inline-block',
-            padding: '10px 24px',
-            background: 'rgba(186, 158, 114, 0.15)',
-            border: '1px solid rgba(186, 158, 114, 0.3)',
+            padding: '12px 28px',
+            background: 'rgba(212, 175, 55, 0.2)',
+            border: '1px solid rgba(212, 175, 55, 0.5)',
             borderRadius: '50px',
-            color: '#BA9E72',
-            fontSize: isStory ? '24px' : '18px',
-            fontWeight: '500',
-            letterSpacing: '0.5px',
+            color: '#D4AF37',
+            fontSize: isStory ? '26px' : '20px',
+            fontWeight: '600',
+            letterSpacing: '1px',
+            backdropFilter: 'blur(10px)',
           }}
         >
           {categoryLabels[category]}
@@ -78,25 +89,56 @@ export const EducationalCoverSlide = ({ slide, category, format }: EducationalCo
           width: '85%',
         }}
       >
+        {/* Decorative element above headline */}
+        <div 
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '20px',
+            marginBottom: isStory ? '40px' : '30px',
+          }}
+        >
+          <div style={{ width: '60px', height: '1px', background: 'linear-gradient(90deg, transparent, #D4AF37)' }} />
+          <div style={{ width: '8px', height: '8px', background: '#D4AF37', transform: 'rotate(45deg)' }} />
+          <div style={{ width: '60px', height: '1px', background: 'linear-gradient(90deg, #D4AF37, transparent)' }} />
+        </div>
+
         <h1 
           style={{
-            fontSize: isStory ? '72px' : '64px',
+            fontSize: isStory ? '76px' : '68px',
             fontWeight: '700',
             color: '#ffffff',
-            lineHeight: '1.2',
+            lineHeight: '1.15',
             whiteSpace: 'pre-line',
-            textShadow: '0 4px 30px rgba(0,0,0,0.3)',
+            textShadow: '0 4px 30px rgba(0,0,0,0.5)',
+            letterSpacing: '-0.5px',
           }}
         >
           {slide.headline}
         </h1>
+
+        {/* Decorative element below headline */}
+        <div 
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '20px',
+            marginTop: isStory ? '40px' : '30px',
+          }}
+        >
+          <div style={{ width: '60px', height: '1px', background: 'linear-gradient(90deg, transparent, #D4AF37)' }} />
+          <div style={{ width: '8px', height: '8px', background: '#D4AF37', transform: 'rotate(45deg)' }} />
+          <div style={{ width: '60px', height: '1px', background: 'linear-gradient(90deg, #D4AF37, transparent)' }} />
+        </div>
       </div>
 
       {/* VDH Text - centered at bottom */}
       <div 
         style={{
           position: 'absolute',
-          bottom: isStory ? '80px' : '50px',
+          bottom: isStory ? '100px' : '60px',
           left: '50%',
           transform: 'translateX(-50%)',
           textAlign: 'center',
@@ -104,11 +146,11 @@ export const EducationalCoverSlide = ({ slide, category, format }: EducationalCo
       >
         <span 
           style={{
-            fontSize: isStory ? '48px' : '40px',
+            fontSize: isStory ? '52px' : '44px',
             fontWeight: '700',
             color: '#ffffff',
-            letterSpacing: '4px',
-            opacity: 0.9,
+            letterSpacing: '8px',
+            textShadow: '0 2px 20px rgba(0,0,0,0.5)',
           }}
         >
           VDH
@@ -120,13 +162,13 @@ export const EducationalCoverSlide = ({ slide, category, format }: EducationalCo
         <div 
           style={{
             position: 'absolute',
-            bottom: '40px',
+            bottom: '50px',
             left: '50%',
             transform: 'translateX(-50%)',
-            color: 'rgba(255,255,255,0.4)',
+            color: 'rgba(255,255,255,0.5)',
             fontSize: '18px',
             textTransform: 'uppercase',
-            letterSpacing: '2px',
+            letterSpacing: '3px',
           }}
         >
           Arraste para ver →

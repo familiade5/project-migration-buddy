@@ -1,5 +1,6 @@
 import { EducationalSlide } from '@/types/educational';
-import { MessageCircle, ArrowRight } from 'lucide-react';
+import { Phone, User, FileText, MessageCircle } from 'lucide-react';
+import bgCta from '@/assets/educational/bg-cta.jpg';
 
 interface EducationalCTASlideProps {
   slide: EducationalSlide;
@@ -28,32 +29,40 @@ export const EducationalCTASlide = ({
       style={{ 
         width: isStory ? '1080px' : '1080px',
         height: isStory ? '1920px' : '1080px',
-        background: 'linear-gradient(135deg, #0a0a14 0%, #12121f 50%, #0a0a14 100%)',
         position: 'relative',
         overflow: 'hidden',
       }}
     >
-      {/* Gold gradient accent */}
+      {/* Background image */}
       <div 
         style={{
           position: 'absolute',
-          bottom: 0,
-          left: 0,
-          right: 0,
-          height: '40%',
-          background: 'linear-gradient(180deg, transparent, rgba(186, 158, 114, 0.08))',
+          inset: 0,
+          backgroundImage: `url(${bgCta})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
         }}
       />
 
-      {/* Top line accent */}
+      {/* Dark overlay */}
+      <div 
+        style={{
+          position: 'absolute',
+          inset: 0,
+          background: 'linear-gradient(180deg, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.75) 50%, rgba(0,0,0,0.85) 100%)',
+        }}
+      />
+
+      {/* Top gold accent */}
       <div 
         style={{
           position: 'absolute',
           top: 0,
-          left: 0,
-          right: 0,
+          left: '50%',
+          transform: 'translateX(-50%)',
+          width: '200px',
           height: '4px',
-          background: 'linear-gradient(90deg, transparent, #BA9E72, transparent)',
+          background: 'linear-gradient(90deg, transparent, #D4AF37, transparent)',
         }}
       />
 
@@ -61,25 +70,41 @@ export const EducationalCTASlide = ({
       <div 
         style={{
           position: 'absolute',
-          top: isStory ? '80px' : '60px',
+          top: isStory ? '80px' : '50px',
           left: '50%',
           transform: 'translateX(-50%)',
+          textAlign: 'center',
         }}
       >
         <span 
           style={{
-            fontSize: isStory ? '56px' : '48px',
+            fontSize: isStory ? '48px' : '40px',
             fontWeight: '700',
             color: '#ffffff',
-            letterSpacing: '4px',
-            opacity: 0.9,
+            letterSpacing: '8px',
+            textShadow: '0 2px 20px rgba(0,0,0,0.5)',
           }}
         >
           VDH
         </span>
       </div>
 
-      {/* Main CTA content */}
+      {/* Slide indicator */}
+      <div 
+        style={{
+          position: 'absolute',
+          top: isStory ? '80px' : '50px',
+          right: isStory ? '80px' : '60px',
+          color: '#D4AF37',
+          fontSize: isStory ? '22px' : '18px',
+          fontWeight: '600',
+          letterSpacing: '2px',
+        }}
+      >
+        {slideNumber}/{totalSlides}
+      </div>
+
+      {/* Main content - centered */}
       <div 
         style={{
           position: 'absolute',
@@ -98,108 +123,159 @@ export const EducationalCTASlide = ({
             color: '#ffffff',
             lineHeight: '1.2',
             marginBottom: isStory ? '24px' : '20px',
+            textShadow: '0 4px 30px rgba(0,0,0,0.5)',
           }}
         >
           {slide.headline}
         </h2>
 
-        {/* Body */}
+        {/* Subtext */}
         {slide.body && (
           <p 
             style={{
-              fontSize: isStory ? '32px' : '26px',
-              color: 'rgba(255,255,255,0.7)',
-              lineHeight: '1.4',
-              marginBottom: isStory ? '48px' : '40px',
+              fontSize: isStory ? '32px' : '28px',
+              color: 'rgba(255,255,255,0.8)',
+              marginBottom: isStory ? '60px' : '48px',
             }}
           >
             {slide.body}
           </p>
         )}
 
-        {/* CTA Button style */}
+        {/* Contact card */}
         <div 
           style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '16px',
-            padding: isStory ? '24px 48px' : '20px 40px',
-            background: 'linear-gradient(135deg, #BA9E72 0%, #D4C4A8 100%)',
-            borderRadius: '60px',
-            boxShadow: '0 8px 32px rgba(186, 158, 114, 0.4)',
+            background: 'rgba(255,255,255,0.1)',
+            backdropFilter: 'blur(20px)',
+            borderRadius: '24px',
+            padding: isStory ? '48px 60px' : '40px 50px',
+            border: '1px solid rgba(212, 175, 55, 0.3)',
+            boxShadow: '0 20px 60px rgba(0,0,0,0.3)',
+            display: 'inline-block',
           }}
         >
-          <MessageCircle 
-            style={{ 
-              width: isStory ? '32px' : '28px', 
-              height: isStory ? '32px' : '28px', 
-              color: '#0a0a14' 
-            }} 
-          />
-          <span 
+          {/* Contact header */}
+          <div 
             style={{
-              fontSize: isStory ? '28px' : '24px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '12px',
+              marginBottom: isStory ? '36px' : '28px',
+              color: '#D4AF37',
+              fontSize: isStory ? '26px' : '22px',
               fontWeight: '600',
-              color: '#0a0a14',
+              letterSpacing: '2px',
+              textTransform: 'uppercase',
             }}
           >
-            Fale conosco
-          </span>
-          <ArrowRight 
-            style={{ 
-              width: isStory ? '28px' : '24px', 
-              height: isStory ? '28px' : '24px', 
-              color: '#0a0a14' 
-            }} 
-          />
+            <MessageCircle style={{ width: isStory ? '28px' : '24px', height: isStory ? '28px' : '24px' }} />
+            Fale Conosco
+          </div>
+
+          {/* Contact details */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: isStory ? '24px' : '20px' }}>
+            {/* Name */}
+            {contactName && (
+              <div 
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '16px',
+                }}
+              >
+                <User 
+                  style={{ 
+                    width: isStory ? '32px' : '28px', 
+                    height: isStory ? '32px' : '28px', 
+                    color: '#D4AF37' 
+                  }} 
+                />
+                <span 
+                  style={{
+                    fontSize: isStory ? '36px' : '32px',
+                    fontWeight: '600',
+                    color: '#ffffff',
+                  }}
+                >
+                  {contactName}
+                </span>
+              </div>
+            )}
+
+            {/* CRECI */}
+            {creci && (
+              <div 
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '16px',
+                }}
+              >
+                <FileText 
+                  style={{ 
+                    width: isStory ? '32px' : '28px', 
+                    height: isStory ? '32px' : '28px', 
+                    color: '#D4AF37' 
+                  }} 
+                />
+                <span 
+                  style={{
+                    fontSize: isStory ? '30px' : '26px',
+                    color: 'rgba(255,255,255,0.85)',
+                  }}
+                >
+                  {creci}
+                </span>
+              </div>
+            )}
+
+            {/* Phone */}
+            {contactPhone && (
+              <div 
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '16px',
+                }}
+              >
+                <Phone 
+                  style={{ 
+                    width: isStory ? '32px' : '28px', 
+                    height: isStory ? '32px' : '28px', 
+                    color: '#D4AF37' 
+                  }} 
+                />
+                <span 
+                  style={{
+                    fontSize: isStory ? '34px' : '30px',
+                    fontWeight: '500',
+                    color: '#ffffff',
+                  }}
+                >
+                  {contactPhone}
+                </span>
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
-      {/* Contact info footer */}
+      {/* Bottom accent line */}
       <div 
         style={{
           position: 'absolute',
-          bottom: isStory ? '80px' : '60px',
+          bottom: 0,
           left: '50%',
           transform: 'translateX(-50%)',
-          textAlign: 'center',
+          width: '300px',
+          height: '4px',
+          background: 'linear-gradient(90deg, transparent, #D4AF37, transparent)',
         }}
-      >
-        {contactName && (
-          <p 
-            style={{
-              fontSize: isStory ? '26px' : '22px',
-              color: 'rgba(255,255,255,0.9)',
-              fontWeight: '500',
-              marginBottom: '8px',
-            }}
-          >
-            {contactName}
-          </p>
-        )}
-        {contactPhone && (
-          <p 
-            style={{
-              fontSize: isStory ? '32px' : '28px',
-              color: '#BA9E72',
-              fontWeight: '600',
-              marginBottom: '8px',
-            }}
-          >
-            {contactPhone}
-          </p>
-        )}
-        {creci && (
-          <p 
-            style={{
-              fontSize: isStory ? '18px' : '16px',
-              color: 'rgba(255,255,255,0.4)',
-            }}
-          >
-            {creci}
-          </p>
-        )}
-      </div>
+      />
     </div>
   );
 };
