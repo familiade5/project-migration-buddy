@@ -41,6 +41,147 @@ export const categoryDescriptions: Record<EducationalCategory, string> = {
   institutional: 'Posicionamento e autoridade da marca',
 };
 
+// Content variations for each category - used for generating new content
+export const contentVariations: Record<EducationalCategory, EducationalSlide[][]> = {
+  tips: [
+    // Variation 1 - Documentação necessária
+    [
+      { type: 'cover', headline: 'Documentos para\ncomprar Imóvel Caixa' },
+      { type: 'content', headline: 'Documentos pessoais', bullets: ['RG e CPF', 'Comprovante de estado civil', 'Comprovante de residência atualizado'] },
+      { type: 'content', headline: 'Comprovação de renda', body: 'Holerites dos últimos 3 meses, declaração de IR ou extrato bancário para autônomos.' },
+      { type: 'content', headline: 'Para usar FGTS', bullets: ['Carteira de trabalho', 'Extrato do FGTS', 'Declaração de 1ª moradia'] },
+      { type: 'highlight', headline: 'Dica importante', body: 'Organize os documentos antes. Isso acelera todo o processo de compra!' },
+      { type: 'cta', headline: 'Precisa de ajuda?', body: 'Enviamos um checklist completo. Fale conosco!' },
+    ],
+    // Variation 2 - Vantagens do leilão
+    [
+      { type: 'cover', headline: '5 Vantagens de\ncomprar Imóvel Caixa' },
+      { type: 'content', headline: '1. Preços abaixo do mercado', body: 'Descontos que podem chegar até 95% do valor de avaliação.' },
+      { type: 'content', headline: '2. Segurança jurídica', body: 'A Caixa garante a regularização do imóvel após a compra.' },
+      { type: 'content', headline: '3. Opções de pagamento', bullets: ['À vista com desconto extra', 'Financiamento facilitado', 'Uso do FGTS'] },
+      { type: 'content', headline: '4. Variedade de imóveis', body: 'Apartamentos, casas, terrenos e comerciais em todo Brasil.' },
+      { type: 'highlight', headline: '5. Investimento inteligente', body: 'Valorização garantida comprando abaixo do preço de mercado.' },
+      { type: 'cta', headline: 'Quer aproveitar?', body: 'Temos as melhores oportunidades. Entre em contato!' },
+    ],
+    // Variation 3 - Erros comuns
+    [
+      { type: 'cover', headline: 'Erros que você\nNÃO pode cometer' },
+      { type: 'content', headline: '❌ Não visitar o imóvel', body: 'Sempre visite ou peça fotos atualizadas antes de dar um lance.' },
+      { type: 'content', headline: '❌ Ignorar débitos', body: 'Verifique IPTU, condomínio e outras pendências antes de comprar.' },
+      { type: 'content', headline: '❌ Não calcular custos extras', bullets: ['ITBI (2-3% do valor)', 'Registro em cartório', 'Reformas necessárias'] },
+      { type: 'content', headline: '❌ Comprar sem assessoria', body: 'Um especialista evita dores de cabeça e garante o melhor negócio.' },
+      { type: 'highlight', headline: '✅ A solução', body: 'Com nossa assessoria, você evita todos esses erros!' },
+      { type: 'cta', headline: 'Compre com segurança', body: 'Fale com quem entende do assunto.' },
+    ],
+    // Variation 4 - Tipos de venda
+    [
+      { type: 'cover', headline: 'Tipos de venda\nImóveis Caixa' },
+      { type: 'content', headline: 'Venda Direta Online', body: 'Imóveis disponíveis no site da Caixa com preço fixo. Primeiro a enviar proposta leva!' },
+      { type: 'content', headline: 'Leilão', body: 'Competição de lances. Quem oferece mais, vence. Pode ter ótimos descontos.' },
+      { type: 'content', headline: 'Venda com Exclusividade', body: 'Imóveis disponíveis apenas através de corretores credenciados.' },
+      { type: 'highlight', headline: 'Qual escolher?', body: 'Depende do seu perfil. Venda Direta é mais rápida, Leilão pode ter mais desconto.' },
+      { type: 'cta', headline: 'Consultoria gratuita', body: 'Ajudamos você a escolher a melhor modalidade!' },
+    ],
+    // Variation 5 - Passo a passo FGTS
+    [
+      { type: 'cover', headline: 'FGTS na compra:\nGuia completo' },
+      { type: 'content', headline: 'Quem pode usar?', bullets: ['3+ anos de carteira assinada', 'Não ter imóvel no mesmo município', 'Imóvel até R$ 1,5 milhão (algumas regiões)'] },
+      { type: 'content', headline: 'Para que serve?', body: 'Entrada, amortização de parcelas ou quitação total do financiamento.' },
+      { type: 'content', headline: 'Como solicitar?', bullets: ['Extrato FGTS atualizado', 'Declaração de 1º imóvel', 'Aprovação na Caixa'] },
+      { type: 'highlight', headline: 'Dica de ouro', body: 'Combine FGTS + Financiamento para comprar com entrada mínima!' },
+      { type: 'cta', headline: 'Verifique seu saldo', body: 'Consulte gratuitamente se pode usar o FGTS.' },
+    ],
+  ],
+  process: [
+    // Variation 1 - Timeline
+    [
+      { type: 'cover', headline: 'Seu imóvel em\n5 passos simples' },
+      { type: 'content', headline: 'Passo 1: Conversa inicial', body: 'Entendemos suas necessidades, orçamento e preferências de localização.' },
+      { type: 'content', headline: 'Passo 2: Busca personalizada', body: 'Selecionamos os melhores imóveis Caixa que se encaixam no seu perfil.' },
+      { type: 'content', headline: 'Passo 3: Análise detalhada', body: 'Verificamos documentação, débitos pendentes e estado real do imóvel.' },
+      { type: 'content', headline: 'Passo 4: Proposta e aprovação', body: 'Preparamos tudo e acompanhamos até a aprovação final.' },
+      { type: 'highlight', headline: 'Passo 5: Chaves na mão!', body: 'Você recebe seu imóvel com toda segurança e tranquilidade.' },
+      { type: 'cta', headline: 'Comece agora', body: 'O primeiro passo é uma conversa sem compromisso!' },
+    ],
+    // Variation 2 - Benefícios assessoria
+    [
+      { type: 'cover', headline: 'Por que ter\nassessoria especializada?' },
+      { type: 'content', headline: 'Economia de tempo', body: 'Você não precisa pesquisar horas. Filtramos apenas o que vale a pena.' },
+      { type: 'content', headline: 'Segurança total', bullets: ['Verificação de documentação', 'Análise de débitos', 'Conferência do estado do imóvel'] },
+      { type: 'content', headline: 'Negociação experiente', body: 'Conhecemos as regras do jogo e conseguimos as melhores condições.' },
+      { type: 'highlight', headline: 'Sem custo para você', body: 'Nossa assessoria é 100% gratuita. Você não paga nada a mais!' },
+      { type: 'cta', headline: 'Fale conosco', body: 'Descubra como podemos ajudar no seu sonho.' },
+    ],
+    // Variation 3 - Prazos
+    [
+      { type: 'cover', headline: 'Quanto tempo\nleva o processo?' },
+      { type: 'content', headline: 'Análise de crédito', body: '5 a 15 dias úteis para aprovação do financiamento.' },
+      { type: 'content', headline: 'Documentação', body: '15 a 30 dias para preparar e protocolar todos os documentos.' },
+      { type: 'content', headline: 'Assinatura do contrato', body: 'Após aprovação, em até 10 dias úteis você assina.' },
+      { type: 'highlight', headline: 'Total médio: 60-90 dias', body: 'Com assessoria, o processo flui sem atrasos desnecessários.' },
+      { type: 'cta', headline: 'Acelere seu sonho', body: 'Comece hoje mesmo o processo. Fale conosco!' },
+    ],
+  ],
+  stories: [
+    // Variation 1 - Família
+    [
+      { type: 'cover', headline: 'A família que\nsaiu do aluguel' },
+      { type: 'content', headline: 'O desafio', body: 'Pagavam R$ 1.800 de aluguel e achavam impossível comprar algo próprio.' },
+      { type: 'content', headline: 'A solução', body: 'Encontramos um apartamento Caixa com 40% de desconto no mesmo bairro.' },
+      { type: 'content', headline: 'O resultado', bullets: ['Parcela menor que o aluguel', 'Imóvel próprio valorizado', 'Economia de R$ 300/mês'] },
+      { type: 'highlight', headline: 'Hoje são proprietários', body: 'A família realizou o sonho e já planeja o segundo imóvel!' },
+      { type: 'cta', headline: 'Sua vez de realizar', body: 'Vamos encontrar a oportunidade perfeita para você!' },
+    ],
+    // Variation 2 - Investidor
+    [
+      { type: 'cover', headline: 'De 0 a 3 imóveis\nem 3 anos' },
+      { type: 'content', headline: 'O início', body: 'Começou com R$ 30 mil guardados e o sonho de construir patrimônio.' },
+      { type: 'content', headline: 'A estratégia', body: 'Comprou o primeiro imóvel Caixa, reformou e alugou em 6 meses.' },
+      { type: 'content', headline: 'O crescimento', bullets: ['Renda do aluguel virou entrada do 2º', 'Repetiu o processo', 'Hoje tem 3 imóveis'] },
+      { type: 'highlight', headline: 'Patrimônio sólido', body: 'Construiu mais de R$ 500 mil em patrimônio começando do zero.' },
+      { type: 'cta', headline: 'Comece sua jornada', body: 'Todo grande investidor deu o primeiro passo!' },
+    ],
+    // Variation 3 - Aposentadoria
+    [
+      { type: 'cover', headline: 'Aposentadoria com\nrenda garantida' },
+      { type: 'content', headline: 'O planejamento', body: 'Aos 45 anos, decidiu investir em imóveis pensando na aposentadoria.' },
+      { type: 'content', headline: 'As aquisições', body: 'Em 10 anos, comprou 4 imóveis Caixa abaixo do mercado.' },
+      { type: 'content', headline: 'O resultado hoje', bullets: ['Todos quitados', '3 alugados gerando renda', 'R$ 4.500/mês de renda passiva'] },
+      { type: 'highlight', headline: 'Aposentadoria tranquila', body: 'Hoje vive com tranquilidade, sem depender só do INSS.' },
+      { type: 'cta', headline: 'Planeje seu futuro', body: 'Nunca é cedo demais para começar. Fale conosco!' },
+    ],
+  ],
+  institutional: [
+    // Variation 1 - Missão
+    [
+      { type: 'cover', headline: 'Nossa missão:\nSeu sonho realizado' },
+      { type: 'content', headline: 'O que nos move', body: 'Acreditamos que todo brasileiro pode ter acesso à casa própria.' },
+      { type: 'content', headline: 'Como fazemos', bullets: ['Assessoria humanizada', 'Transparência total', 'Acompanhamento do início ao fim'] },
+      { type: 'content', headline: 'Nosso compromisso', body: 'Só indicamos imóveis que compraríamos para nossas próprias famílias.' },
+      { type: 'highlight', headline: '+200 famílias atendidas', body: 'Cada história de sucesso nos motiva a continuar.' },
+      { type: 'cta', headline: 'Faça parte', body: 'Seja a próxima história de sucesso!' },
+    ],
+    // Variation 2 - Diferenciais
+    [
+      { type: 'cover', headline: 'Por que escolher\na gente?' },
+      { type: 'content', headline: 'Especialistas de verdade', body: 'Trabalhamos exclusivamente com Imóveis Caixa. É o que sabemos fazer melhor.' },
+      { type: 'content', headline: 'Atendimento humanizado', bullets: ['Você fala com pessoas reais', 'Respondemos suas dúvidas', 'Acompanhamos cada etapa'] },
+      { type: 'content', headline: 'Sem surpresas', body: 'Explicamos tudo: custos, prazos, riscos. Você decide informado.' },
+      { type: 'highlight', headline: 'Gratuito para você', body: 'Nossa assessoria não custa nada. Nosso ganho é seu sucesso!' },
+      { type: 'cta', headline: 'Conheça nosso trabalho', body: 'Fale com nossos clientes e comprove!' },
+    ],
+    // Variation 3 - Credibilidade
+    [
+      { type: 'cover', headline: 'Credibilidade que\nvocê pode confiar' },
+      { type: 'content', headline: 'Anos de experiência', body: 'Conhecemos cada detalhe do mercado de Imóveis Caixa.' },
+      { type: 'content', headline: 'Números que falam', bullets: ['+200 imóveis vendidos', '95% de clientes satisfeitos', '0 reclamações no PROCON'] },
+      { type: 'content', headline: 'Transparência total', body: 'Você acompanha cada passo do processo em tempo real.' },
+      { type: 'highlight', headline: 'Compromisso real', body: 'Se não encontrarmos o imóvel ideal, não forçamos a venda.' },
+      { type: 'cta', headline: 'Fale conosco', body: 'Comprove nossa seriedade. Agende uma conversa!' },
+    ],
+  ],
+};
+
 export const defaultTopics: EducationalTopic[] = [
   // TIPS CATEGORY
   {

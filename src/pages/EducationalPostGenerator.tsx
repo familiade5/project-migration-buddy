@@ -1,11 +1,12 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import { 
   EducationalPostData, 
   defaultEducationalPostData, 
   EducationalTopic,
   EducationalCategory,
   EducationalSlide,
-  defaultTopics 
+  defaultTopics,
+  contentVariations 
 } from '@/types/educational';
 import { EducationalTopicSelector } from '@/components/educational/EducationalTopicSelector';
 import { EducationalSlideEditor } from '@/components/educational/EducationalSlideEditor';
@@ -37,9 +38,17 @@ const EducationalPostGenerator = () => {
   const [saved, setSaved] = useState(false);
   const [agencyPhone, setAgencyPhone] = useState('');
   
-  // History for content generation
-  const [slideHistory, setSlideHistory] = useState<EducationalSlide[][]>([]);
+  // History for content generation - stores full slide arrays
+  const [contentHistory, setContentHistory] = useState<EducationalSlide[][]>([]);
   const [historyIndex, setHistoryIndex] = useState(-1);
+  
+  // Track which variation index we're on per category
+  const variationIndexRef = useRef<Record<EducationalCategory, number>>({
+    tips: 0,
+    process: 0,
+    stories: 0,
+    institutional: 0,
+  });
 
   // Fetch agency data for phone
   useEffect(() => {
@@ -62,20 +71,27 @@ const EducationalPostGenerator = () => {
     }
   }, [agencyPhone, defaultCreci]);
 
+  // Initialize history with current slides when topic changes
+  const initializeHistory = useCallback((slides: EducationalSlide[]) => {
+    setContentHistory([slides]);
+    setHistoryIndex(0);
+  }, []);
+
   const handleCategoryChange = useCallback((category: EducationalCategory) => {
     setPostData(prev => ({ ...prev, category }));
   }, []);
 
   const handleTopicChange = useCallback((topic: EducationalTopic) => {
-    // Reset history when topic changes
-    setSlideHistory([]);
-    setHistoryIndex(-1);
+    // Reset history and variation index when topic changes
+    variationIndexRef.current[topic.category] = 0;
+    const initialSlides = [...topic.defaultSlides];
     setPostData(prev => ({
       ...prev,
       topicId: topic.id,
-      slides: [...topic.defaultSlides],
+      slides: initialSlides,
     }));
-  }, []);
+    initializeHistory(initialSlides);
+  }, [initializeHistory]);
 
   const handleSaveDefaults = () => {
     const dataToSave = {
@@ -90,47 +106,51 @@ const EducationalPostGenerator = () => {
   };
 
   const handleGenerateNewContent = () => {
-    // Save current slides to history before generating new
-    const currentSlides = [...postData.slides];
-    setSlideHistory(prev => [...prev.slice(0, historyIndex + 1), currentSlides]);
-    setHistoryIndex(prev => prev + 1);
-
-    // Find other topics in the same category to rotate content
-    const sameCategoryTopics = defaultTopics.filter(t => t.category === postData.category && t.id !== postData.topicId);
+    const category = postData.category;
+    const variations = contentVariations[category];
     
-    if (sameCategoryTopics.length > 0) {
-      // Randomly pick another topic from same category
-      const randomTopic = sameCategoryTopics[Math.floor(Math.random() * sameCategoryTopics.length)];
-      setPostData(prev => ({
-        ...prev,
-        topicId: randomTopic.id,
-        slides: [...randomTopic.defaultSlides],
-      }));
-      toast.success('Novo conteúdo gerado!');
-    } else {
-      toast.info('Não há outros temas nesta categoria');
+    if (!variations || variations.length === 0) {
+      toast.info('Não há variações disponíveis para esta categoria');
+      return;
     }
+    
+    // Get next variation index (cycling through all variations)
+    const currentIndex = variationIndexRef.current[category];
+    const nextIndex = (currentIndex + 1) % variations.length;
+    variationIndexRef.current[category] = nextIndex;
+    
+    // Get new slides from variations
+    const newSlides = [...variations[nextIndex]];
+    
+    // Save current state to history before generating new
+    const newHistory = [...contentHistory.slice(0, historyIndex + 1), newSlides];
+    setContentHistory(newHistory);
+    setHistoryIndex(newHistory.length - 1);
+    
+    // Update post data with new slides
+    setPostData(prev => ({
+      ...prev,
+      slides: newSlides,
+    }));
+    
+    toast.success(`Novo conteúdo gerado! (${nextIndex + 1}/${variations.length})`);
   };
 
   const handlePreviousContent = () => {
     if (historyIndex > 0) {
-      // Save current before going back
-      if (historyIndex === slideHistory.length - 1) {
-        setSlideHistory(prev => [...prev, [...postData.slides]]);
-      }
-      setHistoryIndex(prev => prev - 1);
-      setPostData(prev => ({ ...prev, slides: [...slideHistory[historyIndex - 1]] }));
-      toast.success('Conteúdo anterior restaurado');
-    } else if (historyIndex === 0 && slideHistory.length > 0) {
-      setPostData(prev => ({ ...prev, slides: [...slideHistory[0]] }));
+      const newIndex = historyIndex - 1;
+      setHistoryIndex(newIndex);
+      setPostData(prev => ({ ...prev, slides: [...contentHistory[newIndex]] }));
+      toast.success(`Versão anterior (${newIndex + 1}/${contentHistory.length})`);
     }
   };
 
   const handleNextContent = () => {
-    if (historyIndex < slideHistory.length - 1) {
-      setHistoryIndex(prev => prev + 1);
-      setPostData(prev => ({ ...prev, slides: [...slideHistory[historyIndex + 1]] }));
-      toast.success('Próximo conteúdo restaurado');
+    if (historyIndex < contentHistory.length - 1) {
+      const newIndex = historyIndex + 1;
+      setHistoryIndex(newIndex);
+      setPostData(prev => ({ ...prev, slides: [...contentHistory[newIndex]] }));
+      toast.success(`Próxima versão (${newIndex + 1}/${contentHistory.length})`);
     }
   };
 
@@ -207,7 +227,7 @@ const EducationalPostGenerator = () => {
                       variant="outline"
                       size="sm"
                       onClick={handlePreviousContent}
-                      disabled={historyIndex < 0}
+                      disabled={historyIndex <= 0}
                       className="gap-1 px-2"
                       title="Conteúdo anterior"
                     >
@@ -226,7 +246,7 @@ const EducationalPostGenerator = () => {
                       variant="outline"
                       size="sm"
                       onClick={handleNextContent}
-                      disabled={historyIndex >= slideHistory.length - 1}
+                      disabled={historyIndex >= contentHistory.length - 1}
                       className="gap-1 px-2"
                       title="Próximo conteúdo"
                     >
