@@ -96,7 +96,7 @@ export const EducationalSlideEditor = ({ slides, onChange }: EducationalSlideEdi
             size="sm"
             onClick={() => addSlide('content')}
             disabled={slides.length >= 10}
-            className="text-xs"
+            className="text-xs border-gray-300 text-gray-700 hover:bg-gray-100"
           >
             <Plus className="w-3 h-3 mr-1" />
             Conteúdo
@@ -106,7 +106,7 @@ export const EducationalSlideEditor = ({ slides, onChange }: EducationalSlideEdi
             size="sm"
             onClick={() => addSlide('highlight')}
             disabled={slides.length >= 10}
-            className="text-xs"
+            className="text-xs border-gray-300 text-gray-700 hover:bg-gray-100"
           >
             <Sparkles className="w-3 h-3 mr-1" />
             Destaque
@@ -122,7 +122,7 @@ export const EducationalSlideEditor = ({ slides, onChange }: EducationalSlideEdi
           >
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <GripVertical className="w-4 h-4 text-gray-300" />
+                <GripVertical className="w-4 h-4 text-gray-400" />
                 <span className={cn(
                   "text-xs font-medium px-2 py-0.5 rounded-full text-white",
                   slideTypeColors[slide.type]
@@ -136,7 +136,7 @@ export const EducationalSlideEditor = ({ slides, onChange }: EducationalSlideEdi
                     variant="ghost"
                     size="sm"
                     onClick={() => toggleBullets(index)}
-                    className="h-7 w-7 p-0"
+                    className="h-7 w-7 p-0 text-gray-600 hover:text-gray-900"
                     title={slide.bullets ? 'Converter para parágrafo' : 'Converter para lista'}
                   >
                     {slide.bullets ? <Type className="w-3.5 h-3.5" /> : <List className="w-3.5 h-3.5" />}
@@ -147,7 +147,7 @@ export const EducationalSlideEditor = ({ slides, onChange }: EducationalSlideEdi
                   size="sm"
                   onClick={() => removeSlide(index)}
                   disabled={slides.length <= 3 || slide.type === 'cover'}
-                  className="h-7 w-7 p-0 text-gray-400 hover:text-red-500"
+                  className="h-7 w-7 p-0 text-gray-500 hover:text-red-500"
                 >
                   <Trash2 className="w-3.5 h-3.5" />
                 </Button>
@@ -159,26 +159,26 @@ export const EducationalSlideEditor = ({ slides, onChange }: EducationalSlideEdi
                 value={slide.headline}
                 onChange={(e) => updateSlide(index, { headline: e.target.value })}
                 placeholder="Título do slide"
-                className="font-medium"
+                className="font-medium border-gray-300 text-gray-900 placeholder:text-gray-400"
               />
 
               {slide.bullets ? (
                 <div className="space-y-2">
                   {slide.bullets.map((bullet, bulletIndex) => (
                     <div key={bulletIndex} className="flex gap-2">
-                      <span className="text-gray-400 mt-2">•</span>
+                      <span className="text-gray-500 mt-2">•</span>
                       <Input
                         value={bullet}
                         onChange={(e) => updateBullet(index, bulletIndex, e.target.value)}
                         placeholder={`Item ${bulletIndex + 1}`}
-                        className="flex-1"
+                        className="flex-1 border-gray-300 text-gray-900 placeholder:text-gray-400"
                       />
                       <Button
                         variant="ghost"
                         size="sm"
                         onClick={() => removeBullet(index, bulletIndex)}
                         disabled={slide.bullets!.length <= 1}
-                        className="h-9 w-9 p-0 text-gray-400 hover:text-red-500"
+                        className="h-9 w-9 p-0 text-gray-500 hover:text-red-500"
                       >
                         <Trash2 className="w-3.5 h-3.5" />
                       </Button>
@@ -188,7 +188,7 @@ export const EducationalSlideEditor = ({ slides, onChange }: EducationalSlideEdi
                     variant="ghost"
                     size="sm"
                     onClick={() => addBullet(index)}
-                    className="text-xs text-gray-500"
+                    className="text-xs text-gray-600 hover:text-gray-900"
                   >
                     <Plus className="w-3 h-3 mr-1" />
                     Adicionar item
@@ -200,7 +200,7 @@ export const EducationalSlideEditor = ({ slides, onChange }: EducationalSlideEdi
                   onChange={(e) => updateSlide(index, { body: e.target.value })}
                   placeholder="Texto do slide (opcional)"
                   rows={2}
-                  className="resize-none"
+                  className="resize-none border-gray-300 text-gray-900 placeholder:text-gray-400"
                 />
               )}
             </div>

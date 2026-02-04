@@ -2,7 +2,6 @@ import { useState, useCallback } from 'react';
 import { 
   EducationalPostData, 
   defaultEducationalPostData, 
-  defaultTopics,
   EducationalTopic,
   EducationalCategory 
 } from '@/types/educational';
@@ -44,7 +43,7 @@ const EducationalPostGenerator = () => {
         <div className="mb-8">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div className="flex items-center gap-4">
-              <img src={logoVDH} alt="Venda Direta Hoje" className="h-12 w-auto" />
+              <img src={logoVDH} alt="VDH - Venda Direta Hoje" className="h-12 w-auto" />
               <div>
                 <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 tracking-tight">
                   Posts Educativos
@@ -69,7 +68,7 @@ const EducationalPostGenerator = () => {
             <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
               <div className="px-6 py-4 border-b border-gray-100 bg-gray-50/50">
                 <div className="flex items-center gap-3">
-                  <div className="p-2 rounded-lg bg-[#BA9E72] text-white">
+                  <div className="p-2 rounded-lg bg-amber-600 text-white">
                     <BookOpen className="w-4 h-4" />
                   </div>
                   <div>
@@ -125,7 +124,7 @@ const EducationalPostGenerator = () => {
               <div className="p-6 space-y-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label className="text-sm text-gray-600 flex items-center gap-2">
+                    <Label className="text-sm text-gray-700 flex items-center gap-2">
                       <User className="w-3.5 h-3.5" />
                       Nome
                     </Label>
@@ -133,10 +132,11 @@ const EducationalPostGenerator = () => {
                       value={postData.contactName}
                       onChange={(e) => setPostData(prev => ({ ...prev, contactName: e.target.value }))}
                       placeholder="Seu nome"
+                      className="border-gray-300 text-gray-900 placeholder:text-gray-400"
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label className="text-sm text-gray-600 flex items-center gap-2">
+                    <Label className="text-sm text-gray-700 flex items-center gap-2">
                       <Phone className="w-3.5 h-3.5" />
                       Telefone
                     </Label>
@@ -144,11 +144,12 @@ const EducationalPostGenerator = () => {
                       value={postData.contactPhone}
                       onChange={(e) => setPostData(prev => ({ ...prev, contactPhone: e.target.value }))}
                       placeholder="(67) 99999-9999"
+                      className="border-gray-300 text-gray-900 placeholder:text-gray-400"
                     />
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <Label className="text-sm text-gray-600 flex items-center gap-2">
+                  <Label className="text-sm text-gray-700 flex items-center gap-2">
                     <BadgeCheck className="w-3.5 h-3.5" />
                     CRECI
                   </Label>
@@ -156,6 +157,7 @@ const EducationalPostGenerator = () => {
                     value={postData.creci}
                     onChange={(e) => setPostData(prev => ({ ...prev, creci: e.target.value }))}
                     placeholder="CRECI-MS 00000"
+                    className="border-gray-300 text-gray-900 placeholder:text-gray-400"
                   />
                 </div>
               </div>
@@ -170,14 +172,14 @@ const EducationalPostGenerator = () => {
                   <TabsList className="grid w-full grid-cols-2 bg-gray-100 p-1 rounded-lg">
                     <TabsTrigger 
                       value="preview" 
-                      className="gap-2 text-sm font-medium rounded-md data-[state=active]:bg-white data-[state=active]:text-gray-900 data-[state=active]:shadow-sm"
+                      className="gap-2 text-sm font-medium rounded-md data-[state=active]:bg-white data-[state=active]:text-gray-900 data-[state=active]:shadow-sm text-gray-600"
                     >
                       <LayoutGrid className="w-4 h-4" />
                       Visualização
                     </TabsTrigger>
                     <TabsTrigger 
                       value="caption" 
-                      className="gap-2 text-sm font-medium rounded-md data-[state=active]:bg-white data-[state=active]:text-gray-900 data-[state=active]:shadow-sm"
+                      className="gap-2 text-sm font-medium rounded-md data-[state=active]:bg-white data-[state=active]:text-gray-900 data-[state=active]:shadow-sm text-gray-600"
                     >
                       <FileText className="w-4 h-4" />
                       Legenda

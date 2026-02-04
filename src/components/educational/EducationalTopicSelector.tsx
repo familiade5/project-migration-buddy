@@ -63,70 +63,70 @@ export const EducationalTopicSelector = ({
   };
 
   return (
-    <div className="space-y-3">
-      {/* Category Selection */}
-      <div className="grid grid-cols-2 gap-2">
-        {categories.map((category) => (
-          <button
-            key={category}
-            onClick={() => handleCategoryClick(category)}
-            className={cn(
-              "flex items-center gap-2 p-3 rounded-xl border-2 transition-all text-left",
-              selectedCategory === category
-                ? "border-[#BA9E72] bg-[#BA9E72]/10 text-[#BA9E72]"
-                : "border-gray-200 hover:border-gray-300 text-gray-600"
-            )}
-          >
-            {categoryIcons[category]}
-            <div>
-              <p className="text-sm font-medium">{categoryLabels[category]}</p>
-            </div>
-          </button>
-        ))}
-      </div>
-
-      {/* Topic Selection */}
-      <div className="mt-4">
-        <p className="text-xs text-gray-500 uppercase tracking-wide mb-2 font-medium">
-          Selecione um tema
-        </p>
-        <div className="space-y-2">
-          {topicsByCategory.map((topic) => (
+      <div className="space-y-3">
+        {/* Category Selection */}
+        <div className="grid grid-cols-2 gap-2">
+          {categories.map((category) => (
             <button
-              key={topic.id}
-              onClick={() => onTopicChange(topic)}
+              key={category}
+              onClick={() => handleCategoryClick(category)}
               className={cn(
-                "w-full flex items-center gap-3 p-3 rounded-xl border transition-all text-left group",
-                selectedTopicId === topic.id
-                  ? "border-[#BA9E72] bg-[#BA9E72]/5"
-                  : "border-gray-100 hover:border-gray-200 hover:bg-gray-50"
+                "flex items-center gap-2 p-3 rounded-xl border-2 transition-all text-left",
+                selectedCategory === category
+                  ? "border-amber-600 bg-amber-50 text-amber-700"
+                  : "border-gray-200 hover:border-gray-300 text-gray-700"
               )}
             >
-              <div className={cn(
-                "p-2 rounded-lg transition-colors",
-                selectedTopicId === topic.id
-                  ? "bg-[#BA9E72] text-white"
-                  : "bg-gray-100 text-gray-500 group-hover:bg-gray-200"
-              )}>
-                {iconMap[topic.icon]}
+              {categoryIcons[category]}
+              <div>
+                <p className="text-sm font-medium">{categoryLabels[category]}</p>
               </div>
-              <div className="flex-1 min-w-0">
-                <p className={cn(
-                  "font-medium text-sm truncate",
-                  selectedTopicId === topic.id ? "text-[#BA9E72]" : "text-gray-700"
-                )}>
-                  {topic.title}
-                </p>
-                <p className="text-xs text-gray-500 truncate">{topic.description}</p>
-              </div>
-              <ChevronRight className={cn(
-                "w-4 h-4 transition-colors",
-                selectedTopicId === topic.id ? "text-[#BA9E72]" : "text-gray-300"
-              )} />
             </button>
           ))}
         </div>
+
+        {/* Topic Selection */}
+        <div className="mt-4">
+          <p className="text-xs text-gray-500 uppercase tracking-wide mb-2 font-medium">
+            Selecione um tema
+          </p>
+          <div className="space-y-2">
+            {topicsByCategory.map((topic) => (
+              <button
+                key={topic.id}
+                onClick={() => onTopicChange(topic)}
+                className={cn(
+                  "w-full flex items-center gap-3 p-3 rounded-xl border transition-all text-left group",
+                  selectedTopicId === topic.id
+                    ? "border-amber-600 bg-amber-50"
+                    : "border-gray-200 hover:border-gray-300 hover:bg-gray-50"
+                )}
+              >
+                <div className={cn(
+                  "p-2 rounded-lg transition-colors",
+                  selectedTopicId === topic.id
+                    ? "bg-amber-600 text-white"
+                    : "bg-gray-100 text-gray-600 group-hover:bg-gray-200"
+                )}>
+                  {iconMap[topic.icon]}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className={cn(
+                    "font-medium text-sm truncate",
+                    selectedTopicId === topic.id ? "text-amber-700" : "text-gray-800"
+                  )}>
+                    {topic.title}
+                  </p>
+                  <p className="text-xs text-gray-500 truncate">{topic.description}</p>
+                </div>
+                <ChevronRight className={cn(
+                  "w-4 h-4 transition-colors",
+                  selectedTopicId === topic.id ? "text-amber-600" : "text-gray-400"
+                )} />
+              </button>
+            ))}
+          </div>
+        </div>
       </div>
-    </div>
   );
 };
