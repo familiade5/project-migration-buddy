@@ -22,7 +22,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import logoPatrimoniar from '@/assets/logo-patrimoniar.svg';
+import logoVDH from '@/assets/logo-vdh-revenda.png';
 
 interface EliteLayoutProps {
   children: React.ReactNode;
@@ -81,8 +81,8 @@ export function EliteLayout({ children }: EliteLayoutProps) {
           <div className="flex items-center justify-between px-6 py-5 border-b border-gray-100">
             <div className="flex items-center gap-3">
               <img 
-                src={logoPatrimoniar} 
-                alt="Patrimoniar Imóveis" 
+                src={logoVDH} 
+                alt="VDH - Venda Direta Hoje" 
                 className="h-12 w-auto"
               />
             </div>
@@ -208,8 +208,8 @@ export function EliteLayout({ children }: EliteLayoutProps) {
               <Menu className="w-6 h-6" />
             </button>
             <img 
-              src={logoPatrimoniar} 
-              alt="Patrimoniar Imóveis" 
+              src={logoVDH} 
+              alt="VDH - Venda Direta Hoje" 
               className="h-10 w-auto"
             />
             <DropdownMenu>

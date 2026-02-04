@@ -5,7 +5,7 @@ import { EducationalContentSlide } from './slides/EducationalContentSlide';
 import { EducationalHighlightSlide } from './slides/EducationalHighlightSlide';
 import { EducationalCTASlide } from './slides/EducationalCTASlide';
 import { Button } from '@/components/ui/button';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ChevronLeft, ChevronRight, Download, Loader2, LayoutGrid, Smartphone } from 'lucide-react';
 import { toPng } from 'html-to-image';
 import JSZip from 'jszip';
@@ -115,7 +115,20 @@ export const EducationalPostPreview = ({ data }: EducationalPostPreviewProps) =>
     }
   };
 
-  const previewScale = format === 'story' ? 0.22 : 0.38;
+  // Calculate preview dimensions
+  const feedWidth = 1080;
+  const feedHeight = 1080;
+  const storyWidth = 1080;
+  const storyHeight = 1920;
+  
+  // Container width for preview
+  const containerWidth = 320;
+  const containerHeight = format === 'story' ? 420 : 320;
+  
+  // Calculate scale to fit
+  const scaleX = containerWidth / (format === 'story' ? storyWidth : feedWidth);
+  const scaleY = containerHeight / (format === 'story' ? storyHeight : feedHeight);
+  const previewScale = Math.min(scaleX, scaleY);
 
   return (
     <div className="space-y-4">
@@ -124,14 +137,14 @@ export const EducationalPostPreview = ({ data }: EducationalPostPreviewProps) =>
         <TabsList className="grid w-full grid-cols-2 bg-gray-100 p-1 rounded-lg">
           <TabsTrigger 
             value="feed" 
-            className="gap-2 text-sm font-medium rounded-md data-[state=active]:bg-white data-[state=active]:shadow-sm"
+            className="gap-2 text-sm font-medium rounded-md data-[state=active]:bg-white data-[state=active]:shadow-sm text-gray-600 data-[state=active]:text-gray-900"
           >
             <LayoutGrid className="w-4 h-4" />
             Feed
           </TabsTrigger>
           <TabsTrigger 
             value="story" 
-            className="gap-2 text-sm font-medium rounded-md data-[state=active]:bg-white data-[state=active]:shadow-sm"
+            className="gap-2 text-sm font-medium rounded-md data-[state=active]:bg-white data-[state=active]:shadow-sm text-gray-600 data-[state=active]:text-gray-900"
           >
             <Smartphone className="w-4 h-4" />
             Story
@@ -140,30 +153,41 @@ export const EducationalPostPreview = ({ data }: EducationalPostPreviewProps) =>
       </Tabs>
 
       {/* Preview area */}
-      <div className="relative bg-gray-100 rounded-xl p-4 flex items-center justify-center overflow-hidden" style={{ minHeight: format === 'story' ? '450px' : '420px' }}>
+      <div 
+        className="relative bg-gray-800 rounded-xl p-4 flex items-center justify-center"
+        style={{ minHeight: containerHeight + 32 }}
+      >
         {/* Navigation arrows */}
         <button
           onClick={prevSlide}
-          className="absolute left-2 z-10 p-2 rounded-full bg-white/80 hover:bg-white shadow-md transition-all"
+          className="absolute left-2 z-10 p-2 rounded-full bg-white/90 hover:bg-white shadow-md transition-all"
         >
-          <ChevronLeft className="w-5 h-5" />
+          <ChevronLeft className="w-5 h-5 text-gray-700" />
         </button>
         <button
           onClick={nextSlide}
-          className="absolute right-2 z-10 p-2 rounded-full bg-white/80 hover:bg-white shadow-md transition-all"
+          className="absolute right-2 z-10 p-2 rounded-full bg-white/90 hover:bg-white shadow-md transition-all"
         >
-          <ChevronRight className="w-5 h-5" />
+          <ChevronRight className="w-5 h-5 text-gray-700" />
         </button>
 
         {/* Current slide preview */}
         <div 
           className="overflow-hidden rounded-lg shadow-xl"
           style={{ 
-            transform: `scale(${previewScale})`,
-            transformOrigin: 'center center',
+            width: containerWidth,
+            height: containerHeight,
           }}
         >
-          <div ref={(el) => (slidesRef.current[currentSlide] = el)}>
+          <div 
+            style={{ 
+              transform: `scale(${previewScale})`,
+              transformOrigin: 'top left',
+              width: format === 'story' ? storyWidth : feedWidth,
+              height: format === 'story' ? storyHeight : feedHeight,
+            }}
+            ref={(el) => (slidesRef.current[currentSlide] = el)}
+          >
             {renderSlide(data.slides[currentSlide], currentSlide)}
           </div>
         </div>
@@ -177,7 +201,7 @@ export const EducationalPostPreview = ({ data }: EducationalPostPreviewProps) =>
             onClick={() => setCurrentSlide(index)}
             className={`w-2 h-2 rounded-full transition-all ${
               index === currentSlide 
-                ? 'bg-[#BA9E72] w-6' 
+                ? 'bg-amber-600 w-6' 
                 : 'bg-gray-300 hover:bg-gray-400'
             }`}
           />
@@ -186,13 +210,13 @@ export const EducationalPostPreview = ({ data }: EducationalPostPreviewProps) =>
 
       {/* Slide counter & export */}
       <div className="flex items-center justify-between">
-        <p className="text-sm text-gray-500">
+        <p className="text-sm text-gray-600">
           Slide {currentSlide + 1} de {totalSlides}
         </p>
         <Button
           onClick={exportAllSlides}
           disabled={isExporting}
-          className="bg-[#BA9E72] hover:bg-[#a68d64] text-white"
+          className="bg-amber-600 hover:bg-amber-700 text-white"
         >
           {isExporting ? (
             <>
