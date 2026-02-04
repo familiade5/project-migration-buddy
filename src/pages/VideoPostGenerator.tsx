@@ -12,7 +12,7 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { toast } from 'sonner';
 import logoVDH from '@/assets/logo-vdh-revenda.png';
-import testVideo from '@/assets/videos/venda-direta-caixa-example.mp4';
+import testVideo from '@/assets/videos/venda-direta-caixa-educational.mp4';
 
 type VideoFormat = 'story' | 'reel' | 'feed';
 type VideoCategory = 'tips' | 'process' | 'testimonial' | 'showcase';
