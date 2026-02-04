@@ -1,5 +1,5 @@
 import { EducationalSlide } from '@/types/educational';
-import logoVDH from '@/assets/logo-vdh-revenda-white-alpha.png';
+import logoVDH from '@/assets/logo-vdh.jpg';
 import { Sparkles } from 'lucide-react';
 
 interface EducationalHighlightSlideProps {

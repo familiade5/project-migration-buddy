@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { 
   EducationalPostData, 
   defaultEducationalPostData, 
@@ -11,18 +11,41 @@ import { EducationalPostPreview } from '@/components/educational/EducationalPost
 import { EducationalCaptionGenerator } from '@/components/educational/EducationalCaptionGenerator';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { 
-  BookOpen, Edit3, LayoutGrid, FileText, User, Phone, BadgeCheck, Sparkles 
+  BookOpen, Edit3, LayoutGrid, FileText, User, Phone, BadgeCheck, Sparkles, Save, Check 
 } from 'lucide-react';
 import { EliteLayout } from '@/components/layout/EliteLayout';
 import { useModuleActivity } from '@/hooks/useModuleActivity';
+import { toast } from 'sonner';
 import logoVDH from '@/assets/logo-vdh-revenda.png';
+
+const STORAGE_KEY = 'educational-contact-defaults';
 
 const EducationalPostGenerator = () => {
   useModuleActivity('Posts Educativos');
   
   const [postData, setPostData] = useState<EducationalPostData>(defaultEducationalPostData);
+  const [saved, setSaved] = useState(false);
+
+  // Load saved contact info on mount
+  useEffect(() => {
+    const savedData = localStorage.getItem(STORAGE_KEY);
+    if (savedData) {
+      try {
+        const parsed = JSON.parse(savedData);
+        setPostData(prev => ({
+          ...prev,
+          contactName: parsed.contactName || '',
+          contactPhone: parsed.contactPhone || '',
+          creci: parsed.creci || '',
+        }));
+      } catch (e) {
+        console.error('Error loading saved contact:', e);
+      }
+    }
+  }, []);
 
   const handleCategoryChange = useCallback((category: EducationalCategory) => {
     setPostData(prev => ({ ...prev, category }));
@@ -35,6 +58,18 @@ const EducationalPostGenerator = () => {
       slides: [...topic.defaultSlides],
     }));
   }, []);
+
+  const handleSaveDefaults = () => {
+    const dataToSave = {
+      contactName: postData.contactName,
+      contactPhone: postData.contactPhone,
+      creci: postData.creci,
+    };
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(dataToSave));
+    setSaved(true);
+    toast.success('Dados de contato salvos como padrão!');
+    setTimeout(() => setSaved(false), 2000);
+  };
 
   return (
     <EliteLayout>
@@ -111,14 +146,34 @@ const EducationalPostGenerator = () => {
             {/* Contact Info */}
             <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
               <div className="px-6 py-4 border-b border-gray-100 bg-gray-50/50">
-                <div className="flex items-center gap-3">
-                  <div className="p-2 rounded-lg bg-gray-900 text-white">
-                    <User className="w-4 h-4" />
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 rounded-lg bg-gray-900 text-white">
+                      <User className="w-4 h-4" />
+                    </div>
+                    <div>
+                      <h2 className="font-semibold text-gray-900">Informações de Contato</h2>
+                      <p className="text-xs text-gray-500">Exibidas no slide final</p>
+                    </div>
                   </div>
-                  <div>
-                    <h2 className="font-semibold text-gray-900">Informações de Contato</h2>
-                    <p className="text-xs text-gray-500">Exibidas no slide final</p>
-                  </div>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleSaveDefaults}
+                    className="gap-2"
+                  >
+                    {saved ? (
+                      <>
+                        <Check className="w-4 h-4 text-green-500" />
+                        Salvo!
+                      </>
+                    ) : (
+                      <>
+                        <Save className="w-4 h-4" />
+                        Salvar Padrão
+                      </>
+                    )}
+                  </Button>
                 </div>
               </div>
               <div className="p-6 space-y-4">
