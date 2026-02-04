@@ -17,6 +17,7 @@ import {
   LayoutDashboard,
   Calculator,
   Key,
+  BookOpen,
 } from 'lucide-react';
 import {
   DropdownMenu,
@@ -37,6 +38,7 @@ const navigation = [
   { name: 'Criar Post', href: '/', icon: Building2 },
   { name: 'Revenda +', href: '/revenda', icon: Gem },
   { name: 'Locação & Gestão', href: '/locacao', icon: Home },
+  { name: 'Posts Educativos', href: '/educativo', icon: BookOpen },
   { name: 'Biblioteca', href: '/library', icon: Calendar },
   { name: 'Calculadora', href: '/calculadora', icon: Calculator },
   { name: 'CRM Imóveis', href: '/crm', icon: LayoutDashboard },

@@ -11,7 +11,8 @@ import {
   Shield,
   Building2,
   MoreVertical,
-  ChevronRight
+  ChevronRight,
+  BookOpen
 } from 'lucide-react';
 import {
   DropdownMenu,
@@ -29,6 +30,7 @@ interface EliteLayoutProps {
 
 const navigation = [
   { name: 'Criar Post', href: '/elite', icon: Home },
+  { name: 'Posts Educativos', href: '/educativo', icon: BookOpen },
   { name: 'Biblioteca', href: '/library', icon: Calendar },
 ];
 
