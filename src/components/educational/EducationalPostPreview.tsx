@@ -31,7 +31,9 @@ export const EducationalPostPreview = ({ data }: EducationalPostPreviewProps) =>
     setCurrentSlide((prev) => (prev - 1 + totalSlides) % totalSlides);
   };
 
-  const renderSlide = (slide: typeof data.slides[0], index: number) => {
+  const renderSlide = (slide: typeof data.slides[0] | undefined, index: number) => {
+    if (!slide) return null;
+    
     const slideNumber = index + 1;
     
     switch (slide.type) {
