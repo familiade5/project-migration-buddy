@@ -22,7 +22,6 @@ import {
 import { EliteLayout } from '@/components/layout/EliteLayout';
 import { useModuleActivity } from '@/hooks/useModuleActivity';
 import { useCrecis } from '@/hooks/useCrecis';
-import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import logoVDH from '@/assets/logo-vdh-revenda.png';
@@ -32,7 +31,6 @@ const STORAGE_KEY = 'educational-contact-defaults';
 const EducationalPostGenerator = () => {
   useModuleActivity('Posts Educativos');
   
-  const { profile } = useAuth();
   const { crecis, defaultCreci, formatCreci } = useCrecis();
   
   const [postData, setPostData] = useState<EducationalPostData>(defaultEducationalPostData);
@@ -54,15 +52,15 @@ const EducationalPostGenerator = () => {
 
   // Auto-fill contact info from profile, agency and default CRECI
   useEffect(() => {
-    if (profile?.full_name || agencyPhone || defaultCreci) {
+    if (agencyPhone || defaultCreci) {
       setPostData(prev => ({
         ...prev,
-        contactName: prev.contactName || profile?.full_name?.split(' - ')[0] || '',
+        contactName: prev.contactName || 'Iury Sampaio',
         contactPhone: prev.contactPhone || agencyPhone || '',
         creci: prev.creci || (defaultCreci ? `CRECI ${defaultCreci}` : ''),
       }));
     }
-  }, [profile, agencyPhone, defaultCreci]);
+  }, [agencyPhone, defaultCreci]);
 
   const handleCategoryChange = useCallback((category: EducationalCategory) => {
     setPostData(prev => ({ ...prev, category }));
@@ -317,7 +315,7 @@ const EducationalPostGenerator = () => {
                     <SelectContent>
                       {crecis.map((creci) => (
                         <SelectItem key={creci.id} value={`CRECI ${formatCreci(creci)}`}>
-                          CRECI {formatCreci(creci)}
+                          {formatCreci(creci)}
                         </SelectItem>
                       ))}
                     </SelectContent>
