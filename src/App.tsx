@@ -18,6 +18,7 @@ import FinancingCalculator from "./pages/FinancingCalculator";
 import ElitePostGenerator from "./pages/ElitePostGenerator";
 import RevendaPostGenerator from "./pages/RevendaPostGenerator";
 import LocacaoPostGenerator from "./pages/LocacaoPostGenerator";
+import EducationalPostGenerator from "./pages/EducationalPostGenerator";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -85,6 +86,11 @@ const App = () => (
               <SuperAdminRoute>
                 <ElitePostGenerator />
               </SuperAdminRoute>
+            } />
+            <Route path="/educativo" element={
+              <ProtectedRoute>
+                <EducationalPostGenerator />
+              </ProtectedRoute>
             } />
             <Route path="*" element={<NotFound />} />
           </Routes>
