@@ -18,6 +18,7 @@ import {
   Calculator,
   Key,
   BookOpen,
+  Video,
 } from 'lucide-react';
 import {
   DropdownMenu,
@@ -180,6 +181,20 @@ export function AppLayout({ children }: AppLayoutProps) {
                 >
                   <Crown className="w-5 h-5 flex-shrink-0" />
                   Élite Imóveis
+                </Link>
+                <Link
+                  to="/videos"
+                  onClick={() => setSidebarOpen(false)}
+                  className={`
+                    flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all
+                    ${location.pathname === '/videos'
+                      ? 'bg-gradient-to-r from-purple-500/20 to-pink-500/10 text-purple-400 border border-purple-500/30' 
+                      : 'text-purple-500/70 hover:bg-purple-500/10 hover:text-purple-400'
+                    }
+                  `}
+                >
+                  <Video className="w-5 h-5 flex-shrink-0" />
+                  Vídeos IA
                 </Link>
               </>
             )}
