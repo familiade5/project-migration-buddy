@@ -19,6 +19,7 @@ import ElitePostGenerator from "./pages/ElitePostGenerator";
 import RevendaPostGenerator from "./pages/RevendaPostGenerator";
 import LocacaoPostGenerator from "./pages/LocacaoPostGenerator";
 import EducationalPostGenerator from "./pages/EducationalPostGenerator";
+import VideoPostGenerator from "./pages/VideoPostGenerator";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -85,6 +86,11 @@ const App = () => (
             <Route path="/elite" element={
               <SuperAdminRoute>
                 <ElitePostGenerator />
+              </SuperAdminRoute>
+            } />
+            <Route path="/videos" element={
+              <SuperAdminRoute>
+                <VideoPostGenerator />
               </SuperAdminRoute>
             } />
             <Route path="/educativo" element={
