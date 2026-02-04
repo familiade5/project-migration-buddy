@@ -1,5 +1,4 @@
 import { EducationalSlide, EducationalCategory, categoryLabels } from '@/types/educational';
-import logoVDH from '@/assets/logo-vdh.jpg';
 
 interface EducationalCoverSlideProps {
   slide: EducationalSlide;
@@ -43,26 +42,7 @@ export const EducationalCoverSlide = ({ slide, category, format }: EducationalCo
         }}
       />
 
-      {/* Logo - top left */}
-      <div 
-        style={{
-          position: 'absolute',
-          top: isStory ? '80px' : '60px',
-          left: isStory ? '80px' : '60px',
-        }}
-      >
-        <img 
-          src={logoVDH} 
-          alt="Venda Direta Hoje"
-          style={{
-            width: isStory ? '200px' : '180px',
-            height: 'auto',
-            opacity: 0.9,
-          }}
-        />
-      </div>
-
-      {/* Category badge */}
+      {/* Category badge - top right */}
       <div 
         style={{
           position: 'absolute',
@@ -112,28 +92,27 @@ export const EducationalCoverSlide = ({ slide, category, format }: EducationalCo
         </h1>
       </div>
 
-      {/* Decorative element */}
+      {/* VDH Text - centered at bottom */}
       <div 
         style={{
           position: 'absolute',
-          bottom: isStory ? '120px' : '80px',
+          bottom: isStory ? '80px' : '50px',
           left: '50%',
           transform: 'translateX(-50%)',
-          display: 'flex',
-          alignItems: 'center',
-          gap: '16px',
+          textAlign: 'center',
         }}
       >
-        <div style={{ width: '60px', height: '1px', background: 'rgba(186, 158, 114, 0.5)' }} />
-        <div 
+        <span 
           style={{
-            width: '8px',
-            height: '8px',
-            borderRadius: '50%',
-            background: '#BA9E72',
+            fontSize: isStory ? '48px' : '40px',
+            fontWeight: '700',
+            color: '#ffffff',
+            letterSpacing: '4px',
+            opacity: 0.9,
           }}
-        />
-        <div style={{ width: '60px', height: '1px', background: 'rgba(186, 158, 114, 0.5)' }} />
+        >
+          VDH
+        </span>
       </div>
 
       {/* Swipe indicator for stories */}
@@ -141,7 +120,7 @@ export const EducationalCoverSlide = ({ slide, category, format }: EducationalCo
         <div 
           style={{
             position: 'absolute',
-            bottom: '60px',
+            bottom: '40px',
             left: '50%',
             transform: 'translateX(-50%)',
             color: 'rgba(255,255,255,0.4)',

@@ -1,5 +1,4 @@
 import { EducationalSlide } from '@/types/educational';
-import logoVDH from '@/assets/logo-vdh.jpg';
 import { Check } from 'lucide-react';
 
 interface EducationalContentSlideProps {
@@ -39,25 +38,6 @@ export const EducationalContentSlide = ({
           background: 'linear-gradient(180deg, transparent, #BA9E72, transparent)',
         }}
       />
-
-      {/* Logo watermark - subtle in corner */}
-      <div 
-        style={{
-          position: 'absolute',
-          bottom: isStory ? '60px' : '40px',
-          right: isStory ? '60px' : '40px',
-          opacity: 0.15,
-        }}
-      >
-        <img 
-          src={logoVDH} 
-          alt=""
-          style={{
-            width: isStory ? '120px' : '100px',
-            height: 'auto',
-          }}
-        />
-      </div>
 
       {/* Slide indicator */}
       <div 
@@ -154,29 +134,27 @@ export const EducationalContentSlide = ({
         ) : null}
       </div>
 
-      {/* Bottom progress dots */}
+      {/* VDH Text - centered at bottom */}
       <div 
         style={{
           position: 'absolute',
           bottom: isStory ? '80px' : '50px',
           left: '50%',
           transform: 'translateX(-50%)',
-          display: 'flex',
-          gap: '8px',
+          textAlign: 'center',
         }}
       >
-        {Array.from({ length: totalSlides }).map((_, i) => (
-          <div 
-            key={i}
-            style={{
-              width: i + 1 === slideNumber ? '24px' : '8px',
-              height: '8px',
-              borderRadius: '4px',
-              background: i + 1 === slideNumber ? '#BA9E72' : 'rgba(255,255,255,0.2)',
-              transition: 'all 0.3s ease',
-            }}
-          />
-        ))}
+        <span 
+          style={{
+            fontSize: isStory ? '36px' : '28px',
+            fontWeight: '700',
+            color: '#ffffff',
+            letterSpacing: '3px',
+            opacity: 0.6,
+          }}
+        >
+          VDH
+        </span>
       </div>
     </div>
   );

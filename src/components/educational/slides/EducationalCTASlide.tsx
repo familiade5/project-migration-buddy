@@ -1,5 +1,4 @@
 import { EducationalSlide } from '@/types/educational';
-import logoVDH from '@/assets/logo-vdh.jpg';
 import { MessageCircle, ArrowRight } from 'lucide-react';
 
 interface EducationalCTASlideProps {
@@ -58,7 +57,7 @@ export const EducationalCTASlide = ({
         }}
       />
 
-      {/* Logo */}
+      {/* VDH Text - top center */}
       <div 
         style={{
           position: 'absolute',
@@ -67,15 +66,17 @@ export const EducationalCTASlide = ({
           transform: 'translateX(-50%)',
         }}
       >
-        <img 
-          src={logoVDH} 
-          alt="Venda Direta Hoje"
+        <span 
           style={{
-            width: isStory ? '220px' : '180px',
-            height: 'auto',
+            fontSize: isStory ? '56px' : '48px',
+            fontWeight: '700',
+            color: '#ffffff',
+            letterSpacing: '4px',
             opacity: 0.9,
           }}
-        />
+        >
+          VDH
+        </span>
       </div>
 
       {/* Main CTA content */}
