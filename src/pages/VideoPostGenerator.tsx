@@ -12,7 +12,7 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { toast } from 'sonner';
 import logoVDH from '@/assets/logo-vdh-revenda.png';
-import testVideo from '@/assets/videos/test-educational-video.mp4';
+import testVideo from '@/assets/videos/venda-direta-caixa-example.mp4';
 
 type VideoFormat = 'story' | 'reel' | 'feed';
 type VideoCategory = 'tips' | 'process' | 'testimonial' | 'showcase';
@@ -90,11 +90,18 @@ const VideoPostGenerator = () => {
   const [generatedVideo, setGeneratedVideo] = useState<string | null>(testVideo);
   const [isGenerating, setIsGenerating] = useState(false);
   const [selectedPromptIndex, setSelectedPromptIndex] = useState(0);
+  const [customPrompt, setCustomPrompt] = useState('');
 
   const handleGenerateVideo = async () => {
+    const promptToUse = customPrompt || categoryTemplates[config.category].prompts[selectedPromptIndex];
+    
+    if (!promptToUse.trim()) {
+      toast.error('Por favor, descreva o vídeo que você quer gerar.');
+      return;
+    }
+    
     setIsGenerating(true);
     
-    const prompt = categoryTemplates[config.category].prompts[selectedPromptIndex];
     const aspectRatio = formatConfigs[config.format].aspectRatio;
     
     toast.info('Gerando vídeo... Isso pode levar alguns minutos.');
@@ -241,21 +248,24 @@ const VideoPostGenerator = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <Label>Template de Cena</Label>
+                  <Label>Template Base (clique para usar como inspiração)</Label>
                   <div className="space-y-2">
                     {categoryTemplates[config.category].prompts.map((prompt, index) => (
                       <button
                         key={index}
-                        onClick={() => setSelectedPromptIndex(index)}
+                        onClick={() => {
+                          setSelectedPromptIndex(index);
+                          setCustomPrompt(prompt);
+                        }}
                         className={`w-full text-left p-3 rounded-lg border-2 transition-all ${
-                          selectedPromptIndex === index
+                          selectedPromptIndex === index && !customPrompt
                             ? 'border-purple-500 bg-purple-50'
                             : 'border-gray-200 hover:border-gray-300'
                         }`}
                       >
                         <div className="flex items-start gap-2">
                           <span className={`flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-sm font-medium ${
-                            selectedPromptIndex === index
+                            selectedPromptIndex === index && !customPrompt
                               ? 'bg-purple-500 text-white'
                               : 'bg-gray-200 text-gray-600'
                           }`}>
@@ -266,6 +276,19 @@ const VideoPostGenerator = () => {
                       </button>
                     ))}
                   </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label>Descreva seu Vídeo (edite como quiser)</Label>
+                  <Textarea
+                    value={customPrompt}
+                    onChange={(e) => setCustomPrompt(e.target.value)}
+                    placeholder="Descreva a cena que você quer no vídeo. Ex: Corretor profissional explicando o processo de venda direta da Caixa em escritório moderno, movimento de câmera suave..."
+                    className="min-h-[100px] resize-none"
+                  />
+                  <p className="text-xs text-gray-500">
+                    💡 Seja específico: mencione ambiente, ações, estilo visual e movimento de câmera desejado.
+                  </p>
                 </div>
               </CardContent>
             </Card>
