@@ -1,5 +1,5 @@
 import { EducationalSlide, EducationalCategory, categoryLabels } from '@/types/educational';
-import logoVDH from '@/assets/logo-vdh-revenda-white-alpha.png';
+import logoVDH from '@/assets/logo-vdh.jpg';
 
 interface EducationalCoverSlideProps {
   slide: EducationalSlide;

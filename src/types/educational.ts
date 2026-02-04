@@ -52,7 +52,7 @@ export const defaultTopics: EducationalTopic[] = [
     defaultSlides: [
       { type: 'cover', headline: 'Você sabe o que são\nImóveis Caixa?' },
       { type: 'content', headline: 'São imóveis retomados', body: 'A Caixa Econômica Federal retoma imóveis de financiamentos não pagos e os vende com descontos significativos.' },
-      { type: 'content', headline: 'Por que são mais baratos?', bullets: ['Imóveis precisam ser vendidos rapidamente', 'Não há intermediários', 'Descontos de até 40% do valor de mercado'] },
+      { type: 'content', headline: 'Por que são mais baratos?', bullets: ['Imóveis precisam ser vendidos rapidamente', 'Não há intermediários', 'Descontos de até 95% do valor de mercado'] },
       { type: 'content', headline: 'Qualquer pessoa pode comprar', body: 'Você não precisa ser cliente Caixa. Os imóveis estão disponíveis para qualquer pessoa física ou jurídica.' },
       { type: 'highlight', headline: 'Oportunidade real', body: 'Milhares de brasileiros já realizaram o sonho da casa própria comprando imóveis Caixa com segurança.' },
       { type: 'cta', headline: 'Quer saber mais?', body: 'Fale com a gente e tire suas dúvidas sem compromisso.' },

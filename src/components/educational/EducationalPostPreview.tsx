@@ -121,14 +121,14 @@ export const EducationalPostPreview = ({ data }: EducationalPostPreviewProps) =>
   const storyWidth = 1080;
   const storyHeight = 1920;
   
-  // Container width for preview
-  const containerWidth = 320;
-  const containerHeight = format === 'story' ? 420 : 320;
+  // Container dimensions for preview - larger to show full slide
+  const containerWidth = format === 'story' ? 200 : 350;
+  const containerHeight = format === 'story' ? 356 : 350;
   
-  // Calculate scale to fit
-  const scaleX = containerWidth / (format === 'story' ? storyWidth : feedWidth);
-  const scaleY = containerHeight / (format === 'story' ? storyHeight : feedHeight);
-  const previewScale = Math.min(scaleX, scaleY);
+  // Calculate scale to fit perfectly
+  const previewScale = format === 'story' 
+    ? containerWidth / storyWidth 
+    : containerWidth / feedWidth;
 
   return (
     <div className="space-y-4">
