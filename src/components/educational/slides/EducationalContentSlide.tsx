@@ -1,5 +1,6 @@
 import { EducationalSlide } from '@/types/educational';
 import { Check } from 'lucide-react';
+import bgContent from '@/assets/educational/bg-content.jpg';
 
 interface EducationalContentSlideProps {
   slide: EducationalSlide;
@@ -22,20 +23,40 @@ export const EducationalContentSlide = ({
       style={{ 
         width: isStory ? '1080px' : '1080px',
         height: isStory ? '1920px' : '1080px',
-        background: 'linear-gradient(180deg, #0f0f1a 0%, #0a0a14 100%)',
         position: 'relative',
         overflow: 'hidden',
       }}
     >
-      {/* Subtle side accent */}
+      {/* Background image */}
+      <div 
+        style={{
+          position: 'absolute',
+          inset: 0,
+          backgroundImage: `url(${bgContent})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+        }}
+      />
+
+      {/* Dark overlay */}
+      <div 
+        style={{
+          position: 'absolute',
+          inset: 0,
+          background: 'linear-gradient(135deg, rgba(10,10,20,0.92) 0%, rgba(20,20,35,0.88) 100%)',
+        }}
+      />
+
+      {/* Left gold accent bar */}
       <div 
         style={{
           position: 'absolute',
           left: 0,
-          top: '20%',
-          bottom: '20%',
-          width: '4px',
-          background: 'linear-gradient(180deg, transparent, #BA9E72, transparent)',
+          top: '15%',
+          bottom: '15%',
+          width: '5px',
+          background: 'linear-gradient(180deg, transparent, #D4AF37 20%, #D4AF37 80%, transparent)',
+          boxShadow: '0 0 20px rgba(212, 175, 55, 0.3)',
         }}
       />
 
@@ -45,12 +66,28 @@ export const EducationalContentSlide = ({
           position: 'absolute',
           top: isStory ? '80px' : '50px',
           right: isStory ? '80px' : '60px',
-          color: 'rgba(186, 158, 114, 0.6)',
-          fontSize: isStory ? '20px' : '16px',
-          fontWeight: '500',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '12px',
         }}
       >
-        {slideNumber}/{totalSlides}
+        <div 
+          style={{
+            width: '40px',
+            height: '2px',
+            background: 'rgba(212, 175, 55, 0.3)',
+          }}
+        />
+        <span 
+          style={{
+            color: '#D4AF37',
+            fontSize: isStory ? '22px' : '18px',
+            fontWeight: '600',
+            letterSpacing: '2px',
+          }}
+        >
+          {slideNumber}/{totalSlides}
+        </span>
       </div>
 
       {/* Main content area */}
@@ -58,19 +95,20 @@ export const EducationalContentSlide = ({
         style={{
           position: 'absolute',
           top: '50%',
-          left: isStory ? '80px' : '80px',
-          right: isStory ? '80px' : '80px',
+          left: isStory ? '100px' : '100px',
+          right: isStory ? '100px' : '100px',
           transform: 'translateY(-50%)',
         }}
       >
         {/* Headline */}
         <h2 
           style={{
-            fontSize: isStory ? '56px' : '48px',
+            fontSize: isStory ? '60px' : '52px',
             fontWeight: '700',
             color: '#ffffff',
             lineHeight: '1.2',
-            marginBottom: isStory ? '40px' : '32px',
+            marginBottom: isStory ? '48px' : '40px',
+            textShadow: '0 2px 20px rgba(0,0,0,0.3)',
           }}
         >
           {slide.headline}
@@ -78,41 +116,43 @@ export const EducationalContentSlide = ({
 
         {/* Body text or bullets */}
         {slide.bullets ? (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: isStory ? '28px' : '20px' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: isStory ? '32px' : '24px' }}>
             {slide.bullets.map((bullet, index) => (
               <div 
                 key={index}
                 style={{
                   display: 'flex',
                   alignItems: 'flex-start',
-                  gap: '16px',
+                  gap: '20px',
                 }}
               >
                 <div 
                   style={{
-                    width: isStory ? '32px' : '28px',
-                    height: isStory ? '32px' : '28px',
+                    width: isStory ? '36px' : '32px',
+                    height: isStory ? '36px' : '32px',
                     borderRadius: '50%',
-                    background: 'rgba(186, 158, 114, 0.2)',
+                    background: 'linear-gradient(135deg, #D4AF37 0%, #B8960C 100%)',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
                     flexShrink: 0,
                     marginTop: '4px',
+                    boxShadow: '0 4px 15px rgba(212, 175, 55, 0.3)',
                   }}
                 >
                   <Check 
                     style={{ 
-                      width: isStory ? '18px' : '16px', 
-                      height: isStory ? '18px' : '16px', 
-                      color: '#BA9E72' 
+                      width: isStory ? '20px' : '18px', 
+                      height: isStory ? '20px' : '18px', 
+                      color: '#0a0a14',
+                      strokeWidth: 3,
                     }} 
                   />
                 </div>
                 <p 
                   style={{
-                    fontSize: isStory ? '32px' : '28px',
-                    color: 'rgba(255,255,255,0.85)',
+                    fontSize: isStory ? '34px' : '30px',
+                    color: 'rgba(255,255,255,0.9)',
                     lineHeight: '1.4',
                   }}
                 >
@@ -124,9 +164,9 @@ export const EducationalContentSlide = ({
         ) : slide.body ? (
           <p 
             style={{
-              fontSize: isStory ? '36px' : '32px',
-              color: 'rgba(255,255,255,0.8)',
-              lineHeight: '1.5',
+              fontSize: isStory ? '38px' : '34px',
+              color: 'rgba(255,255,255,0.85)',
+              lineHeight: '1.6',
             }}
           >
             {slide.body}
@@ -146,11 +186,12 @@ export const EducationalContentSlide = ({
       >
         <span 
           style={{
-            fontSize: isStory ? '36px' : '28px',
+            fontSize: isStory ? '40px' : '32px',
             fontWeight: '700',
             color: '#ffffff',
-            letterSpacing: '3px',
-            opacity: 0.6,
+            letterSpacing: '6px',
+            opacity: 0.7,
+            textShadow: '0 2px 10px rgba(0,0,0,0.3)',
           }}
         >
           VDH
