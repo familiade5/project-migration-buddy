@@ -1,5 +1,5 @@
 import { EducationalSlide, EducationalCategory, categoryLabels } from '@/types/educational';
-import bgCover from '@/assets/educational/bg-cover.jpg';
+import { getBackground } from '../backgrounds';
 
 interface EducationalCoverSlideProps {
   slide: EducationalSlide;
@@ -9,6 +9,7 @@ interface EducationalCoverSlideProps {
 
 export const EducationalCoverSlide = ({ slide, category, format }: EducationalCoverSlideProps) => {
   const isStory = format === 'story';
+  const bgImage = getBackground(category, 'cover');
   
   return (
     <div 
@@ -25,18 +26,18 @@ export const EducationalCoverSlide = ({ slide, category, format }: EducationalCo
         style={{
           position: 'absolute',
           inset: 0,
-          backgroundImage: `url(${bgCover})`,
+          backgroundImage: `url(${bgImage})`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
         }}
       />
 
-      {/* Dark overlay with gradient */}
+      {/* Lighter overlay with gradient - more visible background */}
       <div 
         style={{
           position: 'absolute',
           inset: 0,
-          background: 'linear-gradient(180deg, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.7) 50%, rgba(0,0,0,0.85) 100%)',
+          background: 'linear-gradient(180deg, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0.7) 100%)',
         }}
       />
 
@@ -64,8 +65,8 @@ export const EducationalCoverSlide = ({ slide, category, format }: EducationalCo
           style={{
             display: 'inline-block',
             padding: '12px 28px',
-            background: 'rgba(212, 175, 55, 0.2)',
-            border: '1px solid rgba(212, 175, 55, 0.5)',
+            background: 'rgba(212, 175, 55, 0.25)',
+            border: '1px solid rgba(212, 175, 55, 0.6)',
             borderRadius: '50px',
             color: '#D4AF37',
             fontSize: isStory ? '26px' : '20px',
@@ -111,7 +112,7 @@ export const EducationalCoverSlide = ({ slide, category, format }: EducationalCo
             color: '#ffffff',
             lineHeight: '1.15',
             whiteSpace: 'pre-line',
-            textShadow: '0 4px 30px rgba(0,0,0,0.5)',
+            textShadow: '0 4px 30px rgba(0,0,0,0.6)',
             letterSpacing: '-0.5px',
           }}
         >
@@ -150,7 +151,7 @@ export const EducationalCoverSlide = ({ slide, category, format }: EducationalCo
             fontWeight: '700',
             color: '#ffffff',
             letterSpacing: '8px',
-            textShadow: '0 2px 20px rgba(0,0,0,0.5)',
+            textShadow: '0 2px 20px rgba(0,0,0,0.6)',
           }}
         >
           VDH
@@ -165,7 +166,7 @@ export const EducationalCoverSlide = ({ slide, category, format }: EducationalCo
             bottom: '50px',
             left: '50%',
             transform: 'translateX(-50%)',
-            color: 'rgba(255,255,255,0.5)',
+            color: 'rgba(255,255,255,0.6)',
             fontSize: '18px',
             textTransform: 'uppercase',
             letterSpacing: '3px',

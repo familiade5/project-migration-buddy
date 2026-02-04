@@ -1,6 +1,6 @@
-import { EducationalSlide } from '@/types/educational';
+import { EducationalSlide, EducationalCategory } from '@/types/educational';
 import { Phone, User, FileText, MessageCircle } from 'lucide-react';
-import bgCta from '@/assets/educational/bg-cta.jpg';
+import { getBackground } from '../backgrounds';
 
 interface EducationalCTASlideProps {
   slide: EducationalSlide;
@@ -10,6 +10,7 @@ interface EducationalCTASlideProps {
   contactName: string;
   contactPhone: string;
   creci: string;
+  category: EducationalCategory;
 }
 
 export const EducationalCTASlide = ({ 
@@ -20,8 +21,10 @@ export const EducationalCTASlide = ({
   contactName,
   contactPhone,
   creci,
+  category,
 }: EducationalCTASlideProps) => {
   const isStory = format === 'story';
+  const bgImage = getBackground(category, 'cta');
   
   return (
     <div 
@@ -38,18 +41,18 @@ export const EducationalCTASlide = ({
         style={{
           position: 'absolute',
           inset: 0,
-          backgroundImage: `url(${bgCta})`,
+          backgroundImage: `url(${bgImage})`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
         }}
       />
 
-      {/* Dark overlay */}
+      {/* Lighter overlay */}
       <div 
         style={{
           position: 'absolute',
           inset: 0,
-          background: 'linear-gradient(180deg, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.75) 50%, rgba(0,0,0,0.85) 100%)',
+          background: 'linear-gradient(180deg, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.55) 50%, rgba(0,0,0,0.7) 100%)',
         }}
       />
 
@@ -82,7 +85,7 @@ export const EducationalCTASlide = ({
             fontWeight: '700',
             color: '#ffffff',
             letterSpacing: '8px',
-            textShadow: '0 2px 20px rgba(0,0,0,0.5)',
+            textShadow: '0 2px 20px rgba(0,0,0,0.6)',
           }}
         >
           VDH
@@ -123,7 +126,7 @@ export const EducationalCTASlide = ({
             color: '#ffffff',
             lineHeight: '1.2',
             marginBottom: isStory ? '24px' : '20px',
-            textShadow: '0 4px 30px rgba(0,0,0,0.5)',
+            textShadow: '0 4px 30px rgba(0,0,0,0.6)',
           }}
         >
           {slide.headline}
@@ -134,22 +137,23 @@ export const EducationalCTASlide = ({
           <p 
             style={{
               fontSize: isStory ? '32px' : '28px',
-              color: 'rgba(255,255,255,0.8)',
+              color: 'rgba(255,255,255,0.9)',
               marginBottom: isStory ? '60px' : '48px',
+              textShadow: '0 2px 10px rgba(0,0,0,0.4)',
             }}
           >
             {slide.body}
           </p>
         )}
 
-        {/* Contact card */}
+        {/* Contact card - glassmorphism */}
         <div 
           style={{
-            background: 'rgba(255,255,255,0.1)',
+            background: 'rgba(255,255,255,0.15)',
             backdropFilter: 'blur(20px)',
             borderRadius: '24px',
             padding: isStory ? '48px 60px' : '40px 50px',
-            border: '1px solid rgba(212, 175, 55, 0.3)',
+            border: '1px solid rgba(212, 175, 55, 0.4)',
             boxShadow: '0 20px 60px rgba(0,0,0,0.3)',
             display: 'inline-block',
           }}
@@ -224,7 +228,7 @@ export const EducationalCTASlide = ({
                 <span 
                   style={{
                     fontSize: isStory ? '30px' : '26px',
-                    color: 'rgba(255,255,255,0.85)',
+                    color: 'rgba(255,255,255,0.9)',
                   }}
                 >
                   {creci}

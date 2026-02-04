@@ -1,21 +1,24 @@
-import { EducationalSlide } from '@/types/educational';
+import { EducationalSlide, EducationalCategory } from '@/types/educational';
 import { Sparkles } from 'lucide-react';
-import bgHighlight from '@/assets/educational/bg-highlight.jpg';
+import { getBackground } from '../backgrounds';
 
 interface EducationalHighlightSlideProps {
   slide: EducationalSlide;
   slideNumber: number;
   totalSlides: number;
   format: 'feed' | 'story';
+  category: EducationalCategory;
 }
 
 export const EducationalHighlightSlide = ({ 
   slide, 
   slideNumber, 
   totalSlides, 
-  format 
+  format,
+  category,
 }: EducationalHighlightSlideProps) => {
   const isStory = format === 'story';
+  const bgImage = getBackground(category, 'highlight');
   
   return (
     <div 
@@ -32,18 +35,18 @@ export const EducationalHighlightSlide = ({
         style={{
           position: 'absolute',
           inset: 0,
-          backgroundImage: `url(${bgHighlight})`,
+          backgroundImage: `url(${bgImage})`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
         }}
       />
 
-      {/* Dark overlay with warm tint */}
+      {/* Lighter overlay with warm tint */}
       <div 
         style={{
           position: 'absolute',
           inset: 0,
-          background: 'linear-gradient(180deg, rgba(15,10,20,0.85) 0%, rgba(25,15,10,0.75) 50%, rgba(15,10,20,0.9) 100%)',
+          background: 'linear-gradient(180deg, rgba(15,10,20,0.6) 0%, rgba(25,15,10,0.5) 50%, rgba(15,10,20,0.7) 100%)',
         }}
       />
 
@@ -56,7 +59,7 @@ export const EducationalHighlightSlide = ({
           transform: 'translate(-50%, -50%)',
           width: '800px',
           height: '800px',
-          background: 'radial-gradient(circle, rgba(212, 175, 55, 0.15) 0%, transparent 60%)',
+          background: 'radial-gradient(circle, rgba(212, 175, 55, 0.12) 0%, transparent 60%)',
           borderRadius: '50%',
         }}
       />
@@ -69,8 +72,8 @@ export const EducationalHighlightSlide = ({
           left: isStory ? '60px' : '40px',
           width: '80px',
           height: '80px',
-          borderTop: '2px solid rgba(212, 175, 55, 0.4)',
-          borderLeft: '2px solid rgba(212, 175, 55, 0.4)',
+          borderTop: '2px solid rgba(212, 175, 55, 0.5)',
+          borderLeft: '2px solid rgba(212, 175, 55, 0.5)',
         }}
       />
       <div 
@@ -80,8 +83,8 @@ export const EducationalHighlightSlide = ({
           right: isStory ? '60px' : '40px',
           width: '80px',
           height: '80px',
-          borderBottom: '2px solid rgba(212, 175, 55, 0.4)',
-          borderRight: '2px solid rgba(212, 175, 55, 0.4)',
+          borderBottom: '2px solid rgba(212, 175, 55, 0.5)',
+          borderRight: '2px solid rgba(212, 175, 55, 0.5)',
         }}
       />
 
@@ -168,10 +171,11 @@ export const EducationalHighlightSlide = ({
           <p 
             style={{
               fontSize: isStory ? '38px' : '32px',
-              color: 'rgba(255,255,255,0.9)',
+              color: 'rgba(255,255,255,0.95)',
               lineHeight: '1.5',
               maxWidth: '850px',
               margin: '0 auto',
+              textShadow: '0 2px 10px rgba(0,0,0,0.4)',
             }}
           >
             {slide.body}
@@ -195,8 +199,8 @@ export const EducationalHighlightSlide = ({
             fontWeight: '700',
             color: '#ffffff',
             letterSpacing: '6px',
-            opacity: 0.7,
-            textShadow: '0 2px 10px rgba(0,0,0,0.3)',
+            opacity: 0.8,
+            textShadow: '0 2px 10px rgba(0,0,0,0.4)',
           }}
         >
           VDH

@@ -1,21 +1,24 @@
-import { EducationalSlide } from '@/types/educational';
+import { EducationalSlide, EducationalCategory } from '@/types/educational';
 import { Check } from 'lucide-react';
-import bgContent from '@/assets/educational/bg-content.jpg';
+import { getBackground } from '../backgrounds';
 
 interface EducationalContentSlideProps {
   slide: EducationalSlide;
   slideNumber: number;
   totalSlides: number;
   format: 'feed' | 'story';
+  category: EducationalCategory;
 }
 
 export const EducationalContentSlide = ({ 
   slide, 
   slideNumber, 
   totalSlides, 
-  format 
+  format,
+  category,
 }: EducationalContentSlideProps) => {
   const isStory = format === 'story';
+  const bgImage = getBackground(category, 'content');
   
   return (
     <div 
@@ -32,18 +35,18 @@ export const EducationalContentSlide = ({
         style={{
           position: 'absolute',
           inset: 0,
-          backgroundImage: `url(${bgContent})`,
+          backgroundImage: `url(${bgImage})`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
         }}
       />
 
-      {/* Dark overlay */}
+      {/* Lighter overlay - more visible background */}
       <div 
         style={{
           position: 'absolute',
           inset: 0,
-          background: 'linear-gradient(135deg, rgba(10,10,20,0.92) 0%, rgba(20,20,35,0.88) 100%)',
+          background: 'linear-gradient(135deg, rgba(10,10,20,0.75) 0%, rgba(20,20,35,0.7) 100%)',
         }}
       />
 
@@ -108,7 +111,7 @@ export const EducationalContentSlide = ({
             color: '#ffffff',
             lineHeight: '1.2',
             marginBottom: isStory ? '48px' : '40px',
-            textShadow: '0 2px 20px rgba(0,0,0,0.3)',
+            textShadow: '0 2px 20px rgba(0,0,0,0.5)',
           }}
         >
           {slide.headline}
@@ -152,8 +155,9 @@ export const EducationalContentSlide = ({
                 <p 
                   style={{
                     fontSize: isStory ? '34px' : '30px',
-                    color: 'rgba(255,255,255,0.9)',
+                    color: 'rgba(255,255,255,0.95)',
                     lineHeight: '1.4',
+                    textShadow: '0 2px 10px rgba(0,0,0,0.3)',
                   }}
                 >
                   {bullet}
@@ -165,8 +169,9 @@ export const EducationalContentSlide = ({
           <p 
             style={{
               fontSize: isStory ? '38px' : '34px',
-              color: 'rgba(255,255,255,0.85)',
+              color: 'rgba(255,255,255,0.9)',
               lineHeight: '1.6',
+              textShadow: '0 2px 10px rgba(0,0,0,0.3)',
             }}
           >
             {slide.body}
@@ -190,8 +195,8 @@ export const EducationalContentSlide = ({
             fontWeight: '700',
             color: '#ffffff',
             letterSpacing: '6px',
-            opacity: 0.7,
-            textShadow: '0 2px 10px rgba(0,0,0,0.3)',
+            opacity: 0.8,
+            textShadow: '0 2px 10px rgba(0,0,0,0.4)',
           }}
         >
           VDH
