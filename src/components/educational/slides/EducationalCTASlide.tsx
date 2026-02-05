@@ -47,12 +47,12 @@ export const EducationalCTASlide = ({
         }}
       />
 
-      {/* Lighter overlay */}
+      {/* Very subtle overlay for text readability */}
       <div 
         style={{
           position: 'absolute',
           inset: 0,
-          background: 'linear-gradient(180deg, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.35) 50%, rgba(0,0,0,0.5) 100%)',
+          background: 'linear-gradient(180deg, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.2) 50%, rgba(0,0,0,0.4) 100%)',
         }}
       />
 
