@@ -157,12 +157,12 @@ export const EducationalHighlightSlide = ({
         {/* Headline in gold */}
         <h2 
           style={{
-            fontSize: isStory ? '68px' : '60px',
+            fontSize: isStory ? '80px' : '72px',
             fontWeight: '700',
             color: '#D4AF37',
             lineHeight: '1.15',
             marginBottom: isStory ? '36px' : '28px',
-            textShadow: '0 4px 30px rgba(212, 175, 55, 0.3)',
+            textShadow: '0 6px 40px rgba(212, 175, 55, 0.5), 0 3px 15px rgba(0,0,0,0.5)',
           }}
         >
           {slide.headline}
@@ -172,12 +172,13 @@ export const EducationalHighlightSlide = ({
         {slide.body && (
           <p 
             style={{
-              fontSize: isStory ? '38px' : '32px',
-              color: 'rgba(255,255,255,0.95)',
+              fontSize: isStory ? '46px' : '40px',
+              color: '#ffffff',
               lineHeight: '1.5',
               maxWidth: '850px',
               margin: '0 auto',
-              textShadow: '0 2px 10px rgba(0,0,0,0.4)',
+              textShadow: '0 4px 20px rgba(0,0,0,0.7), 0 2px 8px rgba(0,0,0,0.5)',
+              fontWeight: '500',
             }}
           >
             {slide.body}
@@ -197,12 +198,11 @@ export const EducationalHighlightSlide = ({
       >
         <span 
           style={{
-            fontSize: isStory ? '40px' : '32px',
+            fontSize: isStory ? '52px' : '44px',
             fontWeight: '700',
             color: '#ffffff',
             letterSpacing: '6px',
-            opacity: 0.8,
-            textShadow: '0 2px 10px rgba(0,0,0,0.4)',
+            textShadow: '0 4px 20px rgba(0,0,0,0.7), 0 2px 8px rgba(0,0,0,0.5)',
           }}
         >
           VDH

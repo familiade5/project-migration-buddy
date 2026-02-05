@@ -108,12 +108,12 @@ export const EducationalContentSlide = ({
         {/* Headline */}
         <h2 
           style={{
-            fontSize: isStory ? '60px' : '52px',
+            fontSize: isStory ? '72px' : '64px',
             fontWeight: '700',
             color: '#ffffff',
             lineHeight: '1.2',
             marginBottom: isStory ? '48px' : '40px',
-            textShadow: '0 2px 20px rgba(0,0,0,0.5)',
+            textShadow: '0 4px 30px rgba(0,0,0,0.8), 0 2px 10px rgba(0,0,0,0.6)',
           }}
         >
           {slide.headline}
@@ -121,20 +121,20 @@ export const EducationalContentSlide = ({
 
         {/* Body text or bullets */}
         {slide.bullets ? (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: isStory ? '32px' : '24px' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: isStory ? '36px' : '28px' }}>
             {slide.bullets.map((bullet, index) => (
               <div 
                 key={index}
                 style={{
                   display: 'flex',
                   alignItems: 'flex-start',
-                  gap: '20px',
+                  gap: '24px',
                 }}
               >
                 <div 
                   style={{
-                    width: isStory ? '36px' : '32px',
-                    height: isStory ? '36px' : '32px',
+                    width: isStory ? '44px' : '40px',
+                    height: isStory ? '44px' : '40px',
                     borderRadius: '50%',
                     background: 'linear-gradient(135deg, #D4AF37 0%, #B8960C 100%)',
                     display: 'flex',
@@ -147,8 +147,8 @@ export const EducationalContentSlide = ({
                 >
                   <Check 
                     style={{ 
-                      width: isStory ? '20px' : '18px', 
-                      height: isStory ? '20px' : '18px', 
+                      width: isStory ? '24px' : '22px', 
+                      height: isStory ? '24px' : '22px', 
                       color: '#0a0a14',
                       strokeWidth: 3,
                     }} 
@@ -156,10 +156,11 @@ export const EducationalContentSlide = ({
                 </div>
                 <p 
                   style={{
-                    fontSize: isStory ? '34px' : '30px',
-                    color: 'rgba(255,255,255,0.95)',
+                    fontSize: isStory ? '42px' : '38px',
+                    color: '#ffffff',
                     lineHeight: '1.4',
-                    textShadow: '0 2px 10px rgba(0,0,0,0.3)',
+                    textShadow: '0 4px 20px rgba(0,0,0,0.7), 0 2px 8px rgba(0,0,0,0.5)',
+                    fontWeight: '500',
                   }}
                 >
                   {bullet}
@@ -170,10 +171,11 @@ export const EducationalContentSlide = ({
         ) : slide.body ? (
           <p 
             style={{
-              fontSize: isStory ? '38px' : '34px',
-              color: 'rgba(255,255,255,0.9)',
+              fontSize: isStory ? '46px' : '42px',
+              color: '#ffffff',
               lineHeight: '1.6',
-              textShadow: '0 2px 10px rgba(0,0,0,0.3)',
+              textShadow: '0 4px 20px rgba(0,0,0,0.7), 0 2px 8px rgba(0,0,0,0.5)',
+              fontWeight: '500',
             }}
           >
             {slide.body}
@@ -193,12 +195,11 @@ export const EducationalContentSlide = ({
       >
         <span 
           style={{
-            fontSize: isStory ? '40px' : '32px',
+            fontSize: isStory ? '52px' : '44px',
             fontWeight: '700',
             color: '#ffffff',
             letterSpacing: '6px',
-            opacity: 0.8,
-            textShadow: '0 2px 10px rgba(0,0,0,0.4)',
+            textShadow: '0 4px 20px rgba(0,0,0,0.7), 0 2px 8px rgba(0,0,0,0.5)',
           }}
         >
           VDH
