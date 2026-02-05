@@ -6,11 +6,12 @@ interface EducationalCoverSlideProps {
   category: EducationalCategory;
   format: 'feed' | 'story';
   slideIndex: number;
+  customImage?: string;
 }
 
-export const EducationalCoverSlide = ({ slide, category, format, slideIndex }: EducationalCoverSlideProps) => {
+export const EducationalCoverSlide = ({ slide, category, format, slideIndex, customImage }: EducationalCoverSlideProps) => {
   const isStory = format === 'story';
-  const bgImage = getBackgroundByIndex(category, slideIndex);
+  const bgImage = customImage || getBackgroundByIndex(category, slideIndex);
   
   return (
     <div 

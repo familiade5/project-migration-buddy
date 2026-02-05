@@ -12,6 +12,7 @@ interface EducationalCTASlideProps {
   creci: string;
   category: EducationalCategory;
   slideIndex: number;
+  customImage?: string;
 }
 
 export const EducationalCTASlide = ({ 
@@ -24,9 +25,10 @@ export const EducationalCTASlide = ({
   creci,
   category,
   slideIndex,
+  customImage,
 }: EducationalCTASlideProps) => {
   const isStory = format === 'story';
-  const bgImage = getBackgroundByIndex(category, slideIndex);
+  const bgImage = customImage || getBackgroundByIndex(category, slideIndex);
   
   return (
     <div 
