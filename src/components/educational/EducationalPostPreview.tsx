@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { EducationalPostData } from '@/types/educational';
 import { EducationalCoverSlide } from './slides/EducationalCoverSlide';
 import { EducationalContentSlide } from './slides/EducationalContentSlide';
@@ -6,10 +6,11 @@ import { EducationalHighlightSlide } from './slides/EducationalHighlightSlide';
 import { EducationalCTASlide } from './slides/EducationalCTASlide';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { ChevronLeft, ChevronRight, Download, Loader2, LayoutGrid, Smartphone } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Download, Loader2, LayoutGrid, Smartphone, ImagePlus } from 'lucide-react';
 import { toPng } from 'html-to-image';
 import JSZip from 'jszip';
 import { toast } from 'sonner';
+import { supabase } from '@/integrations/supabase/client';
 
 interface EducationalPostPreviewProps {
   data: EducationalPostData;
@@ -19,7 +20,15 @@ export const EducationalPostPreview = ({ data }: EducationalPostPreviewProps) =>
   const [currentSlide, setCurrentSlide] = useState(0);
   const [format, setFormat] = useState<'feed' | 'story'>('feed');
   const [isExporting, setIsExporting] = useState(false);
+  const [isGeneratingImage, setIsGeneratingImage] = useState(false);
+  const [customImages, setCustomImages] = useState<Record<number, string>>({});
   const slidesRef = useRef<(HTMLDivElement | null)[]>([]);
+
+  // Reset custom images when data changes (new topic generated)
+  useEffect(() => {
+    setCustomImages({});
+    setCurrentSlide(0);
+  }, [data.slides]);
 
   const totalSlides = data.slides.length;
 
@@ -35,6 +44,7 @@ export const EducationalPostPreview = ({ data }: EducationalPostPreviewProps) =>
     if (!slide) return null;
     
     const slideNumber = index + 1;
+    const customImage = customImages[index];
     
     switch (slide.type) {
       case 'cover':
@@ -44,6 +54,7 @@ export const EducationalPostPreview = ({ data }: EducationalPostPreviewProps) =>
             category={data.category} 
             format={format}
             slideIndex={index}
+            customImage={customImage}
           />
         );
       case 'content':
@@ -55,6 +66,7 @@ export const EducationalPostPreview = ({ data }: EducationalPostPreviewProps) =>
             format={format}
             category={data.category}
             slideIndex={index}
+            customImage={customImage}
           />
         );
       case 'highlight':
@@ -66,6 +78,7 @@ export const EducationalPostPreview = ({ data }: EducationalPostPreviewProps) =>
             format={format}
             category={data.category}
             slideIndex={index}
+            customImage={customImage}
           />
         );
       case 'cta':
@@ -80,10 +93,47 @@ export const EducationalPostPreview = ({ data }: EducationalPostPreviewProps) =>
             creci={data.creci}
             category={data.category}
             slideIndex={index}
+            customImage={customImage}
           />
         );
       default:
         return null;
+    }
+  };
+
+  const generateNewImage = async () => {
+    setIsGeneratingImage(true);
+    try {
+      toast.info('Gerando nova imagem...', { duration: 10000 });
+      
+      const { data: responseData, error } = await supabase.functions.invoke('generate-slide-image', {
+        body: {
+          category: data.category,
+          slideIndex: currentSlide,
+        },
+      });
+
+      if (error) {
+        console.error('Error calling edge function:', error);
+        throw new Error(error.message);
+      }
+
+      if (!responseData?.success || !responseData?.imageUrl) {
+        throw new Error(responseData?.error || 'Falha ao gerar imagem');
+      }
+
+      // Update custom image for current slide
+      setCustomImages(prev => ({
+        ...prev,
+        [currentSlide]: responseData.imageUrl,
+      }));
+
+      toast.success('Nova imagem gerada com sucesso!');
+    } catch (error) {
+      console.error('Error generating image:', error);
+      toast.error('Erro ao gerar nova imagem. Tente novamente.');
+    } finally {
+      setIsGeneratingImage(false);
     }
   };
 
@@ -219,26 +269,46 @@ export const EducationalPostPreview = ({ data }: EducationalPostPreviewProps) =>
 
       {/* Slide counter & export */}
       <div className="flex items-center justify-between">
-        <p className="text-sm text-gray-600">
+        <p className="text-sm text-muted-foreground">
           Slide {currentSlide + 1} de {totalSlides}
         </p>
-        <Button
-          onClick={exportAllSlides}
-          disabled={isExporting}
-          className="bg-amber-600 hover:bg-amber-700 text-white"
-        >
-          {isExporting ? (
-            <>
-              <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-              Exportando...
-            </>
-          ) : (
-            <>
-              <Download className="w-4 h-4 mr-2" />
-              Baixar todos ({format})
-            </>
-          )}
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button
+            onClick={generateNewImage}
+            disabled={isGeneratingImage || isExporting}
+            variant="outline"
+            className="border-amber-600 text-amber-600 hover:bg-amber-50"
+          >
+            {isGeneratingImage ? (
+              <>
+                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                Gerando...
+              </>
+            ) : (
+              <>
+                <ImagePlus className="w-4 h-4 mr-2" />
+                Nova imagem
+              </>
+            )}
+          </Button>
+          <Button
+            onClick={exportAllSlides}
+            disabled={isExporting || isGeneratingImage}
+            className="bg-amber-600 hover:bg-amber-700 text-white"
+          >
+            {isExporting ? (
+              <>
+                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                Exportando...
+              </>
+            ) : (
+              <>
+                <Download className="w-4 h-4 mr-2" />
+                Baixar todos ({format})
+              </>
+            )}
+          </Button>
+        </div>
       </div>
 
       {/* Hidden render area for export */}

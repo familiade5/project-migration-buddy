@@ -9,6 +9,7 @@ interface EducationalContentSlideProps {
   format: 'feed' | 'story';
   category: EducationalCategory;
   slideIndex: number;
+  customImage?: string;
 }
 
 export const EducationalContentSlide = ({ 
@@ -18,9 +19,10 @@ export const EducationalContentSlide = ({
   format,
   category,
   slideIndex,
+  customImage,
 }: EducationalContentSlideProps) => {
   const isStory = format === 'story';
-  const bgImage = getBackgroundByIndex(category, slideIndex);
+  const bgImage = customImage || getBackgroundByIndex(category, slideIndex);
   
   return (
     <div 
