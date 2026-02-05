@@ -1,6 +1,6 @@
 import { EducationalSlide, EducationalCategory } from '@/types/educational';
 import { Check } from 'lucide-react';
-import { getBackground } from '../backgrounds';
+import { getBackgroundByIndex } from '../backgrounds';
 
 interface EducationalContentSlideProps {
   slide: EducationalSlide;
@@ -8,6 +8,7 @@ interface EducationalContentSlideProps {
   totalSlides: number;
   format: 'feed' | 'story';
   category: EducationalCategory;
+  slideIndex: number;
 }
 
 export const EducationalContentSlide = ({ 
@@ -16,9 +17,10 @@ export const EducationalContentSlide = ({
   totalSlides, 
   format,
   category,
+  slideIndex,
 }: EducationalContentSlideProps) => {
   const isStory = format === 'story';
-  const bgImage = getBackground(category, 'content');
+  const bgImage = getBackgroundByIndex(category, slideIndex);
   
   return (
     <div 
