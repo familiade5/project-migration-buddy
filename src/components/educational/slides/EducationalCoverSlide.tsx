@@ -108,12 +108,12 @@ export const EducationalCoverSlide = ({ slide, category, format, slideIndex }: E
 
         <h1 
           style={{
-            fontSize: isStory ? '76px' : '68px',
+            fontSize: isStory ? '88px' : '80px',
             fontWeight: '700',
             color: '#ffffff',
             lineHeight: '1.15',
             whiteSpace: 'pre-line',
-            textShadow: '0 4px 30px rgba(0,0,0,0.6)',
+            textShadow: '0 6px 40px rgba(0,0,0,0.9), 0 3px 15px rgba(0,0,0,0.7)',
             letterSpacing: '-0.5px',
           }}
         >
@@ -148,11 +148,11 @@ export const EducationalCoverSlide = ({ slide, category, format, slideIndex }: E
       >
         <span 
           style={{
-            fontSize: isStory ? '52px' : '44px',
+            fontSize: isStory ? '60px' : '52px',
             fontWeight: '700',
             color: '#ffffff',
             letterSpacing: '8px',
-            textShadow: '0 2px 20px rgba(0,0,0,0.6)',
+            textShadow: '0 4px 30px rgba(0,0,0,0.9), 0 2px 10px rgba(0,0,0,0.7)',
           }}
         >
           VDH

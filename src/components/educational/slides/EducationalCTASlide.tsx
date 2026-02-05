@@ -123,12 +123,12 @@ export const EducationalCTASlide = ({
         {/* Headline */}
         <h2 
           style={{
-            fontSize: isStory ? '64px' : '56px',
+            fontSize: isStory ? '76px' : '68px',
             fontWeight: '700',
             color: '#ffffff',
             lineHeight: '1.2',
             marginBottom: isStory ? '24px' : '20px',
-            textShadow: '0 4px 30px rgba(0,0,0,0.6)',
+            textShadow: '0 6px 40px rgba(0,0,0,0.9), 0 3px 15px rgba(0,0,0,0.7)',
           }}
         >
           {slide.headline}
@@ -138,10 +138,11 @@ export const EducationalCTASlide = ({
         {slide.body && (
           <p 
             style={{
-              fontSize: isStory ? '32px' : '28px',
-              color: 'rgba(255,255,255,0.9)',
+              fontSize: isStory ? '40px' : '36px',
+              color: '#ffffff',
               marginBottom: isStory ? '60px' : '48px',
-              textShadow: '0 2px 10px rgba(0,0,0,0.4)',
+              textShadow: '0 4px 20px rgba(0,0,0,0.7), 0 2px 8px rgba(0,0,0,0.5)',
+              fontWeight: '500',
             }}
           >
             {slide.body}
@@ -200,9 +201,10 @@ export const EducationalCTASlide = ({
                 />
                 <span 
                   style={{
-                    fontSize: isStory ? '36px' : '32px',
+                    fontSize: isStory ? '42px' : '38px',
                     fontWeight: '600',
                     color: '#ffffff',
+                    textShadow: '0 2px 10px rgba(0,0,0,0.5)',
                   }}
                 >
                   {contactName}
@@ -229,8 +231,9 @@ export const EducationalCTASlide = ({
                 />
                 <span 
                   style={{
-                    fontSize: isStory ? '30px' : '26px',
-                    color: 'rgba(255,255,255,0.9)',
+                    fontSize: isStory ? '36px' : '32px',
+                    color: '#ffffff',
+                    textShadow: '0 2px 10px rgba(0,0,0,0.5)',
                   }}
                 >
                   {creci}
@@ -257,9 +260,10 @@ export const EducationalCTASlide = ({
                 />
                 <span 
                   style={{
-                    fontSize: isStory ? '34px' : '30px',
-                    fontWeight: '500',
+                    fontSize: isStory ? '42px' : '38px',
+                    fontWeight: '600',
                     color: '#ffffff',
+                    textShadow: '0 2px 10px rgba(0,0,0,0.5)',
                   }}
                 >
                   {contactPhone}
