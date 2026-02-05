@@ -46,7 +46,7 @@ export const EducationalHighlightSlide = ({
         style={{
           position: 'absolute',
           inset: 0,
-          background: 'linear-gradient(180deg, rgba(15,10,20,0.6) 0%, rgba(25,15,10,0.5) 50%, rgba(15,10,20,0.7) 100%)',
+          background: 'linear-gradient(180deg, rgba(15,10,20,0.3) 0%, rgba(25,15,10,0.25) 50%, rgba(15,10,20,0.4) 100%)',
         }}
       />
 
