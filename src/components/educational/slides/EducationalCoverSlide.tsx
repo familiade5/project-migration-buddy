@@ -32,12 +32,12 @@ export const EducationalCoverSlide = ({ slide, category, format }: EducationalCo
         }}
       />
 
-      {/* Lighter overlay with gradient - more visible background */}
+      {/* Very subtle overlay for text readability */}
       <div 
         style={{
           position: 'absolute',
           inset: 0,
-          background: 'linear-gradient(180deg, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.3) 50%, rgba(0,0,0,0.5) 100%)',
+          background: 'linear-gradient(180deg, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.15) 50%, rgba(0,0,0,0.35) 100%)',
         }}
       />
 

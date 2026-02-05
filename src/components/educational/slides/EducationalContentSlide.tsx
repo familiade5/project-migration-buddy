@@ -41,12 +41,12 @@ export const EducationalContentSlide = ({
         }}
       />
 
-      {/* Lighter overlay - more visible background */}
+      {/* Very subtle overlay for text readability */}
       <div 
         style={{
           position: 'absolute',
           inset: 0,
-          background: 'linear-gradient(135deg, rgba(10,10,20,0.45) 0%, rgba(20,20,35,0.4) 100%)',
+          background: 'linear-gradient(135deg, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.25) 100%)',
         }}
       />
 
