@@ -1,6 +1,6 @@
 import { EducationalSlide, EducationalCategory } from '@/types/educational';
 import { Phone, User, FileText, MessageCircle } from 'lucide-react';
-import { getBackground } from '../backgrounds';
+import { getBackgroundByIndex } from '../backgrounds';
 
 interface EducationalCTASlideProps {
   slide: EducationalSlide;
@@ -11,6 +11,7 @@ interface EducationalCTASlideProps {
   contactPhone: string;
   creci: string;
   category: EducationalCategory;
+  slideIndex: number;
 }
 
 export const EducationalCTASlide = ({ 
@@ -22,9 +23,10 @@ export const EducationalCTASlide = ({
   contactPhone,
   creci,
   category,
+  slideIndex,
 }: EducationalCTASlideProps) => {
   const isStory = format === 'story';
-  const bgImage = getBackground(category, 'cta');
+  const bgImage = getBackgroundByIndex(category, slideIndex);
   
   return (
     <div 

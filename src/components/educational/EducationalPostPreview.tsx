@@ -42,7 +42,8 @@ export const EducationalPostPreview = ({ data }: EducationalPostPreviewProps) =>
           <EducationalCoverSlide 
             slide={slide} 
             category={data.category} 
-            format={format} 
+            format={format}
+            slideIndex={index}
           />
         );
       case 'content':
@@ -53,6 +54,7 @@ export const EducationalPostPreview = ({ data }: EducationalPostPreviewProps) =>
             totalSlides={totalSlides}
             format={format}
             category={data.category}
+            slideIndex={index}
           />
         );
       case 'highlight':
@@ -63,6 +65,7 @@ export const EducationalPostPreview = ({ data }: EducationalPostPreviewProps) =>
             totalSlides={totalSlides}
             format={format}
             category={data.category}
+            slideIndex={index}
           />
         );
       case 'cta':
@@ -76,6 +79,7 @@ export const EducationalPostPreview = ({ data }: EducationalPostPreviewProps) =>
             contactPhone={data.contactPhone}
             creci={data.creci}
             category={data.category}
+            slideIndex={index}
           />
         );
       default:

@@ -1,6 +1,6 @@
 import { EducationalSlide, EducationalCategory } from '@/types/educational';
 import { Sparkles } from 'lucide-react';
-import { getBackground } from '../backgrounds';
+import { getBackgroundByIndex } from '../backgrounds';
 
 interface EducationalHighlightSlideProps {
   slide: EducationalSlide;
@@ -8,6 +8,7 @@ interface EducationalHighlightSlideProps {
   totalSlides: number;
   format: 'feed' | 'story';
   category: EducationalCategory;
+  slideIndex: number;
 }
 
 export const EducationalHighlightSlide = ({ 
@@ -16,9 +17,10 @@ export const EducationalHighlightSlide = ({
   totalSlides, 
   format,
   category,
+  slideIndex,
 }: EducationalHighlightSlideProps) => {
   const isStory = format === 'story';
-  const bgImage = getBackground(category, 'highlight');
+  const bgImage = getBackgroundByIndex(category, slideIndex);
   
   return (
     <div 

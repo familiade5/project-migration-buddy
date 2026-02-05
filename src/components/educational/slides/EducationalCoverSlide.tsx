@@ -1,15 +1,16 @@
 import { EducationalSlide, EducationalCategory, categoryLabels } from '@/types/educational';
-import { getBackground } from '../backgrounds';
+import { getBackgroundByIndex } from '../backgrounds';
 
 interface EducationalCoverSlideProps {
   slide: EducationalSlide;
   category: EducationalCategory;
   format: 'feed' | 'story';
+  slideIndex: number;
 }
 
-export const EducationalCoverSlide = ({ slide, category, format }: EducationalCoverSlideProps) => {
+export const EducationalCoverSlide = ({ slide, category, format, slideIndex }: EducationalCoverSlideProps) => {
   const isStory = format === 'story';
-  const bgImage = getBackground(category, 'cover');
+  const bgImage = getBackgroundByIndex(category, slideIndex);
   
   return (
     <div 
