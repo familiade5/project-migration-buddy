@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { CrmClient } from '@/types/client';
+import { CrmProperty } from '@/types/crm';
 import { useCrmClients } from '@/hooks/useCrmClients';
 import { ClientFormModal } from './ClientFormModal';
 import { ClientDetailModal } from './ClientDetailModal';
@@ -26,7 +27,12 @@ import {
   Loader2,
 } from 'lucide-react';
 
-export function ClientsTab() {
+interface ClientsTabProps {
+  properties?: CrmProperty[];
+  onPropertyClick?: (property: CrmProperty) => void;
+}
+
+export function ClientsTab({ properties = [], onPropertyClick }: ClientsTabProps) {
   const { clients, isLoading, createClient, updateClient, deleteClient } = useCrmClients();
   
   const [searchQuery, setSearchQuery] = useState('');
@@ -200,6 +206,8 @@ export function ClientsTab() {
         onClose={() => setIsDetailOpen(false)}
         onEdit={handleEditClient}
         onDelete={handleDeleteClient}
+        properties={properties}
+        onPropertyClick={onPropertyClick}
       />
 
       {/* Form Modal */}

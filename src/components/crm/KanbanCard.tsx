@@ -3,7 +3,7 @@ import { CSS } from '@dnd-kit/utilities';
 import { CrmProperty, PROPERTY_TYPE_LABELS, PropertyStage } from '@/types/crm';
 import { PropertyCompletionStatus } from '@/types/stageCompletion';
 import { formatCurrency } from '@/lib/formatCurrency';
-import { Image, FileText, MapPin, User, Calendar } from 'lucide-react';
+import { Image, FileText, MapPin, User, Calendar, Users } from 'lucide-react';
 import { differenceInDays } from 'date-fns';
 import { PropertyReminder } from '@/types/reminder';
 import { ReminderIndicator } from './ReminderIndicator';
@@ -18,6 +18,7 @@ interface KanbanCardProps {
   onUpdateReminderInterval?: (propertyId: string, stage: PropertyStage, hours: number) => void;
   onSnoozeReminder?: (reminderId: string, hours: number) => void;
   completionStatus?: PropertyCompletionStatus;
+  matchCount?: number;
 }
 
 export function KanbanCard({ 
@@ -29,6 +30,7 @@ export function KanbanCard({
   onUpdateReminderInterval,
   onSnoozeReminder,
   completionStatus,
+  matchCount = 0,
 }: KanbanCardProps) {
   const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
     id: property.id,
@@ -107,6 +109,19 @@ export function KanbanCard({
           <p className="text-sm font-semibold text-gray-900">
             {formatCurrency(property.sale_value)}
           </p>
+        </div>
+      )}
+
+      {/* Match badge */}
+      {matchCount > 0 && (
+        <div className="flex items-center gap-1 mb-2">
+          <span
+            className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-50 text-amber-700 text-[10px] font-medium border border-amber-200"
+            title={`${matchCount} cliente(s) em espera compatível(is)`}
+          >
+            <Users className="w-3 h-3" />
+            {matchCount} cliente{matchCount > 1 ? 's' : ''} em espera
+          </span>
         </div>
       )}
 

@@ -7,6 +7,7 @@ import {
   useStageCompletionRequirements,
   useAllPropertiesCompletionStatus,
 } from '@/hooks/useStageCompletion';
+import { useAllPropertyMatchCounts } from '@/hooks/useCrmMatching';
 import { KanbanBoard } from '@/components/crm/KanbanBoard';
 import { CrmMetrics } from '@/components/crm/CrmMetrics';
 import { CrmFilters } from '@/components/crm/CrmFilters';
@@ -65,6 +66,9 @@ export default function CRM() {
     incompleteProperties,
     stats: completionStats,
   } = useAllPropertiesCompletionStatus(properties, requirements);
+
+  // Match counts for kanban badges
+  const { counts: matchCounts } = useAllPropertyMatchCounts(properties);
 
   // Filters
   const [searchQuery, setSearchQuery] = useState('');
@@ -287,11 +291,18 @@ export default function CRM() {
               onUpdateReminderInterval={updateReminderInterval}
               onSnoozeReminder={snoozeReminder}
               getCompletionStatus={getCompletionStatus}
+              matchCounts={matchCounts}
             />
           </TabsContent>
 
           <TabsContent value="clientes" className="mt-0">
-            <ClientsTab />
+            <ClientsTab
+              properties={properties}
+              onPropertyClick={(property) => {
+                setSelectedProperty(property);
+                setIsDetailOpen(true);
+              }}
+            />
           </TabsContent>
         </Tabs>
 

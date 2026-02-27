@@ -15,6 +15,7 @@ interface KanbanColumnProps {
   onUpdateReminderInterval?: (propertyId: string, stage: PropertyStage, hours: number) => void;
   onSnoozeReminder?: (reminderId: string, hours: number) => void;
   getCompletionStatus?: (property: CrmProperty) => PropertyCompletionStatus;
+  matchCounts?: Record<string, number>;
 }
 
 export function KanbanColumn({ 
@@ -27,6 +28,7 @@ export function KanbanColumn({
   onUpdateReminderInterval,
   onSnoozeReminder,
   getCompletionStatus,
+  matchCounts = {},
 }: KanbanColumnProps) {
   const { setNodeRef, isOver } = useDroppable({
     id: stage,
@@ -81,6 +83,7 @@ export function KanbanColumn({
             onUpdateReminderInterval={onUpdateReminderInterval}
             onSnoozeReminder={onSnoozeReminder}
             completionStatus={getCompletionStatus?.(property)}
+            matchCount={matchCounts[property.id] || 0}
           />
         ))}
 
