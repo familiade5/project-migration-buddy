@@ -404,6 +404,62 @@ export type Database = {
           },
         ]
       }
+      crm_client_searches: {
+        Row: {
+          accepts_financing: boolean | null
+          cities: string[] | null
+          client_id: string
+          created_at: string
+          id: string
+          is_active: boolean
+          max_value: number | null
+          min_bedrooms: number | null
+          min_value: number | null
+          neighborhoods: string[] | null
+          notes: string | null
+          property_types: string[] | null
+          updated_at: string
+        }
+        Insert: {
+          accepts_financing?: boolean | null
+          cities?: string[] | null
+          client_id: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          max_value?: number | null
+          min_bedrooms?: number | null
+          min_value?: number | null
+          neighborhoods?: string[] | null
+          notes?: string | null
+          property_types?: string[] | null
+          updated_at?: string
+        }
+        Update: {
+          accepts_financing?: boolean | null
+          cities?: string[] | null
+          client_id?: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          max_value?: number | null
+          min_bedrooms?: number | null
+          min_value?: number | null
+          neighborhoods?: string[] | null
+          notes?: string | null
+          property_types?: string[] | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "crm_client_searches_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "crm_clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       crm_clients: {
         Row: {
           address: string | null

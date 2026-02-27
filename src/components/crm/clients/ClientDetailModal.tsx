@@ -7,7 +7,9 @@ import {
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { CrmClient } from '@/types/client';
+import { CrmProperty } from '@/types/crm';
 import { ClientDocumentsSection } from './ClientDocumentsSection';
+import { ClientSearchTab } from './ClientSearchTab';
 import {
   User,
   Phone,
@@ -17,6 +19,7 @@ import {
   Calendar,
   Edit,
   Trash2,
+  Search,
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
@@ -27,6 +30,8 @@ interface ClientDetailModalProps {
   onClose: () => void;
   onEdit: (client: CrmClient) => void;
   onDelete: (client: CrmClient) => void;
+  properties?: CrmProperty[];
+  onPropertyClick?: (property: CrmProperty) => void;
 }
 
 export function ClientDetailModal({
@@ -35,6 +40,8 @@ export function ClientDetailModal({
   onClose,
   onEdit,
   onDelete,
+  properties = [],
+  onPropertyClick,
 }: ClientDetailModalProps) {
   if (!client) return null;
 
@@ -75,11 +82,15 @@ export function ClientDetailModal({
         </DialogHeader>
 
         <Tabs defaultValue="dados" className="flex-1 flex flex-col overflow-hidden">
-          <TabsList className="grid w-full grid-cols-2 bg-gray-100 flex-shrink-0">
-            <TabsTrigger value="dados" className="data-[state=active]:bg-white">
+          <TabsList className="grid w-full grid-cols-3 bg-gray-100 flex-shrink-0">
+            <TabsTrigger value="dados" className="data-[state=active]:bg-white text-xs">
               Dados Pessoais
             </TabsTrigger>
-            <TabsTrigger value="documentos" className="data-[state=active]:bg-white">
+            <TabsTrigger value="busca" className="data-[state=active]:bg-white text-xs">
+              <Search className="w-3 h-3 mr-1" />
+              O que Busca
+            </TabsTrigger>
+            <TabsTrigger value="documentos" className="data-[state=active]:bg-white text-xs">
               Documentos
             </TabsTrigger>
           </TabsList>
@@ -163,6 +174,14 @@ export function ClientDetailModal({
                   Cadastrado em {format(new Date(client.created_at), "dd/MM/yyyy 'às' HH:mm", { locale: ptBR })}
                 </div>
               </div>
+            </TabsContent>
+
+            <TabsContent value="busca" className="mt-0">
+              <ClientSearchTab
+                clientId={client.id}
+                properties={properties}
+                onPropertyClick={onPropertyClick}
+              />
             </TabsContent>
 
             <TabsContent value="documentos" className="mt-0">

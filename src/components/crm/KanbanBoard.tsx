@@ -26,6 +26,7 @@ interface KanbanBoardProps {
   onUpdateReminderInterval?: (propertyId: string, stage: PropertyStage, hours: number) => void;
   onSnoozeReminder?: (reminderId: string, hours: number) => void;
   getCompletionStatus?: (property: CrmProperty) => PropertyCompletionStatus;
+  matchCounts?: Record<string, number>;
 }
 
 export function KanbanBoard({ 
@@ -38,6 +39,7 @@ export function KanbanBoard({
   onUpdateReminderInterval,
   onSnoozeReminder,
   getCompletionStatus,
+  matchCounts = {},
 }: KanbanBoardProps) {
   const [activeProperty, setActiveProperty] = useState<CrmProperty | null>(null);
 
@@ -115,6 +117,7 @@ export function KanbanBoard({
             onUpdateReminderInterval={onUpdateReminderInterval}
             onSnoozeReminder={onSnoozeReminder}
             getCompletionStatus={getCompletionStatus}
+            matchCounts={matchCounts}
           />
         ))}
       </div>
