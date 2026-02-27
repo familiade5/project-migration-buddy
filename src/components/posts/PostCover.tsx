@@ -94,7 +94,9 @@ export const PostCover = ({ data, photo }: PostCoverProps) => {
               : data.type}
           </span>
           <span className="text-white/50">|</span>
-          <span className="text-white" style={{ fontSize: '28px' }}>{data.city}</span>
+          <span className="text-white font-semibold" style={{ fontSize: '32px' }}>
+            {[data.city, (data.state || '').trim().length > 2 ? (data.state || '').trim().slice(0, 2).toUpperCase() : data.state].filter(Boolean).join(' - ')}
+          </span>
         </div>
       </div>
 
@@ -110,50 +112,47 @@ export const PostCover = ({ data, photo }: PostCoverProps) => {
         </div>
       </div>
 
-      {/* Rodapé compacto - igual imagem de referência */}
-      <div className="absolute bottom-0 left-0 right-0 bg-[#2a3142] z-10" style={{ padding: '12px 20px' }}>
-        <div className="flex items-center" style={{ gap: '16px' }}>
+      {/* Rodapé - ocupa toda a altura da barra cinza */}
+      <div className="absolute bottom-0 left-0 right-0 bg-[#2a3142] z-10">
+        <div className="flex items-stretch" style={{ minHeight: '100px' }}>
           {/* Logo VDH */}
-          <div className="flex-shrink-0">
+          <div className="flex items-center justify-center flex-shrink-0" style={{ padding: '0 16px' }}>
             <img 
               src={logoVDH} 
               alt="VDH" 
               className="object-contain"
-              style={{ height: '60px' }}
+              style={{ height: '64px' }}
             />
           </div>
           
-          {/* Badge único unificado - Imóvel Caixa + Financiamento */}
+          {/* Badge único unificado - ocupa toda altura */}
           <div 
-            className="flex-shrink-0 relative overflow-hidden rounded"
-            style={{ minWidth: '160px' }}
+            className="flex-shrink-0 relative overflow-hidden flex flex-col items-center justify-center text-center"
+            style={{ minWidth: '170px' }}
           >
-            {/* Fundo unificado */}
             <div 
               className="absolute inset-0" 
               style={{ 
                 background: data.acceptsFinancing 
-                  ? 'linear-gradient(135deg, #16a34a 0%, #22c55e 50%, #15803d 100%)'
-                  : 'linear-gradient(135deg, #c2410c 0%, #f97316 50%, #ea580c 100%)'
+                  ? 'linear-gradient(160deg, #15803d 0%, #22c55e 40%, #16a34a 100%)'
+                  : 'linear-gradient(160deg, #c2410c 0%, #f97316 40%, #ea580c 100%)'
               }} 
             />
-            <div className="absolute inset-0 bg-gradient-to-b from-white/25 to-transparent" style={{ height: '50%' }} />
+            <div className="absolute inset-0 bg-gradient-to-b from-white/20 to-transparent" />
             <div 
-              className="absolute inset-0 rounded" 
+              className="absolute inset-0" 
               style={{ 
-                border: '1px solid rgba(255,255,255,0.3)',
                 boxShadow: data.acceptsFinancing 
-                  ? '0 0 14px rgba(34,197,94,0.6), inset 0 1px 0 rgba(255,255,255,0.2)'
-                  : '0 0 14px rgba(249,115,22,0.5), inset 0 1px 0 rgba(255,255,255,0.2)'
+                  ? 'inset 0 0 20px rgba(0,0,0,0.15), inset 0 2px 0 rgba(255,255,255,0.25)'
+                  : 'inset 0 0 20px rgba(0,0,0,0.15), inset 0 2px 0 rgba(255,255,255,0.2)'
               }} 
             />
-            {/* Conteúdo */}
-            <div className="relative flex flex-col items-center text-center" style={{ padding: '8px 16px', gap: '2px' }}>
-              <span className="text-white font-bold drop-shadow-sm" style={{ fontSize: '20px' }}>Imóvel Caixa</span>
-              <div className="w-full bg-white/20 rounded-full" style={{ height: '1px' }} />
+            <div className="relative flex flex-col items-center" style={{ padding: '12px 20px', gap: '4px' }}>
+              <span className="text-white font-black drop-shadow-md leading-tight" style={{ fontSize: '22px' }}>Imóvel Caixa</span>
+              <div className="w-full bg-white/30 rounded-full" style={{ height: '1px' }} />
               <div className="flex items-center gap-1">
                 {data.acceptsFinancing && <Check style={{ width: '14px', height: '14px', color: '#ffffff', flexShrink: 0 }} />}
-                <span className="text-white font-black tracking-wide drop-shadow-sm" style={{ fontSize: '14px' }}>
+                <span className="text-white font-black tracking-wide drop-shadow-md" style={{ fontSize: '13px' }}>
                   {data.acceptsFinancing ? 'ACEITA FINANCIAMENTO' : 'SOMENTE À VISTA'}
                 </span>
               </div>
@@ -161,10 +160,10 @@ export const PostCover = ({ data, photo }: PostCoverProps) => {
           </div>
 
           {/* Separador vertical */}
-          <div className="h-12 w-px bg-white/20 flex-shrink-0" />
+          <div className="self-stretch w-px bg-white/20 flex-shrink-0 my-3" />
 
           {/* Informações do imóvel */}
-          <div className="flex-1 flex flex-col" style={{ gap: '2px' }}>
+          <div className="flex-1 flex flex-col justify-center" style={{ padding: '10px 14px', gap: '2px' }}>
             <p className="text-white font-bold truncate" style={{ fontSize: '22px' }}>
               {(data.propertyName && data.propertyName.trim()) || `${data.type || 'Casa'} - Ótima localização`}
             </p>
@@ -182,7 +181,7 @@ export const PostCover = ({ data, photo }: PostCoverProps) => {
           </div>
 
           {/* Valores e formas de pagamento */}
-          <div className="flex-shrink-0 text-right flex flex-col" style={{ gap: '2px' }}>
+          <div className="flex-shrink-0 text-right flex flex-col justify-center" style={{ padding: '10px 16px', gap: '2px' }}>
             <p className="text-[#f5d485] font-bold" style={{ fontSize: '24px' }}>{data.minimumValue}</p>
             <p className="text-white/80" style={{ fontSize: '16px' }}>Formas de pagamento</p>
             <p className="text-white/80" style={{ fontSize: '16px' }}>Recursos próprios</p>
