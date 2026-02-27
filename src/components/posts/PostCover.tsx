@@ -123,42 +123,41 @@ export const PostCover = ({ data, photo }: PostCoverProps) => {
             />
           </div>
           
-          {/* Badge Imóvel Caixa + Financiamento */}
-          <div className="flex flex-col flex-shrink-0" style={{ gap: '4px' }}>
-            <div className="bg-[#e87722] rounded" style={{ padding: '6px 16px' }}>
-              <span className="text-white font-bold" style={{ fontSize: '20px' }}>Imóvel Caixa</span>
-            </div>
-            {data.acceptsFinancing ? (
-              <div 
-                className="rounded relative overflow-hidden"
-                style={{ padding: '6px 16px' }}
-              >
-                {/* Fundo verde vibrante com gradiente */}
-                <div className="absolute inset-0" style={{ background: 'linear-gradient(135deg, #16a34a 0%, #22c55e 50%, #15803d 100%)' }} />
-                {/* Brilho superior */}
-                <div className="absolute inset-0 bg-gradient-to-b from-white/25 to-transparent" style={{ height: '50%' }} />
-                {/* Borda dourada sutil */}
-                <div className="absolute inset-0 rounded" style={{ border: '1px solid rgba(255,255,255,0.3)', boxShadow: '0 0 12px rgba(34,197,94,0.6), inset 0 1px 0 rgba(255,255,255,0.2)' }} />
-                <div className="relative flex items-center gap-2">
-                  <Check style={{ width: '16px', height: '16px', color: '#ffffff' }} />
-                  <span className="text-white font-black tracking-wide drop-shadow-sm" style={{ fontSize: '16px' }}>
-                    ACEITA FINANCIAMENTO
-                  </span>
-                </div>
-              </div>
-            ) : (
-              <div 
-                className="rounded relative overflow-hidden"
-                style={{ padding: '6px 16px' }}
-              >
-                <div className="absolute inset-0" style={{ background: 'linear-gradient(135deg, #c2410c 0%, #f97316 50%, #ea580c 100%)' }} />
-                <div className="absolute inset-0 bg-gradient-to-b from-white/20 to-transparent" style={{ height: '50%' }} />
-                <div className="absolute inset-0 rounded" style={{ border: '1px solid rgba(255,255,255,0.2)', boxShadow: '0 0 10px rgba(249,115,22,0.5)' }} />
-                <span className="relative text-white font-black tracking-wide drop-shadow-sm" style={{ fontSize: '16px' }}>
-                  SOMENTE À VISTA
+          {/* Badge único unificado - Imóvel Caixa + Financiamento */}
+          <div 
+            className="flex-shrink-0 relative overflow-hidden rounded"
+            style={{ minWidth: '160px' }}
+          >
+            {/* Fundo unificado */}
+            <div 
+              className="absolute inset-0" 
+              style={{ 
+                background: data.acceptsFinancing 
+                  ? 'linear-gradient(135deg, #16a34a 0%, #22c55e 50%, #15803d 100%)'
+                  : 'linear-gradient(135deg, #c2410c 0%, #f97316 50%, #ea580c 100%)'
+              }} 
+            />
+            <div className="absolute inset-0 bg-gradient-to-b from-white/25 to-transparent" style={{ height: '50%' }} />
+            <div 
+              className="absolute inset-0 rounded" 
+              style={{ 
+                border: '1px solid rgba(255,255,255,0.3)',
+                boxShadow: data.acceptsFinancing 
+                  ? '0 0 14px rgba(34,197,94,0.6), inset 0 1px 0 rgba(255,255,255,0.2)'
+                  : '0 0 14px rgba(249,115,22,0.5), inset 0 1px 0 rgba(255,255,255,0.2)'
+              }} 
+            />
+            {/* Conteúdo */}
+            <div className="relative flex flex-col items-center text-center" style={{ padding: '8px 16px', gap: '2px' }}>
+              <span className="text-white font-bold drop-shadow-sm" style={{ fontSize: '20px' }}>Imóvel Caixa</span>
+              <div className="w-full bg-white/20 rounded-full" style={{ height: '1px' }} />
+              <div className="flex items-center gap-1">
+                {data.acceptsFinancing && <Check style={{ width: '14px', height: '14px', color: '#ffffff', flexShrink: 0 }} />}
+                <span className="text-white font-black tracking-wide drop-shadow-sm" style={{ fontSize: '14px' }}>
+                  {data.acceptsFinancing ? 'ACEITA FINANCIAMENTO' : 'SOMENTE À VISTA'}
                 </span>
               </div>
-            )}
+            </div>
           </div>
 
           {/* Separador vertical */}
