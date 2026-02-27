@@ -126,17 +126,35 @@ export const PostCoverStory = ({ data, photo }: PostCoverStoryProps) => {
             <div className="bg-[#e87722] rounded" style={{ padding: '8px 20px' }}>
               <span className="text-white font-bold" style={{ fontSize: '24px' }}>Imóvel Caixa</span>
             </div>
-            <div className="rounded text-center bg-[#1a2433]" style={{ padding: '6px 20px' }}>
-              <span 
-                className="font-semibold" 
-                style={{ 
-                  fontSize: '18px',
-                  color: data.acceptsFinancing ? '#22c55e' : '#f97316'
-                }}
+            {data.acceptsFinancing ? (
+              <div 
+                className="rounded relative overflow-hidden"
+                style={{ padding: '8px 20px' }}
               >
-                {data.acceptsFinancing ? 'Aceita Financiamento' : 'Somente à Vista'}
-              </span>
-            </div>
+                {/* Fundo verde vibrante */}
+                <div className="absolute inset-0" style={{ background: 'linear-gradient(135deg, #16a34a 0%, #22c55e 50%, #15803d 100%)' }} />
+                <div className="absolute inset-0 bg-gradient-to-b from-white/25 to-transparent" style={{ height: '50%' }} />
+                <div className="absolute inset-0 rounded" style={{ border: '1px solid rgba(255,255,255,0.3)', boxShadow: '0 0 16px rgba(34,197,94,0.7), inset 0 1px 0 rgba(255,255,255,0.2)' }} />
+                <div className="relative flex items-center gap-2">
+                  <Check style={{ width: '20px', height: '20px', color: '#ffffff', flexShrink: 0 }} />
+                  <span className="text-white font-black tracking-wide drop-shadow-sm" style={{ fontSize: '20px' }}>
+                    ACEITA FINANCIAMENTO
+                  </span>
+                </div>
+              </div>
+            ) : (
+              <div 
+                className="rounded relative overflow-hidden"
+                style={{ padding: '8px 20px' }}
+              >
+                <div className="absolute inset-0" style={{ background: 'linear-gradient(135deg, #c2410c 0%, #f97316 50%, #ea580c 100%)' }} />
+                <div className="absolute inset-0 bg-gradient-to-b from-white/20 to-transparent" style={{ height: '50%' }} />
+                <div className="absolute inset-0 rounded" style={{ border: '1px solid rgba(255,255,255,0.2)', boxShadow: '0 0 14px rgba(249,115,22,0.6)' }} />
+                <span className="relative text-white font-black tracking-wide drop-shadow-sm" style={{ fontSize: '20px' }}>
+                  SOMENTE À VISTA
+                </span>
+              </div>
+            )}
           </div>
 
           {/* Separador */}
