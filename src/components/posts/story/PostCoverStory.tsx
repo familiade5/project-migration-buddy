@@ -151,8 +151,8 @@ export const PostCoverStory = ({ data, photo }: PostCoverStoryProps) => {
               <span className="text-white font-black drop-shadow-md leading-tight" style={{ fontSize: '26px' }}>Imóvel Caixa</span>
               <div className="w-full bg-white/30 rounded-full" style={{ height: '1px' }} />
               <div className="flex items-center gap-2">
-                {data.acceptsFinancing && <Check style={{ width: '16px', height: '16px', color: '#ffffff', flexShrink: 0 }} />}
-                <span className="text-white font-black tracking-wide drop-shadow-md" style={{ fontSize: '15px' }}>
+                {data.acceptsFinancing && <Check style={{ width: '20px', height: '20px', color: '#ffffff', flexShrink: 0 }} />}
+                <span className="text-white font-black tracking-wide drop-shadow-md leading-tight text-center" style={{ fontSize: '20px' }}>
                   {data.acceptsFinancing ? 'ACEITA FINANCIAMENTO' : 'SOMENTE À VISTA'}
                 </span>
               </div>
