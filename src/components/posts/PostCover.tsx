@@ -152,7 +152,7 @@ export const PostCover = ({ data, photo }: PostCoverProps) => {
               <div className="w-full bg-white/30 rounded-full" style={{ height: '1px' }} />
               <div className="flex items-center gap-1">
                 {data.acceptsFinancing && <Check style={{ width: '18px', height: '18px', color: '#ffffff', flexShrink: 0 }} />}
-                <span className="text-white font-black tracking-wide drop-shadow-md leading-tight text-center" style={{ fontSize: '17px' }}>
+                <span className="text-white font-black tracking-wide drop-shadow-md leading-tight text-center" style={{ fontSize: '21px' }}>
                   {data.acceptsFinancing ? <>ACEITA<br/>FINANCIAMENTO</> : <>SOMENTE<br/>À VISTA</>}
                 </span>
               </div>
