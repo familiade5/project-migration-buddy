@@ -68,17 +68,17 @@ export function AMPostPreview({ data, photos }: AMPostPreviewProps) {
   const totalSlides = slides.length;
   const safeIndex   = Math.min(currentSlide, totalSlides - 1);
 
-  // ── Preview dimensions — identical logic to PostPreview ──────────────────
-  const nativeH    = format === 'feed' ? FEED_H : STORY_H;
-  // Feed: preview 280×280; Story: preview 180×320
-  const previewW   = format === 'feed' ? 280 : 180;
-  const previewH   = format === 'feed' ? 280 : 320;
+  // ── Preview dimensions — PostGen parity ──────────────────────────────────
+  const nativeH      = format === 'feed' ? FEED_H : STORY_H;
+  // Feed: 280×280 preview; Story: 180×320 preview (same as PostPreview)
+  const previewW     = format === 'feed' ? 280 : 180;
+  const previewH     = format === 'feed' ? 280 : 320;
   const previewScale = format === 'feed' ? (280 / SLIDE_W) : (180 / SLIDE_W);
 
   // Thumbnails
-  const thumbW     = format === 'feed' ? 80 : 54;
-  const thumbH     = format === 'feed' ? 80 : 96;
-  const thumbScale = format === 'feed' ? (80 / SLIDE_W) : (54 / SLIDE_W);
+  const thumbW       = format === 'feed' ? 80 : 54;
+  const thumbH       = format === 'feed' ? 80 : 96;
+  const thumbScale   = format === 'feed' ? (80 / SLIDE_W) : (54 / SLIDE_W);
 
   // ── Navigation ────────────────────────────────────────────────────────────
   const prev = () => setCurrentSlide((p) => (p === 0 ? totalSlides - 1 : p - 1));
