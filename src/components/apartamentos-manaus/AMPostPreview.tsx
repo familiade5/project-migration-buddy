@@ -269,8 +269,8 @@ export function AMPostPreview({ data, photos }: AMPostPreviewProps) {
       </p>
 
       {/* ── Hidden full-resolution export elements ── */}
+      {/* Slides authored at 360px; pixelRatio:3 → 1080px output */}
       <div className="fixed -left-[9999px] top-0 pointer-events-none" aria-hidden="true">
-        {/* Feed – 1080×1080 */}
         {feedSlides.map((slide, i) => (
           <div key={`fexp-${i}`} ref={feedRefs[i]}
             style={{ width: SLIDE_W, height: FEED_H, overflow: 'hidden' }}>
@@ -280,7 +280,6 @@ export function AMPostPreview({ data, photos }: AMPostPreviewProps) {
         {Array.from({ length: 7 - feedSlides.length }).map((_, i) => (
           <div key={`fph-${i}`} ref={feedRefs[feedSlides.length + i]} />
         ))}
-        {/* Story – 1080×1920 */}
         {storySlides.map((slide, i) => (
           <div key={`sexp-${i}`} ref={storyRefs[i]}
             style={{ width: SLIDE_W, height: STORY_H, overflow: 'hidden' }}>
