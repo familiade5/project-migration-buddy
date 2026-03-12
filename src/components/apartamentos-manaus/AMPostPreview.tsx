@@ -20,7 +20,7 @@ interface AMPostPreviewProps {
 
 type FormatType = 'feed' | 'story';
 
-// Slides are natively 360×360 (feed) or 360×640 (story)
+// Native slide dimensions (design units) — slides are authored at 360px
 const SLIDE_W = 360;
 const FEED_H  = 360;
 const STORY_H = 640;
@@ -68,15 +68,17 @@ export function AMPostPreview({ data, photos }: AMPostPreviewProps) {
   const totalSlides = slides.length;
   const safeIndex   = Math.min(currentSlide, totalSlides - 1);
 
-  // ── Preview dimensions (identical ratio to PostGen) ───────────────────────
-  const nativeH     = format === 'feed' ? FEED_H : STORY_H;
-  const previewW    = format === 'feed' ? 280 : 175;
-  const previewH    = Math.round(nativeH * (previewW / SLIDE_W));
-  const previewScale = previewW / SLIDE_W;
+  // ── Preview dimensions — PostGen parity ──────────────────────────────────
+  const nativeH      = format === 'feed' ? FEED_H : STORY_H;
+  // Feed: 280×280 preview; Story: 180×320 preview (same as PostPreview)
+  const previewW     = format === 'feed' ? 280 : 180;
+  const previewH     = format === 'feed' ? 280 : 320;
+  const previewScale = format === 'feed' ? (280 / SLIDE_W) : (180 / SLIDE_W);
 
-  const thumbW      = format === 'feed' ? 72 : 46;
-  const thumbH      = Math.round(nativeH * (thumbW / SLIDE_W));
-  const thumbScale  = thumbW / SLIDE_W;
+  // Thumbnails
+  const thumbW       = format === 'feed' ? 80 : 54;
+  const thumbH       = format === 'feed' ? 80 : 96;
+  const thumbScale   = format === 'feed' ? (80 / SLIDE_W) : (54 / SLIDE_W);
 
   // ── Navigation ────────────────────────────────────────────────────────────
   const prev = () => setCurrentSlide((p) => (p === 0 ? totalSlides - 1 : p - 1));
@@ -85,15 +87,24 @@ export function AMPostPreview({ data, photos }: AMPostPreviewProps) {
   // ── Export helpers ────────────────────────────────────────────────────────
   const captureRef = async (ref: React.RefObject<HTMLDivElement>) => {
     if (!ref.current) return null;
-    return toPng(ref.current, { quality: 1, pixelRatio: 2, cacheBust: true });
+    return toPng(ref.current, { quality: 1, pixelRatio: 1, cacheBust: true });
   };
 
-  const buildZip = async (refs: React.RefObject<HTMLDivElement>[], list: typeof feedSlides, folderName: string, zip: JSZip) => {
+  const buildZip = async (
+    refs: React.RefObject<HTMLDivElement>[],
+    list: typeof feedSlides,
+    folderName: string,
+    zip: JSZip,
+  ) => {
     const folder = zip.folder(folderName) as JSZip;
     for (let i = 0; i < list.length; i++) {
       const url = await captureRef(refs[i]);
       if (!url) continue;
-      folder.file(`${String(i + 1).padStart(2, '0')}-${list[i].name.toLowerCase()}.png`, url.split(',')[1], { base64: true });
+      folder.file(
+        `${String(i + 1).padStart(2, '0')}-${list[i].name.toLowerCase()}.png`,
+        url.split(',')[1],
+        { base64: true },
+      );
     }
   };
 
@@ -105,11 +116,11 @@ export function AMPostPreview({ data, photos }: AMPostPreviewProps) {
   };
 
   const handleExportSingle = async () => {
-    const refs = format === 'feed' ? feedRefs : storyRefs;
-    const url = await captureRef(refs[safeIndex]);
-    if (!url) return;
     setIsExporting(true);
     try {
+      const refs = format === 'feed' ? feedRefs : storyRefs;
+      const url = await captureRef(refs[safeIndex]);
+      if (!url) return;
       const a = document.createElement('a');
       a.download = `am-${format}-${safeIndex + 1}-${slides[safeIndex].name.toLowerCase()}.png`;
       a.href = url; a.click();
@@ -148,22 +159,26 @@ export function AMPostPreview({ data, photos }: AMPostPreviewProps) {
     <div className="space-y-4 sm:space-y-6 overflow-hidden">
       {/* ── Header ── */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        <h3 className="font-semibold text-base text-gray-800">Preview do Carrossel</h3>
+        <h3 className="font-semibold text-base sm:text-lg text-gray-800">Preview do Carrossel</h3>
 
         {/* Format selector */}
         <div className="flex items-center gap-1 bg-gray-100 rounded-lg p-1 self-start">
-          <button onClick={() => { setFormat('feed'); setCurrentSlide(0); }}
+          <button
+            onClick={() => { setFormat('feed'); setCurrentSlide(0); }}
             className={`flex items-center gap-1.5 px-2 sm:px-3 py-1.5 rounded-md text-xs sm:text-sm transition-all ${
               format === 'feed' ? 'text-white' : 'text-gray-500 hover:text-gray-700'
             }`}
-            style={format === 'feed' ? { backgroundColor: '#1B5EA6' } : {}}>
+            style={format === 'feed' ? { backgroundColor: '#1B5EA6' } : {}}
+          >
             <Square className="w-3 h-3 sm:w-4 sm:h-4" /><span>Feed</span>
           </button>
-          <button onClick={() => { setFormat('story'); setCurrentSlide(0); }}
+          <button
+            onClick={() => { setFormat('story'); setCurrentSlide(0); }}
             className={`flex items-center gap-1.5 px-2 sm:px-3 py-1.5 rounded-md text-xs sm:text-sm transition-all ${
               format === 'story' ? 'text-white' : 'text-gray-500 hover:text-gray-700'
             }`}
-            style={format === 'story' ? { backgroundColor: '#1B5EA6' } : {}}>
+            style={format === 'story' ? { backgroundColor: '#1B5EA6' } : {}}
+          >
             <Smartphone className="w-3 h-3 sm:w-4 sm:h-4" /><span>Story</span>
           </button>
         </div>
@@ -188,7 +203,7 @@ export function AMPostPreview({ data, photos }: AMPostPreviewProps) {
       <div className="flex items-center justify-center gap-1 sm:gap-2 flex-wrap">
         {slides.map((slide, index) => (
           <button key={slide.id} onClick={() => setCurrentSlide(index)}
-            className={`px-2 sm:px-3 py-1 sm:py-1.5 rounded-full text-xs sm:text-sm transition-all`}
+            className="px-2 sm:px-3 py-1 sm:py-1.5 rounded-full text-xs sm:text-sm transition-all"
             style={safeIndex === index
               ? { backgroundColor: '#1B5EA6', color: '#FFFFFF' }
               : { backgroundColor: '#F3F4F6', color: '#6B7280' }}>
@@ -231,7 +246,7 @@ export function AMPostPreview({ data, photos }: AMPostPreviewProps) {
       </div>
 
       {/* ── Thumbnails ── */}
-      <div className="flex gap-2 flex-wrap justify-center">
+      <div className="hidden sm:flex gap-2 flex-wrap justify-center">
         {slides.map((slide, index) => (
           <button key={slide.id} onClick={() => setCurrentSlide(index)}
             className="relative rounded-lg overflow-hidden transition-all flex-shrink-0"
@@ -239,7 +254,7 @@ export function AMPostPreview({ data, photos }: AMPostPreviewProps) {
               width: thumbW, height: thumbH,
               outline: safeIndex === index ? '2px solid #1B5EA6' : '2px solid transparent',
               outlineOffset: '2px',
-              opacity: safeIndex === index ? 1 : 0.55,
+              opacity: safeIndex === index ? 1 : 0.6,
             }}>
             <div className="origin-top-left pointer-events-none"
               style={{ width: SLIDE_W, height: nativeH, transform: `scale(${thumbScale})` }}>
@@ -254,35 +269,23 @@ export function AMPostPreview({ data, photos }: AMPostPreviewProps) {
       </p>
 
       {/* ── Hidden full-resolution export elements ── */}
+      {/* Slides authored at 360px; pixelRatio:3 → 1080px output */}
       <div className="fixed -left-[9999px] top-0 pointer-events-none" aria-hidden="true">
-        {/* Feed – export at 1080×1080 */}
         {feedSlides.map((slide, i) => (
           <div key={`fexp-${i}`} ref={feedRefs[i]}
-            style={{ width: 1080, height: 1080, overflow: 'hidden' }}>
-            <div style={{ width: SLIDE_W, height: FEED_H, transform: `scale(${1080 / SLIDE_W})`, transformOrigin: 'top left' }}>
-              {slide.el}
-            </div>
+            style={{ width: SLIDE_W, height: FEED_H, overflow: 'hidden' }}>
+            {slide.el}
           </div>
         ))}
-        {/* Unused feed ref placeholders */}
         {Array.from({ length: 7 - feedSlides.length }).map((_, i) => (
           <div key={`fph-${i}`} ref={feedRefs[feedSlides.length + i]} />
         ))}
-        {/* Story – export at 1080×1920 */}
         {storySlides.map((slide, i) => (
           <div key={`sexp-${i}`} ref={storyRefs[i]}
-            style={{ width: 1080, height: 1920, overflow: 'hidden' }}>
-            <div style={{ width: SLIDE_W, height: STORY_H, transform: `scale(${1080 / SLIDE_W})`, transformOrigin: 'top left' }}>
-              {/* Stretch feed slide to story proportions */}
-              <div style={{ width: SLIDE_W, height: STORY_H, overflow: 'hidden' }}>
-                <div style={{ transform: `scaleY(${STORY_H / FEED_H})`, transformOrigin: 'top', width: SLIDE_W, height: FEED_H }}>
-                  {slide.el}
-                </div>
-              </div>
-            </div>
+            style={{ width: SLIDE_W, height: STORY_H, overflow: 'hidden' }}>
+            {slide.el}
           </div>
         ))}
-        {/* Unused story ref placeholders */}
         {Array.from({ length: 5 - storySlides.length }).map((_, i) => (
           <div key={`sph-${i}`} ref={storyRefs[storySlides.length + i]} />
         ))}
