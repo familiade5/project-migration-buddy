@@ -1,12 +1,11 @@
-import { useState, useCallback } from 'react';
+import { useState } from 'react';
 import { AMPropertyData, defaultAMPropertyData } from '@/types/apartamentosManaus';
 import { AMPostPreview } from '@/components/apartamentos-manaus/AMPostPreview';
 import { AMPropertyForm } from '@/components/apartamentos-manaus/AMPropertyForm';
+import { AMCaptionGenerator } from '@/components/apartamentos-manaus/AMCaptionGenerator';
 import { AMLayout } from '@/components/layout/AMLayout';
 import { PhotoUpload } from '@/components/PhotoUpload';
-import { Image, Edit3, Sparkles, FileText, Upload } from 'lucide-react';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { AMLogoSVG } from '@/components/apartamentos-manaus/AMLogo';
+import { Image, Edit3, Sparkles, FileText } from 'lucide-react';
 
 const ApartamentosManausPage = () => {
   const [propertyData, setPropertyData] = useState<AMPropertyData>(defaultAMPropertyData);
@@ -16,18 +15,15 @@ const ApartamentosManausPage = () => {
     <AMLayout>
       <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto">
         {/* Page Header */}
-        <div className="mb-6">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <div className="flex items-center gap-4">
-              <AMLogoSVG width={180} variant="color" />
-            </div>
-            <div
-              className="flex items-center gap-2 px-4 py-2.5 rounded-full text-white text-sm font-medium shadow"
-              style={{ backgroundColor: '#1B5EA6' }}
-            >
-              <Sparkles className="w-4 h-4" />
-              <span>5 slides + story</span>
-            </div>
+        <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div>
+            <h1 className="text-xl font-bold text-gray-900">Gerador de Posts</h1>
+            <p className="text-sm text-gray-500">Crie criativos profissionais para Instagram</p>
+          </div>
+          <div className="flex items-center gap-2 px-4 py-2.5 rounded-full text-white text-sm font-medium shadow"
+            style={{ backgroundColor: '#1B5EA6' }}>
+            <Sparkles className="w-4 h-4" />
+            <span>Feed + Story + Legenda</span>
           </div>
         </div>
 
@@ -70,6 +66,24 @@ const ApartamentosManausPage = () => {
                 <AMPropertyForm data={propertyData} onChange={setPropertyData} />
               </div>
             </div>
+
+            {/* Caption */}
+            <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+              <div className="px-6 py-4 border-b border-gray-100" style={{ backgroundColor: '#F0F6FF' }}>
+                <div className="flex items-center gap-3">
+                  <div className="p-2 rounded-lg text-white" style={{ backgroundColor: '#1B5EA6' }}>
+                    <FileText className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <h2 className="font-semibold text-gray-900">Legenda do Post</h2>
+                    <p className="text-xs text-gray-500">Gerada automaticamente — edite conforme necessário</p>
+                  </div>
+                </div>
+              </div>
+              <div className="p-6">
+                <AMCaptionGenerator data={propertyData} />
+              </div>
+            </div>
           </div>
 
           {/* Right – Preview */}
@@ -79,7 +93,7 @@ const ApartamentosManausPage = () => {
                 <h2 className="font-semibold text-gray-900">Preview dos Criativos</h2>
                 <p className="text-xs text-gray-500">Visualize e baixe os slides prontos</p>
               </div>
-              <div className="p-6 max-h-screen overflow-y-auto">
+              <div className="p-6 overflow-y-auto" style={{ maxHeight: 'calc(100vh - 160px)' }}>
                 <AMPostPreview data={propertyData} photos={photos} />
               </div>
             </div>

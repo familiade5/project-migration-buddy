@@ -11,7 +11,6 @@ interface AMPropertyFormProps {
 }
 
 const propertyTypes = ['Apartamento', 'Casa', 'Casa em Condomínio', 'Cobertura', 'Terreno', 'Sala Comercial'];
-
 const inputClass = 'h-10 border-gray-300 focus:border-blue-500 bg-white text-gray-900 text-sm';
 const labelClass = 'text-xs font-semibold text-gray-600 uppercase tracking-wide';
 
@@ -44,35 +43,40 @@ export function AMPropertyForm({ data, onChange }: AMPropertyFormProps) {
         <div className="grid grid-cols-2 gap-3">
           <div className="col-span-2 space-y-1">
             <Label className={labelClass}>Nome do imóvel / condomínio *</Label>
-            <Input
-              className={inputClass}
-              placeholder="Ex: Residencial Flores"
-              value={data.title}
-              onChange={(e) => set('title', e.target.value)}
-            />
+            <Input className={inputClass} placeholder="Ex: Villa Jardim Azaleia"
+              value={data.title} onChange={(e) => set('title', e.target.value)} />
           </div>
           <div className="space-y-1">
             <Label className={labelClass}>Tipo</Label>
             <Select value={data.propertyType} onValueChange={(v) => set('propertyType', v)}>
-              <SelectTrigger className={inputClass}>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {propertyTypes.map((t) => <SelectItem key={t} value={t}>{t}</SelectItem>)}
-              </SelectContent>
+              <SelectTrigger className={inputClass}><SelectValue /></SelectTrigger>
+              <SelectContent>{propertyTypes.map((t) => <SelectItem key={t} value={t}>{t}</SelectItem>)}</SelectContent>
             </Select>
           </div>
           <div className="space-y-1">
             <Label className={labelClass}>Bairro</Label>
-            <Input className={inputClass} placeholder="Ex: Flores" value={data.neighborhood} onChange={(e) => set('neighborhood', e.target.value)} />
+            <Input className={inputClass} placeholder="Ex: Tarumã"
+              value={data.neighborhood} onChange={(e) => set('neighborhood', e.target.value)} />
+          </div>
+          <div className="col-span-2 space-y-1">
+            <Label className={labelClass}>Endereço (Rua)</Label>
+            <Input className={inputClass} placeholder="Ex: Rua Peixe Cavalo"
+              value={data.address} onChange={(e) => set('address', e.target.value)} />
+          </div>
+          <div className="col-span-2 space-y-1">
+            <Label className={labelClass}>Ponto de Referência</Label>
+            <Input className={inputClass} placeholder="Ex: Em frente a Volvo"
+              value={data.referencePoint} onChange={(e) => set('referencePoint', e.target.value)} />
           </div>
           <div className="space-y-1">
             <Label className={labelClass}>Cidade</Label>
-            <Input className={inputClass} placeholder="Manaus" value={data.city} onChange={(e) => set('city', e.target.value)} />
+            <Input className={inputClass} placeholder="Manaus"
+              value={data.city} onChange={(e) => set('city', e.target.value)} />
           </div>
           <div className="space-y-1">
             <Label className={labelClass}>Estado</Label>
-            <Input className={inputClass} placeholder="AM" value={data.state} onChange={(e) => set('state', e.target.value)} />
+            <Input className={inputClass} placeholder="AM"
+              value={data.state} onChange={(e) => set('state', e.target.value)} />
           </div>
         </div>
       </Section>
@@ -89,23 +93,36 @@ export function AMPropertyForm({ data, onChange }: AMPropertyFormProps) {
           ].map(({ label, field }) => (
             <div key={field} className="space-y-1">
               <Label className={labelClass}>{label}</Label>
-              <Input
-                className={inputClass}
-                type="number"
-                min={0}
+              <Input className={inputClass} type="number" min={0}
                 value={data[field] || ''}
-                onChange={(e) => set(field, Number(e.target.value))}
-              />
+                onChange={(e) => set(field, Number(e.target.value))} />
             </div>
           ))}
           <div className="space-y-1">
             <Label className={labelClass}>Andar</Label>
-            <Input className={inputClass} placeholder="Ex: 3º" value={data.floor} onChange={(e) => set('floor', e.target.value)} />
+            <Input className={inputClass} placeholder="Ex: 4"
+              value={data.floor} onChange={(e) => set('floor', e.target.value)} />
           </div>
+        </div>
+        <div className="space-y-1">
+          <Label className={labelClass}>Cômodos (um por linha)</Label>
+          <Textarea className="border-gray-300 bg-white text-sm resize-none" rows={3}
+            placeholder={"Salas estar e jantar\nCozinha americana\nÁrea de serviço"}
+            value={data.rooms} onChange={(e) => set('rooms', e.target.value)} />
         </div>
         <div className="flex items-center gap-2 pt-1">
           <Switch checked={data.furnished} onCheckedChange={(v) => set('furnished', v)} />
           <Label className="text-sm text-gray-600">Imóvel mobiliado</Label>
+        </div>
+      </Section>
+
+      {/* Lazer */}
+      <Section title="Itens de Lazer" color="#1B5EA6">
+        <div className="space-y-1">
+          <Label className={labelClass}>Itens (um por linha ou separados por vírgula)</Label>
+          <Textarea className="border-gray-300 bg-white text-sm resize-none" rows={2}
+            placeholder={"Piscina\nChurrasqueira\nSalão de festas"}
+            value={data.leisureItems} onChange={(e) => set('leisureItems', e.target.value)} />
         </div>
       </Section>
 
@@ -119,29 +136,49 @@ export function AMPropertyForm({ data, onChange }: AMPropertyFormProps) {
         {data.isRental ? (
           <div className="space-y-1">
             <Label className={labelClass}>Valor do Aluguel (R$)</Label>
-            <Input className={inputClass} type="number" placeholder="0" value={data.rentalPrice || ''} onChange={(e) => set('rentalPrice', Number(e.target.value))} />
+            <Input className={inputClass} type="number" placeholder="0"
+              value={data.rentalPrice || ''} onChange={(e) => set('rentalPrice', Number(e.target.value))} />
           </div>
         ) : (
           <div className="space-y-3">
             <div className="space-y-1">
               <Label className={labelClass}>Preço de Venda (R$)</Label>
-              <Input className={inputClass} type="number" placeholder="0" value={data.salePrice || ''} onChange={(e) => set('salePrice', Number(e.target.value))} />
+              <Input className={inputClass} type="number" placeholder="0"
+                value={data.salePrice || ''} onChange={(e) => set('salePrice', Number(e.target.value))} />
             </div>
-            <div className="flex items-center gap-2">
-              <Switch checked={data.acceptsFinancing} onCheckedChange={(v) => set('acceptsFinancing', v)} />
-              <Label className="text-sm text-gray-600">Aceita financiamento</Label>
+            <div className="space-y-1">
+              <Label className={labelClass}>Subsídio Governo (R$)</Label>
+              <Input className={inputClass} type="number" placeholder="0"
+                value={data.subsidy || ''} onChange={(e) => set('subsidy', Number(e.target.value))} />
+            </div>
+            <div className="flex gap-4">
+              <div className="flex items-center gap-2">
+                <Switch checked={data.acceptsFinancing} onCheckedChange={(v) => set('acceptsFinancing', v)} />
+                <Label className="text-sm text-gray-600">Aceita financiamento</Label>
+              </div>
+              <div className="flex items-center gap-2">
+                <Switch checked={data.acceptsFGTS} onCheckedChange={(v) => set('acceptsFGTS', v)} />
+                <Label className="text-sm text-gray-600">Aceita FGTS</Label>
+              </div>
             </div>
           </div>
         )}
 
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-2 gap-3 pt-1">
           <div className="space-y-1">
             <Label className={labelClass}>Condomínio (R$)</Label>
-            <Input className={inputClass} type="number" placeholder="0" value={data.condominiumFee || ''} onChange={(e) => set('condominiumFee', Number(e.target.value))} />
+            <Input className={inputClass} type="number" placeholder="0"
+              value={data.condominiumFee || ''} onChange={(e) => set('condominiumFee', Number(e.target.value))} />
           </div>
           <div className="space-y-1">
             <Label className={labelClass}>IPTU (R$)</Label>
-            <Input className={inputClass} type="number" placeholder="0" value={data.iptu || ''} onChange={(e) => set('iptu', Number(e.target.value))} />
+            <Input className={inputClass} type="number" placeholder="0"
+              value={data.iptu || ''} onChange={(e) => set('iptu', Number(e.target.value))} />
+          </div>
+          <div className="col-span-2 space-y-1">
+            <Label className={labelClass}>O condomínio inclui</Label>
+            <Input className={inputClass} placeholder="Ex: água, gás e segurança 24h"
+              value={data.condoIncludes} onChange={(e) => set('condoIncludes', e.target.value)} />
           </div>
         </div>
       </Section>
@@ -151,44 +188,40 @@ export function AMPropertyForm({ data, onChange }: AMPropertyFormProps) {
         <div className="grid grid-cols-2 gap-3">
           <div className="space-y-1">
             <Label className={labelClass}>Nome do Corretor</Label>
-            <Input className={inputClass} placeholder="Nome completo" value={data.brokerName} onChange={(e) => set('brokerName', e.target.value)} />
+            <Input className={inputClass} placeholder="Nome completo"
+              value={data.brokerName} onChange={(e) => set('brokerName', e.target.value)} />
           </div>
           <div className="space-y-1">
             <Label className={labelClass}>Telefone / WhatsApp</Label>
-            <Input className={inputClass} placeholder="(92) 99999-9999" value={data.brokerPhone} onChange={(e) => set('brokerPhone', e.target.value)} />
+            <Input className={inputClass} placeholder="(92) 99999-9999"
+              value={data.brokerPhone} onChange={(e) => set('brokerPhone', e.target.value)} />
           </div>
           <div className="col-span-2 space-y-1">
             <Label className={labelClass}>CRECI</Label>
-            <Input className={inputClass} placeholder="Ex: 12345-AM" value={data.creci} onChange={(e) => set('creci', e.target.value)} />
+            <Input className={inputClass} placeholder="Ex: 3968 PF"
+              value={data.creci} onChange={(e) => set('creci', e.target.value)} />
           </div>
         </div>
       </Section>
 
       {/* Destaques */}
       <Section title="Destaques do Imóvel (Slide Informativo)" color="#F47920">
-        <p className="text-xs text-gray-400">Até 6 itens. Deixe em branco para usar padrões.</p>
+        <p className="text-xs text-gray-400">Até 6 itens. Deixe vazio para usar padrões.</p>
         <div className="space-y-2">
           {Array.from({ length: 6 }).map((_, i) => (
-            <Input
-              key={i}
-              className={inputClass}
+            <Input key={i} className={inputClass}
               placeholder={`Destaque ${i + 1} (ex: ✅ Área de lazer completa)`}
               value={data.highlights[i] || ''}
-              onChange={(e) => setHighlight(i, e.target.value)}
-            />
+              onChange={(e) => setHighlight(i, e.target.value)} />
           ))}
         </div>
       </Section>
 
-      {/* Mensagem informativa */}
+      {/* Mensagem extra */}
       <Section title="Mensagem Informativa Extra" color="#F47920">
-        <Textarea
-          className="border-gray-300 focus:border-blue-500 bg-white text-gray-900 text-sm resize-none"
-          rows={2}
+        <Textarea className="border-gray-300 bg-white text-sm resize-none" rows={2}
           placeholder="Ex: Unidades limitadas, consulte disponibilidade!"
-          value={data.infoMessage}
-          onChange={(e) => set('infoMessage', e.target.value)}
-        />
+          value={data.infoMessage} onChange={(e) => set('infoMessage', e.target.value)} />
       </Section>
     </div>
   );
