@@ -8,7 +8,7 @@ import {
   AMInfoSlide,
 } from './slides/AMSlides';
 import { Button } from '@/components/ui/button';
-import { Download, ZipIcon } from 'lucide-react';
+import { Download } from 'lucide-react';
 import { toPng } from 'html-to-image';
 import JSZip from 'jszip';
 
