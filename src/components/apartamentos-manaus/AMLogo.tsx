@@ -1,24 +1,46 @@
-// AM Logo — SVG recreation faithful to the Apartamentos Manaus brand
-// Icon: letter A (blue block, left) + letter M (orange block, right) forming a house/building
-// Colors: #1B5EA6 (blue), #E8873A (orange)
+import logoColor from '@/assets/logo-apartamentos-manaus.svg';
 
+interface AMLogoProps {
+  size?: 'sm' | 'md' | 'lg' | 'xl';
+  className?: string;
+  variant?: 'color' | 'white';
+  width?: number;
+}
+
+const sizeConfig = {
+  sm: 140,
+  md: 220,
+  lg: 300,
+  xl: 400,
+};
+
+export const AMLogo = ({ size = 'md', className = '', width }: AMLogoProps) => {
+  const w = width ?? sizeConfig[size];
+  return (
+    <div className={`inline-flex items-center justify-center ${className}`}>
+      <img src={logoColor} alt="Apartamentos Manaus" width={w} style={{ display: 'block' }} />
+    </div>
+  );
+};
+
+// For slides/watermarks we keep a white SVG version using the same icon geometry
 interface AMLogoSVGProps {
   width?: number;
   variant?: 'color' | 'white';
 }
 
-const AMLogoSVG = ({ width = 240, variant = 'color' }: AMLogoSVGProps) => {
+export const AMLogoSVG = ({ width = 220, variant = 'color' }: AMLogoSVGProps) => {
+  if (variant === 'color') {
+    const h = Math.round(width * (140 / 520));
+    return (
+      <img src={logoColor} alt="Apartamentos Manaus" width={width} height={h} style={{ display: 'block' }} />
+    );
+  }
+
+  // White variant — inline SVG recreation for dark/colored backgrounds
   const aspectRatio = 520 / 140;
   const height = width / aspectRatio;
-
-  const blue       = variant === 'white' ? '#FFFFFF' : '#1B5EA6';
-  const orange     = variant === 'white' ? 'rgba(255,255,255,0.80)' : '#E8873A';
-  const divider    = variant === 'white' ? 'rgba(255,255,255,0.40)' : '#CCCCCC';
-  const titleColor = variant === 'white' ? '#FFFFFF' : '#222222';
-  const subColor   = variant === 'white' ? 'rgba(255,255,255,0.60)' : '#999999';
-  // "cut-out" white for letter shapes inside blocks
   const cut = 'white';
-  const cutOp = variant === 'white' ? 0.25 : 1;
 
   return (
     <svg
@@ -28,98 +50,45 @@ const AMLogoSVG = ({ width = 240, variant = 'color' }: AMLogoSVGProps) => {
       xmlns="http://www.w3.org/2000/svg"
       style={{ display: 'block' }}
     >
-      {/* ─────────────────────────────────────────
-          ICON  (fits in 0,0 → 160,140)
-          ───────────────────────────────────────── */}
+      {/* Roofline */}
+      <polygon points="80,6 4,56 156,56" fill="white" />
+      <polygon points="80,6 74,26 86,26" fill="rgba(255,255,255,0.7)" />
 
-      {/* shared roofline triangle: peak at (80,6), base corners (4,56) and (156,56) */}
-      <polygon points="80,6 4,56 156,56" fill={blue} />
-      {/* small orange roof accent */}
-      <polygon points="80,6 74,26 86,26" fill={orange} />
+      {/* Left block — "A" (blue → white) */}
+      <rect x="6"  y="56" width="64" height="78" rx="3" fill="white" />
+      <rect x="15" y="65" width="16" height="16" rx="2" fill="rgba(255,255,255,0.25)" />
+      <rect x="45" y="65" width="16" height="16" rx="2" fill="rgba(255,255,255,0.25)" />
+      <rect x="28" y="92" width="20" height="42" rx="10 10 2 2" fill="rgba(255,255,255,0.25)" />
 
-      {/* LEFT BLOCK — blue "A" shape */}
-      <rect x="6"  y="56" width="64" height="78" rx="3" fill={blue} />
-      {/* "A" cutout: two top windows */}
-      <rect x="15" y="65" width="16" height="16" rx="2" fill={cut} fillOpacity={cutOp} />
-      <rect x="45" y="65" width="16" height="16" rx="2" fill={cut} fillOpacity={cutOp} />
-      {/* "A" arch/door at bottom center — white arch */}
-      <rect x="28" y="92" width="20" height="42" rx="10 10 2 2" fill={cut} fillOpacity={cutOp} />
+      {/* Right block — "M" (orange → white) */}
+      <rect x="90" y="56" width="64" height="78" rx="3" fill="rgba(255,255,255,0.85)" />
+      <rect x="98"  y="56" width="18" height="26" rx="9 9 2 2" fill={cut} fillOpacity={0.25} />
+      <rect x="128" y="56" width="18" height="26" rx="9 9 2 2" fill={cut} fillOpacity={0.25} />
+      <rect x="99"  y="94" width="16" height="14" rx="2" fill={cut} fillOpacity={0.25} />
+      <rect x="129" y="94" width="16" height="14" rx="2" fill={cut} fillOpacity={0.25} />
 
-      {/* RIGHT BLOCK — orange "M" shape */}
-      <rect x="90" y="56" width="64" height="78" rx="3" fill={orange} />
-      {/* "M" cutout: two top notch arches */}
-      <rect x="98"  y="56" width="18" height="26" rx="9 9 2 2" fill={cut} fillOpacity={cutOp} />
-      <rect x="128" y="56" width="18" height="26" rx="9 9 2 2" fill={cut} fillOpacity={cutOp} />
-      {/* "M" bottom windows */}
-      <rect x="99"  y="94" width="16" height="14" rx="2" fill={cut} fillOpacity={cutOp} />
-      <rect x="129" y="94" width="16" height="14" rx="2" fill={cut} fillOpacity={cutOp} />
+      {/* Divider */}
+      <line x1="174" y1="10" x2="174" y2="130" stroke="rgba(255,255,255,0.4)" strokeWidth="2" />
 
-      {/* ─────────────────────────────────────────
-          DIVIDER
-          ───────────────────────────────────────── */}
-      <line x1="174" y1="10" x2="174" y2="130" stroke={divider} strokeWidth="2" />
-
-      {/* ─────────────────────────────────────────
-          TEXT
-          ───────────────────────────────────────── */}
       {/* APARTAMENTOS */}
-      <text
-        x="188" y="64"
-        fontFamily="'Montserrat', 'Arial Black', Arial, sans-serif"
-        fontSize="44"
-        fontWeight="800"
-        fill={titleColor}
-        letterSpacing="1"
-      >
+      <text x="188" y="64"
+        fontFamily="'Montserrat','Arial Black',Arial,sans-serif"
+        fontSize="44" fontWeight="800" fill="white" letterSpacing="1">
         APARTAMENTOS
       </text>
-
       {/* MANAUS */}
-      <text
-        x="188" y="108"
-        fontFamily="'Montserrat', 'Arial Black', Arial, sans-serif"
-        fontSize="44"
-        fontWeight="800"
-        fill={titleColor}
-        letterSpacing="1"
-      >
+      <text x="188" y="108"
+        fontFamily="'Montserrat','Arial Black',Arial,sans-serif"
+        fontSize="44" fontWeight="800" fill="white" letterSpacing="1">
         MANAUS
       </text>
-
       {/* IMOBILIÁRIA */}
-      <text
-        x="190" y="130"
-        fontFamily="'Montserrat', Arial, sans-serif"
-        fontSize="20"
-        fontWeight="400"
-        fill={subColor}
-        letterSpacing="6"
-      >
+      <text x="190" y="130"
+        fontFamily="'Montserrat',Arial,sans-serif"
+        fontSize="20" fontWeight="400" fill="rgba(255,255,255,0.65)" letterSpacing="6">
         IMOBILIÁRIA
       </text>
     </svg>
-  );
-};
-
-interface AMLogoProps {
-  size?: 'sm' | 'md' | 'lg' | 'xl';
-  className?: string;
-  variant?: 'color' | 'white';
-}
-
-const sizeConfig = {
-  sm: 160,
-  md: 240,
-  lg: 320,
-  xl: 420,
-};
-
-export const AMLogo = ({ size = 'md', className = '', variant = 'color' }: AMLogoProps) => {
-  const width = sizeConfig[size];
-  return (
-    <div className={`inline-flex items-center justify-center ${className}`}>
-      <AMLogoSVG width={width} variant={variant} />
-    </div>
   );
 };
 
@@ -146,5 +115,3 @@ export const AMWatermark = ({
     </div>
   );
 };
-
-export { AMLogoSVG };
