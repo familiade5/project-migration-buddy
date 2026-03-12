@@ -20,10 +20,10 @@ interface AMPostPreviewProps {
 
 type FormatType = 'feed' | 'story';
 
-// Native slide dimensions (design units)
-const SLIDE_W = 1080;
-const FEED_H  = 1080;
-const STORY_H = 1920;
+// Native slide dimensions (design units) — slides are authored at 360px
+const SLIDE_W = 360;
+const FEED_H  = 360;
+const STORY_H = 640;
 
 export function AMPostPreview({ data, photos }: AMPostPreviewProps) {
   const [currentSlide, setCurrentSlide] = useState(0);
