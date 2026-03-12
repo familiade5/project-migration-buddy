@@ -191,7 +191,7 @@ export function AMLayout({ children }: AMLayoutProps) {
             >
               <Menu className="w-6 h-6" />
             </button>
-            <AMLogoSVG width={140} variant="color" />
+            <AMLogoSVG width={180} variant="color" />
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <button className="p-2 text-gray-500 hover:text-gray-700">
