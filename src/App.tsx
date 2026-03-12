@@ -102,6 +102,23 @@ const App = () => (
                 <EducationalPostGenerator />
               </ProtectedRoute>
             } />
+            {/* Apartamentos Manaus – separate brand, same auth */}
+            <Route path="/am/auth" element={<AMAuth />} />
+            <Route path="/apartamentos-manaus" element={
+              <ProtectedRoute>
+                <ApartamentosManausPage />
+              </ProtectedRoute>
+            } />
+            <Route path="/apartamentos-manaus/biblioteca" element={
+              <ProtectedRoute>
+                <AMLibrary />
+              </ProtectedRoute>
+            } />
+            <Route path="/apartamentos-manaus/admin" element={
+              <ProtectedRoute requireAdmin>
+                <AMAdmin />
+              </ProtectedRoute>
+            } />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthProvider>
