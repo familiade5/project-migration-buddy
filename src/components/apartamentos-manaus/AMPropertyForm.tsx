@@ -1,0 +1,195 @@
+import { AMPropertyData } from '@/types/apartamentosManaus';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Switch } from '@/components/ui/switch';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Textarea } from '@/components/ui/textarea';
+
+interface AMPropertyFormProps {
+  data: AMPropertyData;
+  onChange: (data: AMPropertyData) => void;
+}
+
+const propertyTypes = ['Apartamento', 'Casa', 'Casa em Condomínio', 'Cobertura', 'Terreno', 'Sala Comercial'];
+
+const inputClass = 'h-10 border-gray-300 focus:border-blue-500 bg-white text-gray-900 text-sm';
+const labelClass = 'text-xs font-semibold text-gray-600 uppercase tracking-wide';
+
+function Section({ title, color, children }: { title: string; color: string; children: React.ReactNode }) {
+  return (
+    <div className="space-y-3">
+      <div className="flex items-center gap-2">
+        <div className="w-1 h-4 rounded-full" style={{ backgroundColor: color }} />
+        <h3 className="text-sm font-bold text-gray-700">{title}</h3>
+      </div>
+      {children}
+    </div>
+  );
+}
+
+export function AMPropertyForm({ data, onChange }: AMPropertyFormProps) {
+  const set = (field: keyof AMPropertyData, value: unknown) =>
+    onChange({ ...data, [field]: value });
+
+  const setHighlight = (index: number, value: string) => {
+    const hl = [...data.highlights];
+    hl[index] = value;
+    onChange({ ...data, highlights: hl });
+  };
+
+  return (
+    <div className="space-y-6">
+      {/* Identificação */}
+      <Section title="Identificação" color="#1B5EA6">
+        <div className="grid grid-cols-2 gap-3">
+          <div className="col-span-2 space-y-1">
+            <Label className={labelClass}>Nome do imóvel / condomínio *</Label>
+            <Input
+              className={inputClass}
+              placeholder="Ex: Residencial Flores"
+              value={data.title}
+              onChange={(e) => set('title', e.target.value)}
+            />
+          </div>
+          <div className="space-y-1">
+            <Label className={labelClass}>Tipo</Label>
+            <Select value={data.propertyType} onValueChange={(v) => set('propertyType', v)}>
+              <SelectTrigger className={inputClass}>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {propertyTypes.map((t) => <SelectItem key={t} value={t}>{t}</SelectItem>)}
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="space-y-1">
+            <Label className={labelClass}>Bairro</Label>
+            <Input className={inputClass} placeholder="Ex: Flores" value={data.neighborhood} onChange={(e) => set('neighborhood', e.target.value)} />
+          </div>
+          <div className="space-y-1">
+            <Label className={labelClass}>Cidade</Label>
+            <Input className={inputClass} placeholder="Manaus" value={data.city} onChange={(e) => set('city', e.target.value)} />
+          </div>
+          <div className="space-y-1">
+            <Label className={labelClass}>Estado</Label>
+            <Input className={inputClass} placeholder="AM" value={data.state} onChange={(e) => set('state', e.target.value)} />
+          </div>
+        </div>
+      </Section>
+
+      {/* Especificações */}
+      <Section title="Especificações" color="#1B5EA6">
+        <div className="grid grid-cols-3 gap-3">
+          {[
+            { label: 'Quartos', field: 'bedrooms' as const },
+            { label: 'Suítes', field: 'suites' as const },
+            { label: 'Banheiros', field: 'bathrooms' as const },
+            { label: 'Área (m²)', field: 'area' as const },
+            { label: 'Vagas', field: 'garageSpaces' as const },
+          ].map(({ label, field }) => (
+            <div key={field} className="space-y-1">
+              <Label className={labelClass}>{label}</Label>
+              <Input
+                className={inputClass}
+                type="number"
+                min={0}
+                value={data[field] || ''}
+                onChange={(e) => set(field, Number(e.target.value))}
+              />
+            </div>
+          ))}
+          <div className="space-y-1">
+            <Label className={labelClass}>Andar</Label>
+            <Input className={inputClass} placeholder="Ex: 3º" value={data.floor} onChange={(e) => set('floor', e.target.value)} />
+          </div>
+        </div>
+        <div className="flex items-center gap-2 pt-1">
+          <Switch checked={data.furnished} onCheckedChange={(v) => set('furnished', v)} />
+          <Label className="text-sm text-gray-600">Imóvel mobiliado</Label>
+        </div>
+      </Section>
+
+      {/* Valores */}
+      <Section title="Valores" color="#F47920">
+        <div className="flex items-center gap-2 mb-2">
+          <Switch checked={data.isRental} onCheckedChange={(v) => set('isRental', v)} />
+          <Label className="text-sm text-gray-600">É locação (aluguel)?</Label>
+        </div>
+
+        {data.isRental ? (
+          <div className="space-y-1">
+            <Label className={labelClass}>Valor do Aluguel (R$)</Label>
+            <Input className={inputClass} type="number" placeholder="0" value={data.rentalPrice || ''} onChange={(e) => set('rentalPrice', Number(e.target.value))} />
+          </div>
+        ) : (
+          <div className="space-y-3">
+            <div className="space-y-1">
+              <Label className={labelClass}>Preço de Venda (R$)</Label>
+              <Input className={inputClass} type="number" placeholder="0" value={data.salePrice || ''} onChange={(e) => set('salePrice', Number(e.target.value))} />
+            </div>
+            <div className="flex items-center gap-2">
+              <Switch checked={data.acceptsFinancing} onCheckedChange={(v) => set('acceptsFinancing', v)} />
+              <Label className="text-sm text-gray-600">Aceita financiamento</Label>
+            </div>
+          </div>
+        )}
+
+        <div className="grid grid-cols-2 gap-3">
+          <div className="space-y-1">
+            <Label className={labelClass}>Condomínio (R$)</Label>
+            <Input className={inputClass} type="number" placeholder="0" value={data.condominiumFee || ''} onChange={(e) => set('condominiumFee', Number(e.target.value))} />
+          </div>
+          <div className="space-y-1">
+            <Label className={labelClass}>IPTU (R$)</Label>
+            <Input className={inputClass} type="number" placeholder="0" value={data.iptu || ''} onChange={(e) => set('iptu', Number(e.target.value))} />
+          </div>
+        </div>
+      </Section>
+
+      {/* Contato */}
+      <Section title="Corretor / Contato" color="#1B5EA6">
+        <div className="grid grid-cols-2 gap-3">
+          <div className="space-y-1">
+            <Label className={labelClass}>Nome do Corretor</Label>
+            <Input className={inputClass} placeholder="Nome completo" value={data.brokerName} onChange={(e) => set('brokerName', e.target.value)} />
+          </div>
+          <div className="space-y-1">
+            <Label className={labelClass}>Telefone / WhatsApp</Label>
+            <Input className={inputClass} placeholder="(92) 99999-9999" value={data.brokerPhone} onChange={(e) => set('brokerPhone', e.target.value)} />
+          </div>
+          <div className="col-span-2 space-y-1">
+            <Label className={labelClass}>CRECI</Label>
+            <Input className={inputClass} placeholder="Ex: 12345-AM" value={data.creci} onChange={(e) => set('creci', e.target.value)} />
+          </div>
+        </div>
+      </Section>
+
+      {/* Destaques */}
+      <Section title="Destaques do Imóvel (Slide Informativo)" color="#F47920">
+        <p className="text-xs text-gray-400">Até 6 itens. Deixe em branco para usar padrões.</p>
+        <div className="space-y-2">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <Input
+              key={i}
+              className={inputClass}
+              placeholder={`Destaque ${i + 1} (ex: ✅ Área de lazer completa)`}
+              value={data.highlights[i] || ''}
+              onChange={(e) => setHighlight(i, e.target.value)}
+            />
+          ))}
+        </div>
+      </Section>
+
+      {/* Mensagem informativa */}
+      <Section title="Mensagem Informativa Extra" color="#F47920">
+        <Textarea
+          className="border-gray-300 focus:border-blue-500 bg-white text-gray-900 text-sm resize-none"
+          rows={2}
+          placeholder="Ex: Unidades limitadas, consulte disponibilidade!"
+          value={data.infoMessage}
+          onChange={(e) => set('infoMessage', e.target.value)}
+        />
+      </Section>
+    </div>
+  );
+}

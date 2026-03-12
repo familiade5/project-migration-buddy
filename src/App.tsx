@@ -21,6 +21,10 @@ import LocacaoPostGenerator from "./pages/LocacaoPostGenerator";
 import EducationalPostGenerator from "./pages/EducationalPostGenerator";
 import VideoPostGenerator from "./pages/VideoPostGenerator";
 import NotFound from "./pages/NotFound";
+import AMAuth from "./pages/am/AMAuth";
+import ApartamentosManausPage from "./pages/am/ApartamentosManausPage";
+import AMLibrary from "./pages/am/AMLibrary";
+import AMAdmin from "./pages/am/AMAdmin";
 
 const queryClient = new QueryClient();
 
@@ -96,6 +100,23 @@ const App = () => (
             <Route path="/educativo" element={
               <ProtectedRoute>
                 <EducationalPostGenerator />
+              </ProtectedRoute>
+            } />
+            {/* Apartamentos Manaus – separate brand, same auth */}
+            <Route path="/am/auth" element={<AMAuth />} />
+            <Route path="/apartamentos-manaus" element={
+              <ProtectedRoute>
+                <ApartamentosManausPage />
+              </ProtectedRoute>
+            } />
+            <Route path="/apartamentos-manaus/biblioteca" element={
+              <ProtectedRoute>
+                <AMLibrary />
+              </ProtectedRoute>
+            } />
+            <Route path="/apartamentos-manaus/admin" element={
+              <ProtectedRoute requireAdmin>
+                <AMAdmin />
               </ProtectedRoute>
             } />
             <Route path="*" element={<NotFound />} />
