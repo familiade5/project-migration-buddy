@@ -1,5 +1,6 @@
 // AM Logo component - faithful SVG recreation of the Apartamentos Manaus logo
 // Colors: blue #1B5EA6, orange #F47920
+// Icon: Two building blocks (A=blue, M=orange) sharing a peaked roofline, forming the letters A and M
 
 interface AMLogoSVGProps {
   width?: number;
