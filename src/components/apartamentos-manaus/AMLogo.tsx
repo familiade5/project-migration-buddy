@@ -1,83 +1,89 @@
-// AM Logo component - faithful SVG recreation of the Apartamentos Manaus logo
+// AM Logo — faithful SVG recreation of the Apartamentos Manaus logo
+// Icon: two building blocks (blue "A" + orange "M") sharing a peaked roofline
 // Colors: blue #1B5EA6, orange #F47920
-// Icon: Two building blocks (A=blue, M=orange) sharing a peaked roofline, forming the letters A and M
 
 interface AMLogoSVGProps {
   width?: number;
   variant?: 'color' | 'white';
 }
 
-const AMLogoSVG = ({ width = 200, variant = 'color' }: AMLogoSVGProps) => {
-  const height = width * 0.38;
-  const scale = width / 520;
+const AMLogoSVG = ({ width = 240, variant = 'color' }: AMLogoSVGProps) => {
+  const blue   = variant === 'white' ? '#FFFFFF' : '#1B5EA6';
+  const orange = variant === 'white' ? 'rgba(255,255,255,0.85)' : '#E8873A';
+  const dividerColor  = variant === 'white' ? 'rgba(255,255,255,0.45)' : '#CCCCCC';
+  const textColor     = variant === 'white' ? '#FFFFFF' : '#1a1a1a';
+  const subTextColor  = variant === 'white' ? 'rgba(255,255,255,0.65)' : '#888888';
+  const windowFill    = variant === 'white' ? 'rgba(255,255,255,0.35)' : 'rgba(255,255,255,0.55)';
 
-  const blue = variant === 'white' ? '#FFFFFF' : '#1B5EA6';
-  const orange = variant === 'white' ? 'rgba(255,255,255,0.85)' : '#F47920';
-  const dividerColor = variant === 'white' ? 'rgba(255,255,255,0.4)' : '#CCCCCC';
-  const textColor = variant === 'white' ? '#FFFFFF' : '#1B5EA6';
-  const subTextColor = variant === 'white' ? 'rgba(255,255,255,0.7)' : '#888888';
-
+  // All coordinates designed on a 220×80 viewBox
+  // Icon occupies x 0..76, text starts at x 86
   return (
     <svg
       width={width}
-      height={height}
-      viewBox="0 0 520 198"
+      height={width * (80 / 220)}
+      viewBox="0 0 220 80"
       xmlns="http://www.w3.org/2000/svg"
       style={{ display: 'block' }}
     >
-      {/* Left building block (blue) */}
-      <rect x="4" y="80" width="72" height="110" rx="5" fill={blue} />
-      {/* Left window */}
-      <rect x="20" y="100" width="16" height="16" rx="2" fill="white" fillOpacity="0.6" />
-      <rect x="44" y="100" width="16" height="16" rx="2" fill="white" fillOpacity="0.6" />
+      {/* ── ROOFLINE (shared peaked triangle) ── */}
+      {/* The peak sits at x=38, y=4; left edge x=2, right edge x=74; base y=34 */}
+      <polygon points="38,4 2,34 74,34" fill={blue} />
+      {/* Small orange accent at peak */}
+      <polygon points="38,4 34,16 42,16" fill={orange} />
 
-      {/* Right building block (orange) */}
-      <rect x="84" y="80" width="72" height="110" rx="5" fill={orange} />
-      {/* Right window */}
-      <rect x="100" y="100" width="16" height="16" rx="2" fill="white" fillOpacity="0.6" />
-      <rect x="124" y="100" width="16" height="16" rx="2" fill="white" fillOpacity="0.6" />
+      {/* ── LEFT BLOCK — "A" shape (blue) ── */}
+      <rect x="4"  y="34" width="30" height="40" rx="2" fill={blue} />
+      {/* Window left */}
+      <rect x="9"  y="41" width="8" height="8" rx="1" fill={windowFill} />
+      {/* Window right */}
+      <rect x="21" y="41" width="8" height="8" rx="1" fill={windowFill} />
+      {/* Door / archway in middle bottom */}
+      <rect x="14" y="58" width="10" height="16" rx="2" fill={windowFill} />
 
-      {/* Roof (blue) - shared peaked roof */}
-      <polygon points="80,8 4,84 156,84" fill={blue} />
-      {/* Roof ridge (orange accent) */}
-      <polygon points="80,8 76,28 84,28" fill={orange} />
+      {/* ── RIGHT BLOCK — "M" shape (orange) ── */}
+      <rect x="40" y="34" width="30" height="40" rx="2" fill={orange} />
+      {/* M arch: two inner notches cut from the top of the block */}
+      <rect x="44" y="34" width="9"  height="14" rx="1" fill="white" fillOpacity={variant === 'white' ? 0.2 : 0.9} />
+      <rect x="57" y="34" width="9"  height="14" rx="1" fill="white" fillOpacity={variant === 'white' ? 0.2 : 0.9} />
+      {/* Window */}
+      <rect x="45" y="55" width="8"  height="8" rx="1" fill={windowFill} />
+      <rect x="57" y="55" width="8"  height="8" rx="1" fill={windowFill} />
 
-      {/* Vertical divider */}
-      <line x1="172" y1="10" x2="172" y2="188" stroke={dividerColor} strokeWidth="2" />
+      {/* ── DIVIDER ── */}
+      <line x1="82" y1="6" x2="82" y2="74" stroke={dividerColor} strokeWidth="1.5" />
 
-      {/* APARTAMENTOS */}
+      {/* ── TEXT: APARTAMENTOS ── */}
       <text
-        x="186"
-        y="90"
-        fontFamily="Arial Black, Arial, sans-serif"
-        fontSize="46"
-        fontWeight="900"
+        x="90" y="36"
+        fontFamily="'Montserrat', 'Arial Black', Arial, sans-serif"
+        fontSize="17.5"
+        fontWeight="800"
         fill={textColor}
-        letterSpacing="1"
+        letterSpacing="0.5"
       >
         APARTAMENTOS
       </text>
-      {/* MANAUS */}
+
+      {/* ── TEXT: MANAUS ── */}
       <text
-        x="186"
-        y="144"
-        fontFamily="Arial Black, Arial, sans-serif"
-        fontSize="46"
-        fontWeight="900"
+        x="90" y="56"
+        fontFamily="'Montserrat', 'Arial Black', Arial, sans-serif"
+        fontSize="17.5"
+        fontWeight="800"
         fill={textColor}
-        letterSpacing="1"
+        letterSpacing="0.5"
       >
         MANAUS
       </text>
-      {/* IMOBILIÁRIA */}
+
+      {/* ── SUBTEXT: IMOBILIÁRIA ── */}
       <text
-        x="188"
-        y="175"
-        fontFamily="Arial, sans-serif"
-        fontSize="22"
+        x="90" y="70"
+        fontFamily="'Montserrat', Arial, sans-serif"
+        fontSize="9"
         fontWeight="400"
         fill={subTextColor}
-        letterSpacing="4"
+        letterSpacing="2.5"
       >
         IMOBILIÁRIA
       </text>
@@ -92,10 +98,10 @@ interface AMLogoProps {
 }
 
 const sizeConfig = {
-  sm: 120,
-  md: 200,
-  lg: 260,
-  xl: 340,
+  sm: 140,
+  md: 220,
+  lg: 280,
+  xl: 360,
 };
 
 export const AMLogo = ({ size = 'md', className = '', variant = 'color' }: AMLogoProps) => {
@@ -114,13 +120,13 @@ export const AMWatermark = ({
   position?: 'bottom-left' | 'bottom-right' | 'bottom-center';
   size?: 'sm' | 'md' | 'lg';
 }) => {
-  const widths = { sm: 120, md: 160, lg: 210 };
+  const widths = { sm: 130, md: 170, lg: 220 };
   const w = widths[size];
 
   const baseClass = 'absolute pointer-events-none';
   const posMap: Record<string, string> = {
-    'bottom-left': `${baseClass} bottom-3 left-3`,
-    'bottom-right': `${baseClass} bottom-3 right-3`,
+    'bottom-left':   `${baseClass} bottom-3 left-3`,
+    'bottom-right':  `${baseClass} bottom-3 right-3`,
     'bottom-center': `${baseClass} bottom-3 left-0 right-0 flex justify-center`,
   };
 
