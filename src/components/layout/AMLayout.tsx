@@ -69,7 +69,7 @@ export function AMLayout({ children }: AMLayoutProps) {
         <div className="flex flex-col h-full">
           {/* Logo */}
           <div className="flex items-center justify-between px-5 py-4 border-b" style={{ borderColor: '#E5E7EB' }}>
-            <AMLogoSVG width={170} variant="color" />
+            <AMLogoSVG width={220} variant="color" />
             <button
               className="lg:hidden text-gray-400 hover:text-gray-600 ml-2 flex-shrink-0"
               onClick={() => setSidebarOpen(false)}
