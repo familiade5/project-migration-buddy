@@ -21,6 +21,10 @@ import LocacaoPostGenerator from "./pages/LocacaoPostGenerator";
 import EducationalPostGenerator from "./pages/EducationalPostGenerator";
 import VideoPostGenerator from "./pages/VideoPostGenerator";
 import NotFound from "./pages/NotFound";
+import AMAuth from "./pages/am/AMAuth";
+import ApartamentosManausPage from "./pages/am/ApartamentosManausPage";
+import AMLibrary from "./pages/am/AMLibrary";
+import AMAdmin from "./pages/am/AMAdmin";
 
 const queryClient = new QueryClient();
 

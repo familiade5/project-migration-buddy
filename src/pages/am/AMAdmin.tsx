@@ -53,6 +53,8 @@ export default function AMAdmin() {
 
   useEffect(() => { fetchUsers(); }, []);
 
+  if (!isAdmin) return <Navigate to="/apartamentos-manaus" replace />;
+
   const handleCreate = async () => {
     setCreating(true);
     try {
