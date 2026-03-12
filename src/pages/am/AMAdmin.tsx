@@ -31,8 +31,6 @@ export default function AMAdmin() {
   const [newUser, setNewUser] = useState({ email: '', full_name: '', password: '', isAdmin: false });
   const [creating, setCreating] = useState(false);
 
-  if (!isAdmin) return <Navigate to="/apartamentos-manaus" replace />;
-
   const fetchUsers = async () => {
     setLoading(true);
     try {
