@@ -1,30 +1,39 @@
 export interface AMPropertyData {
   // Basic info
-  title: string;         // Nome do condomínio/imóvel
-  propertyType: string;  // Casa, Apartamento, etc.
+  title: string;
+  propertyType: string;
   neighborhood: string;
   city: string;
   state: string;
+  address: string;        // Rua / endereço
+  referencePoint: string; // Ex: Em frente à Volvo
 
   // Specs
   bedrooms: number;
   bathrooms: number;
-  area: number;          // m²
+  area: number;
   garageSpaces: number;
   suites: number;
+  floor: string;
+  totalFloors: string;
+  furnished: boolean;
+
+  // Rooms (for caption)
+  rooms: string; // multiline text — ex: "Salas estar e jantar"
+
+  // Leisure
+  leisureItems: string; // multiline text — ex: "Piscina, Churrasqueira"
 
   // Pricing
   salePrice: number;
   acceptsFinancing: boolean;
+  acceptsFGTS: boolean;
+  subsidy: number;        // Subsídio governo
   cashOnly: boolean;
   isRental: boolean;
   rentalPrice: number;
-
-  // Details
-  floor: string;
-  totalFloors: string;
-  furnished: boolean;
   condominiumFee: number;
+  condoIncludes: string;  // Ex: "água, gás e segurança 24h"
   iptu: number;
 
   // Contact
@@ -32,10 +41,8 @@ export interface AMPropertyData {
   brokerPhone: string;
   creci: string;
 
-  // Highlights (up to 6)
+  // Highlights (up to 6) – for info slide
   highlights: string[];
-
-  // Info slide message
   infoMessage: string;
 }
 
@@ -45,20 +52,27 @@ export const defaultAMPropertyData: AMPropertyData = {
   neighborhood: '',
   city: 'Manaus',
   state: 'AM',
+  address: '',
+  referencePoint: '',
   bedrooms: 2,
   bathrooms: 1,
   area: 60,
   garageSpaces: 1,
   suites: 0,
-  salePrice: 0,
-  acceptsFinancing: true,
-  cashOnly: false,
-  isRental: false,
-  rentalPrice: 0,
   floor: '',
   totalFloors: '',
   furnished: false,
+  rooms: '',
+  leisureItems: '',
+  salePrice: 0,
+  acceptsFinancing: true,
+  acceptsFGTS: true,
+  subsidy: 0,
+  cashOnly: false,
+  isRental: false,
+  rentalPrice: 0,
   condominiumFee: 0,
+  condoIncludes: '',
   iptu: 0,
   brokerName: '',
   brokerPhone: '',
