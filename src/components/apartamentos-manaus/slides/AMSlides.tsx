@@ -393,18 +393,19 @@ export const AMLocationSlide = ({
   // Clip path com DOIS nichos: superior-esquerdo (card azul) e inferior-direito (card logo).
   // Notch azul: x 14→170, y 14→172 (8px branco ao redor do card). Notch logo: x 208→346, y 276→346.
   // Cantos externos: arcos convexos A r=22. Cantos internos dos nichos: bezier Q (côncavos).
-  // Logo card: bottom=20, right=20 → right edge at x=340, left edge at x=160 (w≈180)
-  // Notch x começa em 160, deixando cinza visível à esquerda do card com canto arredondado exposto
+  // Logo card: bottom=14, right=14 → right edge x=346, bottom y=346
+  // Card logo width=100 → left edge x=346-14-100=232. Notch left wall x=210 (232-22).
+  // Card top: bottom=14, logo+padding ~56px → top y=346-56=290. Notch top y=268 (290-22).
   const shapePath = [
     'M 192 14',              // top edge start (notch-azul right x=170 + r=22)
     'H 324',                 // top edge rightward
     'A 22 22 0 0 1 346 36',  // top-right outer convex corner
-    'V 240',                 // right edge down (262-22=240)
-    'Q 346 262 324 262',     // concave at top-right of logo notch
-    'H 182',                 // logo notch top leftward (160+22=182) — puxado para x=160
-    'Q 160 262 160 284',     // concave at top-left of logo notch (262+22=284)
+    'V 268',                 // right edge down (290-22=268)
+    'Q 346 290 324 290',     // concave at top-right of logo notch (notch topo y=290)
+    'H 232',                 // logo notch top leftward (210+22=232)
+    'Q 210 290 210 312',     // concave at top-left of logo notch (290+22=312)
     'V 324',                 // down logo notch left wall (346-22=324)
-    'A 22 22 0 0 1 138 346', // canto inferior-esquerdo do notch — igual ao padrão da capa (down→left, CW)
+    'A 22 22 0 0 1 188 346', // canto inferior-esquerdo (210-22=188, down→left, CW)
     'H 36',                  // bottom edge leftward
     'A 22 22 0 0 1 14 324',  // bottom-left outer convex corner
     'V 194',                 // left edge upward to blue notch (172+22=194)
@@ -520,12 +521,12 @@ export const AMLocationSlide = ({
         </div>
       </div>
 
-      {/* Logo card — encaixado no notch inferior-direito — bottom/right alinhados ao notch */}
+      {/* Logo card — encaixado no notch inferior-direito */}
       <div
         style={{
           position: 'absolute',
-          bottom: 20,
-          right: 20,
+          bottom: 14,
+          right: 14,
           zIndex: 20,
           backgroundColor: '#ffffff',
           borderRadius: 12,
@@ -534,7 +535,7 @@ export const AMLocationSlide = ({
           alignItems: 'center',
         }}
       >
-        <AMLogo width={130} variant="color" />
+        <AMLogo width={100} variant="color" />
       </div>
     </div>
   );
