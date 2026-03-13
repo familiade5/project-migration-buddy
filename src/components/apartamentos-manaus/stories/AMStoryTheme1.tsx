@@ -1,8 +1,8 @@
 /**
  * TEMA 1 — "ENIGMA"
  * Story 1: Curiosidade — fundo escuro + foto borrada + pergunta provocativa
- * Story 2: Revelação  — foto clara + preço destacado + specs
- * Story 3: CTA        — gradiente azul + chamada de ação vibrante
+ * Story 2: Revelação   — galeria moderna 4+ fotos + preço
+ * Story 3: CTA         — gradiente azul + chamada de ação vibrante
  */
 
 import { AMPropertyData } from '@/types/apartamentosManaus';
@@ -99,34 +99,44 @@ export const AMStory1_T1_Curiosity = ({
       </p>
     </div>
 
-    {/* Blurred photo teaser strip at bottom */}
+    {/* Photo teaser strip at bottom — clear, not blurred */}
     {photo && (
       <div style={{
-        position: 'absolute', bottom: 0, left: 0, right: 0, height: 140, overflow: 'hidden', zIndex: 5,
+        position: 'absolute', bottom: 0, left: 0, right: 0, height: 160, overflow: 'hidden', zIndex: 5,
       }}>
         <img
           src={photo}
           alt=""
           style={{
-            width: '100%', height: 200, objectFit: 'cover', objectPosition: 'center',
-            filter: 'blur(6px) brightness(0.5)', marginTop: -60,
+            width: '100%', height: 220, objectFit: 'cover', objectPosition: 'center',
+            filter: 'brightness(0.7)', marginTop: -60,
           }}
         />
         <div style={{
           position: 'absolute', inset: 0,
           background: 'linear-gradient(to bottom, #0a0f1e 0%, transparent 40%, transparent 100%)',
         }} />
+        {/* Subtle "ver mais" label */}
+        <div style={{
+          position: 'absolute', bottom: 16, left: 0, right: 0, display: 'flex', justifyContent: 'center', zIndex: 10,
+        }}>
+          <div style={{
+            backgroundColor: 'rgba(244,121,32,0.85)', borderRadius: 20, padding: '4px 16px',
+            backdropFilter: 'blur(8px)',
+          }}>
+            <p style={{ color: 'white', fontSize: 10, fontWeight: 700, margin: 0, letterSpacing: '0.1em' }}>
+              VER IMÓVEL ↑
+            </p>
+          </div>
+        </div>
       </div>
     )}
 
     {/* Bottom bar */}
     <div style={{
       position: 'absolute', bottom: 32, left: 32, right: 32, zIndex: 20,
-      display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+      display: 'flex', alignItems: 'center', justifyContent: 'flex-end',
     }}>
-      <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: 11, margin: 0 }}>
-        Minha Casa Minha Vida
-      </p>
       <div style={{
         backgroundColor: 'rgba(255,255,255,0.1)', borderRadius: 20,
         padding: '5px 14px', border: '1px solid rgba(255,255,255,0.15)',
@@ -137,13 +147,13 @@ export const AMStory1_T1_Curiosity = ({
   </div>
 );
 
-/* ── Story 2: Revelação ─────────────────────────────────────────────────────── */
+/* ── Story 2: Revelação — multi-photo gallery ───────────────────────────────── */
 export const AMStory1_T1_Reveal = ({
   data,
-  photo,
+  photos,
 }: {
   data: AMPropertyData;
-  photo?: string;
+  photos?: string[];
 }) => {
   const price = data.isRental ? data.rentalPrice : data.salePrice;
   const specs = [
@@ -153,56 +163,86 @@ export const AMStory1_T1_Reveal = ({
     data.floor && `${data.floor}° Andar`,
   ].filter(Boolean) as string[];
 
+  const imgs = photos && photos.length > 0 ? photos : [];
+  const img = (i: number) => imgs[i] ?? imgs[0] ?? undefined;
+
   return (
     <div style={{ position: 'relative', width: STORY_W, height: STORY_H, backgroundColor: '#0a0f1e', fontFamily: 'Arial, sans-serif', overflow: 'hidden' }}>
-      {/* Photo — top 60% */}
-      <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 400, overflow: 'hidden' }}>
-        {photo ? (
-          <img src={photo} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-        ) : (
-          <div style={{ width: '100%', height: '100%', backgroundColor: '#1e293b' }} />
-        )}
-        {/* Gradient over photo */}
-        <div style={{
-          position: 'absolute', bottom: 0, left: 0, right: 0, height: 120,
-          background: 'linear-gradient(to bottom, transparent, #0a0f1e)',
-        }} />
-        {/* Logo overlay on photo */}
-        <div style={{ position: 'absolute', top: 32, left: 24, zIndex: 10 }}>
+
+      {/* ── Photo gallery — top 54% ── */}
+      <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 346, zIndex: 1 }}>
+
+        {/* Main large photo — left 58% */}
+        <div style={{ position: 'absolute', top: 0, left: 0, width: 208, height: 346, overflow: 'hidden' }}>
+          {img(0) ? (
+            <img src={img(0)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+          ) : (
+            <div style={{ width: '100%', height: '100%', backgroundColor: '#1e293b' }} />
+          )}
+          <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to right, transparent 60%, #0a0f1e 100%)' }} />
+        </div>
+
+        {/* Right column — 3 small photos stacked */}
+        <div style={{ position: 'absolute', top: 0, right: 0, width: 148, height: 346, display: 'flex', flexDirection: 'column', gap: 3 }}>
+          {[1, 2, 3].map((idx) => (
+            <div key={idx} style={{ flex: 1, overflow: 'hidden' }}>
+              {img(idx) ? (
+                <img src={img(idx)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+              ) : (
+                <div style={{ width: '100%', height: '100%', backgroundColor: idx === 1 ? '#1e293b' : idx === 2 ? '#172033' : '#111827' }} />
+              )}
+            </div>
+          ))}
+          {/* "+N" badge on last if more photos */}
+          {imgs.length > 4 && (
+            <div style={{
+              position: 'absolute', bottom: 0, right: 0, width: 148, height: '33.3%',
+              backgroundColor: 'rgba(0,0,0,0.55)', display: 'flex', alignItems: 'center', justifyContent: 'center',
+            }}>
+              <p style={{ color: 'white', fontSize: 18, fontWeight: 900, margin: 0 }}>+{imgs.length - 4}</p>
+            </div>
+          )}
+        </div>
+
+        {/* Top overlay: logo + neighborhood badge */}
+        <div style={{ position: 'absolute', top: 16, left: 16, zIndex: 10 }}>
           <Logo variant="white" />
         </div>
-        {/* Orange badge */}
         {data.neighborhood && (
           <div style={{
-            position: 'absolute', top: 32, right: 20, zIndex: 10,
-            backgroundColor: '#F47920', borderRadius: 20, padding: '5px 14px',
+            position: 'absolute', top: 16, right: 8, zIndex: 10,
+            backgroundColor: '#F47920', borderRadius: 20, padding: '4px 12px',
           }}>
-            <p style={{ color: 'white', fontSize: 11, fontWeight: 700, margin: 0 }}>
-              📍 {data.neighborhood}
-            </p>
+            <p style={{ color: 'white', fontSize: 10, fontWeight: 700, margin: 0 }}>📍 {data.neighborhood}</p>
           </div>
         )}
+
+        {/* Gradient bottom fade */}
+        <div style={{
+          position: 'absolute', bottom: 0, left: 0, right: 0, height: 80,
+          background: 'linear-gradient(to bottom, transparent, #0a0f1e)',
+        }} />
       </div>
 
-      {/* Info card */}
+      {/* ── Info card — bottom 46% ── */}
       <div style={{
-        position: 'absolute', top: 340, left: 20, right: 20, zIndex: 20,
-        backgroundColor: '#111827', borderRadius: 20, padding: '20px 22px',
+        position: 'absolute', top: 330, left: 16, right: 16, zIndex: 20,
+        backgroundColor: '#111827', borderRadius: 20, padding: '18px 20px',
         border: '1px solid rgba(27,94,166,0.3)',
         boxShadow: '0 0 40px rgba(27,94,166,0.15)',
       }}>
         {/* Title */}
-        <p style={{ color: 'white', fontSize: 17, fontWeight: 700, margin: '0 0 12px', lineHeight: 1.3 }}>
+        <p style={{ color: 'white', fontSize: 15, fontWeight: 700, margin: '0 0 10px', lineHeight: 1.3 }}>
           {data.title || 'Apartamento Disponível'}
         </p>
 
         {/* Specs pills */}
         {specs.length > 0 && (
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 16 }}>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 5, marginBottom: 14 }}>
             {specs.map((s, i) => (
               <span key={i} style={{
                 backgroundColor: 'rgba(27,94,166,0.25)', border: '1px solid rgba(27,94,166,0.4)',
-                borderRadius: 20, padding: '3px 12px', color: '#93c5fd', fontSize: 11, fontWeight: 600,
+                borderRadius: 20, padding: '3px 10px', color: '#93c5fd', fontSize: 10, fontWeight: 600,
               }}>
                 {s}
               </span>
@@ -219,7 +259,7 @@ export const AMStory1_T1_Reveal = ({
             <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: 10, margin: '0 0 2px', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
               {data.isRental ? 'Aluguel' : 'Valor de Venda'}
             </p>
-            <p style={{ color: 'white', fontSize: 24, fontWeight: 900, margin: 0, lineHeight: 1 }}>
+            <p style={{ color: 'white', fontSize: 22, fontWeight: 900, margin: 0, lineHeight: 1 }}>
               {formatPrice(price)}
             </p>
           </div>
@@ -236,13 +276,11 @@ export const AMStory1_T1_Reveal = ({
         </div>
       </div>
 
-      {/* Bottom */}
+      {/* Bottom counter */}
       <div style={{
-        position: 'absolute', bottom: 28, left: 32, right: 32, zIndex: 20,
-        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        position: 'absolute', bottom: 14, right: 24, zIndex: 30,
       }}>
-        <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: 11, margin: 0 }}>Minha Casa Minha Vida</p>
-        <div style={{ backgroundColor: 'rgba(255,255,255,0.1)', borderRadius: 20, padding: '5px 14px', border: '1px solid rgba(255,255,255,0.15)' }}>
+        <div style={{ backgroundColor: 'rgba(255,255,255,0.1)', borderRadius: 20, padding: '4px 12px', border: '1px solid rgba(255,255,255,0.15)' }}>
           <p style={{ color: 'white', fontSize: 11, margin: 0, fontWeight: 600 }}>2 / 3</p>
         </div>
       </div>
