@@ -322,7 +322,7 @@ export const AMSpecsSlide = ({
           left: 0,
           width: 360,
           height: 360,
-          clipPath: 'url(#am-specs-shape)',
+          clipPath: `url(#${clipId})`,
           zIndex: 10,
         }}
       >
