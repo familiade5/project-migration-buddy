@@ -330,43 +330,6 @@ export const AMSpecsSlide = ({
   );
 };
 
-      {/* ── Logo card — sits in the notch, below the SVG layer (z-index 5) ── */}
-      <div style={{
-        position: 'absolute',
-        top: 4,
-        left: 4,
-        width: 164,
-        height: 76,
-        borderRadius: 18,
-        backgroundColor: '#ffffff',
-        zIndex: 5,
-        display: 'flex',
-        alignItems: 'center',
-        paddingLeft: 12,
-        paddingRight: 12,
-        boxSizing: 'border-box',
-      }}>
-        <AMLogo width={140} variant="color" />
-      </div>
-
-      {/* ── Specs card ── */}
-      {specs.length > 0 && (
-        <div style={{
-          position: 'absolute', bottom: 22, right: 22, zIndex: 20,
-          backgroundColor: 'rgba(17,24,39,0.75)', backdropFilter: 'blur(6px)',
-          borderRadius: 14, padding: '10px 14px', maxWidth: 165,
-        }}>
-          {specs.map((spec, i) => (
-            <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 5, marginBottom: i < specs.length - 1 ? 4 : 0 }}>
-              <span style={{ color: 'rgba(255,255,255,0.6)', fontSize: 11, marginTop: 1, flexShrink: 0 }}>•</span>
-              <span style={{ color: 'white', fontSize: 11, lineHeight: 1.4 }}>{spec}</span>
-            </div>
-          ))}
-        </div>
-      )}
-    </div>
-  );
-};
 
 // ─── Slide 3: LOCALIZAÇÃO ────────────────────────────────────────────────────
 // White bg • right photo (large, rounded) + bottom-left photo (smaller, rounded)
