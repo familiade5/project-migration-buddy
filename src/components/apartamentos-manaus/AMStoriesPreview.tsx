@@ -80,24 +80,23 @@ export function AMStoriesPreview({ data, photos }: AMStoriesPreviewProps) {
   };
 
   const p0 = photos[0];
-  const p1 = photos[1] ?? photos[0];
   const pLast = photos[photos.length - 1] ?? photos[0];
 
   // Slides content per theme
   const slidesByTheme = {
     1: [
       <AMStory1_T1_Curiosity data={data} photo={p0} />,
-      <AMStory1_T1_Reveal data={data} photo={p1} />,
+      <AMStory1_T1_Reveal data={data} photos={photos} />,
       <AMStory1_T1_CTA data={data} photo={pLast} />,
     ],
     2: [
       <AMStory2_T2_Curiosity data={data} photo={p0} />,
-      <AMStory2_T2_Reveal data={data} photo={p1} />,
+      <AMStory2_T2_Reveal data={data} photos={photos} />,
       <AMStory2_T2_CTA data={data} photo={pLast} />,
     ],
     3: [
       <AMStory3_T3_Curiosity data={data} photo={p0} />,
-      <AMStory3_T3_Reveal data={data} photo={p1} />,
+      <AMStory3_T3_Reveal data={data} photos={photos} />,
       <AMStory3_T3_CTA data={data} photo={pLast} />,
     ],
   };
