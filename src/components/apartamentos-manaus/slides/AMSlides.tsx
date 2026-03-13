@@ -268,10 +268,10 @@ export const AMSpecsSlide = ({
           position: 'absolute',
           top: 0,
           left: 162,
-          width: 14,
-          height: 14,
+          width: 22,
+          height: 22,
           zIndex: 20,
-          background: 'radial-gradient(circle at 0% 100%, transparent 14px, #ffffff 14px)',
+          background: 'radial-gradient(circle at 0% 100%, transparent 22px, #ffffff 22px)',
         }}
       />
 
@@ -281,10 +281,10 @@ export const AMSpecsSlide = ({
           position: 'absolute',
           top: 58,
           left: 0,
-          width: 14,
-          height: 14,
+          width: 22,
+          height: 22,
           zIndex: 20,
-          background: 'radial-gradient(circle at 100% 0%, transparent 14px, #ffffff 14px)',
+          background: 'radial-gradient(circle at 100% 0%, transparent 22px, #ffffff 22px)',
         }}
       />
 
