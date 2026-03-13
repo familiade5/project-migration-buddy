@@ -85,17 +85,17 @@ export const AMCoverSlide = ({
         )}
       </div>
 
-      {/* ── ORANGE BADGE: white ring contour ── */}
+      {/* ── ORANGE BADGE: wider, white ring contour ── */}
       <div
         style={{
           position: 'absolute',
           top: 4,
           left: 4,
+          right: 4,
           zIndex: 20,
           backgroundColor: '#F47920',
           borderRadius: 17,
           padding: '8px 14px 9px',
-          maxWidth: 220,
           boxShadow: '0 0 0 5px #ffffff',
         }}
       >
@@ -105,7 +105,6 @@ export const AMCoverSlide = ({
         <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '5px 10px', marginTop: 5 }}>
           {data.neighborhood && (
             <span style={{ color: 'white', fontSize: 11, opacity: 0.95, display: 'flex', alignItems: 'center', gap: 3 }}>
-              {/* pin icon */}
               <svg width="9" height="11" viewBox="0 0 10 13" fill="white">
                 <path d="M5 0C2.24 0 0 2.24 0 5c0 3.75 5 8 5 8s5-4.25 5-8C10 2.24 7.76 0 5 0zm0 7c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/>
               </svg>
@@ -114,7 +113,6 @@ export const AMCoverSlide = ({
           )}
           {data.bedrooms > 0 && (
             <span style={{ color: 'white', fontSize: 11, opacity: 0.95, display: 'flex', alignItems: 'center', gap: 3 }}>
-              {/* bed icon */}
               <svg width="14" height="10" viewBox="0 0 18 12" fill="white">
                 <path d="M1 8V4a1 1 0 011-1h4a1 1 0 011 1v1h4V4a1 1 0 011-1h4a1 1 0 011 1v4H1zm0 1h16v3H1V9z"/>
               </svg>
@@ -123,7 +121,6 @@ export const AMCoverSlide = ({
           )}
           {data.area > 0 && (
             <span style={{ color: 'white', fontSize: 11, opacity: 0.95, display: 'flex', alignItems: 'center', gap: 3 }}>
-              {/* area icon */}
               <svg width="11" height="11" viewBox="0 0 12 12" fill="white">
                 <path d="M0 0v5l2-2 3 3 2-2-3-3 2-2H0zm12 12V7l-2 2-3-3-2 2 3 3-2 2h6z"/>
               </svg>
@@ -133,12 +130,11 @@ export const AMCoverSlide = ({
         </div>
       </div>
 
-      {/* ── WHITE LOGO: sits ON the photo, bottom-left quadrant ── */}
-      {/* bottom=88 puts it at y=272 which is inside the photo (photo ends at y=278) */}
+      {/* ── WHITE LOGO: bottom-left footer, on the photo ── */}
       <div
         style={{
           position: 'absolute',
-          bottom: 88,
+          bottom: 18,
           left: 18,
           zIndex: 20,
         }}
