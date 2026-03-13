@@ -1,5 +1,7 @@
+import { useId } from 'react';
 import { AMPropertyData } from '@/types/apartamentosManaus';
 import logoAM from '@/assets/logo-apartamentos-manaus.png';
+
 
 // ─── Logo ────────────────────────────────────────────────────────────────────
 export const AMLogo = ({
