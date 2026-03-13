@@ -60,7 +60,8 @@ export const AMCoverSlide = ({
     'Q 352 284 334 284',      // smooth curve into blue card notch top-right corner
     'H 192',                  // across notch top, stop 18px before notch left (x=174)
     'Q 174 284 174 302',      // smooth curve into blue card notch left side
-    'V 352',                  // down to bottom edge (bottom-right corner fully carved)
+    'V 330',                  // down notch left wall, stop 22px above bottom
+    'A 22 22 0 0 1 152 352',  // round inner bottom corner (r=22, CW) — grey area rounded
     'H 30',                   // left along bottom edge
     'A 22 22 0 0 1 8 330',    // bottom-left outer corner (r=22)
     'V 84',                   // up left edge to badge notch start (y=66+18=84)
