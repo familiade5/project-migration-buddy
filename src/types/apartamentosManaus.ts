@@ -74,9 +74,9 @@ export const defaultAMPropertyData: AMPropertyData = {
   condominiumFee: 0,
   condoIncludes: '',
   iptu: 0,
-  brokerName: '',
-  brokerPhone: '',
-  creci: '',
+  brokerName: 'Iury Sampaio',
+  brokerPhone: '(92) 98839-1098',
+  creci: 'CRECI 14851 MS PJ',
   highlights: [],
   infoMessage: '',
 };

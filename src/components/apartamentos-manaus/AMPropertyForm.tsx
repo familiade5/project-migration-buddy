@@ -32,12 +32,6 @@ export function AMPropertyForm({ data, onChange }: AMPropertyFormProps) {
   const set = (field: keyof AMPropertyData, value: unknown) =>
     onChange({ ...data, [field]: value });
 
-  const setHighlight = (index: number, value: string) => {
-    const hl = [...data.highlights];
-    hl[index] = value;
-    onChange({ ...data, highlights: hl });
-  };
-
   return (
     <div className="space-y-6">
       {/* Identificação */}
@@ -130,35 +124,17 @@ export function AMPropertyForm({ data, onChange }: AMPropertyFormProps) {
 
       {/* Valores */}
       <Section title="Valores" color="#F47920">
-        <div className="flex items-center gap-2 mb-2">
-          <Switch className={switchClass} checked={data.isRental} onCheckedChange={(v) => set('isRental', v)} />
-          <Label className="text-sm text-gray-600">É locação (aluguel)?</Label>
-        </div>
-
-        {data.isRental ? (
+        <div className="space-y-3">
           <div className="space-y-1">
-            <Label className={labelClass}>Valor do Aluguel (R$)</Label>
+            <Label className={labelClass}>Preço de Venda (R$)</Label>
             <Input className={inputClass} type="number" placeholder="0"
-              value={data.rentalPrice || ''} onChange={(e) => set('rentalPrice', Number(e.target.value))} />
+              value={data.salePrice || ''} onChange={(e) => set('salePrice', Number(e.target.value))} />
           </div>
-        ) : (
-          <div className="space-y-3">
-            <div className="space-y-1">
-              <Label className={labelClass}>Preço de Venda (R$)</Label>
-              <Input className={inputClass} type="number" placeholder="0"
-                value={data.salePrice || ''} onChange={(e) => set('salePrice', Number(e.target.value))} />
-            </div>
-            <div className="space-y-1">
-              <Label className={labelClass}>Subsídio Governo (R$)</Label>
-              <Input className={inputClass} type="number" placeholder="0"
-                value={data.subsidy || ''} onChange={(e) => set('subsidy', Number(e.target.value))} />
-            </div>
-            <div className="flex items-center gap-2">
-              <Switch className={switchClass} checked={data.acceptsFinancing} onCheckedChange={(v) => set('acceptsFinancing', v)} />
-              <Label className="text-sm text-gray-600">Aceita financiamento</Label>
-            </div>
+          <div className="flex items-center gap-2">
+            <Switch className={switchClass} checked={data.acceptsFinancing} onCheckedChange={(v) => set('acceptsFinancing', v)} />
+            <Label className="text-sm text-gray-600">Aceita financiamento</Label>
           </div>
-        )}
+        </div>
 
         <div className="grid grid-cols-2 gap-3 pt-1">
           <div className="space-y-1">
@@ -193,23 +169,10 @@ export function AMPropertyForm({ data, onChange }: AMPropertyFormProps) {
               value={data.brokerPhone} onChange={(e) => set('brokerPhone', e.target.value)} />
           </div>
           <div className="col-span-2 space-y-1">
-            <Label className={labelClass}>CRECI</Label>
-            <Input className={inputClass} placeholder="Ex: 3968 PF"
+            <Label className={labelClass}>CRECI <span className="text-gray-400 normal-case font-normal">(editável)</span></Label>
+            <Input className={inputClass} placeholder="Ex: CRECI 14851 MS PJ"
               value={data.creci} onChange={(e) => set('creci', e.target.value)} />
           </div>
-        </div>
-      </Section>
-
-      {/* Destaques */}
-      <Section title="Destaques do Imóvel (Slide Informativo)" color="#F47920">
-        <p className="text-xs text-gray-400">Até 6 itens. Deixe vazio para usar padrões.</p>
-        <div className="space-y-2">
-          {Array.from({ length: 6 }).map((_, i) => (
-            <Input key={i} className={inputClass}
-              placeholder={`Destaque ${i + 1} (ex: ✅ Área de lazer completa)`}
-              value={data.highlights[i] || ''}
-              onChange={(e) => setHighlight(i, e.target.value)} />
-          ))}
         </div>
       </Section>
 
