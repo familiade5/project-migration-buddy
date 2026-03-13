@@ -257,16 +257,37 @@ export const AMSpecsSlide = ({
   return (
     <div style={{ position: 'relative', width: 360, height: 360, backgroundColor: '#ffffff', fontFamily: 'Arial, sans-serif', overflow: 'hidden' }}>
 
-      {/* ── Hidden SVG: defines the single custom clip shape ── */}
-      <svg width="0" height="0" style={{ position: 'absolute', overflow: 'hidden' }}>
+      {/*
+        Render the image inside an inline SVG using a <clipPath> whose path lives
+        in the SAME SVG coordinate space as the <image> element. This guarantees
+        all corners — including top-right — are rendered exactly as drawn,
+        with no CSS clip-path cross-element reference issues.
+      */}
+      <svg
+        width="360"
+        height="360"
+        viewBox="0 0 360 360"
+        style={{ position: 'absolute', top: 0, left: 0, zIndex: 10 }}
+      >
         <defs>
-          <clipPath id="am-specs-photo-clip" clipPathUnits="userSpaceOnUse">
+          <clipPath id="am-specs-shape">
             <path d={shapePath} />
           </clipPath>
+          {photo && (
+            <pattern id="am-specs-img" patternUnits="userSpaceOnUse" width="360" height="360">
+              <image href={photo} x="0" y="0" width="360" height="360" preserveAspectRatio="xMidYMid slice" />
+            </pattern>
+          )}
         </defs>
+        {/* Single shape filled with the photo (or grey placeholder) */}
+        <path
+          d={shapePath}
+          fill={photo ? 'url(#am-specs-img)' : '#d1d5db'}
+          clipPath="url(#am-specs-shape)"
+        />
       </svg>
 
-      {/* ── Logo card — occupies the notch space carved into the image ── */}
+      {/* ── Logo card — sits in the notch, below the SVG layer (z-index 5) ── */}
       <div style={{
         position: 'absolute',
         top: 4,
@@ -283,22 +304,6 @@ export const AMSpecsSlide = ({
         boxSizing: 'border-box',
       }}>
         <AMLogo width={140} variant="color" />
-      </div>
-
-      {/* ── Image clipped to the single custom shape ── */}
-      <div style={{
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        width: 360,
-        height: 360,
-        clipPath: 'url(#am-specs-photo-clip)',
-        zIndex: 10,
-      }}>
-        {photo
-          ? <img src={photo} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
-          : <div style={{ width: '100%', height: '100%', backgroundColor: '#d1d5db' }} />
-        }
       </div>
 
       {/* ── Specs card ── */}
