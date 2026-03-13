@@ -77,8 +77,7 @@ function buildCaption(data: AMPropertyData): string {
 
   // Contact
   if (data.brokerName) {
-    const creciStr = data.creci ? ` - Creci ${data.creci}` : '';
-    lines.push(`👨🏽‍💼 ${data.brokerName} | Corretor de Imóveis${creciStr}`);
+    lines.push(`👨🏽‍💼 ${data.brokerName} | Corretor de Imóveis - Creci 3968 PF`);
   }
   if (data.brokerPhone) {
     lines.push(`🖊 ${data.brokerPhone} (whatsapp)`);
