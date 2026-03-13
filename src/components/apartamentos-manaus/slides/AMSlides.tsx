@@ -241,7 +241,7 @@ export const AMSpecsSlide = ({
   // The top edge (168→330 at y=8) is the LAST segment before Z.
   const shapePath = [
     'M 330 8',               // start directly at top-right arc entry
-    'A 22 22 0 0 1 352 30',  // top-right outer corner (r=22) — no straight before it
+    'A 22 22 0 0 1 352 30',  // top-right outer corner (r=22)
     'V 330',                 // right edge downward
     'A 22 22 0 0 1 330 352', // bottom-right outer corner (r=22)
     'H 30',                  // bottom edge leftward
@@ -250,7 +250,8 @@ export const AMSpecsSlide = ({
     'Q 8 80 26 80',          // smooth concave curve into notch bottom-left
     'H 150',                 // notch bottom rightward
     'Q 168 80 168 62',       // smooth convex curve up notch bottom-right
-    'V 8',                   // up notch right edge to top
+    'V 30',                  // up notch right edge — stop 22px before top
+    'A 22 22 0 0 0 190 8',   // round the top-notch corner (r=22, CCW) ← new
     'H 330',                 // top edge back to arc start
     'Z',
   ].join(' ');
