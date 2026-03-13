@@ -311,9 +311,9 @@ export const AMStory2_T2_CTA = ({
     {/* Blue vertical stripe left */}
     <div style={{ position: 'absolute', left: 0, top: 0, width: 6, height: '100%', backgroundColor: '#1B5EA6', zIndex: 5 }} />
 
-    {/* ── Top section — laranja grande com foto de fundo, 50% ── */}
+    {/* ── Top section — laranja grande com foto de fundo, 55% ── */}
     <div style={{
-      position: 'absolute', top: 0, left: 6, right: 0, height: '50%',
+      position: 'absolute', top: 0, left: 6, right: 0, height: '55%',
       backgroundColor: '#F47920', overflow: 'hidden',
     }}>
       {/* Foto de fundo com overlay laranja */}
@@ -328,27 +328,30 @@ export const AMStory2_T2_CTA = ({
         position: 'absolute', inset: 0,
         background: 'linear-gradient(145deg, rgba(244,121,32,0.75) 0%, rgba(200,80,0,0.85) 100%)',
       }} />
-      {/* Texto do cabeçalho */}
+      {/* Logo no topo centralizada + texto abaixo */}
       <div style={{
         position: 'absolute', inset: 0,
         display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-        padding: '24px 28px', zIndex: 10,
+        padding: '18px 28px 20px', zIndex: 10, gap: 14,
       }}>
-        <p style={{ color: 'rgba(255,255,255,0.9)', fontSize: 13, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', margin: '0 0 10px', textAlign: 'center' }}>
-          Pronto para mudar?
-        </p>
-        <p style={{ color: 'white', fontSize: 32, fontWeight: 900, textAlign: 'center', lineHeight: 1.15, margin: 0, textShadow: '0 2px 12px rgba(0,0,0,0.3)' }}>
-          Realize o seu<br />sonho agora!
-        </p>
+        {/* Logo centralizada no topo da área laranja */}
+        <div style={{ backgroundColor: 'rgba(255,255,255,0.15)', borderRadius: 10, padding: '6px 14px' }}>
+          <Logo variant="white" />
+        </div>
+        {/* Texto */}
+        <div style={{ textAlign: 'center' }}>
+          <p style={{ color: 'rgba(255,255,255,0.9)', fontSize: 12, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', margin: '0 0 8px' }}>
+            Pronto para mudar?
+          </p>
+          <p style={{ color: 'white', fontSize: 30, fontWeight: 900, textAlign: 'center', lineHeight: 1.15, margin: 0, textShadow: '0 2px 12px rgba(0,0,0,0.3)' }}>
+            Realize o seu<br />sonho agora!
+          </p>
+        </div>
       </div>
     </div>
 
     {/* ── Bottom section — branco, conteúdo de contato ── */}
-    <div style={{ position: 'absolute', top: '50%', left: 6, right: 0, bottom: 0, padding: '18px 22px 0' }}>
-      {/* Logo */}
-      <div style={{ marginBottom: 14 }}>
-        <Logo variant="color" />
-      </div>
+    <div style={{ position: 'absolute', top: '55%', left: 6, right: 0, bottom: 0, padding: '14px 22px 0' }}>
 
       {/* Broker card */}
       <div style={{

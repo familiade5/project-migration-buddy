@@ -110,29 +110,29 @@ export const AMCoverSlide = ({
         <p style={{ color: 'white', fontWeight: 700, fontSize: 15, lineHeight: 1.25, margin: 0 }}>
           {data.title || 'Nome do Imóvel'}
         </p>
-        <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '5px 10px', marginTop: 5 }}>
+        <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'nowrap', gap: '3px 7px', marginTop: 5 }}>
           {data.neighborhood && (
-            <span style={{ color: 'white', fontSize: 11, opacity: 0.95, display: 'flex', alignItems: 'center', gap: 3 }}>
-              <svg width="9" height="11" viewBox="0 0 10 13" fill="white">
+            <span style={{ color: 'white', fontSize: 10, opacity: 0.95, display: 'flex', alignItems: 'center', gap: 2, whiteSpace: 'nowrap' }}>
+              <svg width="8" height="10" viewBox="0 0 10 13" fill="white">
                 <path d="M5 0C2.24 0 0 2.24 0 5c0 3.75 5 8 5 8s5-4.25 5-8C10 2.24 7.76 0 5 0zm0 7c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/>
               </svg>
               {data.neighborhood}
             </span>
           )}
           {data.bedrooms > 0 && (
-            <span style={{ color: 'white', fontSize: 11, opacity: 0.95, display: 'flex', alignItems: 'center', gap: 3 }}>
-              <svg width="14" height="10" viewBox="0 0 18 12" fill="white">
+            <span style={{ color: 'white', fontSize: 10, opacity: 0.95, display: 'flex', alignItems: 'center', gap: 2, whiteSpace: 'nowrap' }}>
+              <svg width="12" height="9" viewBox="0 0 18 12" fill="white">
                 <path d="M1 8V4a1 1 0 011-1h4a1 1 0 011 1v1h4V4a1 1 0 011-1h4a1 1 0 011 1v4H1zm0 1h16v3H1V9z"/>
               </svg>
-              {data.bedrooms} {data.bedrooms === 1 ? 'Quarto' : 'Quartos'}
+              {data.bedrooms} {data.bedrooms === 1 ? 'Qto' : 'Qtos'}
             </span>
           )}
           {data.area > 0 && (
-            <span style={{ color: 'white', fontSize: 11, opacity: 0.95, display: 'flex', alignItems: 'center', gap: 3 }}>
-              <svg width="11" height="11" viewBox="0 0 12 12" fill="white">
+            <span style={{ color: 'white', fontSize: 10, opacity: 0.95, display: 'flex', alignItems: 'center', gap: 2, whiteSpace: 'nowrap' }}>
+              <svg width="10" height="10" viewBox="0 0 12 12" fill="white">
                 <path d="M0 0v5l2-2 3 3 2-2-3-3 2-2H0zm12 12V7l-2 2-3-3-2 2 3 3-2 2h6z"/>
               </svg>
-              {data.area} m²
+              {data.area}m²
             </span>
           )}
         </div>
