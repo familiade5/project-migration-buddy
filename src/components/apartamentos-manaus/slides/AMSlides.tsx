@@ -41,6 +41,9 @@ export const AMCoverSlide = ({
   data: AMPropertyData;
   photo?: string;
 }) => {
+  const uid = useId();
+  const clipId = `am-cover-${uid}`;
+
   const price = data.isRental ? data.rentalPrice : data.salePrice;
   const priceLabel = data.isRental ? 'LOCAÇÃO' : 'VENDA';
   const paymentParts = data.isRental
@@ -51,31 +54,24 @@ export const AMCoverSlide = ({
       ].filter(Boolean) as string[];
   const paymentLine = paymentParts.join(' | ');
 
-  // Photo container shape: rounded rect (r=22) with notch carved for the orange badge.
-  // Badge: top:4, left:4, width:210, estimated height ~56px.
-  // Notch: x 8→218, y 8→66. Q curves (r≈18) at notch corners.
-  // Inner corner at (218, 8) rounded with A r=22 sweep=1 — same treatment as slide 2.
-  // Path starts at (352,266) — arc start = notch top (288) − r (22) = 266.
-  // Card with bottom=4: top≈293, shadow top≈288. Notch H at y=288 aligns perfectly.
-  // Z closes back (352,30)→(352,266) = right wall, no segment before arc.
   const shapePath = [
-    'M 352 246',              // arc start: moved up 10px (256→246)
-    'A 22 22 0 0 1 330 268',  // CW concave r=22 — end also moved up 10px (278→268)
-    'H 192',                  // card notch top at y=268
-    'Q 174 268 174 286',      // smooth curve into card notch left side (shifted up 10px)
-    'V 334',                  // down notch left wall
-    'A 22 22 0 0 1 152 352',  // round inner bottom corner (r=22)
-    'H 30',                   // bottom edge
-    'A 22 22 0 0 1 8 330',    // bottom-left outer corner (r=22)
-    'V 84',                   // left wall up to badge notch
-    'Q 8 66 26 66',           // badge notch bottom-left curve
-    'H 200',                  // badge notch bottom
-    'Q 218 66 218 48',        // badge notch bottom-right curve
-    'V 30',                   // badge right wall up
-    'A 22 22 0 0 1 240 8',    // badge inner top corner (r=22)
-    'H 330',                  // top edge rightward
-    'A 22 22 0 0 1 352 30',   // top-right outer corner (r=22)
-    'Z',                      // right wall: (352,30)→(352,256)
+    'M 352 246',
+    'A 22 22 0 0 1 330 268',
+    'H 192',
+    'Q 174 268 174 286',
+    'V 334',
+    'A 22 22 0 0 1 152 352',
+    'H 30',
+    'A 22 22 0 0 1 8 330',
+    'V 84',
+    'Q 8 66 26 66',
+    'H 200',
+    'Q 218 66 218 48',
+    'V 30',
+    'A 22 22 0 0 1 240 8',
+    'H 330',
+    'A 22 22 0 0 1 352 30',
+    'Z',
   ].join(' ');
 
   return (
@@ -92,7 +88,7 @@ export const AMCoverSlide = ({
       {/* ── clipPath definition ── */}
       <svg aria-hidden="true" style={{ position: 'absolute', width: 0, height: 0, overflow: 'hidden' }}>
         <defs>
-          <clipPath id="am-cover-photo-clip" clipPathUnits="userSpaceOnUse">
+          <clipPath id={clipId} clipPathUnits="userSpaceOnUse">
             <path d={shapePath} />
           </clipPath>
         </defs>
