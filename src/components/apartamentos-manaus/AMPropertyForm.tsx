@@ -49,6 +49,11 @@ export function AMPropertyForm({ data, onChange }: AMPropertyFormProps) {
               <SelectContent>{propertyTypes.map((t) => <SelectItem key={t} value={t}>{t}</SelectItem>)}</SelectContent>
             </Select>
           </div>
+          <div className="space-y-1">
+            <Label className={labelClass}>Bairro <span className="text-gray-400 normal-case font-normal">(aparece na capa)</span></Label>
+            <Input className={inputClass} placeholder="Ex: Tarumã"
+              value={data.neighborhood} onChange={(e) => set('neighborhood', e.target.value)} />
+          </div>
           <div className="col-span-2 space-y-1">
             <Label className={labelClass}>Endereço (Rua)</Label>
             <Input className={inputClass} placeholder="Ex: Rua Peixe Cavalo"

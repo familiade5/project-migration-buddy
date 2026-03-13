@@ -360,8 +360,10 @@ export const AMSpecsSlide = ({
       {specs.length > 0 && (
         <div style={{
           position: 'absolute', bottom: 22, right: 22, zIndex: 20,
-          backgroundColor: 'rgba(17,24,39,0.75)', backdropFilter: 'blur(6px)',
+          backgroundColor: 'rgba(0,0,0,0.28)', backdropFilter: 'blur(12px)',
+          WebkitBackdropFilter: 'blur(12px)',
           borderRadius: 12, padding: '7px 12px', maxWidth: 155,
+          border: '1px solid rgba(255,255,255,0.08)',
         }}>
           {specs.map((spec, i) => (
             <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 4, marginBottom: i < specs.length - 1 ? 2 : 0 }}>
@@ -389,9 +391,8 @@ export const AMLocationSlide = ({
   const uid = useId();
   const clipId = `am-location-${uid}`;
 
-  const address = [data.address, data.neighborhood, `${data.city} - ${data.state}`]
-    .filter(Boolean)
-    .join(', ');
+  // Apenas o endereço digitado — cidade/estado e bairro NÃO são adicionados automaticamente
+  const address = data.address || '';
 
   // Clip path com DOIS nichos: superior-esquerdo (card azul) e inferior-direito (card logo).
   // Notch azul: x 14→170, y 14→172. Notch logo: x 210→346, y 282→346.
