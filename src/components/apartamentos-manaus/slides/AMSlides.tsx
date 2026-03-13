@@ -263,6 +263,12 @@ export const AMSpecsSlide = ({
         all corners — including top-right — are rendered exactly as drawn,
         with no CSS clip-path cross-element reference issues.
       */}
+      {/*
+        Use <image clipPath> — the standard SVG idiom.
+        <image> covers the full 360×360 canvas; clipPath restricts it to
+        the custom notch shape. Both live in the same SVG coordinate space
+        so all corners, including top-right, render with correct anti-aliasing.
+      */}
       <svg
         width="360"
         height="360"
@@ -273,18 +279,23 @@ export const AMSpecsSlide = ({
           <clipPath id="am-specs-shape">
             <path d={shapePath} />
           </clipPath>
-          {photo && (
-            <pattern id="am-specs-img" patternUnits="userSpaceOnUse" width="360" height="360">
-              <image href={photo} x="0" y="0" width="360" height="360" preserveAspectRatio="xMidYMid slice" />
-            </pattern>
-          )}
         </defs>
-        {/* Single shape filled with the photo (or grey placeholder) */}
-        <path
-          d={shapePath}
-          fill={photo ? 'url(#am-specs-img)' : '#d1d5db'}
-          clipPath="url(#am-specs-shape)"
-        />
+        {photo ? (
+          <image
+            href={photo}
+            x="0" y="0"
+            width="360" height="360"
+            preserveAspectRatio="xMidYMid slice"
+            clipPath="url(#am-specs-shape)"
+          />
+        ) : (
+          <rect
+            x="0" y="0"
+            width="360" height="360"
+            fill="#d1d5db"
+            clipPath="url(#am-specs-shape)"
+          />
+        )}
       </svg>
 
       {/* ── Logo card — sits in the notch, below the SVG layer (z-index 5) ── */}
