@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { toPng } from 'html-to-image';
 import JSZip from 'jszip';
 import { Download, ChevronLeft, ChevronRight, Loader2, Square, Smartphone } from 'lucide-react';
