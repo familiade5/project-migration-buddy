@@ -1,8 +1,28 @@
 import { AMPropertyData } from '@/types/apartamentosManaus';
-import { AMLogoSVG, AMWatermark } from '../AMLogo';
-import { formatCurrency } from '@/lib/formatCurrency';
+import logoAM from '@/assets/logo-apartamentos-manaus.png';
 
-// ─── Slide 1: Capa com preço ────────────────────────────────────────────────
+// ─── Shared logo component ───────────────────────────────────────────────────
+export const AMLogo = ({
+  width = 120,
+  variant = 'color',
+}: {
+  width?: number;
+  variant?: 'color' | 'white';
+}) => (
+  <img
+    src={logoAM}
+    alt="Apartamentos Manaus"
+    width={width}
+    style={variant === 'white' ? { filter: 'brightness(0) invert(1)' } : undefined}
+  />
+);
+
+// ─── Slide 1: CAPA ──────────────────────────────────────────────────────────
+// Reference: Capa_png.png
+// - Orange rounded badge top-left (name, neighborhood, bedrooms, area)
+// - Full photo background
+// - White logo bottom-left (semi-transparent)
+// - Blue rounded price card bottom-right (VENDA badge, price, payment method)
 export const AMCoverSlide = ({
   data,
   photo,
@@ -12,136 +32,225 @@ export const AMCoverSlide = ({
 }) => {
   const price = data.isRental ? data.rentalPrice : data.salePrice;
   const priceLabel = data.isRental ? 'LOCAÇÃO' : 'VENDA';
-  const paymentLabel = data.isRental
+  const paymentLine = data.isRental
     ? 'Locação'
-    : data.acceptsFinancing
-    ? 'À vista | Aceita financiamento'
-    : 'À vista';
+    : [
+        data.acceptsFinancing && 'Aceita financiamento',
+        data.acceptsFGTS && 'Aceita FGTS',
+      ]
+        .filter(Boolean)
+        .join(' | ') || 'À vista';
 
   return (
     <div
-      className="relative overflow-hidden flex flex-col"
-      style={{ width: 360, height: 360, backgroundColor: '#1B5EA6', fontFamily: 'Arial, sans-serif' }}
+      className="relative overflow-hidden"
+      style={{ width: 360, height: 360, fontFamily: 'Arial, sans-serif', backgroundColor: '#1B5EA6' }}
     >
       {/* Background photo */}
       {photo && (
-        <div
-          className="absolute inset-0"
-          style={{
-            backgroundImage: `url(${photo})`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-          }}
+        <img
+          src={photo}
+          alt=""
+          className="absolute inset-0 w-full h-full object-cover"
         />
       )}
-      {/* Dark overlay */}
-      <div className="absolute inset-0" style={{ backgroundColor: 'rgba(0,0,0,0.35)' }} />
 
-      {/* Top orange banner */}
+      {/* Orange info badge – top left */}
       <div
-        className="absolute top-0 left-0 right-0 z-10 px-3 py-2"
-        style={{ backgroundColor: '#F47920' }}
+        className="absolute top-3 left-3 z-10 px-3 py-2 rounded-2xl"
+        style={{ backgroundColor: '#F47920', maxWidth: 220 }}
       >
-        <p className="text-white font-bold text-sm truncate leading-tight">
+        <p className="text-white font-bold text-sm leading-tight truncate">
           {data.title || 'Nome do Imóvel'}
         </p>
-        <div className="flex items-center gap-3 text-white text-xs opacity-90 mt-0.5">
-          {data.bedrooms > 0 && <span>🛏 {data.bedrooms} {data.bedrooms === 1 ? 'quarto' : 'quartos'}</span>}
-          {data.area > 0 && <span>📐 {data.area} m²</span>}
-          {data.neighborhood && <span>📍 {data.neighborhood}</span>}
+        <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 mt-1">
+          {data.neighborhood && (
+            <span className="flex items-center gap-0.5 text-white text-xs opacity-90">
+              <svg width="10" height="12" viewBox="0 0 10 12" fill="white">
+                <path d="M5 0C2.24 0 0 2.24 0 5c0 3.75 5 7 5 7s5-3.25 5-7c0-2.76-2.24-5-5-5zm0 6.5C4.17 6.5 3.5 5.83 3.5 5S4.17 3.5 5 3.5 6.5 4.17 6.5 5 5.83 6.5 5 6.5z"/>
+              </svg>
+              {data.neighborhood}
+            </span>
+          )}
+          {data.bedrooms > 0 && (
+            <span className="text-white text-xs opacity-90">
+              🛏 {data.bedrooms} {data.bedrooms === 1 ? 'Quarto' : 'Quartos'}
+            </span>
+          )}
+          {data.area > 0 && (
+            <span className="text-white text-xs opacity-90">
+              📐 {data.area} m²
+            </span>
+          )}
         </div>
       </div>
 
-      {/* Bottom price section */}
-      <div className="absolute bottom-0 left-0 right-0 z-10 flex items-end">
-        {/* Logo bottom-left */}
-        <div className="flex-1 p-3">
-          <AMLogoSVG width={110} variant="white" />
-        </div>
-        {/* Price badge */}
+      {/* Bottom-left: white logo */}
+      <div className="absolute bottom-3 left-3 z-10" style={{ opacity: 0.85 }}>
+        <AMLogo width={100} variant="white" />
+      </div>
+
+      {/* Bottom-right: Blue price card */}
+      <div
+        className="absolute bottom-3 right-3 z-10 px-4 py-3 rounded-2xl"
+        style={{ backgroundColor: '#1B5EA6', minWidth: 140 }}
+      >
+        {/* VENDA/LOCAÇÃO badge */}
         <div
-          className="rounded-tl-2xl px-4 py-3 text-right"
-          style={{ backgroundColor: '#1B5EA6', minWidth: 150 }}
+          className="inline-block text-white text-xs font-bold px-2 py-0.5 rounded-full mb-1"
+          style={{ backgroundColor: 'rgba(255,255,255,0.25)', border: '1px solid rgba(255,255,255,0.4)' }}
         >
-          <div
-            className="text-xs font-bold px-2 py-0.5 rounded-full inline-block mb-1"
-            style={{ backgroundColor: '#F47920', color: 'white' }}
-          >
-            {priceLabel}
-          </div>
-          <div className="text-white font-bold text-lg leading-tight">
-            {price > 0 ? formatCurrency(price) : 'Consulte'}
-          </div>
-          <div className="text-white text-xs opacity-80 mt-0.5">{paymentLabel}</div>
+          {priceLabel}
         </div>
+
+        {/* Price */}
+        {price > 0 ? (
+          <div className="text-white">
+            <span className="text-xs opacity-70">R$</span>
+            {' '}
+            <span className="text-xl font-bold leading-tight">
+              {price.toLocaleString('pt-BR').replace(',', '.')}
+            </span>
+            <span className="text-xs opacity-70">,00</span>
+          </div>
+        ) : (
+          <div className="text-white font-bold text-lg">Consulte</div>
+        )}
+
+        {/* Payment label */}
+        <p className="text-white text-xs opacity-80 mt-0.5 leading-tight">{paymentLine}</p>
       </div>
     </div>
   );
 };
 
-// ─── Slide 2: Detalhes / Ficha Técnica ──────────────────────────────────────
-export const AMDetailsSlide = ({ data }: { data: AMPropertyData }) => {
-  const specs = [
-    data.bedrooms > 0 && { icon: '🛏', label: 'Quartos', value: String(data.bedrooms) },
-    data.suites > 0 && { icon: '🛁', label: 'Suítes', value: String(data.suites) },
-    data.bathrooms > 0 && { icon: '🚿', label: 'Banheiros', value: String(data.bathrooms) },
-    data.area > 0 && { icon: '📐', label: 'Área', value: `${data.area} m²` },
-    data.garageSpaces > 0 && { icon: '🚗', label: 'Vagas', value: String(data.garageSpaces) },
-    data.floor && { icon: '🏢', label: 'Andar', value: data.floor },
-    data.furnished && { icon: '🛋', label: 'Mobiliado', value: 'Sim' },
-    data.condominiumFee > 0 && { icon: '💰', label: 'Condomínio', value: formatCurrency(data.condominiumFee) },
-    data.iptu > 0 && { icon: '📋', label: 'IPTU', value: formatCurrency(data.iptu) },
-  ].filter(Boolean) as { icon: string; label: string; value: string }[];
+// ─── Slide 2: ESPECIFICAÇÕES ─────────────────────────────────────────────────
+// Reference: slide_2.png
+// - Color logo top-left on white rounded panel
+// - Full photo background
+// - Dark rounded specs box bottom-right with bullet list
+export const AMSpecsSlide = ({
+  data,
+  photo,
+}: {
+  data: AMPropertyData;
+  photo?: string;
+}) => {
+  const specs: string[] = [
+    data.bedrooms > 0 ? `${data.bedrooms} quarto${data.bedrooms > 1 ? 's' : ''}` : '',
+    ...(data.rooms ? data.rooms.split('\n').filter(Boolean) : []),
+    data.garageSpaces > 0 ? `${data.garageSpaces} vaga${data.garageSpaces > 1 ? 's' : ''} de garagem` : '',
+    data.floor ? `${data.floor}° andar` : '',
+    data.area > 0 ? `${data.area}m²` : '',
+    data.suites > 0 ? `${data.suites} suíte${data.suites > 1 ? 's' : ''}` : '',
+  ].filter(Boolean).slice(0, 6);
 
   return (
     <div
-      className="relative overflow-hidden flex flex-col"
-      style={{ width: 360, height: 360, backgroundColor: '#FFFFFF', fontFamily: 'Arial, sans-serif' }}
+      className="relative overflow-hidden"
+      style={{ width: 360, height: 360, fontFamily: 'Arial, sans-serif', backgroundColor: '#f0f0f0' }}
     >
-      {/* Blue top bar */}
+      {/* Full photo */}
+      {photo && (
+        <img src={photo} alt="" className="absolute inset-0 w-full h-full object-cover" />
+      )}
+
+      {/* Top-left: white logo panel */}
       <div
-        className="px-5 py-3 flex items-center gap-2"
-        style={{ backgroundColor: '#1B5EA6' }}
+        className="absolute top-3 left-3 z-10 px-3 py-2 rounded-2xl"
+        style={{ backgroundColor: 'rgba(255,255,255,0.92)' }}
       >
-        <AMLogoSVG width={120} variant="white" />
-        <div className="flex-1" />
-        <span className="text-white text-xs font-semibold opacity-80">{data.propertyType}</span>
+        <AMLogo width={90} variant="color" />
       </div>
 
-      {/* Title */}
-      <div className="px-5 py-3 border-b border-gray-100">
-        <h2 className="font-bold text-base leading-tight" style={{ color: '#1B5EA6' }}>
-          {data.title || 'Nome do Imóvel'}
-        </h2>
-        {data.neighborhood && (
-          <p className="text-xs text-gray-500 mt-0.5">
-            📍 {data.neighborhood}, {data.city} - {data.state}
-          </p>
-        )}
-      </div>
-
-      {/* Specs grid */}
-      <div className="flex-1 p-4 grid grid-cols-3 gap-2 content-start">
-        {specs.slice(0, 9).map((spec, i) => (
-          <div
-            key={i}
-            className="flex flex-col items-center justify-center rounded-xl p-2 text-center"
-            style={{ backgroundColor: '#F0F6FF', minHeight: 64 }}
-          >
-            <span className="text-xl">{spec.icon}</span>
-            <span className="text-xs text-gray-500 mt-0.5">{spec.label}</span>
-            <span className="text-sm font-bold" style={{ color: '#1B5EA6' }}>{spec.value}</span>
-          </div>
-        ))}
-      </div>
-
-      {/* Orange bottom accent */}
-      <div className="h-1.5" style={{ backgroundColor: '#F47920' }} />
+      {/* Bottom-right: dark specs box */}
+      {specs.length > 0 && (
+        <div
+          className="absolute bottom-3 right-3 z-10 px-4 py-3 rounded-2xl"
+          style={{
+            backgroundColor: 'rgba(31, 41, 55, 0.88)',
+            backdropFilter: 'blur(4px)',
+            maxWidth: 180,
+          }}
+        >
+          {specs.map((spec, i) => (
+            <div key={i} className="flex items-start gap-1.5 mb-0.5 last:mb-0">
+              <span className="text-white text-xs opacity-60 mt-0.5">•</span>
+              <span className="text-white text-xs leading-snug">{spec}</span>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 };
 
-// ─── Slide 3: Foto individual ────────────────────────────────────────────────
+// ─── Slide 3: LOCALIZAÇÃO ────────────────────────────────────────────────────
+// Reference: Slide_3.png
+// - Blue rounded card top-left (title + address + CTA)
+// - Photo occupies bottom half and right
+// - White logo card bottom-right
+export const AMLocationSlide = ({
+  data,
+  photo,
+}: {
+  data: AMPropertyData;
+  photo?: string;
+}) => {
+  const address = [data.address, data.neighborhood, `${data.city} - ${data.state}`]
+    .filter(Boolean)
+    .join(', ');
+
+  return (
+    <div
+      className="relative overflow-hidden"
+      style={{ width: 360, height: 360, fontFamily: 'Arial, sans-serif', backgroundColor: '#e5e7eb' }}
+    >
+      {/* Photo – bottom half */}
+      {photo && (
+        <div className="absolute inset-0">
+          <img src={photo} alt="" className="w-full h-full object-cover" />
+        </div>
+      )}
+
+      {/* Top-left: blue info card */}
+      <div
+        className="absolute top-3 left-3 z-10 px-4 py-3 rounded-2xl"
+        style={{ backgroundColor: '#1B5EA6', maxWidth: 190 }}
+      >
+        <p className="text-white font-bold text-sm leading-snug mb-1">
+          {data.title || 'Imóveis bem localizados em Manaus'}
+        </p>
+        {address && (
+          <p className="text-white text-xs opacity-80 leading-snug mb-2">{address}</p>
+        )}
+        {data.referencePoint && (
+          <p className="text-white text-xs opacity-70 leading-snug mb-2">{data.referencePoint}</p>
+        )}
+        <div
+          className="flex items-center gap-1 px-2 py-1 rounded-full text-xs text-white border border-white/40"
+          style={{ backgroundColor: 'rgba(255,255,255,0.15)', width: 'fit-content' }}
+        >
+          <span>Arraste para o lado</span>
+          <span>→</span>
+        </div>
+      </div>
+
+      {/* Bottom-right: white logo card */}
+      <div
+        className="absolute bottom-3 right-3 z-10 px-3 py-2 rounded-2xl flex items-center gap-2"
+        style={{ backgroundColor: 'rgba(255,255,255,0.92)' }}
+      >
+        <AMLogo width={80} variant="color" />
+      </div>
+    </div>
+  );
+};
+
+// ─── Slide 4+: FOTO SIMPLES ──────────────────────────────────────────────────
+// Reference: Slide_4.png
+// - Color logo top-left on white panel
+// - Full photo
 export const AMPhotoSlide = ({
   data,
   photo,
@@ -154,142 +263,76 @@ export const AMPhotoSlide = ({
   return (
     <div
       className="relative overflow-hidden"
-      style={{ width: 360, height: 360, backgroundColor: '#111827' }}
+      style={{ width: 360, height: 360, backgroundColor: '#1f2937' }}
     >
+      <img src={photo} alt="" className="absolute inset-0 w-full h-full object-cover" />
+
+      {/* Top-left logo panel */}
       <div
-        className="absolute inset-0"
-        style={{ backgroundImage: `url(${photo})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
-      />
-      {/* subtle gradient at bottom */}
-      <div
-        className="absolute bottom-0 left-0 right-0 h-28"
-        style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.7), transparent)' }}
-      />
-      {/* Photo counter */}
-      <div
-        className="absolute top-3 right-3 text-xs font-bold text-white px-2 py-1 rounded-full"
-        style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}
+        className="absolute top-3 left-3 z-10 px-3 py-2 rounded-2xl"
+        style={{ backgroundColor: 'rgba(255,255,255,0.92)' }}
       >
-        📷 {photoIndex}
-      </div>
-      {/* Bottom info strip */}
-      <div className="absolute bottom-0 left-0 right-0 flex items-end p-3">
-        <AMLogoSVG width={100} variant="white" />
-        <div className="flex-1 text-right">
-          <p className="text-white font-bold text-sm truncate">{data.title || ''}</p>
-          <p className="text-white text-xs opacity-70">{data.neighborhood}</p>
-        </div>
+        <AMLogo width={90} variant="color" />
       </div>
     </div>
   );
 };
 
-// ─── Slide 4: Contato ────────────────────────────────────────────────────────
-export const AMContactSlide = ({ data }: { data: AMPropertyData }) => {
+// ─── Último Slide: INFORMAÇÃO ────────────────────────────────────────────────
+// Reference: Informação.png
+// - Full photo bg with dark overlay
+// - Large white headline + subtitle inside white-bordered rounded box
+// - White logo card bottom-right
+export const AMInfoSlide = ({
+  data,
+  photo,
+}: {
+  data: AMPropertyData;
+  photo?: string;
+}) => {
+  const headline = data.infoMessage ||
+    'A Apartamentos Manaus acompanha você em todas as etapas da escolha do seu imóvel.';
+  const subtitle =
+    'Encontrar o imóvel ideal pode ser mais simples do que parece. A Apartamentos Manaus orienta você sobre as possibilidades de financiamento e acompanha todo o processo com transparência.';
+
   return (
     <div
-      className="relative overflow-hidden flex flex-col items-center justify-center text-center"
-      style={{
-        width: 360,
-        height: 360,
-        background: 'linear-gradient(135deg, #1B5EA6 0%, #0D3D73 100%)',
-        fontFamily: 'Arial, sans-serif',
-      }}
+      className="relative overflow-hidden"
+      style={{ width: 360, height: 360, fontFamily: 'Arial, sans-serif', backgroundColor: '#111827' }}
     >
-      {/* Orange accent top */}
-      <div className="absolute top-0 left-0 right-0 h-1.5" style={{ backgroundColor: '#F47920' }} />
+      {/* Background photo */}
+      {photo && (
+        <img src={photo} alt="" className="absolute inset-0 w-full h-full object-cover" />
+      )}
+      {/* Dark overlay */}
+      <div className="absolute inset-0" style={{ backgroundColor: 'rgba(0,0,0,0.55)' }} />
 
-      <div className="px-8 space-y-5">
-        <AMLogoSVG width={160} variant="white" />
-
-        <div>
-          <p className="text-white text-sm opacity-70 mb-1">Fale com nosso corretor</p>
-          {data.brokerName && (
-            <p className="text-white font-bold text-lg">{data.brokerName}</p>
-          )}
-          {data.creci && (
-            <p className="text-xs opacity-60" style={{ color: '#F47920' }}>CRECI {data.creci}</p>
-          )}
-        </div>
-
-        {data.brokerPhone && (
-          <div
-            className="flex items-center justify-center gap-2 px-5 py-3 rounded-full text-white font-bold"
-            style={{ backgroundColor: '#F47920' }}
+      {/* White-bordered content box */}
+      <div
+        className="absolute inset-4 z-10 rounded-2xl p-5 flex flex-col justify-between"
+        style={{ border: '2px solid rgba(255,255,255,0.5)' }}
+      >
+        <div className="flex-1">
+          <h2
+            className="text-white font-bold leading-tight mb-3"
+            style={{ fontSize: 18 }}
           >
-            <span>📱</span>
-            <span>{data.brokerPhone}</span>
-          </div>
-        )}
-
-        <div>
-          <p className="text-white font-semibold">{data.title || ''}</p>
-          <p className="text-xs opacity-60 text-white mt-0.5">
-            {data.neighborhood && `${data.neighborhood} • `}{data.city} - {data.state}
+            {headline}
+          </h2>
+          <p className="text-white opacity-80 leading-snug" style={{ fontSize: 11 }}>
+            {subtitle}
           </p>
         </div>
-      </div>
 
-      {/* Orange accent bottom */}
-      <div className="absolute bottom-0 left-0 right-0 h-1.5" style={{ backgroundColor: '#F47920' }} />
-    </div>
-  );
-};
-
-// ─── Slide 5: Mensagem Informativa ────────────────────────────────────────────
-export const AMInfoSlide = ({ data }: { data: AMPropertyData }) => {
-  const highlights = data.highlights.filter(Boolean);
-  const defaultHighlights = [
-    '✅ Financiamento facilitado',
-    '✅ Documentação segura',
-    '✅ Assessoria completa',
-    '✅ Atendimento personalizado',
-    '✅ Localização privilegiada',
-    '✅ Melhor custo-benefício',
-  ];
-  const items = highlights.length > 0 ? highlights : defaultHighlights;
-
-  return (
-    <div
-      className="relative overflow-hidden flex flex-col"
-      style={{ width: 360, height: 360, backgroundColor: '#FFFFFF', fontFamily: 'Arial, sans-serif' }}
-    >
-      {/* Orange top bar */}
-      <div className="px-5 py-3" style={{ backgroundColor: '#F47920' }}>
-        <p className="text-white font-bold text-base">Por que escolher este imóvel?</p>
-        <p className="text-white text-xs opacity-80 truncate">{data.title || 'Apartamentos Manaus'}</p>
-      </div>
-
-      {/* Highlights */}
-      <div className="flex-1 p-4 space-y-2 overflow-hidden">
-        {items.slice(0, 6).map((item, i) => (
+        {/* Bottom-right: white logo card */}
+        <div className="flex justify-end mt-3">
           <div
-            key={i}
-            className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium"
-            style={{
-              backgroundColor: i % 2 === 0 ? '#F0F6FF' : '#FFF5ED',
-              color: i % 2 === 0 ? '#1B5EA6' : '#F47920',
-            }}
+            className="px-3 py-2 rounded-xl flex items-center gap-2"
+            style={{ backgroundColor: 'rgba(255,255,255,0.92)' }}
           >
-            {item}
+            <AMLogo width={75} variant="color" />
           </div>
-        ))}
-
-        {data.infoMessage && (
-          <div
-            className="mt-2 px-3 py-2 rounded-lg text-xs italic text-gray-600 border border-gray-200"
-          >
-            💬 {data.infoMessage}
-          </div>
-        )}
-      </div>
-
-      {/* Logo footer */}
-      <div className="flex items-center justify-between px-4 py-2 border-t border-gray-100">
-        <AMLogoSVG width={110} variant="color" />
-        {data.brokerPhone && (
-          <span className="text-xs font-bold" style={{ color: '#F47920' }}>{data.brokerPhone}</span>
-        )}
+        </div>
       </div>
     </div>
   );
