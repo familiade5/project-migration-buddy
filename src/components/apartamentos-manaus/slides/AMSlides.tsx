@@ -606,8 +606,9 @@ export const AMPhotoSlide = ({
 };
 
 // ─── Último Slide: INFORMAÇÃO ─────────────────────────────────────────────────
-// White bg • photo fills inner rounded card (inset 14px) with dark overlay
-// • white-bordered text box inside • white logo card bottom-right
+// White bg • foto ocupa o slide inteiro (inset 14px) com overlay escuro
+// • título + subtítulo sobrepostos diretamente na foto
+// • card branco com somente a logo no canto inferior direito
 export const AMInfoSlide = ({
   data,
   photo,
@@ -644,56 +645,54 @@ export const AMInfoSlide = ({
           overflow: 'hidden',
         }}
       >
-        {photo && (
+        {photo ? (
           <img src={photo} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+        ) : (
+          <div style={{ width: '100%', height: '100%', backgroundColor: '#374151' }} />
         )}
-        <div style={{ position: 'absolute', inset: 0, backgroundColor: 'rgba(0,0,0,0.58)' }} />
+        {/* Dark overlay */}
+        <div style={{ position: 'absolute', inset: 0, backgroundColor: 'rgba(0,0,0,0.55)' }} />
       </div>
 
-      {/* White-bordered content box */}
+      {/* Text content — directly on top of photo/overlay */}
       <div
         style={{
           position: 'absolute',
           top: 28,
           left: 28,
           right: 28,
-          bottom: 28,
+          bottom: 90,
           zIndex: 20,
-          border: '2px solid rgba(255,255,255,0.5)',
-          borderRadius: 14,
-          padding: '16px 14px 12px',
           display: 'flex',
           flexDirection: 'column',
-          justifyContent: 'space-between',
+          justifyContent: 'flex-start',
         }}
       >
-        <div>
-          <h2 style={{ color: 'white', fontWeight: 700, fontSize: 17, lineHeight: 1.35, margin: '0 0 8px' }}>
-            {headline}
-          </h2>
-          <p style={{ color: 'white', fontSize: 10, opacity: 0.82, lineHeight: 1.5, margin: 0 }}>
-            {subtitle}
-          </p>
-        </div>
+        <h2 style={{ color: 'white', fontWeight: 700, fontSize: 19, lineHeight: 1.3, margin: '0 0 10px' }}>
+          {headline}
+        </h2>
+        <p style={{ color: 'white', fontSize: 10.5, opacity: 0.85, lineHeight: 1.55, margin: 0 }}>
+          {subtitle}
+        </p>
+      </div>
 
-        <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-          <div
-            style={{
-              backgroundColor: 'rgba(255,255,255,0.95)',
-              borderRadius: 12,
-              padding: '7px 10px',
-              display: 'flex',
-              alignItems: 'center',
-              gap: 6,
-            }}
-          >
-            <AMLogo width={40} variant="color" />
-            <div>
-              <p style={{ margin: 0, fontWeight: 700, fontSize: 8, color: '#1B5EA6', letterSpacing: '0.05em', lineHeight: 1.3 }}>AP. MANAUS</p>
-              <p style={{ margin: 0, fontSize: 7, color: '#9ca3af', letterSpacing: '0.08em' }}>IMOBILIÁRIA</p>
-            </div>
-          </div>
-        </div>
+      {/* Logo card — somente logo, sem texto */}
+      <div
+        style={{
+          position: 'absolute',
+          bottom: 22,
+          right: 22,
+          zIndex: 30,
+          backgroundColor: '#ffffff',
+          borderRadius: 14,
+          padding: '8px 12px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          boxShadow: '0 0 0 4px rgba(255,255,255,0.3)',
+        }}
+      >
+        <AMLogo width={90} variant="color" />
       </div>
     </div>
   );
