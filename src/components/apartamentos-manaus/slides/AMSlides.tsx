@@ -393,16 +393,18 @@ export const AMLocationSlide = ({
   // Clip path com DOIS nichos: superior-esquerdo (card azul) e inferior-direito (card logo).
   // Notch azul: x 14→170, y 14→172 (8px branco ao redor do card). Notch logo: x 208→346, y 276→346.
   // Cantos externos: arcos convexos A r=22. Cantos internos dos nichos: bezier Q (côncavos).
+  // Logo card: bottom=20, right=20 → right edge at x=340, left edge at x=160 (w≈180)
+  // Notch x começa em 160, deixando cinza visível à esquerda do card com canto arredondado exposto
   const shapePath = [
     'M 192 14',              // top edge start (notch-azul right x=170 + r=22)
     'H 324',                 // top edge rightward
     'A 22 22 0 0 1 346 36',  // top-right outer convex corner
-    'V 240',                 // right edge down — puxado para criar distância visível antes do notch (262-22=240)
-    'Q 346 262 324 262',     // concave at top-right of logo notch (notch topo y=262)
-    'H 222',                 // logo notch top leftward (200+22=222) — x=200 restaurado
-    'Q 200 262 200 284',     // concave at top-left of logo notch (262+22=284)
+    'V 240',                 // right edge down (262-22=240)
+    'Q 346 262 324 262',     // concave at top-right of logo notch
+    'H 182',                 // logo notch top leftward (160+22=182) — puxado para x=160
+    'Q 160 262 160 284',     // concave at top-left of logo notch (262+22=284)
     'V 324',                 // down logo notch left wall (346-22=324)
-    'A 22 22 0 0 1 222 346', // convex arc bottom-left — mesmo padrão do card de preço da capa
+    'A 22 22 0 0 1 182 346', // convex arc bottom-left — expõe canto arredondado
     'H 36',                  // bottom edge leftward
     'A 22 22 0 0 1 14 324',  // bottom-left outer convex corner
     'V 194',                 // left edge upward to blue notch (172+22=194)
