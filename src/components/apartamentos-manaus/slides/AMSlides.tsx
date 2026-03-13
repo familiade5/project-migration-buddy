@@ -56,16 +56,19 @@ export const AMCoverSlide = ({
   const shapePath = [
     'M 330 8',
     'A 22 22 0 0 1 352 30',   // top-right outer corner (r=22)
-    'V 330',
-    'A 22 22 0 0 1 330 352',  // bottom-right outer corner (r=22)
-    'H 30',
+    'V 266',                  // down right edge, stop 18px above blue card notch top (y=284)
+    'Q 352 284 334 284',      // smooth curve into blue card notch top-right corner
+    'H 192',                  // across notch top, stop 18px before notch left (x=174)
+    'Q 174 284 174 302',      // smooth curve into blue card notch left side
+    'V 352',                  // down to bottom edge (bottom-right corner fully carved)
+    'H 30',                   // left along bottom edge
     'A 22 22 0 0 1 8 330',    // bottom-left outer corner (r=22)
-    'V 84',                   // up left edge to y = 66+18 = 84
-    'Q 8 66 26 66',           // smooth concave curve into notch bottom-left
-    'H 200',                  // along notch bottom to x = 218-18 = 200
-    'Q 218 66 218 48',        // smooth convex curve up notch bottom-right
-    'V 30',                   // up notch right edge to y = 8+22 = 30
-    'A 22 22 0 0 1 240 8',    // round inner top corner (r=22, sweep=1) — same as slide 2
+    'V 84',                   // up left edge to badge notch start (y=66+18=84)
+    'Q 8 66 26 66',           // smooth concave curve into badge notch bottom-left
+    'H 200',                  // along badge notch bottom to x=218-18=200
+    'Q 218 66 218 48',        // smooth convex curve up badge notch bottom-right
+    'V 30',                   // up badge notch right edge to y=8+22=30
+    'A 22 22 0 0 1 240 8',    // round badge inner top corner (r=22)
     'H 330',                  // top edge back to arc start
     'Z',
   ].join(' ');
