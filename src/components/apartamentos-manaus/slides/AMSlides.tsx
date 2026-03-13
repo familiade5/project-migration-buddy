@@ -60,7 +60,7 @@ export const AMCoverSlide = ({
     'M 352 246',              // arc start: moved up 10px (256→246)
     'A 22 22 0 0 1 330 268',  // CW concave r=22 — end also moved up 10px (278→268)
     'H 192',                  // card notch top at y=268
-    'Q 174 278 174 296',      // smooth curve into card notch left side (shifted up 10px)
+    'Q 174 268 174 286',      // smooth curve into card notch left side (shifted up 10px)
     'V 334',                  // down notch left wall
     'A 22 22 0 0 1 152 352',  // round inner bottom corner (r=22)
     'H 30',                   // bottom edge
