@@ -606,9 +606,9 @@ export const AMPhotoSlide = ({
 };
 
 // ─── Último Slide: INFORMAÇÃO ─────────────────────────────────────────────────
-// White bg • foto ocupa o slide inteiro (inset 14px) com overlay escuro
-// • título + subtítulo sobrepostos diretamente na foto
-// • card branco com somente a logo no canto inferior direito
+// Mesmo padrão do Slide 3: clip-path com nicho recortado para o card da logo.
+// Logo card em zIndex 5 (abaixo da foto), foto em zIndex 10 contornando o nicho.
+// Overlay escuro dentro da foto. Texto sobreposto em zIndex 20.
 export const AMInfoSlide = ({
   data,
   photo,
@@ -622,6 +622,26 @@ export const AMInfoSlide = ({
   const subtitle =
     'Encontrar o imóvel ideal pode ser mais simples do que parece. A Apartamentos Manaus orienta você sobre as possibilidades de financiamento e acompanha todo o processo com transparência.';
 
+  // Foto inset 14px. Nicho logo: bottom=14, right=14, w=120, h=52.
+  // Slide coords logo: top=294, left=226. Margem de 8px → nicho top_y=286, left_x=218.
+  // Bordas externas: r=22. Curvas côncavas Q idênticas ao Slide 3.
+  const shapePath = [
+    'M 324 14',              // top edge start, right of top-left arc
+    'A 22 22 0 0 1 346 36',  // top-right outer corner
+    'V 264',                 // right edge down (286 - 22 = 264)
+    'Q 346 286 324 286',     // côncava → entrada do nicho superior-direito
+    'H 240',                 // nicho topo esquerdo (218 + 22 = 240)
+    'Q 218 286 218 308',     // côncava → entrada do nicho superior-esquerdo
+    'V 324',                 // desce parede esquerda do nicho (346 - 22 = 324)
+    'A 22 22 0 0 1 196 346', // canto inferior-esquerdo do nicho (218 - 22 = 196)
+    'H 36',                  // borda inferior
+    'A 22 22 0 0 1 14 324',  // canto inferior-esquerdo externo
+    'V 36',                  // sobe borda esquerda
+    'A 22 22 0 0 1 36 14',   // canto superior-esquerdo externo
+    'H 324',                 // topo de volta
+    'Z',
+  ].join(' ');
+
   return (
     <div
       style={{
@@ -633,15 +653,47 @@ export const AMInfoSlide = ({
         overflow: 'hidden',
       }}
     >
-      {/* Photo card — inset 14px all sides */}
+      {/* clipPath definition */}
+      <svg aria-hidden="true" style={{ position: 'absolute', width: 0, height: 0, overflow: 'hidden' }}>
+        <defs>
+          <clipPath id="am-info-photo-clip" clipPathUnits="userSpaceOnUse">
+            <path d={shapePath} />
+          </clipPath>
+        </defs>
+      </svg>
+
+      {/* Logo card — zIndex 5, fica no nicho abaixo da foto */}
       <div
         style={{
           position: 'absolute',
-          top: 14,
-          left: 14,
-          right: 14,
           bottom: 14,
-          borderRadius: 22,
+          right: 14,
+          zIndex: 5,
+          backgroundColor: '#ffffff',
+          borderRadius: 12,
+          width: 120,
+          height: 52,
+          overflow: 'hidden',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          boxSizing: 'border-box',
+          padding: '2px 4px',
+        }}
+      >
+        <AMLogo width={116} variant="color" />
+      </div>
+
+      {/* Foto — clip-path recortando o nicho da logo, zIndex 10 */}
+      <div
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          width: 360,
+          height: 360,
+          clipPath: 'url(#am-info-photo-clip)',
+          zIndex: 10,
           overflow: 'hidden',
         }}
       >
@@ -650,11 +702,11 @@ export const AMInfoSlide = ({
         ) : (
           <div style={{ width: '100%', height: '100%', backgroundColor: '#374151' }} />
         )}
-        {/* Dark overlay */}
+        {/* Overlay escuro dentro da foto */}
         <div style={{ position: 'absolute', inset: 0, backgroundColor: 'rgba(0,0,0,0.55)' }} />
       </div>
 
-      {/* Text content — directly on top of photo/overlay */}
+      {/* Texto — sobreposto diretamente sobre a foto/overlay */}
       <div
         style={{
           position: 'absolute',
@@ -674,25 +726,6 @@ export const AMInfoSlide = ({
         <p style={{ color: 'white', fontSize: 10.5, opacity: 0.85, lineHeight: 1.55, margin: 0 }}>
           {subtitle}
         </p>
-      </div>
-
-      {/* Logo card — somente logo, sem texto */}
-      <div
-        style={{
-          position: 'absolute',
-          bottom: 22,
-          right: 22,
-          zIndex: 30,
-          backgroundColor: '#ffffff',
-          borderRadius: 14,
-          padding: '8px 12px',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          boxShadow: '0 0 0 4px rgba(255,255,255,0.3)',
-        }}
-      >
-        <AMLogo width={90} variant="color" />
       </div>
     </div>
   );
