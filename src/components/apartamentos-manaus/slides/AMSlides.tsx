@@ -386,6 +386,9 @@ export const AMLocationSlide = ({
   data: AMPropertyData;
   photo?: string;
 }) => {
+  const uid = useId();
+  const clipId = `am-location-${uid}`;
+
   const address = [data.address, data.neighborhood, `${data.city} - ${data.state}`]
     .filter(Boolean)
     .join(', ');
