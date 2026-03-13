@@ -33,11 +33,17 @@ export function AMPostPreview({ data, photos }: AMPostPreviewProps) {
   const [format, setFormat] = useState<FormatType>('feed');
   const [isExporting, setIsExporting] = useState(false);
 
-  // Fixed-size ref pool – never conditionally created
-  // eslint-disable-next-line react-hooks/rules-of-hooks
-  const feedRefs = Array.from({ length: MAX_SLIDES }, () => useRef<HTMLDivElement>(null));
-  // eslint-disable-next-line react-hooks/rules-of-hooks
-  const storyRefs = Array.from({ length: MAX_SLIDES }, () => useRef<HTMLDivElement>(null));
+  // Fixed-size ref pool at top level (20 refs each, satisfies hooks rules)
+  const f0=useRef<HTMLDivElement>(null),f1=useRef<HTMLDivElement>(null),f2=useRef<HTMLDivElement>(null),f3=useRef<HTMLDivElement>(null),f4=useRef<HTMLDivElement>(null);
+  const f5=useRef<HTMLDivElement>(null),f6=useRef<HTMLDivElement>(null),f7=useRef<HTMLDivElement>(null),f8=useRef<HTMLDivElement>(null),f9=useRef<HTMLDivElement>(null);
+  const f10=useRef<HTMLDivElement>(null),f11=useRef<HTMLDivElement>(null),f12=useRef<HTMLDivElement>(null),f13=useRef<HTMLDivElement>(null),f14=useRef<HTMLDivElement>(null);
+  const f15=useRef<HTMLDivElement>(null),f16=useRef<HTMLDivElement>(null),f17=useRef<HTMLDivElement>(null),f18=useRef<HTMLDivElement>(null),f19=useRef<HTMLDivElement>(null);
+  const s0=useRef<HTMLDivElement>(null),s1=useRef<HTMLDivElement>(null),s2=useRef<HTMLDivElement>(null),s3=useRef<HTMLDivElement>(null),s4=useRef<HTMLDivElement>(null);
+  const s5=useRef<HTMLDivElement>(null),s6=useRef<HTMLDivElement>(null),s7=useRef<HTMLDivElement>(null),s8=useRef<HTMLDivElement>(null),s9=useRef<HTMLDivElement>(null);
+  const s10=useRef<HTMLDivElement>(null),s11=useRef<HTMLDivElement>(null),s12=useRef<HTMLDivElement>(null),s13=useRef<HTMLDivElement>(null),s14=useRef<HTMLDivElement>(null);
+  const s15=useRef<HTMLDivElement>(null),s16=useRef<HTMLDivElement>(null),s17=useRef<HTMLDivElement>(null),s18=useRef<HTMLDivElement>(null),s19=useRef<HTMLDivElement>(null);
+  const feedRefs = [f0,f1,f2,f3,f4,f5,f6,f7,f8,f9,f10,f11,f12,f13,f14,f15,f16,f17,f18,f19];
+  const storyRefs = [s0,s1,s2,s3,s4,s5,s6,s7,s8,s9,s10,s11,s12,s13,s14,s15,s16,s17,s18,s19];
 
   // ── Build FEED slide list ─────────────────────────────────────────────────
   // Structure:
