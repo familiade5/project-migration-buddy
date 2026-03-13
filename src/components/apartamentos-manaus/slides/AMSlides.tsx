@@ -280,22 +280,19 @@ export const AMSpecsSlide = ({
             <path d={shapePath} />
           </clipPath>
         </defs>
-        {photo ? (
-          <image
-            href={photo}
-            x="0" y="0"
-            width="360" height="360"
-            preserveAspectRatio="xMidYMid slice"
-            clipPath="url(#am-specs-shape)"
-          />
-        ) : (
-          <rect
-            x="0" y="0"
-            width="360" height="360"
-            fill="#d1d5db"
-            clipPath="url(#am-specs-shape)"
-          />
-        )}
+        {/* clip-path on <g> is universally reliable across all browsers */}
+        <g clipPath="url(#am-specs-shape)">
+          {photo ? (
+            <image
+              href={photo}
+              x="0" y="0"
+              width="360" height="360"
+              preserveAspectRatio="xMidYMid slice"
+            />
+          ) : (
+            <rect x="0" y="0" width="360" height="360" fill="#d1d5db" />
+          )}
+        </g>
       </svg>
 
       {/* ── Logo card — sits in the notch, below the SVG layer (z-index 5) ── */}
