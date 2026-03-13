@@ -465,7 +465,7 @@ export const AMLocationSlide = ({
             width: 360,
             height: 360,
             backgroundColor: '#d1d5db',
-            clipPath: 'url(#am-location-photo-clip)',
+            clipPath: `url(#${clipId})`,
             zIndex: 10,
           }}
         />
