@@ -134,6 +134,29 @@ export const AMCoverSlide = ({
         </div>
       </div>
 
+      {/* ── PHOTO — clipped to single custom shape, zIndex:10 (above badge, below overlays) ── */}
+      <div
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          width: 360,
+          height: 360,
+          clipPath: 'url(#am-cover-photo-clip)',
+          zIndex: 10,
+        }}
+      >
+        {photo ? (
+          <img
+            src={photo}
+            alt=""
+            style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+          />
+        ) : (
+          <div style={{ width: '100%', height: '100%', backgroundColor: '#d1d5db' }} />
+        )}
+      </div>
+
       {/* ── WHITE LOGO: bottom-left footer, on the photo ── */}
       <div
         style={{
