@@ -196,17 +196,14 @@ export const AMCoverSlide = ({
 };
 
 // ─── Slide 2: ESPECIFICAÇÕES ─────────────────────────────────────────────────
-// White bg • logo top-left on white strip • large photo RIGHT (tall) •
-// smaller photo LEFT-BOTTOM • inset thumbnail on right photo center •
-// dark specs bullet box bottom-right on right photo
+// White bg • logo only top-left • single photo below (full width) •
+// dark specs bullet box bottom-right on photo
 export const AMSpecsSlide = ({
   data,
   photo,
-  photo2,
 }: {
   data: AMPropertyData;
   photo?: string;
-  photo2?: string;
 }) => {
   const specs: string[] = [
     data.bedrooms > 0 ? `${data.bedrooms} quarto${data.bedrooms > 1 ? 's' : ''}` : '',
@@ -216,9 +213,6 @@ export const AMSpecsSlide = ({
     data.area > 0 ? `${data.area}m²` : '',
     data.suites > 0 ? `${data.suites} suíte${data.suites > 1 ? 's' : ''}` : '',
   ].filter(Boolean).slice(0, 6);
-
-  // The inset thumbnail shows photo2 (or falls back to photo itself)
-  const thumbSrc = photo2 || photo;
 
   return (
     <div
@@ -231,12 +225,12 @@ export const AMSpecsSlide = ({
         overflow: 'hidden',
       }}
     >
-      {/* ── RIGHT PHOTO: tall, right ~58% of slide ── */}
+      {/* ── SINGLE PHOTO: starts below logo strip ── */}
       <div
         style={{
           position: 'absolute',
-          top: 14,
-          left: 158,
+          top: 76,
+          left: 14,
           right: 14,
           bottom: 14,
           borderRadius: 22,
@@ -250,74 +244,19 @@ export const AMSpecsSlide = ({
         )}
       </div>
 
-      {/* ── LEFT-BOTTOM PHOTO: below logo area ── */}
-      <div
-        style={{
-          position: 'absolute',
-          top: 86,
-          left: 14,
-          width: 136,
-          bottom: 14,
-          borderRadius: 22,
-          overflow: 'hidden',
-        }}
-      >
-        {photo2 || photo ? (
-          <img
-            src={photo2 || photo}
-            alt=""
-            style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center', display: 'block' }}
-          />
-        ) : (
-          <div style={{ width: '100%', height: '100%', backgroundColor: '#d1d5db' }} />
-        )}
-      </div>
-
-      {/* ── LOGO + BRAND TEXT: top-left white area ── */}
+      {/* ── LOGO ONLY: top-left (logo PNG already contains the text) ── */}
       <div
         style={{
           position: 'absolute',
           top: 14,
           left: 14,
           zIndex: 20,
-          display: 'flex',
-          alignItems: 'center',
-          gap: 8,
-          backgroundColor: '#ffffff',
-          borderRadius: 12,
-          padding: '4px 8px 4px 4px',
         }}
       >
-        <AMLogo width={46} variant="color" />
-        <div>
-          <p style={{ margin: 0, fontWeight: 700, fontSize: 10, color: '#1B5EA6', letterSpacing: '0.06em', lineHeight: 1.3 }}>APARTAMENTOS</p>
-          <p style={{ margin: 0, fontWeight: 700, fontSize: 10, color: '#1B5EA6', letterSpacing: '0.06em', lineHeight: 1.3 }}>MANAUS</p>
-          <p style={{ margin: 0, fontSize: 8, color: '#9ca3af', letterSpacing: '0.1em', lineHeight: 1.3 }}>IMOBILIÁRIA</p>
-        </div>
+        <AMLogo width={120} variant="color" />
       </div>
 
-      {/* ── INSET THUMBNAIL: center of right photo ── */}
-      {thumbSrc && (
-        <div
-          style={{
-            position: 'absolute',
-            top: '50%',
-            left: '68%',
-            transform: 'translate(-50%, -50%)',
-            zIndex: 20,
-            width: 68,
-            height: 52,
-            borderRadius: 8,
-            overflow: 'hidden',
-            border: '2px solid #ffffff',
-            boxShadow: '0 2px 8px rgba(0,0,0,0.3)',
-          }}
-        >
-          <img src={thumbSrc} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
-        </div>
-      )}
-
-      {/* ── DARK SPECS CARD: bottom-right on right photo ── */}
+      {/* ── DARK SPECS CARD: bottom-right on photo ── */}
       {specs.length > 0 && (
         <div
           style={{
@@ -329,7 +268,7 @@ export const AMSpecsSlide = ({
             backdropFilter: 'blur(6px)',
             borderRadius: 14,
             padding: '10px 14px',
-            maxWidth: 160,
+            maxWidth: 165,
           }}
         >
           {specs.map((spec, i) => (
