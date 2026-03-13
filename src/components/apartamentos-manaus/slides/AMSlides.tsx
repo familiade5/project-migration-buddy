@@ -197,26 +197,27 @@ export const AMCoverSlide = ({
 
 // ─── Slide 2: ESPECIFICAÇÕES ─────────────────────────────────────────────────
 //
-// SINGLE SHAPE CONCEPT:
-//   The image container IS the custom shape — a rounded rectangle with a notch
-//   carved out of the top-left corner. The shape is defined as one continuous
-//   SVG path and used as the clip-path for the image div.
+// SINGLE CONTINUOUS PATH with SMOOTH BEZIER CURVES:
+//   One vector path defines the entire image container shape.
+//   Outer corners use arc segments (r=22).
+//   Notch corners use quadratic bezier curves (Q) for smooth, organic transitions.
 //
-//   Shape geometry (360×360 slide, 8px inset):
-//     Start at (168, 8) — top edge, right end of notch
-//     → right along top → top-right convex r=22
-//     → down right edge → bottom-right convex r=22
-//     → left along bottom → bottom-left convex r=22
-//     → up left edge to notch start
-//     → concave inner corner r=18 (bottom-left of notch)
-//     → right along notch bottom
-//     → convex inner corner r=18 (bottom-right of notch)
-//     → up right edge of notch back to start
+//   Path walkthrough (clockwise from top, right of notch):
+//     M 168 8          → start at top edge, right end of notch
+//     H 330            → right along top edge
+//     A 22,22 → 352,30 → top-right outer convex corner
+//     V 330            → down right edge
+//     A 22,22 → 330,352→ bottom-right outer convex corner
+//     H 30             → left along bottom edge
+//     A 22,22 → 8,330  → bottom-left outer convex corner
+//     V 98             → up left edge, stop before notch bottom
+//     Q 8,80 → 26,80   → smooth concave curve into notch bottom-left corner
+//     H 150            → along notch bottom
+//     Q 168,80 → 168,62→ smooth convex curve out of notch bottom-right corner
+//     V 8 Z            → up right notch edge to start
 //
-//   Logo card: top=4, left=4, width=164, height=76, r=18
-//   Notch in image: x=8→168, y=8→84, inner corners r=18
-//
-//   The logo card sits INSIDE the notch (same space), not above the image.
+//   Logo card: top=4, left=4, w=164, h=76, r=18
+//   Notch: x 8→168, y 8→80, Q radius ≈ 18
 export const AMSpecsSlide = ({
   data,
   photo,
@@ -233,25 +234,24 @@ export const AMSpecsSlide = ({
     data.suites > 0 ? `${data.suites} suíte${data.suites > 1 ? 's' : ''}` : '',
   ].filter(Boolean).slice(0, 6);
 
-  // Single continuous shape path:
-  //   Outer corners (r=22): top-right, bottom-right, bottom-left
-  //   Notch inner corners (r=18): concave at bottom-left, convex at bottom-right
-  //   Notch occupies x: 8→168, y: 8→84
-  const shapePath =
-    'M 168 8 ' +                                        // top, right side of notch
-    'H 330 A 22 22 0 0 1 352 30 ' +                     // → top-right outer corner
-    'V 330 A 22 22 0 0 1 330 352 ' +                    // → bottom-right outer corner
-    'H 30 A 22 22 0 0 1 8 330 ' +                       // → bottom-left outer corner
-    'V 102 ' +                                          // ↑ up left edge to notch start
-    'A 18 18 0 0 0 26 84 ' +                            // ↙ concave corner into notch bottom
-    'H 150 ' +                                          // → along notch bottom
-    'A 18 18 0 0 1 168 66 ' +                           // ↗ convex corner up notch right edge
-    'V 8 Z';                                            // ↑ up to start, close
+  // One continuous path — smooth Q bezier curves at the notch corners,
+  // standard A arcs at the three outer rounded corners.
+  const shapePath = [
+    'M 168 8',
+    'H 330 A 22 22 0 0 1 352 30',
+    'V 330 A 22 22 0 0 1 330 352',
+    'H 30 A 22 22 0 0 1 8 330',
+    'V 98',
+    'Q 8 80 26 80',
+    'H 150',
+    'Q 168 80 168 62',
+    'V 8 Z',
+  ].join(' ');
 
   return (
     <div style={{ position: 'relative', width: 360, height: 360, backgroundColor: '#ffffff', fontFamily: 'Arial, sans-serif', overflow: 'hidden' }}>
 
-      {/* ── SVG clipPath definition for the single custom shape ── */}
+      {/* ── Hidden SVG: defines the single custom clip shape ── */}
       <svg width="0" height="0" style={{ position: 'absolute', overflow: 'hidden' }}>
         <defs>
           <clipPath id="am-specs-photo-clip" clipPathUnits="userSpaceOnUse">
@@ -260,7 +260,7 @@ export const AMSpecsSlide = ({
         </defs>
       </svg>
 
-      {/* ── Logo card: sits in the notch area (not above the image) ── */}
+      {/* ── Logo card — occupies the notch space carved into the image ── */}
       <div style={{
         position: 'absolute',
         top: 4,
@@ -279,7 +279,7 @@ export const AMSpecsSlide = ({
         <AMLogo width={140} variant="color" />
       </div>
 
-      {/* ── Image: clipped to the single custom notch shape ── */}
+      {/* ── Image clipped to the single custom shape ── */}
       <div style={{
         position: 'absolute',
         top: 0,
