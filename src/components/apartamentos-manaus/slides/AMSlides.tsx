@@ -266,6 +266,8 @@ export const AMSpecsSlide = ({
   data: AMPropertyData;
   photo?: string;
 }) => {
+  const uid = useId();
+  const clipId = `am-specs-${uid}`;
   const specs: string[] = [
     data.bedrooms > 0 ? `${data.bedrooms} quarto${data.bedrooms > 1 ? 's' : ''}` : '',
     ...(data.rooms ? data.rooms.split('\n').filter(Boolean) : []),
