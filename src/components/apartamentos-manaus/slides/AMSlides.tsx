@@ -245,9 +245,9 @@ export const AMSpecsSlide = ({
         )}
       </div>
 
-      {/* ── LOGO: aba no canto superior-esquerdo do slide (flush com o canto).
-           Apenas o canto inferior-direito é arredondado (radius 22 = mesmo da foto),
-           criando a transição suave que contorna a imagem em todos os lados. ── */}
+      {/* ── LOGO: aba no canto superior-esquerdo. 3 cantos arredondados (exceto
+           top-left flush com slide). Os cantos arredondados revelam a foto
+           por trás, criando contorno curvo nos 3 lados. ── */}
       <div
         style={{
           position: 'absolute',
@@ -255,7 +255,7 @@ export const AMSpecsSlide = ({
           left: 0,
           zIndex: 20,
           backgroundColor: '#ffffff',
-          borderRadius: '0 0 22px 0',
+          borderRadius: '0 22px 22px 22px',
           padding: '10px 14px 8px 10px',
         }}
       >
