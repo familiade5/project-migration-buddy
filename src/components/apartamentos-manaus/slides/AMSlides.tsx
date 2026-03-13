@@ -196,11 +196,8 @@ export const AMCoverSlide = ({
 };
 
 // ─── Slide 2: ESPECIFICAÇÕES ─────────────────────────────────────────────────
-// Dois painéis que usam a MESMA foto mas com background-position alinhado
-// para que juntos formem UMA imagem contínua dividida pelo tab da logo.
-// • Painel direito: full-height, à direita da logo
-// • Painel esquerdo: abaixo da logo, à esquerda
-// • borderRadius:22 em todos os painéis gera os cantos côncavos naturais
+// UMA foto de fundo, plana (inset 8px, radius 22).
+// Card branco flutuante com borderRadius em TODOS os cantos flutua sobre ela.
 export const AMSpecsSlide = ({
   data,
   photo,
@@ -217,35 +214,6 @@ export const AMSpecsSlide = ({
     data.suites > 0 ? `${data.suites} suíte${data.suites > 1 ? 's' : ''}` : '',
   ].filter(Boolean).slice(0, 6);
 
-  // Geometria dos painéis (coordenadas relativas ao slide de 360×360)
-  // A foto total ocupa (8,8)→(352,352) = 344×344 px
-  // Logo tab ocupa (0,0)→(LOGO_W, LOGO_H)
-  const SLIDE_PAD = 8;
-  const PHOTO_SIZE = 360 - SLIDE_PAD * 2; // 344
-  const LOGO_W = 162;
-  const LOGO_H = 58;
-  const R = 22;
-
-  // helper: estilos de background para que os dois painéis formem uma imagem contínua
-  // background-position é calculado para alinhar cada painel com sua posição no frame total
-  const bgRight = photo
-    ? {
-        backgroundImage: `url(${photo})`,
-        backgroundSize: `${PHOTO_SIZE}px ${PHOTO_SIZE}px`,
-        // painel começa em x=LOGO_W dentro do frame → deslocar pela diferença
-        backgroundPosition: `-${LOGO_W - SLIDE_PAD}px 0px`,
-      }
-    : { backgroundColor: '#d1d5db' };
-
-  const bgLeft = photo
-    ? {
-        backgroundImage: `url(${photo})`,
-        backgroundSize: `${PHOTO_SIZE}px ${PHOTO_SIZE}px`,
-        // painel começa em x=SLIDE_PAD, y=LOGO_H dentro do frame
-        backgroundPosition: `0px -${LOGO_H - SLIDE_PAD}px`,
-      }
-    : { backgroundColor: '#d1d5db' };
-
   return (
     <div
       style={{
@@ -257,48 +225,50 @@ export const AMSpecsSlide = ({
         overflow: 'hidden',
       }}
     >
-      {/* ── PAINEL DIREITO: full-height à direita do tab da logo ── */}
+      {/* ── FOTO ÚNICA: fundo completo, plana, sem cortes ── */}
       <div
         style={{
           position: 'absolute',
-          top: SLIDE_PAD,
-          left: LOGO_W,
-          right: SLIDE_PAD,
-          bottom: SLIDE_PAD,
-          borderRadius: R,
-          ...bgRight,
-        }}
-      />
-
-      {/* ── PAINEL ESQUERDO: abaixo do tab da logo ── */}
-      <div
-        style={{
-          position: 'absolute',
-          top: LOGO_H,
-          left: SLIDE_PAD,
-          width: LOGO_W - SLIDE_PAD,
-          bottom: SLIDE_PAD,
-          borderRadius: R,
-          ...bgLeft,
-        }}
-      />
-
-      {/* ── LOGO: quadro branco canto superior-esquerdo ── */}
-      <div
-        style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          zIndex: 20,
-          backgroundColor: '#ffffff',
-          borderRadius: `0 0 ${R}px 0`,
-          padding: '10px 14px 8px 10px',
+          top: 8,
+          left: 8,
+          right: 8,
+          bottom: 8,
+          borderRadius: 22,
+          overflow: 'hidden',
         }}
       >
-        <AMLogo width={138} variant="color" />
+        {photo ? (
+          <img src={photo} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+        ) : (
+          <div style={{ width: '100%', height: '100%', backgroundColor: '#d1d5db' }} />
+        )}
       </div>
 
-      {/* ── CARD ESCURO DE SPECS: canto inferior-direito sobre o painel direito ── */}
+      {/* ── CARD BRANCO DA LOGO: flutuante, borderRadius em TODOS os cantos ── */}
+      <div
+        style={{
+          position: 'absolute',
+          top: 14,
+          left: 14,
+          zIndex: 20,
+          backgroundColor: '#ffffff',
+          borderRadius: 18,
+          padding: '10px 16px 10px 12px',
+          display: 'flex',
+          alignItems: 'center',
+          gap: 10,
+          boxShadow: '0 2px 12px rgba(0,0,0,0.10)',
+        }}
+      >
+        <AMLogo width={38} variant="color" />
+        <div>
+          <p style={{ margin: 0, fontWeight: 700, fontSize: 10, color: '#1B5EA6', letterSpacing: '0.06em', lineHeight: 1.3 }}>APARTAMENTOS</p>
+          <p style={{ margin: 0, fontWeight: 700, fontSize: 10, color: '#1B5EA6', letterSpacing: '0.06em', lineHeight: 1.3 }}>MANAUS</p>
+          <p style={{ margin: 0, fontSize: 8, color: '#9ca3af', letterSpacing: '0.1em', lineHeight: 1.3 }}>IMOBILIÁRIA</p>
+        </div>
+      </div>
+
+      {/* ── CARD ESCURO DE SPECS: canto inferior-direito ── */}
       {specs.length > 0 && (
         <div
           style={{
