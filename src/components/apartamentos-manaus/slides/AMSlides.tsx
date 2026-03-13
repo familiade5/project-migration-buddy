@@ -196,18 +196,27 @@ export const AMCoverSlide = ({
 };
 
 // ─── Slide 2: ESPECIFICAÇÕES ─────────────────────────────────────────────────
-// IMAGE MASK CONCEPT:
-//   Layer 1 (bottom): white slide background
-//   Layer 2: Logo card — white rounded rect, sits on background BELOW image
-//   Layer 3: Property image — clipped with evenodd hole exactly matching logo card
-//            so image is "cut away" revealing the logo card behind it
-//   Layer 4: Specs card
 //
-// The clip uses two subpaths + clipRule="evenodd":
-//   outer = rounded rect (image visible area, r=22, inset 8px)
-//   hole  = logo card shape (r=18, exact same dimensions as the card div)
-// The evenodd rule subtracts the hole from the outer, cutting the image precisely
-// around the logo card's rounded corners.
+// SINGLE SHAPE CONCEPT:
+//   The image container IS the custom shape — a rounded rectangle with a notch
+//   carved out of the top-left corner. The shape is defined as one continuous
+//   SVG path and used as the clip-path for the image div.
+//
+//   Shape geometry (360×360 slide, 8px inset):
+//     Start at (168, 8) — top edge, right end of notch
+//     → right along top → top-right convex r=22
+//     → down right edge → bottom-right convex r=22
+//     → left along bottom → bottom-left convex r=22
+//     → up left edge to notch start
+//     → concave inner corner r=18 (bottom-left of notch)
+//     → right along notch bottom
+//     → convex inner corner r=18 (bottom-right of notch)
+//     → up right edge of notch back to start
+//
+//   Logo card: top=4, left=4, width=164, height=76, r=18
+//   Notch in image: x=8→168, y=8→84, inner corners r=18
+//
+//   The logo card sits INSIDE the notch (same space), not above the image.
 export const AMSpecsSlide = ({
   data,
   photo,
@@ -224,26 +233,34 @@ export const AMSpecsSlide = ({
     data.suites > 0 ? `${data.suites} suíte${data.suites > 1 ? 's' : ''}` : '',
   ].filter(Boolean).slice(0, 6);
 
-  // Logo card: top=4, left=4, width=164, height=76, rx=18
-  // Hole path corners: left+rx=22, right-rx=150, top+rx=22, bottom-rx=62, right=168, bottom=80
-  const outerPath =
-    'M 30 8 H 330 A 22 22 0 0 1 352 30 V 330 A 22 22 0 0 1 330 352 H 30 A 22 22 0 0 1 8 330 V 30 A 22 22 0 0 1 30 8 Z';
-  const holePath =
-    'M 22 4 H 150 A 18 18 0 0 1 168 22 V 62 A 18 18 0 0 1 150 80 H 22 A 18 18 0 0 1 4 62 V 22 A 18 18 0 0 1 22 4 Z';
+  // Single continuous shape path:
+  //   Outer corners (r=22): top-right, bottom-right, bottom-left
+  //   Notch inner corners (r=18): concave at bottom-left, convex at bottom-right
+  //   Notch occupies x: 8→168, y: 8→84
+  const shapePath =
+    'M 168 8 ' +                                        // top, right side of notch
+    'H 330 A 22 22 0 0 1 352 30 ' +                     // → top-right outer corner
+    'V 330 A 22 22 0 0 1 330 352 ' +                    // → bottom-right outer corner
+    'H 30 A 22 22 0 0 1 8 330 ' +                       // → bottom-left outer corner
+    'V 102 ' +                                          // ↑ up left edge to notch start
+    'A 18 18 0 0 0 26 84 ' +                            // ↙ concave corner into notch bottom
+    'H 150 ' +                                          // → along notch bottom
+    'A 18 18 0 0 1 168 66 ' +                           // ↗ convex corner up notch right edge
+    'V 8 Z';                                            // ↑ up to start, close
 
   return (
     <div style={{ position: 'relative', width: 360, height: 360, backgroundColor: '#ffffff', fontFamily: 'Arial, sans-serif', overflow: 'hidden' }}>
 
-      {/* ── SVG: evenodd clipPath = outer image area MINUS logo card hole ── */}
+      {/* ── SVG clipPath definition for the single custom shape ── */}
       <svg width="0" height="0" style={{ position: 'absolute', overflow: 'hidden' }}>
         <defs>
           <clipPath id="am-specs-photo-clip" clipPathUnits="userSpaceOnUse">
-            <path clipRule="evenodd" d={`${outerPath} ${holePath}`} />
+            <path d={shapePath} />
           </clipPath>
         </defs>
       </svg>
 
-      {/* ── LAYER 2: Logo card on background — image reveals this by being cut away ── */}
+      {/* ── Logo card: sits in the notch area (not above the image) ── */}
       <div style={{
         position: 'absolute',
         top: 4,
@@ -262,7 +279,7 @@ export const AMSpecsSlide = ({
         <AMLogo width={140} variant="color" />
       </div>
 
-      {/* ── LAYER 3: Image — evenodd clip cuts a hole matching the logo card exactly ── */}
+      {/* ── Image: clipped to the single custom notch shape ── */}
       <div style={{
         position: 'absolute',
         top: 0,
@@ -278,7 +295,7 @@ export const AMSpecsSlide = ({
         }
       </div>
 
-      {/* ── LAYER 4: Specs card ── */}
+      {/* ── Specs card ── */}
       {specs.length > 0 && (
         <div style={{
           position: 'absolute', bottom: 22, right: 22, zIndex: 20,
