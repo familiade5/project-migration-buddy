@@ -1,8 +1,8 @@
 /**
  * TEMA 3 — "URGÊNCIA URBANA"
- * Story 1: Curiosidade — foto dramática full-bleed + texto impactante
- * Story 2: Revelação   — mosaico de 4 fotos + cards flutuantes
- * Story 3: CTA         — urgência + oferta limitada
+ * Story 1: Curiosidade — foto dramática mais clara + texto impactante sem "unidades limitadas"
+ * Story 2: Revelação   — fotos maiores (68%) + card azul no rodapé
+ * Story 3: CTA         — sem "oportunidade única" + contato honesto
  */
 
 import { AMPropertyData } from '@/types/apartamentosManaus';
@@ -34,15 +34,20 @@ export const AMStory3_T3_Curiosity = ({
   photo?: string;
 }) => (
   <div style={{ position: 'relative', width: STORY_W, height: STORY_H, backgroundColor: '#0c0c0c', fontFamily: 'Arial, sans-serif', overflow: 'hidden' }}>
-    {/* Full bleed photo — visible and dramatic */}
+    {/* Full bleed photo — sombra mais clara para a foto aparecer */}
     {photo && (
-      <img src={photo} alt="" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', filter: 'brightness(0.45) contrast(1.1)' }} />
+      <img src={photo} alt="" style={{
+        position: 'absolute', inset: 0, width: '100%', height: '100%',
+        objectFit: 'cover',
+        // brightness mais alto = imagem mais visível
+        filter: 'brightness(0.62) contrast(1.05)',
+      }} />
     )}
 
-    {/* Gradient top dark */}
-    <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '40%', background: 'linear-gradient(to bottom, rgba(0,0,0,0.85), transparent)' }} />
-    {/* Gradient bottom dark */}
-    <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '55%', background: 'linear-gradient(to top, rgba(0,0,0,0.95), transparent)' }} />
+    {/* Gradient top dark — apenas no topo para o logo */}
+    <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '30%', background: 'linear-gradient(to bottom, rgba(0,0,0,0.75), transparent)' }} />
+    {/* Gradient bottom dark — para o texto */}
+    <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '48%', background: 'linear-gradient(to top, rgba(0,0,0,0.92), transparent)' }} />
 
     {/* Orange diagonal stripe accent */}
     <div style={{
@@ -54,23 +59,23 @@ export const AMStory3_T3_Curiosity = ({
       backgroundColor: '#F47920', transform: 'rotate(-3deg)', zIndex: 5, opacity: 0.4,
     }} />
 
-    {/* Top section */}
+    {/* Top section — logo */}
     <div style={{ position: 'absolute', top: 50, left: 0, right: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', zIndex: 10 }}>
       <Logo variant="white" />
     </div>
 
     {/* Main dramatic text */}
     <div style={{
-      position: 'absolute', bottom: 110, left: 24, right: 24, zIndex: 10,
+      position: 'absolute', bottom: 100, left: 24, right: 24, zIndex: 10,
     }}>
-      {/* Alert pill */}
+      {/* Alert pill — sem "unidades limitadas", frase relevante para o cliente */}
       <div style={{
         display: 'inline-flex', alignItems: 'center', gap: 6,
         backgroundColor: '#F47920', borderRadius: 30, padding: '5px 16px', marginBottom: 16,
       }}>
         <div style={{ width: 6, height: 6, borderRadius: '50%', backgroundColor: 'white' }} />
         <p style={{ color: 'white', fontSize: 10, fontWeight: 800, margin: 0, textTransform: 'uppercase', letterSpacing: '0.12em' }}>
-          Unidades limitadas
+          {data.neighborhood ? `Imóvel em ${data.neighborhood}` : 'Imóvel especial para você'}
         </p>
       </div>
 
@@ -85,9 +90,9 @@ export const AMStory3_T3_Curiosity = ({
         color: 'white', fontSize: 36, fontWeight: 900, lineHeight: 1.1, margin: '0 0 16px',
         textShadow: '0 2px 20px rgba(0,0,0,0.5)',
       }}>
-        Esse imóvel vai{' '}
+        O imóvel que{' '}
         <span style={{ color: '#F47920' }}>
-          acabar!
+          você procura
         </span>
       </p>
 
@@ -124,7 +129,7 @@ export const AMStory3_T3_Curiosity = ({
   </div>
 );
 
-/* ── Story 2: Revelação — dramatic 4-photo mosaic ────────────────────────────*/
+/* ── Story 2: Revelação — fotos maiores (68%) + card no rodapé ───────────────*/
 export const AMStory3_T3_Reveal = ({
   data,
   photos,
@@ -136,22 +141,26 @@ export const AMStory3_T3_Reveal = ({
   const imgs = photos && photos.length > 0 ? photos : [];
   const img = (i: number) => imgs[i] ?? imgs[0] ?? undefined;
 
+  // Fotos 68% = 435px
+  const PHOTO_H = 435;
+  const CARD_TOP = PHOTO_H - 20;
+
   return (
     <div style={{ position: 'relative', width: STORY_W, height: STORY_H, backgroundColor: '#0c0c0c', fontFamily: 'Arial, sans-serif', overflow: 'hidden' }}>
 
-      {/* ── 4-photo mosaic — full background ── */}
+      {/* ── 4-photo mosaic — 68% da tela ── */}
       {/* Top row: 2 equal photos */}
-      <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 200, display: 'flex', gap: 2 }}>
-        <div style={{ flex: 1, overflow: 'hidden', position: 'relative' }}>
+      <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: Math.round(PHOTO_H * 0.46), display: 'flex', gap: 2 }}>
+        <div style={{ flex: 1, overflow: 'hidden' }}>
           {img(0) ? (
-            <img src={img(0)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', filter: 'brightness(0.75)' }} />
+            <img src={img(0)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', filter: 'brightness(0.85)' }} />
           ) : (
             <div style={{ width: '100%', height: '100%', backgroundColor: '#1a1a2e' }} />
           )}
         </div>
-        <div style={{ flex: 1, overflow: 'hidden', position: 'relative' }}>
+        <div style={{ flex: 1, overflow: 'hidden' }}>
           {img(1) ? (
-            <img src={img(1)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', filter: 'brightness(0.75)' }} />
+            <img src={img(1)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', filter: 'brightness(0.85)' }} />
           ) : (
             <div style={{ width: '100%', height: '100%', backgroundColor: '#16213e' }} />
           )}
@@ -159,24 +168,23 @@ export const AMStory3_T3_Reveal = ({
       </div>
 
       {/* Bottom row: 1 wide + 1 normal */}
-      <div style={{ position: 'absolute', top: 202, left: 0, right: 0, height: 180, display: 'flex', gap: 2 }}>
-        <div style={{ flex: 2, overflow: 'hidden', position: 'relative' }}>
+      <div style={{ position: 'absolute', top: Math.round(PHOTO_H * 0.46) + 2, left: 0, right: 0, height: Math.round(PHOTO_H * 0.54) - 2, display: 'flex', gap: 2 }}>
+        <div style={{ flex: 2, overflow: 'hidden' }}>
           {img(2) ? (
-            <img src={img(2)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', filter: 'brightness(0.75)' }} />
+            <img src={img(2)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', filter: 'brightness(0.85)' }} />
           ) : (
             <div style={{ width: '100%', height: '100%', backgroundColor: '#0f3460' }} />
           )}
         </div>
         <div style={{ flex: 1, overflow: 'hidden', position: 'relative' }}>
           {img(3) ? (
-            <img src={img(3)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', filter: 'brightness(0.75)' }} />
+            <img src={img(3)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', filter: 'brightness(0.85)' }} />
           ) : (
             <div style={{ width: '100%', height: '100%', backgroundColor: '#533483' }} />
           )}
-          {/* "+N" badge */}
           {imgs.length > 4 && (
             <div style={{
-              position: 'absolute', inset: 0, backgroundColor: 'rgba(244,121,32,0.7)',
+              position: 'absolute', inset: 0, backgroundColor: 'rgba(244,121,32,0.75)',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
             }}>
               <p style={{ color: 'white', fontSize: 22, fontWeight: 900, margin: 0 }}>+{imgs.length - 4}</p>
@@ -185,11 +193,15 @@ export const AMStory3_T3_Reveal = ({
         </div>
       </div>
 
-      {/* Dark gradient bottom overlay */}
-      <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '50%', background: 'linear-gradient(to top, rgba(0,0,0,1) 40%, transparent 100%)' }} />
+      {/* Gradient fade bottom das fotos */}
+      <div style={{
+        position: 'absolute', top: PHOTO_H - 60, left: 0, right: 0, height: 60,
+        background: 'linear-gradient(to bottom, transparent, #0c0c0c)',
+        zIndex: 3,
+      }} />
 
-      {/* Top: logo + tag */}
-      <div style={{ position: 'absolute', top: 20, left: 18, right: 18, zIndex: 20, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+      {/* Top overlay: logo + neighborhood tag */}
+      <div style={{ position: 'absolute', top: 18, left: 16, right: 16, zIndex: 20, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <Logo variant="white" />
         {data.neighborhood && (
           <div style={{ backgroundColor: '#F47920', borderRadius: 20, padding: '5px 12px' }}>
@@ -198,32 +210,35 @@ export const AMStory3_T3_Reveal = ({
         )}
       </div>
 
-      {/* Bottom content */}
-      <div style={{ position: 'absolute', bottom: 44, left: 18, right: 18, zIndex: 20 }}>
+      {/* ── Card info — rodapé ── */}
+      <div style={{
+        position: 'absolute', top: CARD_TOP, left: 12, right: 12, bottom: 12, zIndex: 20,
+        display: 'flex', flexDirection: 'column', justifyContent: 'space-between',
+      }}>
         {/* Property name */}
-        <p style={{ color: 'white', fontSize: 16, fontWeight: 800, margin: '0 0 12px', lineHeight: 1.3 }}>
+        <p style={{ color: 'white', fontSize: 14, fontWeight: 800, margin: '0 0 8px', lineHeight: 1.3 }}>
           {data.title || 'Apartamento Disponível'}
         </p>
 
         {/* Specs row */}
-        <div style={{ display: 'flex', gap: 6, marginBottom: 12, flexWrap: 'wrap' }}>
+        <div style={{ display: 'flex', gap: 6, marginBottom: 8, flexWrap: 'wrap' }}>
           {data.bedrooms > 0 && (
-            <div style={{ backgroundColor: 'rgba(255,255,255,0.1)', backdropFilter: 'blur(10px)', borderRadius: 10, padding: '5px 10px', border: '1px solid rgba(255,255,255,0.15)' }}>
+            <div style={{ backgroundColor: 'rgba(255,255,255,0.1)', backdropFilter: 'blur(10px)', borderRadius: 10, padding: '4px 10px', border: '1px solid rgba(255,255,255,0.15)' }}>
               <p style={{ color: 'white', fontSize: 10, fontWeight: 600, margin: 0 }}>🛏 {data.bedrooms} Qto{data.bedrooms > 1 ? 's' : ''}</p>
             </div>
           )}
           {data.area > 0 && (
-            <div style={{ backgroundColor: 'rgba(255,255,255,0.1)', backdropFilter: 'blur(10px)', borderRadius: 10, padding: '5px 10px', border: '1px solid rgba(255,255,255,0.15)' }}>
+            <div style={{ backgroundColor: 'rgba(255,255,255,0.1)', backdropFilter: 'blur(10px)', borderRadius: 10, padding: '4px 10px', border: '1px solid rgba(255,255,255,0.15)' }}>
               <p style={{ color: 'white', fontSize: 10, fontWeight: 600, margin: 0 }}>📐 {data.area}m²</p>
             </div>
           )}
           {data.garageSpaces > 0 && (
-            <div style={{ backgroundColor: 'rgba(255,255,255,0.1)', backdropFilter: 'blur(10px)', borderRadius: 10, padding: '5px 10px', border: '1px solid rgba(255,255,255,0.15)' }}>
+            <div style={{ backgroundColor: 'rgba(255,255,255,0.1)', backdropFilter: 'blur(10px)', borderRadius: 10, padding: '4px 10px', border: '1px solid rgba(255,255,255,0.15)' }}>
               <p style={{ color: 'white', fontSize: 10, fontWeight: 600, margin: 0 }}>🚗 {data.garageSpaces} Vaga{data.garageSpaces > 1 ? 's' : ''}</p>
             </div>
           )}
           {data.floor && (
-            <div style={{ backgroundColor: 'rgba(255,255,255,0.1)', backdropFilter: 'blur(10px)', borderRadius: 10, padding: '5px 10px', border: '1px solid rgba(255,255,255,0.15)' }}>
+            <div style={{ backgroundColor: 'rgba(255,255,255,0.1)', backdropFilter: 'blur(10px)', borderRadius: 10, padding: '4px 10px', border: '1px solid rgba(255,255,255,0.15)' }}>
               <p style={{ color: 'white', fontSize: 10, fontWeight: 600, margin: 0 }}>🏢 {data.floor}° And.</p>
             </div>
           )}
@@ -232,7 +247,7 @@ export const AMStory3_T3_Reveal = ({
         {/* Price — big highlight */}
         <div style={{
           background: 'linear-gradient(135deg, #1B5EA6 0%, #0d3b6e 100%)',
-          borderRadius: 16, padding: '14px 18px',
+          borderRadius: 16, padding: '13px 18px',
           border: '1px solid rgba(27,94,166,0.5)',
           boxShadow: '0 8px 32px rgba(27,94,166,0.4)',
         }}>
@@ -259,27 +274,24 @@ export const AMStory3_T3_Reveal = ({
             </div>
           )}
         </div>
-      </div>
 
-      {/* Bottom */}
-      <div style={{
-        position: 'absolute', bottom: 14, left: 18, right: 18, zIndex: 20,
-        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-      }}>
-        <div style={{ display: 'flex', gap: 4 }}>
-          <div style={{ width: 32, height: 3, borderRadius: 2, backgroundColor: 'rgba(255,255,255,0.3)' }} />
-          <div style={{ width: 32, height: 3, borderRadius: 2, backgroundColor: '#F47920' }} />
-          <div style={{ width: 32, height: 3, borderRadius: 2, backgroundColor: 'rgba(255,255,255,0.3)' }} />
-        </div>
-        <div style={{ backgroundColor: 'rgba(255,255,255,0.1)', borderRadius: 20, padding: '4px 12px', border: '1px solid rgba(255,255,255,0.15)' }}>
-          <p style={{ color: 'white', fontSize: 10, margin: 0, fontWeight: 600 }}>2 / 3</p>
+        {/* Bottom */}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 8 }}>
+          <div style={{ display: 'flex', gap: 4 }}>
+            <div style={{ width: 32, height: 3, borderRadius: 2, backgroundColor: 'rgba(255,255,255,0.3)' }} />
+            <div style={{ width: 32, height: 3, borderRadius: 2, backgroundColor: '#F47920' }} />
+            <div style={{ width: 32, height: 3, borderRadius: 2, backgroundColor: 'rgba(255,255,255,0.3)' }} />
+          </div>
+          <div style={{ backgroundColor: 'rgba(255,255,255,0.1)', borderRadius: 20, padding: '4px 12px', border: '1px solid rgba(255,255,255,0.15)' }}>
+            <p style={{ color: 'white', fontSize: 10, margin: 0, fontWeight: 600 }}>2 / 3</p>
+          </div>
         </div>
       </div>
     </div>
   );
 };
 
-/* ── Story 3: CTA ────────────────────────────────────────────────────────────*/
+/* ── Story 3: CTA — sem gatilhos falsos, honesto e direto ────────────────────*/
 export const AMStory3_T3_CTA = ({
   data,
   photo,
@@ -309,20 +321,20 @@ export const AMStory3_T3_CTA = ({
       {/* Logo */}
       <Logo variant="white" />
 
-      {/* Top urgency badge */}
+      {/* Top badge — honesto, sem gatilho falso */}
       <div style={{
-        marginTop: 20, backgroundColor: '#F47920', borderRadius: 30, padding: '6px 20px',
-        boxShadow: '0 4px 16px rgba(244,121,32,0.5)',
+        marginTop: 20, backgroundColor: '#1B5EA6', borderRadius: 30, padding: '6px 20px',
+        boxShadow: '0 4px 16px rgba(27,94,166,0.5)',
       }}>
         <p style={{ color: 'white', fontSize: 11, fontWeight: 800, margin: 0, letterSpacing: '0.12em', textTransform: 'uppercase' }}>
-          🔥 Oportunidade única
+          📞 Estamos aqui para ajudar
         </p>
       </div>
 
       {/* Main CTA text */}
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center' }}>
         <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: 13, fontWeight: 600, margin: '0 0 8px', textTransform: 'uppercase', letterSpacing: '0.12em' }}>
-          Não espere mais
+          Tire suas dúvidas
         </p>
         <p style={{ color: 'white', fontSize: 38, fontWeight: 900, lineHeight: 1.1, margin: '0 0 6px' }}>
           Entre em

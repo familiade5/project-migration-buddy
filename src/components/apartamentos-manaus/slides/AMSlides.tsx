@@ -632,9 +632,6 @@ export const AMPhotoSlide = ({
 };
 
 // ─── Último Slide: INFORMAÇÃO ─────────────────────────────────────────────────
-// Mesmo padrão do Slide 3: clip-path com nicho recortado para o card da logo.
-// Logo card em zIndex 5 (abaixo da foto), foto em zIndex 10 contornando o nicho.
-// Overlay escuro dentro da foto. Texto sobreposto em zIndex 20.
 export const AMInfoSlide = ({
   data,
   photo,
@@ -769,3 +766,327 @@ export const AMInfoSlide = ({
     </div>
   );
 };
+
+// ─── STORY SLIDES (360 × 640 — formato 9:16) ─────────────────────────────────
+// Versões dos slides adaptadas para o formato de story vertical.
+
+const STORY_W = 360;
+const STORY_H = 640;
+
+const formatPriceSt = (v: number) =>
+  v > 0
+    ? `R$ ${v.toLocaleString('pt-BR', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`
+    : 'Consulte';
+
+// Story: Capa
+export const AMStoryCoverSlide = ({
+  data,
+  photo,
+}: {
+  data: AMPropertyData;
+  photo?: string;
+}) => {
+  const price = data.isRental ? data.rentalPrice : data.salePrice;
+  const priceLabel = data.isRental ? 'LOCAÇÃO' : 'VENDA';
+
+  return (
+    <div style={{ position: 'relative', width: STORY_W, height: STORY_H, backgroundColor: '#0a0f1e', fontFamily: 'Arial, sans-serif', overflow: 'hidden' }}>
+      {/* Full bleed photo */}
+      {photo && (
+        <img src={photo} alt="" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', filter: 'brightness(0.55)' }} />
+      )}
+      {/* Gradient overlays */}
+      <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, rgba(0,0,0,0.6) 0%, transparent 30%, transparent 55%, rgba(0,0,0,0.85) 100%)' }} />
+
+      {/* Logo + header */}
+      <div style={{ position: 'absolute', top: 44, left: 0, right: 0, display: 'flex', justifyContent: 'center', zIndex: 10 }}>
+        <AMLogo width={110} variant="white" />
+      </div>
+
+      {/* Orange badge */}
+      <div style={{ position: 'absolute', top: 44, left: 18, zIndex: 10 }}>
+        <div style={{ backgroundColor: '#F47920', borderRadius: 6, padding: '4px 10px' }}>
+          <p style={{ color: 'white', fontSize: 10, fontWeight: 700, margin: 0, textTransform: 'uppercase', letterSpacing: '0.08em' }}>{priceLabel}</p>
+        </div>
+      </div>
+
+      {/* Bottom content */}
+      <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '0 20px 36px', zIndex: 10 }}>
+        <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: 11, fontWeight: 600, letterSpacing: '0.12em', textTransform: 'uppercase', margin: '0 0 6px' }}>
+          {data.neighborhood || 'Manaus'} — {data.city || 'AM'}
+        </p>
+        <p style={{ color: 'white', fontSize: 24, fontWeight: 900, lineHeight: 1.25, margin: '0 0 16px', textShadow: '0 2px 12px rgba(0,0,0,0.4)' }}>
+          {data.title || 'Apartamento Disponível'}
+        </p>
+
+        {/* Specs row */}
+        <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 14 }}>
+          {data.bedrooms > 0 && (
+            <div style={{ backgroundColor: 'rgba(255,255,255,0.12)', backdropFilter: 'blur(8px)', borderRadius: 8, padding: '5px 10px', border: '1px solid rgba(255,255,255,0.2)' }}>
+              <span style={{ color: 'white', fontSize: 11, fontWeight: 600 }}>🛏 {data.bedrooms} Qto{data.bedrooms > 1 ? 's' : ''}</span>
+            </div>
+          )}
+          {data.area > 0 && (
+            <div style={{ backgroundColor: 'rgba(255,255,255,0.12)', backdropFilter: 'blur(8px)', borderRadius: 8, padding: '5px 10px', border: '1px solid rgba(255,255,255,0.2)' }}>
+              <span style={{ color: 'white', fontSize: 11, fontWeight: 600 }}>📐 {data.area}m²</span>
+            </div>
+          )}
+          {data.garageSpaces > 0 && (
+            <div style={{ backgroundColor: 'rgba(255,255,255,0.12)', backdropFilter: 'blur(8px)', borderRadius: 8, padding: '5px 10px', border: '1px solid rgba(255,255,255,0.2)' }}>
+              <span style={{ color: 'white', fontSize: 11, fontWeight: 600 }}>🚗 {data.garageSpaces} Vaga{data.garageSpaces > 1 ? 's' : ''}</span>
+            </div>
+          )}
+          {data.floor && (
+            <div style={{ backgroundColor: 'rgba(255,255,255,0.12)', backdropFilter: 'blur(8px)', borderRadius: 8, padding: '5px 10px', border: '1px solid rgba(255,255,255,0.2)' }}>
+              <span style={{ color: 'white', fontSize: 11, fontWeight: 600 }}>🏢 {data.floor}° And.</span>
+            </div>
+          )}
+        </div>
+
+        {/* Price card */}
+        <div style={{
+          backgroundColor: '#1B5EA6', borderRadius: 16, padding: '14px 18px',
+          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+          boxShadow: '0 8px 30px rgba(27,94,166,0.45)',
+        }}>
+          <div>
+            <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: 10, margin: '0 0 2px', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+              {data.isRental ? 'Aluguel' : 'Valor de Venda'}
+            </p>
+            <p style={{ color: 'white', fontSize: 26, fontWeight: 900, margin: 0, lineHeight: 1 }}>
+              {formatPriceSt(price)}
+            </p>
+          </div>
+          <div style={{ textAlign: 'right' }}>
+            {data.acceptsFinancing && <p style={{ color: '#86efac', fontSize: 10, fontWeight: 600, margin: '0 0 2px' }}>✓ Financiamento</p>}
+            {data.acceptsFGTS && <p style={{ color: '#86efac', fontSize: 10, fontWeight: 600, margin: 0 }}>✓ FGTS</p>}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Story: Foto individual
+export const AMStoryPhotoSlide = ({
+  photo,
+  data,
+  photoIndex,
+}: {
+  photo: string;
+  data: AMPropertyData;
+  photoIndex: number;
+}) => (
+  <div style={{ position: 'relative', width: STORY_W, height: STORY_H, backgroundColor: '#0a0f1e', fontFamily: 'Arial, sans-serif', overflow: 'hidden' }}>
+    <img src={photo} alt="" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
+    {/* Subtle gradient bottom for logo */}
+    <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 100, background: 'linear-gradient(to top, rgba(0,0,0,0.65), transparent)' }} />
+    {/* Top logo */}
+    <div style={{ position: 'absolute', top: 18, left: 18, zIndex: 10, backgroundColor: 'rgba(255,255,255,0.88)', borderRadius: 8, padding: '4px 10px' }}>
+      <AMLogo width={96} variant="color" />
+    </div>
+    {/* Bottom info */}
+    <div style={{ position: 'absolute', bottom: 24, left: 18, right: 18, zIndex: 10, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+      <div style={{ backgroundColor: '#F47920', borderRadius: 8, padding: '4px 12px' }}>
+        <p style={{ color: 'white', fontSize: 10, fontWeight: 700, margin: 0 }}>📍 {data.neighborhood || 'Manaus'}</p>
+      </div>
+      <div style={{ backgroundColor: 'rgba(255,255,255,0.15)', borderRadius: 8, padding: '4px 12px', border: '1px solid rgba(255,255,255,0.2)' }}>
+        <p style={{ color: 'white', fontSize: 10, fontWeight: 600, margin: 0 }}>{photoIndex} / {photoIndex}</p>
+      </div>
+    </div>
+  </div>
+);
+
+// Story: Especificações
+export const AMStorySpecsSlide = ({
+  data,
+  photo,
+}: {
+  data: AMPropertyData;
+  photo?: string;
+}) => {
+  const specs: { icon: string; label: string }[] = [
+    data.bedrooms > 0 ? { icon: '🛏', label: `${data.bedrooms} quarto${data.bedrooms > 1 ? 's' : ''}` } : null,
+    data.suites > 0 ? { icon: '🛁', label: `${data.suites} suíte${data.suites > 1 ? 's' : ''}` } : null,
+    data.garageSpaces > 0 ? { icon: '🚗', label: `${data.garageSpaces} vaga${data.garageSpaces > 1 ? 's' : ''}` } : null,
+    data.floor ? { icon: '🏢', label: `${data.floor}° andar` } : null,
+    data.area > 0 ? { icon: '📐', label: `${data.area}m²` } : null,
+    ...(data.rooms ? data.rooms.split('\n').filter(Boolean).map(r => ({ icon: '✅', label: r })) : []),
+  ].filter(Boolean) as { icon: string; label: string }[];
+
+  return (
+    <div style={{ position: 'relative', width: STORY_W, height: STORY_H, backgroundColor: '#0a0f1e', fontFamily: 'Arial, sans-serif', overflow: 'hidden' }}>
+      {/* Background photo */}
+      {photo && (
+        <img src={photo} alt="" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', filter: 'brightness(0.3)' }} />
+      )}
+      <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, #0a0f1e 0%, transparent 40%, rgba(0,0,0,0.8) 100%)' }} />
+
+      {/* Logo */}
+      <div style={{ position: 'absolute', top: 44, left: 0, right: 0, display: 'flex', justifyContent: 'center', zIndex: 10 }}>
+        <AMLogo width={110} variant="white" />
+      </div>
+
+      {/* Content */}
+      <div style={{ position: 'absolute', top: 120, left: 24, right: 24, zIndex: 10 }}>
+        <div style={{ backgroundColor: '#F47920', borderRadius: 30, padding: '5px 18px', display: 'inline-block', marginBottom: 16 }}>
+          <p style={{ color: 'white', fontSize: 11, fontWeight: 700, margin: 0, textTransform: 'uppercase', letterSpacing: '0.12em' }}>Detalhes do imóvel</p>
+        </div>
+
+        <p style={{ color: 'white', fontSize: 20, fontWeight: 800, margin: '0 0 20px', lineHeight: 1.3 }}>
+          {data.title || 'Apartamento Disponível'}
+        </p>
+
+        {/* Specs list */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+          {specs.slice(0, 8).map((spec, i) => (
+            <div key={i} style={{
+              backgroundColor: 'rgba(255,255,255,0.08)', backdropFilter: 'blur(8px)',
+              borderRadius: 12, padding: '10px 14px', border: '1px solid rgba(255,255,255,0.1)',
+              display: 'flex', alignItems: 'center', gap: 10,
+            }}>
+              <span style={{ fontSize: 16 }}>{spec.icon}</span>
+              <span style={{ color: 'white', fontSize: 13, fontWeight: 600 }}>{spec.label}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Bottom */}
+      <div style={{ position: 'absolute', bottom: 30, left: 24, right: 24, zIndex: 10 }}>
+        <div style={{ backgroundColor: '#1B5EA6', borderRadius: 12, padding: '10px 16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <p style={{ color: 'rgba(255,255,255,0.8)', fontSize: 11, margin: 0 }}>apartamentosmanaus.com</p>
+          <div style={{ backgroundColor: 'rgba(255,255,255,0.2)', borderRadius: 20, padding: '3px 12px' }}>
+            <p style={{ color: 'white', fontSize: 10, margin: 0, fontWeight: 600 }}>Deslize ➜</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Story: Localização
+export const AMStoryLocationSlide = ({
+  data,
+  photo,
+}: {
+  data: AMPropertyData;
+  photo?: string;
+}) => {
+  const address = data.address || '';
+
+  return (
+    <div style={{ position: 'relative', width: STORY_W, height: STORY_H, backgroundColor: '#0a0f1e', fontFamily: 'Arial, sans-serif', overflow: 'hidden' }}>
+      {/* Background photo */}
+      {photo && (
+        <img src={photo} alt="" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', filter: 'brightness(0.45)' }} />
+      )}
+      <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.2) 40%, rgba(0,0,0,0.75) 100%)' }} />
+
+      {/* Logo */}
+      <div style={{ position: 'absolute', top: 44, left: 0, right: 0, display: 'flex', justifyContent: 'center', zIndex: 10 }}>
+        <AMLogo width={110} variant="white" />
+      </div>
+
+      {/* Location pin icon */}
+      <div style={{ position: 'absolute', top: '38%', left: '50%', transform: 'translate(-50%,-50%)', zIndex: 10, textAlign: 'center' }}>
+        <div style={{ fontSize: 48, marginBottom: 12 }}>📍</div>
+        <div style={{ backgroundColor: '#F47920', borderRadius: 30, padding: '6px 20px', display: 'inline-block' }}>
+          <p style={{ color: 'white', fontSize: 12, fontWeight: 700, margin: 0, textTransform: 'uppercase', letterSpacing: '0.1em' }}>
+            {data.neighborhood || 'Manaus'}
+          </p>
+        </div>
+      </div>
+
+      {/* Bottom info card */}
+      <div style={{ position: 'absolute', bottom: 30, left: 20, right: 20, zIndex: 10 }}>
+        <div style={{
+          backgroundColor: 'rgba(10,15,30,0.85)', backdropFilter: 'blur(16px)',
+          borderRadius: 20, padding: '18px 20px',
+          border: '1px solid rgba(27,94,166,0.4)',
+        }}>
+          <p style={{ color: '#93c5fd', fontSize: 10, fontWeight: 700, margin: '0 0 4px', textTransform: 'uppercase', letterSpacing: '0.1em' }}>📌 Localização</p>
+          <p style={{ color: 'white', fontSize: 16, fontWeight: 800, margin: '0 0 6px', lineHeight: 1.3 }}>
+            {data.title || 'Apartamento Disponível'}
+          </p>
+          {address && (
+            <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: 12, margin: '0 0 6px', lineHeight: 1.4 }}>{address}</p>
+          )}
+          {data.referencePoint && (
+            <p style={{ color: 'rgba(255,255,255,0.55)', fontSize: 11, margin: 0, lineHeight: 1.4 }}>📎 {data.referencePoint}</p>
+          )}
+          <div style={{ marginTop: 12, borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: 10, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <p style={{ color: 'rgba(255,255,255,0.55)', fontSize: 10, margin: 0 }}>apartamentosmanaus.com</p>
+            <div style={{ backgroundColor: '#1B5EA6', borderRadius: 20, padding: '3px 12px' }}>
+              <p style={{ color: 'white', fontSize: 10, fontWeight: 600, margin: 0 }}>Deslize ➜</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Story: Info / CTA final
+export const AMStoryInfoSlide = ({
+  data,
+  photo,
+}: {
+  data: AMPropertyData;
+  photo?: string;
+}) => (
+  <div style={{ position: 'relative', width: STORY_W, height: STORY_H, fontFamily: 'Arial, sans-serif', overflow: 'hidden' }}>
+    {photo && (
+      <img src={photo} alt="" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', filter: 'brightness(0.3)' }} />
+    )}
+    <div style={{
+      position: 'absolute', inset: 0,
+      background: 'linear-gradient(160deg, #0a1628 0%, #1B5EA6 50%, #0a1628 100%)',
+      opacity: photo ? 0.85 : 1,
+    }} />
+    {/* Geometric accents */}
+    <div style={{ position: 'absolute', top: -80, right: -80, width: 260, height: 260, borderRadius: '50%', border: '2px solid rgba(244,121,32,0.2)', zIndex: 2 }} />
+    <div style={{ position: 'absolute', top: -50, right: -50, width: 180, height: 180, borderRadius: '50%', border: '2px solid rgba(244,121,32,0.35)', zIndex: 2 }} />
+
+    <div style={{ position: 'absolute', inset: 0, zIndex: 10, display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '50px 28px 40px' }}>
+      <AMLogo width={110} variant="white" />
+
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+        <div style={{
+          backgroundColor: 'rgba(244,121,32,0.15)', border: '1px solid rgba(244,121,32,0.5)',
+          borderRadius: 30, padding: '5px 20px', marginBottom: 20,
+        }}>
+          <p style={{ color: '#F47920', fontSize: 11, fontWeight: 700, margin: 0, letterSpacing: '0.12em', textTransform: 'uppercase' }}>
+            Fale conosco hoje
+          </p>
+        </div>
+
+        <p style={{ color: 'white', fontSize: 30, fontWeight: 900, textAlign: 'center', lineHeight: 1.2, margin: '0 0 8px' }}>
+          Tire suas dúvidas
+        </p>
+        <p style={{ color: '#F47920', fontSize: 34, fontWeight: 900, textAlign: 'center', lineHeight: 1.1, margin: '0 0 28px' }}>
+          entre em contato!
+        </p>
+
+        {/* Phone CTA */}
+        <div style={{
+          width: '100%', backgroundColor: '#F47920', borderRadius: 16, padding: '14px 20px',
+          display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, marginBottom: 14,
+          boxShadow: '0 8px 24px rgba(244,121,32,0.4)',
+        }}>
+          <span style={{ fontSize: 22 }}>📱</span>
+          <div>
+            <p style={{ color: 'rgba(255,255,255,0.8)', fontSize: 10, margin: '0 0 1px', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Fale agora via WhatsApp</p>
+            <p style={{ color: 'white', fontSize: 18, fontWeight: 900, margin: 0 }}>{data.brokerPhone || '(92) 9XXXX-XXXX'}</p>
+          </div>
+        </div>
+
+        <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: 11, textAlign: 'center', margin: '0 0 4px' }}>
+          {data.brokerName || 'Iury Sampaio'} • Corretor de Imóveis
+        </p>
+        <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: 10, textAlign: 'center', margin: '0 0 4px' }}>Creci 3968 PF</p>
+        <p style={{ color: 'rgba(255,255,255,0.35)', fontSize: 10, textAlign: 'center', margin: 0 }}>🌐 www.apartamentosmanaus.com</p>
+      </div>
+    </div>
+  </div>
+);
