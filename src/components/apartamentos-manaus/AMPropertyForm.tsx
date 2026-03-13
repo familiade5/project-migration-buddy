@@ -49,11 +49,6 @@ export function AMPropertyForm({ data, onChange }: AMPropertyFormProps) {
               <SelectContent>{propertyTypes.map((t) => <SelectItem key={t} value={t}>{t}</SelectItem>)}</SelectContent>
             </Select>
           </div>
-          <div className="space-y-1">
-            <Label className={labelClass}>Bairro</Label>
-            <Input className={inputClass} placeholder="Ex: Tarumã"
-              value={data.neighborhood} onChange={(e) => set('neighborhood', e.target.value)} />
-          </div>
           <div className="col-span-2 space-y-1">
             <Label className={labelClass}>Endereço (Rua)</Label>
             <Input className={inputClass} placeholder="Ex: Rua Peixe Cavalo"
@@ -63,16 +58,6 @@ export function AMPropertyForm({ data, onChange }: AMPropertyFormProps) {
             <Label className={labelClass}>Ponto de Referência</Label>
             <Input className={inputClass} placeholder="Ex: Em frente a Volvo"
               value={data.referencePoint} onChange={(e) => set('referencePoint', e.target.value)} />
-          </div>
-          <div className="space-y-1">
-            <Label className={labelClass}>Cidade</Label>
-            <Input className={inputClass} placeholder="Manaus"
-              value={data.city} onChange={(e) => set('city', e.target.value)} />
-          </div>
-          <div className="space-y-1">
-            <Label className={labelClass}>Estado</Label>
-            <Input className={inputClass} placeholder="AM"
-              value={data.state} onChange={(e) => set('state', e.target.value)} />
           </div>
         </div>
       </Section>
