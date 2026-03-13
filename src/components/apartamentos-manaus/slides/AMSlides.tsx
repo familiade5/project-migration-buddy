@@ -53,14 +53,15 @@ export const AMCoverSlide = ({
   // Badge: top:4, left:4, width:210, estimated height ~56px.
   // Notch: x 8→218, y 8→66. Q curves (r≈18) at notch corners.
   // Inner corner at (218, 8) rounded with A r=22 sweep=1 — same treatment as slide 2.
-  // Path starts at (352,262) — the exact start of the concave card arc —
-  // so NO straight segment exists before it. Z closes back via the right wall + top-right corner.
+  // Path starts at (352,266) — arc start = notch top (288) − r (22) = 266.
+  // Card with bottom=4: top≈293, shadow top≈288. Notch H at y=288 aligns perfectly.
+  // Z closes back (352,30)→(352,266) = right wall, no segment before arc.
   const shapePath = [
-    'M 352 262',              // start exactly where the concave arc begins (no prior line segment)
-    'A 22 22 0 0 1 330 284',  // CW concave quarter-circle r=22: card top-right corner
-    'H 192',                  // across card notch top
-    'Q 174 284 174 302',      // smooth curve into blue card notch left side
-    'V 330',                  // down notch left wall
+    'M 352 266',              // arc start: shadow top (288) - r (22) = 266
+    'A 22 22 0 0 1 330 288',  // CW concave r=22 — same geometry as top-right outer corner, mirrored
+    'H 192',                  // card notch top at y=288
+    'Q 174 288 174 306',      // smooth curve into card notch left side
+    'V 334',                  // down notch left wall
     'A 22 22 0 0 1 152 352',  // round inner bottom corner (r=22)
     'H 30',                   // bottom edge
     'A 22 22 0 0 1 8 330',    // bottom-left outer corner (r=22)
@@ -71,8 +72,8 @@ export const AMCoverSlide = ({
     'V 30',                   // badge right wall up
     'A 22 22 0 0 1 240 8',    // badge inner top corner (r=22)
     'H 330',                  // top edge rightward
-    'A 22 22 0 0 1 352 30',   // top-right outer corner (r=22) → (352,30)
-    'Z',                      // closes with a straight line (352,30)→(352,262) = right wall, no visible spike
+    'A 22 22 0 0 1 352 30',   // top-right outer corner (r=22)
+    'Z',                      // right wall: (352,30)→(352,266)
   ].join(' ');
 
   return (
