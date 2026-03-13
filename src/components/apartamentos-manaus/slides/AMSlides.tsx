@@ -85,13 +85,13 @@ export const AMCoverSlide = ({
         )}
       </div>
 
-      {/* ── ORANGE BADGE: wider, white ring contour ── */}
+      {/* ── ORANGE BADGE: half-width, white ring contour ── */}
       <div
         style={{
           position: 'absolute',
           top: 4,
           left: 4,
-          right: 4,
+          width: 172,
           zIndex: 20,
           backgroundColor: '#F47920',
           borderRadius: 17,
@@ -142,7 +142,7 @@ export const AMCoverSlide = ({
         <AMLogo width={106} variant="white" />
       </div>
 
-      {/* ── BLUE PRICE CARD: white ring contour ── */}
+      {/* ── BLUE PRICE CARD: reduced height (~1/4 less), white ring contour ── */}
       <div
         style={{
           position: 'absolute',
@@ -151,7 +151,7 @@ export const AMCoverSlide = ({
           zIndex: 20,
           backgroundColor: '#1B5EA6',
           borderRadius: 20,
-          padding: '11px 16px 12px',
+          padding: '7px 16px 8px',
           minWidth: 160,
           boxShadow: '0 0 0 5px #ffffff',
         }}
@@ -167,8 +167,8 @@ export const AMCoverSlide = ({
             backgroundColor: 'rgba(255,255,255,0.2)',
             border: '1px solid rgba(255,255,255,0.4)',
             borderRadius: 20,
-            padding: '2px 10px',
-            marginBottom: 7,
+            padding: '1px 10px',
+            marginBottom: 4,
           }}
         >
           {priceLabel}
@@ -176,18 +176,18 @@ export const AMCoverSlide = ({
 
         {/* Price */}
         <div style={{ display: 'flex', alignItems: 'baseline', gap: 2, color: 'white' }}>
-          <span style={{ fontSize: 12, opacity: 0.75, marginRight: 2 }}>R$</span>
-          <span style={{ fontSize: 26, fontWeight: 700, lineHeight: 1 }}>
+          <span style={{ fontSize: 11, opacity: 0.75, marginRight: 2 }}>R$</span>
+          <span style={{ fontSize: 22, fontWeight: 700, lineHeight: 1 }}>
             {price > 0
               ? price.toLocaleString('pt-BR', { minimumFractionDigits: 0, maximumFractionDigits: 0 })
               : 'Consulte'}
           </span>
-          {price > 0 && <span style={{ fontSize: 12, opacity: 0.75 }}>,00</span>}
+          {price > 0 && <span style={{ fontSize: 11, opacity: 0.75 }}>,00</span>}
         </div>
 
         {/* Payment separator line */}
-        <div style={{ borderTop: '1px solid rgba(255,255,255,0.2)', marginTop: 6, paddingTop: 5 }}>
-          <p style={{ color: 'white', fontSize: 10, opacity: 0.9, margin: 0, lineHeight: 1.3 }}>
+        <div style={{ borderTop: '1px solid rgba(255,255,255,0.2)', marginTop: 4, paddingTop: 3 }}>
+          <p style={{ color: 'white', fontSize: 9, opacity: 0.9, margin: 0, lineHeight: 1.3 }}>
             {paymentLine}
           </p>
         </div>
