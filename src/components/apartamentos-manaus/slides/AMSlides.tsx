@@ -57,10 +57,10 @@ export const AMCoverSlide = ({
   // Card with bottom=4: top≈293, shadow top≈288. Notch H at y=288 aligns perfectly.
   // Z closes back (352,30)→(352,266) = right wall, no segment before arc.
   const shapePath = [
-    'M 352 266',              // arc start: shadow top (288) - r (22) = 266
-    'A 22 22 0 0 1 330 288',  // CW concave r=22 — same geometry as top-right outer corner, mirrored
-    'H 192',                  // card notch top at y=288
-    'Q 174 288 174 306',      // smooth curve into card notch left side
+    'M 352 256',              // arc start: moved up 10px (266→256)
+    'A 22 22 0 0 1 330 278',  // CW concave r=22 — end also moved up 10px (288→278)
+    'H 192',                  // card notch top at y=278
+    'Q 174 278 174 296',      // smooth curve into card notch left side (shifted up 10px)
     'V 334',                  // down notch left wall
     'A 22 22 0 0 1 152 352',  // round inner bottom corner (r=22)
     'H 30',                   // bottom edge
@@ -73,7 +73,7 @@ export const AMCoverSlide = ({
     'A 22 22 0 0 1 240 8',    // badge inner top corner (r=22)
     'H 330',                  // top edge rightward
     'A 22 22 0 0 1 352 30',   // top-right outer corner (r=22)
-    'Z',                      // right wall: (352,30)→(352,266)
+    'Z',                      // right wall: (352,30)→(352,256)
   ].join(' ');
 
   return (
