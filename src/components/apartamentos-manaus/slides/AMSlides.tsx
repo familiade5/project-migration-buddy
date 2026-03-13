@@ -254,11 +254,11 @@ export const AMSpecsSlide = ({
           zIndex: 20,
           backgroundColor: '#ffffff',
           borderRadius: 16,
-          padding: '8px 12px',
+          padding: '4px 10px',
           boxShadow: '0 0 0 5px #ffffff',
         }}
       >
-        <AMLogo width={110} variant="color" />
+        <AMLogo width={138} variant="color" />
       </div>
 
       {/* ── CARD ESCURO DE SPECS: canto inferior-direito sobre a foto ── */}
