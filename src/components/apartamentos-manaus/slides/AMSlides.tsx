@@ -402,7 +402,7 @@ export const AMLocationSlide = ({
     'H 222',                 // logo notch top leftward (200+22=222) — x=200 restaurado
     'Q 200 262 200 284',     // concave at top-left of logo notch (262+22=284)
     'V 324',                 // down logo notch left wall (346-22=324)
-    'Q 200 346 222 346',     // concave Q at bottom-left of logo notch
+    'A 22 22 0 0 1 222 346', // convex arc bottom-left — mesmo padrão do card de preço da capa
     'H 36',                  // bottom edge leftward
     'A 22 22 0 0 1 14 324',  // bottom-left outer convex corner
     'V 194',                 // left edge upward to blue notch (172+22=194)
