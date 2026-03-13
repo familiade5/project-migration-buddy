@@ -113,7 +113,7 @@ export function AMPropertyForm({ data, onChange }: AMPropertyFormProps) {
             value={data.rooms} onChange={(e) => set('rooms', e.target.value)} />
         </div>
         <div className="flex items-center gap-2 pt-1">
-          <Switch checked={data.furnished} onCheckedChange={(v) => set('furnished', v)} />
+          <Switch className={switchClass} checked={data.furnished} onCheckedChange={(v) => set('furnished', v)} />
           <Label className="text-sm text-gray-600">Imóvel mobiliado</Label>
         </div>
       </Section>
