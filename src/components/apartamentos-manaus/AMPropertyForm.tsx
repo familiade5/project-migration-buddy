@@ -11,7 +11,8 @@ interface AMPropertyFormProps {
 }
 
 const propertyTypes = ['Apartamento', 'Casa', 'Casa em Condomínio', 'Cobertura', 'Terreno', 'Sala Comercial'];
-const inputClass = 'h-10 border-gray-300 focus:border-blue-500 bg-white text-gray-900 text-sm';
+const inputClass = 'h-10 border-gray-300 focus:border-[#1B5EA6] bg-white text-gray-900 placeholder:text-gray-400 text-sm';
+const textareaClass = 'border-gray-300 focus:border-[#1B5EA6] bg-white text-gray-900 placeholder:text-gray-400 text-sm resize-none';
 const labelClass = 'text-xs font-semibold text-gray-600 uppercase tracking-wide';
 
 function Section({ title, color, children }: { title: string; color: string; children: React.ReactNode }) {
@@ -106,7 +107,7 @@ export function AMPropertyForm({ data, onChange }: AMPropertyFormProps) {
         </div>
         <div className="space-y-1">
           <Label className={labelClass}>Cômodos (um por linha)</Label>
-          <Textarea className="border-gray-300 bg-white text-sm resize-none" rows={3}
+          <Textarea className={textareaClass} rows={3}
             placeholder={"Salas estar e jantar\nCozinha americana\nÁrea de serviço"}
             value={data.rooms} onChange={(e) => set('rooms', e.target.value)} />
         </div>
@@ -120,7 +121,7 @@ export function AMPropertyForm({ data, onChange }: AMPropertyFormProps) {
       <Section title="Itens de Lazer" color="#1B5EA6">
         <div className="space-y-1">
           <Label className={labelClass}>Itens (um por linha ou separados por vírgula)</Label>
-          <Textarea className="border-gray-300 bg-white text-sm resize-none" rows={2}
+          <Textarea className={textareaClass} rows={2}
             placeholder={"Piscina\nChurrasqueira\nSalão de festas"}
             value={data.leisureItems} onChange={(e) => set('leisureItems', e.target.value)} />
         </div>
@@ -151,15 +152,9 @@ export function AMPropertyForm({ data, onChange }: AMPropertyFormProps) {
               <Input className={inputClass} type="number" placeholder="0"
                 value={data.subsidy || ''} onChange={(e) => set('subsidy', Number(e.target.value))} />
             </div>
-            <div className="flex gap-4">
-              <div className="flex items-center gap-2">
-                <Switch checked={data.acceptsFinancing} onCheckedChange={(v) => set('acceptsFinancing', v)} />
-                <Label className="text-sm text-gray-600">Aceita financiamento</Label>
-              </div>
-              <div className="flex items-center gap-2">
-                <Switch checked={data.acceptsFGTS} onCheckedChange={(v) => set('acceptsFGTS', v)} />
-                <Label className="text-sm text-gray-600">Aceita FGTS</Label>
-              </div>
+            <div className="flex items-center gap-2">
+              <Switch checked={data.acceptsFinancing} onCheckedChange={(v) => set('acceptsFinancing', v)} />
+              <Label className="text-sm text-gray-600">Aceita financiamento</Label>
             </div>
           </div>
         )}
@@ -219,7 +214,7 @@ export function AMPropertyForm({ data, onChange }: AMPropertyFormProps) {
 
       {/* Mensagem extra */}
       <Section title="Mensagem Informativa Extra" color="#F47920">
-        <Textarea className="border-gray-300 bg-white text-sm resize-none" rows={2}
+        <Textarea className={textareaClass} rows={2}
           placeholder="Ex: Unidades limitadas, consulte disponibilidade!"
           value={data.infoMessage} onChange={(e) => set('infoMessage', e.target.value)} />
       </Section>

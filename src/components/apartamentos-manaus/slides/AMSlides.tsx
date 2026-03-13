@@ -85,13 +85,13 @@ export const AMCoverSlide = ({
         )}
       </div>
 
-      {/* ── ORANGE BADGE: half-width, white ring contour ── */}
+      {/* ── ORANGE BADGE: ~60% width, white ring contour ── */}
       <div
         style={{
           position: 'absolute',
           top: 4,
           left: 4,
-          width: 172,
+          width: 210,
           zIndex: 20,
           backgroundColor: '#F47920',
           borderRadius: 17,
@@ -142,7 +142,7 @@ export const AMCoverSlide = ({
         <AMLogo width={106} variant="white" />
       </div>
 
-      {/* ── BLUE PRICE CARD: reduced height (~1/4 less), white ring contour ── */}
+      {/* ── BLUE PRICE CARD: compact height, white ring contour ── */}
       <div
         style={{
           position: 'absolute',
@@ -151,8 +151,8 @@ export const AMCoverSlide = ({
           zIndex: 20,
           backgroundColor: '#1B5EA6',
           borderRadius: 20,
-          padding: '7px 16px 8px',
-          minWidth: 160,
+          padding: '5px 14px 6px',
+          minWidth: 150,
           boxShadow: '0 0 0 5px #ffffff',
         }}
       >
