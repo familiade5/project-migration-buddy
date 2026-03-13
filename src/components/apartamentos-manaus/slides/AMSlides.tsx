@@ -196,8 +196,8 @@ export const AMCoverSlide = ({
 };
 
 // ─── Slide 2: ESPECIFICAÇÕES ─────────────────────────────────────────────────
-// Dois painéis com a mesma foto (crops diferentes via object-fit).
-// Card branco da logo flutua no topo-esquerdo com todos os cantos arredondados.
+// UMA única imagem, todos os 4 cantos arredondados.
+// Card branco da logo (só a logo, sem texto extra) flutua com todos os cantos arredondados.
 export const AMSpecsSlide = ({
   data,
   photo,
@@ -214,55 +214,25 @@ export const AMSpecsSlide = ({
     data.suites > 0 ? `${data.suites} suíte${data.suites > 1 ? 's' : ''}` : '',
   ].filter(Boolean).slice(0, 6);
 
-  const PAD = 8;
-  const GAP = 6;
-  const SPLIT_X = 154; // divisória vertical entre esquerdo e direito
-  const LEFT_TOP = 84; // painel esquerdo começa abaixo do card
-  const R = 22;
-
-  const photoImg = (pos: string) =>
-    photo ? (
-      <img src={photo} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: pos, display: 'block' }} />
-    ) : (
-      <div style={{ width: '100%', height: '100%', backgroundColor: '#d1d5db' }} />
-    );
-
   return (
     <div style={{ position: 'relative', width: 360, height: 360, backgroundColor: '#ffffff', fontFamily: 'Arial, sans-serif', overflow: 'hidden' }}>
 
-      {/* ── PAINEL DIREITO: altura total, foto à direita ── */}
-      <div style={{ position: 'absolute', top: PAD, left: SPLIT_X + GAP, right: PAD, bottom: PAD, borderRadius: R, overflow: 'hidden' }}>
-        {photoImg('center center')}
+      {/* ── 1 ÚNICA IMAGEM: todos os 4 cantos arredondados ── */}
+      <div style={{ position: 'absolute', top: 8, left: 8, right: 8, bottom: 8, borderRadius: 22, overflow: 'hidden' }}>
+        {photo
+          ? <img src={photo} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+          : <div style={{ width: '100%', height: '100%', backgroundColor: '#d1d5db' }} />
+        }
       </div>
 
-      {/* ── PAINEL ESQUERDO: abaixo do card da logo ── */}
-      <div style={{ position: 'absolute', top: LEFT_TOP, left: PAD, width: SPLIT_X - PAD, bottom: PAD, borderRadius: R, overflow: 'hidden' }}>
-        {photoImg('center center')}
-      </div>
-
-      {/* ── CARD BRANCO DA LOGO: todos os cantos arredondados, flutua sobre os painéis ── */}
-      <div
-        style={{
-          position: 'absolute',
-          top: PAD,
-          left: PAD,
-          width: SPLIT_X - PAD,
-          zIndex: 20,
-          backgroundColor: '#ffffff',
-          borderRadius: 16,
-          padding: '10px 12px',
-          display: 'flex',
-          alignItems: 'center',
-          gap: 10,
-          boxShadow: '0 4px 18px rgba(0,0,0,0.13)',
-        }}
-      >
-        <AMLogo width={44} variant="color" />
-        <div>
-          <p style={{ margin: 0, fontWeight: 700, fontSize: 9, color: '#1B5EA6', letterSpacing: '0.07em', lineHeight: 1.3 }}>APARTAMENTOS</p>
-          <p style={{ margin: '1px 0 0', fontWeight: 800, fontSize: 12, color: '#1B5EA6', lineHeight: 1.3 }}>MANAUS</p>
-          <p style={{ margin: '4px 0 0', fontWeight: 400, fontSize: 8, color: '#9ca3af', letterSpacing: '0.15em', lineHeight: 1.3 }}>IMOBILIÁRIA</p>
-        </div>
+      {/* ── CARD BRANCO DA LOGO: todos os cantos arredondados, só a logo (sem texto extra) ── */}
+      <div style={{
+        position: 'absolute', top: 14, left: 14, zIndex: 20,
+        backgroundColor: '#ffffff', borderRadius: 18,
+        padding: '10px 14px',
+        boxShadow: '0 4px 20px rgba(0,0,0,0.15)',
+      }}>
+        <AMLogo width={130} variant="color" />
       </div>
 
       {/* ── CARD ESCURO DE SPECS ── */}
