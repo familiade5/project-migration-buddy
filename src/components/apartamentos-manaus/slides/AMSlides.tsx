@@ -196,9 +196,9 @@ export const AMCoverSlide = ({
 };
 
 // ─── Slide 2: ESPECIFICAÇÕES ─────────────────────────────────────────────────
-// Foto cobre todo o slide (8px inset, radius 22) — mesmo padrão da Capa.
-// Logo flutua no topo-esquerdo com fundo branco + box-shadow branco (contorno).
-// Card escuro de specs no canto inferior-direito sobre a foto.
+// UMA foto de fundo (inset 8px, radius 22) — cobre todo o frame.
+// Quadro branco da logo fica no topo-esquerdo (zIndex alto) sobre a foto.
+// Dois overlays radial-gradient criam os cantos côncavos nas duas junções.
 export const AMSpecsSlide = ({
   data,
   photo,
@@ -215,6 +215,11 @@ export const AMSpecsSlide = ({
     data.suites > 0 ? `${data.suites} suíte${data.suites > 1 ? 's' : ''}` : '',
   ].filter(Boolean).slice(0, 6);
 
+  // Largura e altura do quadro da logo
+  const LOGO_W = 162; // px até onde a logo se estende horizontalmente
+  const LOGO_H = 58;  // px até onde a logo se estende verticalmente
+  const R = 22;       // raio do arredondamento (igual ao da foto)
+
   return (
     <div
       style={{
@@ -226,20 +231,15 @@ export const AMSpecsSlide = ({
         overflow: 'hidden',
       }}
     >
-      {/* ── FOTO: dois recortes da MESMA imagem que contornam a logo.
-           Janela direita (faixa vertical) + Janela inferior-esquerda (abaixo da logo).
-           Cada janela tem borderRadius:22 em todos os cantos → cantos arredondados
-           visíveis onde a foto encontra o quadro branco. ── */}
-
-      {/* Janela direita */}
+      {/* ── FOTO ÚNICA: fundo completo, recuada 8px, radius 22 ── */}
       <div
         style={{
           position: 'absolute',
           top: 8,
-          left: 162,
+          left: 8,
           right: 8,
           bottom: 8,
-          borderRadius: 22,
+          borderRadius: R,
           overflow: 'hidden',
         }}
       >
@@ -250,26 +250,7 @@ export const AMSpecsSlide = ({
         )}
       </div>
 
-      {/* Janela inferior-esquerda (abaixo da logo) */}
-      <div
-        style={{
-          position: 'absolute',
-          top: 58,
-          left: 8,
-          width: 154,
-          bottom: 8,
-          borderRadius: 22,
-          overflow: 'hidden',
-        }}
-      >
-        {photo ? (
-          <img src={photo} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
-        ) : (
-          <div style={{ width: '100%', height: '100%', backgroundColor: '#d1d5db' }} />
-        )}
-      </div>
-
-      {/* ── LOGO: quadro branco no canto superior-esquerdo ── */}
+      {/* ── LOGO: quadro branco canto superior-esquerdo ── */}
       <div
         style={{
           position: 'absolute',
@@ -277,12 +258,40 @@ export const AMSpecsSlide = ({
           left: 0,
           zIndex: 20,
           backgroundColor: '#ffffff',
-          borderRadius: '0 0 22px 0',
+          borderRadius: `0 0 ${R}px 0`,
           padding: '10px 14px 8px 10px',
         }}
       >
         <AMLogo width={138} variant="color" />
       </div>
+
+      {/* ── CANTO CÔNCAVO 1: inferior-direito do quadro logo (encontra foto à direita) ── */}
+      {/* Posicionado exatamente no canto inferior-direito do quadro branco */}
+      <div
+        style={{
+          position: 'absolute',
+          top: LOGO_H,
+          left: LOGO_W - R,
+          width: R,
+          height: R,
+          zIndex: 20,
+          background: `radial-gradient(circle at 0% 0%, transparent ${R}px, #ffffff ${R}px)`,
+        }}
+      />
+
+      {/* ── CANTO CÔNCAVO 2: superior-direito do quadro logo (encontra foto abaixo à esquerda) ── */}
+      {/* Posicionado exatamente no canto inferior-esquerdo da área do logo */}
+      <div
+        style={{
+          position: 'absolute',
+          top: LOGO_H - R,
+          left: 8,
+          width: R,
+          height: R,
+          zIndex: 20,
+          background: `radial-gradient(circle at 100% 100%, transparent ${R}px, #ffffff ${R}px)`,
+        }}
+      />
 
       {/* ── CARD ESCURO DE SPECS: canto inferior-direito sobre a foto ── */}
       {specs.length > 0 && (
