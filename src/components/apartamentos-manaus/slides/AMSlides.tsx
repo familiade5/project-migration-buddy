@@ -56,8 +56,8 @@ export const AMCoverSlide = ({
   const shapePath = [
     'M 330 8',
     'A 22 22 0 0 1 352 30',   // top-right outer corner (r=22)
-    'V 262',                  // stop 22px above corner
-    'A 22 22 0 0 1 330 284',  // CW arc — rounds grey corner outward
+    'V 240',                  // down right edge, giving more room for smooth curve
+    'Q 352 284 330 284',      // bezier from right edge to notch top — smooth rounded corner
     'H 192',                  // across notch top
     'Q 174 284 174 302',      // smooth curve into blue card notch left side
     'V 330',                  // down notch left wall, stop 22px above bottom
