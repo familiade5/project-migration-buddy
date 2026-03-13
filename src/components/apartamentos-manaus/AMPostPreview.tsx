@@ -9,6 +9,11 @@ import {
   AMLocationSlide,
   AMPhotoSlide,
   AMInfoSlide,
+  AMStoryCoverSlide,
+  AMStorySpecsSlide,
+  AMStoryLocationSlide,
+  AMStoryPhotoSlide,
+  AMStoryInfoSlide,
 } from './slides/AMSlides';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
