@@ -251,7 +251,7 @@ export const AMSpecsSlide = ({
     'H 150',                 // notch bottom rightward
     'Q 168 80 168 62',       // smooth convex curve up notch bottom-right
     'V 30',                  // up notch right edge — stop 22px before top
-    'A 22 22 0 0 0 190 8',   // round the top-notch corner (r=22, CCW) ← new
+    'A 22 22 0 0 1 190 8',   // round the top-notch corner (r=22, CW) ← corrected sweep
     'H 330',                 // top edge back to arc start
     'Z',
   ].join(' ');
