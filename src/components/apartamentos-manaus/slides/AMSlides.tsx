@@ -196,24 +196,18 @@ export const AMCoverSlide = ({
 };
 
 // ─── Slide 2: ESPECIFICAÇÕES ─────────────────────────────────────────────────
-// ONE single continuous shape for the grey photo area.
-// Uses a smooth cubic bezier concave curve at the top-left to create a natural
-// organic notch. The white logo card sits ON TOP of the grey shape (overlapping).
+// IMAGE MASK CONCEPT:
+//   Layer 1 (bottom): white slide background
+//   Layer 2: Logo card — white rounded rect, sits on background BELOW image
+//   Layer 3: Property image — clipped with evenodd hole exactly matching logo card
+//            so image is "cut away" revealing the logo card behind it
+//   Layer 4: Specs card
 //
-// Path (clockwise, 360×360 slide space):
-//   - Start at (175, 8): top edge, right of logo area
-//   - H 330 → top edge right
-//   - A 22 22 → round top-right corner
-//   - V 330 → right edge
-//   - A 22 22 → round bottom-right corner
-//   - H 30 → bottom edge
-//   - A 22 22 → round bottom-left corner
-//   - V 85 → up left edge
-//   - C 8 85 8 8 175 8 → CUBIC BEZIER concave curve: starts going up/right
-//     along left edge, then sweeps smoothly to the top edge.
-//     Control1=(8,85) keeps tangent vertical. Control2=(8,8) pulls toward corner.
-//     Creates a smooth single-arc concave shape.
-//   - Z → close
+// The clip uses two subpaths + clipRule="evenodd":
+//   outer = rounded rect (image visible area, r=22, inset 8px)
+//   hole  = logo card shape (r=18, exact same dimensions as the card div)
+// The evenodd rule subtracts the hole from the outer, cutting the image precisely
+// around the logo card's rounded corners.
 export const AMSpecsSlide = ({
   data,
   photo,
@@ -230,55 +224,61 @@ export const AMSpecsSlide = ({
     data.suites > 0 ? `${data.suites} suíte${data.suites > 1 ? 's' : ''}` : '',
   ].filter(Boolean).slice(0, 6);
 
-  // Single continuous shape. Cubic bezier C cx1 cy1 cx2 cy2 x y:
-  // From (8,85): C1=(8,85) keeps direction vertical, C2=(8,8) pulls into corner, end=(175,8).
-  const clipPath =
-    'M 175 8 H 330 A 22 22 0 0 1 352 30 V 330 A 22 22 0 0 1 330 352 H 30 A 22 22 0 0 1 8 330 V 85 C 8 85 8 8 175 8 Z';
+  // Logo card: top=4, left=4, width=164, height=76, rx=18
+  // Hole path corners: left+rx=22, right-rx=150, top+rx=22, bottom-rx=62, right=168, bottom=80
+  const outerPath =
+    'M 30 8 H 330 A 22 22 0 0 1 352 30 V 330 A 22 22 0 0 1 330 352 H 30 A 22 22 0 0 1 8 330 V 30 A 22 22 0 0 1 30 8 Z';
+  const holePath =
+    'M 22 4 H 150 A 18 18 0 0 1 168 22 V 62 A 18 18 0 0 1 150 80 H 22 A 18 18 0 0 1 4 62 V 22 A 18 18 0 0 1 22 4 Z';
 
   return (
     <div style={{ position: 'relative', width: 360, height: 360, backgroundColor: '#ffffff', fontFamily: 'Arial, sans-serif', overflow: 'hidden' }}>
 
-      {/* ── SVG clipPath: single continuous rounded shape with concave curve ── */}
+      {/* ── SVG: evenodd clipPath = outer image area MINUS logo card hole ── */}
       <svg width="0" height="0" style={{ position: 'absolute', overflow: 'hidden' }}>
         <defs>
           <clipPath id="am-specs-photo-clip" clipPathUnits="userSpaceOnUse">
-            <path d={clipPath} />
+            <path clipRule="evenodd" d={`${outerPath} ${holePath}`} />
           </clipPath>
         </defs>
       </svg>
 
-      {/* ── 1 ÚNICA IMAGEM: masked by the single continuous shape ── */}
-      <div
-        style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          width: 360,
-          height: 360,
-          clipPath: 'url(#am-specs-photo-clip)',
-        }}
-      >
+      {/* ── LAYER 2: Logo card on background — image reveals this by being cut away ── */}
+      <div style={{
+        position: 'absolute',
+        top: 4,
+        left: 4,
+        width: 164,
+        height: 76,
+        borderRadius: 18,
+        backgroundColor: '#ffffff',
+        zIndex: 5,
+        display: 'flex',
+        alignItems: 'center',
+        paddingLeft: 12,
+        paddingRight: 12,
+        boxSizing: 'border-box',
+      }}>
+        <AMLogo width={140} variant="color" />
+      </div>
+
+      {/* ── LAYER 3: Image — evenodd clip cuts a hole matching the logo card exactly ── */}
+      <div style={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        width: 360,
+        height: 360,
+        clipPath: 'url(#am-specs-photo-clip)',
+        zIndex: 10,
+      }}>
         {photo
           ? <img src={photo} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
           : <div style={{ width: '100%', height: '100%', backgroundColor: '#d1d5db' }} />
         }
       </div>
 
-      {/* ── WHITE LOGO CARD: sits on top of the grey shape, overlapping it ──
-           White bg + rounded corners make it appear the grey area curves around it ── */}
-      <div style={{
-        position: 'absolute',
-        top: 4,
-        left: 4,
-        zIndex: 20,
-        backgroundColor: '#ffffff',
-        borderRadius: 18,
-        padding: '10px 14px 10px 10px',
-      }}>
-        <AMLogo width={138} variant="color" />
-      </div>
-
-      {/* ── CARD ESCURO DE SPECS ── */}
+      {/* ── LAYER 4: Specs card ── */}
       {specs.length > 0 && (
         <div style={{
           position: 'absolute', bottom: 22, right: 22, zIndex: 20,
