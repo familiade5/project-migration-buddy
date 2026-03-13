@@ -706,37 +706,33 @@ export const AMInfoSlide = ({
         <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to right, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0.55) 50%, rgba(0,0,0,0.12) 100%)' }} />
       </div>
 
-      {/* Texto — sobreposto diretamente sobre a foto/overlay */}
+      {/* Texto — confinado à metade esquerda, dimensões fiéis ao modelo */}
       <div
         style={{
           position: 'absolute',
-          top: 30,
+          top: 36,
           left: 26,
-          right: 26,
-          bottom: 80,
           zIndex: 20,
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'flex-start',
+          maxWidth: 196,
         }}
       >
         <h2 style={{
           color: 'white',
           fontWeight: 800,
-          fontSize: 22,
-          lineHeight: 1.25,
-          margin: '0 0 12px',
+          fontSize: 20,
+          lineHeight: 1.28,
+          margin: '0 0 9px',
           letterSpacing: '-0.01em',
         }}>
           {headline}
         </h2>
         <p style={{
           color: 'white',
-          fontSize: 11,
-          opacity: 0.88,
-          lineHeight: 1.6,
+          fontSize: 10.5,
+          opacity: 0.9,
+          lineHeight: 1.58,
           margin: 0,
-          maxWidth: 200,
+          maxWidth: 186,
         }}>
           {subtitle}
         </p>
