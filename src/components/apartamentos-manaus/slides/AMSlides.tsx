@@ -621,17 +621,11 @@ export const AMPhotoSlide = ({
         zIndex: 5,
         display: 'flex',
         alignItems: 'center',
-        gap: 8,
-        paddingLeft: 10,
-        paddingRight: 8,
+        paddingLeft: 12,
+        paddingRight: 12,
         boxSizing: 'border-box',
       }}>
-        <AMLogo width={46} variant="color" />
-        <div>
-          <p style={{ margin: 0, fontWeight: 700, fontSize: 9.5, color: '#1B5EA6', letterSpacing: '0.05em', lineHeight: 1.3 }}>APARTAMENTOS</p>
-          <p style={{ margin: 0, fontWeight: 700, fontSize: 9.5, color: '#1B5EA6', letterSpacing: '0.05em', lineHeight: 1.3 }}>MANAUS</p>
-          <p style={{ margin: 0, fontSize: 7.5, color: '#9ca3af', letterSpacing: '0.1em', lineHeight: 1.3 }}>IMOBILIÁRIA</p>
-        </div>
+        <AMLogo width={140} variant="color" />
       </div>
     </div>
   );
