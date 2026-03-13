@@ -391,20 +391,19 @@ export const AMLocationSlide = ({
     .join(', ');
 
   // Clip path com DOIS nichos: superior-esquerdo (card azul) e inferior-direito (card logo).
-  // Notch azul: x 14→170, y 14→172 (8px branco ao redor do card). Notch logo: x 208→346, y 276→346.
-  // Cantos externos: arcos convexos A r=22. Cantos internos dos nichos: bezier Q (côncavos).
-  // Logo card: bottom=14, right=14 → right edge x=346, bottom y=346
-  // Card logo width=100 → left edge x=346-14-100=232. Notch left wall x=210 (232-22).
-  // Card top: bottom=14, logo+padding ~56px → top y=346-56=290. Notch top y=268 (290-22).
+  // Notch azul: x 14→170, y 14→172. Notch logo: x 210→346, y 282→346.
+  // Card logo: bottom=14, right=14, width=120, height=52.
+  // Card top: y=360-14-52=294. Notch top y=282 (12px acima do card → gap visual correto).
+  // Left wall: y=304→324 = 20px reta (sem deformação).
   const shapePath = [
     'M 192 14',              // top edge start (notch-azul right x=170 + r=22)
     'H 324',                 // top edge rightward
     'A 22 22 0 0 1 346 36',  // top-right outer convex corner
-    'V 268',                 // right edge down (290-22=268)
-    'Q 346 290 324 290',     // concave at top-right of logo notch (notch topo y=290)
+    'V 260',                 // right edge down (282-22=260)
+    'Q 346 282 324 282',     // concave at top-right of logo notch (notch topo y=282)
     'H 232',                 // logo notch top leftward (210+22=232)
-    'Q 210 290 210 312',     // concave at top-left of logo notch (290+22=312)
-    'V 324',                 // down logo notch left wall (346-22=324)
+    'Q 210 282 210 304',     // concave at top-left of logo notch (282+22=304)
+    'V 324',                 // down logo notch left wall 304→324 = 20px reta
     'A 22 22 0 0 1 188 346', // canto inferior-esquerdo (210-22=188, down→left, CW)
     'H 36',                  // bottom edge leftward
     'A 22 22 0 0 1 14 324',  // bottom-left outer convex corner
