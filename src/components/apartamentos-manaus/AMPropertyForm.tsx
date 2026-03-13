@@ -121,7 +121,7 @@ export function AMPropertyForm({ data, onChange }: AMPropertyFormProps) {
       <Section title="Itens de Lazer" color="#1B5EA6">
         <div className="space-y-1">
           <Label className={labelClass}>Itens (um por linha ou separados por vírgula)</Label>
-          <Textarea className="border-gray-300 bg-white text-sm resize-none" rows={2}
+          <Textarea className={textareaClass} rows={2}
             placeholder={"Piscina\nChurrasqueira\nSalão de festas"}
             value={data.leisureItems} onChange={(e) => set('leisureItems', e.target.value)} />
         </div>
