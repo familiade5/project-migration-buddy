@@ -49,6 +49,27 @@ export const AMCoverSlide = ({
       ].filter(Boolean) as string[];
   const paymentLine = paymentParts.join(' | ');
 
+  // Photo container shape: rounded rect (r=22) with notch carved for the orange badge.
+  // Badge: top:4, left:4, width:210, estimated height ~56px.
+  // Notch: x 8→218, y 8→66. Q curves (r≈18) at notch corners.
+  // Inner corner at (218, 8) rounded with A r=22 sweep=1 — same treatment as slide 2.
+  const shapePath = [
+    'M 330 8',
+    'A 22 22 0 0 1 352 30',   // top-right outer corner (r=22)
+    'V 330',
+    'A 22 22 0 0 1 330 352',  // bottom-right outer corner (r=22)
+    'H 30',
+    'A 22 22 0 0 1 8 330',    // bottom-left outer corner (r=22)
+    'V 84',                   // up left edge to y = 66+18 = 84
+    'Q 8 66 26 66',           // smooth concave curve into notch bottom-left
+    'H 200',                  // along notch bottom to x = 218-18 = 200
+    'Q 218 66 218 48',        // smooth convex curve up notch bottom-right
+    'V 30',                   // up notch right edge to y = 8+22 = 30
+    'A 22 22 0 0 1 240 8',    // round inner top corner (r=22, sweep=1) — same as slide 2
+    'H 330',                  // top edge back to arc start
+    'Z',
+  ].join(' ');
+
   return (
     <div
       style={{
@@ -60,42 +81,26 @@ export const AMCoverSlide = ({
         overflow: 'hidden',
       }}
     >
-      {/* ── PHOTO: full bleed with 8px margin top/sides, 8px bottom (same as blue card) ── */}
-      {/* Rounded corners create white arcs that "contour" the badges */}
-      <div
-        style={{
-          position: 'absolute',
-          top: 8,
-          left: 8,
-          right: 8,
-          bottom: 8,
-          borderRadius: 22,
-          overflow: 'hidden',
-        }}
-      >
-        {photo ? (
-          <img
-            src={photo}
-            alt=""
-            style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
-          />
-        ) : (
-          <div style={{ width: '100%', height: '100%', backgroundColor: '#d1d5db' }} />
-        )}
-      </div>
+      {/* ── clipPath definition ── */}
+      <svg aria-hidden="true" style={{ position: 'absolute', width: 0, height: 0, overflow: 'hidden' }}>
+        <defs>
+          <clipPath id="am-cover-photo-clip" clipPathUnits="userSpaceOnUse">
+            <path d={shapePath} />
+          </clipPath>
+        </defs>
+      </svg>
 
-      {/* ── ORANGE BADGE: ~60% width, white ring contour ── */}
+      {/* ── ORANGE BADGE — zIndex:5, sits inside the carved notch ── */}
       <div
         style={{
           position: 'absolute',
           top: 4,
           left: 4,
           width: 210,
-          zIndex: 20,
+          zIndex: 5,
           backgroundColor: '#F47920',
           borderRadius: 17,
           padding: '8px 14px 9px',
-          boxShadow: '0 0 0 5px #ffffff',
         }}
       >
         <p style={{ color: 'white', fontWeight: 700, fontSize: 15, lineHeight: 1.25, margin: 0 }}>
