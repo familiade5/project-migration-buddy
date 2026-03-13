@@ -50,10 +50,6 @@ export const AMCoverSlide = ({
       ].filter(Boolean) as string[];
   const paymentLine = paymentParts.join(' | ');
 
-  // Photo dims: top=8, left=8, right=8, bottom=82 → height = 360-8-82 = 270px
-  // White strip at bottom = 82px (for logo + price card)
-  // Photo bottom edge at y = 360-82 = 278px
-
   return (
     <div
       style={{
@@ -65,15 +61,15 @@ export const AMCoverSlide = ({
         overflow: 'hidden',
       }}
     >
-      {/* ── PHOTO: nearly full-bleed, 8px margin, rounded corners 22px ── */}
-      {/* The 4 rounded corners create white arcs that "contour" the badges */}
+      {/* ── PHOTO: full bleed with 8px margin top/sides, 8px bottom (same as blue card) ── */}
+      {/* Rounded corners create white arcs that "contour" the badges */}
       <div
         style={{
           position: 'absolute',
           top: 8,
           left: 8,
           right: 8,
-          bottom: 82,
+          bottom: 8,
           borderRadius: 22,
           overflow: 'hidden',
         }}
