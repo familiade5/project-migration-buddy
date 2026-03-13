@@ -196,8 +196,9 @@ export const AMCoverSlide = ({
 };
 
 // ─── Slide 2: ESPECIFICAÇÕES ─────────────────────────────────────────────────
-// UMA única imagem, todos os 4 cantos arredondados.
-// Card branco da logo (só a logo, sem texto extra) flutua com todos os cantos arredondados.
+// UMA única imagem com clipPath em forma de "L arredondado":
+// todos os 4 cantos EXTERNOS arredondados + canto interno (junto à logo) arredondado com curva bezier.
+// A logo fica sobre o fundo branco do slide, sem cobrir a imagem.
 export const AMSpecsSlide = ({
   data,
   photo,
@@ -214,25 +215,49 @@ export const AMSpecsSlide = ({
     data.suites > 0 ? `${data.suites} suíte${data.suites > 1 ? 's' : ''}` : '',
   ].filter(Boolean).slice(0, 6);
 
+  // Logo card notch: the photo is "carved" around the logo area.
+  // Logo card sits at top:4, left:4 with padding ~10px 14px and logo width 130.
+  // Notch covers slide coords approximately (0,0) to (notchW=176, notchH=86).
+  // SVG clipPath path (in slide coordinate space 360x360):
+  //   - Outer corners: arc r=22
+  //   - Inner concave corner (top-left): Q bezier with control at (8,8) → smooth organic curve
+  const clipPath = `M 176 8 H 330 A 22 22 0 0 1 352 30 V 330 A 22 22 0 0 1 330 352 H 30 A 22 22 0 0 1 8 330 V 86 Q 8 8 176 8 Z`;
+
   return (
     <div style={{ position: 'relative', width: 360, height: 360, backgroundColor: '#ffffff', fontFamily: 'Arial, sans-serif', overflow: 'hidden' }}>
 
-      {/* ── 1 ÚNICA IMAGEM: todos os 4 cantos arredondados ── */}
-      <div style={{ position: 'absolute', top: 8, left: 8, right: 8, bottom: 8, borderRadius: 22, overflow: 'hidden' }}>
+      {/* ── SVG clipPath definition ── */}
+      <svg width="0" height="0" style={{ position: 'absolute', overflow: 'hidden' }}>
+        <defs>
+          <clipPath id="am-specs-photo-clip" clipPathUnits="userSpaceOnUse">
+            <path d={clipPath} />
+          </clipPath>
+        </defs>
+      </svg>
+
+      {/* ── 1 ÚNICA IMAGEM: clipPath com todos os cantos externos arredondados
+              e canto interno (top-left) com curva suave ao redor da logo ── */}
+      <div
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          width: 360,
+          height: 360,
+          clipPath: 'url(#am-specs-photo-clip)',
+        }}
+      >
         {photo
           ? <img src={photo} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
           : <div style={{ width: '100%', height: '100%', backgroundColor: '#d1d5db' }} />
         }
       </div>
 
-      {/* ── CARD BRANCO DA LOGO: mesmo efeito dos badges da Capa (contorno branco) ── */}
+      {/* ── LOGO: fica sobre o fundo branco do slide, sem sobreposição na foto ── */}
       <div style={{
-        position: 'absolute', top: 4, left: 4, zIndex: 20,
-        backgroundColor: '#ffffff', borderRadius: 18,
-        padding: '10px 14px',
-        boxShadow: '0 0 0 5px #ffffff',
+        position: 'absolute', top: 14, left: 14, zIndex: 20,
       }}>
-        <AMLogo width={130} variant="color" />
+        <AMLogo width={140} variant="color" />
       </div>
 
       {/* ── CARD ESCURO DE SPECS ── */}
