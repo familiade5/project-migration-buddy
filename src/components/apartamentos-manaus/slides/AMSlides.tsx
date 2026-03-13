@@ -187,14 +187,14 @@ export const AMCoverSlide = ({
       <div
         style={{
           position: 'absolute',
-          bottom: 10,
+          bottom: 4,
           right: 10,
           zIndex: 20,
           backgroundColor: '#1B5EA6',
           borderRadius: 20,
           padding: '3px 12px 4px',
           minWidth: 170,
-          border: '5px solid #ffffff',
+          boxShadow: '0 0 0 5px #ffffff',
         }}
       >
         {/* VENDA/LOCAÇÃO pill */}
