@@ -196,14 +196,17 @@ export const AMCoverSlide = ({
 };
 
 // ─── Slide 2: ESPECIFICAÇÕES ─────────────────────────────────────────────────
-// White bg • logo + brand text top-left on white • photo as rounded card below
-// • dark specs bullet box bottom-right on photo
+// White bg • logo top-left on white strip • large photo RIGHT (tall) •
+// smaller photo LEFT-BOTTOM • inset thumbnail on right photo center •
+// dark specs bullet box bottom-right on right photo
 export const AMSpecsSlide = ({
   data,
   photo,
+  photo2,
 }: {
   data: AMPropertyData;
   photo?: string;
+  photo2?: string;
 }) => {
   const specs: string[] = [
     data.bedrooms > 0 ? `${data.bedrooms} quarto${data.bedrooms > 1 ? 's' : ''}` : '',
@@ -213,6 +216,9 @@ export const AMSpecsSlide = ({
     data.area > 0 ? `${data.area}m²` : '',
     data.suites > 0 ? `${data.suites} suíte${data.suites > 1 ? 's' : ''}` : '',
   ].filter(Boolean).slice(0, 6);
+
+  // The inset thumbnail shows photo2 (or falls back to photo itself)
+  const thumbSrc = photo2 || photo;
 
   return (
     <div
@@ -225,12 +231,12 @@ export const AMSpecsSlide = ({
         overflow: 'hidden',
       }}
     >
-      {/* Photo — starts 76px from top */}
+      {/* ── RIGHT PHOTO: tall, right ~58% of slide ── */}
       <div
         style={{
           position: 'absolute',
-          top: 76,
-          left: 14,
+          top: 14,
+          left: 158,
           right: 14,
           bottom: 14,
           borderRadius: 22,
@@ -244,7 +250,30 @@ export const AMSpecsSlide = ({
         )}
       </div>
 
-      {/* Logo + brand text — top-left on white */}
+      {/* ── LEFT-BOTTOM PHOTO: below logo area ── */}
+      <div
+        style={{
+          position: 'absolute',
+          top: 86,
+          left: 14,
+          width: 136,
+          bottom: 14,
+          borderRadius: 22,
+          overflow: 'hidden',
+        }}
+      >
+        {photo2 || photo ? (
+          <img
+            src={photo2 || photo}
+            alt=""
+            style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center', display: 'block' }}
+          />
+        ) : (
+          <div style={{ width: '100%', height: '100%', backgroundColor: '#d1d5db' }} />
+        )}
+      </div>
+
+      {/* ── LOGO + BRAND TEXT: top-left white area ── */}
       <div
         style={{
           position: 'absolute',
@@ -254,6 +283,9 @@ export const AMSpecsSlide = ({
           display: 'flex',
           alignItems: 'center',
           gap: 8,
+          backgroundColor: '#ffffff',
+          borderRadius: 12,
+          padding: '4px 8px 4px 4px',
         }}
       >
         <AMLogo width={46} variant="color" />
@@ -264,7 +296,28 @@ export const AMSpecsSlide = ({
         </div>
       </div>
 
-      {/* Dark specs bullet box — bottom-right on photo */}
+      {/* ── INSET THUMBNAIL: center of right photo ── */}
+      {thumbSrc && (
+        <div
+          style={{
+            position: 'absolute',
+            top: '50%',
+            left: '68%',
+            transform: 'translate(-50%, -50%)',
+            zIndex: 20,
+            width: 68,
+            height: 52,
+            borderRadius: 8,
+            overflow: 'hidden',
+            border: '2px solid #ffffff',
+            boxShadow: '0 2px 8px rgba(0,0,0,0.3)',
+          }}
+        >
+          <img src={thumbSrc} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+        </div>
+      )}
+
+      {/* ── DARK SPECS CARD: bottom-right on right photo ── */}
       {specs.length > 0 && (
         <div
           style={{
@@ -272,16 +325,16 @@ export const AMSpecsSlide = ({
             bottom: 22,
             right: 22,
             zIndex: 20,
-            backgroundColor: 'rgba(17, 24, 39, 0.82)',
+            backgroundColor: 'rgba(17, 24, 39, 0.75)',
             backdropFilter: 'blur(6px)',
-            borderRadius: 16,
+            borderRadius: 14,
             padding: '10px 14px',
-            maxWidth: 165,
+            maxWidth: 160,
           }}
         >
           {specs.map((spec, i) => (
             <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 5, marginBottom: i < specs.length - 1 ? 4 : 0 }}>
-              <span style={{ color: 'rgba(255,255,255,0.5)', fontSize: 11, marginTop: 1, flexShrink: 0 }}>•</span>
+              <span style={{ color: 'rgba(255,255,255,0.6)', fontSize: 11, marginTop: 1, flexShrink: 0 }}>•</span>
               <span style={{ color: 'white', fontSize: 11, lineHeight: 1.4 }}>{spec}</span>
             </div>
           ))}
