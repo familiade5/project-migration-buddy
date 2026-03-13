@@ -389,9 +389,8 @@ export const AMLocationSlide = ({
   const uid = useId();
   const clipId = `am-location-${uid}`;
 
-  const address = [data.address, data.neighborhood, `${data.city} - ${data.state}`]
-    .filter(Boolean)
-    .join(', ');
+  // Apenas o endereço digitado — cidade/estado e bairro NÃO são adicionados automaticamente
+  const address = data.address || '';
 
   // Clip path com DOIS nichos: superior-esquerdo (card azul) e inferior-direito (card logo).
   // Notch azul: x 14→170, y 14→172. Notch logo: x 210→346, y 282→346.
