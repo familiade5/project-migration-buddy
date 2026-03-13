@@ -391,10 +391,10 @@ export const AMLocationSlide = ({
     .join(', ');
 
   // Clip path com DOIS nichos: superior-esquerdo (card azul) e inferior-direito (card logo).
-  // Notch azul: x 14→162, y 14→164. Notch logo: x 208→346, y 276→346.
+  // Notch azul: x 14→170, y 14→172 (8px branco ao redor do card). Notch logo: x 208→346, y 276→346.
   // Cantos externos: arcos convexos A r=22. Cantos internos dos nichos: bezier Q (côncavos).
   const shapePath = [
-    'M 184 14',              // top edge start (notch-azul right x=162 + r=22)
+    'M 192 14',              // top edge start (notch-azul right x=170 + r=22)
     'H 324',                 // top edge rightward
     'A 22 22 0 0 1 346 36',  // top-right outer convex corner
     'V 254',                 // right edge down (stop before logo notch: 276-22=254)
@@ -405,12 +405,12 @@ export const AMLocationSlide = ({
     'A 22 22 0 0 1 230 346', // convex outer corner at bottom-left of logo notch
     'H 36',                  // bottom edge leftward
     'A 22 22 0 0 1 14 324',  // bottom-left outer convex corner
-    'V 186',                 // left edge upward to blue notch (164+22=186)
-    'Q 14 164 36 164',       // concave at bottom-left of blue notch
-    'H 140',                 // blue notch bottom (162-22=140)
-    'Q 162 164 162 142',     // concave at bottom-right of blue notch (164-22=142)
+    'V 194',                 // left edge upward to blue notch (172+22=194)
+    'Q 14 172 36 172',       // concave at bottom-left of blue notch
+    'H 148',                 // blue notch bottom (170-22=148)
+    'Q 170 172 170 150',     // concave at bottom-right of blue notch (172-22=150)
     'V 36',                  // up notch right edge (stopping r=22 before top)
-    'A 22 22 0 0 1 184 14',  // convex outer corner at top of notch
+    'A 22 22 0 0 1 192 14',  // convex outer corner at top of notch
     'Z',
   ].join(' ');
 
@@ -527,7 +527,7 @@ export const AMLocationSlide = ({
           zIndex: 20,
           backgroundColor: '#ffffff',
           borderRadius: 12,
-          padding: '8px 14px',
+          padding: '3px 14px',
           display: 'flex',
           alignItems: 'center',
         }}
