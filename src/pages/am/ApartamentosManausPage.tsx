@@ -87,13 +87,13 @@ const ApartamentosManausPage = () => {
           </div>
 
           {/* Right – Preview */}
-          <div className="lg:sticky lg:top-4 self-start">
+          <div className="lg:sticky lg:top-6 self-start">
             <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
               <div className="px-6 py-4 border-b border-gray-100" style={{ backgroundColor: '#F0F6FF' }}>
                 <h2 className="font-semibold text-gray-900">Preview dos Criativos</h2>
                 <p className="text-xs text-gray-500">Visualize e baixe os slides prontos</p>
               </div>
-              <div className="p-6 overflow-y-auto" style={{ maxHeight: 'calc(100vh - 160px)' }}>
+              <div className="p-6 overflow-y-auto" style={{ maxHeight: 'calc(100vh - 120px)' }}>
                 <AMPostPreview data={propertyData} photos={photos} />
               </div>
             </div>
