@@ -550,7 +550,8 @@ export const AMLocationSlide = ({
 };
 
 // ─── Slide 4+: FOTO SIMPLES ──────────────────────────────────────────────────
-// White bg • logo + brand top-left on white • photo as rounded card below
+// Mesmo padrão do Slide 2: foto recortada com notch superior-esquerdo para o card da logo.
+// Card da logo: top=4, left=4, w=164, h=76, r=18. Foto ocupa o resto via clipPath.
 export const AMPhotoSlide = ({
   data,
   photo,
@@ -560,49 +561,76 @@ export const AMPhotoSlide = ({
   photo: string;
   photoIndex: number;
 }) => {
+  const uid = useId();
+  const clipId = `am-photo-${uid}`;
+
+  // Mesmo path do Slide 2 — notch superior-esquerdo para o card da logo
+  const shapePath = [
+    'M 330 8',
+    'A 22 22 0 0 1 352 30',
+    'V 330',
+    'A 22 22 0 0 1 330 352',
+    'H 30',
+    'A 22 22 0 0 1 8 330',
+    'V 98',
+    'Q 8 80 26 80',
+    'H 150',
+    'Q 168 80 168 62',
+    'V 30',
+    'A 22 22 0 0 1 190 8',
+    'H 330',
+    'Z',
+  ].join(' ');
+
   return (
-    <div
-      style={{
-        position: 'relative',
-        width: 360,
-        height: 360,
-        backgroundColor: '#ffffff',
-        fontFamily: 'Arial, sans-serif',
-        overflow: 'hidden',
-      }}
-    >
-      {/* Photo — starts 76px from top */}
+    <div style={{ position: 'relative', width: 360, height: 360, backgroundColor: '#ffffff', fontFamily: 'Arial, sans-serif', overflow: 'hidden' }}>
+
+      {/* clipPath definition */}
+      <svg aria-hidden="true" style={{ position: 'absolute', width: 0, height: 0, overflow: 'hidden' }}>
+        <defs>
+          <clipPath id={clipId} clipPathUnits="userSpaceOnUse">
+            <path d={shapePath} />
+          </clipPath>
+        </defs>
+      </svg>
+
+      {/* Foto — recortada com o mesmo shape do Slide 2 */}
       <div
         style={{
           position: 'absolute',
-          top: 76,
-          left: 14,
-          right: 14,
-          bottom: 14,
-          borderRadius: 22,
-          overflow: 'hidden',
+          top: 0,
+          left: 0,
+          width: 360,
+          height: 360,
+          clipPath: `url(#${clipId})`,
+          zIndex: 10,
         }}
       >
         <img src={photo} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
       </div>
 
-      {/* Logo + brand text — top-left on white */}
-      <div
-        style={{
-          position: 'absolute',
-          top: 14,
-          left: 14,
-          zIndex: 20,
-          display: 'flex',
-          alignItems: 'center',
-          gap: 8,
-        }}
-      >
+      {/* Card da logo — encaixado no notch superior-esquerdo (zIndex abaixo da foto) */}
+      <div style={{
+        position: 'absolute',
+        top: 4,
+        left: 4,
+        width: 164,
+        height: 76,
+        borderRadius: 18,
+        backgroundColor: '#ffffff',
+        zIndex: 5,
+        display: 'flex',
+        alignItems: 'center',
+        gap: 8,
+        paddingLeft: 10,
+        paddingRight: 8,
+        boxSizing: 'border-box',
+      }}>
         <AMLogo width={46} variant="color" />
         <div>
-          <p style={{ margin: 0, fontWeight: 700, fontSize: 10, color: '#1B5EA6', letterSpacing: '0.06em', lineHeight: 1.3 }}>APARTAMENTOS</p>
-          <p style={{ margin: 0, fontWeight: 700, fontSize: 10, color: '#1B5EA6', letterSpacing: '0.06em', lineHeight: 1.3 }}>MANAUS</p>
-          <p style={{ margin: 0, fontSize: 8, color: '#9ca3af', letterSpacing: '0.1em', lineHeight: 1.3 }}>IMOBILIÁRIA</p>
+          <p style={{ margin: 0, fontWeight: 700, fontSize: 9.5, color: '#1B5EA6', letterSpacing: '0.05em', lineHeight: 1.3 }}>APARTAMENTOS</p>
+          <p style={{ margin: 0, fontWeight: 700, fontSize: 9.5, color: '#1B5EA6', letterSpacing: '0.05em', lineHeight: 1.3 }}>MANAUS</p>
+          <p style={{ margin: 0, fontSize: 7.5, color: '#9ca3af', letterSpacing: '0.1em', lineHeight: 1.3 }}>IMOBILIÁRIA</p>
         </div>
       </div>
     </div>
