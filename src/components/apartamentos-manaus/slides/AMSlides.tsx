@@ -632,9 +632,6 @@ export const AMPhotoSlide = ({
 };
 
 // ─── Último Slide: INFORMAÇÃO ─────────────────────────────────────────────────
-// Mesmo padrão do Slide 3: clip-path com nicho recortado para o card da logo.
-// Logo card em zIndex 5 (abaixo da foto), foto em zIndex 10 contornando o nicho.
-// Overlay escuro dentro da foto. Texto sobreposto em zIndex 20.
 export const AMInfoSlide = ({
   data,
   photo,
