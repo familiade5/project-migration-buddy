@@ -18,12 +18,20 @@ export const AMLogo = ({
 );
 
 // ─── Slide 1: CAPA ──────────────────────────────────────────────────────────
-// Reference: Capa_png-2.png
-// • White background
-// • Photo: inset 14px top/left/right, ends 85px from bottom → border-radius 22px
-// • Orange badge: z=20, top=8, left=8, overlaps top of photo
-// • White logo: z=20, on photo bottom-left at bottom=95px
-// • Blue price card: z=20, bottom=14, right=14 (partially over photo, partially on white)
+// Exact analysis of Capa_png-3.png:
+//
+//  PHOTO: rounded rect, ~8px margin on top/left/right, ends ~82px from bottom.
+//  border-radius 22px all corners. The 4 rounded corners expose the white slide
+//  background — this IS the "white border contouring the frames" effect.
+//
+//  ORANGE BADGE: top=4, left=4. Sits mostly on top of the photo's top-left
+//  rounded corner, causing the white arc of that corner to appear AROUND the badge.
+//
+//  WHITE LOGO: on the photo, bottom-left area. bottom ≈ 88px, left=18px.
+//  Uses white (inverted) version since it sits on the photo.
+//
+//  BLUE PRICE CARD: bottom=10, right=10. Sits in the white strip below the photo,
+//  extending slightly upward to overlap the photo's bottom edge.
 export const AMCoverSlide = ({
   data,
   photo,
@@ -42,6 +50,10 @@ export const AMCoverSlide = ({
       ].filter(Boolean) as string[];
   const paymentLine = paymentParts.join(' | ');
 
+  // Photo dims: top=8, left=8, right=8, bottom=82 → height = 360-8-82 = 270px
+  // White strip at bottom = 82px (for logo + price card)
+  // Photo bottom edge at y = 360-82 = 278px
+
   return (
     <div
       style={{
@@ -53,36 +65,42 @@ export const AMCoverSlide = ({
         overflow: 'hidden',
       }}
     >
-      {/* Photo card — inset 14px top/sides, ends 85px from bottom */}
-      <div
-        style={{
-          position: 'absolute',
-          top: 14,
-          left: 14,
-          right: 14,
-          bottom: 85,
-          borderRadius: 22,
-          overflow: 'hidden',
-        }}
-      >
-        {photo ? (
-          <img src={photo} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
-        ) : (
-          <div style={{ width: '100%', height: '100%', backgroundColor: '#d1d5db' }} />
-        )}
-      </div>
-
-      {/* Orange info badge — top-left, overlaps photo */}
+      {/* ── PHOTO: nearly full-bleed, 8px margin, rounded corners 22px ── */}
+      {/* The 4 rounded corners create white arcs that "contour" the badges */}
       <div
         style={{
           position: 'absolute',
           top: 8,
           left: 8,
+          right: 8,
+          bottom: 82,
+          borderRadius: 22,
+          overflow: 'hidden',
+        }}
+      >
+        {photo ? (
+          <img
+            src={photo}
+            alt=""
+            style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+          />
+        ) : (
+          <div style={{ width: '100%', height: '100%', backgroundColor: '#d1d5db' }} />
+        )}
+      </div>
+
+      {/* ── ORANGE BADGE: top=4, left=4 — overlaps photo top-left rounded corner ── */}
+      {/* White arc from rounded corner is visible AROUND the badge → contouring effect */}
+      <div
+        style={{
+          position: 'absolute',
+          top: 4,
+          left: 4,
           zIndex: 20,
           backgroundColor: '#F47920',
-          borderRadius: 18,
-          padding: '8px 14px',
-          maxWidth: 218,
+          borderRadius: 17,
+          padding: '8px 14px 9px',
+          maxWidth: 220,
         }}
       >
         <p style={{ color: 'white', fontWeight: 700, fontSize: 15, lineHeight: 1.25, margin: 0 }}>
@@ -91,6 +109,7 @@ export const AMCoverSlide = ({
         <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '5px 10px', marginTop: 5 }}>
           {data.neighborhood && (
             <span style={{ color: 'white', fontSize: 11, opacity: 0.95, display: 'flex', alignItems: 'center', gap: 3 }}>
+              {/* pin icon */}
               <svg width="9" height="11" viewBox="0 0 10 13" fill="white">
                 <path d="M5 0C2.24 0 0 2.24 0 5c0 3.75 5 8 5 8s5-4.25 5-8C10 2.24 7.76 0 5 0zm0 7c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/>
               </svg>
@@ -99,6 +118,7 @@ export const AMCoverSlide = ({
           )}
           {data.bedrooms > 0 && (
             <span style={{ color: 'white', fontSize: 11, opacity: 0.95, display: 'flex', alignItems: 'center', gap: 3 }}>
+              {/* bed icon */}
               <svg width="14" height="10" viewBox="0 0 18 12" fill="white">
                 <path d="M1 8V4a1 1 0 011-1h4a1 1 0 011 1v1h4V4a1 1 0 011-1h4a1 1 0 011 1v4H1zm0 1h16v3H1V9z"/>
               </svg>
@@ -107,6 +127,7 @@ export const AMCoverSlide = ({
           )}
           {data.area > 0 && (
             <span style={{ color: 'white', fontSize: 11, opacity: 0.95, display: 'flex', alignItems: 'center', gap: 3 }}>
+              {/* area icon */}
               <svg width="11" height="11" viewBox="0 0 12 12" fill="white">
                 <path d="M0 0v5l2-2 3 3 2-2-3-3 2-2H0zm12 12V7l-2 2-3-3-2 2 3 3-2 2h6z"/>
               </svg>
@@ -116,61 +137,68 @@ export const AMCoverSlide = ({
         </div>
       </div>
 
-      {/* White logo — bottom-left on the photo */}
+      {/* ── WHITE LOGO: sits ON the photo, bottom-left quadrant ── */}
+      {/* bottom=88 puts it at y=272 which is inside the photo (photo ends at y=278) */}
       <div
         style={{
           position: 'absolute',
-          bottom: 94,
-          left: 22,
+          bottom: 88,
+          left: 18,
           zIndex: 20,
         }}
       >
-        <AMLogo width={104} variant="white" />
+        <AMLogo width={106} variant="white" />
       </div>
 
-      {/* Blue price card — bottom-right, overlaps photo bottom + white strip */}
+      {/* ── BLUE PRICE CARD: in the white strip, bottom-right ── */}
+      {/* bottom=10, right=10 → card top extends slightly above photo bottom edge */}
       <div
         style={{
           position: 'absolute',
-          bottom: 14,
-          right: 14,
+          bottom: 10,
+          right: 10,
           zIndex: 20,
           backgroundColor: '#1B5EA6',
           borderRadius: 20,
-          padding: '11px 16px',
-          minWidth: 158,
+          padding: '11px 16px 12px',
+          minWidth: 160,
         }}
       >
+        {/* VENDA/LOCAÇÃO pill */}
         <div
           style={{
             display: 'inline-block',
             color: 'white',
             fontWeight: 700,
             fontSize: 9,
-            letterSpacing: '0.07em',
+            letterSpacing: '0.08em',
             backgroundColor: 'rgba(255,255,255,0.2)',
-            border: '1px solid rgba(255,255,255,0.35)',
+            border: '1px solid rgba(255,255,255,0.4)',
             borderRadius: 20,
             padding: '2px 10px',
-            marginBottom: 6,
+            marginBottom: 7,
           }}
         >
           {priceLabel}
         </div>
 
+        {/* Price */}
         <div style={{ display: 'flex', alignItems: 'baseline', gap: 2, color: 'white' }}>
-          <span style={{ fontSize: 12, opacity: 0.8 }}>R$</span>
-          <span style={{ fontSize: 25, fontWeight: 700, lineHeight: 1.1 }}>
+          <span style={{ fontSize: 12, opacity: 0.75, marginRight: 2 }}>R$</span>
+          <span style={{ fontSize: 26, fontWeight: 700, lineHeight: 1 }}>
             {price > 0
               ? price.toLocaleString('pt-BR', { minimumFractionDigits: 0, maximumFractionDigits: 0 })
               : 'Consulte'}
           </span>
-          {price > 0 && <span style={{ fontSize: 12, opacity: 0.8 }}>,00</span>}
+          {price > 0 && <span style={{ fontSize: 12, opacity: 0.75 }}>,00</span>}
         </div>
 
-        <p style={{ color: 'white', fontSize: 10, opacity: 0.85, margin: '3px 0 0', lineHeight: 1.4 }}>
-          {paymentLine}
-        </p>
+        {/* Payment separator line */}
+        <div style={{ borderTop: '1px solid rgba(255,255,255,0.2)', marginTop: 6, paddingTop: 5 }}>
+          <p style={{ color: 'white', fontSize: 10, opacity: 0.9, margin: 0, lineHeight: 1.3 }}>
+            {paymentLine}
+          </p>
+        </div>
       </div>
     </div>
   );
