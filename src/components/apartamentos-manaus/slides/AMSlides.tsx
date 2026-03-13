@@ -151,7 +151,7 @@ export const AMCoverSlide = ({
           backgroundColor: '#1B5EA6',
           borderRadius: 20,
           padding: '5px 14px 6px',
-          minWidth: 150,
+          minWidth: 200,
           boxShadow: '0 0 0 5px #ffffff',
         }}
       >
