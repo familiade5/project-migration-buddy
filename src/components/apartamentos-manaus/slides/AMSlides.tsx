@@ -245,18 +245,18 @@ export const AMSpecsSlide = ({
         )}
       </div>
 
-      {/* ── LOGO: canto superior-esquerdo no fundo branco do slide.
-           O canto arredondado da foto (top:8 left:8 radius:22) cria o arco
-           que contorna o quadro branco — mesmo mecanismo do badge da Capa. ── */}
+      {/* ── LOGO: aba no canto superior-esquerdo do slide (flush com o canto).
+           Apenas o canto inferior-direito é arredondado (radius 22 = mesmo da foto),
+           criando a transição suave que contorna a imagem em todos os lados. ── */}
       <div
         style={{
           position: 'absolute',
-          top: 4,
-          left: 4,
+          top: 0,
+          left: 0,
           zIndex: 20,
           backgroundColor: '#ffffff',
-          borderRadius: 18,
-          padding: '2px 6px 2px 4px',
+          borderRadius: '0 0 22px 0',
+          padding: '10px 14px 8px 10px',
         }}
       >
         <AMLogo width={138} variant="color" />
