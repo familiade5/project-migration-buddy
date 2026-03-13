@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import { AMPropertyData, defaultAMPropertyData } from '@/types/apartamentosManaus';
 import { AMPostPreview } from '@/components/apartamentos-manaus/AMPostPreview';
+import { AMStoriesPreview } from '@/components/apartamentos-manaus/AMStoriesPreview';
 import { AMPropertyForm } from '@/components/apartamentos-manaus/AMPropertyForm';
 import { AMCaptionGenerator } from '@/components/apartamentos-manaus/AMCaptionGenerator';
 import { AMPhotoManager } from '@/components/apartamentos-manaus/AMPhotoManager';
 import { AMLayout } from '@/components/layout/AMLayout';
-import { Image, Edit3, Sparkles, FileText } from 'lucide-react';
+import { Image, Edit3, Sparkles, FileText, LayoutGrid, Smartphone } from 'lucide-react';
 
 const ApartamentosManausPage = () => {
   const [propertyData, setPropertyData] = useState<AMPropertyData>(defaultAMPropertyData);
