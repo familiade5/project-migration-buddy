@@ -452,7 +452,7 @@ export const AMLocationSlide = ({
             height: 360,
             objectFit: 'cover',
             display: 'block',
-            clipPath: 'url(#am-location-photo-clip)',
+            clipPath: `url(#${clipId})`,
             zIndex: 10,
           }}
         />
