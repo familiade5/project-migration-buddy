@@ -401,8 +401,8 @@ export const AMLocationSlide = ({
     'Q 346 276 324 276',     // concave at top-right of logo notch
     'H 222',                 // logo notch top leftward (200+22=222) — 8px branco à esquerda do card
     'Q 200 276 200 298',     // concave at top-left of logo notch (276+22=298)
-    'V 324',                 // down logo notch left wall (346-22=324)
-    'A 22 22 0 0 1 222 346', // convex outer corner at bottom-left of logo notch
+    'V 324',                 // down logo notch left wall (stop 22px before turn)
+    'Q 200 346 222 346',     // concave Q at bottom-left of logo notch (igual aos cantos de cima)
     'H 36',                  // bottom edge leftward
     'A 22 22 0 0 1 14 324',  // bottom-left outer convex corner
     'V 194',                 // left edge upward to blue notch (172+22=194)
@@ -527,12 +527,12 @@ export const AMLocationSlide = ({
           zIndex: 20,
           backgroundColor: '#ffffff',
           borderRadius: 12,
-          padding: '3px 14px',
+          padding: '3px 9px',
           display: 'flex',
           alignItems: 'center',
         }}
       >
-        <AMLogo width={110} variant="color" />
+        <AMLogo width={120} variant="color" />
       </div>
     </div>
   );
