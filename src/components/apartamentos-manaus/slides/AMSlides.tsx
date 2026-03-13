@@ -702,8 +702,8 @@ export const AMInfoSlide = ({
         ) : (
           <div style={{ width: '100%', height: '100%', backgroundColor: '#374151' }} />
         )}
-        {/* Overlay escuro dentro da foto */}
-        <div style={{ position: 'absolute', inset: 0, backgroundColor: 'rgba(0,0,0,0.55)' }} />
+        {/* Overlay gradiente — escuro à esquerda (texto), transparente à direita (foto visível) */}
+        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to right, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0.55) 50%, rgba(0,0,0,0.12) 100%)' }} />
       </div>
 
       {/* Texto — sobreposto diretamente sobre a foto/overlay */}
