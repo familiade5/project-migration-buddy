@@ -1,6 +1,5 @@
 import { AMPropertyData } from '@/types/apartamentosManaus';
 import logoAM from '@/assets/logo-apartamentos-manaus.png';
-import { formatCurrency } from '@/lib/formatCurrency';
 
 // ─── Shared logo component ───────────────────────────────────────────────────
 export const AMLogo = ({
