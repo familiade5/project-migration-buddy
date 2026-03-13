@@ -538,7 +538,7 @@ export const AMLocationSlide = ({
           padding: '4px 8px',
         }}
       >
-        <AMLogo width={130} variant="color" />
+        <AMLogo width={150} variant="color" />
       </div>
     </div>
   );
