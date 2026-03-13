@@ -89,8 +89,7 @@ export const AMCoverSlide = ({
         )}
       </div>
 
-      {/* ── ORANGE BADGE: top=4, left=4 — overlaps photo top-left rounded corner ── */}
-      {/* White arc from rounded corner is visible AROUND the badge → contouring effect */}
+      {/* ── ORANGE BADGE: white ring contour ── */}
       <div
         style={{
           position: 'absolute',
@@ -101,6 +100,7 @@ export const AMCoverSlide = ({
           borderRadius: 17,
           padding: '8px 14px 9px',
           maxWidth: 220,
+          boxShadow: '0 0 0 5px #ffffff',
         }}
       >
         <p style={{ color: 'white', fontWeight: 700, fontSize: 15, lineHeight: 1.25, margin: 0 }}>
@@ -150,8 +150,7 @@ export const AMCoverSlide = ({
         <AMLogo width={106} variant="white" />
       </div>
 
-      {/* ── BLUE PRICE CARD: in the white strip, bottom-right ── */}
-      {/* bottom=10, right=10 → card top extends slightly above photo bottom edge */}
+      {/* ── BLUE PRICE CARD: white ring contour ── */}
       <div
         style={{
           position: 'absolute',
@@ -162,6 +161,7 @@ export const AMCoverSlide = ({
           borderRadius: 20,
           padding: '11px 16px 12px',
           minWidth: 160,
+          boxShadow: '0 0 0 5px #ffffff',
         }}
       >
         {/* VENDA/LOCAÇÃO pill */}
