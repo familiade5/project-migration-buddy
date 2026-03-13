@@ -151,7 +151,7 @@ export const AMCoverSlide = ({
             height: 360,
             objectFit: 'cover',
             display: 'block',
-            clipPath: 'url(#am-cover-photo-clip)',
+            clipPath: `url(#${clipId})`,
             zIndex: 10,
           }}
         />
@@ -164,7 +164,7 @@ export const AMCoverSlide = ({
             width: 360,
             height: 360,
             backgroundColor: '#d1d5db',
-            clipPath: 'url(#am-cover-photo-clip)',
+            clipPath: `url(#${clipId})`,
             zIndex: 10,
           }}
         />
