@@ -226,12 +226,17 @@ export const AMSpecsSlide = ({
         overflow: 'hidden',
       }}
     >
-      {/* ── FOTO: cobre todo o slide com 8px de margem e cantos arredondados ── */}
+      {/* ── FOTO: dois recortes da MESMA imagem que contornam a logo.
+           Janela direita (faixa vertical) + Janela inferior-esquerda (abaixo da logo).
+           Cada janela tem borderRadius:22 em todos os cantos → cantos arredondados
+           visíveis onde a foto encontra o quadro branco. ── */}
+
+      {/* Janela direita */}
       <div
         style={{
           position: 'absolute',
           top: 8,
-          left: 8,
+          left: 162,
           right: 8,
           bottom: 8,
           borderRadius: 22,
@@ -245,9 +250,26 @@ export const AMSpecsSlide = ({
         )}
       </div>
 
-      {/* ── LOGO: aba no canto superior-esquerdo (flush com slide).
-           Apenas o canto inferior-direito é arredondado (convexo).
-           Os cantos côncavos (invertidos) são feitos com radial-gradient. ── */}
+      {/* Janela inferior-esquerda (abaixo da logo) */}
+      <div
+        style={{
+          position: 'absolute',
+          top: 58,
+          left: 8,
+          width: 154,
+          bottom: 8,
+          borderRadius: 22,
+          overflow: 'hidden',
+        }}
+      >
+        {photo ? (
+          <img src={photo} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+        ) : (
+          <div style={{ width: '100%', height: '100%', backgroundColor: '#d1d5db' }} />
+        )}
+      </div>
+
+      {/* ── LOGO: quadro branco no canto superior-esquerdo ── */}
       <div
         style={{
           position: 'absolute',
@@ -261,32 +283,6 @@ export const AMSpecsSlide = ({
       >
         <AMLogo width={138} variant="color" />
       </div>
-
-      {/* ── Canto côncavo: topo-direito do quadro branco ── */}
-      <div
-        style={{
-          position: 'absolute',
-          top: 0,
-          left: 162,
-          width: 22,
-          height: 22,
-          zIndex: 20,
-          background: 'radial-gradient(circle at 0% 100%, transparent 22px, #ffffff 22px)',
-        }}
-      />
-
-      {/* ── Canto côncavo: base-esquerda do quadro branco ── */}
-      <div
-        style={{
-          position: 'absolute',
-          top: 58,
-          left: 0,
-          width: 22,
-          height: 22,
-          zIndex: 20,
-          background: 'radial-gradient(circle at 100% 0%, transparent 22px, #ffffff 22px)',
-        }}
-      />
 
       {/* ── CARD ESCURO DE SPECS: canto inferior-direito sobre a foto ── */}
       {specs.length > 0 && (
