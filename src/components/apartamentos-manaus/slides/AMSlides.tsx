@@ -404,7 +404,7 @@ export const AMLocationSlide = ({
     'H 182',                 // logo notch top leftward (160+22=182) — puxado para x=160
     'Q 160 262 160 284',     // concave at top-left of logo notch (262+22=284)
     'V 324',                 // down logo notch left wall (346-22=324)
-    'A 22 22 0 0 1 182 346', // convex arc bottom-left — expõe canto arredondado
+    'Q 160 346 182 346',     // concave arc bottom-left — canto côncavo igual aos outros nichos
     'H 36',                  // bottom edge leftward
     'A 22 22 0 0 1 14 324',  // bottom-left outer convex corner
     'V 194',                 // left edge upward to blue notch (172+22=194)
