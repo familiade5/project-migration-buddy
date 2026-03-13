@@ -466,7 +466,7 @@ export const AMLocationSlide = ({
         />
       )}
 
-      {/* Blue info card — fixed height to match notch (top:14 + height:176 = bottom:190 = notch y) */}
+      {/* Blue info card — height:150 → bottom at y=164, alinhado ao notch */}
       <div
         style={{
           position: 'absolute',
@@ -477,7 +477,7 @@ export const AMLocationSlide = ({
           borderRadius: 18,
           padding: '14px 13px 12px',
           width: 148,
-          height: 176,
+          height: 150,
           boxSizing: 'border-box',
           overflow: 'hidden',
           display: 'flex',
@@ -518,7 +518,7 @@ export const AMLocationSlide = ({
         </div>
       </div>
 
-      {/* Logo card — bottom-right, somente o asset da logo (sem texto duplicado) */}
+      {/* Logo card — encaixado no notch inferior-direito, sem border */}
       <div
         style={{
           position: 'absolute',
@@ -526,9 +526,8 @@ export const AMLocationSlide = ({
           right: 14,
           zIndex: 20,
           backgroundColor: '#ffffff',
-          border: '1px solid #e5e7eb',
           borderRadius: 12,
-          padding: '8px 12px',
+          padding: '8px 14px',
           display: 'flex',
           alignItems: 'center',
         }}
