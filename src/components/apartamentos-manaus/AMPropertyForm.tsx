@@ -131,7 +131,7 @@ export function AMPropertyForm({ data, onChange }: AMPropertyFormProps) {
       {/* Valores */}
       <Section title="Valores" color="#F47920">
         <div className="flex items-center gap-2 mb-2">
-          <Switch checked={data.isRental} onCheckedChange={(v) => set('isRental', v)} />
+          <Switch className={switchClass} checked={data.isRental} onCheckedChange={(v) => set('isRental', v)} />
           <Label className="text-sm text-gray-600">É locação (aluguel)?</Label>
         </div>
 
