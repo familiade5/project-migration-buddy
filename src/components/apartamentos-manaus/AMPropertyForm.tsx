@@ -154,7 +154,7 @@ export function AMPropertyForm({ data, onChange }: AMPropertyFormProps) {
                 value={data.subsidy || ''} onChange={(e) => set('subsidy', Number(e.target.value))} />
             </div>
             <div className="flex items-center gap-2">
-              <Switch checked={data.acceptsFinancing} onCheckedChange={(v) => set('acceptsFinancing', v)} />
+              <Switch className={switchClass} checked={data.acceptsFinancing} onCheckedChange={(v) => set('acceptsFinancing', v)} />
               <Label className="text-sm text-gray-600">Aceita financiamento</Label>
             </div>
           </div>
