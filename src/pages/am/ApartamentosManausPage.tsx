@@ -30,59 +30,59 @@ const ApartamentosManausPage = () => {
         </div>
 
         {/* Main Content */}
-        <div className="grid lg:grid-cols-2 gap-6 lg:gap-8">
+        <div className="grid lg:grid-cols-2 gap-4 lg:gap-8">
           {/* Left – Input */}
-          <div className="space-y-6">
+          <div className="space-y-4">
             {/* Photos */}
             <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
-              <div className="px-6 py-4 border-b border-gray-100" style={{ backgroundColor: '#F0F6FF' }}>
+              <div className="px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-100" style={{ backgroundColor: '#F0F6FF' }}>
                 <div className="flex items-center gap-3">
-                  <div className="p-2 rounded-lg text-white" style={{ backgroundColor: '#1B5EA6' }}>
+                  <div className="p-2 rounded-lg text-white flex-shrink-0" style={{ backgroundColor: '#1B5EA6' }}>
                     <Image className="w-4 h-4" />
                   </div>
-                  <div>
-                    <h2 className="font-semibold text-gray-900">Fotos do Imóvel</h2>
-                    <p className="text-xs text-gray-500">Adicione fotos — arraste para reordenar slides</p>
+                  <div className="min-w-0">
+                    <h2 className="font-semibold text-gray-900 text-sm sm:text-base">Fotos do Imóvel</h2>
+                    <p className="text-xs text-gray-500 truncate">Adicione fotos — arraste para reordenar slides</p>
                   </div>
                 </div>
               </div>
-              <div className="p-6">
+              <div className="p-4 sm:p-6">
                 <AMPhotoManager photos={photos} onChange={setPhotos} />
               </div>
             </div>
 
             {/* Form */}
             <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
-              <div className="px-6 py-4 border-b border-gray-100" style={{ backgroundColor: '#FFF5ED' }}>
+              <div className="px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-100" style={{ backgroundColor: '#FFF5ED' }}>
                 <div className="flex items-center gap-3">
-                  <div className="p-2 rounded-lg text-white" style={{ backgroundColor: '#F47920' }}>
+                  <div className="p-2 rounded-lg text-white flex-shrink-0" style={{ backgroundColor: '#F47920' }}>
                     <Edit3 className="w-4 h-4" />
                   </div>
-                  <div>
-                    <h2 className="font-semibold text-gray-900">Dados do Imóvel</h2>
+                  <div className="min-w-0">
+                    <h2 className="font-semibold text-gray-900 text-sm sm:text-base">Dados do Imóvel</h2>
                     <p className="text-xs text-gray-500">Preencha as informações para gerar os posts</p>
                   </div>
                 </div>
               </div>
-              <div className="p-6">
+              <div className="p-4 sm:p-6">
                 <AMPropertyForm data={propertyData} onChange={setPropertyData} />
               </div>
             </div>
 
             {/* Caption */}
             <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
-              <div className="px-6 py-4 border-b border-gray-100" style={{ backgroundColor: '#F0F6FF' }}>
+              <div className="px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-100" style={{ backgroundColor: '#F0F6FF' }}>
                 <div className="flex items-center gap-3">
-                  <div className="p-2 rounded-lg text-white" style={{ backgroundColor: '#1B5EA6' }}>
+                  <div className="p-2 rounded-lg text-white flex-shrink-0" style={{ backgroundColor: '#1B5EA6' }}>
                     <FileText className="w-4 h-4" />
                   </div>
-                  <div>
-                    <h2 className="font-semibold text-gray-900">Legenda do Post</h2>
+                  <div className="min-w-0">
+                    <h2 className="font-semibold text-gray-900 text-sm sm:text-base">Legenda do Post</h2>
                     <p className="text-xs text-gray-500">Gerada automaticamente — edite conforme necessário</p>
                   </div>
                 </div>
               </div>
-              <div className="p-6">
+              <div className="p-4 sm:p-6">
                 <AMCaptionGenerator data={propertyData} />
               </div>
             </div>
@@ -92,17 +92,17 @@ const ApartamentosManausPage = () => {
           <div className="lg:sticky lg:top-6 self-start">
             <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
               {/* Tab selector */}
-              <div className="px-6 py-4 border-b border-gray-100" style={{ backgroundColor: '#F0F6FF' }}>
-                <div className="flex items-center justify-between gap-3">
-                  <div>
-                    <h2 className="font-semibold text-gray-900">Preview dos Criativos</h2>
-                    <p className="text-xs text-gray-500">Visualize e baixe os slides prontos</p>
+              <div className="px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-100" style={{ backgroundColor: '#F0F6FF' }}>
+                <div className="flex items-center justify-between gap-2">
+                  <div className="min-w-0">
+                    <h2 className="font-semibold text-gray-900 text-sm sm:text-base">Preview dos Criativos</h2>
+                    <p className="text-xs text-gray-500 hidden sm:block">Visualize e baixe os slides prontos</p>
                   </div>
                   {/* Feed / Stories toggle */}
-                  <div className="flex items-center gap-1 bg-white rounded-lg p-1 border border-gray-200 shadow-sm">
+                  <div className="flex items-center gap-1 bg-white rounded-lg p-1 border border-gray-200 shadow-sm flex-shrink-0">
                     <button
                       onClick={() => setPreviewTab('feed')}
-                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-all"
+                      className="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 rounded-md text-xs font-medium transition-all"
                       style={previewTab === 'feed'
                         ? { backgroundColor: '#1B5EA6', color: 'white' }
                         : { color: '#6B7280' }}
@@ -112,7 +112,7 @@ const ApartamentosManausPage = () => {
                     </button>
                     <button
                       onClick={() => setPreviewTab('stories')}
-                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-all"
+                      className="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 rounded-md text-xs font-medium transition-all"
                       style={previewTab === 'stories'
                         ? { backgroundColor: '#F47920', color: 'white' }
                         : { color: '#6B7280' }}
@@ -123,7 +123,7 @@ const ApartamentosManausPage = () => {
                   </div>
                 </div>
               </div>
-              <div className="p-6 overflow-y-auto" style={{ maxHeight: 'calc(100vh - 120px)' }}>
+              <div className="p-4 sm:p-6">
                 {previewTab === 'feed' ? (
                   <AMPostPreview data={propertyData} photos={photos} />
                 ) : (

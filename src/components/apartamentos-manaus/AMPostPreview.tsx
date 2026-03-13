@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { toPng } from 'html-to-image';
 import JSZip from 'jszip';
 import { Download, ChevronLeft, ChevronRight, Loader2, Square, Smartphone } from 'lucide-react';
@@ -37,6 +37,21 @@ export function AMPostPreview({ data, photos }: AMPostPreviewProps) {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [format, setFormat] = useState<FormatType>('feed');
   const [isExporting, setIsExporting] = useState(false);
+  const [containerW, setContainerW] = useState(320);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  // Measure container width to compute responsive scale
+  useEffect(() => {
+    const measure = () => {
+      if (containerRef.current) {
+        setContainerW(containerRef.current.offsetWidth);
+      }
+    };
+    measure();
+    const ro = new ResizeObserver(measure);
+    if (containerRef.current) ro.observe(containerRef.current);
+    return () => ro.disconnect();
+  }, []);
 
   // Fixed-size ref pool at top level (20 refs each, satisfies hooks rules)
   const f0=useRef<HTMLDivElement>(null),f1=useRef<HTMLDivElement>(null),f2=useRef<HTMLDivElement>(null),f3=useRef<HTMLDivElement>(null),f4=useRef<HTMLDivElement>(null);
@@ -51,94 +66,41 @@ export function AMPostPreview({ data, photos }: AMPostPreviewProps) {
   const storyRefs = [s0,s1,s2,s3,s4,s5,s6,s7,s8,s9,s10,s11,s12,s13,s14,s15,s16,s17,s18,s19];
 
   // ── Build FEED slide list ─────────────────────────────────────────────────
-  // Structure:
-  //   Slide 1:    Cover  (photos[0])
-  //   Slide 2:    Specs  (photos[1])
-  //   Slide 3:    Location (photos[2])
-  //   Slides 4+:  Photo slides (photos[3..last-1])
-  //   Last slide: Info   (uses last photo as background)
   const buildFeedSlides = () => {
     const p = photos;
     const slides = [];
 
-    // Slide 1 – Capa
-    slides.push({
-      id: 'cover',
-      name: 'Capa',
-      el: <AMCoverSlide data={data} photo={p[0]} />,
-    });
+    slides.push({ id: 'cover',    name: 'Capa',     el: <AMCoverSlide data={data} photo={p[0]} /> });
+    slides.push({ id: 'specs',    name: 'Especif.',  el: <AMSpecsSlide data={data} photo={p[1] ?? p[0]} /> });
+    slides.push({ id: 'location', name: 'Local',     el: <AMLocationSlide data={data} photo={p[2] ?? p[1] ?? p[0]} /> });
 
-    // Slide 2 – Specs
-    slides.push({
-      id: 'specs',
-      name: 'Especif.',
-      el: <AMSpecsSlide data={data} photo={p[1] ?? p[0]} />,
-    });
-
-    // Slide 3 – Location
-    slides.push({
-      id: 'location',
-      name: 'Local',
-      el: <AMLocationSlide data={data} photo={p[2] ?? p[1] ?? p[0]} />,
-    });
-
-    // Photo slides (4 to n-1) — from index 3 up
     const photoSliceEnd = Math.max(3, p.length - 1);
     for (let i = 3; i < photoSliceEnd; i++) {
-      slides.push({
-        id: `photo-${i}`,
-        name: `Foto ${i - 1}`,
-        el: <AMPhotoSlide data={data} photo={p[i]} photoIndex={i} />,
-      });
+      slides.push({ id: `photo-${i}`, name: `Foto ${i - 1}`, el: <AMPhotoSlide data={data} photo={p[i]} photoIndex={i} /> });
     }
 
-    // Last slide – Info
     const lastPhoto = p[p.length - 1] ?? p[0];
-    slides.push({
-      id: 'info',
-      name: 'Info',
-      el: <AMInfoSlide data={data} photo={lastPhoto} />,
-    });
+    slides.push({ id: 'info', name: 'Info', el: <AMInfoSlide data={data} photo={lastPhoto} /> });
 
     return slides;
   };
 
-  // ── Build STORY slide list ─── Slides em formato 9:16 (360×640) ──────────────
+  // ── Build STORY slide list ────────────────────────────────────────────────
   const buildStorySlides = () => {
     const p = photos;
     const slides = [];
 
-    slides.push({
-      id: 'story-cover',
-      name: 'Capa',
-      el: <AMStoryCoverSlide data={data} photo={p[0]} />,
-    });
-    slides.push({
-      id: 'story-specs',
-      name: 'Especif.',
-      el: <AMStorySpecsSlide data={data} photo={p[1] ?? p[0]} />,
-    });
-    slides.push({
-      id: 'story-location',
-      name: 'Local',
-      el: <AMStoryLocationSlide data={data} photo={p[2] ?? p[1] ?? p[0]} />,
-    });
+    slides.push({ id: 'story-cover',    name: 'Capa',    el: <AMStoryCoverSlide data={data} photo={p[0]} /> });
+    slides.push({ id: 'story-specs',    name: 'Especif.', el: <AMStorySpecsSlide data={data} photo={p[1] ?? p[0]} /> });
+    slides.push({ id: 'story-location', name: 'Local',   el: <AMStoryLocationSlide data={data} photo={p[2] ?? p[1] ?? p[0]} /> });
 
     const photoSliceEnd = Math.max(3, p.length - 1);
     for (let i = 3; i < photoSliceEnd; i++) {
-      slides.push({
-        id: `story-photo-${i}`,
-        name: `Foto ${i - 1}`,
-        el: <AMStoryPhotoSlide data={data} photo={p[i]} photoIndex={i} />,
-      });
+      slides.push({ id: `story-photo-${i}`, name: `Foto ${i - 1}`, el: <AMStoryPhotoSlide data={data} photo={p[i]} photoIndex={i} /> });
     }
 
     const lastPhoto = p[p.length - 1] ?? p[0];
-    slides.push({
-      id: 'story-info',
-      name: 'Info',
-      el: <AMStoryInfoSlide data={data} photo={lastPhoto} />,
-    });
+    slides.push({ id: 'story-info', name: 'Info', el: <AMStoryInfoSlide data={data} photo={lastPhoto} /> });
 
     return slides;
   };
@@ -150,14 +112,21 @@ export function AMPostPreview({ data, photos }: AMPostPreviewProps) {
   const totalSlides = slides.length;
   const safeIndex   = Math.min(currentSlide, totalSlides - 1);
 
-  // ── Preview dimensions ────────────────────────────────────────────────────
+  // ── Responsive preview dimensions ─────────────────────────────────────────
+  // Reserve ~48px for left/right arrow buttons + gap
+  const availableW   = Math.max(160, containerW - 80);
   const nativeH      = format === 'feed' ? FEED_H : STORY_H;
-  const previewW     = format === 'feed' ? 280 : 180;
-  const previewH     = format === 'feed' ? 280 : 320;
+  const nativeAspect = SLIDE_W / nativeH; // width/height ratio
+
+  // For feed (square): cap at availableW; for story (portrait): constrain by available height budget
+  const maxPreviewH  = format === 'feed' ? availableW : Math.min(availableW / nativeAspect, 340);
+  const previewW     = format === 'feed' ? Math.min(availableW, maxPreviewH) : maxPreviewH * nativeAspect;
+  const previewH     = format === 'feed' ? previewW : maxPreviewH;
   const previewScale = previewW / SLIDE_W;
 
-  const thumbW     = format === 'feed' ? 72 : 48;
-  const thumbH     = format === 'feed' ? 72 : 85;
+  // Thumbnails: scale proportionally
+  const thumbW     = format === 'feed' ? 60 : 38;
+  const thumbH     = format === 'feed' ? 60 : 68;
   const thumbScale = thumbW / SLIDE_W;
 
   // ── Navigation ────────────────────────────────────────────────────────────
@@ -236,37 +205,37 @@ export function AMPostPreview({ data, photos }: AMPostPreviewProps) {
   };
 
   return (
-    <div className="space-y-4 overflow-hidden">
+    <div ref={containerRef} className="space-y-3 w-full overflow-hidden">
       {/* ── Header + Format selector ── */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        <h3 className="font-semibold text-base text-gray-800">Preview do Carrossel</h3>
-        <div className="flex items-center gap-1 bg-gray-100 rounded-lg p-1 self-start">
+      <div className="flex items-center justify-between gap-2">
+        <h3 className="font-semibold text-sm text-gray-800">Preview do Carrossel</h3>
+        <div className="flex items-center gap-1 bg-gray-100 rounded-lg p-1 flex-shrink-0">
           <button
             onClick={() => { setFormat('feed'); setCurrentSlide(0); }}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs transition-all ${format === 'feed' ? 'text-white' : 'text-gray-500 hover:text-gray-700'}`}
+            className={`flex items-center gap-1 px-2.5 py-1.5 rounded-md text-xs transition-all ${format === 'feed' ? 'text-white' : 'text-gray-500 hover:text-gray-700'}`}
             style={format === 'feed' ? { backgroundColor: '#1B5EA6' } : {}}
           >
-            <Square className="w-3.5 h-3.5" /><span>Feed</span>
+            <Square className="w-3 h-3" /><span>Feed</span>
           </button>
           <button
             onClick={() => { setFormat('story'); setCurrentSlide(0); }}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs transition-all ${format === 'story' ? 'text-white' : 'text-gray-500 hover:text-gray-700'}`}
+            className={`flex items-center gap-1 px-2.5 py-1.5 rounded-md text-xs transition-all ${format === 'story' ? 'text-white' : 'text-gray-500 hover:text-gray-700'}`}
             style={format === 'story' ? { backgroundColor: '#1B5EA6' } : {}}
           >
-            <Smartphone className="w-3.5 h-3.5" /><span>Story</span>
+            <Smartphone className="w-3 h-3" /><span>Story</span>
           </button>
         </div>
       </div>
 
       {/* ── Export buttons ── */}
       <div className="flex gap-2">
-        <Button variant="outline" size="sm" onClick={handleExportAll} disabled={isExporting} className="gap-1.5 flex-1 text-xs">
-          {isExporting ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Download className="w-3.5 h-3.5" />}
-          Exportar {format === 'feed' ? 'Feed' : 'Story'} ({slides.length})
+        <Button variant="outline" size="sm" onClick={handleExportAll} disabled={isExporting} className="gap-1.5 flex-1 text-xs min-w-0">
+          {isExporting ? <Loader2 className="w-3.5 h-3.5 animate-spin flex-shrink-0" /> : <Download className="w-3.5 h-3.5 flex-shrink-0" />}
+          <span className="truncate">Exportar {format === 'feed' ? 'Feed' : 'Story'} ({slides.length})</span>
         </Button>
-        <Button size="sm" onClick={handleExportBoth} disabled={isExporting} className="gap-1.5 flex-1 text-xs text-white" style={{ backgroundColor: '#F47920' }}>
-          {isExporting ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Download className="w-3.5 h-3.5" />}
-          Tudo ({feedSlides.length + storySlides.length})
+        <Button size="sm" onClick={handleExportBoth} disabled={isExporting} className="gap-1.5 flex-1 text-xs text-white min-w-0" style={{ backgroundColor: '#F47920' }}>
+          {isExporting ? <Loader2 className="w-3.5 h-3.5 animate-spin flex-shrink-0" /> : <Download className="w-3.5 h-3.5 flex-shrink-0" />}
+          <span className="truncate">Tudo ({feedSlides.length + storySlides.length})</span>
         </Button>
       </div>
 
@@ -274,7 +243,7 @@ export function AMPostPreview({ data, photos }: AMPostPreviewProps) {
       <div className="flex items-center gap-1 flex-wrap">
         {slides.map((slide, index) => (
           <button key={slide.id} onClick={() => setCurrentSlide(index)}
-            className="px-2 py-1 rounded-full text-xs transition-all"
+            className="px-2 py-0.5 rounded-full text-xs transition-all"
             style={safeIndex === index
               ? { backgroundColor: '#1B5EA6', color: '#fff' }
               : { backgroundColor: '#F3F4F6', color: '#6B7280' }}>
@@ -284,20 +253,24 @@ export function AMPostPreview({ data, photos }: AMPostPreviewProps) {
       </div>
 
       {/* ── Main preview + arrows ── */}
-      <div className="flex items-center justify-center gap-3">
-        <button onClick={prev} className="p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors flex-shrink-0">
+      <div className="flex items-center justify-center gap-2">
+        <button onClick={prev} className="p-1.5 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors flex-shrink-0">
           <ChevronLeft className="w-4 h-4 text-gray-500" />
         </button>
 
-        <div className="relative rounded-xl overflow-hidden shadow-2xl flex-shrink-0"
-          style={{ width: previewW, height: previewH }}>
-          <div className="origin-top-left"
-            style={{ width: SLIDE_W, height: nativeH, transform: `scale(${previewScale})` }}>
+        <div
+          className="relative rounded-xl overflow-hidden shadow-2xl flex-shrink-0"
+          style={{ width: Math.round(previewW), height: Math.round(previewH) }}
+        >
+          <div
+            className="origin-top-left"
+            style={{ width: SLIDE_W, height: nativeH, transform: `scale(${previewScale})` }}
+          >
             {slides[safeIndex]?.el}
           </div>
         </div>
 
-        <button onClick={next} className="p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors flex-shrink-0">
+        <button onClick={next} className="p-1.5 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors flex-shrink-0">
           <ChevronRight className="w-4 h-4 text-gray-500" />
         </button>
       </div>
@@ -341,7 +314,6 @@ export function AMPostPreview({ data, photos }: AMPostPreviewProps) {
             {slide.el}
           </div>
         ))}
-        {/* Pad remaining refs */}
         {Array.from({ length: MAX_SLIDES - feedSlides.length }).map((_, i) => (
           <div key={`fpad-${i}`} ref={feedRefs[feedSlides.length + i]} />
         ))}
