@@ -257,43 +257,78 @@ export const AMSpecsSlide = ({
   return (
     <div style={{ position: 'relative', width: 360, height: 360, backgroundColor: '#ffffff', fontFamily: 'Arial, sans-serif', overflow: 'hidden' }}>
 
-      {/*
-        Render the image inside an inline SVG using a <clipPath> whose path lives
-        in the SAME SVG coordinate space as the <image> element. This guarantees
-        all corners — including top-right — are rendered exactly as drawn,
-        with no CSS clip-path cross-element reference issues.
-      */}
-      {/*
-        Use <image clipPath> — the standard SVG idiom.
-        <image> covers the full 360×360 canvas; clipPath restricts it to
-        the custom notch shape. Both live in the same SVG coordinate space
-        so all corners, including top-right, render with correct anti-aliasing.
-      */}
+      {/* ── clipPath definition — 0×0 SVG keeps it out of flow but in the DOM ── */}
       <svg
-        width="360"
-        height="360"
-        viewBox="0 0 360 360"
-        style={{ position: 'absolute', top: 0, left: 0, zIndex: 10 }}
+        aria-hidden="true"
+        style={{ position: 'absolute', width: 0, height: 0, overflow: 'hidden' }}
       >
         <defs>
-          <clipPath id="am-specs-shape">
+          <clipPath id="am-specs-shape" clipPathUnits="userSpaceOnUse">
             <path d={shapePath} />
           </clipPath>
         </defs>
-        {/* clip-path on <g> is universally reliable across all browsers */}
-        <g clipPath="url(#am-specs-shape)">
-          {photo ? (
-            <image
-              href={photo}
-              x="0" y="0"
-              width="360" height="360"
-              preserveAspectRatio="xMidYMid slice"
-            />
-          ) : (
-            <rect x="0" y="0" width="360" height="360" fill="#d1d5db" />
-          )}
-        </g>
       </svg>
+
+      {/* ── Image container — clip-path applied directly to this div ── */}
+      <div
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          width: 360,
+          height: 360,
+          clipPath: 'url(#am-specs-shape)',
+          zIndex: 10,
+        }}
+      >
+        {photo ? (
+          <img
+            src={photo}
+            alt=""
+            style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+          />
+        ) : (
+          <div style={{ width: '100%', height: '100%', backgroundColor: '#d1d5db' }} />
+        )}
+      </div>
+
+      {/* ── Logo card — sits in the notch (z-index below image) ── */}
+      <div style={{
+        position: 'absolute',
+        top: 4,
+        left: 4,
+        width: 164,
+        height: 76,
+        borderRadius: 18,
+        backgroundColor: '#ffffff',
+        zIndex: 5,
+        display: 'flex',
+        alignItems: 'center',
+        paddingLeft: 12,
+        paddingRight: 12,
+        boxSizing: 'border-box',
+      }}>
+        <AMLogo width={140} variant="color" />
+      </div>
+
+      {/* ── Specs card ── */}
+      {specs.length > 0 && (
+        <div style={{
+          position: 'absolute', bottom: 22, right: 22, zIndex: 20,
+          backgroundColor: 'rgba(17,24,39,0.75)', backdropFilter: 'blur(6px)',
+          borderRadius: 14, padding: '10px 14px', maxWidth: 165,
+        }}>
+          {specs.map((spec, i) => (
+            <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 5, marginBottom: i < specs.length - 1 ? 4 : 0 }}>
+              <span style={{ color: 'rgba(255,255,255,0.6)', fontSize: 11, marginTop: 1, flexShrink: 0 }}>•</span>
+              <span style={{ color: 'white', fontSize: 11, lineHeight: 1.4 }}>{spec}</span>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
 
       {/* ── Logo card — sits in the notch, below the SVG layer (z-index 5) ── */}
       <div style={{
