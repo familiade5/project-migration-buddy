@@ -56,8 +56,8 @@ export const AMCoverSlide = ({
   const shapePath = [
     'M 330 8',
     'A 22 22 0 0 1 352 30',   // top-right outer corner (r=22)
-    'V 264',                  // down right edge, stop 20px above notch top
-    'A 20 20 0 0 0 332 284',  // CCW concave arc r=20, carves inward to match blue card corner
+    'V 250',                  // down right edge, stop 34px above notch top (above card visual top)
+    'A 34 34 0 0 0 318 284',  // CCW concave arc r=34, curve starts before card begins — no straight edge visible
     'H 192',                  // across notch top
     'Q 174 284 174 302',      // smooth curve into blue card notch left side
     'V 330',                  // down notch left wall, stop 22px above bottom
