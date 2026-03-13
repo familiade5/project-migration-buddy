@@ -196,8 +196,7 @@ export const AMCoverSlide = ({
 };
 
 // ─── Slide 2: ESPECIFICAÇÕES ─────────────────────────────────────────────────
-// Dois painéis que usam a MESMA foto mas com background-position alinhado
-// para que juntos formem UMA imagem contínua dividida pelo tab da logo.
+// UMA foto de fundo. Card branco flutuante com borderRadius em TODOS os cantos.
 // • Painel direito: full-height, à direita da logo
 // • Painel esquerdo: abaixo da logo, à esquerda
 // • borderRadius:22 em todos os painéis gera os cantos côncavos naturais
