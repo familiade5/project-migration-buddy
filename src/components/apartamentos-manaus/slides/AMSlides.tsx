@@ -399,10 +399,10 @@ export const AMLocationSlide = ({
     'A 22 22 0 0 1 346 36',  // top-right outer convex corner
     'V 254',                 // right edge down (stop before logo notch: 276-22=254)
     'Q 346 276 324 276',     // concave at top-right of logo notch
-    'H 230',                 // logo notch top leftward (208+22=230)
-    'Q 208 276 208 298',     // concave at top-left of logo notch (276+22=298)
+    'H 222',                 // logo notch top leftward (200+22=222) — 8px branco à esquerda do card
+    'Q 200 276 200 298',     // concave at top-left of logo notch (276+22=298)
     'V 324',                 // down logo notch left wall (346-22=324)
-    'A 22 22 0 0 1 230 346', // convex outer corner at bottom-left of logo notch
+    'A 22 22 0 0 1 222 346', // convex outer corner at bottom-left of logo notch
     'H 36',                  // bottom edge leftward
     'A 22 22 0 0 1 14 324',  // bottom-left outer convex corner
     'V 194',                 // left edge upward to blue notch (172+22=194)
