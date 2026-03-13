@@ -1,8 +1,8 @@
 /**
  * TEMA 2 — "CLEAN LUXURY"
- * Story 1: Curiosidade — fundo branco com foto lateral e texto bold
- * Story 2: Revelação   — grade de 4 fotos moderno + info clara
- * Story 3: CTA         — branco + laranja, elegante e premium
+ * Story 1: Curiosidade — foto grande (50%) + texto organizado abaixo
+ * Story 2: Revelação   — fotos maiores (68%) + info no rodapé
+ * Story 3: CTA         — cabeçalho laranja grande com foto de fundo + contato
  */
 
 import { AMPropertyData } from '@/types/apartamentosManaus';
@@ -25,7 +25,7 @@ const formatPrice = (v: number) =>
     ? `R$ ${v.toLocaleString('pt-BR', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`
     : 'Consulte';
 
-/* ── Story 1: Curiosidade ─────────────────────────────────────────────────────*/
+/* ── Story 1: Curiosidade — foto 50% superior, texto organizado abaixo ────────*/
 export const AMStory2_T2_Curiosity = ({
   data,
   photo,
@@ -35,85 +35,102 @@ export const AMStory2_T2_Curiosity = ({
 }) => (
   <div style={{ position: 'relative', width: STORY_W, height: STORY_H, backgroundColor: '#ffffff', fontFamily: 'Arial, sans-serif', overflow: 'hidden' }}>
     {/* Blue vertical stripe left */}
-    <div style={{ position: 'absolute', left: 0, top: 0, width: 28, height: '100%', backgroundColor: '#1B5EA6' }} />
+    <div style={{ position: 'absolute', left: 0, top: 0, width: 6, height: '100%', backgroundColor: '#1B5EA6', zIndex: 5 }} />
 
-    {/* Orange accent top-right corner */}
-    <div style={{ position: 'absolute', top: 0, right: 0, width: 120, height: 120, overflow: 'hidden' }}>
-      <div style={{
-        position: 'absolute', top: -60, right: -60, width: 180, height: 180,
-        borderRadius: '50%', backgroundColor: '#F47920', opacity: 0.12,
-      }} />
-    </div>
-
-    {/* Photo — rounded rect, visible and clear */}
-    <div style={{
-      position: 'absolute', top: 100, right: 20, width: 220, height: 260,
-      borderRadius: 20, overflow: 'hidden', boxShadow: '0 20px 60px rgba(27,94,166,0.25)',
-    }}>
+    {/* ── FOTO — ocupa 50% superior ── */}
+    <div style={{ position: 'absolute', top: 0, left: 6, right: 0, height: '50%', overflow: 'hidden' }}>
       {photo ? (
         <img src={photo} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
       ) : (
         <div style={{ width: '100%', height: '100%', backgroundColor: '#e2e8f0' }} />
       )}
-      {/* Subtle blue overlay */}
+      {/* Gradient bottom para integrar */}
+      <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, transparent 60%, rgba(255,255,255,0.95) 100%)' }} />
+      {/* Orange badge bairro */}
       <div style={{
-        position: 'absolute', inset: 0,
-        background: 'linear-gradient(135deg, rgba(27,94,166,0.15) 0%, transparent 60%)',
-      }} />
-      {/* Orange corner badge */}
-      <div style={{
-        position: 'absolute', bottom: 12, left: 12,
-        backgroundColor: '#F47920', borderRadius: 8, padding: '4px 10px',
+        position: 'absolute', bottom: 16, left: 16,
+        backgroundColor: '#F47920', borderRadius: 8, padding: '5px 12px',
       }}>
-        <p style={{ color: 'white', fontSize: 9, fontWeight: 700, margin: 0, textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+        <p style={{ color: 'white', fontSize: 10, fontWeight: 700, margin: 0, textTransform: 'uppercase', letterSpacing: '0.08em' }}>
           📍 {data.neighborhood || 'Manaus'}
         </p>
       </div>
+      {/* Logo overlay canto superior */}
+      <div style={{ position: 'absolute', top: 14, right: 14, backgroundColor: 'rgba(255,255,255,0.92)', borderRadius: 8, padding: '4px 8px' }}>
+        <Logo variant="color" />
+      </div>
     </div>
 
-    {/* Logo top */}
-    <div style={{ position: 'absolute', top: 40, left: 48, zIndex: 10 }}>
-      <Logo variant="color" />
-    </div>
-
-    {/* Main text */}
-    <div style={{ position: 'absolute', top: 190, left: 44, right: 252, zIndex: 10 }}>
-      <p style={{
-        color: '#1B5EA6', fontSize: 11, fontWeight: 700, letterSpacing: '0.15em',
-        textTransform: 'uppercase', margin: '0 0 10px',
-      }}>
-        Você sabia que...
-      </p>
-      <p style={{ color: '#0f172a', fontSize: 26, fontWeight: 900, lineHeight: 1.2, margin: '0 0 16px' }}>
-        É possível<br />
-        <span style={{ color: '#F47920' }}>sair do aluguel</span><br />
-        em {data.neighborhood || 'Manaus'}?
-      </p>
-      <div style={{ width: 36, height: 3, backgroundColor: '#1B5EA6', borderRadius: 2, marginBottom: 14 }} />
-      <p style={{ color: '#64748b', fontSize: 12, lineHeight: 1.5, margin: 0 }}>
-        Temos um apart. de{' '}
-        {data.bedrooms > 0 ? `${data.bedrooms} quartos` : 'alta qualidade'} que cabe no seu bolso.
-      </p>
-    </div>
-
-    {/* Bottom strip */}
+    {/* ── TEXTO — 50% inferior, organizado ── */}
     <div style={{
-      position: 'absolute', bottom: 0, left: 0, right: 0, height: 80,
-      backgroundColor: '#1B5EA6',
-      display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-      padding: '0 24px 0 48px',
+      position: 'absolute', top: '50%', left: 6, right: 0, bottom: 0,
+      display: 'flex', flexDirection: 'column', justifyContent: 'space-between',
+      padding: '20px 22px 0',
     }}>
-      <p style={{ color: 'rgba(255,255,255,0.8)', fontSize: 12, margin: 0, fontWeight: 600 }}>
-        Veja nas próximas ➜
-      </p>
-      <div style={{ backgroundColor: 'rgba(255,255,255,0.2)', borderRadius: 20, padding: '4px 14px' }}>
-        <p style={{ color: 'white', fontSize: 11, margin: 0, fontWeight: 700 }}>1 / 3</p>
+      <div>
+        {/* Eyebrow */}
+        <p style={{
+          color: '#1B5EA6', fontSize: 11, fontWeight: 700, letterSpacing: '0.15em',
+          textTransform: 'uppercase', margin: '0 0 8px',
+        }}>
+          Você sabia que...
+        </p>
+
+        {/* Headline */}
+        <p style={{ color: '#0f172a', fontSize: 28, fontWeight: 900, lineHeight: 1.2, margin: '0 0 12px' }}>
+          É possível{' '}
+          <span style={{ color: '#F47920' }}>sair do aluguel</span>{' '}
+          em {data.neighborhood || 'Manaus'}?
+        </p>
+
+        {/* Divider */}
+        <div style={{ width: 40, height: 3, backgroundColor: '#1B5EA6', borderRadius: 2, marginBottom: 12 }} />
+
+        {/* Subtext */}
+        <p style={{ color: '#64748b', fontSize: 13, lineHeight: 1.55, margin: '0 0 14px' }}>
+          Temos um apartamento de{' '}
+          <strong style={{ color: '#0f172a' }}>{data.bedrooms > 0 ? `${data.bedrooms} quartos` : 'alta qualidade'}</strong>
+          {data.area > 0 ? ` com ${data.area}m²` : ''} que cabe no seu bolso.
+        </p>
+
+        {/* Specs rápidas */}
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+          {data.bedrooms > 0 && (
+            <div style={{ backgroundColor: '#f0f6ff', borderRadius: 8, padding: '5px 10px', border: '1px solid #bfdbfe' }}>
+              <span style={{ color: '#1B5EA6', fontSize: 11, fontWeight: 600 }}>🛏 {data.bedrooms} Qto{data.bedrooms > 1 ? 's' : ''}</span>
+            </div>
+          )}
+          {data.area > 0 && (
+            <div style={{ backgroundColor: '#f0f6ff', borderRadius: 8, padding: '5px 10px', border: '1px solid #bfdbfe' }}>
+              <span style={{ color: '#1B5EA6', fontSize: 11, fontWeight: 600 }}>📐 {data.area}m²</span>
+            </div>
+          )}
+          {data.garageSpaces > 0 && (
+            <div style={{ backgroundColor: '#f0f6ff', borderRadius: 8, padding: '5px 10px', border: '1px solid #bfdbfe' }}>
+              <span style={{ color: '#1B5EA6', fontSize: 11, fontWeight: 600 }}>🚗 {data.garageSpaces} Vaga{data.garageSpaces > 1 ? 's' : ''}</span>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Bottom strip */}
+      <div style={{
+        backgroundColor: '#1B5EA6',
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        padding: '12px 18px', marginLeft: -22, marginRight: 0,
+      }}>
+        <p style={{ color: 'rgba(255,255,255,0.85)', fontSize: 12, margin: 0, fontWeight: 600 }}>
+          Veja nas próximas ➜
+        </p>
+        <div style={{ backgroundColor: 'rgba(255,255,255,0.2)', borderRadius: 20, padding: '4px 14px' }}>
+          <p style={{ color: 'white', fontSize: 11, margin: 0, fontWeight: 700 }}>1 / 3</p>
+        </div>
       </div>
     </div>
   </div>
 );
 
-/* ── Story 2: Revelação — 4-photo modern grid ────────────────────────────────*/
+/* ── Story 2: Revelação — fotos grandes 68%, info no rodapé ──────────────────*/
 export const AMStory2_T2_Reveal = ({
   data,
   photos,
@@ -128,20 +145,26 @@ export const AMStory2_T2_Reveal = ({
     data.area > 0 && { label: `${data.area} m²`, icon: '📐' },
     data.garageSpaces > 0 && { label: `${data.garageSpaces} Vaga${data.garageSpaces > 1 ? 's' : ''}`, icon: '🚗' },
     data.floor && { label: `${data.floor}° And.`, icon: '🏢' },
-    data.furnished && { label: 'Mobiliado', icon: '✨' },
   ].filter(Boolean) as { label: string; icon: string }[];
 
   const imgs = photos && photos.length > 0 ? photos : [];
   const img = (i: number) => imgs[i] ?? imgs[0] ?? undefined;
 
+  // Fotos: 68% = 435px
+  const PHOTO_H = 435;
+  const CARD_TOP = PHOTO_H - 20;
+
   return (
     <div style={{ position: 'relative', width: STORY_W, height: STORY_H, backgroundColor: '#f8fafc', fontFamily: 'Arial, sans-serif', overflow: 'hidden' }}>
       {/* Blue vertical stripe left */}
-      <div style={{ position: 'absolute', left: 0, top: 0, width: 6, height: '100%', backgroundColor: '#1B5EA6' }} />
+      <div style={{ position: 'absolute', left: 0, top: 0, width: 6, height: '100%', backgroundColor: '#1B5EA6', zIndex: 5 }} />
 
-      {/* ── Photo grid — top 52% ── */}
-      <div style={{ position: 'absolute', top: 0, left: 6, right: 0, height: 332, display: 'grid', gridTemplateColumns: '1fr 1fr', gridTemplateRows: '1fr 1fr', gap: 3 }}>
-        {/* Large top-left photo spanning 2 rows */}
+      {/* ── Photo grid — 68% da tela ── */}
+      <div style={{
+        position: 'absolute', top: 0, left: 6, right: 0, height: PHOTO_H,
+        display: 'grid', gridTemplateColumns: '1fr 1fr', gridTemplateRows: '1fr 1fr', gap: 3,
+      }}>
+        {/* Large top-left spanning 2 rows */}
         <div style={{ gridRow: '1 / 3', overflow: 'hidden', position: 'relative' }}>
           {img(0) ? (
             <img src={img(0)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
@@ -149,8 +172,8 @@ export const AMStory2_T2_Reveal = ({
             <div style={{ width: '100%', height: '100%', backgroundColor: '#cbd5e1' }} />
           )}
           {/* Logo overlay */}
-          <div style={{ position: 'absolute', top: 14, left: 12, zIndex: 10 }}>
-            <Logo variant="white" />
+          <div style={{ position: 'absolute', top: 14, left: 12, zIndex: 10, backgroundColor: 'rgba(255,255,255,0.88)', borderRadius: 8, padding: '4px 8px' }}>
+            <Logo variant="color" />
           </div>
         </div>
 
@@ -170,46 +193,61 @@ export const AMStory2_T2_Reveal = ({
           ) : (
             <div style={{ width: '100%', height: '100%', backgroundColor: '#e2e8f0' }} />
           )}
-          {/* "+N more" overlay */}
+          {imgs.length > 3 && img(3) && (
+            <div style={{ position: 'absolute', inset: 0 }}>
+              <img src={img(3)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+            </div>
+          )}
           {imgs.length > 4 && (
             <div style={{
-              position: 'absolute', inset: 0, backgroundColor: 'rgba(27,94,166,0.7)',
+              position: 'absolute', inset: 0, backgroundColor: 'rgba(27,94,166,0.75)',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
             }}>
               <p style={{ color: 'white', fontSize: 20, fontWeight: 900, margin: 0 }}>+{imgs.length - 3}</p>
             </div>
           )}
         </div>
+
+        {/* Bottom gradient fade */}
+        <div style={{
+          position: 'absolute', bottom: 0, left: 0, right: 0, height: 50,
+          background: 'linear-gradient(to bottom, transparent, #f8fafc)',
+          zIndex: 3,
+        }} />
+
+        {/* Orange neighborhood tag */}
+        {data.neighborhood && (
+          <div style={{
+            position: 'absolute', top: 16, right: 8, zIndex: 10,
+            backgroundColor: '#F47920', borderRadius: 20, padding: '4px 12px',
+            boxShadow: '0 4px 12px rgba(244,121,32,0.4)',
+          }}>
+            <p style={{ color: 'white', fontSize: 10, fontWeight: 700, margin: 0 }}>📍 {data.neighborhood}</p>
+          </div>
+        )}
       </div>
 
-      {/* Orange neighborhood tag */}
-      {data.neighborhood && (
-        <div style={{
-          position: 'absolute', top: 300, right: 8, zIndex: 20,
-          backgroundColor: '#F47920', borderRadius: 20, padding: '4px 12px',
-          boxShadow: '0 4px 12px rgba(244,121,32,0.4)',
-        }}>
-          <p style={{ color: 'white', fontSize: 10, fontWeight: 700, margin: 0 }}>📍 {data.neighborhood}</p>
-        </div>
-      )}
-
-      {/* Info section */}
-      <div style={{ position: 'absolute', top: 340, left: 16, right: 12 }}>
+      {/* ── Info card — colado no rodapé ── */}
+      <div style={{
+        position: 'absolute', top: CARD_TOP, left: 6, right: 0, bottom: 0,
+        backgroundColor: '#f8fafc', padding: '16px 18px 0',
+        display: 'flex', flexDirection: 'column', justifyContent: 'space-between',
+      }}>
         {/* Title */}
-        <p style={{ color: '#0f172a', fontSize: 14, fontWeight: 800, margin: '0 0 10px', lineHeight: 1.3 }}>
+        <p style={{ color: '#0f172a', fontSize: 13, fontWeight: 800, margin: '0 0 8px', lineHeight: 1.3 }}>
           {data.title || 'Apartamento Disponível'}
         </p>
 
         {/* Specs grid */}
         {specs.length > 0 && (
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 5, marginBottom: 12 }}>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 5, marginBottom: 10 }}>
             {specs.slice(0, 5).map((s, i) => (
               <div key={i} style={{
-                backgroundColor: 'white', borderRadius: 8, padding: '5px 9px',
+                backgroundColor: 'white', borderRadius: 8, padding: '4px 9px',
                 border: '1px solid #e2e8f0', display: 'flex', alignItems: 'center', gap: 4,
                 boxShadow: '0 1px 4px rgba(0,0,0,0.05)',
               }}>
-                <span style={{ fontSize: 12 }}>{s.icon}</span>
+                <span style={{ fontSize: 11 }}>{s.icon}</span>
                 <span style={{ color: '#334155', fontSize: 10, fontWeight: 600 }}>{s.label}</span>
               </div>
             ))}
@@ -218,7 +256,7 @@ export const AMStory2_T2_Reveal = ({
 
         {/* Price block */}
         <div style={{
-          backgroundColor: '#1B5EA6', borderRadius: 14, padding: '12px 16px',
+          backgroundColor: '#1B5EA6', borderRadius: 14, padding: '11px 16px',
           boxShadow: '0 8px 24px rgba(27,94,166,0.25)',
         }}>
           <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between' }}>
@@ -226,7 +264,7 @@ export const AMStory2_T2_Reveal = ({
               <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: 10, margin: '0 0 2px', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
                 {data.isRental ? 'Aluguel mensal' : 'Valor de venda'}
               </p>
-              <p style={{ color: 'white', fontSize: 26, fontWeight: 900, margin: 0, lineHeight: 1 }}>
+              <p style={{ color: 'white', fontSize: 24, fontWeight: 900, margin: 0, lineHeight: 1 }}>
                 {formatPrice(price)}
               </p>
             </div>
@@ -244,25 +282,24 @@ export const AMStory2_T2_Reveal = ({
             </div>
           </div>
         </div>
-      </div>
 
-      {/* Bottom */}
-      <div style={{
-        position: 'absolute', bottom: 0, left: 0, right: 0, height: 52,
-        backgroundColor: '#1B5EA6',
-        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-        padding: '0 20px 0 16px',
-      }}>
-        <p style={{ color: 'rgba(255,255,255,0.8)', fontSize: 10, margin: 0 }}>apartamentosmanaus.com</p>
-        <div style={{ backgroundColor: 'rgba(255,255,255,0.2)', borderRadius: 20, padding: '4px 14px' }}>
-          <p style={{ color: 'white', fontSize: 11, margin: 0, fontWeight: 700 }}>2 / 3</p>
+        {/* Bottom bar */}
+        <div style={{
+          backgroundColor: '#1B5EA6',
+          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+          padding: '10px 18px', marginLeft: -18, marginRight: 0, marginTop: 10,
+        }}>
+          <p style={{ color: 'rgba(255,255,255,0.8)', fontSize: 10, margin: 0 }}>apartamentosmanaus.com</p>
+          <div style={{ backgroundColor: 'rgba(255,255,255,0.2)', borderRadius: 20, padding: '4px 14px' }}>
+            <p style={{ color: 'white', fontSize: 11, margin: 0, fontWeight: 700 }}>2 / 3</p>
+          </div>
         </div>
       </div>
     </div>
   );
 };
 
-/* ── Story 3: CTA ────────────────────────────────────────────────────────────*/
+/* ── Story 3: CTA — quadro laranja grande com foto de fundo ─────────────────*/
 export const AMStory2_T2_CTA = ({
   data,
   photo,
@@ -272,37 +309,51 @@ export const AMStory2_T2_CTA = ({
 }) => (
   <div style={{ position: 'relative', width: STORY_W, height: STORY_H, backgroundColor: '#ffffff', fontFamily: 'Arial, sans-serif', overflow: 'hidden' }}>
     {/* Blue vertical stripe left */}
-    <div style={{ position: 'absolute', left: 0, top: 0, width: 28, height: '100%', backgroundColor: '#1B5EA6' }} />
+    <div style={{ position: 'absolute', left: 0, top: 0, width: 6, height: '100%', backgroundColor: '#1B5EA6', zIndex: 5 }} />
 
-    {/* Top section — orange */}
+    {/* ── Top section — laranja grande com foto de fundo, 50% ── */}
     <div style={{
-      position: 'absolute', top: 0, left: 28, right: 0, height: 220,
+      position: 'absolute', top: 0, left: 6, right: 0, height: '50%',
       backgroundColor: '#F47920', overflow: 'hidden',
     }}>
+      {/* Foto de fundo com overlay laranja */}
       {photo && (
-        <img src={photo} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', filter: 'brightness(0.4) saturate(0.5)', mixBlendMode: 'multiply' }} />
+        <img src={photo} alt="" style={{
+          position: 'absolute', inset: 0, width: '100%', height: '100%',
+          objectFit: 'cover', filter: 'brightness(0.45) saturate(0.6)',
+        }} />
       )}
-      <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '20px 24px' }}>
-        <p style={{ color: 'white', fontSize: 13, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', margin: '0 0 8px', opacity: 0.9 }}>
+      {/* Overlay laranja semi-transparente sobre a foto */}
+      <div style={{
+        position: 'absolute', inset: 0,
+        background: 'linear-gradient(145deg, rgba(244,121,32,0.75) 0%, rgba(200,80,0,0.85) 100%)',
+      }} />
+      {/* Texto do cabeçalho */}
+      <div style={{
+        position: 'absolute', inset: 0,
+        display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+        padding: '24px 28px', zIndex: 10,
+      }}>
+        <p style={{ color: 'rgba(255,255,255,0.9)', fontSize: 13, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', margin: '0 0 10px', textAlign: 'center' }}>
           Pronto para mudar?
         </p>
-        <p style={{ color: 'white', fontSize: 30, fontWeight: 900, textAlign: 'center', lineHeight: 1.2, margin: 0 }}>
+        <p style={{ color: 'white', fontSize: 32, fontWeight: 900, textAlign: 'center', lineHeight: 1.15, margin: 0, textShadow: '0 2px 12px rgba(0,0,0,0.3)' }}>
           Realize o seu<br />sonho agora!
         </p>
       </div>
     </div>
 
-    {/* Middle content */}
-    <div style={{ position: 'absolute', top: 232, left: 44, right: 20 }}>
+    {/* ── Bottom section — branco, conteúdo de contato ── */}
+    <div style={{ position: 'absolute', top: '50%', left: 6, right: 0, bottom: 0, padding: '18px 22px 0' }}>
       {/* Logo */}
-      <div style={{ marginBottom: 16 }}>
+      <div style={{ marginBottom: 14 }}>
         <Logo variant="color" />
       </div>
 
       {/* Broker card */}
       <div style={{
-        backgroundColor: '#f8fafc', borderRadius: 16, padding: '14px 16px',
-        border: '1px solid #e2e8f0', marginBottom: 16,
+        backgroundColor: '#f8fafc', borderRadius: 14, padding: '12px 16px',
+        border: '1px solid #e2e8f0', marginBottom: 14,
         boxShadow: '0 2px 12px rgba(0,0,0,0.06)',
       }}>
         <p style={{ color: '#64748b', fontSize: 10, margin: '0 0 2px', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Fale com o corretor</p>
@@ -312,7 +363,7 @@ export const AMStory2_T2_CTA = ({
 
       {/* WhatsApp button */}
       <div style={{
-        backgroundColor: '#25D366', borderRadius: 14, padding: '14px 20px',
+        backgroundColor: '#25D366', borderRadius: 14, padding: '13px 20px',
         display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, marginBottom: 12,
         boxShadow: '0 6px 20px rgba(37,211,102,0.35)',
       }}>
@@ -330,12 +381,12 @@ export const AMStory2_T2_CTA = ({
       </div>
     </div>
 
-    {/* Bottom */}
+    {/* Bottom bar */}
     <div style={{
-      position: 'absolute', bottom: 0, left: 0, right: 0, height: 60,
+      position: 'absolute', bottom: 0, left: 0, right: 0,
       backgroundColor: '#1B5EA6',
       display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-      padding: '0 20px 0 48px',
+      padding: '10px 20px 10px 26px',
     }}>
       <p style={{ color: 'rgba(255,255,255,0.8)', fontSize: 11, margin: 0 }}>apartamentosmanaus.com</p>
       <div style={{ backgroundColor: 'rgba(255,255,255,0.2)', borderRadius: 20, padding: '4px 14px' }}>
