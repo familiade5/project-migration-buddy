@@ -529,12 +529,16 @@ export const AMLocationSlide = ({
           zIndex: 20,
           backgroundColor: '#ffffff',
           borderRadius: 12,
-          padding: '3px 2px',
+          width: 120,
+          height: 52,
           display: 'flex',
           alignItems: 'center',
+          justifyContent: 'center',
+          boxSizing: 'border-box',
+          padding: '4px 8px',
         }}
       >
-        <AMLogo width={100} variant="color" />
+        <AMLogo width={115} variant="color" />
       </div>
     </div>
   );
