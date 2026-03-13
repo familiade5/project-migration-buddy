@@ -236,22 +236,23 @@ export const AMSpecsSlide = ({
 
   // One continuous path — smooth Q bezier curves at the notch corners,
   // standard A arcs at the three outer rounded corners.
-  // Outer right edge x=352 (8px inset from 360). Top-right arc: (330,8)→(352,30) r=22.
-  // Bottom-right arc: (352,330)→(330,352) r=22. Bottom-left arc: (30,352)→(8,330) r=22.
-  // Notch: x 8→168, y 8→80. Q curves for smooth concave/convex inner corners.
+  // Path starts at (330, 8) — the exact entry point of the top-right arc —
+  // so the arc comes FIRST with no straight segment before it.
+  // The top edge (168→330 at y=8) is the LAST segment before Z.
   const shapePath = [
-    'M 168 8',               // top edge, right end of notch
-    'H 330',                 // top edge rightward
-    'A 22 22 0 0 1 352 30',  // top-right outer corner (r=22)
+    'M 330 8',               // start directly at top-right arc entry
+    'A 22 22 0 0 1 352 30',  // top-right outer corner (r=22) — no straight before it
     'V 330',                 // right edge downward
     'A 22 22 0 0 1 330 352', // bottom-right outer corner (r=22)
     'H 30',                  // bottom edge leftward
     'A 22 22 0 0 1 8 330',   // bottom-left outer corner (r=22)
-    'V 98',                  // left edge upward, stop before notch bottom
+    'V 98',                  // left edge upward to notch start
     'Q 8 80 26 80',          // smooth concave curve into notch bottom-left
     'H 150',                 // notch bottom rightward
     'Q 168 80 168 62',       // smooth convex curve up notch bottom-right
-    'V 8 Z',                 // up right notch edge to start, close
+    'V 8',                   // up notch right edge to top
+    'H 330',                 // top edge back to arc start
+    'Z',
   ].join(' ');
 
   return (
