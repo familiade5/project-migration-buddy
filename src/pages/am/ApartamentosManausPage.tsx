@@ -11,6 +11,7 @@ import { Image, Edit3, Sparkles, FileText, LayoutGrid, Smartphone } from 'lucide
 const ApartamentosManausPage = () => {
   const [propertyData, setPropertyData] = useState<AMPropertyData>(defaultAMPropertyData);
   const [photos, setPhotos] = useState<string[]>([]);
+  const [previewTab, setPreviewTab] = useState<'feed' | 'stories'>('feed');
 
   return (
     <AMLayout>
@@ -39,14 +40,14 @@ const ApartamentosManausPage = () => {
                   <div className="p-2 rounded-lg text-white" style={{ backgroundColor: '#1B5EA6' }}>
                     <Image className="w-4 h-4" />
                   </div>
-                   <div>
-                     <h2 className="font-semibold text-gray-900">Fotos do Imóvel</h2>
-                     <p className="text-xs text-gray-500">Adicione fotos — arraste para reordenar slides</p>
-                   </div>
-                 </div>
-               </div>
-               <div className="p-6">
-                 <AMPhotoManager photos={photos} onChange={setPhotos} />
+                  <div>
+                    <h2 className="font-semibold text-gray-900">Fotos do Imóvel</h2>
+                    <p className="text-xs text-gray-500">Adicione fotos — arraste para reordenar slides</p>
+                  </div>
+                </div>
+              </div>
+              <div className="p-6">
+                <AMPhotoManager photos={photos} onChange={setPhotos} />
               </div>
             </div>
 
@@ -90,12 +91,44 @@ const ApartamentosManausPage = () => {
           {/* Right – Preview */}
           <div className="lg:sticky lg:top-6 self-start">
             <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+              {/* Tab selector */}
               <div className="px-6 py-4 border-b border-gray-100" style={{ backgroundColor: '#F0F6FF' }}>
-                <h2 className="font-semibold text-gray-900">Preview dos Criativos</h2>
-                <p className="text-xs text-gray-500">Visualize e baixe os slides prontos</p>
+                <div className="flex items-center justify-between gap-3">
+                  <div>
+                    <h2 className="font-semibold text-gray-900">Preview dos Criativos</h2>
+                    <p className="text-xs text-gray-500">Visualize e baixe os slides prontos</p>
+                  </div>
+                  {/* Feed / Stories toggle */}
+                  <div className="flex items-center gap-1 bg-white rounded-lg p-1 border border-gray-200 shadow-sm">
+                    <button
+                      onClick={() => setPreviewTab('feed')}
+                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-all"
+                      style={previewTab === 'feed'
+                        ? { backgroundColor: '#1B5EA6', color: 'white' }
+                        : { color: '#6B7280' }}
+                    >
+                      <LayoutGrid className="w-3.5 h-3.5" />
+                      Feed
+                    </button>
+                    <button
+                      onClick={() => setPreviewTab('stories')}
+                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-all"
+                      style={previewTab === 'stories'
+                        ? { backgroundColor: '#F47920', color: 'white' }
+                        : { color: '#6B7280' }}
+                    >
+                      <Smartphone className="w-3.5 h-3.5" />
+                      Stories
+                    </button>
+                  </div>
+                </div>
               </div>
               <div className="p-6 overflow-y-auto" style={{ maxHeight: 'calc(100vh - 120px)' }}>
-                <AMPostPreview data={propertyData} photos={photos} />
+                {previewTab === 'feed' ? (
+                  <AMPostPreview data={propertyData} photos={photos} />
+                ) : (
+                  <AMStoriesPreview data={propertyData} photos={photos} />
+                )}
               </div>
             </div>
           </div>
