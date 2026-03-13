@@ -196,26 +196,24 @@ export const AMCoverSlide = ({
 };
 
 // ─── Slide 2: ESPECIFICAÇÕES ─────────────────────────────────────────────────
-// Grey photo area = rounded rectangle with a rectangular notch carved at top-left for the logo.
-// Shape:
-//   - Top-left outer corner: SHARP (8,8) — no border-radius here
-//   - Top-right, bottom-right, bottom-left outer corners: rounded r=22
-//   - Notch inner corners (bottom-left and bottom-right of notch): rounded r=20 following logo card curves
-//   - Notch dimensions: x=8→172, y=8→90
-// Path (clockwise, in slide coordinate space 360×360):
-//   M 8 8  → sharp top-left
-//   H 330  → top edge right
-//   A 22 22 0 0 1 352 30  → round top-right
-//   V 330  → right edge down
-//   A 22 22 0 0 1 330 352  → round bottom-right
-//   H 30   → bottom edge left
-//   A 22 22 0 0 1 8 330   → round bottom-left
-//   V 70   → up left edge to notch bottom-left arc
-//   A 20 20 0 0 1 28 90   → concave arc following logo card bottom-left corner
-//   H 152  → notch bottom edge right
-//   A 20 20 0 0 1 172 70  → concave arc following logo card bottom-right corner
-//   V 8    → up notch right edge to top
-//   Z      → close: line from (172,8) back to (8,8) along top
+// ONE single continuous shape for the grey photo area.
+// Uses a smooth cubic bezier concave curve at the top-left to create a natural
+// organic notch. The white logo card sits ON TOP of the grey shape (overlapping).
+//
+// Path (clockwise, 360×360 slide space):
+//   - Start at (175, 8): top edge, right of logo area
+//   - H 330 → top edge right
+//   - A 22 22 → round top-right corner
+//   - V 330 → right edge
+//   - A 22 22 → round bottom-right corner
+//   - H 30 → bottom edge
+//   - A 22 22 → round bottom-left corner
+//   - V 85 → up left edge
+//   - C 8 85 8 8 175 8 → CUBIC BEZIER concave curve: starts going up/right
+//     along left edge, then sweeps smoothly to the top edge.
+//     Control1=(8,85) keeps tangent vertical. Control2=(8,8) pulls toward corner.
+//     Creates a smooth single-arc concave shape.
+//   - Z → close
 export const AMSpecsSlide = ({
   data,
   photo,
@@ -232,13 +230,15 @@ export const AMSpecsSlide = ({
     data.suites > 0 ? `${data.suites} suíte${data.suites > 1 ? 's' : ''}` : '',
   ].filter(Boolean).slice(0, 6);
 
+  // Single continuous shape. Cubic bezier C cx1 cy1 cx2 cy2 x y:
+  // From (8,85): C1=(8,85) keeps direction vertical, C2=(8,8) pulls into corner, end=(175,8).
   const clipPath =
-    'M 8 8 H 330 A 22 22 0 0 1 352 30 V 330 A 22 22 0 0 1 330 352 H 30 A 22 22 0 0 1 8 330 V 70 A 20 20 0 0 1 28 90 H 152 A 20 20 0 0 1 172 70 V 8 Z';
+    'M 175 8 H 330 A 22 22 0 0 1 352 30 V 330 A 22 22 0 0 1 330 352 H 30 A 22 22 0 0 1 8 330 V 85 C 8 85 8 8 175 8 Z';
 
   return (
     <div style={{ position: 'relative', width: 360, height: 360, backgroundColor: '#ffffff', fontFamily: 'Arial, sans-serif', overflow: 'hidden' }}>
 
-      {/* ── SVG clipPath definition ── */}
+      {/* ── SVG clipPath: single continuous rounded shape with concave curve ── */}
       <svg width="0" height="0" style={{ position: 'absolute', overflow: 'hidden' }}>
         <defs>
           <clipPath id="am-specs-photo-clip" clipPathUnits="userSpaceOnUse">
@@ -247,7 +247,7 @@ export const AMSpecsSlide = ({
         </defs>
       </svg>
 
-      {/* ── 1 ÚNICA IMAGEM: clipPath carves a notch at top-left for the logo ── */}
+      {/* ── 1 ÚNICA IMAGEM: masked by the single continuous shape ── */}
       <div
         style={{
           position: 'absolute',
@@ -264,16 +264,27 @@ export const AMSpecsSlide = ({
         }
       </div>
 
-      {/* ── LOGO: sits on white slide background inside the notch ── */}
+      {/* ── WHITE LOGO CARD: sits on top of the grey shape, overlapping it ──
+           White bg + rounded corners make it appear the grey area curves around it ── */}
       <div style={{
-        position: 'absolute', top: 16, left: 14, zIndex: 20,
+        position: 'absolute',
+        top: 4,
+        left: 4,
+        zIndex: 20,
+        backgroundColor: '#ffffff',
+        borderRadius: 18,
+        padding: '10px 14px 10px 10px',
       }}>
-        <AMLogo width={142} variant="color" />
+        <AMLogo width={138} variant="color" />
       </div>
 
       {/* ── CARD ESCURO DE SPECS ── */}
       {specs.length > 0 && (
-        <div style={{ position: 'absolute', bottom: 22, right: 22, zIndex: 20, backgroundColor: 'rgba(17,24,39,0.75)', backdropFilter: 'blur(6px)', borderRadius: 14, padding: '10px 14px', maxWidth: 165 }}>
+        <div style={{
+          position: 'absolute', bottom: 22, right: 22, zIndex: 20,
+          backgroundColor: 'rgba(17,24,39,0.75)', backdropFilter: 'blur(6px)',
+          borderRadius: 14, padding: '10px 14px', maxWidth: 165,
+        }}>
           {specs.map((spec, i) => (
             <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 5, marginBottom: i < specs.length - 1 ? 4 : 0 }}>
               <span style={{ color: 'rgba(255,255,255,0.6)', fontSize: 11, marginTop: 1, flexShrink: 0 }}>•</span>
