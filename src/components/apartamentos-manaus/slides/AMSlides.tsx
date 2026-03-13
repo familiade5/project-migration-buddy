@@ -527,7 +527,7 @@ export const AMLocationSlide = ({
           zIndex: 20,
           backgroundColor: '#ffffff',
           borderRadius: 12,
-          padding: '8px 14px',
+          padding: '3px 14px',
           display: 'flex',
           alignItems: 'center',
         }}
