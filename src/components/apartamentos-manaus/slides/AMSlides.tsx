@@ -532,7 +532,7 @@ export const AMLocationSlide = ({
           alignItems: 'center',
         }}
       >
-        <AMLogo width={120} variant="color" />
+        <AMLogo width={130} variant="color" />
       </div>
     </div>
   );
