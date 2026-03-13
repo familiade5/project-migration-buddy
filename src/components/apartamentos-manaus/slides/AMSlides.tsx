@@ -397,12 +397,12 @@ export const AMLocationSlide = ({
     'M 192 14',              // top edge start (notch-azul right x=170 + r=22)
     'H 324',                 // top edge rightward
     'A 22 22 0 0 1 346 36',  // top-right outer convex corner
-    'V 254',                 // right edge down (stop before logo notch: 276-22=254)
-    'Q 346 276 324 276',     // concave at top-right of logo notch
-    'H 202',                 // logo notch top leftward (180+22=202) — recuado para a esquerda
-    'Q 180 276 180 298',     // concave at top-left of logo notch
-    'V 324',                 // down logo notch left wall
-    'Q 180 346 202 346',     // concave Q at bottom-left of logo notch
+    'V 240',                 // right edge down — puxado para criar distância visível antes do notch (262-22=240)
+    'Q 346 262 324 262',     // concave at top-right of logo notch (notch topo y=262)
+    'H 222',                 // logo notch top leftward (200+22=222) — x=200 restaurado
+    'Q 200 262 200 284',     // concave at top-left of logo notch (262+22=284)
+    'V 324',                 // down logo notch left wall (346-22=324)
+    'Q 200 346 222 346',     // concave Q at bottom-left of logo notch
     'H 36',                  // bottom edge leftward
     'A 22 22 0 0 1 14 324',  // bottom-left outer convex corner
     'V 194',                 // left edge upward to blue notch (172+22=194)
