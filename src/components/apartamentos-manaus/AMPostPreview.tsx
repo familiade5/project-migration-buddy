@@ -67,7 +67,7 @@ export function AMPostPreview({ data, photos }: AMPostPreviewProps) {
     slides.push({
       id: 'specs',
       name: 'Especif.',
-      el: <AMSpecsSlide data={data} photo={p[1] ?? p[0]} photo2={p[2] ?? p[0]} />,
+      el: <AMSpecsSlide data={data} photo={p[1] ?? p[0]} />,
     });
 
     // Slide 3 – Location
@@ -111,7 +111,7 @@ export function AMPostPreview({ data, photos }: AMPostPreviewProps) {
     slides.push({
       id: 'story-specs',
       name: 'Especif.',
-      el: <AMSpecsSlide data={data} photo={p[1] ?? p[0]} photo2={p[2] ?? p[0]} />,
+      el: <AMSpecsSlide data={data} photo={p[1] ?? p[0]} />,
     });
     slides.push({
       id: 'story-location',
