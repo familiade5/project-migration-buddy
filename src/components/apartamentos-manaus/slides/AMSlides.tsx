@@ -390,6 +390,26 @@ export const AMLocationSlide = ({
     .filter(Boolean)
     .join(', ');
 
+  // L-shaped clip path: photo fills entire canvas EXCEPT upper-left notch (for blue card).
+  // Notch: x 14→162, y 14→190. Outer corners r=22 (convex arcs). Inner notch corners use Q bezier (concave).
+  // Clockwise from top of notch right edge:
+  const shapePath = [
+    'M 184 14',              // top edge start (notch right edge x=162 + arc r=22)
+    'H 324',                 // top edge rightward
+    'A 22 22 0 0 1 346 36',  // top-right outer convex corner
+    'V 324',                 // right edge downward
+    'A 22 22 0 0 1 324 346', // bottom-right outer convex corner
+    'H 36',                  // bottom edge leftward
+    'A 22 22 0 0 1 14 324',  // bottom-left outer convex corner
+    'V 212',                 // left edge upward to notch (190 + r=22)
+    'Q 14 190 36 190',       // concave smooth curve at bottom-left of notch
+    'H 140',                 // notch bottom (162 - r=22)
+    'Q 162 190 162 168',     // concave smooth curve at bottom-right of notch
+    'V 36',                  // up notch right edge (stopping r=22 before top)
+    'A 22 22 0 0 1 184 14',  // convex outer corner at top of notch → back to start
+    'Z',
+  ].join(' ');
+
   return (
     <div
       style={{
@@ -401,45 +421,48 @@ export const AMLocationSlide = ({
         overflow: 'hidden',
       }}
     >
-      {/* Right photo — tall, right 57% */}
-      <div
-        style={{
-          position: 'absolute',
-          top: 14,
-          left: 158,
-          right: 14,
-          bottom: 14,
-          borderRadius: 20,
-          overflow: 'hidden',
-        }}
-      >
-        {photo ? (
-          <img src={photo} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
-        ) : (
-          <div style={{ width: '100%', height: '100%', backgroundColor: '#d1d5db' }} />
-        )}
-      </div>
+      {/* clipPath definition */}
+      <svg aria-hidden="true" style={{ position: 'absolute', width: 0, height: 0, overflow: 'hidden' }}>
+        <defs>
+          <clipPath id="am-location-photo-clip" clipPathUnits="userSpaceOnUse">
+            <path d={shapePath} />
+          </clipPath>
+        </defs>
+      </svg>
 
-      {/* Bottom-left photo */}
-      <div
-        style={{
-          position: 'absolute',
-          bottom: 14,
-          left: 14,
-          width: 134,
-          height: 110,
-          borderRadius: 20,
-          overflow: 'hidden',
-        }}
-      >
-        {photo ? (
-          <img src={photo} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: '40% center', display: 'block' }} />
-        ) : (
-          <div style={{ width: '100%', height: '100%', backgroundColor: '#d1d5db' }} />
-        )}
-      </div>
+      {/* Photo — single image, L-shaped clip */}
+      {photo ? (
+        <img
+          src={photo}
+          alt=""
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: 360,
+            height: 360,
+            objectFit: 'cover',
+            display: 'block',
+            clipPath: 'url(#am-location-photo-clip)',
+            zIndex: 10,
+          }}
+        />
+      ) : (
+        <div
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: 360,
+            height: 360,
+            backgroundColor: '#d1d5db',
+            clipPath: 'url(#am-location-photo-clip)',
+            zIndex: 10,
+          }}
+        />
+      )}
 
-      {/* Blue info card — top-left */}
+      {/* Blue info card — sits inside the upper-left notch */}
       <div
         style={{
           position: 'absolute',
@@ -448,20 +471,20 @@ export const AMLocationSlide = ({
           zIndex: 20,
           backgroundColor: '#1B5EA6',
           borderRadius: 18,
-          padding: '12px 13px',
-          width: 134,
+          padding: '14px 13px 12px',
+          width: 148,
         }}
       >
-        <p style={{ color: 'white', fontWeight: 700, fontSize: 13, lineHeight: 1.3, margin: '0 0 6px' }}>
+        <p style={{ color: 'white', fontWeight: 700, fontSize: 14, lineHeight: 1.3, margin: '0 0 6px' }}>
           {data.title || 'Imóveis bem localizados em Manaus'}
         </p>
         {address && (
-          <p style={{ color: 'white', fontSize: 10, opacity: 0.82, lineHeight: 1.4, margin: '0 0 8px' }}>
+          <p style={{ color: 'white', fontSize: 10, opacity: 0.82, lineHeight: 1.4, margin: '0 0 10px' }}>
             {address}
           </p>
         )}
         {data.referencePoint && (
-          <p style={{ color: 'white', fontSize: 10, opacity: 0.7, lineHeight: 1.4, margin: '0 0 8px' }}>
+          <p style={{ color: 'white', fontSize: 10, opacity: 0.7, lineHeight: 1.4, margin: '0 0 10px' }}>
             {data.referencePoint}
           </p>
         )}
@@ -471,9 +494,9 @@ export const AMLocationSlide = ({
             alignItems: 'center',
             gap: 4,
             backgroundColor: 'rgba(255,255,255,0.15)',
-            border: '1px solid rgba(255,255,255,0.3)',
+            border: '1px solid rgba(255,255,255,0.35)',
             borderRadius: 20,
-            padding: '3px 9px',
+            padding: '4px 10px',
             fontSize: 9,
             color: 'white',
           }}
@@ -482,27 +505,26 @@ export const AMLocationSlide = ({
         </div>
       </div>
 
-      {/* White logo card — mid-left between the two left panels */}
+      {/* Logo card — bottom-right, on top of photo */}
       <div
         style={{
           position: 'absolute',
-          bottom: 134,
-          left: 14,
+          bottom: 14,
+          right: 14,
           zIndex: 20,
           backgroundColor: '#ffffff',
           border: '1px solid #e5e7eb',
           borderRadius: 12,
-          padding: '7px 9px',
+          padding: '7px 10px',
           display: 'flex',
           alignItems: 'center',
-          gap: 6,
-          width: 134,
+          gap: 8,
         }}
       >
-        <AMLogo width={42} variant="color" />
+        <AMLogo width={44} variant="color" />
         <div>
-          <p style={{ margin: 0, fontWeight: 700, fontSize: 8, color: '#1B5EA6', letterSpacing: '0.05em', lineHeight: 1.3 }}>APARTAMENTOS</p>
-          <p style={{ margin: 0, fontWeight: 700, fontSize: 8, color: '#1B5EA6', letterSpacing: '0.05em', lineHeight: 1.3 }}>MANAUS</p>
+          <p style={{ margin: 0, fontWeight: 700, fontSize: 8, color: '#1B5EA6', letterSpacing: '0.05em', lineHeight: 1.4 }}>APARTAMENTOS</p>
+          <p style={{ margin: 0, fontWeight: 700, fontSize: 8, color: '#1B5EA6', letterSpacing: '0.05em', lineHeight: 1.4 }}>MANAUS</p>
           <p style={{ margin: 0, fontSize: 7, color: '#9ca3af', letterSpacing: '0.08em' }}>IMOBILIÁRIA</p>
         </div>
       </div>
