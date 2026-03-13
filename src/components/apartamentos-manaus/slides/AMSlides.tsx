@@ -57,9 +57,9 @@ export const AMCoverSlide = ({
   // Card with bottom=4: top≈293, shadow top≈288. Notch H at y=288 aligns perfectly.
   // Z closes back (352,30)→(352,266) = right wall, no segment before arc.
   const shapePath = [
-    'M 352 256',              // arc start: moved up 10px (266→256)
-    'A 22 22 0 0 1 330 278',  // CW concave r=22 — end also moved up 10px (288→278)
-    'H 192',                  // card notch top at y=278
+    'M 352 246',              // arc start: moved up 10px (256→246)
+    'A 22 22 0 0 1 330 268',  // CW concave r=22 — end also moved up 10px (278→268)
+    'H 192',                  // card notch top at y=268
     'Q 174 278 174 296',      // smooth curve into card notch left side (shifted up 10px)
     'V 334',                  // down notch left wall
     'A 22 22 0 0 1 152 352',  // round inner bottom corner (r=22)
