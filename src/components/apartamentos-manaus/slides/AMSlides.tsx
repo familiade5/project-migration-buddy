@@ -698,7 +698,7 @@ export const AMInfoSlide = ({
           left: 0,
           width: 360,
           height: 360,
-          clipPath: 'url(#am-info-photo-clip)',
+          clipPath: `url(#${clipId})`,
           zIndex: 10,
           overflow: 'hidden',
         }}
