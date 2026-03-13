@@ -214,7 +214,7 @@ export function AMPropertyForm({ data, onChange }: AMPropertyFormProps) {
 
       {/* Mensagem extra */}
       <Section title="Mensagem Informativa Extra" color="#F47920">
-        <Textarea className="border-gray-300 bg-white text-sm resize-none" rows={2}
+        <Textarea className={textareaClass} rows={2}
           placeholder="Ex: Unidades limitadas, consulte disponibilidade!"
           value={data.infoMessage} onChange={(e) => set('infoMessage', e.target.value)} />
       </Section>
