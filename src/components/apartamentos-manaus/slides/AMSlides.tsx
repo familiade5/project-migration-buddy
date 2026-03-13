@@ -245,9 +245,9 @@ export const AMSpecsSlide = ({
         )}
       </div>
 
-      {/* ── LOGO: aba no canto superior-esquerdo. 3 cantos arredondados (exceto
-           top-left flush com slide). Os cantos arredondados revelam a foto
-           por trás, criando contorno curvo nos 3 lados. ── */}
+      {/* ── LOGO: aba no canto superior-esquerdo (flush com slide).
+           Apenas o canto inferior-direito é arredondado (convexo).
+           Os cantos côncavos (invertidos) são feitos com radial-gradient. ── */}
       <div
         style={{
           position: 'absolute',
@@ -255,12 +255,38 @@ export const AMSpecsSlide = ({
           left: 0,
           zIndex: 20,
           backgroundColor: '#ffffff',
-          borderRadius: '0 22px 22px 22px',
+          borderRadius: '0 0 22px 0',
           padding: '10px 14px 8px 10px',
         }}
       >
         <AMLogo width={138} variant="color" />
       </div>
+
+      {/* ── Canto côncavo: topo-direito do quadro branco ── */}
+      <div
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: 162,
+          width: 14,
+          height: 14,
+          zIndex: 20,
+          background: 'radial-gradient(circle at 0% 100%, transparent 14px, #ffffff 14px)',
+        }}
+      />
+
+      {/* ── Canto côncavo: base-esquerda do quadro branco ── */}
+      <div
+        style={{
+          position: 'absolute',
+          top: 58,
+          left: 0,
+          width: 14,
+          height: 14,
+          zIndex: 20,
+          background: 'radial-gradient(circle at 100% 0%, transparent 14px, #ffffff 14px)',
+        }}
+      />
 
       {/* ── CARD ESCURO DE SPECS: canto inferior-direito sobre a foto ── */}
       {specs.length > 0 && (
