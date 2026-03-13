@@ -3,8 +3,8 @@ import { AMPropertyData, defaultAMPropertyData } from '@/types/apartamentosManau
 import { AMPostPreview } from '@/components/apartamentos-manaus/AMPostPreview';
 import { AMPropertyForm } from '@/components/apartamentos-manaus/AMPropertyForm';
 import { AMCaptionGenerator } from '@/components/apartamentos-manaus/AMCaptionGenerator';
+import { AMPhotoManager } from '@/components/apartamentos-manaus/AMPhotoManager';
 import { AMLayout } from '@/components/layout/AMLayout';
-import { PhotoUpload } from '@/components/PhotoUpload';
 import { Image, Edit3, Sparkles, FileText } from 'lucide-react';
 
 const ApartamentosManausPage = () => {
