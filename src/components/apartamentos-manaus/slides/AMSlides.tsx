@@ -521,12 +521,12 @@ export const AMLocationSlide = ({
         </div>
       </div>
 
-      {/* Logo card — encaixado no notch inferior-direito — bottom/right alinhados ao notch */}
+      {/* Logo card — encaixado no notch inferior-direito */}
       <div
         style={{
           position: 'absolute',
-          bottom: 20,
-          right: 20,
+          bottom: 14,
+          right: 14,
           zIndex: 20,
           backgroundColor: '#ffffff',
           borderRadius: 12,
@@ -535,7 +535,7 @@ export const AMLocationSlide = ({
           alignItems: 'center',
         }}
       >
-        <AMLogo width={130} variant="color" />
+        <AMLogo width={100} variant="color" />
       </div>
     </div>
   );
