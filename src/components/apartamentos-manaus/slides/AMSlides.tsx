@@ -46,7 +46,6 @@ export const AMCoverSlide = ({
     : [
         'À vista',
         data.acceptsFinancing && 'Aceita financiamento',
-        data.acceptsFGTS && 'Aceita FGTS',
       ].filter(Boolean) as string[];
   const paymentLine = paymentParts.join(' | ');
 
