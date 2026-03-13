@@ -85,13 +85,13 @@ export const AMCoverSlide = ({
         )}
       </div>
 
-      {/* ── ORANGE BADGE: half-width, white ring contour ── */}
+      {/* ── ORANGE BADGE: ~60% width, white ring contour ── */}
       <div
         style={{
           position: 'absolute',
           top: 4,
           left: 4,
-          width: 172,
+          width: 210,
           zIndex: 20,
           backgroundColor: '#F47920',
           borderRadius: 17,
