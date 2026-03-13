@@ -196,8 +196,9 @@ export const AMCoverSlide = ({
 };
 
 // ─── Slide 2: ESPECIFICAÇÕES ─────────────────────────────────────────────────
-// White bg • logo only top-left • single photo below (full width) •
-// dark specs bullet box bottom-right on photo
+// Foto cobre todo o slide (8px inset, radius 22) — mesmo padrão da Capa.
+// Logo flutua no topo-esquerdo com fundo branco + box-shadow branco (contorno).
+// Card escuro de specs no canto inferior-direito sobre a foto.
 export const AMSpecsSlide = ({
   data,
   photo,
@@ -225,14 +226,14 @@ export const AMSpecsSlide = ({
         overflow: 'hidden',
       }}
     >
-      {/* ── SINGLE PHOTO: starts below logo strip ── */}
+      {/* ── FOTO: cobre todo o slide com 8px de margem e cantos arredondados ── */}
       <div
         style={{
           position: 'absolute',
-          top: 76,
-          left: 14,
-          right: 14,
-          bottom: 14,
+          top: 8,
+          left: 8,
+          right: 8,
+          bottom: 8,
           borderRadius: 22,
           overflow: 'hidden',
         }}
@@ -244,19 +245,23 @@ export const AMSpecsSlide = ({
         )}
       </div>
 
-      {/* ── LOGO ONLY: top-left (logo PNG already contains the text) ── */}
+      {/* ── LOGO: flutua no topo-esquerdo com fundo branco + contorno branco ── */}
       <div
         style={{
           position: 'absolute',
-          top: 14,
-          left: 14,
+          top: 4,
+          left: 4,
           zIndex: 20,
+          backgroundColor: '#ffffff',
+          borderRadius: 16,
+          padding: '8px 12px',
+          boxShadow: '0 0 0 5px #ffffff',
         }}
       >
-        <AMLogo width={120} variant="color" />
+        <AMLogo width={110} variant="color" />
       </div>
 
-      {/* ── DARK SPECS CARD: bottom-right on photo ── */}
+      {/* ── CARD ESCURO DE SPECS: canto inferior-direito sobre a foto ── */}
       {specs.length > 0 && (
         <div
           style={{
