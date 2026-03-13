@@ -244,27 +244,27 @@ export const AMSpecsSlide = ({
         )}
       </div>
 
-      {/* ── CARD BRANCO DA LOGO: flutuante, borderRadius em TODOS os cantos ── */}
+      {/* ── CARD BRANCO DA LOGO ── */}
       <div
         style={{
           position: 'absolute',
-          top: 14,
-          left: 14,
+          top: 18,
+          left: 18,
           zIndex: 20,
           backgroundColor: '#ffffff',
-          borderRadius: 18,
-          padding: '10px 16px 10px 12px',
+          borderRadius: 24,
+          padding: '18px 22px',
           display: 'flex',
           alignItems: 'center',
-          gap: 10,
-          boxShadow: '0 2px 12px rgba(0,0,0,0.10)',
+          gap: 14,
+          boxShadow: '0 12px 28px rgba(0,0,0,0.12)',
         }}
       >
-        <AMLogo width={38} variant="color" />
+        <AMLogo width={54} variant="color" />
         <div>
-          <p style={{ margin: 0, fontWeight: 700, fontSize: 10, color: '#1B5EA6', letterSpacing: '0.06em', lineHeight: 1.3 }}>APARTAMENTOS</p>
-          <p style={{ margin: 0, fontWeight: 700, fontSize: 10, color: '#1B5EA6', letterSpacing: '0.06em', lineHeight: 1.3 }}>MANAUS</p>
-          <p style={{ margin: 0, fontSize: 8, color: '#9ca3af', letterSpacing: '0.1em', lineHeight: 1.3 }}>IMOBILIÁRIA</p>
+          <p style={{ margin: 0, fontWeight: 700, fontSize: 14, color: '#2b6fbf', letterSpacing: '1px', lineHeight: 1.2 }}>APARTAMENTOS</p>
+          <p style={{ margin: '2px 0 0', fontWeight: 800, fontSize: 18, color: '#2b6fbf', lineHeight: 1.2 }}>MANAUS</p>
+          <p style={{ margin: '6px 0 0', fontWeight: 400, fontSize: 12, color: '#9aa0a6', letterSpacing: '2px', lineHeight: 1.2 }}>IMOBILIÁRIA</p>
         </div>
       </div>
 
