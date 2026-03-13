@@ -225,12 +225,12 @@ export const AMSpecsSlide = ({
         }
       </div>
 
-      {/* ── CARD BRANCO DA LOGO: todos os cantos arredondados, só a logo (sem texto extra) ── */}
+      {/* ── CARD BRANCO DA LOGO: mesmo efeito dos badges da Capa (contorno branco) ── */}
       <div style={{
-        position: 'absolute', top: 14, left: 14, zIndex: 20,
+        position: 'absolute', top: 4, left: 4, zIndex: 20,
         backgroundColor: '#ffffff', borderRadius: 18,
         padding: '10px 14px',
-        boxShadow: '0 4px 20px rgba(0,0,0,0.15)',
+        boxShadow: '0 0 0 5px #ffffff',
       }}>
         <AMLogo width={130} variant="color" />
       </div>
