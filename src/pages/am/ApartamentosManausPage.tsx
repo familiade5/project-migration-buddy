@@ -38,14 +38,14 @@ const ApartamentosManausPage = () => {
                   <div className="p-2 rounded-lg text-white" style={{ backgroundColor: '#1B5EA6' }}>
                     <Image className="w-4 h-4" />
                   </div>
-                  <div>
-                    <h2 className="font-semibold text-gray-900">Fotos do Imóvel</h2>
-                    <p className="text-xs text-gray-500">Adicione até 6 fotos para os criativos</p>
-                  </div>
-                </div>
-              </div>
-              <div className="p-6">
-                <PhotoUpload photos={photos} onChange={setPhotos} onClear={() => setPhotos([])} />
+                   <div>
+                     <h2 className="font-semibold text-gray-900">Fotos do Imóvel</h2>
+                     <p className="text-xs text-gray-500">Adicione fotos — arraste para reordenar slides</p>
+                   </div>
+                 </div>
+               </div>
+               <div className="p-6">
+                 <AMPhotoManager photos={photos} onChange={setPhotos} />
               </div>
             </div>
 
