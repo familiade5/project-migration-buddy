@@ -14,6 +14,7 @@ const propertyTypes = ['Apartamento', 'Casa', 'Casa em Condomínio', 'Cobertura'
 const inputClass = 'h-10 border-gray-300 focus:border-[#1B5EA6] bg-white text-gray-900 placeholder:text-gray-400 text-sm';
 const textareaClass = 'border-gray-300 focus:border-[#1B5EA6] bg-white text-gray-900 placeholder:text-gray-400 text-sm resize-none';
 const labelClass = 'text-xs font-semibold text-gray-600 uppercase tracking-wide';
+const switchClass = 'data-[state=checked]:bg-[#1B5EA6] data-[state=unchecked]:bg-gray-300 border-transparent';
 
 function Section({ title, color, children }: { title: string; color: string; children: React.ReactNode }) {
   return (
@@ -112,7 +113,7 @@ export function AMPropertyForm({ data, onChange }: AMPropertyFormProps) {
             value={data.rooms} onChange={(e) => set('rooms', e.target.value)} />
         </div>
         <div className="flex items-center gap-2 pt-1">
-          <Switch checked={data.furnished} onCheckedChange={(v) => set('furnished', v)} />
+          <Switch className={switchClass} checked={data.furnished} onCheckedChange={(v) => set('furnished', v)} />
           <Label className="text-sm text-gray-600">Imóvel mobiliado</Label>
         </div>
       </Section>
@@ -130,7 +131,7 @@ export function AMPropertyForm({ data, onChange }: AMPropertyFormProps) {
       {/* Valores */}
       <Section title="Valores" color="#F47920">
         <div className="flex items-center gap-2 mb-2">
-          <Switch checked={data.isRental} onCheckedChange={(v) => set('isRental', v)} />
+          <Switch className={switchClass} checked={data.isRental} onCheckedChange={(v) => set('isRental', v)} />
           <Label className="text-sm text-gray-600">É locação (aluguel)?</Label>
         </div>
 
@@ -153,7 +154,7 @@ export function AMPropertyForm({ data, onChange }: AMPropertyFormProps) {
                 value={data.subsidy || ''} onChange={(e) => set('subsidy', Number(e.target.value))} />
             </div>
             <div className="flex items-center gap-2">
-              <Switch checked={data.acceptsFinancing} onCheckedChange={(v) => set('acceptsFinancing', v)} />
+              <Switch className={switchClass} checked={data.acceptsFinancing} onCheckedChange={(v) => set('acceptsFinancing', v)} />
               <Label className="text-sm text-gray-600">Aceita financiamento</Label>
             </div>
           </div>
