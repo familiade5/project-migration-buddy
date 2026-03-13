@@ -462,7 +462,7 @@ export const AMLocationSlide = ({
         />
       )}
 
-      {/* Blue info card — sits inside the upper-left notch */}
+      {/* Blue info card — fixed height to match notch (top:14 + height:176 = bottom:190 = notch y) */}
       <div
         style={{
           position: 'absolute',
@@ -473,21 +473,29 @@ export const AMLocationSlide = ({
           borderRadius: 18,
           padding: '14px 13px 12px',
           width: 148,
+          height: 176,
+          boxSizing: 'border-box',
+          overflow: 'hidden',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'space-between',
         }}
       >
-        <p style={{ color: 'white', fontWeight: 700, fontSize: 14, lineHeight: 1.3, margin: '0 0 6px' }}>
-          {data.title || 'Imóveis bem localizados em Manaus'}
-        </p>
-        {address && (
-          <p style={{ color: 'white', fontSize: 10, opacity: 0.82, lineHeight: 1.4, margin: '0 0 10px' }}>
-            {address}
+        <div>
+          <p style={{ color: 'white', fontWeight: 700, fontSize: 14, lineHeight: 1.3, margin: '0 0 6px' }}>
+            {data.title || 'Imóveis bem localizados em Manaus'}
           </p>
-        )}
-        {data.referencePoint && (
-          <p style={{ color: 'white', fontSize: 10, opacity: 0.7, lineHeight: 1.4, margin: '0 0 10px' }}>
-            {data.referencePoint}
-          </p>
-        )}
+          {address && (
+            <p style={{ color: 'white', fontSize: 10, opacity: 0.82, lineHeight: 1.4, margin: 0 }}>
+              {address}
+            </p>
+          )}
+          {data.referencePoint && (
+            <p style={{ color: 'white', fontSize: 10, opacity: 0.7, lineHeight: 1.4, margin: '4px 0 0' }}>
+              {data.referencePoint}
+            </p>
+          )}
+        </div>
         <div
           style={{
             display: 'inline-flex',
@@ -499,13 +507,14 @@ export const AMLocationSlide = ({
             padding: '4px 10px',
             fontSize: 9,
             color: 'white',
+            alignSelf: 'flex-start',
           }}
         >
           Arraste para o lado →
         </div>
       </div>
 
-      {/* Logo card — bottom-right, on top of photo */}
+      {/* Logo card — bottom-right, somente o asset da logo (sem texto duplicado) */}
       <div
         style={{
           position: 'absolute',
@@ -515,18 +524,12 @@ export const AMLocationSlide = ({
           backgroundColor: '#ffffff',
           border: '1px solid #e5e7eb',
           borderRadius: 12,
-          padding: '7px 10px',
+          padding: '8px 12px',
           display: 'flex',
           alignItems: 'center',
-          gap: 8,
         }}
       >
-        <AMLogo width={44} variant="color" />
-        <div>
-          <p style={{ margin: 0, fontWeight: 700, fontSize: 8, color: '#1B5EA6', letterSpacing: '0.05em', lineHeight: 1.4 }}>APARTAMENTOS</p>
-          <p style={{ margin: 0, fontWeight: 700, fontSize: 8, color: '#1B5EA6', letterSpacing: '0.05em', lineHeight: 1.4 }}>MANAUS</p>
-          <p style={{ margin: 0, fontSize: 7, color: '#9ca3af', letterSpacing: '0.08em' }}>IMOBILIÁRIA</p>
-        </div>
+        <AMLogo width={110} variant="color" />
       </div>
     </div>
   );
