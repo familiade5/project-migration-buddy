@@ -53,25 +53,26 @@ export const AMCoverSlide = ({
   // Badge: top:4, left:4, width:210, estimated height ~56px.
   // Notch: x 8→218, y 8→66. Q curves (r≈18) at notch corners.
   // Inner corner at (218, 8) rounded with A r=22 sweep=1 — same treatment as slide 2.
+  // Path starts at (352,262) — the exact start of the concave card arc —
+  // so NO straight segment exists before it. Z closes back via the right wall + top-right corner.
   const shapePath = [
-    'M 330 8',
-    'A 22 22 0 0 1 352 30',   // top-right outer corner (r=22)
-    'V 262',                  // down right edge — arc starts exactly r=22 above notch top (284-22=262)
-    'A 22 22 0 0 1 330 284',  // CW concave quarter-circle r=22: from (352,262)→(330,284), center(330,262)
-    'H 192',                  // across notch top
+    'M 352 262',              // start exactly where the concave arc begins (no prior line segment)
+    'A 22 22 0 0 1 330 284',  // CW concave quarter-circle r=22: card top-right corner
+    'H 192',                  // across card notch top
     'Q 174 284 174 302',      // smooth curve into blue card notch left side
-    'V 330',                  // down notch left wall, stop 22px above bottom
-    'A 22 22 0 0 1 152 352',  // round inner bottom corner (r=22, CW) — grey area rounded
-    'H 30',                   // left along bottom edge
+    'V 330',                  // down notch left wall
+    'A 22 22 0 0 1 152 352',  // round inner bottom corner (r=22)
+    'H 30',                   // bottom edge
     'A 22 22 0 0 1 8 330',    // bottom-left outer corner (r=22)
-    'V 84',                   // up left edge to badge notch start (y=66+18=84)
-    'Q 8 66 26 66',           // smooth concave curve into badge notch bottom-left
-    'H 200',                  // along badge notch bottom to x=218-18=200
-    'Q 218 66 218 48',        // smooth convex curve up badge notch bottom-right
-    'V 30',                   // up badge notch right edge to y=8+22=30
-    'A 22 22 0 0 1 240 8',    // round badge inner top corner (r=22)
-    'H 330',                  // top edge back to arc start
-    'Z',
+    'V 84',                   // left wall up to badge notch
+    'Q 8 66 26 66',           // badge notch bottom-left curve
+    'H 200',                  // badge notch bottom
+    'Q 218 66 218 48',        // badge notch bottom-right curve
+    'V 30',                   // badge right wall up
+    'A 22 22 0 0 1 240 8',    // badge inner top corner (r=22)
+    'H 330',                  // top edge rightward
+    'A 22 22 0 0 1 352 30',   // top-right outer corner (r=22) → (352,30)
+    'Z',                      // closes with a straight line (352,30)→(352,262) = right wall, no visible spike
   ].join(' ');
 
   return (
