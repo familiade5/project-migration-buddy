@@ -107,7 +107,7 @@ export function AMPropertyForm({ data, onChange }: AMPropertyFormProps) {
         </div>
         <div className="space-y-1">
           <Label className={labelClass}>Cômodos (um por linha)</Label>
-          <Textarea className="border-gray-300 bg-white text-sm resize-none" rows={3}
+          <Textarea className={textareaClass} rows={3}
             placeholder={"Salas estar e jantar\nCozinha americana\nÁrea de serviço"}
             value={data.rooms} onChange={(e) => set('rooms', e.target.value)} />
         </div>
