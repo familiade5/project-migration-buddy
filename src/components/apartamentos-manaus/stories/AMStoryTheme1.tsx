@@ -49,43 +49,44 @@ export const AMStory1_T1_Curiosity = ({
       background: 'radial-gradient(ellipse 80% 40% at 50% 20%, rgba(27,94,166,0.55) 0%, transparent 70%)',
     }} />
 
-    {/* Top section — texto (50% superior) */}
+    {/* Top section — logo + texto (50% superior) */}
     <div style={{
       position: 'absolute', top: 0, left: 0, right: 0, height: '50%',
       display: 'flex', flexDirection: 'column', alignItems: 'center',
-      justifyContent: 'center', padding: '0 32px', zIndex: 10,
+      justifyContent: 'space-evenly', padding: '20px 32px 16px', zIndex: 10,
     }}>
-      {/* Logo */}
-      <div style={{ position: 'absolute', top: 36, left: 0, right: 0, display: 'flex', justifyContent: 'center' }}>
-        <Logo variant="white" />
+      {/* Logo — topo fixo na coluna */}
+      <Logo variant="white" />
+
+      {/* Bloco de texto centralizado */}
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+        {/* Eyebrow pill */}
+        <div style={{
+          backgroundColor: '#F47920', borderRadius: 30, padding: '5px 20px', marginBottom: 14,
+          fontSize: 11, fontWeight: 700, color: 'white', letterSpacing: '0.15em', textTransform: 'uppercase',
+        }}>
+          Você viu esse imóvel?
+        </div>
+
+        {/* Main question */}
+        <p style={{
+          color: 'white', fontSize: 28, fontWeight: 900, textAlign: 'center',
+          lineHeight: 1.2, margin: '0 0 12px',
+          textShadow: '0 2px 20px rgba(0,0,0,0.6)',
+        }}>
+          {data.bedrooms > 0 ? `${data.bedrooms} quartos` : 'Apartamento'}{' '}
+          <span style={{ color: '#F47920' }}>em {data.neighborhood || 'Manaus'}</span>{' '}
+          por um preço que vai te surpreender
+        </p>
+
+        {/* Divider */}
+        <div style={{ width: 48, height: 3, backgroundColor: '#F47920', borderRadius: 2, margin: '0 0 10px' }} />
+
+        {/* Tease */}
+        <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: 12, textAlign: 'center', lineHeight: 1.5, margin: 0 }}>
+          Deslize para ver o imóvel completo 👇
+        </p>
       </div>
-
-      {/* Eyebrow pill */}
-      <div style={{
-        backgroundColor: '#F47920', borderRadius: 30, padding: '5px 20px', marginBottom: 20, marginTop: 20,
-        fontSize: 11, fontWeight: 700, color: 'white', letterSpacing: '0.15em', textTransform: 'uppercase',
-      }}>
-        Você viu esse imóvel?
-      </div>
-
-      {/* Main question */}
-      <p style={{
-        color: 'white', fontSize: 32, fontWeight: 900, textAlign: 'center',
-        lineHeight: 1.15, margin: '0 0 16px',
-        textShadow: '0 2px 20px rgba(0,0,0,0.6)',
-      }}>
-        {data.bedrooms > 0 ? `${data.bedrooms} quartos` : 'Apartamento'}{' '}
-        <span style={{ color: '#F47920' }}>em {data.neighborhood || 'Manaus'}</span>{' '}
-        por um preço que vai te surpreender
-      </p>
-
-      {/* Divider */}
-      <div style={{ width: 48, height: 3, backgroundColor: '#F47920', borderRadius: 2, margin: '0 0 14px' }} />
-
-      {/* Tease */}
-      <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: 13, textAlign: 'center', lineHeight: 1.5, margin: 0 }}>
-        Deslize para ver o imóvel completo 👇
-      </p>
     </div>
 
     {/* Bottom section — foto real ocupa exatamente 50% */}
