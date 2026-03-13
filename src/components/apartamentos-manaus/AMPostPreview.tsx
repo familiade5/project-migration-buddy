@@ -103,7 +103,7 @@ export function AMPostPreview({ data, photos }: AMPostPreviewProps) {
     return slides;
   };
 
-  // ── Build STORY slide list ────────────────────────────────────────────────
+  // ── Build STORY slide list ─── Slides em formato 9:16 (360×640) ──────────────
   const buildStorySlides = () => {
     const p = photos;
     const slides = [];
@@ -111,17 +111,17 @@ export function AMPostPreview({ data, photos }: AMPostPreviewProps) {
     slides.push({
       id: 'story-cover',
       name: 'Capa',
-      el: <AMCoverSlide data={data} photo={p[0]} />,
+      el: <AMStoryCoverSlide data={data} photo={p[0]} />,
     });
     slides.push({
       id: 'story-specs',
       name: 'Especif.',
-      el: <AMSpecsSlide data={data} photo={p[1] ?? p[0]} />,
+      el: <AMStorySpecsSlide data={data} photo={p[1] ?? p[0]} />,
     });
     slides.push({
       id: 'story-location',
       name: 'Local',
-      el: <AMLocationSlide data={data} photo={p[2] ?? p[1] ?? p[0]} />,
+      el: <AMStoryLocationSlide data={data} photo={p[2] ?? p[1] ?? p[0]} />,
     });
 
     const photoSliceEnd = Math.max(3, p.length - 1);
@@ -129,7 +129,7 @@ export function AMPostPreview({ data, photos }: AMPostPreviewProps) {
       slides.push({
         id: `story-photo-${i}`,
         name: `Foto ${i - 1}`,
-        el: <AMPhotoSlide data={data} photo={p[i]} photoIndex={i} />,
+        el: <AMStoryPhotoSlide data={data} photo={p[i]} photoIndex={i} />,
       });
     }
 
@@ -137,7 +137,7 @@ export function AMPostPreview({ data, photos }: AMPostPreviewProps) {
     slides.push({
       id: 'story-info',
       name: 'Info',
-      el: <AMInfoSlide data={data} photo={lastPhoto} />,
+      el: <AMStoryInfoSlide data={data} photo={lastPhoto} />,
     });
 
     return slides;
