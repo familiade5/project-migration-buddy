@@ -188,7 +188,7 @@ export const AMCoverSlide = ({
       <div
         style={{
           position: 'absolute',
-          bottom: 4,
+          bottom: 18,
           right: 10,
           zIndex: 20,
           backgroundColor: '#1B5EA6',
