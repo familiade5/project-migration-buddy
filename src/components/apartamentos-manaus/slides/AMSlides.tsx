@@ -196,9 +196,11 @@ export const AMCoverSlide = ({
 };
 
 // ─── Slide 2: ESPECIFICAÇÕES ─────────────────────────────────────────────────
-// UMA foto de fundo (inset 8px, radius 22) — cobre todo o frame.
-// Quadro branco da logo fica no topo-esquerdo (zIndex alto) sobre a foto.
-// Dois overlays radial-gradient criam os cantos côncavos nas duas junções.
+// Dois painéis que usam a MESMA foto mas com background-position alinhado
+// para que juntos formem UMA imagem contínua dividida pelo tab da logo.
+// • Painel direito: full-height, à direita da logo
+// • Painel esquerdo: abaixo da logo, à esquerda
+// • borderRadius:22 em todos os painéis gera os cantos côncavos naturais
 export const AMSpecsSlide = ({
   data,
   photo,
@@ -215,10 +217,34 @@ export const AMSpecsSlide = ({
     data.suites > 0 ? `${data.suites} suíte${data.suites > 1 ? 's' : ''}` : '',
   ].filter(Boolean).slice(0, 6);
 
-  // Largura e altura do quadro da logo
-  const LOGO_W = 162; // px até onde a logo se estende horizontalmente
-  const LOGO_H = 58;  // px até onde a logo se estende verticalmente
-  const R = 22;       // raio do arredondamento (igual ao da foto)
+  // Geometria dos painéis (coordenadas relativas ao slide de 360×360)
+  // A foto total ocupa (8,8)→(352,352) = 344×344 px
+  // Logo tab ocupa (0,0)→(LOGO_W, LOGO_H)
+  const SLIDE_PAD = 8;
+  const PHOTO_SIZE = 360 - SLIDE_PAD * 2; // 344
+  const LOGO_W = 162;
+  const LOGO_H = 58;
+  const R = 22;
+
+  // helper: estilos de background para que os dois painéis formem uma imagem contínua
+  // background-position é calculado para alinhar cada painel com sua posição no frame total
+  const bgRight = photo
+    ? {
+        backgroundImage: `url(${photo})`,
+        backgroundSize: `${PHOTO_SIZE}px ${PHOTO_SIZE}px`,
+        // painel começa em x=LOGO_W dentro do frame → deslocar pela diferença
+        backgroundPosition: `-${LOGO_W - SLIDE_PAD}px 0px`,
+      }
+    : { backgroundColor: '#d1d5db' };
+
+  const bgLeft = photo
+    ? {
+        backgroundImage: `url(${photo})`,
+        backgroundSize: `${PHOTO_SIZE}px ${PHOTO_SIZE}px`,
+        // painel começa em x=SLIDE_PAD, y=LOGO_H dentro do frame
+        backgroundPosition: `0px -${LOGO_H - SLIDE_PAD}px`,
+      }
+    : { backgroundColor: '#d1d5db' };
 
   return (
     <div
@@ -231,24 +257,31 @@ export const AMSpecsSlide = ({
         overflow: 'hidden',
       }}
     >
-      {/* ── FOTO ÚNICA: fundo completo, recuada 8px, radius 22 ── */}
+      {/* ── PAINEL DIREITO: full-height à direita do tab da logo ── */}
       <div
         style={{
           position: 'absolute',
-          top: 8,
-          left: 8,
-          right: 8,
-          bottom: 8,
+          top: SLIDE_PAD,
+          left: LOGO_W,
+          right: SLIDE_PAD,
+          bottom: SLIDE_PAD,
           borderRadius: R,
-          overflow: 'hidden',
+          ...bgRight,
         }}
-      >
-        {photo ? (
-          <img src={photo} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
-        ) : (
-          <div style={{ width: '100%', height: '100%', backgroundColor: '#d1d5db' }} />
-        )}
-      </div>
+      />
+
+      {/* ── PAINEL ESQUERDO: abaixo do tab da logo ── */}
+      <div
+        style={{
+          position: 'absolute',
+          top: LOGO_H,
+          left: SLIDE_PAD,
+          width: LOGO_W - SLIDE_PAD,
+          bottom: SLIDE_PAD,
+          borderRadius: R,
+          ...bgLeft,
+        }}
+      />
 
       {/* ── LOGO: quadro branco canto superior-esquerdo ── */}
       <div
@@ -265,38 +298,7 @@ export const AMSpecsSlide = ({
         <AMLogo width={138} variant="color" />
       </div>
 
-      {/* ── CANTO CÔNCAVO 1: canto inferior-direito do quadro da logo
-           Fica logo abaixo e à direita do quadro branco.
-           O gradiente remove o canto superior-esquerdo do quadrado branco,
-           revelando a foto e criando a curva côncava. ── */}
-      <div
-        style={{
-          position: 'absolute',
-          top: LOGO_H,
-          left: LOGO_W,
-          width: R,
-          height: R,
-          zIndex: 20,
-          background: `radial-gradient(circle at 0% 0%, transparent ${R}px, #ffffff ${R}px)`,
-        }}
-      />
-
-      {/* ── CANTO CÔNCAVO 2: canto superior-direito da área abaixo da logo
-           Fica logo à direita e acima da foto do lado esquerdo.
-           O gradiente remove o canto superior-direito revelando a foto. ── */}
-      <div
-        style={{
-          position: 'absolute',
-          top: LOGO_H,
-          left: LOGO_W - R,
-          width: R,
-          height: R,
-          zIndex: 19,
-          background: `radial-gradient(circle at 100% 0%, transparent ${R}px, #ffffff ${R}px)`,
-        }}
-      />
-
-      {/* ── CARD ESCURO DE SPECS: canto inferior-direito sobre a foto ── */}
+      {/* ── CARD ESCURO DE SPECS: canto inferior-direito sobre o painel direito ── */}
       {specs.length > 0 && (
         <div
           style={{
