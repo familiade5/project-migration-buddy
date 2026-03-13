@@ -196,8 +196,9 @@ export const AMCoverSlide = ({
 };
 
 // ─── Slide 2: ESPECIFICAÇÕES ─────────────────────────────────────────────────
-// UMA foto de fundo, plana (inset 8px, radius 22).
-// Card branco flutuante com borderRadius em TODOS os cantos flutua sobre ela.
+// DOIS painéis separados (mesma foto, crops naturais via object-fit:cover).
+// Card branco flutuante com borderRadius em TODOS os cantos sobre o painel esquerdo.
+// Layout: painel direito (altura total) + painel esquerdo (abaixo do card da logo).
 export const AMSpecsSlide = ({
   data,
   photo,
@@ -213,6 +214,13 @@ export const AMSpecsSlide = ({
     data.area > 0 ? `${data.area}m²` : '',
     data.suites > 0 ? `${data.suites} suíte${data.suites > 1 ? 's' : ''}` : '',
   ].filter(Boolean).slice(0, 6);
+
+  // Geometria — espelha exatamente a imagem de referência
+  const PAD = 8;   // margem do slide
+  const GAP = 6;   // espaço branco entre os dois painéis
+  const SPLIT_X = 154; // x onde o painel esquerdo termina
+  const LEFT_TOP = 84; // y onde o painel esquerdo começa (abaixo do card da logo)
+  const R = 22;
 
   return (
     <div
