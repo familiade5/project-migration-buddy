@@ -236,31 +236,58 @@ export const AMSpecsSlide = ({
 
   // One continuous path — smooth Q bezier curves at the notch corners,
   // standard A arcs at the three outer rounded corners.
+  // Outer right edge x=352 (8px inset from 360). Top-right arc: (330,8)→(352,30) r=22.
+  // Bottom-right arc: (352,330)→(330,352) r=22. Bottom-left arc: (30,352)→(8,330) r=22.
+  // Notch: x 8→168, y 8→80. Q curves for smooth concave/convex inner corners.
   const shapePath = [
-    'M 168 8',
-    'H 330 A 22 22 0 0 1 352 30',
-    'V 330 A 22 22 0 0 1 330 352',
-    'H 30 A 22 22 0 0 1 8 330',
-    'V 98',
-    'Q 8 80 26 80',
-    'H 150',
-    'Q 168 80 168 62',
-    'V 8 Z',
+    'M 168 8',               // top edge, right end of notch
+    'H 330',                 // top edge rightward
+    'A 22 22 0 0 1 352 30',  // top-right outer corner (r=22)
+    'V 330',                 // right edge downward
+    'A 22 22 0 0 1 330 352', // bottom-right outer corner (r=22)
+    'H 30',                  // bottom edge leftward
+    'A 22 22 0 0 1 8 330',   // bottom-left outer corner (r=22)
+    'V 98',                  // left edge upward, stop before notch bottom
+    'Q 8 80 26 80',          // smooth concave curve into notch bottom-left
+    'H 150',                 // notch bottom rightward
+    'Q 168 80 168 62',       // smooth convex curve up notch bottom-right
+    'V 8 Z',                 // up right notch edge to start, close
   ].join(' ');
 
   return (
     <div style={{ position: 'relative', width: 360, height: 360, backgroundColor: '#ffffff', fontFamily: 'Arial, sans-serif', overflow: 'hidden' }}>
 
-      {/* ── Hidden SVG: defines the single custom clip shape ── */}
-      <svg width="0" height="0" style={{ position: 'absolute', overflow: 'hidden' }}>
+      {/*
+        Render the image inside an inline SVG using a <clipPath> whose path lives
+        in the SAME SVG coordinate space as the <image> element. This guarantees
+        all corners — including top-right — are rendered exactly as drawn,
+        with no CSS clip-path cross-element reference issues.
+      */}
+      <svg
+        width="360"
+        height="360"
+        viewBox="0 0 360 360"
+        style={{ position: 'absolute', top: 0, left: 0, zIndex: 10 }}
+      >
         <defs>
-          <clipPath id="am-specs-photo-clip" clipPathUnits="userSpaceOnUse">
+          <clipPath id="am-specs-shape">
             <path d={shapePath} />
           </clipPath>
+          {photo && (
+            <pattern id="am-specs-img" patternUnits="userSpaceOnUse" width="360" height="360">
+              <image href={photo} x="0" y="0" width="360" height="360" preserveAspectRatio="xMidYMid slice" />
+            </pattern>
+          )}
         </defs>
+        {/* Single shape filled with the photo (or grey placeholder) */}
+        <path
+          d={shapePath}
+          fill={photo ? 'url(#am-specs-img)' : '#d1d5db'}
+          clipPath="url(#am-specs-shape)"
+        />
       </svg>
 
-      {/* ── Logo card — occupies the notch space carved into the image ── */}
+      {/* ── Logo card — sits in the notch, below the SVG layer (z-index 5) ── */}
       <div style={{
         position: 'absolute',
         top: 4,
@@ -277,22 +304,6 @@ export const AMSpecsSlide = ({
         boxSizing: 'border-box',
       }}>
         <AMLogo width={140} variant="color" />
-      </div>
-
-      {/* ── Image clipped to the single custom shape ── */}
-      <div style={{
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        width: 360,
-        height: 360,
-        clipPath: 'url(#am-specs-photo-clip)',
-        zIndex: 10,
-      }}>
-        {photo
-          ? <img src={photo} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
-          : <div style={{ width: '100%', height: '100%', backgroundColor: '#d1d5db' }} />
-        }
       </div>
 
       {/* ── Specs card ── */}
