@@ -308,7 +308,7 @@ export const AMSpecsSlide = ({
         style={{ position: 'absolute', width: 0, height: 0, overflow: 'hidden' }}
       >
         <defs>
-          <clipPath id="am-specs-shape" clipPathUnits="userSpaceOnUse">
+          <clipPath id={clipId} clipPathUnits="userSpaceOnUse">
             <path d={shapePath} />
           </clipPath>
         </defs>
