@@ -196,9 +196,26 @@ export const AMCoverSlide = ({
 };
 
 // ─── Slide 2: ESPECIFICAÇÕES ─────────────────────────────────────────────────
-// UMA única imagem com clipPath em forma de "L arredondado":
-// todos os 4 cantos EXTERNOS arredondados + canto interno (junto à logo) arredondado com curva bezier.
-// A logo fica sobre o fundo branco do slide, sem cobrir a imagem.
+// Grey photo area = rounded rectangle with a rectangular notch carved at top-left for the logo.
+// Shape:
+//   - Top-left outer corner: SHARP (8,8) — no border-radius here
+//   - Top-right, bottom-right, bottom-left outer corners: rounded r=22
+//   - Notch inner corners (bottom-left and bottom-right of notch): rounded r=20 following logo card curves
+//   - Notch dimensions: x=8→172, y=8→90
+// Path (clockwise, in slide coordinate space 360×360):
+//   M 8 8  → sharp top-left
+//   H 330  → top edge right
+//   A 22 22 0 0 1 352 30  → round top-right
+//   V 330  → right edge down
+//   A 22 22 0 0 1 330 352  → round bottom-right
+//   H 30   → bottom edge left
+//   A 22 22 0 0 1 8 330   → round bottom-left
+//   V 70   → up left edge to notch bottom-left arc
+//   A 20 20 0 0 1 28 90   → concave arc following logo card bottom-left corner
+//   H 152  → notch bottom edge right
+//   A 20 20 0 0 1 172 70  → concave arc following logo card bottom-right corner
+//   V 8    → up notch right edge to top
+//   Z      → close: line from (172,8) back to (8,8) along top
 export const AMSpecsSlide = ({
   data,
   photo,
@@ -215,13 +232,8 @@ export const AMSpecsSlide = ({
     data.suites > 0 ? `${data.suites} suíte${data.suites > 1 ? 's' : ''}` : '',
   ].filter(Boolean).slice(0, 6);
 
-  // Logo card notch: the photo is "carved" around the logo area.
-  // Logo card sits at top:4, left:4 with padding ~10px 14px and logo width 130.
-  // Notch covers slide coords approximately (0,0) to (notchW=176, notchH=86).
-  // SVG clipPath path (in slide coordinate space 360x360):
-  //   - Outer corners: arc r=22
-  //   - Inner concave corner (top-left): Q bezier with control at (8,8) → smooth organic curve
-  const clipPath = `M 176 8 H 330 A 22 22 0 0 1 352 30 V 330 A 22 22 0 0 1 330 352 H 30 A 22 22 0 0 1 8 330 V 86 Q 8 8 176 8 Z`;
+  const clipPath =
+    'M 8 8 H 330 A 22 22 0 0 1 352 30 V 330 A 22 22 0 0 1 330 352 H 30 A 22 22 0 0 1 8 330 V 70 A 20 20 0 0 1 28 90 H 152 A 20 20 0 0 1 172 70 V 8 Z';
 
   return (
     <div style={{ position: 'relative', width: 360, height: 360, backgroundColor: '#ffffff', fontFamily: 'Arial, sans-serif', overflow: 'hidden' }}>
@@ -235,8 +247,7 @@ export const AMSpecsSlide = ({
         </defs>
       </svg>
 
-      {/* ── 1 ÚNICA IMAGEM: clipPath com todos os cantos externos arredondados
-              e canto interno (top-left) com curva suave ao redor da logo ── */}
+      {/* ── 1 ÚNICA IMAGEM: clipPath carves a notch at top-left for the logo ── */}
       <div
         style={{
           position: 'absolute',
@@ -253,11 +264,11 @@ export const AMSpecsSlide = ({
         }
       </div>
 
-      {/* ── LOGO: fica sobre o fundo branco do slide, sem sobreposição na foto ── */}
+      {/* ── LOGO: sits on white slide background inside the notch ── */}
       <div style={{
-        position: 'absolute', top: 14, left: 14, zIndex: 20,
+        position: 'absolute', top: 16, left: 14, zIndex: 20,
       }}>
-        <AMLogo width={140} variant="color" />
+        <AMLogo width={142} variant="color" />
       </div>
 
       {/* ── CARD ESCURO DE SPECS ── */}
