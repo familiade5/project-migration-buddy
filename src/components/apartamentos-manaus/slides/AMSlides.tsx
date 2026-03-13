@@ -1,7 +1,7 @@
 import { AMPropertyData } from '@/types/apartamentosManaus';
 import logoAM from '@/assets/logo-apartamentos-manaus.png';
 
-// ─── Shared logo component ───────────────────────────────────────────────────
+// ─── Logo ────────────────────────────────────────────────────────────────────
 export const AMLogo = ({
   width = 120,
   variant = 'color',
@@ -18,11 +18,10 @@ export const AMLogo = ({
 );
 
 // ─── Slide 1: CAPA ──────────────────────────────────────────────────────────
-// Reference: Capa_png.png
-// - Orange rounded badge top-left (name, neighborhood, bedrooms, area)
-// - Full photo background
-// - White logo bottom-left (semi-transparent)
-// - Blue rounded price card bottom-right (VENDA badge, price, payment method)
+// Layout: white background • photo fills right ~72% with rounded-left corners
+// touching the right/top/bottom edges • orange info badge top-left overlapping
+// the white+photo boundary • white logo bottom-left on white area •
+// blue price card bottom-right floating on photo
 export const AMCoverSlide = ({
   data,
   photo,
@@ -32,103 +31,136 @@ export const AMCoverSlide = ({
 }) => {
   const price = data.isRental ? data.rentalPrice : data.salePrice;
   const priceLabel = data.isRental ? 'LOCAÇÃO' : 'VENDA';
-  const paymentLine = data.isRental
-    ? 'Locação'
+  const paymentParts = data.isRental
+    ? ['Locação']
     : [
+        'À vista',
         data.acceptsFinancing && 'Aceita financiamento',
         data.acceptsFGTS && 'Aceita FGTS',
-      ]
-        .filter(Boolean)
-        .join(' | ') || 'À vista';
+      ].filter(Boolean) as string[];
+  const paymentLine = paymentParts.join(' | ');
 
   return (
     <div
       className="relative overflow-hidden"
-      style={{ width: 360, height: 360, fontFamily: 'Arial, sans-serif', backgroundColor: '#1B5EA6' }}
+      style={{
+        width: 360,
+        height: 360,
+        backgroundColor: '#ffffff',
+        fontFamily: 'Arial, sans-serif',
+      }}
     >
-      {/* Background photo */}
+      {/* Photo — covers right portion, left edge rounded, right edges flush */}
       {photo && (
-        <img
-          src={photo}
-          alt=""
-          className="absolute inset-0 w-full h-full object-cover"
-        />
+        <div
+          className="absolute overflow-hidden"
+          style={{
+            top: 14,
+            left: 90,
+            right: 0,
+            bottom: 14,
+            borderTopLeftRadius: 20,
+            borderBottomLeftRadius: 20,
+          }}
+        >
+          <img src={photo} alt="" className="w-full h-full object-cover" />
+        </div>
       )}
 
-      {/* Orange info badge – top left */}
+      {/* Orange info badge — top-left, overlaps white+photo boundary */}
       <div
-        className="absolute top-3 left-3 z-10 px-3 py-2 rounded-2xl"
-        style={{ backgroundColor: '#F47920', maxWidth: 220 }}
+        className="absolute z-10"
+        style={{
+          top: 14,
+          left: 14,
+          backgroundColor: '#F47920',
+          borderRadius: 16,
+          padding: '8px 12px',
+          maxWidth: 200,
+        }}
       >
-        <p className="text-white font-bold text-sm leading-tight truncate">
+        <p className="text-white font-bold leading-tight" style={{ fontSize: 13 }}>
           {data.title || 'Nome do Imóvel'}
         </p>
         <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 mt-1">
           {data.neighborhood && (
-            <span className="flex items-center gap-0.5 text-white text-xs opacity-90">
-              <svg width="10" height="12" viewBox="0 0 10 12" fill="white">
+            <span className="text-white opacity-90 flex items-center gap-0.5" style={{ fontSize: 10 }}>
+              <svg width="8" height="10" viewBox="0 0 10 12" fill="white">
                 <path d="M5 0C2.24 0 0 2.24 0 5c0 3.75 5 7 5 7s5-3.25 5-7c0-2.76-2.24-5-5-5zm0 6.5C4.17 6.5 3.5 5.83 3.5 5S4.17 3.5 5 3.5 6.5 4.17 6.5 5 5.83 6.5 5 6.5z"/>
               </svg>
               {data.neighborhood}
             </span>
           )}
           {data.bedrooms > 0 && (
-            <span className="text-white text-xs opacity-90">
+            <span className="text-white opacity-90" style={{ fontSize: 10 }}>
               🛏 {data.bedrooms} {data.bedrooms === 1 ? 'Quarto' : 'Quartos'}
             </span>
           )}
           {data.area > 0 && (
-            <span className="text-white text-xs opacity-90">
+            <span className="text-white opacity-90" style={{ fontSize: 10 }}>
               📐 {data.area} m²
             </span>
           )}
         </div>
       </div>
 
-      {/* Bottom-left: white logo */}
-      <div className="absolute bottom-3 left-3 z-10" style={{ opacity: 0.85 }}>
-        <AMLogo width={100} variant="white" />
+      {/* Bottom-left: white logo on white background */}
+      <div className="absolute z-10" style={{ bottom: 20, left: 14 }}>
+        <AMLogo width={75} variant="color" />
       </div>
 
-      {/* Bottom-right: Blue price card */}
+      {/* Bottom-right: blue price card floating on photo */}
       <div
-        className="absolute bottom-3 right-3 z-10 px-4 py-3 rounded-2xl"
-        style={{ backgroundColor: '#1B5EA6', minWidth: 140 }}
+        className="absolute z-10"
+        style={{
+          bottom: 18,
+          right: 12,
+          backgroundColor: '#1B5EA6',
+          borderRadius: 18,
+          padding: '10px 14px',
+          minWidth: 148,
+        }}
       >
-        {/* VENDA/LOCAÇÃO badge */}
+        {/* VENDA badge */}
         <div
-          className="inline-block text-white text-xs font-bold px-2 py-0.5 rounded-full mb-1"
-          style={{ backgroundColor: 'rgba(255,255,255,0.25)', border: '1px solid rgba(255,255,255,0.4)' }}
+          className="inline-block text-white font-bold"
+          style={{
+            fontSize: 9,
+            letterSpacing: '0.06em',
+            backgroundColor: 'rgba(255,255,255,0.22)',
+            border: '1px solid rgba(255,255,255,0.35)',
+            borderRadius: 20,
+            padding: '2px 8px',
+            marginBottom: 4,
+          }}
         >
           {priceLabel}
         </div>
 
-        {/* Price */}
-        {price > 0 ? (
-          <div className="text-white">
-            <span className="text-xs opacity-70">R$</span>
-            {' '}
-            <span className="text-xl font-bold leading-tight">
-              {price.toLocaleString('pt-BR').replace(',', '.')}
-            </span>
-            <span className="text-xs opacity-70">,00</span>
-          </div>
-        ) : (
-          <div className="text-white font-bold text-lg">Consulte</div>
-        )}
+        {/* Price row */}
+        <div className="text-white flex items-baseline gap-0.5">
+          <span style={{ fontSize: 11, opacity: 0.8 }}>R$</span>
+          <span style={{ fontSize: 22, fontWeight: 700, lineHeight: 1.1 }}>
+            {price > 0
+              ? price.toLocaleString('pt-BR', { minimumFractionDigits: 0, maximumFractionDigits: 0 })
+              : 'Consulte'}
+          </span>
+          {price > 0 && <span style={{ fontSize: 11, opacity: 0.8 }}>,00</span>}
+        </div>
 
-        {/* Payment label */}
-        <p className="text-white text-xs opacity-80 mt-0.5 leading-tight">{paymentLine}</p>
+        {/* Payment methods */}
+        <p className="text-white" style={{ fontSize: 10, opacity: 0.82, marginTop: 2 }}>
+          {paymentLine}
+        </p>
       </div>
     </div>
   );
 };
 
 // ─── Slide 2: ESPECIFICAÇÕES ─────────────────────────────────────────────────
-// Reference: slide_2.png
-// - Color logo top-left on white rounded panel
-// - Full photo background
-// - Dark rounded specs box bottom-right with bullet list
+// Layout: white background • main photo as large rounded card (slight inset all sides)
+// logo + text "APARTAMENTOS MANAUS / IMOBILIÁRIA" top-left on white area
+// dark rounded specs box bottom-right overlaid on photo
 export const AMSpecsSlide = ({
   data,
   photo,
@@ -148,35 +180,65 @@ export const AMSpecsSlide = ({
   return (
     <div
       className="relative overflow-hidden"
-      style={{ width: 360, height: 360, fontFamily: 'Arial, sans-serif', backgroundColor: '#f0f0f0' }}
+      style={{
+        width: 360,
+        height: 360,
+        backgroundColor: '#ffffff',
+        fontFamily: 'Arial, sans-serif',
+      }}
     >
-      {/* Full photo */}
+      {/* Photo — large rounded card, inset 14px on all sides */}
       {photo && (
-        <img src={photo} alt="" className="absolute inset-0 w-full h-full object-cover" />
+        <div
+          className="absolute overflow-hidden"
+          style={{
+            top: 80,
+            left: 14,
+            right: 0,
+            bottom: 0,
+            borderTopLeftRadius: 20,
+            borderTopRightRadius: 20,
+          }}
+        >
+          <img src={photo} alt="" className="w-full h-full object-cover" />
+        </div>
       )}
 
-      {/* Top-left: white logo panel */}
+      {/* Top area: logo + brand text on white */}
       <div
-        className="absolute top-3 left-3 z-10 px-3 py-2 rounded-2xl"
-        style={{ backgroundColor: 'rgba(255,255,255,0.92)' }}
+        className="absolute z-10 flex items-center gap-2"
+        style={{ top: 16, left: 14 }}
       >
-        <AMLogo width={90} variant="color" />
+        <AMLogo width={52} variant="color" />
+        <div>
+          <p className="font-bold" style={{ fontSize: 11, color: '#1B5EA6', letterSpacing: '0.05em' }}>
+            APARTAMENTOS
+          </p>
+          <p className="font-bold" style={{ fontSize: 11, color: '#1B5EA6', letterSpacing: '0.05em' }}>
+            MANAUS
+          </p>
+          <p style={{ fontSize: 9, color: '#6b7280', letterSpacing: '0.08em' }}>IMOBILIÁRIA</p>
+        </div>
       </div>
 
-      {/* Bottom-right: dark specs box */}
+      {/* Dark specs box — bottom-right, overlaid on photo */}
       {specs.length > 0 && (
         <div
-          className="absolute bottom-3 right-3 z-10 px-4 py-3 rounded-2xl"
+          className="absolute z-10"
           style={{
-            backgroundColor: 'rgba(31, 41, 55, 0.88)',
-            backdropFilter: 'blur(4px)',
-            maxWidth: 180,
+            bottom: 16,
+            right: 14,
+            backgroundColor: 'rgba(31, 41, 55, 0.84)',
+            backdropFilter: 'blur(6px)',
+            borderRadius: 16,
+            padding: '10px 14px',
+            maxWidth: 170,
           }}
         >
           {specs.map((spec, i) => (
-            <div key={i} className="flex items-start gap-1.5 mb-0.5 last:mb-0">
-              <span className="text-white text-xs opacity-60 mt-0.5">•</span>
-              <span className="text-white text-xs leading-snug">{spec}</span>
+            <div key={i} className="flex items-start gap-1.5" style={{ marginBottom: i < specs.length - 1 ? 3 : 0 }}>
+              <span className="text-white" style={{ fontSize: 10, opacity: 0.6, marginTop: 1 }}>•</span>
+              <span className="text-white" style={{ fontSize: 11, lineHeight: 1.4 }}>{spec}</span>
             </div>
           ))}
         </div>
@@ -186,10 +248,9 @@ export const AMSpecsSlide = ({
 };
 
 // ─── Slide 3: LOCALIZAÇÃO ────────────────────────────────────────────────────
-// Reference: Slide_3.png
-// - Blue rounded card top-left (title + address + CTA)
-// - Photo occupies bottom half and right
-// - White logo card bottom-right
+// Layout: white background • TWO photos with rounded corners
+// (bottom-left smaller + right larger) • blue card top-left on white •
+// white logo card bottom-right on white
 export const AMLocationSlide = ({
   data,
   photo,
@@ -197,60 +258,126 @@ export const AMLocationSlide = ({
   data: AMPropertyData;
   photo?: string;
 }) => {
-  const address = [data.address, data.neighborhood, `${data.city} - ${data.state}`]
+  const address = [
+    data.address,
+    data.neighborhood ? `${data.neighborhood}` : '',
+    `${data.city} - ${data.state}`,
+  ]
     .filter(Boolean)
     .join(', ');
 
   return (
     <div
       className="relative overflow-hidden"
-      style={{ width: 360, height: 360, fontFamily: 'Arial, sans-serif', backgroundColor: '#e5e7eb' }}
+      style={{
+        width: 360,
+        height: 360,
+        backgroundColor: '#ffffff',
+        fontFamily: 'Arial, sans-serif',
+      }}
     >
-      {/* Photo – bottom half */}
+      {/* Right photo — large, takes right 55%, with rounded corners */}
       {photo && (
-        <div className="absolute inset-0">
+        <div
+          className="absolute overflow-hidden"
+          style={{
+            top: 14,
+            left: 152,
+            right: 0,
+            bottom: 0,
+            borderTopLeftRadius: 20,
+            borderTopRightRadius: 14,
+          }}
+        >
           <img src={photo} alt="" className="w-full h-full object-cover" />
         </div>
       )}
 
-      {/* Top-left: blue info card */}
+      {/* Bottom-left photo — smaller square with rounded corners */}
+      {photo && (
+        <div
+          className="absolute overflow-hidden"
+          style={{
+            bottom: 0,
+            left: 14,
+            width: 128,
+            height: 148,
+            borderTopLeftRadius: 20,
+            borderTopRightRadius: 20,
+          }}
+        >
+          <img src={photo} alt="" className="w-full h-full object-cover" style={{ objectPosition: '30% center' }} />
+        </div>
+      )}
+
+      {/* Top-left: blue info card on white */}
       <div
-        className="absolute top-3 left-3 z-10 px-4 py-3 rounded-2xl"
-        style={{ backgroundColor: '#1B5EA6', maxWidth: 190 }}
+        className="absolute z-10"
+        style={{
+          top: 14,
+          left: 14,
+          backgroundColor: '#1B5EA6',
+          borderRadius: 18,
+          padding: '12px 14px',
+          maxWidth: 172,
+        }}
       >
-        <p className="text-white font-bold text-sm leading-snug mb-1">
+        <p className="text-white font-bold leading-snug" style={{ fontSize: 13, marginBottom: 6 }}>
           {data.title || 'Imóveis bem localizados em Manaus'}
         </p>
         {address && (
-          <p className="text-white text-xs opacity-80 leading-snug mb-2">{address}</p>
+          <p className="text-white leading-snug" style={{ fontSize: 10, opacity: 0.82, marginBottom: 8 }}>
+            {address}
+          </p>
         )}
         {data.referencePoint && (
-          <p className="text-white text-xs opacity-70 leading-snug mb-2">{data.referencePoint}</p>
+          <p className="text-white leading-snug" style={{ fontSize: 10, opacity: 0.7, marginBottom: 8 }}>
+            {data.referencePoint}
+          </p>
         )}
         <div
-          className="flex items-center gap-1 px-2 py-1 rounded-full text-xs text-white border border-white/40"
-          style={{ backgroundColor: 'rgba(255,255,255,0.15)', width: 'fit-content' }}
+          style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: 4,
+            backgroundColor: 'rgba(255,255,255,0.15)',
+            border: '1px solid rgba(255,255,255,0.35)',
+            borderRadius: 20,
+            padding: '3px 10px',
+            fontSize: 10,
+            color: 'white',
+          }}
         >
-          <span>Arraste para o lado</span>
-          <span>→</span>
+          Arraste para o lado →
         </div>
       </div>
 
-      {/* Bottom-right: white logo card */}
+      {/* Bottom-right: white logo panel on white background */}
       <div
-        className="absolute bottom-3 right-3 z-10 px-3 py-2 rounded-2xl flex items-center gap-2"
-        style={{ backgroundColor: 'rgba(255,255,255,0.92)' }}
+        className="absolute z-10 flex items-center gap-2"
+        style={{
+          bottom: 14,
+          right: 12,
+          backgroundColor: '#ffffff',
+          border: '1px solid #e5e7eb',
+          borderRadius: 14,
+          padding: '8px 10px',
+        }}
       >
-        <AMLogo width={80} variant="color" />
+        <AMLogo width={56} variant="color" />
+        <div>
+          <p style={{ fontSize: 9, fontWeight: 700, color: '#1B5EA6', letterSpacing: '0.05em' }}>APARTAMENTOS</p>
+          <p style={{ fontSize: 9, fontWeight: 700, color: '#1B5EA6', letterSpacing: '0.05em' }}>MANAUS</p>
+          <p style={{ fontSize: 8, color: '#9ca3af', letterSpacing: '0.08em' }}>IMOBILIÁRIA</p>
+        </div>
       </div>
     </div>
   );
 };
 
-// ─── Slide 4+: FOTO SIMPLES ──────────────────────────────────────────────────
-// Reference: Slide_4.png
-// - Color logo top-left on white panel
-// - Full photo
+// ─── Slide 4+: FOTO ──────────────────────────────────────────────────────────
+// Layout: white background • photo as rounded card with ~14px inset all sides
+// logo + brand text top-left on white area
 export const AMPhotoSlide = ({
   data,
   photo,
@@ -263,26 +390,52 @@ export const AMPhotoSlide = ({
   return (
     <div
       className="relative overflow-hidden"
-      style={{ width: 360, height: 360, backgroundColor: '#1f2937' }}
+      style={{
+        width: 360,
+        height: 360,
+        backgroundColor: '#ffffff',
+        fontFamily: 'Arial, sans-serif',
+      }}
     >
-      <img src={photo} alt="" className="absolute inset-0 w-full h-full object-cover" />
-
-      {/* Top-left logo panel */}
+      {/* Photo — large rounded card, full height with top gap for logo */}
       <div
-        className="absolute top-3 left-3 z-10 px-3 py-2 rounded-2xl"
-        style={{ backgroundColor: 'rgba(255,255,255,0.92)' }}
+        className="absolute overflow-hidden"
+        style={{
+          top: 78,
+          left: 14,
+          right: 0,
+          bottom: 0,
+          borderTopLeftRadius: 20,
+          borderTopRightRadius: 20,
+        }}
       >
-        <AMLogo width={90} variant="color" />
+        <img src={photo} alt="" className="w-full h-full object-cover" />
+      </div>
+
+      {/* Top: logo + brand text on white */}
+      <div
+        className="absolute z-10 flex items-center gap-2"
+        style={{ top: 16, left: 14 }}
+      >
+        <AMLogo width={52} variant="color" />
+        <div>
+          <p className="font-bold" style={{ fontSize: 11, color: '#1B5EA6', letterSpacing: '0.05em' }}>
+            APARTAMENTOS
+          </p>
+          <p className="font-bold" style={{ fontSize: 11, color: '#1B5EA6', letterSpacing: '0.05em' }}>
+            MANAUS
+          </p>
+          <p style={{ fontSize: 9, color: '#6b7280', letterSpacing: '0.08em' }}>IMOBILIÁRIA</p>
+        </div>
       </div>
     </div>
   );
 };
 
-// ─── Último Slide: INFORMAÇÃO ────────────────────────────────────────────────
-// Reference: Informação.png
-// - Full photo bg with dark overlay
-// - Large white headline + subtitle inside white-bordered rounded box
-// - White logo card bottom-right
+// ─── Último Slide: INFORMAÇÃO ─────────────────────────────────────────────────
+// Layout: white background • photo fills inner rounded rectangle
+// dark overlay over photo • white-bordered rounded content box inside
+// white logo card bottom-right
 export const AMInfoSlide = ({
   data,
   photo,
@@ -290,7 +443,8 @@ export const AMInfoSlide = ({
   data: AMPropertyData;
   photo?: string;
 }) => {
-  const headline = data.infoMessage ||
+  const headline =
+    data.infoMessage ||
     'A Apartamentos Manaus acompanha você em todas as etapas da escolha do seu imóvel.';
   const subtitle =
     'Encontrar o imóvel ideal pode ser mais simples do que parece. A Apartamentos Manaus orienta você sobre as possibilidades de financiamento e acompanha todo o processo com transparência.';
@@ -298,39 +452,77 @@ export const AMInfoSlide = ({
   return (
     <div
       className="relative overflow-hidden"
-      style={{ width: 360, height: 360, fontFamily: 'Arial, sans-serif', backgroundColor: '#111827' }}
+      style={{
+        width: 360,
+        height: 360,
+        backgroundColor: '#ffffff',
+        fontFamily: 'Arial, sans-serif',
+      }}
     >
-      {/* Background photo */}
-      {photo && (
-        <img src={photo} alt="" className="absolute inset-0 w-full h-full object-cover" />
-      )}
-      {/* Dark overlay */}
-      <div className="absolute inset-0" style={{ backgroundColor: 'rgba(0,0,0,0.55)' }} />
-
-      {/* White-bordered content box */}
+      {/* Photo — rounded card inset 14px all sides */}
       <div
-        className="absolute inset-4 z-10 rounded-2xl p-5 flex flex-col justify-between"
-        style={{ border: '2px solid rgba(255,255,255,0.5)' }}
+        className="absolute overflow-hidden"
+        style={{
+          top: 14,
+          left: 14,
+          right: 14,
+          bottom: 14,
+          borderRadius: 22,
+        }}
       >
-        <div className="flex-1">
+        {photo && (
+          <img src={photo} alt="" className="w-full h-full object-cover" />
+        )}
+        {/* Dark overlay */}
+        <div
+          className="absolute inset-0"
+          style={{ backgroundColor: 'rgba(0,0,0,0.58)' }}
+        />
+      </div>
+
+      {/* White-bordered content box overlaid on photo */}
+      <div
+        className="absolute z-10 flex flex-col justify-between"
+        style={{
+          top: 28,
+          left: 28,
+          right: 28,
+          bottom: 28,
+          border: '2px solid rgba(255,255,255,0.55)',
+          borderRadius: 14,
+          padding: '16px 14px 12px 14px',
+        }}
+      >
+        <div>
           <h2
-            className="text-white font-bold leading-tight mb-3"
-            style={{ fontSize: 18 }}
+            className="text-white font-bold leading-tight"
+            style={{ fontSize: 17, marginBottom: 8 }}
           >
             {headline}
           </h2>
-          <p className="text-white opacity-80 leading-snug" style={{ fontSize: 11 }}>
+          <p
+            className="text-white leading-snug"
+            style={{ fontSize: 10, opacity: 0.82 }}
+          >
             {subtitle}
           </p>
         </div>
 
         {/* Bottom-right: white logo card */}
-        <div className="flex justify-end mt-3">
+        <div className="flex justify-end">
           <div
-            className="px-3 py-2 rounded-xl flex items-center gap-2"
-            style={{ backgroundColor: 'rgba(255,255,255,0.92)' }}
+            className="flex items-center gap-2"
+            style={{
+              backgroundColor: 'rgba(255,255,255,0.95)',
+              borderRadius: 12,
+              padding: '6px 10px',
+            }}
           >
-            <AMLogo width={75} variant="color" />
+            <AMLogo width={44} variant="color" />
+            <div>
+              <p style={{ fontSize: 8, fontWeight: 700, color: '#1B5EA6', letterSpacing: '0.05em' }}>AP. MANAUS</p>
+              <p style={{ fontSize: 7, color: '#9ca3af', letterSpacing: '0.08em' }}>IMOBILIÁRIA</p>
+            </div>
           </div>
         </div>
       </div>
