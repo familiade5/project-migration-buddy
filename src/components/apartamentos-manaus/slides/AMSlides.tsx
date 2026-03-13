@@ -710,20 +710,34 @@ export const AMInfoSlide = ({
       <div
         style={{
           position: 'absolute',
-          top: 28,
-          left: 28,
-          right: 28,
-          bottom: 90,
+          top: 30,
+          left: 26,
+          right: 26,
+          bottom: 80,
           zIndex: 20,
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'flex-start',
         }}
       >
-        <h2 style={{ color: 'white', fontWeight: 700, fontSize: 19, lineHeight: 1.3, margin: '0 0 10px' }}>
+        <h2 style={{
+          color: 'white',
+          fontWeight: 800,
+          fontSize: 22,
+          lineHeight: 1.25,
+          margin: '0 0 12px',
+          letterSpacing: '-0.01em',
+        }}>
           {headline}
         </h2>
-        <p style={{ color: 'white', fontSize: 10.5, opacity: 0.85, lineHeight: 1.55, margin: 0 }}>
+        <p style={{
+          color: 'white',
+          fontSize: 11,
+          opacity: 0.88,
+          lineHeight: 1.6,
+          margin: 0,
+          maxWidth: 200,
+        }}>
           {subtitle}
         </p>
       </div>
