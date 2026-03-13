@@ -328,33 +328,33 @@ export function AMStoriesPreview({ data, photos }: AMStoriesPreviewProps) {
       <div className="fixed -left-[9999px] top-0 pointer-events-none" aria-hidden="true">
         {/* Theme 1 */}
         <div ref={t1r0} style={{ width: STORY_W, height: STORY_H, overflow: 'hidden' }}>
-          <AMStory1_T1_Curiosity data={data} photo={p0} />
+          <AMStory1_T1_Curiosity data={data} photo={photos[0]} />
         </div>
         <div ref={t1r1} style={{ width: STORY_W, height: STORY_H, overflow: 'hidden' }}>
-          <AMStory1_T1_Reveal data={data} photo={p1} />
+          <AMStory1_T1_Reveal data={data} photos={photos} />
         </div>
         <div ref={t1r2} style={{ width: STORY_W, height: STORY_H, overflow: 'hidden' }}>
-          <AMStory1_T1_CTA data={data} photo={pLast} />
+          <AMStory1_T1_CTA data={data} photo={photos[photos.length - 1] ?? photos[0]} />
         </div>
         {/* Theme 2 */}
         <div ref={t2r0} style={{ width: STORY_W, height: STORY_H, overflow: 'hidden' }}>
-          <AMStory2_T2_Curiosity data={data} photo={p0} />
+          <AMStory2_T2_Curiosity data={data} photo={photos[0]} />
         </div>
         <div ref={t2r1} style={{ width: STORY_W, height: STORY_H, overflow: 'hidden' }}>
-          <AMStory2_T2_Reveal data={data} photo={p1} />
+          <AMStory2_T2_Reveal data={data} photos={photos} />
         </div>
         <div ref={t2r2} style={{ width: STORY_W, height: STORY_H, overflow: 'hidden' }}>
-          <AMStory2_T2_CTA data={data} photo={pLast} />
+          <AMStory2_T2_CTA data={data} photo={photos[photos.length - 1] ?? photos[0]} />
         </div>
         {/* Theme 3 */}
         <div ref={t3r0} style={{ width: STORY_W, height: STORY_H, overflow: 'hidden' }}>
-          <AMStory3_T3_Curiosity data={data} photo={p0} />
+          <AMStory3_T3_Curiosity data={data} photo={photos[0]} />
         </div>
         <div ref={t3r1} style={{ width: STORY_W, height: STORY_H, overflow: 'hidden' }}>
-          <AMStory3_T3_Reveal data={data} photo={p1} />
+          <AMStory3_T3_Reveal data={data} photos={photos} />
         </div>
         <div ref={t3r2} style={{ width: STORY_W, height: STORY_H, overflow: 'hidden' }}>
-          <AMStory3_T3_CTA data={data} photo={pLast} />
+          <AMStory3_T3_CTA data={data} photo={photos[photos.length - 1] ?? photos[0]} />
         </div>
       </div>
     </div>
