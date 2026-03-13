@@ -185,7 +185,7 @@ export const AMCoverSlide = ({
           borderRadius: 20,
           padding: '3px 12px 4px',
           minWidth: 170,
-          boxShadow: '0 0 0 5px #ffffff',
+          border: '5px solid #ffffff',
         }}
       >
         {/* VENDA/LOCAÇÃO pill */}
