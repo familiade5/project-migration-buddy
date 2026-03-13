@@ -14,6 +14,7 @@ const propertyTypes = ['Apartamento', 'Casa', 'Casa em Condomínio', 'Cobertura'
 const inputClass = 'h-10 border-gray-300 focus:border-[#1B5EA6] bg-white text-gray-900 placeholder:text-gray-400 text-sm';
 const textareaClass = 'border-gray-300 focus:border-[#1B5EA6] bg-white text-gray-900 placeholder:text-gray-400 text-sm resize-none';
 const labelClass = 'text-xs font-semibold text-gray-600 uppercase tracking-wide';
+const switchClass = 'data-[state=checked]:bg-[#1B5EA6] data-[state=unchecked]:bg-gray-300 border-transparent';
 
 function Section({ title, color, children }: { title: string; color: string; children: React.ReactNode }) {
   return (
