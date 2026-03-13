@@ -390,23 +390,27 @@ export const AMLocationSlide = ({
     .filter(Boolean)
     .join(', ');
 
-  // L-shaped clip path: photo fills entire canvas EXCEPT upper-left notch (for blue card).
-  // Notch: x 14→162, y 14→190. Outer corners r=22 (convex arcs). Inner notch corners use Q bezier (concave).
-  // Clockwise from top of notch right edge:
+  // Clip path com DOIS nichos: superior-esquerdo (card azul) e inferior-direito (card logo).
+  // Notch azul: x 14→162, y 14→164. Notch logo: x 208→346, y 276→346.
+  // Cantos externos: arcos convexos A r=22. Cantos internos dos nichos: bezier Q (côncavos).
   const shapePath = [
-    'M 184 14',              // top edge start (notch right edge x=162 + arc r=22)
+    'M 184 14',              // top edge start (notch-azul right x=162 + r=22)
     'H 324',                 // top edge rightward
     'A 22 22 0 0 1 346 36',  // top-right outer convex corner
-    'V 324',                 // right edge downward
-    'A 22 22 0 0 1 324 346', // bottom-right outer convex corner
+    'V 254',                 // right edge down (stop before logo notch: 276-22=254)
+    'Q 346 276 324 276',     // concave at top-right of logo notch
+    'H 230',                 // logo notch top leftward (208+22=230)
+    'Q 208 276 208 298',     // concave at top-left of logo notch (276+22=298)
+    'V 324',                 // down logo notch left wall (346-22=324)
+    'A 22 22 0 0 1 230 346', // convex outer corner at bottom-left of logo notch
     'H 36',                  // bottom edge leftward
     'A 22 22 0 0 1 14 324',  // bottom-left outer convex corner
-    'V 212',                 // left edge upward to notch (190 + r=22)
-    'Q 14 190 36 190',       // concave smooth curve at bottom-left of notch
-    'H 140',                 // notch bottom (162 - r=22)
-    'Q 162 190 162 168',     // concave smooth curve at bottom-right of notch
+    'V 186',                 // left edge upward to blue notch (164+22=186)
+    'Q 14 164 36 164',       // concave at bottom-left of blue notch
+    'H 140',                 // blue notch bottom (162-22=140)
+    'Q 162 164 162 142',     // concave at bottom-right of blue notch (164-22=142)
     'V 36',                  // up notch right edge (stopping r=22 before top)
-    'A 22 22 0 0 1 184 14',  // convex outer corner at top of notch → back to start
+    'A 22 22 0 0 1 184 14',  // convex outer corner at top of notch
     'Z',
   ].join(' ');
 
