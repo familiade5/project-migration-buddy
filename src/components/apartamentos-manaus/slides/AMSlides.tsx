@@ -265,13 +265,15 @@ export const AMSpecsSlide = ({
         <AMLogo width={138} variant="color" />
       </div>
 
-      {/* ── CANTO CÔNCAVO 1: inferior-direito do quadro logo (encontra foto à direita) ── */}
-      {/* Posicionado exatamente no canto inferior-direito do quadro branco */}
+      {/* ── CANTO CÔNCAVO 1: canto inferior-direito do quadro da logo
+           Fica logo abaixo e à direita do quadro branco.
+           O gradiente remove o canto superior-esquerdo do quadrado branco,
+           revelando a foto e criando a curva côncava. ── */}
       <div
         style={{
           position: 'absolute',
           top: LOGO_H,
-          left: LOGO_W - R,
+          left: LOGO_W,
           width: R,
           height: R,
           zIndex: 20,
@@ -279,17 +281,18 @@ export const AMSpecsSlide = ({
         }}
       />
 
-      {/* ── CANTO CÔNCAVO 2: superior-direito do quadro logo (encontra foto abaixo à esquerda) ── */}
-      {/* Posicionado exatamente no canto inferior-esquerdo da área do logo */}
+      {/* ── CANTO CÔNCAVO 2: canto superior-direito da área abaixo da logo
+           Fica logo à direita e acima da foto do lado esquerdo.
+           O gradiente remove o canto superior-direito revelando a foto. ── */}
       <div
         style={{
           position: 'absolute',
-          top: LOGO_H - R,
-          left: 8,
+          top: LOGO_H,
+          left: LOGO_W - R,
           width: R,
           height: R,
-          zIndex: 20,
-          background: `radial-gradient(circle at 100% 100%, transparent ${R}px, #ffffff ${R}px)`,
+          zIndex: 19,
+          background: `radial-gradient(circle at 100% 0%, transparent ${R}px, #ffffff ${R}px)`,
         }}
       />
 
