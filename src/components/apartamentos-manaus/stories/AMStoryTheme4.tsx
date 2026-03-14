@@ -614,8 +614,9 @@ export const AMStory4_T4_Slide4 = ({
 };
 
 /* ─────────────────────────────────────────────────────────────────
-   SLIDE 5 — Contato / CTA clean
-   Layout: fundo branco · grande card laranja de contato · broker info · website
+   SLIDE 5 — Dark Luxury CTA
+   Layout: foto full-bleed · overlay gradiente · logo · preço pill ·
+           card glassmorphism com corretor + WhatsApp · footer website
    ───────────────────────────────────────────────────────────────── */
 export const AMStory4_T4_Slide5 = ({
   data,
@@ -629,91 +630,136 @@ export const AMStory4_T4_Slide5 = ({
   return (
     <div style={{
       position: 'relative', width: STORY_W, height: STORY_H,
-      backgroundColor: '#f8fafc', fontFamily: 'Arial, sans-serif', overflow: 'hidden',
+      backgroundColor: '#0a0f1e', fontFamily: 'Arial, sans-serif', overflow: 'hidden',
     }}>
-      {/* Diagonal orange shape decorativa no topo */}
+
+      {/* ── Foto full-bleed como fundo ── */}
+      {photo && (
+        <img src={photo} alt="" style={{
+          position: 'absolute', inset: 0, width: '100%', height: '100%',
+          objectFit: 'cover', opacity: 0.45,
+        }} />
+      )}
+
+      {/* ── Gradiente dramático de baixo pra cima ── */}
       <div style={{
-        position: 'absolute', top: -60, right: -40, width: 240, height: 340,
-        backgroundColor: '#F47920', borderRadius: '0 0 0 80%', opacity: 0.08, zIndex: 0,
-      }} />
-      <div style={{
-        position: 'absolute', bottom: -80, left: -60, width: 280, height: 280,
-        backgroundColor: '#1B5EA6', borderRadius: '50%', opacity: 0.06, zIndex: 0,
+        position: 'absolute', inset: 0,
+        background: 'linear-gradient(to top, #0a0f1e 55%, rgba(10,15,30,0.55) 78%, rgba(10,15,30,0.15) 100%)',
       }} />
 
-      {/* Conteúdo */}
-      <div style={{ position: 'relative', zIndex: 5, display: 'flex', flexDirection: 'column', height: '100%', padding: '28px 22px 22px' }}>
+      {/* ── Acento laranja sutil no topo ── */}
+      <div style={{
+        position: 'absolute', top: -120, left: -60, width: 300, height: 300,
+        borderRadius: '50%',
+        background: 'radial-gradient(circle, rgba(244,121,32,0.22) 0%, transparent 70%)',
+      }} />
 
-        {/* Logo centralizada */}
-        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 18 }}>
-          <Logo size={100} />
+      {/* ── Conteúdo ── */}
+      <div style={{ position: 'relative', zIndex: 5, height: '100%', display: 'flex', flexDirection: 'column' }}>
+
+        {/* Topo: logo + bairro */}
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', paddingTop: 32, gap: 10 }}>
+          <Logo size={100} white />
+          {data.neighborhood && (
+            <div style={{
+              backgroundColor: 'rgba(244,121,32,0.9)', borderRadius: 30,
+              padding: '4px 16px', display: 'flex', alignItems: 'center', gap: 5,
+            }}>
+              <span style={{ fontSize: 10 }}>📍</span>
+              <span style={{ color: 'white', fontSize: 10, fontWeight: 700 }}>{data.neighborhood}</span>
+            </div>
+          )}
         </div>
 
-        {/* Resumo do imóvel */}
-        <div style={{
-          backgroundColor: 'white', borderRadius: 16, padding: '14px 18px', marginBottom: 14,
-          border: '1px solid #e2e8f0', boxShadow: '0 2px 12px rgba(0,0,0,0.06)',
-        }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
-            <p style={{ color: '#0f172a', fontSize: 14, fontWeight: 800, margin: 0, lineHeight: 1.2, flex: 1 }}>
-              {data.title || 'Apartamento Disponível'}
-            </p>
-            {data.neighborhood && (
-              <div style={{ backgroundColor: '#fff7ed', borderRadius: 8, padding: '3px 8px', border: '1px solid #fed7aa', marginLeft: 8 }}>
-                <span style={{ color: '#F47920', fontSize: 9, fontWeight: 700 }}>📍 {data.neighborhood}</span>
+        {/* Meio: título + specs */}
+        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '0 22px', gap: 14 }}>
+          <p style={{
+            color: 'white', fontSize: 22, fontWeight: 900, textAlign: 'center',
+            margin: 0, lineHeight: 1.25, textShadow: '0 2px 12px rgba(0,0,0,0.5)',
+          }}>
+            {data.title || 'Apartamento Disponível'}
+          </p>
+
+          {/* Spec chips */}
+          <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', justifyContent: 'center' }}>
+            {data.bedrooms > 0 && (
+              <div style={{ backgroundColor: 'rgba(255,255,255,0.12)', border: '1px solid rgba(255,255,255,0.22)', borderRadius: 20, padding: '5px 12px' }}>
+                <span style={{ color: 'white', fontSize: 10, fontWeight: 700 }}>🛏 {data.bedrooms} Qto{data.bedrooms > 1 ? 's' : ''}</span>
+              </div>
+            )}
+            {data.area > 0 && (
+              <div style={{ backgroundColor: 'rgba(255,255,255,0.12)', border: '1px solid rgba(255,255,255,0.22)', borderRadius: 20, padding: '5px 12px' }}>
+                <span style={{ color: 'white', fontSize: 10, fontWeight: 700 }}>📐 {data.area}m²</span>
+              </div>
+            )}
+            {data.garageSpaces > 0 && (
+              <div style={{ backgroundColor: 'rgba(255,255,255,0.12)', border: '1px solid rgba(255,255,255,0.22)', borderRadius: 20, padding: '5px 12px' }}>
+                <span style={{ color: 'white', fontSize: 10, fontWeight: 700 }}>🚗 {data.garageSpaces} Vaga{data.garageSpaces > 1 ? 's' : ''}</span>
+              </div>
+            )}
+            {data.suites > 0 && (
+              <div style={{ backgroundColor: 'rgba(255,255,255,0.12)', border: '1px solid rgba(255,255,255,0.22)', borderRadius: 20, padding: '5px 12px' }}>
+                <span style={{ color: 'white', fontSize: 10, fontWeight: 700 }}>🛁 {data.suites} Suíte{data.suites > 1 ? 's' : ''}</span>
               </div>
             )}
           </div>
-          {/* Especificações em linha */}
-          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', borderTop: '1px solid #f1f5f9', paddingTop: 10 }}>
-            {data.bedrooms > 0 && <span style={{ color: '#475569', fontSize: 10, fontWeight: 600 }}>🛏 {data.bedrooms} Qto{data.bedrooms > 1 ? 's' : ''}</span>}
-            {data.area > 0 && <span style={{ color: '#475569', fontSize: 10, fontWeight: 600 }}>📐 {data.area}m²</span>}
-            {data.garageSpaces > 0 && <span style={{ color: '#475569', fontSize: 10, fontWeight: 600 }}>🚗 {data.garageSpaces} Vaga{data.garageSpaces > 1 ? 's' : ''}</span>}
-            {data.floor && <span style={{ color: '#475569', fontSize: 10, fontWeight: 600 }}>🏢 {data.floor}° And.</span>}
-          </div>
-        </div>
 
-        {/* Preço destaque */}
-        <div style={{
-          backgroundColor: '#1B5EA6', borderRadius: 14, padding: '14px 18px', marginBottom: 14,
-          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-          boxShadow: '0 6px 20px rgba(27,94,166,0.3)',
-        }}>
-          <div>
-            <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: 9, margin: '0 0 2px', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
+          {/* Price pill grande */}
+          <div style={{
+            backgroundColor: '#F47920', borderRadius: 16,
+            padding: '12px 24px', textAlign: 'center',
+            boxShadow: '0 8px 28px rgba(244,121,32,0.45)',
+          }}>
+            <p style={{ color: 'rgba(255,255,255,0.75)', fontSize: 9, margin: '0 0 2px', textTransform: 'uppercase', letterSpacing: '0.12em' }}>
               {data.isRental ? 'Aluguel mensal' : 'Valor de Venda'}
             </p>
-            <p style={{ color: 'white', fontSize: 24, fontWeight: 900, margin: 0, lineHeight: 1 }}>
+            <p style={{ color: 'white', fontSize: 26, fontWeight: 900, margin: 0, lineHeight: 1 }}>
               {formatPrice(price)}
             </p>
-          </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-            {data.acceptsFinancing && <span style={{ backgroundColor: 'rgba(134,239,172,0.2)', color: '#86efac', fontSize: 9, fontWeight: 700, padding: '2px 8px', borderRadius: 20, border: '1px solid rgba(134,239,172,0.3)' }}>✓ Financiamento</span>}
-            {data.acceptsFGTS && <span style={{ backgroundColor: 'rgba(134,239,172,0.2)', color: '#86efac', fontSize: 9, fontWeight: 700, padding: '2px 8px', borderRadius: 20, border: '1px solid rgba(134,239,172,0.3)' }}>✓ FGTS</span>}
+            {(data.acceptsFinancing || data.acceptsFGTS) && (
+              <p style={{ color: 'rgba(255,255,255,0.85)', fontSize: 9, margin: '4px 0 0', fontWeight: 600 }}>
+                {[data.acceptsFinancing && '✓ Financiamento', data.acceptsFGTS && '✓ FGTS'].filter(Boolean).join(' • ')}
+              </p>
+            )}
           </div>
         </div>
 
-        {/* Card corretor */}
-        <div style={{
-          backgroundColor: '#F47920', borderRadius: 16, padding: '16px 18px', marginBottom: 12,
-          boxShadow: '0 8px 24px rgba(244,121,32,0.35)',
-        }}>
-          <p style={{ color: 'rgba(255,255,255,0.8)', fontSize: 10, margin: '0 0 2px', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Fale com o Corretor</p>
-          <p style={{ color: 'white', fontSize: 16, fontWeight: 900, margin: '0 0 10px' }}>{data.brokerName || 'Iury Sampaio'}</p>
-          <div style={{ backgroundColor: 'rgba(255,255,255,0.2)', borderRadius: 12, padding: '10px 14px', display: 'flex', alignItems: 'center', gap: 10 }}>
-            <span style={{ fontSize: 22 }}>💬</span>
-            <div>
-              <p style={{ color: 'rgba(255,255,255,0.85)', fontSize: 9, margin: '0 0 1px', textTransform: 'uppercase' }}>WhatsApp</p>
-              <p style={{ color: 'white', fontSize: 16, fontWeight: 900, margin: 0 }}>{data.brokerPhone || '(92) 98839-1098'}</p>
+        {/* Rodapé: glassmorphism card corretor */}
+        <div style={{ padding: '0 16px 20px' }}>
+          <div style={{
+            backgroundColor: 'rgba(255,255,255,0.08)',
+            border: '1px solid rgba(255,255,255,0.15)',
+            borderRadius: 20, padding: '16px 18px',
+            backdropFilter: 'blur(12px)',
+          }}>
+            <p style={{ color: 'rgba(255,255,255,0.55)', fontSize: 9, margin: '0 0 4px', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
+              Fale com o corretor
+            </p>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
+              <div>
+                <p style={{ color: 'white', fontSize: 15, fontWeight: 800, margin: 0 }}>
+                  {data.brokerName || 'Iury Sampaio'}
+                </p>
+                <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: 9, margin: 0 }}>Creci 3968 PF</p>
+              </div>
+              <div style={{
+                backgroundColor: '#25D366', borderRadius: 12,
+                padding: '6px 14px', display: 'flex', alignItems: 'center', gap: 6,
+                boxShadow: '0 4px 14px rgba(37,211,102,0.4)',
+              }}>
+                <span style={{ fontSize: 14 }}>💬</span>
+                <span style={{ color: 'white', fontSize: 12, fontWeight: 800 }}>
+                  {data.brokerPhone || '(92) 98839-1098'}
+                </span>
+              </div>
+            </div>
+            <div style={{ borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: 10, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <span style={{ color: 'rgba(255,255,255,0.45)', fontSize: 9 }}>🌐 www.apartamentosmanaus.com</span>
+              <span style={{ color: 'rgba(255,255,255,0.35)', fontSize: 8 }}>facebook.com/ApartamentosManaus</span>
             </div>
           </div>
         </div>
 
-        {/* Website + CRECI */}
-        <div style={{ textAlign: 'center' }}>
-          <p style={{ color: '#94a3b8', fontSize: 10, margin: '0 0 2px' }}>🌐 www.apartamentosmanaus.com</p>
-          <p style={{ color: '#cbd5e1', fontSize: 9, margin: 0 }}>Creci 3968 PF • facebook.com/ApartamentosManaus</p>
-        </div>
       </div>
     </div>
   );
