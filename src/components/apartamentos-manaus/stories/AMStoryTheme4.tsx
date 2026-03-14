@@ -693,22 +693,27 @@ export const AMStory4_T4_Slide5 = ({
         }} />
       </div>
 
+      {/* ── Logo + badge de bairro fixos no TOPO sobre as fotos ── */}
+      <div style={{
+        position: 'absolute', top: 0, left: 0, right: 0, zIndex: 20,
+        background: 'linear-gradient(to bottom, rgba(10,15,30,0.72) 0%, rgba(10,15,30,0.0) 100%)',
+        padding: '14px 16px 28px',
+        display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 7,
+      }}>
+        <Logo size={82} white />
+        {data.neighborhood && (
+          <div style={{ backgroundColor: 'rgba(244,121,32,0.95)', borderRadius: 30, padding: '3px 14px', display: 'flex', alignItems: 'center', gap: 4 }}>
+            <span style={{ fontSize: 9 }}>📍</span>
+            <span style={{ color: 'white', fontSize: 9, fontWeight: 700 }}>{data.neighborhood}</span>
+          </div>
+        )}
+      </div>
+
       {/* ── Conteúdo sobre o fundo escuro ── */}
       <div style={{
         position: 'absolute', top: PHOTO_ZONE - 30, left: 0, right: 0, bottom: 0,
         zIndex: 5, display: 'flex', flexDirection: 'column', padding: '0 16px 18px',
       }}>
-        {/* Logo + bairro centralizados */}
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6, marginBottom: 10 }}>
-          <Logo size={82} white />
-          {data.neighborhood && (
-            <div style={{ backgroundColor: 'rgba(244,121,32,0.92)', borderRadius: 30, padding: '3px 14px', display: 'flex', alignItems: 'center', gap: 4 }}>
-              <span style={{ fontSize: 9 }}>📍</span>
-              <span style={{ color: 'white', fontSize: 9, fontWeight: 700 }}>{data.neighborhood}</span>
-            </div>
-          )}
-        </div>
-
         {/* Título */}
         <p style={{
           color: 'white', fontSize: 17, fontWeight: 900, textAlign: 'center',
