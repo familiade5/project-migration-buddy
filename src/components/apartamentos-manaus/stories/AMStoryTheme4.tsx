@@ -384,18 +384,25 @@ export const AMStory4_T4_Slide3 = ({
         </div>
       </div>
 
-      {/* ── Strip 3 fotos horizontais ── */}
-      <div style={{ display: 'flex', gap: 5, padding: '8px 14px 0' }}>
-        {[0, 1, 2].map((i) => (
-          <div key={i} style={{
-            flex: 1, height: 90, borderRadius: 12, overflow: 'hidden',
-            boxShadow: '0 2px 8px rgba(0,0,0,0.12)',
-          }}>
-            {img(i) ? (
-              <img src={img(i)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-            ) : (
-              <div style={{ width: '100%', height: '100%', backgroundColor: '#e2e8f0' }} />
-            )}
+      {/* ── 2 linhas de 3 fotos ── */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 5, padding: '8px 14px 0' }}>
+        {[0, 1].map((row) => (
+          <div key={row} style={{ display: 'flex', gap: 5 }}>
+            {[0, 1, 2].map((col) => {
+              const idx = row * 3 + col;
+              return (
+                <div key={col} style={{
+                  flex: 1, height: 82, borderRadius: 10, overflow: 'hidden',
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.12)',
+                }}>
+                  {img(idx) ? (
+                    <img src={img(idx)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  ) : (
+                    <div style={{ width: '100%', height: '100%', backgroundColor: '#e2e8f0' }} />
+                  )}
+                </div>
+              );
+            })}
           </div>
         ))}
       </div>
