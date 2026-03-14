@@ -197,8 +197,8 @@ export const AMStory4_T4_Slide1 = ({
 };
 
 /* ─────────────────────────────────────────────────────────────────
-   SLIDE 2 — Composição triangular de 3 fotos + preço em destaque
-   Layout: hero diagonal topo · 2 cards embaixo · logo sem fundo · preço
+   SLIDE 2 — Composição triangular de 5 fotos + preço em destaque
+   Layout: hero diagonal topo · 2x2 grid embaixo · fundo branco fotos · fundo preto info
    ───────────────────────────────────────────────────────────────── */
 export const AMStory4_T4_Slide2 = ({
   data,
@@ -213,74 +213,60 @@ export const AMStory4_T4_Slide2 = ({
   const imgs = photos && photos.length > 0 ? photos : photo ? [photo] : [];
   const img = (i: number) => imgs[i] ?? imgs[0] ?? undefined;
 
+  // Zona de fotos: 0 a ~370px (branco)
+  // Zona de informações: ~370px até 640px (preto)
+  const INFO_TOP = 368;
+
   return (
     <div style={{
       position: 'relative', width: STORY_W, height: STORY_H,
-      backgroundColor: '#0a0f1e', fontFamily: 'Arial, sans-serif', overflow: 'hidden',
+      fontFamily: 'Arial, sans-serif', overflow: 'hidden',
     }}>
 
-      {/* ── ZONA DE FOTOS — composição triangular ── */}
+      {/* ── FUNDO BRANCO — zona de fotos ── */}
+      <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: INFO_TOP, backgroundColor: '#ffffff' }} />
 
-      {/* Foto 0 — hero topo, corte diagonal na base */}
+      {/* ── FUNDO PRETO — zona de informações ── */}
+      <div style={{ position: 'absolute', top: INFO_TOP, left: 0, right: 0, bottom: 0, backgroundColor: '#0a0f1e' }} />
+
+      {/* ── Logo topo — sem fundo, logo colorida sobre branco ── */}
+      <div style={{ position: 'absolute', top: 14, left: 0, right: 0, display: 'flex', justifyContent: 'center', zIndex: 20 }}>
+        <Logo size={72} />
+      </div>
+
+      {/* ── Foto 0 — hero topo, corte diagonal na base ── */}
       <div style={{
-        position: 'absolute', top: 0, left: 0, right: 0, height: 265,
-        clipPath: 'polygon(0 0, 100% 0, 100% 78%, 50% 100%, 0 78%)',
+        position: 'absolute', top: 56, left: 0, right: 0, height: 180,
+        clipPath: 'polygon(0 0, 100% 0, 100% 82%, 50% 100%, 0 82%)',
         overflow: 'hidden',
       }}>
         {img(0) ? (
           <img src={img(0)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
         ) : (
-          <div style={{ width: '100%', height: '100%', backgroundColor: '#1e293b' }} />
+          <div style={{ width: '100%', height: '100%', backgroundColor: '#e2e8f0' }} />
         )}
-        {/* Escurecer base para separar das fotos abaixo */}
-        <div style={{
-          position: 'absolute', inset: 0,
-          background: 'linear-gradient(to bottom, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.5) 100%)',
-        }} />
       </div>
 
-      {/* Foto 1 — card inferior esquerdo */}
+      {/* ── Grade 2x2 de fotos abaixo do hero ── */}
       <div style={{
-        position: 'absolute', top: 230, left: 16,
-        width: 152, height: 118, borderRadius: 14, overflow: 'hidden',
-        boxShadow: '0 6px 24px rgba(0,0,0,0.55)',
-        border: '2px solid rgba(255,255,255,0.12)',
+        position: 'absolute', top: 248, left: 14, right: 14,
+        display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 6,
+        zIndex: 10,
       }}>
-        {img(1) ? (
-          <img src={img(1)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-        ) : (
-          <div style={{ width: '100%', height: '100%', backgroundColor: '#1e293b' }} />
-        )}
-      </div>
-
-      {/* Foto 2 — card inferior direito */}
-      <div style={{
-        position: 'absolute', top: 230, right: 16,
-        width: 152, height: 118, borderRadius: 14, overflow: 'hidden',
-        boxShadow: '0 6px 24px rgba(0,0,0,0.55)',
-        border: '2px solid rgba(255,255,255,0.12)',
-      }}>
-        {img(2) ? (
-          <img src={img(2)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-        ) : (
-          <div style={{ width: '100%', height: '100%', backgroundColor: '#334155' }} />
-        )}
-      </div>
-
-      {/* Gradiente escuro da zona de fotos para o conteúdo */}
-      <div style={{
-        position: 'absolute', top: 310, left: 0, right: 0, bottom: 0,
-        background: 'linear-gradient(to bottom, transparent 0%, #0a0f1e 30%)',
-      }} />
-
-      {/* ── Logo topo — sem fundo, só a logo branca ── */}
-      <div style={{ position: 'absolute', top: 18, left: 0, right: 0, display: 'flex', justifyContent: 'center', zIndex: 20 }}>
-        <Logo size={78} white />
+        {[1, 2, 3, 4].map((idx) => (
+          <div key={idx} style={{ height: 96, borderRadius: 10, overflow: 'hidden' }}>
+            {img(idx) ? (
+              <img src={img(idx)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+            ) : (
+              <div style={{ width: '100%', height: '100%', backgroundColor: '#e2e8f0' }} />
+            )}
+          </div>
+        ))}
       </div>
 
       {/* ── Bairro pill ── */}
       {data.neighborhood && (
-        <div style={{ position: 'absolute', top: 88, left: 0, right: 0, display: 'flex', justifyContent: 'center', zIndex: 20 }}>
+        <div style={{ position: 'absolute', top: INFO_TOP + 14, left: 0, right: 0, display: 'flex', justifyContent: 'center', zIndex: 20 }}>
           <div style={{ backgroundColor: '#F47920', borderRadius: 30, padding: '4px 16px', display: 'flex', alignItems: 'center', gap: 5 }}>
             <span style={{ fontSize: 10 }}>📍</span>
             <span style={{ color: 'white', fontSize: 10, fontWeight: 700 }}>{data.neighborhood}, {data.city || 'Manaus'}</span>
@@ -288,43 +274,42 @@ export const AMStory4_T4_Slide2 = ({
         </div>
       )}
 
-      {/* ── Bloco de conteúdo ── */}
-      <div style={{ position: 'absolute', bottom: 28, left: 0, right: 0, zIndex: 10, padding: '0 20px' }}>
+      {/* ── Bloco de conteúdo (sobre fundo preto) ── */}
+      <div style={{ position: 'absolute', bottom: 22, left: 0, right: 0, zIndex: 10, padding: '0 18px' }}>
         {/* Título */}
-        <p style={{ color: 'white', fontSize: 19, fontWeight: 900, textAlign: 'center', margin: '0 0 12px', lineHeight: 1.2 }}>
+        <p style={{ color: 'white', fontSize: 18, fontWeight: 900, textAlign: 'center', margin: '0 0 8px', lineHeight: 1.2 }}>
           {data.title || 'Apartamento Disponível'}
         </p>
 
         {/* Especificações em linha */}
-        <div style={{ display: 'flex', justifyContent: 'center', gap: 6, flexWrap: 'wrap', marginBottom: 14 }}>
+        <div style={{ display: 'flex', justifyContent: 'center', gap: 5, flexWrap: 'wrap', marginBottom: 10 }}>
           {data.bedrooms > 0 && (
-            <div style={{ backgroundColor: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: 20, padding: '4px 10px' }}>
-              <span style={{ color: 'white', fontSize: 10, fontWeight: 600 }}>🛏 {data.bedrooms} Qto{data.bedrooms > 1 ? 's' : ''}</span>
+            <div style={{ backgroundColor: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: 20, padding: '3px 9px' }}>
+              <span style={{ color: 'white', fontSize: 9, fontWeight: 600 }}>🛏 {data.bedrooms} Qto{data.bedrooms > 1 ? 's' : ''}</span>
             </div>
           )}
           {data.area > 0 && (
-            <div style={{ backgroundColor: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: 20, padding: '4px 10px' }}>
-              <span style={{ color: 'white', fontSize: 10, fontWeight: 600 }}>📐 {data.area}m²</span>
+            <div style={{ backgroundColor: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: 20, padding: '3px 9px' }}>
+              <span style={{ color: 'white', fontSize: 9, fontWeight: 600 }}>📐 {data.area}m²</span>
             </div>
           )}
           {data.garageSpaces > 0 && (
-            <div style={{ backgroundColor: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: 20, padding: '4px 10px' }}>
-              <span style={{ color: 'white', fontSize: 10, fontWeight: 600 }}>🚗 {data.garageSpaces} Vaga{data.garageSpaces > 1 ? 's' : ''}</span>
+            <div style={{ backgroundColor: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: 20, padding: '3px 9px' }}>
+              <span style={{ color: 'white', fontSize: 9, fontWeight: 600 }}>🚗 {data.garageSpaces} Vaga{data.garageSpaces > 1 ? 's' : ''}</span>
             </div>
           )}
         </div>
 
         {/* Card de preço */}
         <div style={{
-          backgroundColor: 'white', borderRadius: 16, padding: '14px 18px',
+          backgroundColor: 'white', borderRadius: 14, padding: '12px 16px',
           display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-          boxShadow: '0 8px 32px rgba(0,0,0,0.4)',
         }}>
           <div>
-            <p style={{ color: '#64748b', fontSize: 10, margin: '0 0 2px', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+            <p style={{ color: '#64748b', fontSize: 9, margin: '0 0 2px', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
               {data.isRental ? 'Aluguel' : 'Valor de Venda'}
             </p>
-            <p style={{ color: '#1B5EA6', fontSize: 24, fontWeight: 900, margin: 0, lineHeight: 1 }}>
+            <p style={{ color: '#1B5EA6', fontSize: 22, fontWeight: 900, margin: 0, lineHeight: 1 }}>
               {formatPrice(price)}
             </p>
           </div>
