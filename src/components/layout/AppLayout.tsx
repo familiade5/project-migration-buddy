@@ -9,7 +9,6 @@ import {
   Menu, 
   X,
   Shield,
-  ChevronDown,
   MoreVertical,
   Crown,
   Gem,
@@ -28,6 +27,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import logoVDH from '@/assets/logo-vdh.jpg';
 
 interface AppLayoutProps {
   children: React.ReactNode;
@@ -51,6 +51,10 @@ const adminNavigation = [
   { name: 'Admin', href: '/admin', icon: Shield },
 ];
 
+// VDH brand colors
+const BRAND_BLUE = '#1a3a6b';
+const BRAND_GOLD = '#c9a84c';
+
 export function AppLayout({ children }: AppLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const { profile, isAdmin, signOut, user } = useAuth();
@@ -64,20 +68,16 @@ export function AppLayout({ children }: AppLayoutProps) {
     navigate('/auth');
   };
 
-  const getInitials = (name: string) => {
-    return name
-      .split(' ')
-      .map((n) => n[0])
-      .join('')
-      .toUpperCase()
-      .slice(0, 2);
-  };
+  const getInitials = (name: string) =>
+    name.split(' ').map((n) => n[0]).join('').toUpperCase().slice(0, 2);
+
+  const isActive = (href: string) => location.pathname === href;
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen" style={{ backgroundColor: '#F5F7FA' }}>
       {/* Mobile sidebar backdrop */}
       {sidebarOpen && (
-        <div 
+        <div
           className="fixed inset-0 bg-black/50 z-40 lg:hidden"
           onClick={() => setSidebarOpen(false)}
         />
@@ -85,22 +85,30 @@ export function AppLayout({ children }: AppLayoutProps) {
 
       {/* Sidebar */}
       <aside className={`
-        fixed inset-y-0 left-0 z-50 w-64 bg-card border-r border-border transform transition-transform duration-200 ease-in-out
+        fixed inset-y-0 left-0 z-50 w-64 border-r transform transition-transform duration-200 ease-in-out
         ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
         lg:translate-x-0
-      `}>
+      `} style={{ backgroundColor: '#FFFFFF', borderColor: '#E5E7EB' }}>
         <div className="flex flex-col h-full">
           {/* Logo */}
-          <div className="flex items-center gap-3 px-6 py-5 border-b border-border">
-            <div className="w-10 h-10 rounded-xl bg-gold flex items-center justify-center flex-shrink-0">
-              <Building2 className="w-5 h-5 text-primary-foreground" />
+          <div className="flex items-center justify-between px-5 py-4 border-b" style={{ borderColor: '#E5E7EB' }}>
+            <div className="flex items-center gap-3 min-w-0">
+              <img
+                src={logoVDH}
+                alt="Venda Direta Hoje"
+                className="h-10 w-10 rounded-xl object-cover flex-shrink-0"
+              />
+              <div className="min-w-0">
+                <p className="font-bold text-sm leading-tight truncate" style={{ color: BRAND_BLUE }}>
+                  Venda Direta Hoje
+                </p>
+                <p className="text-xs truncate" style={{ color: '#9CA3AF' }}>
+                  Gerador de Posts
+                </p>
+              </div>
             </div>
-            <div className="min-w-0 flex-1">
-              <h1 className="font-display text-xl font-semibold text-foreground">PostGen</h1>
-              <p className="text-xs text-muted-foreground truncate">Gerador de Posts</p>
-            </div>
-            <button 
-              className="lg:hidden text-muted-foreground hover:text-foreground flex-shrink-0"
+            <button
+              className="lg:hidden text-gray-400 hover:text-gray-600 ml-2 flex-shrink-0"
               onClick={() => setSidebarOpen(false)}
             >
               <X className="w-5 h-5" />
@@ -109,54 +117,70 @@ export function AppLayout({ children }: AppLayoutProps) {
 
           {/* Navigation */}
           <nav className="flex-1 px-4 py-6 space-y-1 overflow-y-auto">
-            {navigation.map((item) => {
-              const isActive = location.pathname === item.href;
-              return (
-                <Link
-                  key={item.name}
-                  to={item.href}
-                  onClick={() => setSidebarOpen(false)}
-                  className={`
-                    flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all
-                    ${isActive 
-                      ? 'bg-gold/10 text-gold border border-gold/20' 
-                      : 'text-muted-foreground hover:bg-surface hover:text-foreground'
-                    }
-                  `}
-                >
-                  <item.icon className="w-5 h-5 flex-shrink-0" />
-                  {item.name}
-                </Link>
-              );
-            })}
+            {navigation.map((item) => (
+              <Link
+                key={item.name}
+                to={item.href}
+                onClick={() => setSidebarOpen(false)}
+                className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all"
+                style={
+                  isActive(item.href)
+                    ? { backgroundColor: '#EEF2FF', color: BRAND_BLUE, border: `1px solid #C7D4F0` }
+                    : { color: '#6B7280' }
+                }
+                onMouseEnter={(e) => {
+                  if (!isActive(item.href)) {
+                    (e.currentTarget as HTMLElement).style.backgroundColor = '#F3F4F6';
+                    (e.currentTarget as HTMLElement).style.color = '#111827';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (!isActive(item.href)) {
+                    (e.currentTarget as HTMLElement).style.backgroundColor = 'transparent';
+                    (e.currentTarget as HTMLElement).style.color = '#6B7280';
+                  }
+                }}
+              >
+                <item.icon className="w-5 h-5 flex-shrink-0" />
+                {item.name}
+              </Link>
+            ))}
 
             {isAdmin && (
               <>
                 <div className="pt-4 pb-2">
-                  <p className="px-4 text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                  <p className="px-4 text-xs font-medium uppercase tracking-wider" style={{ color: '#9CA3AF' }}>
                     Administração
                   </p>
                 </div>
-                {adminNavigation.map((item) => {
-                  const isActive = location.pathname === item.href;
-                  return (
-                    <Link
-                      key={item.name}
-                      to={item.href}
-                      onClick={() => setSidebarOpen(false)}
-                      className={`
-                        flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all
-                        ${isActive 
-                          ? 'bg-gold/10 text-gold border border-gold/20' 
-                          : 'text-muted-foreground hover:bg-surface hover:text-foreground'
-                        }
-                      `}
-                    >
-                      <item.icon className="w-5 h-5 flex-shrink-0" />
-                      {item.name}
-                    </Link>
-                  );
-                })}
+                {adminNavigation.map((item) => (
+                  <Link
+                    key={item.name}
+                    to={item.href}
+                    onClick={() => setSidebarOpen(false)}
+                    className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all"
+                    style={
+                      isActive(item.href)
+                        ? { backgroundColor: '#FEF9EE', color: BRAND_GOLD, border: `1px solid #F0DFA0` }
+                        : { color: '#6B7280' }
+                    }
+                    onMouseEnter={(e) => {
+                      if (!isActive(item.href)) {
+                        (e.currentTarget as HTMLElement).style.backgroundColor = '#F3F4F6';
+                        (e.currentTarget as HTMLElement).style.color = '#111827';
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (!isActive(item.href)) {
+                        (e.currentTarget as HTMLElement).style.backgroundColor = 'transparent';
+                        (e.currentTarget as HTMLElement).style.color = '#6B7280';
+                      }
+                    }}
+                  >
+                    <item.icon className="w-5 h-5 flex-shrink-0" />
+                    {item.name}
+                  </Link>
+                ))}
               </>
             )}
 
@@ -164,20 +188,29 @@ export function AppLayout({ children }: AppLayoutProps) {
             {isSuperAdmin && (
               <>
                 <div className="pt-4 pb-2">
-                  <p className="px-4 text-xs font-medium text-amber-500/80 uppercase tracking-wider">
+                  <p className="px-4 text-xs font-medium uppercase tracking-wider" style={{ color: '#D97706' }}>
                     Projetos Exclusivos
                   </p>
                 </div>
                 <Link
                   to="/elite"
                   onClick={() => setSidebarOpen(false)}
-                  className={`
-                    flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all
-                    ${location.pathname === '/elite'
-                      ? 'bg-gradient-to-r from-amber-500/20 to-yellow-500/10 text-amber-400 border border-amber-500/30' 
-                      : 'text-amber-500/70 hover:bg-amber-500/10 hover:text-amber-400'
+                  className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all"
+                  style={
+                    isActive('/elite')
+                      ? { backgroundColor: '#FFFBEB', color: '#B45309', border: '1px solid #FDE68A' }
+                      : { color: '#D97706' }
+                  }
+                  onMouseEnter={(e) => {
+                    if (!isActive('/elite')) {
+                      (e.currentTarget as HTMLElement).style.backgroundColor = '#FFFBEB';
                     }
-                  `}
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!isActive('/elite')) {
+                      (e.currentTarget as HTMLElement).style.backgroundColor = 'transparent';
+                    }
+                  }}
                 >
                   <Crown className="w-5 h-5 flex-shrink-0" />
                   Élite Imóveis
@@ -185,13 +218,22 @@ export function AppLayout({ children }: AppLayoutProps) {
                 <Link
                   to="/videos"
                   onClick={() => setSidebarOpen(false)}
-                  className={`
-                    flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all
-                    ${location.pathname === '/videos'
-                      ? 'bg-gradient-to-r from-purple-500/20 to-pink-500/10 text-purple-400 border border-purple-500/30' 
-                      : 'text-purple-500/70 hover:bg-purple-500/10 hover:text-purple-400'
+                  className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all"
+                  style={
+                    isActive('/videos')
+                      ? { backgroundColor: '#F5F3FF', color: '#7C3AED', border: '1px solid #DDD6FE' }
+                      : { color: '#8B5CF6' }
+                  }
+                  onMouseEnter={(e) => {
+                    if (!isActive('/videos')) {
+                      (e.currentTarget as HTMLElement).style.backgroundColor = '#F5F3FF';
                     }
-                  `}
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!isActive('/videos')) {
+                      (e.currentTarget as HTMLElement).style.backgroundColor = 'transparent';
+                    }
+                  }}
                 >
                   <Video className="w-5 h-5 flex-shrink-0" />
                   Vídeos IA
@@ -200,39 +242,39 @@ export function AppLayout({ children }: AppLayoutProps) {
             )}
           </nav>
 
-          {/* User section - Desktop */}
-          <div className="p-4 border-t border-border">
-            <div className="flex items-center gap-3 px-3 py-2 rounded-xl bg-surface">
+          {/* User footer */}
+          <div className="p-4 border-t" style={{ borderColor: '#E5E7EB' }}>
+            <div className="flex items-center gap-3 px-3 py-2 rounded-xl" style={{ backgroundColor: '#F3F4F6' }}>
               <Avatar className="h-9 w-9 flex-shrink-0">
-                <AvatarFallback className="bg-gold text-primary-foreground text-sm">
+                <AvatarFallback style={{ backgroundColor: BRAND_BLUE, color: '#FFFFFF' }} className="text-sm">
                   {profile?.full_name ? getInitials(profile.full_name) : 'U'}
                 </AvatarFallback>
               </Avatar>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-foreground truncate">
+                <p className="text-sm font-medium truncate" style={{ color: '#111827' }}>
                   {profile?.full_name || 'Usuário'}
                 </p>
-                <p className="text-xs text-muted-foreground truncate">
+                <p className="text-xs truncate" style={{ color: '#9CA3AF' }}>
                   {profile?.email}
                 </p>
               </div>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <button className="p-1.5 rounded-lg hover:bg-surface-elevated transition-colors flex-shrink-0">
-                    <MoreVertical className="w-4 h-4 text-muted-foreground" />
+                  <button className="p-1.5 rounded-lg hover:bg-gray-200 transition-colors flex-shrink-0">
+                    <MoreVertical className="w-4 h-4 text-gray-400" />
                   </button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-48 bg-card border-border">
+                <DropdownMenuContent align="end" className="w-48 bg-white border-gray-200">
                   <DropdownMenuItem asChild>
-                    <Link to="/settings" className="flex items-center gap-2 cursor-pointer">
+                    <Link to="/settings" className="flex items-center gap-2 cursor-pointer text-gray-700">
                       <Settings className="w-4 h-4" />
                       Configurações
                     </Link>
                   </DropdownMenuItem>
-                  <DropdownMenuSeparator className="bg-border" />
+                  <DropdownMenuSeparator />
                   <DropdownMenuItem
                     onClick={handleSignOut}
-                    className="text-destructive focus:text-destructive cursor-pointer"
+                    className="text-red-600 focus:text-red-600 cursor-pointer"
                   >
                     <LogOut className="w-4 h-4 mr-2" />
                     Sair
@@ -247,38 +289,45 @@ export function AppLayout({ children }: AppLayoutProps) {
       {/* Main content */}
       <div className="lg:pl-64 min-h-screen flex flex-col">
         {/* Mobile header */}
-        <header className="sticky top-0 z-30 lg:hidden bg-card/95 backdrop-blur border-b border-border">
+        <header
+          className="sticky top-0 z-30 lg:hidden border-b"
+          style={{ backgroundColor: '#FFFFFF', borderColor: '#E5E7EB' }}
+        >
           <div className="flex items-center justify-between px-4 py-3">
             <button
               onClick={() => setSidebarOpen(true)}
-              className="p-2 -ml-2 text-muted-foreground hover:text-foreground"
+              className="p-2 -ml-2 text-gray-500 hover:text-gray-700"
               aria-label="Abrir menu"
             >
               <Menu className="w-6 h-6" />
             </button>
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-lg bg-gold flex items-center justify-center">
-                <Building2 className="w-4 h-4 text-primary-foreground" />
-              </div>
-              <span className="font-display font-semibold text-foreground">PostGen</span>
+              <img
+                src={logoVDH}
+                alt="Venda Direta Hoje"
+                className="h-8 w-8 rounded-lg object-cover"
+              />
+              <span className="font-bold text-sm" style={{ color: BRAND_BLUE }}>
+                Venda Direta Hoje
+              </span>
             </div>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <button className="p-2 text-muted-foreground hover:text-foreground" aria-label="Menu">
+                <button className="p-2 text-gray-500 hover:text-gray-700" aria-label="Menu">
                   <MoreVertical className="w-5 h-5" />
                 </button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-48 bg-card border-border">
+              <DropdownMenuContent align="end" className="w-48 bg-white border-gray-200">
                 <DropdownMenuItem asChild>
-                  <Link to="/settings" className="flex items-center gap-2 cursor-pointer">
+                  <Link to="/settings" className="flex items-center gap-2 cursor-pointer text-gray-700">
                     <Settings className="w-4 h-4" />
                     Configurações
                   </Link>
                 </DropdownMenuItem>
-                <DropdownMenuSeparator className="bg-border" />
+                <DropdownMenuSeparator />
                 <DropdownMenuItem
                   onClick={handleSignOut}
-                  className="text-destructive focus:text-destructive cursor-pointer"
+                  className="text-red-600 focus:text-red-600 cursor-pointer"
                 >
                   <LogOut className="w-4 h-4 mr-2" />
                   Sair
