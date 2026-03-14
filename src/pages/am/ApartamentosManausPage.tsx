@@ -128,7 +128,7 @@ const ApartamentosManausPage = () => {
                 {previewTab === 'feed' ? (
                   <AMPostPreview data={propertyData} photos={photos} />
                 ) : (
-                  <AMStoriesPreview data={propertyData} photos={photos} />
+                  <AMPadraoStoriesViewer data={propertyData} photos={photos} />
                 )}
               </div>
             </div>
