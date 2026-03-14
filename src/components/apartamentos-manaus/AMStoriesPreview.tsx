@@ -430,7 +430,7 @@ export function AMStoriesPreview({ data, photos }: AMStoriesPreviewProps) {
           <AMStory4_T4_Slide1 data={data} photos={photos} />
         </div>
         <div ref={t4r1} style={{ width: STORY_W, height: STORY_H, overflow: 'hidden' }}>
-          <AMStory4_T4_Slide2 data={data} photo={photos[0]} />
+          <AMStory4_T4_Slide2 data={data} photo={photos[0]} photos={photos} />
         </div>
         <div ref={t4r2} style={{ width: STORY_W, height: STORY_H, overflow: 'hidden' }}>
           <AMStory4_T4_Slide3 data={data} photo={photos[0]} />
