@@ -109,31 +109,32 @@ export const PhotoSearcher = ({
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center gap-2 text-gold">
+      <div className="flex items-center gap-2" style={{ color: '#c9a84c' }}>
         <Image className="w-5 h-5" />
-        <h3 className="font-display text-lg">Buscar Fotos do Imóvel</h3>
+        <h3 className="font-semibold text-base text-gray-800">Buscar Fotos do Imóvel</h3>
       </div>
 
       {/* Campo de busca */}
       <div className="space-y-2">
-        <Label htmlFor="search-address" className="text-sm text-muted-foreground">
+        <Label htmlFor="search-address" className="text-sm text-gray-500">
           Endereço para busca
         </Label>
         <div className="flex gap-2">
           <div className="relative flex-1">
-            <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+            <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
             <Input
               id="search-address"
               value={searchAddress}
               onChange={(e) => setSearchAddress(e.target.value)}
               placeholder="Digite o endereço completo..."
-              className="pl-10"
+              className="pl-10 bg-white border-gray-200 text-gray-900 placeholder:text-gray-400"
             />
           </div>
           <Button 
             onClick={handleSearch} 
             disabled={isSearching}
-            className="bg-gold hover:bg-gold-dark text-primary-foreground gap-2"
+            className="gap-2 text-white"
+            style={{ backgroundColor: '#1a3a6b' }}
           >
             {isSearching ? (
               <Loader2 className="w-4 h-4 animate-spin" />
@@ -147,11 +148,11 @@ export const PhotoSearcher = ({
 
       {/* Nome do condomínio encontrado */}
       {condominiumName && (
-        <div className="flex items-center gap-2 p-3 bg-green-500/10 border border-green-500/20 rounded-lg">
-          <Building2 className="w-5 h-5 text-green-500" />
+        <div className="flex items-center gap-2 p-3 bg-green-50 border border-green-200 rounded-lg">
+          <Building2 className="w-5 h-5 text-green-600" />
           <div>
-            <p className="text-sm text-muted-foreground">Condomínio identificado:</p>
-            <p className="font-semibold text-green-500">{condominiumName}</p>
+            <p className="text-sm text-gray-500">Condomínio identificado:</p>
+            <p className="font-semibold text-green-700">{condominiumName}</p>
           </div>
         </div>
       )}
@@ -160,10 +161,10 @@ export const PhotoSearcher = ({
       {photos.length > 0 && (
         <div className="space-y-3">
           <div className="flex items-center justify-between">
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm text-gray-500">
               Selecione até 10 fotos (clique para selecionar na ordem)
             </p>
-            <span className="text-sm font-medium text-gold">
+            <span className="text-sm font-medium" style={{ color: '#c9a84c' }}>
               {selectedPhotos.length}/10 selecionadas
             </span>
           </div>
@@ -179,8 +180,8 @@ export const PhotoSearcher = ({
                   onClick={() => togglePhotoSelection(photo.url)}
                   className={`relative aspect-square rounded-lg overflow-hidden cursor-pointer transition-all duration-200 ${
                     isSelected 
-                      ? 'ring-4 ring-gold scale-[0.98]' 
-                      : 'hover:ring-2 hover:ring-gold/50'
+                      ? 'ring-4 ring-amber-400 scale-[0.98]' 
+                      : 'hover:ring-2 hover:ring-amber-300'
                   }`}
                 >
                   <img
@@ -190,16 +191,14 @@ export const PhotoSearcher = ({
                     loading="lazy"
                   />
                   
-                  {/* Overlay de seleção */}
                   {isSelected && (
-                    <div className="absolute inset-0 bg-gold/20 flex items-center justify-center">
-                      <div className="bg-gold text-primary-foreground w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg shadow-lg">
+                    <div className="absolute inset-0 bg-amber-400/20 flex items-center justify-center">
+                      <div className="w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg shadow-lg text-white" style={{ backgroundColor: '#c9a84c' }}>
                         {selectionOrder}
                       </div>
                     </div>
                   )}
 
-                  {/* Indicador de hover */}
                   {!isSelected && (
                     <div className="absolute inset-0 bg-black/0 hover:bg-black/30 transition-colors flex items-center justify-center opacity-0 hover:opacity-100">
                       <Check className="w-8 h-8 text-white" />
@@ -210,12 +209,13 @@ export const PhotoSearcher = ({
             })}
           </div>
 
-          {/* Botão de confirmar */}
+          {/* Botões de ação */}
           <div className="flex gap-2">
             <Button
               onClick={handleConfirmSelection}
               disabled={selectedPhotos.length === 0}
-              className="flex-1 bg-gold hover:bg-gold-dark text-primary-foreground gap-2"
+              className="flex-1 gap-2 text-white"
+              style={{ backgroundColor: '#1a3a6b' }}
             >
               <Check className="w-4 h-4" />
               Usar {selectedPhotos.length} foto(s) selecionada(s)
@@ -224,7 +224,7 @@ export const PhotoSearcher = ({
               <Button
                 variant="outline"
                 onClick={() => setSelectedPhotos([])}
-                className="gap-2"
+                className="gap-2 border-gray-200 text-gray-600 hover:bg-gray-50"
               >
                 <X className="w-4 h-4" />
                 Limpar seleção
@@ -237,7 +237,7 @@ export const PhotoSearcher = ({
                   setSelectedPhotos([]);
                   onClear();
                 }}
-                className="gap-2 text-destructive hover:text-destructive"
+                className="gap-2 border-red-200 text-red-500 hover:bg-red-50"
               >
                 <X className="w-4 h-4" />
                 Limpar slides
@@ -249,14 +249,14 @@ export const PhotoSearcher = ({
 
       {/* Estado vazio após busca */}
       {hasSearched && !isSearching && photos.length === 0 && (
-        <div className="text-center py-8 text-muted-foreground">
-          <Image className="w-12 h-12 mx-auto mb-3 opacity-50" />
-          <p>Nenhuma foto encontrada para este endereço.</p>
+        <div className="text-center py-8 text-gray-400">
+          <Image className="w-12 h-12 mx-auto mb-3 opacity-40" />
+          <p className="text-gray-500">Nenhuma foto encontrada para este endereço.</p>
           <p className="text-sm mt-1">Tente buscar com um endereço diferente.</p>
         </div>
       )}
 
-      <p className="text-xs text-muted-foreground text-center">
+      <p className="text-xs text-gray-400 text-center">
         💡 As fotos são obtidas do Google Maps e podem incluir imagens do Street View e contribuições de usuários
       </p>
     </div>

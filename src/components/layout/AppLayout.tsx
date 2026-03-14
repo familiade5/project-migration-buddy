@@ -91,21 +91,13 @@ export function AppLayout({ children }: AppLayoutProps) {
       `} style={{ backgroundColor: '#FFFFFF', borderColor: '#E5E7EB' }}>
         <div className="flex flex-col h-full">
           {/* Logo */}
-          <div className="flex items-center justify-between px-5 py-4 border-b" style={{ borderColor: '#E5E7EB' }}>
-            <div className="flex items-center gap-3 min-w-0">
+          <div className="flex items-center justify-between px-4 py-3 border-b" style={{ borderColor: '#E5E7EB' }}>
+            <div className="flex items-center min-w-0 flex-1">
               <img
                 src={logoVDH}
                 alt="Venda Direta Hoje"
-                className="h-10 w-10 rounded-xl object-cover flex-shrink-0"
+                className="h-10 w-auto max-w-[160px] object-contain flex-shrink-0"
               />
-              <div className="min-w-0">
-                <p className="font-bold text-sm leading-tight truncate" style={{ color: BRAND_BLUE }}>
-                  Venda Direta Hoje
-                </p>
-                <p className="text-xs truncate" style={{ color: '#9CA3AF' }}>
-                  Gerador de Posts
-                </p>
-              </div>
             </div>
             <button
               className="lg:hidden text-gray-400 hover:text-gray-600 ml-2 flex-shrink-0"
@@ -301,15 +293,12 @@ export function AppLayout({ children }: AppLayoutProps) {
             >
               <Menu className="w-6 h-6" />
             </button>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center">
               <img
                 src={logoVDH}
                 alt="Venda Direta Hoje"
-                className="h-8 w-8 rounded-lg object-cover"
+                className="h-9 w-auto max-w-[140px] object-contain"
               />
-              <span className="font-bold text-sm" style={{ color: BRAND_BLUE }}>
-                Venda Direta Hoje
-              </span>
             </div>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>

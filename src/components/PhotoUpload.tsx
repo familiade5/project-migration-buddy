@@ -30,13 +30,11 @@ export const PhotoUpload = ({ photos, onChange, onClear }: PhotoUploadProps) => 
 
   return (
     <div className="space-y-4">
-      <h3 className="font-display text-lg text-gold">Fotos do Imóvel</h3>
-      
       <div className="grid grid-cols-2 gap-3">
         {photos.map((photo, index) => (
           <div
             key={index}
-            className="relative aspect-square rounded-lg overflow-hidden bg-surface group"
+            className="relative aspect-square rounded-lg overflow-hidden bg-gray-100 group border border-gray-200"
           >
             <img
               src={photo}
@@ -45,18 +43,18 @@ export const PhotoUpload = ({ photos, onChange, onClear }: PhotoUploadProps) => 
             />
             <button
               onClick={() => removePhoto(index)}
-              className="absolute top-2 right-2 p-1.5 rounded-full bg-background/80 text-foreground opacity-0 group-hover:opacity-100 transition-opacity hover:bg-destructive hover:text-destructive-foreground"
+              className="absolute top-2 right-2 p-1.5 rounded-full bg-white/90 text-gray-700 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-50 hover:text-red-500 shadow-sm"
             >
               <X className="w-4 h-4" />
             </button>
-            <div className="absolute bottom-2 left-2 px-2 py-1 rounded bg-background/80 text-xs text-foreground">
+            <div className="absolute bottom-2 left-2 px-2 py-1 rounded bg-white/90 text-xs text-gray-700 shadow-sm">
               Foto {index + 1}
             </div>
           </div>
         ))}
         
         {photos.length < 10 && (
-          <label className="aspect-square rounded-lg border-2 border-dashed border-muted-foreground/30 flex flex-col items-center justify-center gap-2 cursor-pointer hover:border-gold/50 hover:bg-surface transition-all group">
+          <label className="aspect-square rounded-lg border-2 border-dashed border-gray-200 flex flex-col items-center justify-center gap-2 cursor-pointer hover:border-gray-300 hover:bg-gray-50 transition-all group">
             <input
               type="file"
               accept="image/*"
@@ -64,8 +62,8 @@ export const PhotoUpload = ({ photos, onChange, onClear }: PhotoUploadProps) => 
               onChange={handleFileChange}
               className="hidden"
             />
-            <Upload className="w-8 h-8 text-muted-foreground group-hover:text-gold transition-colors" />
-            <span className="text-sm text-muted-foreground group-hover:text-foreground transition-colors">
+            <Upload className="w-8 h-8 text-gray-300 group-hover:text-gray-400 transition-colors" />
+            <span className="text-sm text-gray-400 group-hover:text-gray-500 transition-colors">
               Adicionar foto
             </span>
           </label>
@@ -73,7 +71,7 @@ export const PhotoUpload = ({ photos, onChange, onClear }: PhotoUploadProps) => 
       </div>
 
       {photos.length === 0 && (
-        <div className="flex items-center gap-2 text-muted-foreground text-sm p-3 rounded-lg bg-surface">
+        <div className="flex items-center gap-2 text-gray-400 text-sm p-3 rounded-lg bg-gray-50 border border-gray-200">
           <ImageIcon className="w-4 h-4" />
           <span>Adicione até 10 fotos do imóvel</span>
         </div>
@@ -81,7 +79,7 @@ export const PhotoUpload = ({ photos, onChange, onClear }: PhotoUploadProps) => 
 
       {photos.length > 0 && (
         <div className="flex items-center justify-between">
-          <p className="text-muted-foreground text-sm">
+          <p className="text-gray-500 text-sm">
             {photos.length}/10 fotos adicionadas
           </p>
           {onClear && (
@@ -89,7 +87,7 @@ export const PhotoUpload = ({ photos, onChange, onClear }: PhotoUploadProps) => 
               variant="outline"
               size="sm"
               onClick={onClear}
-              className="gap-2 text-destructive hover:text-destructive"
+              className="gap-2 border-red-200 text-red-500 hover:bg-red-50 hover:text-red-600"
             >
               <Trash2 className="w-4 h-4" />
               Limpar todas
