@@ -50,7 +50,7 @@ export const defaultAMPropertyData: AMPropertyData = {
   title: '',
   propertyType: 'Apartamento',
   neighborhood: '',
-  city: 'Manaus',
+  city: '',
   state: 'AM',
   address: '',
   referencePoint: '',
