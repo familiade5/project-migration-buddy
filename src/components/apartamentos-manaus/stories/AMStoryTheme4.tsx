@@ -11,6 +11,7 @@
 
 import { AMPropertyData } from '@/types/apartamentosManaus';
 import logoAM from '@/assets/logo-apartamentos-manaus.png';
+import logoCaixa from '@/assets/logo-caixa.png';
 
 const STORY_W = 360;
 const STORY_H = 640;
