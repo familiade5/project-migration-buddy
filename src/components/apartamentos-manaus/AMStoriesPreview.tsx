@@ -1,5 +1,5 @@
 /**
- * AMStoriesPreview — Seletor de 3 temas com 3 stories cada
+ * AMStoriesPreview — Seletor de 4 temas (3 com 3 stories, 1 com 5 slides independentes)
  */
 
 import { useState, useRef } from 'react';
@@ -16,17 +16,24 @@ import { AMStory1_T1_Curiosity, AMStory1_T1_Reveal, AMStory1_T1_CTA } from './st
 import { AMStory2_T2_Curiosity, AMStory2_T2_Reveal, AMStory2_T2_CTA } from './stories/AMStoryTheme2';
 // Theme 3 — Urgência Urbana (dramatic)
 import { AMStory3_T3_Curiosity, AMStory3_T3_Reveal, AMStory3_T3_CTA } from './stories/AMStoryTheme3';
+// Theme 4 — Padrão (5 slides independentes)
+import {
+  AMStory4_T4_Slide1,
+  AMStory4_T4_Slide2,
+  AMStory4_T4_Slide3,
+  AMStory4_T4_Slide4,
+  AMStory4_T4_Slide5,
+} from './stories/AMStoryTheme4';
 
 const STORY_W = 360;
 const STORY_H = 640;
-const MAX_REFS = 3;
 
 interface AMStoriesPreviewProps {
   data: AMPropertyData;
   photos: string[];
 }
 
-type ThemeId = 1 | 2 | 3;
+type ThemeId = 1 | 2 | 3 | 4;
 
 const THEMES = [
   {
@@ -36,6 +43,7 @@ const THEMES = [
     emoji: '🌑',
     accent: '#1B5EA6',
     gradient: 'linear-gradient(135deg, #0a0f1e, #1B5EA6)',
+    slideCount: 3,
   },
   {
     id: 2 as ThemeId,
@@ -44,6 +52,7 @@ const THEMES = [
     emoji: '✨',
     accent: '#F47920',
     gradient: 'linear-gradient(135deg, #ffffff, #f0f6ff)',
+    slideCount: 3,
   },
   {
     id: 3 as ThemeId,
@@ -52,17 +61,25 @@ const THEMES = [
     emoji: '🔥',
     accent: '#F47920',
     gradient: 'linear-gradient(135deg, #0c0c0c, #7c2d12)',
+    slideCount: 3,
+  },
+  {
+    id: 4 as ThemeId,
+    name: 'Padrão',
+    description: '5 Cards Únicos',
+    emoji: '🏠',
+    accent: '#1B5EA6',
+    gradient: 'linear-gradient(135deg, #f8fafc, #dbeafe)',
+    slideCount: 5,
   },
 ] as const;
-
-const STORY_LABELS = ['Curiosidade', 'Imóvel', 'CTA'];
 
 export function AMStoriesPreview({ data, photos }: AMStoriesPreviewProps) {
   const [activeTheme, setActiveTheme] = useState<ThemeId>(1);
   const [currentStory, setCurrentStory] = useState(0);
   const [isExporting, setIsExporting] = useState(false);
 
-  // Fixed ref pool — 3 refs per theme × 3 themes = 9 refs
+  // Fixed ref pools
   const t1r0 = useRef<HTMLDivElement>(null);
   const t1r1 = useRef<HTMLDivElement>(null);
   const t1r2 = useRef<HTMLDivElement>(null);
@@ -72,18 +89,28 @@ export function AMStoriesPreview({ data, photos }: AMStoriesPreviewProps) {
   const t3r0 = useRef<HTMLDivElement>(null);
   const t3r1 = useRef<HTMLDivElement>(null);
   const t3r2 = useRef<HTMLDivElement>(null);
+  const t4r0 = useRef<HTMLDivElement>(null);
+  const t4r1 = useRef<HTMLDivElement>(null);
+  const t4r2 = useRef<HTMLDivElement>(null);
+  const t4r3 = useRef<HTMLDivElement>(null);
+  const t4r4 = useRef<HTMLDivElement>(null);
 
-  const refsByTheme = {
+  const refsByTheme: Record<ThemeId, React.RefObject<HTMLDivElement>[]> = {
     1: [t1r0, t1r1, t1r2],
     2: [t2r0, t2r1, t2r2],
     3: [t3r0, t3r1, t3r2],
+    4: [t4r0, t4r1, t4r2, t4r3, t4r4],
   };
 
   const p0 = photos[0];
   const pLast = photos[photos.length - 1] ?? photos[0];
 
-  // Slides content per theme
-  const slidesByTheme = {
+  const STORY_LABELS_T1_T2_T3 = ['Curiosidade', 'Imóvel', 'CTA'];
+  const STORY_LABELS_T4 = ['Card 1', 'Card 2', 'Card 3', 'Card 4', 'Card 5'];
+
+  const storyLabels = activeTheme === 4 ? STORY_LABELS_T4 : STORY_LABELS_T1_T2_T3;
+
+  const slidesByTheme: Record<ThemeId, React.ReactElement[]> = {
     1: [
       <AMStory1_T1_Curiosity data={data} photo={p0} />,
       <AMStory1_T1_Reveal data={data} photos={photos} />,
@@ -99,19 +126,28 @@ export function AMStoriesPreview({ data, photos }: AMStoriesPreviewProps) {
       <AMStory3_T3_Reveal data={data} photos={photos} />,
       <AMStory3_T3_CTA data={data} photo={pLast} />,
     ],
+    4: [
+      <AMStory4_T4_Slide1 data={data} photos={photos} />,
+      <AMStory4_T4_Slide2 data={data} photo={p0} />,
+      <AMStory4_T4_Slide3 data={data} photo={p0} />,
+      <AMStory4_T4_Slide4 data={data} photos={photos} />,
+      <AMStory4_T4_Slide5 data={data} photo={pLast} />,
+    ],
   };
 
   const currentSlides = slidesByTheme[activeTheme];
   const currentRefs = refsByTheme[activeTheme];
+  const slideCount = currentSlides.length;
 
-  // Preview scale — story is 360×640, preview container ~220×390
+  // Clamp currentStory when theme changes
+  const safeStory = Math.min(currentStory, slideCount - 1);
+
   const previewW = 200;
   const previewH = 356;
   const previewScale = previewW / STORY_W;
 
-  // Thumb scale
-  const thumbW = 64;
-  const thumbH = 114;
+  const thumbW = 56;
+  const thumbH = 100;
   const thumbScale = thumbW / STORY_W;
 
   const captureRef = async (ref: React.RefObject<HTMLDivElement>) => {
@@ -123,14 +159,15 @@ export function AMStoriesPreview({ data, photos }: AMStoriesPreviewProps) {
     setIsExporting(true);
     try {
       const zip = new JSZip();
-      const themeName = THEMES.find((t) => t.id === activeTheme)?.name ?? `tema${activeTheme}`;
-      const folder = zip.folder(`stories-${themeName}`) as JSZip;
+      const theme = THEMES.find((t) => t.id === activeTheme)!;
+      const folder = zip.folder(`stories-${theme.name}`) as JSZip;
+      const labels = activeTheme === 4 ? STORY_LABELS_T4 : STORY_LABELS_T1_T2_T3;
 
-      for (let i = 0; i < MAX_REFS; i++) {
+      for (let i = 0; i < currentRefs.length; i++) {
         const url = await captureRef(currentRefs[i]);
         if (!url) continue;
         folder.file(
-          `${String(i + 1).padStart(2, '0')}-${STORY_LABELS[i].toLowerCase()}.png`,
+          `${String(i + 1).padStart(2, '0')}-${labels[i].toLowerCase().replace(' ', '-')}.png`,
           url.split(',')[1],
           { base64: true },
         );
@@ -139,10 +176,10 @@ export function AMStoriesPreview({ data, photos }: AMStoriesPreviewProps) {
       const blob = await zip.generateAsync({ type: 'blob' });
       const a = document.createElement('a');
       a.href = URL.createObjectURL(blob);
-      a.download = `stories-${themeName}-${data.title || 'imovel'}.zip`;
+      a.download = `stories-${theme.name}-${data.title || 'imovel'}.zip`;
       a.click();
       URL.revokeObjectURL(a.href);
-      toast.success(`3 stories exportados!`);
+      toast.success(`${currentRefs.length} stories exportados!`);
     } catch {
       toast.error('Erro ao exportar stories');
     } finally {
@@ -158,11 +195,12 @@ export function AMStoriesPreview({ data, photos }: AMStoriesPreviewProps) {
       for (const theme of THEMES) {
         const refs = refsByTheme[theme.id];
         const folder = zip.folder(`tema-${theme.id}-${theme.name}`) as JSZip;
-        for (let i = 0; i < MAX_REFS; i++) {
+        const labels = theme.id === 4 ? STORY_LABELS_T4 : STORY_LABELS_T1_T2_T3;
+        for (let i = 0; i < refs.length; i++) {
           const url = await captureRef(refs[i]);
           if (!url) continue;
           folder.file(
-            `${String(i + 1).padStart(2, '0')}-${STORY_LABELS[i].toLowerCase()}.png`,
+            `${String(i + 1).padStart(2, '0')}-${labels[i].toLowerCase().replace(' ', '-')}.png`,
             url.split(',')[1],
             { base64: true },
           );
@@ -175,7 +213,7 @@ export function AMStoriesPreview({ data, photos }: AMStoriesPreviewProps) {
       a.download = `todos-stories-${data.title || 'imovel'}.zip`;
       a.click();
       URL.revokeObjectURL(a.href);
-      toast.success('9 stories (3 temas) exportados!');
+      toast.success('14 stories (4 temas) exportados!');
     } catch {
       toast.error('Erro ao exportar');
     } finally {
@@ -191,8 +229,8 @@ export function AMStoriesPreview({ data, photos }: AMStoriesPreviewProps) {
         <h3 className="font-semibold text-sm text-gray-800">Stories — Escolha um tema</h3>
       </div>
 
-      {/* Theme selector */}
-      <div className="grid grid-cols-3 gap-2">
+      {/* Theme selector — 2x2 grid for 4 themes */}
+      <div className="grid grid-cols-2 gap-2">
         {THEMES.map((theme) => (
           <button
             key={theme.id}
@@ -213,15 +251,15 @@ export function AMStoriesPreview({ data, photos }: AMStoriesPreviewProps) {
                 <span style={{ color: 'white', fontSize: 9, fontWeight: 800 }}>✓</span>
               </div>
             )}
-            <p style={{ fontSize: 18, margin: '0 0 4px', textAlign: 'center' }}>{theme.emoji}</p>
+            <p style={{ fontSize: 16, margin: '0 0 3px', textAlign: 'center' }}>{theme.emoji}</p>
             <p style={{
-              color: theme.id === 2 ? '#0f172a' : 'white',
-              fontSize: 11, fontWeight: 700, margin: '0 0 2px', textAlign: 'center',
+              color: theme.id === 2 || theme.id === 4 ? '#0f172a' : 'white',
+              fontSize: 11, fontWeight: 700, margin: '0 0 1px', textAlign: 'center',
             }}>
               {theme.name}
             </p>
             <p style={{
-              color: theme.id === 2 ? '#64748b' : 'rgba(255,255,255,0.65)',
+              color: theme.id === 2 || theme.id === 4 ? '#64748b' : 'rgba(255,255,255,0.65)',
               fontSize: 9, margin: 0, textAlign: 'center',
             }}>
               {theme.description}
@@ -230,16 +268,16 @@ export function AMStoriesPreview({ data, photos }: AMStoriesPreviewProps) {
         ))}
       </div>
 
-      {/* Story step pills */}
-      <div className="flex gap-2">
-        {STORY_LABELS.map((label, i) => (
+      {/* Story step pills — scroll horizontal se muitos */}
+      <div className="flex gap-1.5 overflow-x-auto pb-0.5">
+        {storyLabels.map((label, i) => (
           <button
             key={i}
             onClick={() => setCurrentStory(i)}
-            className="flex-1 py-1.5 rounded-lg text-xs font-medium transition-all"
+            className="flex-shrink-0 py-1.5 px-3 rounded-lg text-xs font-medium transition-all"
             style={{
-              backgroundColor: currentStory === i ? '#1B5EA6' : '#F3F4F6',
-              color: currentStory === i ? 'white' : '#6B7280',
+              backgroundColor: safeStory === i ? '#1B5EA6' : '#F3F4F6',
+              color: safeStory === i ? 'white' : '#6B7280',
             }}
           >
             {i + 1}. {label}
@@ -250,7 +288,7 @@ export function AMStoriesPreview({ data, photos }: AMStoriesPreviewProps) {
       {/* Main preview */}
       <div className="flex items-center justify-center gap-3">
         <button
-          onClick={() => setCurrentStory((s) => (s === 0 ? 2 : s - 1))}
+          onClick={() => setCurrentStory((s) => (s === 0 ? slideCount - 1 : s - 1))}
           className="p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors flex-shrink-0"
         >
           <ChevronLeft className="w-4 h-4 text-gray-500" />
@@ -264,30 +302,30 @@ export function AMStoriesPreview({ data, photos }: AMStoriesPreviewProps) {
             className="origin-top-left"
             style={{ width: STORY_W, height: STORY_H, transform: `scale(${previewScale})` }}
           >
-            {currentSlides[currentStory]}
+            {currentSlides[safeStory]}
           </div>
         </div>
 
         <button
-          onClick={() => setCurrentStory((s) => (s === 2 ? 0 : s + 1))}
+          onClick={() => setCurrentStory((s) => (s === slideCount - 1 ? 0 : s + 1))}
           className="p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors flex-shrink-0"
         >
           <ChevronRight className="w-4 h-4 text-gray-500" />
         </button>
       </div>
 
-      {/* Thumbnails */}
-      <div className="flex gap-2 justify-center">
-        {STORY_LABELS.map((label, i) => (
+      {/* Thumbnails — scroll horizontal para o tema 4 */}
+      <div className="flex gap-1.5 justify-center overflow-x-auto pb-0.5">
+        {storyLabels.map((_, i) => (
           <button
             key={i}
             onClick={() => setCurrentStory(i)}
             className="relative rounded-lg overflow-hidden flex-shrink-0 transition-all"
             style={{
               width: thumbW, height: thumbH,
-              outline: currentStory === i ? '2px solid #1B5EA6' : '2px solid transparent',
+              outline: safeStory === i ? '2px solid #1B5EA6' : '2px solid transparent',
               outlineOffset: '2px',
-              opacity: currentStory === i ? 1 : 0.55,
+              opacity: safeStory === i ? 1 : 0.55,
             }}
           >
             <div
@@ -320,11 +358,11 @@ export function AMStoriesPreview({ data, photos }: AMStoriesPreviewProps) {
           style={{ backgroundColor: '#F47920' }}
         >
           {isExporting ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Download className="w-3.5 h-3.5" />}
-          Todos (9)
+          Todos (14)
         </Button>
       </div>
 
-      {/* Hidden full-res DOM for all 3 themes */}
+      {/* Hidden full-res DOM for all 4 themes */}
       <div className="fixed -left-[9999px] top-0 pointer-events-none" aria-hidden="true">
         {/* Theme 1 */}
         <div ref={t1r0} style={{ width: STORY_W, height: STORY_H, overflow: 'hidden' }}>
@@ -355,6 +393,22 @@ export function AMStoriesPreview({ data, photos }: AMStoriesPreviewProps) {
         </div>
         <div ref={t3r2} style={{ width: STORY_W, height: STORY_H, overflow: 'hidden' }}>
           <AMStory3_T3_CTA data={data} photo={photos[photos.length - 1] ?? photos[0]} />
+        </div>
+        {/* Theme 4 — Padrão (5 slides) */}
+        <div ref={t4r0} style={{ width: STORY_W, height: STORY_H, overflow: 'hidden' }}>
+          <AMStory4_T4_Slide1 data={data} photos={photos} />
+        </div>
+        <div ref={t4r1} style={{ width: STORY_W, height: STORY_H, overflow: 'hidden' }}>
+          <AMStory4_T4_Slide2 data={data} photo={photos[0]} />
+        </div>
+        <div ref={t4r2} style={{ width: STORY_W, height: STORY_H, overflow: 'hidden' }}>
+          <AMStory4_T4_Slide3 data={data} photo={photos[0]} />
+        </div>
+        <div ref={t4r3} style={{ width: STORY_W, height: STORY_H, overflow: 'hidden' }}>
+          <AMStory4_T4_Slide4 data={data} photos={photos} />
+        </div>
+        <div ref={t4r4} style={{ width: STORY_W, height: STORY_H, overflow: 'hidden' }}>
+          <AMStory4_T4_Slide5 data={data} photo={photos[photos.length - 1] ?? photos[0]} />
         </div>
       </div>
     </div>
