@@ -366,48 +366,64 @@ export const AMStory4_T4_Slide3 = ({
       backgroundColor: '#f8fafc', fontFamily: 'Arial, sans-serif', overflow: 'hidden',
     }}>
       {/* ── Cabeçalho laranja com foto ── */}
-      <div style={{ position: 'relative', height: 160, backgroundColor: '#F47920', overflow: 'hidden' }}>
-        {photo && (
-          <img src={photo} alt="" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', filter: 'brightness(0.35) saturate(0.5)' }} />
+      <div style={{ position: 'relative', height: 128, backgroundColor: '#F47920', overflow: 'hidden' }}>
+        {img(0) && (
+          <img src={img(0)} alt="" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', filter: 'brightness(0.35) saturate(0.5)' }} />
         )}
         <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(135deg, rgba(244,121,32,0.88) 0%, rgba(200,70,0,0.92) 100%)' }} />
-        <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', zIndex: 5, gap: 8 }}>
-          <Logo size={80} white />
-          <p style={{ color: 'white', fontSize: 15, fontWeight: 900, margin: 0, textAlign: 'center', lineHeight: 1.2 }}>
+        <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', zIndex: 5, gap: 6 }}>
+          <Logo size={72} white />
+          <p style={{ color: 'white', fontSize: 14, fontWeight: 900, margin: 0, textAlign: 'center', lineHeight: 1.2 }}>
             {data.title || 'Ficha do Imóvel'}
           </p>
           {data.neighborhood && (
-            <div style={{ backgroundColor: 'rgba(255,255,255,0.2)', borderRadius: 20, padding: '3px 12px' }}>
-              <span style={{ color: 'white', fontSize: 10, fontWeight: 600 }}>📍 {data.neighborhood}</span>
+            <div style={{ backgroundColor: 'rgba(255,255,255,0.2)', borderRadius: 20, padding: '2px 10px' }}>
+              <span style={{ color: 'white', fontSize: 9, fontWeight: 600 }}>📍 {data.neighborhood}</span>
             </div>
           )}
         </div>
       </div>
 
+      {/* ── Strip 3 fotos horizontais ── */}
+      <div style={{ display: 'flex', gap: 5, padding: '8px 14px 0' }}>
+        {[0, 1, 2].map((i) => (
+          <div key={i} style={{
+            flex: 1, height: 90, borderRadius: 12, overflow: 'hidden',
+            boxShadow: '0 2px 8px rgba(0,0,0,0.12)',
+          }}>
+            {img(i) ? (
+              <img src={img(i)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+            ) : (
+              <div style={{ width: '100%', height: '100%', backgroundColor: '#e2e8f0' }} />
+            )}
+          </div>
+        ))}
+      </div>
+
       {/* ── Cards de especificações ── */}
-      <div style={{ padding: '14px 16px' }}>
-        <p style={{ color: '#94a3b8', fontSize: 10, fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', margin: '0 0 10px' }}>
+      <div style={{ padding: '10px 14px 0' }}>
+        <p style={{ color: '#94a3b8', fontSize: 10, fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', margin: '0 0 8px' }}>
           Características
         </p>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 7 }}>
           {specCards.slice(0, 6).map((s, i) => (
             <div key={i} style={{
-              backgroundColor: 'white', borderRadius: 12, padding: '10px 8px',
+              backgroundColor: 'white', borderRadius: 12, padding: '9px 7px',
               border: '1px solid #e2e8f0', textAlign: 'center',
               boxShadow: '0 1px 4px rgba(0,0,0,0.05)',
             }}>
-              <div style={{ fontSize: 18, marginBottom: 3 }}>{s.icon}</div>
-              <p style={{ color: '#1B5EA6', fontSize: 13, fontWeight: 900, margin: '0 0 2px' }}>{s.value}</p>
-              <p style={{ color: '#94a3b8', fontSize: 8, margin: 0, textTransform: 'uppercase', letterSpacing: '0.06em' }}>{s.label}</p>
+              <div style={{ fontSize: 16, marginBottom: 2 }}>{s.icon}</div>
+              <p style={{ color: '#1B5EA6', fontSize: 12, fontWeight: 900, margin: '0 0 2px' }}>{s.value}</p>
+              <p style={{ color: '#94a3b8', fontSize: 7.5, margin: 0, textTransform: 'uppercase', letterSpacing: '0.06em' }}>{s.label}</p>
             </div>
           ))}
         </div>
       </div>
 
       {/* ── Preço ── */}
-      <div style={{ padding: '0 16px' }}>
+      <div style={{ padding: '8px 14px 0' }}>
         <div style={{
-          backgroundColor: '#1B5EA6', borderRadius: 14, padding: '14px 18px',
+          backgroundColor: '#1B5EA6', borderRadius: 14, padding: '12px 16px',
           display: 'flex', alignItems: 'center', justifyContent: 'space-between',
           boxShadow: '0 6px 20px rgba(27,94,166,0.3)',
         }}>
@@ -415,7 +431,7 @@ export const AMStory4_T4_Slide3 = ({
             <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: 10, margin: '0 0 2px', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
               {data.isRental ? 'Aluguel/mês' : 'Valor de Venda'}
             </p>
-            <p style={{ color: 'white', fontSize: 26, fontWeight: 900, margin: 0, lineHeight: 1 }}>
+            <p style={{ color: 'white', fontSize: 23, fontWeight: 900, margin: 0, lineHeight: 1 }}>
               {formatPrice(price)}
             </p>
           </div>
