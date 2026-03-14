@@ -333,16 +333,20 @@ export const AMStory4_T4_Slide2 = ({
 };
 
 /* ─────────────────────────────────────────────────────────────────
-   SLIDE 3 — Ficha técnica clean
-   Layout: cabeçalho laranja com foto pequena · cards de especificações em grade · rodapé azul
+   SLIDE 3 — Ficha técnica clean + 3 fotos horizontais
+   Layout: cabeçalho laranja · strip 3 fotos · cards de especificações · preço · rodapé
    ───────────────────────────────────────────────────────────────── */
 export const AMStory4_T4_Slide3 = ({
   data,
   photo,
+  photos,
 }: {
   data: AMPropertyData;
   photo?: string;
+  photos?: string[];
 }) => {
+  const allPhotos = photos && photos.length > 0 ? photos : photo ? [photo] : [];
+  const img = (i: number) => allPhotos[i] ?? allPhotos[0] ?? undefined;
   const price = data.isRental ? data.rentalPrice : data.salePrice;
 
   const specCards = [
