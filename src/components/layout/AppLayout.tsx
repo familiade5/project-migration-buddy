@@ -293,15 +293,12 @@ export function AppLayout({ children }: AppLayoutProps) {
             >
               <Menu className="w-6 h-6" />
             </button>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center">
               <img
                 src={logoVDH}
                 alt="Venda Direta Hoje"
-                className="h-8 w-8 rounded-lg object-cover"
+                className="h-9 w-auto max-w-[140px] object-contain"
               />
-              <span className="font-bold text-sm" style={{ color: BRAND_BLUE }}>
-                Venda Direta Hoje
-              </span>
             </div>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
