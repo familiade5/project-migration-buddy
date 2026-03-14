@@ -97,30 +97,28 @@ export const AMStory4_T4_Slide1 = ({
           </div>
         </div>
 
-        {/* CAIXA — fundo branco + borda, X bicolor fiel à identidade da Caixa Econômica Federal */}
+        {/* CAIXA — SVG fiel à identidade visual da Caixa Econômica Federal */}
         {data.acceptsFinancing && (
           <div style={{
-            width: 72, backgroundColor: '#ffffff', borderRadius: 10,
-            border: '1.5px solid #e2e8f0',
-            display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '8px 6px',
-            boxShadow: '0 1px 6px rgba(0,0,0,0.08)',
+            display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+            backgroundColor: '#ffffff', width: 72, height: 72,
+            borderRadius: 10, boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
+            border: '1px solid #e2e8f0', flexShrink: 0,
           }}>
-            <span style={{
-              fontSize: 17, fontWeight: 900,
-              fontFamily: 'Arial Black, Arial, sans-serif',
-              letterSpacing: '0.03em', lineHeight: 1,
-              display: 'inline-flex', alignItems: 'center',
-            }}>
-              <span style={{ color: '#005CA9' }}>CAI</span>
-              {/* X bicolor: metade esq azul + metade dir laranja via gradiente */}
-              <span style={{
-                background: 'linear-gradient(90deg, #005CA9 50%, #F7A800 50%)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                backgroundClip: 'text',
-              }}>X</span>
-              <span style={{ color: '#005CA9' }}>A</span>
-            </span>
+            <svg width="54" height="22" viewBox="0 0 120 40">
+              {/* C */}
+              <text x="0" y="28" fontFamily="Arial, Helvetica, sans-serif" fontWeight="700" fontSize="28" fill="#1F4E8C">C</text>
+              {/* A */}
+              <text x="22" y="28" fontFamily="Arial, Helvetica, sans-serif" fontWeight="700" fontSize="28" fill="#1F4E8C">A</text>
+              {/* I */}
+              <text x="47" y="28" fontFamily="Arial, Helvetica, sans-serif" fontWeight="700" fontSize="28" fill="#1F4E8C">I</text>
+              {/* X metade azul */}
+              <polygon points="58,6 66,6 78,34 70,34" fill="#1F4E8C" />
+              {/* X metade laranja */}
+              <polygon points="70,6 78,6 66,34 58,34" fill="#F39200" />
+              {/* A */}
+              <text x="84" y="28" fontFamily="Arial, Helvetica, sans-serif" fontWeight="700" fontSize="28" fill="#1F4E8C">A</text>
+            </svg>
           </div>
         )}
       </div>
