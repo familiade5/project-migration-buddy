@@ -67,10 +67,9 @@ function buildCaption(data: AMPropertyData): string {
   // Location
   const locationParts: string[] = [];
   if (data.address) locationParts.push(data.address);
-  if (data.neighborhood) locationParts.push(`${data.neighborhood} Manaus/AM`);
-  else locationParts.push('Manaus/AM');
+  if (data.neighborhood) locationParts.push(data.neighborhood);
   if (data.referencePoint) locationParts.push(data.referencePoint);
-  lines.push(`📍 Localização: ${locationParts.join(' – ')}`);
+  if (locationParts.length > 0) lines.push(`📍 Localização: ${locationParts.join(' – ')}`);
   lines.push('');
 
   // Contact
