@@ -64,10 +64,9 @@ function buildCaption(data: AMPropertyData): string {
     lines.push('');
   }
 
-  // Location
+  // Location — neighborhood is exclusive to the cover slide, not used here
   const locationParts: string[] = [];
   if (data.address) locationParts.push(data.address);
-  if (data.neighborhood) locationParts.push(data.neighborhood);
   if (data.referencePoint) locationParts.push(data.referencePoint);
   if (locationParts.length > 0) lines.push(`📍 Localização: ${locationParts.join(' – ')}`);
   lines.push('');
