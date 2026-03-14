@@ -37,7 +37,7 @@ export const PropertyForm = ({ data, onChange }: PropertyFormProps) => {
     <div className="space-y-6 max-w-full overflow-hidden">
       {/* Nome do Imóvel */}
       <div className="space-y-4">
-        <h3 className="font-semibold text-base text-foreground flex items-center gap-2">
+        <h3 className="font-semibold text-base text-gray-800 flex items-center gap-2">
           <span className="text-lg">🏡</span> Identificação
         </h3>
         <div>
