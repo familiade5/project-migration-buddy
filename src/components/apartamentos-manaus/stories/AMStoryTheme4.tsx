@@ -98,17 +98,17 @@ export const AMStory4_T4_Slide1 = ({
           </div>
         </div>
 
-        {/* CAIXA — logo sem container extra */}
+        {/* CAIXA — logo sem container extra, tamanho dobrado */}
         {data.acceptsFinancing && (
           <img
             src={logoCaixa}
             alt="CAIXA"
             style={{
-              width: 72,
-              height: 72,
+              width: 144,
+              height: 144,
               objectFit: 'contain',
               flexShrink: 0,
-              borderRadius: 14,
+              borderRadius: 20,
             }}
           />
         )}
