@@ -101,7 +101,7 @@ export const AMStory4_T4_Slide1 = ({
         {/* CAIXA — mesmo height do card laranja, sem fundo extra */}
         {data.acceptsFinancing && (
           <div style={{
-            width: 85, alignSelf: 'stretch', borderRadius: 10, overflow: 'hidden',
+            width: 108, alignSelf: 'stretch', borderRadius: 10, overflow: 'hidden',
             flexShrink: 0,
             display: 'flex', alignItems: 'center', justifyContent: 'center',
           }}>
