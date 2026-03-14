@@ -264,12 +264,14 @@ export const AMStory4_T4_Slide2 = ({
         ))}
       </div>
 
-      {/* ── Bairro pill ── */}
+      {/* ── Bairro pill — sobreposto no topo da foto hero ── */}
       {data.neighborhood && (
-        <div style={{ position: 'absolute', top: INFO_TOP + 14, left: 0, right: 0, display: 'flex', justifyContent: 'center', zIndex: 20 }}>
+        <div style={{ position: 'absolute', top: 70, left: 0, right: 0, display: 'flex', justifyContent: 'center', zIndex: 30 }}>
           <div style={{ backgroundColor: '#F47920', borderRadius: 30, padding: '4px 16px', display: 'flex', alignItems: 'center', gap: 5 }}>
             <span style={{ fontSize: 10 }}>📍</span>
-            <span style={{ color: 'white', fontSize: 10, fontWeight: 700 }}>{data.neighborhood}, {data.city || 'Manaus'}</span>
+            <span style={{ color: 'white', fontSize: 10, fontWeight: 700 }}>
+              {data.neighborhood}{data.city ? `, ${data.city}` : ''}
+            </span>
           </div>
         </div>
       )}
