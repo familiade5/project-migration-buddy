@@ -91,21 +91,13 @@ export function AppLayout({ children }: AppLayoutProps) {
       `} style={{ backgroundColor: '#FFFFFF', borderColor: '#E5E7EB' }}>
         <div className="flex flex-col h-full">
           {/* Logo */}
-          <div className="flex items-center justify-between px-5 py-4 border-b" style={{ borderColor: '#E5E7EB' }}>
-            <div className="flex items-center gap-3 min-w-0">
+          <div className="flex items-center justify-between px-4 py-3 border-b" style={{ borderColor: '#E5E7EB' }}>
+            <div className="flex items-center min-w-0 flex-1">
               <img
                 src={logoVDH}
                 alt="Venda Direta Hoje"
-                className="h-10 w-10 rounded-xl object-cover flex-shrink-0"
+                className="h-10 w-auto max-w-[160px] object-contain flex-shrink-0"
               />
-              <div className="min-w-0">
-                <p className="font-bold text-sm leading-tight truncate" style={{ color: BRAND_BLUE }}>
-                  Venda Direta Hoje
-                </p>
-                <p className="text-xs truncate" style={{ color: '#9CA3AF' }}>
-                  Gerador de Posts
-                </p>
-              </div>
             </div>
             <button
               className="lg:hidden text-gray-400 hover:text-gray-600 ml-2 flex-shrink-0"
