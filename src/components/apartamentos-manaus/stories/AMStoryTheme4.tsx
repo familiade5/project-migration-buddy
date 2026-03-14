@@ -11,6 +11,7 @@
 
 import { AMPropertyData } from '@/types/apartamentosManaus';
 import logoAM from '@/assets/logo-apartamentos-manaus.png';
+import logoCaixa from '@/assets/logo-caixa.png';
 
 const STORY_W = 360;
 const STORY_H = 640;
@@ -97,21 +98,14 @@ export const AMStory4_T4_Slide1 = ({
           </div>
         </div>
 
-        {/* CAIXA — SVG exato conforme modelo fornecido */}
+        {/* CAIXA — logo oficial */}
         {data.acceptsFinancing && (
           <div style={{
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             background: '#ffffff', width: 72, height: 72,
             borderRadius: 14, boxShadow: '0 4px 12px rgba(0,0,0,0.08)', flexShrink: 0,
           }}>
-            <svg width="56" height="22" viewBox="0 0 120 40">
-              <text x="0" y="28" fontFamily="Arial, Helvetica, sans-serif" fontWeight="700" fontSize="28" fill="#1F4E8C">C</text>
-              <text x="22" y="28" fontFamily="Arial, Helvetica, sans-serif" fontWeight="700" fontSize="28" fill="#1F4E8C">A</text>
-              <text x="44" y="28" fontFamily="Arial, Helvetica, sans-serif" fontWeight="700" fontSize="28" fill="#1F4E8C">I</text>
-              <polygon points="56,6 62,6 74,34 68,34" fill="#1F4E8C" />
-              <polygon points="62,6 70,6 58,34 50,34" fill="#F39200" />
-              <text x="78" y="28" fontFamily="Arial, Helvetica, sans-serif" fontWeight="700" fontSize="28" fill="#1F4E8C">A</text>
-            </svg>
+            <img src={logoCaixa} alt="CAIXA" style={{ width: 56, height: 'auto', display: 'block' }} />
           </div>
         )}
       </div>
