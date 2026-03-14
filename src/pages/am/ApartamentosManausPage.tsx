@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { AMPropertyData, defaultAMPropertyData } from '@/types/apartamentosManaus';
 import { AMPostPreview } from '@/components/apartamentos-manaus/AMPostPreview';
+import { AMPadraoStoriesViewer } from '@/components/apartamentos-manaus/AMPadraoStoriesViewer';
 import { AMStoriesPreview } from '@/components/apartamentos-manaus/AMStoriesPreview';
 import { AMPropertyForm } from '@/components/apartamentos-manaus/AMPropertyForm';
 import { AMCaptionGenerator } from '@/components/apartamentos-manaus/AMCaptionGenerator';
