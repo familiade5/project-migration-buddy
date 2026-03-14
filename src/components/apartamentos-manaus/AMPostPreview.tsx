@@ -9,12 +9,14 @@ import {
   AMLocationSlide,
   AMPhotoSlide,
   AMInfoSlide,
-  AMStoryCoverSlide,
-  AMStorySpecsSlide,
-  AMStoryLocationSlide,
-  AMStoryPhotoSlide,
-  AMStoryInfoSlide,
 } from './slides/AMSlides';
+import {
+  AMStory4_T4_Slide1,
+  AMStory4_T4_Slide2,
+  AMStory4_T4_Slide3,
+  AMStory4_T4_Slide4,
+  AMStory4_T4_Slide5,
+} from './stories/AMStoryTheme4';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 
