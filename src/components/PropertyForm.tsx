@@ -544,7 +544,6 @@ export const PropertyForm = ({ data, onChange }: PropertyFormProps) => {
     </div>
   );
 };
-          <span className="text-lg">🏡</span> Identificação
         </h3>
         <div>
           <Label htmlFor="propertyName" className="text-muted-foreground text-sm font-medium">Nome do Imóvel/Condomínio</Label>
