@@ -124,6 +124,10 @@ export function AMPropertyForm({ data, onChange }: AMPropertyFormProps) {
             <Switch className={switchClass} checked={data.acceptsFinancing} onCheckedChange={(v) => set('acceptsFinancing', v)} />
             <Label className="text-sm text-gray-600">Aceita financiamento</Label>
           </div>
+          <div className="flex items-center gap-2">
+            <Switch className={switchClass} checked={data.acceptsFGTS} onCheckedChange={(v) => set('acceptsFGTS', v)} />
+            <Label className="text-sm text-gray-600">Aceita FGTS</Label>
+          </div>
         </div>
 
         <div className="grid grid-cols-2 gap-3 pt-1">
