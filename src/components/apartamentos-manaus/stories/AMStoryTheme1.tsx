@@ -134,150 +134,22 @@ export const AMStory1_T1_Curiosity = ({
   </div>
 );
 
-/* ── Story 2: Revelação — fotos ocupam 68%, card info no rodapé ─────────────── */
+/* ── Story 2: Imóvel — novo layout modelo (localização + grade de fotos + preço) */
 export const AMStory1_T1_Reveal = ({
   data,
   photos,
 }: {
   data: AMPropertyData;
   photos?: string[];
-}) => {
-  const price = data.isRental ? data.rentalPrice : data.salePrice;
-  const specs = [
-    data.bedrooms > 0 && `${data.bedrooms} Quarto${data.bedrooms > 1 ? 's' : ''}`,
-    data.area > 0 && `${data.area}m²`,
-    data.garageSpaces > 0 && `${data.garageSpaces} Vaga${data.garageSpaces > 1 ? 's' : ''}`,
-    data.floor && `${data.floor}° Andar`,
-  ].filter(Boolean) as string[];
-
-  const imgs = photos && photos.length > 0 ? photos : [];
-  const img = (i: number) => imgs[i] ?? imgs[0] ?? undefined;
-
-  // Fotos: 68% do story = 435px
-  const PHOTO_H = 435;
-  // Card info: restante com pequena sobreposição nas fotos
-  const CARD_TOP = PHOTO_H - 20;
-
-  return (
-    <div style={{ position: 'relative', width: STORY_W, height: STORY_H, backgroundColor: '#0a0f1e', fontFamily: 'Arial, sans-serif', overflow: 'hidden' }}>
-
-      {/* ── Photo gallery — 68% da tela ── */}
-      <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: PHOTO_H, zIndex: 1 }}>
-
-        {/* Main large photo — left 58% */}
-        <div style={{ position: 'absolute', top: 0, left: 0, width: 208, height: PHOTO_H, overflow: 'hidden' }}>
-          {img(0) ? (
-            <img src={img(0)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-          ) : (
-            <div style={{ width: '100%', height: '100%', backgroundColor: '#1e293b' }} />
-          )}
-          <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to right, transparent 60%, #0a0f1e 100%)' }} />
-        </div>
-
-        {/* Right column — 3 small photos stacked */}
-        <div style={{ position: 'absolute', top: 0, right: 0, width: 148, height: PHOTO_H, display: 'flex', flexDirection: 'column', gap: 3 }}>
-          {[1, 2, 3].map((idx) => (
-            <div key={idx} style={{ flex: 1, overflow: 'hidden', position: 'relative' }}>
-              {img(idx) ? (
-                <img src={img(idx)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-              ) : (
-                <div style={{ width: '100%', height: '100%', backgroundColor: idx === 1 ? '#1e293b' : idx === 2 ? '#172033' : '#111827' }} />
-              )}
-            </div>
-          ))}
-          {imgs.length > 4 && (
-            <div style={{
-              position: 'absolute', bottom: 0, right: 0, width: 148, height: '33.3%',
-              backgroundColor: 'rgba(0,0,0,0.6)', display: 'flex', alignItems: 'center', justifyContent: 'center',
-            }}>
-              <p style={{ color: 'white', fontSize: 18, fontWeight: 900, margin: 0 }}>+{imgs.length - 4}</p>
-            </div>
-          )}
-        </div>
-
-        {/* Logo + neighborhood overlay */}
-        <div style={{ position: 'absolute', top: 16, left: 16, zIndex: 10 }}>
-          <Logo variant="white" />
-        </div>
-        {data.neighborhood && (
-          <div style={{
-            position: 'absolute', top: 16, right: 8, zIndex: 10,
-            backgroundColor: '#F47920', borderRadius: 20, padding: '4px 12px',
-          }}>
-            <p style={{ color: 'white', fontSize: 10, fontWeight: 700, margin: 0 }}>📍 {data.neighborhood}</p>
-          </div>
-        )}
-
-        {/* Gradient bottom fade */}
-        <div style={{
-          position: 'absolute', bottom: 0, left: 0, right: 0, height: 60,
-          background: 'linear-gradient(to bottom, transparent, #0a0f1e)',
-        }} />
-      </div>
-
-      {/* ── Info card — colado no rodapé ── */}
-      <div style={{
-        position: 'absolute', top: CARD_TOP, left: 12, right: 12, bottom: 12, zIndex: 20,
-        backgroundColor: '#111827', borderRadius: 20, padding: '16px 18px',
-        border: '1px solid rgba(27,94,166,0.35)',
-        boxShadow: '0 0 40px rgba(27,94,166,0.2)',
-        display: 'flex', flexDirection: 'column', justifyContent: 'space-between',
-      }}>
-        {/* Title */}
-        <p style={{ color: 'white', fontSize: 14, fontWeight: 700, margin: '0 0 8px', lineHeight: 1.3 }}>
-          {data.title || 'Apartamento Disponível'}
-        </p>
-
-        {/* Specs pills */}
-        {specs.length > 0 && (
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 5, marginBottom: 10 }}>
-            {specs.map((s, i) => (
-              <span key={i} style={{
-                backgroundColor: 'rgba(27,94,166,0.25)', border: '1px solid rgba(27,94,166,0.4)',
-                borderRadius: 20, padding: '3px 10px', color: '#93c5fd', fontSize: 10, fontWeight: 600,
-              }}>
-                {s}
-              </span>
-            ))}
-          </div>
-        )}
-
-        {/* Price */}
-        <div style={{
-          backgroundColor: '#1B5EA6', borderRadius: 14, padding: '10px 16px',
-          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-        }}>
-          <div>
-            <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: 10, margin: '0 0 2px', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
-              {data.isRental ? 'Aluguel' : 'Valor de Venda'}
-            </p>
-            <p style={{ color: 'white', fontSize: 22, fontWeight: 900, margin: 0, lineHeight: 1 }}>
-              {formatPrice(price)}
-            </p>
-          </div>
-          <div style={{ textAlign: 'right', display: 'flex', flexDirection: 'column', gap: 3, alignItems: 'flex-end' }}>
-            {data.acceptsFinancing && (
-              <p style={{ color: '#86efac', fontSize: 10, margin: 0, fontWeight: 600 }}>✓ Financiamento</p>
-            )}
-            {data.acceptsFGTS && (
-              <p style={{ color: '#86efac', fontSize: 10, margin: 0, fontWeight: 600 }}>✓ FGTS</p>
-            )}
-            {data.subsidy > 0 && (
-              <p style={{ color: '#fde68a', fontSize: 10, margin: 0, fontWeight: 600 }}>Subsídio até {formatPrice(data.subsidy)}</p>
-            )}
-          </div>
-        </div>
-
-        {/* Counter */}
-        <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 8 }}>
-          <div style={{ backgroundColor: 'rgba(255,255,255,0.08)', borderRadius: 20, padding: '3px 12px', border: '1px solid rgba(255,255,255,0.12)' }}>
-            <p style={{ color: 'white', fontSize: 10, margin: 0, fontWeight: 600 }}>2 / 3</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
+}) => (
+  <AMStoryRevealSlide
+    data={data}
+    photos={photos}
+    counter="2 / 3"
+    footerBg="#0a0f1e"
+    footerColor="#ffffff"
+  />
+);
 
 /* ── Story 3: CTA — frase personalizada do imóvel ────────────────────────────── */
 export const AMStory1_T1_CTA = ({
