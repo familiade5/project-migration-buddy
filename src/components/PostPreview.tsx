@@ -396,39 +396,42 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
     <div className="space-y-4 sm:space-y-6 overflow-hidden">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        <h3 className="font-display text-base sm:text-lg text-gold">Preview do Carrossel</h3>
+        <h3 className="font-semibold text-base sm:text-lg text-gray-800">Preview do Carrossel</h3>
         
         {/* Seletor de formato */}
-        <div className="flex items-center gap-1 bg-surface rounded-lg p-1 self-start">
+        <div className="flex items-center gap-1 bg-gray-100 rounded-xl p-1 self-start border border-gray-200">
           <button
             onClick={() => { setFormat('feed'); setCurrentPost(0); }}
-            className={`flex items-center gap-1.5 px-2 sm:px-3 py-1.5 rounded-md text-xs sm:text-sm transition-all ${
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-all ${
               format === 'feed'
-                ? 'bg-gold text-primary-foreground'
-                : 'text-muted-foreground hover:text-foreground'
+                ? 'text-white shadow-sm'
+                : 'text-gray-500 hover:text-gray-700'
             }`}
+            style={format === 'feed' ? { backgroundColor: '#1a3a6b' } : {}}
           >
             <Square className="w-3 h-3 sm:w-4 sm:h-4" />
             <span>Feed</span>
           </button>
           <button
             onClick={() => { setFormat('story'); setCurrentPost(0); }}
-            className={`flex items-center gap-1.5 px-2 sm:px-3 py-1.5 rounded-md text-xs sm:text-sm transition-all ${
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-all ${
               format === 'story'
-                ? 'bg-gold text-primary-foreground'
-                : 'text-muted-foreground hover:text-foreground'
+                ? 'text-white shadow-sm'
+                : 'text-gray-500 hover:text-gray-700'
             }`}
+            style={format === 'story' ? { backgroundColor: '#1a3a6b' } : {}}
           >
             <Smartphone className="w-3 h-3 sm:w-4 sm:h-4" />
             <span>Story</span>
           </button>
           <button
             onClick={() => { setFormat('vdh'); setCurrentPost(0); }}
-            className={`flex items-center gap-1.5 px-2 sm:px-3 py-1.5 rounded-md text-xs sm:text-sm transition-all ${
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-all ${
               format === 'vdh'
-                ? 'bg-gold text-primary-foreground'
-                : 'text-muted-foreground hover:text-foreground'
+                ? 'text-white shadow-sm'
+                : 'text-gray-500 hover:text-gray-700'
             }`}
+            style={format === 'vdh' ? { backgroundColor: '#1a3a6b' } : {}}
           >
             <Sparkles className="w-3 h-3 sm:w-4 sm:h-4" />
             <span>VDH</span>
@@ -438,12 +441,11 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
 
       {/* Botões de exportação */}
       <div className="flex flex-col sm:flex-row gap-2">
-        <Button
+        <button
           onClick={handleExportAll}
           disabled={isExporting}
-          variant="outline"
-          className="gap-2 flex-1 text-xs sm:text-sm"
-          size="sm"
+          className="flex items-center justify-center gap-2 flex-1 px-4 py-2.5 rounded-xl text-sm font-medium text-white transition-all hover:opacity-90 disabled:opacity-50"
+          style={{ backgroundColor: '#1a3a6b' }}
         >
           {isExporting ? (
             <Loader2 className="w-4 h-4 animate-spin" />
@@ -451,12 +453,12 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
             <Download className="w-4 h-4" />
           )}
           Exportar {format === 'feed' ? 'Feed (4)' : format === 'story' ? 'Stories (4)' : 'VDH (4)'}
-        </Button>
-        <Button
+        </button>
+        <button
           onClick={handleExportBothFormats}
           disabled={isExporting}
-          className="bg-gold hover:bg-gold-dark text-primary-foreground gap-2 flex-1 text-xs sm:text-sm"
-          size="sm"
+          className="flex items-center justify-center gap-2 flex-1 px-4 py-2.5 rounded-xl text-sm font-medium text-white transition-all hover:opacity-90 disabled:opacity-50"
+          style={{ backgroundColor: '#c9a84c' }}
         >
           {isExporting ? (
             <Loader2 className="w-4 h-4 animate-spin" />
@@ -464,10 +466,10 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
             <Download className="w-4 h-4" />
           )}
           Exportar Tudo (8)
-        </Button>
+        </button>
       </div>
       
-      <p className="text-xs text-muted-foreground text-center">
+      <p className="text-xs text-gray-400 text-center">
         ✓ Os posts são salvos automaticamente na biblioteca ao exportar
       </p>
 
@@ -477,11 +479,12 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
           <button
             key={index}
             onClick={() => setCurrentPost(index)}
-            className={`px-2 sm:px-3 py-1 sm:py-1.5 rounded-full text-xs sm:text-sm transition-all ${
+            className={`px-3 py-1.5 rounded-full text-xs sm:text-sm font-medium transition-all border ${
               currentPost === index
-                ? 'bg-gold text-primary-foreground'
-                : 'bg-surface text-muted-foreground hover:bg-surface-elevated'
+                ? 'text-white border-transparent'
+                : 'bg-white text-gray-500 border-gray-200 hover:border-gray-300 hover:text-gray-700'
             }`}
+            style={currentPost === index ? { backgroundColor: '#c9a84c', borderColor: '#c9a84c' } : {}}
           >
             {post.name}
           </button>
@@ -493,17 +496,18 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
         <div className="flex items-center justify-center gap-2 sm:gap-4">
           <button
             onClick={() => setCurrentPost((prev) => (prev === 0 ? 3 : prev - 1))}
-            className="p-1.5 sm:p-2 rounded-full bg-surface hover:bg-surface-elevated transition-colors flex-shrink-0"
+            className="p-2 rounded-full bg-white border border-gray-200 hover:bg-gray-50 transition-colors flex-shrink-0 shadow-sm"
           >
-            <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5 text-muted-foreground" />
+            <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5 text-gray-600" />
           </button>
 
           {/* Preview container with proper scaling */}
           <div 
-            className="relative rounded-xl overflow-hidden shadow-2xl flex-shrink-0"
+            className="relative rounded-xl overflow-hidden flex-shrink-0"
             style={{ 
               width: format === 'feed' ? '280px' : '180px',
               height: format === 'feed' ? '280px' : '320px',
+              boxShadow: '0 8px 32px rgba(0,0,0,0.15)'
             }}
           >
             <div 
@@ -524,24 +528,23 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
 
           <button
             onClick={() => setCurrentPost((prev) => (prev === 3 ? 0 : prev + 1))}
-            className="p-1.5 sm:p-2 rounded-full bg-surface hover:bg-surface-elevated transition-colors flex-shrink-0"
+            className="p-2 rounded-full bg-white border border-gray-200 hover:bg-gray-50 transition-colors flex-shrink-0 shadow-sm"
           >
-            <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5 text-muted-foreground" />
+            <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5 text-gray-600" />
           </button>
         </div>
 
         {/* Export single button */}
         <div className="flex justify-center mt-4">
-          <Button
-            variant="outline"
-            size="sm"
+          <button
             onClick={() => handleExportSingle(currentPost)}
             disabled={isExporting}
-            className="gap-2 text-xs sm:text-sm"
+            className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium text-white transition-all hover:opacity-90 disabled:opacity-50 shadow-sm"
+            style={{ backgroundColor: '#1a3a6b' }}
           >
             <Download className="w-4 h-4" />
             Exportar este post
-          </Button>
+          </button>
         </div>
       </div>
 
@@ -573,19 +576,20 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
       </div>
 
       {/* Thumbnails - Hidden on mobile */}
-      <div className="hidden sm:grid grid-cols-4 gap-2">
+      <div className="hidden sm:flex gap-2 justify-center">
         {posts.map((Post, index) => (
           <button
             key={index}
             onClick={() => setCurrentPost(index)}
-            className={`relative rounded-lg overflow-hidden transition-all ${
+            className={`relative rounded-lg overflow-hidden transition-all flex-shrink-0 ${
               currentPost === index
-                ? 'ring-2 ring-gold ring-offset-2 ring-offset-background'
+                ? 'ring-2 ring-offset-2'
                 : 'opacity-60 hover:opacity-100'
             }`}
             style={{ 
               width: format === 'feed' ? '80px' : '54px',
-              height: format === 'feed' ? '80px' : '96px'
+              height: format === 'feed' ? '80px' : '96px',
+              ...(currentPost === index ? { '--tw-ring-color': '#c9a84c' } as React.CSSProperties : {})
             }}
           >
             <div 
@@ -603,7 +607,7 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
       </div>
 
       {/* Info sobre formatos */}
-      <div className="text-center text-xs text-muted-foreground">
+      <div className="text-center text-xs text-gray-400">
         <p>📱 <strong>Feed:</strong> 1:1 • <strong>Story:</strong> 9:16</p>
       </div>
     </div>
