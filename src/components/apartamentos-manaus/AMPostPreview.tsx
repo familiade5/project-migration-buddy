@@ -87,24 +87,18 @@ export function AMPostPreview({ data, photos }: AMPostPreviewProps) {
     return slides;
   };
 
-  // ── Build STORY slide list ────────────────────────────────────────────────
+  // ── Build STORY slide list — Padrão T4 (5 slides fixos) ──────────────────
   const buildStorySlides = () => {
     const p = photos;
-    const slides = [];
-
-    slides.push({ id: 'story-cover',    name: 'Capa',    el: <AMStoryCoverSlide data={data} photo={p[0]} /> });
-    slides.push({ id: 'story-specs',    name: 'Especif.', el: <AMStorySpecsSlide data={data} photo={p[1] ?? p[0]} /> });
-    slides.push({ id: 'story-location', name: 'Local',   el: <AMStoryLocationSlide data={data} photo={p[2] ?? p[1] ?? p[0]} /> });
-
-    const photoSliceEnd = Math.max(3, p.length - 1);
-    for (let i = 3; i < photoSliceEnd; i++) {
-      slides.push({ id: `story-photo-${i}`, name: `Foto ${i - 1}`, el: <AMStoryPhotoSlide data={data} photo={p[i]} photoIndex={i} /> });
-    }
-
-    const lastPhoto = p[p.length - 1] ?? p[0];
-    slides.push({ id: 'story-info', name: 'Info', el: <AMStoryInfoSlide data={data} photo={lastPhoto} /> });
-
-    return slides;
+    const p0 = p[0];
+    const pLast = p[p.length - 1] ?? p[0];
+    return [
+      { id: 'story-t4-1', name: 'Card 1', el: <AMStory4_T4_Slide1 data={data} photos={p} /> },
+      { id: 'story-t4-2', name: 'Card 2', el: <AMStory4_T4_Slide2 data={data} photo={p0} photos={p} /> },
+      { id: 'story-t4-3', name: 'Card 3', el: <AMStory4_T4_Slide3 data={data} photo={p0} photos={p} /> },
+      { id: 'story-t4-4', name: 'Card 4', el: <AMStory4_T4_Slide4 data={data} photos={p} /> },
+      { id: 'story-t4-5', name: 'Card 5', el: <AMStory4_T4_Slide5 data={data} photo={pLast} photos={p} /> },
+    ];
   };
 
   const feedSlides  = buildFeedSlides();
