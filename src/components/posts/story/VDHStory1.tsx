@@ -28,7 +28,7 @@ export const VDHStory1 = ({ data, photo }: VDHStory1Props) => {
     if (val.includes('R$')) return val;
     return `R$ ${val}`;
   };
-  const price = formatPrice(data.minimumValue) || formatFormat(data.evaluationValue);
+  const price = formatPrice(data.minimumValue) || formatPrice(data.evaluationValue);
 
   const locationParts = [data.neighborhood, data.city, data.state].filter(Boolean);
   const locationLine = locationParts.join('  ·  ');
