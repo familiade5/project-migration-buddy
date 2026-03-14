@@ -686,18 +686,13 @@ export const AMStory4_T4_Slide5 = ({
             )}
           </div>
         </div>
-        {/* Gradiente suavizando a transição foto → fundo escuro */}
-        <div style={{
-          position: 'absolute', bottom: 0, left: 0, right: 0, height: 80,
-          background: 'linear-gradient(to bottom, transparent, #0a0f1e)',
-        }} />
+        {/* Sem gradiente — fotos totalmente visíveis */}
       </div>
 
       {/* ── Logo + badge de bairro fixos no TOPO sobre as fotos ── */}
       <div style={{
         position: 'absolute', top: 0, left: 0, right: 0, zIndex: 20,
-        background: 'linear-gradient(to bottom, rgba(10,15,30,0.72) 0%, rgba(10,15,30,0.0) 100%)',
-        padding: '14px 16px 28px',
+        padding: '14px 16px 20px',
         display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 7,
       }}>
         <Logo size={82} white />
@@ -711,8 +706,8 @@ export const AMStory4_T4_Slide5 = ({
 
       {/* ── Conteúdo sobre o fundo escuro ── */}
       <div style={{
-        position: 'absolute', top: PHOTO_ZONE - 30, left: 0, right: 0, bottom: 0,
-        zIndex: 5, display: 'flex', flexDirection: 'column', padding: '0 16px 18px',
+        position: 'absolute', top: PHOTO_ZONE, left: 0, right: 0, bottom: 0,
+        zIndex: 5, display: 'flex', flexDirection: 'column', padding: '10px 16px 18px',
       }}>
         {/* Título */}
         <p style={{
