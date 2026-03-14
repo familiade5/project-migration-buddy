@@ -105,7 +105,7 @@ export const AMStory4_T4_Slide1 = ({
             background: '#ffffff', width: 72, height: 72,
             borderRadius: 14, boxShadow: '0 4px 12px rgba(0,0,0,0.08)', flexShrink: 0,
           }}>
-            <img src={logoCaixa} alt="CAIXA" style={{ width: 56, height: 'auto', display: 'block' }} />
+            <img src={logoCaixa} alt="CAIXA" style={{ width: 64, height: 'auto', display: 'block', padding: '0 4px' }} />
           </div>
         )}
       </div>
