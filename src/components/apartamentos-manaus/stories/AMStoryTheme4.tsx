@@ -614,17 +614,188 @@ export const AMStory4_T4_Slide4 = ({
 };
 
 /* ─────────────────────────────────────────────────────────────────
-   SLIDE 5 — Dark Luxury CTA
-   Layout: foto full-bleed · overlay gradiente · logo · preço pill ·
-           card glassmorphism com corretor + WhatsApp · footer website
+   SLIDE 5 — Dark Gallery CTA
+   Layout: bento 5 fotos (1 hero + 2+2) · gradiente · logo · specs ·
+           price pill laranja · card glassmorphism corretor
    ───────────────────────────────────────────────────────────────── */
 export const AMStory4_T4_Slide5 = ({
   data,
   photo,
+  photos,
 }: {
   data: AMPropertyData;
   photo?: string;
+  photos?: string[];
 }) => {
+  const price = data.isRental ? data.rentalPrice : data.salePrice;
+  const imgs = photos && photos.length > 0 ? photos : photo ? [photo] : [];
+  const img = (i: number) => imgs[i] ?? imgs[0] ?? undefined;
+
+  const GAP = 3;
+  const HERO_H = 158;
+  const ROW_H = 82;
+  const PHOTO_ZONE = HERO_H + GAP + ROW_H + GAP + ROW_H; // 410px
+
+  return (
+    <div style={{
+      position: 'relative', width: STORY_W, height: STORY_H,
+      backgroundColor: '#0a0f1e', fontFamily: 'Arial, sans-serif', overflow: 'hidden',
+    }}>
+
+      {/* ── Bento 5 fotos no topo ── */}
+      <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: PHOTO_ZONE }}>
+        {/* Linha 1 — hero full width */}
+        <div style={{ height: HERO_H, overflow: 'hidden' }}>
+          {img(0) ? (
+            <img src={img(0)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+          ) : (
+            <div style={{ width: '100%', height: '100%', backgroundColor: '#1e293b' }} />
+          )}
+        </div>
+        {/* Linha 2 — 2 fotos (55/45) */}
+        <div style={{ display: 'flex', gap: GAP, marginTop: GAP, height: ROW_H }}>
+          <div style={{ flex: 11, overflow: 'hidden' }}>
+            {img(1) ? (
+              <img src={img(1)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+            ) : (
+              <div style={{ width: '100%', height: '100%', backgroundColor: '#1e293b' }} />
+            )}
+          </div>
+          <div style={{ flex: 9, overflow: 'hidden' }}>
+            {img(2) ? (
+              <img src={img(2)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+            ) : (
+              <div style={{ width: '100%', height: '100%', backgroundColor: '#1e293b' }} />
+            )}
+          </div>
+        </div>
+        {/* Linha 3 — 2 fotos (45/55) invertido */}
+        <div style={{ display: 'flex', gap: GAP, marginTop: GAP, height: ROW_H }}>
+          <div style={{ flex: 9, overflow: 'hidden' }}>
+            {img(3) ? (
+              <img src={img(3)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+            ) : (
+              <div style={{ width: '100%', height: '100%', backgroundColor: '#1e293b' }} />
+            )}
+          </div>
+          <div style={{ flex: 11, overflow: 'hidden' }}>
+            {img(4) ? (
+              <img src={img(4)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+            ) : (
+              <div style={{ width: '100%', height: '100%', backgroundColor: '#1e293b' }} />
+            )}
+          </div>
+        </div>
+        {/* Gradiente suavizando a transição foto → fundo escuro */}
+        <div style={{
+          position: 'absolute', bottom: 0, left: 0, right: 0, height: 80,
+          background: 'linear-gradient(to bottom, transparent, #0a0f1e)',
+        }} />
+      </div>
+
+      {/* ── Conteúdo sobre o fundo escuro ── */}
+      <div style={{
+        position: 'absolute', top: PHOTO_ZONE - 30, left: 0, right: 0, bottom: 0,
+        zIndex: 5, display: 'flex', flexDirection: 'column', padding: '0 16px 18px',
+      }}>
+        {/* Logo + bairro centralizados */}
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6, marginBottom: 10 }}>
+          <Logo size={82} white />
+          {data.neighborhood && (
+            <div style={{ backgroundColor: 'rgba(244,121,32,0.92)', borderRadius: 30, padding: '3px 14px', display: 'flex', alignItems: 'center', gap: 4 }}>
+              <span style={{ fontSize: 9 }}>📍</span>
+              <span style={{ color: 'white', fontSize: 9, fontWeight: 700 }}>{data.neighborhood}</span>
+            </div>
+          )}
+        </div>
+
+        {/* Título */}
+        <p style={{
+          color: 'white', fontSize: 17, fontWeight: 900, textAlign: 'center',
+          margin: '0 0 8px', lineHeight: 1.25,
+        }}>
+          {data.title || 'Apartamento Disponível'}
+        </p>
+
+        {/* Spec chips */}
+        <div style={{ display: 'flex', gap: 5, flexWrap: 'wrap', justifyContent: 'center', marginBottom: 10 }}>
+          {data.bedrooms > 0 && (
+            <div style={{ backgroundColor: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.18)', borderRadius: 20, padding: '4px 10px' }}>
+              <span style={{ color: 'white', fontSize: 9, fontWeight: 700 }}>🛏 {data.bedrooms} Qto{data.bedrooms > 1 ? 's' : ''}</span>
+            </div>
+          )}
+          {data.area > 0 && (
+            <div style={{ backgroundColor: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.18)', borderRadius: 20, padding: '4px 10px' }}>
+              <span style={{ color: 'white', fontSize: 9, fontWeight: 700 }}>📐 {data.area}m²</span>
+            </div>
+          )}
+          {data.garageSpaces > 0 && (
+            <div style={{ backgroundColor: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.18)', borderRadius: 20, padding: '4px 10px' }}>
+              <span style={{ color: 'white', fontSize: 9, fontWeight: 700 }}>🚗 {data.garageSpaces} Vaga{data.garageSpaces > 1 ? 's' : ''}</span>
+            </div>
+          )}
+          {data.suites > 0 && (
+            <div style={{ backgroundColor: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.18)', borderRadius: 20, padding: '4px 10px' }}>
+              <span style={{ color: 'white', fontSize: 9, fontWeight: 700 }}>🛁 {data.suites} Suíte{data.suites > 1 ? 's' : ''}</span>
+            </div>
+          )}
+        </div>
+
+        {/* Price pill */}
+        <div style={{
+          backgroundColor: '#F47920', borderRadius: 14,
+          padding: '10px 20px', textAlign: 'center', marginBottom: 10,
+          boxShadow: '0 6px 22px rgba(244,121,32,0.45)',
+        }}>
+          <p style={{ color: 'rgba(255,255,255,0.75)', fontSize: 9, margin: '0 0 2px', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
+            {data.isRental ? 'Aluguel mensal' : 'Valor de Venda'}
+          </p>
+          <p style={{ color: 'white', fontSize: 22, fontWeight: 900, margin: 0, lineHeight: 1 }}>
+            {formatPrice(price)}
+          </p>
+          {(data.acceptsFinancing || data.acceptsFGTS) && (
+            <p style={{ color: 'rgba(255,255,255,0.85)', fontSize: 9, margin: '3px 0 0', fontWeight: 600 }}>
+              {[data.acceptsFinancing && '✓ Financiamento', data.acceptsFGTS && '✓ FGTS'].filter(Boolean).join(' • ')}
+            </p>
+          )}
+        </div>
+
+        {/* Card corretor glassmorphism */}
+        <div style={{
+          backgroundColor: 'rgba(255,255,255,0.07)',
+          border: '1px solid rgba(255,255,255,0.13)',
+          borderRadius: 18, padding: '12px 16px',
+        }}>
+          <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: 8, margin: '0 0 4px', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
+            Fale com o corretor
+          </p>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
+            <div>
+              <p style={{ color: 'white', fontSize: 13, fontWeight: 800, margin: 0 }}>
+                {data.brokerName || 'Iury Sampaio'}
+              </p>
+              <p style={{ color: 'rgba(255,255,255,0.45)', fontSize: 8, margin: 0 }}>Creci 3968 PF</p>
+            </div>
+            <div style={{
+              backgroundColor: '#25D366', borderRadius: 10,
+              padding: '5px 12px', display: 'flex', alignItems: 'center', gap: 5,
+              boxShadow: '0 4px 12px rgba(37,211,102,0.4)',
+            }}>
+              <span style={{ fontSize: 12 }}>💬</span>
+              <span style={{ color: 'white', fontSize: 11, fontWeight: 800 }}>
+                {data.brokerPhone || '(92) 98839-1098'}
+              </span>
+            </div>
+          </div>
+          <div style={{ borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: 8, display: 'flex', justifyContent: 'space-between' }}>
+            <span style={{ color: 'rgba(255,255,255,0.4)', fontSize: 8 }}>🌐 www.apartamentosmanaus.com</span>
+            <span style={{ color: 'rgba(255,255,255,0.3)', fontSize: 7.5 }}>facebook.com/ApartamentosManaus</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
   const price = data.isRental ? data.rentalPrice : data.salePrice;
 
   return (
