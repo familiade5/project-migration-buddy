@@ -1,15 +1,17 @@
 import { useState } from 'react';
 import { AMPropertyData, defaultAMPropertyData } from '@/types/apartamentosManaus';
 import { AMPostPreview } from '@/components/apartamentos-manaus/AMPostPreview';
+import { AMStoriesPreview } from '@/components/apartamentos-manaus/AMStoriesPreview';
 import { AMPropertyForm } from '@/components/apartamentos-manaus/AMPropertyForm';
 import { AMCaptionGenerator } from '@/components/apartamentos-manaus/AMCaptionGenerator';
 import { AMPhotoManager } from '@/components/apartamentos-manaus/AMPhotoManager';
 import { AMLayout } from '@/components/layout/AMLayout';
-import { Image, Edit3, Sparkles, FileText } from 'lucide-react';
+import { Image, Edit3, Sparkles, FileText, LayoutGrid, Smartphone } from 'lucide-react';
 
 const ApartamentosManausPage = () => {
   const [propertyData, setPropertyData] = useState<AMPropertyData>(defaultAMPropertyData);
   const [photos, setPhotos] = useState<string[]>([]);
+  const [previewTab, setPreviewTab] = useState<'feed' | 'stories'>('feed');
 
   return (
     <AMLayout>
@@ -89,14 +91,44 @@ const ApartamentosManausPage = () => {
           {/* Right – Preview */}
           <div className="lg:sticky lg:top-6 self-start">
             <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+              {/* Tab selector */}
               <div className="px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-100" style={{ backgroundColor: '#F0F6FF' }}>
-                <div className="min-w-0">
-                  <h2 className="font-semibold text-gray-900 text-sm sm:text-base">Preview dos Criativos</h2>
-                  <p className="text-xs text-gray-500">Visualize e baixe os slides prontos</p>
+                <div className="flex items-center justify-between gap-2">
+                  <div className="min-w-0">
+                    <h2 className="font-semibold text-gray-900 text-sm sm:text-base">Preview dos Criativos</h2>
+                    <p className="text-xs text-gray-500 hidden sm:block">Visualize e baixe os slides prontos</p>
+                  </div>
+                  {/* Feed / Stories toggle */}
+                  <div className="flex items-center gap-1 bg-white rounded-lg p-1 border border-gray-200 shadow-sm flex-shrink-0">
+                    <button
+                      onClick={() => setPreviewTab('feed')}
+                      className="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 rounded-md text-xs font-medium transition-all"
+                      style={previewTab === 'feed'
+                        ? { backgroundColor: '#1B5EA6', color: 'white' }
+                        : { color: '#6B7280' }}
+                    >
+                      <LayoutGrid className="w-3.5 h-3.5" />
+                      Feed
+                    </button>
+                    <button
+                      onClick={() => setPreviewTab('stories')}
+                      className="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 rounded-md text-xs font-medium transition-all"
+                      style={previewTab === 'stories'
+                        ? { backgroundColor: '#F47920', color: 'white' }
+                        : { color: '#6B7280' }}
+                    >
+                      <Smartphone className="w-3.5 h-3.5" />
+                      Stories
+                    </button>
+                  </div>
                 </div>
               </div>
               <div className="p-4 sm:p-6">
-                <AMPostPreview data={propertyData} photos={photos} />
+                {previewTab === 'feed' ? (
+                  <AMPostPreview data={propertyData} photos={photos} />
+                ) : (
+                  <AMStoriesPreview data={propertyData} photos={photos} />
+                )}
               </div>
             </div>
           </div>
