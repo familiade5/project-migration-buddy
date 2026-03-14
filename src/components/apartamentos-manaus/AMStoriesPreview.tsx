@@ -339,42 +339,36 @@ export function AMStoriesPreview({ data, photos }: AMStoriesPreviewProps) {
       </div>
 
       {/* Export buttons */}
-      {/* Row 1: download slide individual */}
-      <div className="flex gap-1.5 overflow-x-auto pb-0.5">
-        {storyLabels.map((label, i) => (
-          <button
-            key={i}
-            disabled={isExporting}
-            onClick={async () => {
-              setIsExporting(true);
-              try {
-                const url = await captureRef(currentRefs[i]);
-                if (!url) return;
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `story-${String(i + 1).padStart(2, '0')}-${label.toLowerCase().replace(' ', '-')}.png`;
-                a.click();
-              } catch {
-                toast.error('Erro ao exportar');
-              } finally {
-                setIsExporting(false);
-              }
-            }}
-            className="flex-shrink-0 flex items-center gap-1 py-1.5 px-2.5 rounded-lg text-xs font-medium transition-all border"
-            style={{
-              backgroundColor: safeStory === i ? '#1B5EA620' : '#F9FAFB',
-              borderColor: safeStory === i ? '#1B5EA6' : '#E5E7EB',
-              color: '#374151',
-            }}
-          >
-            <Download className="w-3 h-3" />
-            {i + 1}
-          </button>
-        ))}
-      </div>
-
-      {/* Row 2: exportar tema / todos */}
       <div className="flex gap-2">
+        {/* Baixar slide atual */}
+        <Button
+          variant="outline"
+          size="sm"
+          disabled={isExporting}
+          onClick={async () => {
+            setIsExporting(true);
+            try {
+              const label = storyLabels[safeStory];
+              const url = await captureRef(currentRefs[safeStory]);
+              if (!url) return;
+              const a = document.createElement('a');
+              a.href = url;
+              a.download = `story-${String(safeStory + 1).padStart(2, '0')}-${label.toLowerCase().replace(' ', '-')}.png`;
+              a.click();
+              toast.success('Slide exportado!');
+            } catch {
+              toast.error('Erro ao exportar');
+            } finally {
+              setIsExporting(false);
+            }
+          }}
+          className="flex-1 gap-1.5 text-xs"
+        >
+          {isExporting ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Download className="w-3.5 h-3.5" />}
+          Este slide
+        </Button>
+
+        {/* Baixar tema (zip) */}
         <Button
           variant="outline"
           size="sm"
@@ -383,8 +377,10 @@ export function AMStoriesPreview({ data, photos }: AMStoriesPreviewProps) {
           className="flex-1 gap-1.5 text-xs"
         >
           {isExporting ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Download className="w-3.5 h-3.5" />}
-          Tema {activeTheme} (zip)
+          Tema {activeTheme}
         </Button>
+
+        {/* Baixar todos */}
         <Button
           size="sm"
           onClick={handleExportAllThemes}
@@ -393,7 +389,7 @@ export function AMStoriesPreview({ data, photos }: AMStoriesPreviewProps) {
           style={{ backgroundColor: '#F47920' }}
         >
           {isExporting ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Download className="w-3.5 h-3.5" />}
-          Todos (14)
+          Todos
         </Button>
       </div>
 
