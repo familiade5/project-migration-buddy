@@ -131,7 +131,7 @@ export function AMStoriesPreview({ data, photos }: AMStoriesPreviewProps) {
       <AMStory4_T4_Slide2 data={data} photo={p0} photos={photos} />,
       <AMStory4_T4_Slide3 data={data} photo={p0} photos={photos} />,
       <AMStory4_T4_Slide4 data={data} photos={photos} />,
-      <AMStory4_T4_Slide5 data={data} photo={pLast} />,
+      <AMStory4_T4_Slide5 data={data} photo={pLast} photos={photos} />,
     ],
   };
 
@@ -439,7 +439,7 @@ export function AMStoriesPreview({ data, photos }: AMStoriesPreviewProps) {
           <AMStory4_T4_Slide4 data={data} photos={photos} />
         </div>
         <div ref={t4r4} style={{ width: STORY_W, height: STORY_H, overflow: 'hidden' }}>
-          <AMStory4_T4_Slide5 data={data} photo={photos[photos.length - 1] ?? photos[0]} />
+          <AMStory4_T4_Slide5 data={data} photo={photos[photos.length - 1] ?? photos[0]} photos={photos} />
         </div>
       </div>
     </div>

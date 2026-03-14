@@ -614,18 +614,27 @@ export const AMStory4_T4_Slide4 = ({
 };
 
 /* ─────────────────────────────────────────────────────────────────
-   SLIDE 5 — Dark Luxury CTA
-   Layout: foto full-bleed · overlay gradiente · logo · preço pill ·
-           card glassmorphism com corretor + WhatsApp · footer website
+   SLIDE 5 — Dark Gallery CTA
+   Layout: bento 5 fotos (1 hero + 2+2) · gradiente · logo · specs ·
+           price pill laranja · card glassmorphism corretor
    ───────────────────────────────────────────────────────────────── */
 export const AMStory4_T4_Slide5 = ({
   data,
   photo,
+  photos,
 }: {
   data: AMPropertyData;
   photo?: string;
+  photos?: string[];
 }) => {
   const price = data.isRental ? data.rentalPrice : data.salePrice;
+  const imgs = photos && photos.length > 0 ? photos : photo ? [photo] : [];
+  const img = (i: number) => imgs[i] ?? imgs[0] ?? undefined;
+
+  const GAP = 3;
+  const HERO_H = 158;
+  const ROW_H = 82;
+  const PHOTO_ZONE = HERO_H + GAP + ROW_H + GAP + ROW_H; // 410px
 
   return (
     <div style={{
@@ -633,133 +642,156 @@ export const AMStory4_T4_Slide5 = ({
       backgroundColor: '#0a0f1e', fontFamily: 'Arial, sans-serif', overflow: 'hidden',
     }}>
 
-      {/* ── Foto full-bleed como fundo ── */}
-      {photo && (
-        <img src={photo} alt="" style={{
-          position: 'absolute', inset: 0, width: '100%', height: '100%',
-          objectFit: 'cover', opacity: 0.45,
+      {/* ── Bento 5 fotos no topo ── */}
+      <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: PHOTO_ZONE }}>
+        {/* Linha 1 — hero full width */}
+        <div style={{ height: HERO_H, overflow: 'hidden' }}>
+          {img(0) ? (
+            <img src={img(0)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+          ) : (
+            <div style={{ width: '100%', height: '100%', backgroundColor: '#1e293b' }} />
+          )}
+        </div>
+        {/* Linha 2 — 2 fotos (55/45) */}
+        <div style={{ display: 'flex', gap: GAP, marginTop: GAP, height: ROW_H }}>
+          <div style={{ flex: 11, overflow: 'hidden' }}>
+            {img(1) ? (
+              <img src={img(1)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+            ) : (
+              <div style={{ width: '100%', height: '100%', backgroundColor: '#1e293b' }} />
+            )}
+          </div>
+          <div style={{ flex: 9, overflow: 'hidden' }}>
+            {img(2) ? (
+              <img src={img(2)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+            ) : (
+              <div style={{ width: '100%', height: '100%', backgroundColor: '#1e293b' }} />
+            )}
+          </div>
+        </div>
+        {/* Linha 3 — 2 fotos (45/55) invertido */}
+        <div style={{ display: 'flex', gap: GAP, marginTop: GAP, height: ROW_H }}>
+          <div style={{ flex: 9, overflow: 'hidden' }}>
+            {img(3) ? (
+              <img src={img(3)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+            ) : (
+              <div style={{ width: '100%', height: '100%', backgroundColor: '#1e293b' }} />
+            )}
+          </div>
+          <div style={{ flex: 11, overflow: 'hidden' }}>
+            {img(4) ? (
+              <img src={img(4)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+            ) : (
+              <div style={{ width: '100%', height: '100%', backgroundColor: '#1e293b' }} />
+            )}
+          </div>
+        </div>
+        {/* Gradiente suavizando a transição foto → fundo escuro */}
+        <div style={{
+          position: 'absolute', bottom: 0, left: 0, right: 0, height: 80,
+          background: 'linear-gradient(to bottom, transparent, #0a0f1e)',
         }} />
-      )}
+      </div>
 
-      {/* ── Gradiente dramático de baixo pra cima ── */}
+      {/* ── Conteúdo sobre o fundo escuro ── */}
       <div style={{
-        position: 'absolute', inset: 0,
-        background: 'linear-gradient(to top, #0a0f1e 55%, rgba(10,15,30,0.55) 78%, rgba(10,15,30,0.15) 100%)',
-      }} />
-
-      {/* ── Acento laranja sutil no topo ── */}
-      <div style={{
-        position: 'absolute', top: -120, left: -60, width: 300, height: 300,
-        borderRadius: '50%',
-        background: 'radial-gradient(circle, rgba(244,121,32,0.22) 0%, transparent 70%)',
-      }} />
-
-      {/* ── Conteúdo ── */}
-      <div style={{ position: 'relative', zIndex: 5, height: '100%', display: 'flex', flexDirection: 'column' }}>
-
-        {/* Topo: logo + bairro */}
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', paddingTop: 32, gap: 10 }}>
-          <Logo size={100} white />
+        position: 'absolute', top: PHOTO_ZONE - 30, left: 0, right: 0, bottom: 0,
+        zIndex: 5, display: 'flex', flexDirection: 'column', padding: '0 16px 18px',
+      }}>
+        {/* Logo + bairro centralizados */}
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6, marginBottom: 10 }}>
+          <Logo size={82} white />
           {data.neighborhood && (
-            <div style={{
-              backgroundColor: 'rgba(244,121,32,0.9)', borderRadius: 30,
-              padding: '4px 16px', display: 'flex', alignItems: 'center', gap: 5,
-            }}>
-              <span style={{ fontSize: 10 }}>📍</span>
-              <span style={{ color: 'white', fontSize: 10, fontWeight: 700 }}>{data.neighborhood}</span>
+            <div style={{ backgroundColor: 'rgba(244,121,32,0.92)', borderRadius: 30, padding: '3px 14px', display: 'flex', alignItems: 'center', gap: 4 }}>
+              <span style={{ fontSize: 9 }}>📍</span>
+              <span style={{ color: 'white', fontSize: 9, fontWeight: 700 }}>{data.neighborhood}</span>
             </div>
           )}
         </div>
 
-        {/* Meio: título + specs */}
-        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '0 22px', gap: 14 }}>
-          <p style={{
-            color: 'white', fontSize: 22, fontWeight: 900, textAlign: 'center',
-            margin: 0, lineHeight: 1.25, textShadow: '0 2px 12px rgba(0,0,0,0.5)',
-          }}>
-            {data.title || 'Apartamento Disponível'}
+        {/* Título */}
+        <p style={{
+          color: 'white', fontSize: 17, fontWeight: 900, textAlign: 'center',
+          margin: '0 0 8px', lineHeight: 1.25,
+        }}>
+          {data.title || 'Apartamento Disponível'}
+        </p>
+
+        {/* Spec chips */}
+        <div style={{ display: 'flex', gap: 5, flexWrap: 'wrap', justifyContent: 'center', marginBottom: 10 }}>
+          {data.bedrooms > 0 && (
+            <div style={{ backgroundColor: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.18)', borderRadius: 20, padding: '4px 10px' }}>
+              <span style={{ color: 'white', fontSize: 9, fontWeight: 700 }}>🛏 {data.bedrooms} Qto{data.bedrooms > 1 ? 's' : ''}</span>
+            </div>
+          )}
+          {data.area > 0 && (
+            <div style={{ backgroundColor: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.18)', borderRadius: 20, padding: '4px 10px' }}>
+              <span style={{ color: 'white', fontSize: 9, fontWeight: 700 }}>📐 {data.area}m²</span>
+            </div>
+          )}
+          {data.garageSpaces > 0 && (
+            <div style={{ backgroundColor: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.18)', borderRadius: 20, padding: '4px 10px' }}>
+              <span style={{ color: 'white', fontSize: 9, fontWeight: 700 }}>🚗 {data.garageSpaces} Vaga{data.garageSpaces > 1 ? 's' : ''}</span>
+            </div>
+          )}
+          {data.suites > 0 && (
+            <div style={{ backgroundColor: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.18)', borderRadius: 20, padding: '4px 10px' }}>
+              <span style={{ color: 'white', fontSize: 9, fontWeight: 700 }}>🛁 {data.suites} Suíte{data.suites > 1 ? 's' : ''}</span>
+            </div>
+          )}
+        </div>
+
+        {/* Price pill */}
+        <div style={{
+          backgroundColor: '#F47920', borderRadius: 14,
+          padding: '10px 20px', textAlign: 'center', marginBottom: 10,
+          boxShadow: '0 6px 22px rgba(244,121,32,0.45)',
+        }}>
+          <p style={{ color: 'rgba(255,255,255,0.75)', fontSize: 9, margin: '0 0 2px', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
+            {data.isRental ? 'Aluguel mensal' : 'Valor de Venda'}
           </p>
-
-          {/* Spec chips */}
-          <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', justifyContent: 'center' }}>
-            {data.bedrooms > 0 && (
-              <div style={{ backgroundColor: 'rgba(255,255,255,0.12)', border: '1px solid rgba(255,255,255,0.22)', borderRadius: 20, padding: '5px 12px' }}>
-                <span style={{ color: 'white', fontSize: 10, fontWeight: 700 }}>🛏 {data.bedrooms} Qto{data.bedrooms > 1 ? 's' : ''}</span>
-              </div>
-            )}
-            {data.area > 0 && (
-              <div style={{ backgroundColor: 'rgba(255,255,255,0.12)', border: '1px solid rgba(255,255,255,0.22)', borderRadius: 20, padding: '5px 12px' }}>
-                <span style={{ color: 'white', fontSize: 10, fontWeight: 700 }}>📐 {data.area}m²</span>
-              </div>
-            )}
-            {data.garageSpaces > 0 && (
-              <div style={{ backgroundColor: 'rgba(255,255,255,0.12)', border: '1px solid rgba(255,255,255,0.22)', borderRadius: 20, padding: '5px 12px' }}>
-                <span style={{ color: 'white', fontSize: 10, fontWeight: 700 }}>🚗 {data.garageSpaces} Vaga{data.garageSpaces > 1 ? 's' : ''}</span>
-              </div>
-            )}
-            {data.suites > 0 && (
-              <div style={{ backgroundColor: 'rgba(255,255,255,0.12)', border: '1px solid rgba(255,255,255,0.22)', borderRadius: 20, padding: '5px 12px' }}>
-                <span style={{ color: 'white', fontSize: 10, fontWeight: 700 }}>🛁 {data.suites} Suíte{data.suites > 1 ? 's' : ''}</span>
-              </div>
-            )}
-          </div>
-
-          {/* Price pill grande */}
-          <div style={{
-            backgroundColor: '#F47920', borderRadius: 16,
-            padding: '12px 24px', textAlign: 'center',
-            boxShadow: '0 8px 28px rgba(244,121,32,0.45)',
-          }}>
-            <p style={{ color: 'rgba(255,255,255,0.75)', fontSize: 9, margin: '0 0 2px', textTransform: 'uppercase', letterSpacing: '0.12em' }}>
-              {data.isRental ? 'Aluguel mensal' : 'Valor de Venda'}
+          <p style={{ color: 'white', fontSize: 22, fontWeight: 900, margin: 0, lineHeight: 1 }}>
+            {formatPrice(price)}
+          </p>
+          {(data.acceptsFinancing || data.acceptsFGTS) && (
+            <p style={{ color: 'rgba(255,255,255,0.85)', fontSize: 9, margin: '3px 0 0', fontWeight: 600 }}>
+              {[data.acceptsFinancing && '✓ Financiamento', data.acceptsFGTS && '✓ FGTS'].filter(Boolean).join(' • ')}
             </p>
-            <p style={{ color: 'white', fontSize: 26, fontWeight: 900, margin: 0, lineHeight: 1 }}>
-              {formatPrice(price)}
-            </p>
-            {(data.acceptsFinancing || data.acceptsFGTS) && (
-              <p style={{ color: 'rgba(255,255,255,0.85)', fontSize: 9, margin: '4px 0 0', fontWeight: 600 }}>
-                {[data.acceptsFinancing && '✓ Financiamento', data.acceptsFGTS && '✓ FGTS'].filter(Boolean).join(' • ')}
+          )}
+        </div>
+
+        {/* Card corretor glassmorphism */}
+        <div style={{
+          backgroundColor: 'rgba(255,255,255,0.07)',
+          border: '1px solid rgba(255,255,255,0.13)',
+          borderRadius: 18, padding: '12px 16px',
+        }}>
+          <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: 8, margin: '0 0 4px', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
+            Fale com o corretor
+          </p>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
+            <div>
+              <p style={{ color: 'white', fontSize: 13, fontWeight: 800, margin: 0 }}>
+                {data.brokerName || 'Iury Sampaio'}
               </p>
-            )}
-          </div>
-        </div>
-
-        {/* Rodapé: glassmorphism card corretor */}
-        <div style={{ padding: '0 16px 20px' }}>
-          <div style={{
-            backgroundColor: 'rgba(255,255,255,0.08)',
-            border: '1px solid rgba(255,255,255,0.15)',
-            borderRadius: 20, padding: '16px 18px',
-            backdropFilter: 'blur(12px)',
-          }}>
-            <p style={{ color: 'rgba(255,255,255,0.55)', fontSize: 9, margin: '0 0 4px', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
-              Fale com o corretor
-            </p>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
-              <div>
-                <p style={{ color: 'white', fontSize: 15, fontWeight: 800, margin: 0 }}>
-                  {data.brokerName || 'Iury Sampaio'}
-                </p>
-                <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: 9, margin: 0 }}>Creci 3968 PF</p>
-              </div>
-              <div style={{
-                backgroundColor: '#25D366', borderRadius: 12,
-                padding: '6px 14px', display: 'flex', alignItems: 'center', gap: 6,
-                boxShadow: '0 4px 14px rgba(37,211,102,0.4)',
-              }}>
-                <span style={{ fontSize: 14 }}>💬</span>
-                <span style={{ color: 'white', fontSize: 12, fontWeight: 800 }}>
-                  {data.brokerPhone || '(92) 98839-1098'}
-                </span>
-              </div>
+              <p style={{ color: 'rgba(255,255,255,0.45)', fontSize: 8, margin: 0 }}>Creci 3968 PF</p>
             </div>
-            <div style={{ borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: 10, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <span style={{ color: 'rgba(255,255,255,0.45)', fontSize: 9 }}>🌐 www.apartamentosmanaus.com</span>
-              <span style={{ color: 'rgba(255,255,255,0.35)', fontSize: 8 }}>facebook.com/ApartamentosManaus</span>
+            <div style={{
+              backgroundColor: '#25D366', borderRadius: 10,
+              padding: '5px 12px', display: 'flex', alignItems: 'center', gap: 5,
+              boxShadow: '0 4px 12px rgba(37,211,102,0.4)',
+            }}>
+              <span style={{ fontSize: 12 }}>💬</span>
+              <span style={{ color: 'white', fontSize: 11, fontWeight: 800 }}>
+                {data.brokerPhone || '(92) 98839-1098'}
+              </span>
             </div>
           </div>
+          <div style={{ borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: 8, display: 'flex', justifyContent: 'space-between' }}>
+            <span style={{ color: 'rgba(255,255,255,0.4)', fontSize: 8 }}>🌐 www.apartamentosmanaus.com</span>
+            <span style={{ color: 'rgba(255,255,255,0.3)', fontSize: 7.5 }}>facebook.com/ApartamentosManaus</span>
+          </div>
         </div>
-
       </div>
     </div>
   );
