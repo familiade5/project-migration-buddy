@@ -97,19 +97,20 @@ export const AMStory4_T4_Slide1 = ({
           </div>
         </div>
 
-        {/* CAIXA logo card — tipografia fiel à identidade visual */}
+        {/* CAIXA — fundo branco + borda, texto azul fiel à identidade da marca */}
         {data.acceptsFinancing && (
           <div style={{
-            width: 72, backgroundColor: '#003E7E', borderRadius: 10,
+            width: 72, backgroundColor: '#ffffff', borderRadius: 10,
+            border: '1.5px solid #e2e8f0',
             display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '8px 6px',
-            boxShadow: '0 1px 6px rgba(0,0,0,0.15)',
+            boxShadow: '0 1px 6px rgba(0,0,0,0.08)',
           }}>
             <span style={{
-              color: '#ffffff',
-              fontSize: 16,
+              color: '#005CA9',
+              fontSize: 17,
               fontWeight: 900,
               fontFamily: 'Arial Black, Arial, sans-serif',
-              letterSpacing: '0.04em',
+              letterSpacing: '0.03em',
               textAlign: 'center',
               lineHeight: 1,
             }}>
@@ -155,30 +156,39 @@ export const AMStory4_T4_Slide1 = ({
               <div style={{ width: '100%', height: '100%', backgroundColor: '#e2e8f0' }} />
             )}
           </div>
-          {/* Price card azul */}
+          {/* Price card azul — idêntico ao feed */}
           <div style={{
             flex: 1, height: 100, backgroundColor: '#1B5EA6', borderRadius: 10,
             display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '8px 12px',
           }}>
-            <div style={{ display: 'flex', alignItems: 'baseline', gap: 1, marginBottom: 4 }}>
-              <span style={{ color: 'rgba(255,255,255,0.8)', fontSize: 10, fontWeight: 600 }}>{priceParts.prefix} </span>
-              <span style={{ color: 'white', fontSize: 20, fontWeight: 900, lineHeight: 1 }}>{priceParts.main}</span>
-              <span style={{ color: 'rgba(255,255,255,0.7)', fontSize: 10 }}>{priceParts.cents}</span>
+            {/* Pill VENDA/LOCAÇÃO */}
+            <div style={{
+              display: 'inline-block', alignSelf: 'flex-start',
+              color: 'white', fontWeight: 700, fontSize: 8, letterSpacing: '0.08em',
+              backgroundColor: 'rgba(255,255,255,0.2)', border: '1px solid rgba(255,255,255,0.4)',
+              borderRadius: 20, padding: '1px 8px', marginBottom: 4,
+            }}>
+              {data.isRental ? 'LOCAÇÃO' : 'VENDA'}
             </div>
-            {/* À vista / barra / Aceita Financiamento — igual ao feed */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: 3, flexWrap: 'wrap' }}>
-              {data.cashOnly && (
-                <span style={{ color: 'rgba(255,255,255,0.9)', fontSize: 8, fontWeight: 700 }}>À vista</span>
-              )}
-              {data.cashOnly && data.acceptsFinancing && (
-                <span style={{ color: 'rgba(255,255,255,0.55)', fontSize: 8 }}>|</span>
-              )}
-              {data.acceptsFinancing && (
-                <span style={{ color: 'rgba(255,255,255,0.9)', fontSize: 8, fontWeight: 700 }}>Aceita Financiamento</span>
-              )}
-              {!data.cashOnly && !data.acceptsFinancing && (
-                <span style={{ color: 'rgba(255,255,255,0.7)', fontSize: 8 }}>Consulte condições</span>
-              )}
+            {/* Preço */}
+            <div style={{ display: 'flex', alignItems: 'baseline', gap: 1, color: 'white' }}>
+              <span style={{ fontSize: 10, opacity: 0.75, marginRight: 1 }}>R$</span>
+              <span style={{ fontSize: 19, fontWeight: 700, lineHeight: 1 }}>
+                {priceParts.main || 'Consulte'}
+              </span>
+              {priceParts.cents && <span style={{ fontSize: 10, opacity: 0.75 }}>{priceParts.cents}</span>}
+            </div>
+            {/* Separador + linha de pagamento — igual ao feed */}
+            <div style={{ borderTop: '1px solid rgba(255,255,255,0.2)', marginTop: 4, paddingTop: 3 }}>
+              <p style={{ color: 'white', fontSize: 8, opacity: 0.9, margin: 0, lineHeight: 1.3 }}>
+                {data.isRental
+                  ? 'Locação'
+                  : [
+                      'À vista',
+                      data.acceptsFinancing && 'Aceita financiamento',
+                    ].filter(Boolean).join(' | ')
+                }
+              </p>
             </div>
           </div>
         </div>
