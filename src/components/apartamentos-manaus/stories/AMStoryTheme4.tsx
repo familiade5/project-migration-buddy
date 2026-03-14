@@ -97,7 +97,7 @@ export const AMStory4_T4_Slide1 = ({
           </div>
         </div>
 
-        {/* CAIXA — fundo branco + borda, texto azul fiel à identidade da marca */}
+        {/* CAIXA — fundo branco + borda, X bicolor fiel à identidade da Caixa Econômica Federal */}
         {data.acceptsFinancing && (
           <div style={{
             width: 72, backgroundColor: '#ffffff', borderRadius: 10,
@@ -106,15 +106,20 @@ export const AMStory4_T4_Slide1 = ({
             boxShadow: '0 1px 6px rgba(0,0,0,0.08)',
           }}>
             <span style={{
-              color: '#005CA9',
-              fontSize: 17,
-              fontWeight: 900,
+              fontSize: 17, fontWeight: 900,
               fontFamily: 'Arial Black, Arial, sans-serif',
-              letterSpacing: '0.03em',
-              textAlign: 'center',
-              lineHeight: 1,
+              letterSpacing: '0.03em', lineHeight: 1,
+              display: 'inline-flex', alignItems: 'center',
             }}>
-              CAIXA
+              <span style={{ color: '#005CA9' }}>CAI</span>
+              {/* X bicolor: metade esq azul + metade dir laranja via gradiente */}
+              <span style={{
+                background: 'linear-gradient(90deg, #005CA9 50%, #F7A800 50%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text',
+              }}>X</span>
+              <span style={{ color: '#005CA9' }}>A</span>
             </span>
           </div>
         )}
