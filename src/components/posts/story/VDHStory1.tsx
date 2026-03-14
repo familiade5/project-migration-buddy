@@ -1,5 +1,5 @@
 import { PropertyData } from '@/types/property';
-import { MapPin, Bed, Maximize2, Car, ChevronRight } from 'lucide-react';
+import { Bed, Maximize2, Car, CheckCircle2, Building2 } from 'lucide-react';
 import logoVDH from '@/assets/logo-vdh.jpg';
 
 interface VDHStory1Props {
@@ -17,7 +17,6 @@ export const VDHStory1 = ({ data, photo }: VDHStory1Props) => {
     return area ? `${area}m²` : null;
   };
 
-  const title = data.propertyName?.trim() || data.type || 'Imóvel';
   const acceptsFGTS = data.acceptsFGTS || data.canUseFGTS;
   const acceptsFinancing = data.acceptsFinancing || data.paymentMethod?.toLowerCase().includes('financ');
 
@@ -35,13 +34,16 @@ export const VDHStory1 = ({ data, photo }: VDHStory1Props) => {
   ].filter(Boolean) as { icon: any; value: string; label: string }[];
 
   const locationLine = [data.neighborhood, data.city, data.state].filter(Boolean).join(' · ');
+  const propertyType = data.type || 'Imóvel';
+
+  // Gold border style reused
+  const goldBorder = '2px solid rgba(212,175,55,0.7)';
+  const goldShadow = '0 4px 24px rgba(180,140,20,0.35), inset 0 1px 0 rgba(255,220,80,0.18)';
 
   return (
-    <div className="post-template-story relative overflow-hidden" style={{ background: '#080c14' }}>
+    <div className="post-template-story relative overflow-hidden" style={{ background: '#1a2415', fontFamily: 'system-ui, sans-serif' }}>
 
-      {/* ══════════════════════════════════
-          FULL-BLEED PHOTO
-      ══════════════════════════════════ */}
+      {/* ── FULL-BLEED PHOTO ── */}
       {photo ? (
         <div
           className="absolute inset-0"
@@ -55,263 +57,196 @@ export const VDHStory1 = ({ data, photo }: VDHStory1Props) => {
         <div
           className="absolute inset-0"
           style={{
-            background: 'linear-gradient(160deg, #1a2a3a 0%, #0d1a28 45%, #060c14 100%)',
+            background: 'linear-gradient(160deg, #2a3d1a 0%, #1a2a10 50%, #0e1a08 100%)',
           }}
-        >
-          {/* Subtle texture when no photo */}
-          <div
-            className="absolute inset-0 opacity-[0.06]"
-            style={{
-              backgroundImage: `repeating-linear-gradient(
-                45deg,
-                rgba(255,255,255,0.5) 0px,
-                rgba(255,255,255,0.5) 1px,
-                transparent 1px,
-                transparent 60px
-              )`,
-            }}
-          />
-          <div
-            className="absolute"
-            style={{
-              width: '700px', height: '700px',
-              borderRadius: '50%',
-              top: '100px', right: '-200px',
-              background: 'radial-gradient(circle, rgba(232,119,34,0.18) 0%, transparent 70%)',
-            }}
-          />
-        </div>
+        />
       )}
 
-      {/* PHOTO gradient — dark on top + very heavy at bottom */}
+      {/* Gradient overlays: top dark + bottom heavy */}
       <div
         className="absolute inset-0"
         style={{
-          background: photo
-            ? 'linear-gradient(to bottom, rgba(8,12,20,0.7) 0%, rgba(8,12,20,0.05) 30%, rgba(8,12,20,0.1) 50%, rgba(8,12,20,0.88) 72%, rgba(8,12,20,1) 100%)'
-            : 'none',
+          background: 'linear-gradient(to bottom, rgba(15,22,8,0.82) 0%, rgba(15,22,8,0.2) 22%, rgba(15,22,8,0.15) 45%, rgba(15,22,8,0.75) 65%, rgba(12,18,6,0.97) 100%)',
         }}
       />
 
-      {/* ══════════════════════════════════
-          TOP: BRAND BAR
-      ══════════════════════════════════ */}
+      {/* ── TOP: ACHADO DO DIA + VDH LOGO ── */}
       <div
-        className="absolute z-20 flex items-center justify-between"
-        style={{ top: '50px', left: '50px', right: '50px' }}
+        className="absolute z-20 flex flex-col items-center"
+        style={{ top: '52px', left: '44px', right: '44px', gap: '18px' }}
       >
-        {/* VDH logo */}
+        {/* VDH brand row */}
+        <div className="flex items-center justify-between w-full">
+          <div className="flex items-center gap-2"
+            style={{
+              background: 'rgba(10,16,6,0.7)',
+              backdropFilter: 'blur(12px)',
+              border: '1px solid rgba(212,175,55,0.35)',
+              borderRadius: '100px',
+              padding: '10px 20px 10px 12px',
+            }}
+          >
+            <img src={logoVDH} alt="VDH" style={{ height: '30px', width: '30px', borderRadius: '6px', objectFit: 'cover' }} />
+            <span style={{ fontSize: '16px', color: 'rgba(255,255,255,0.85)', fontWeight: 600, letterSpacing: '0.02em' }}>
+              Venda Direta Hoje
+            </span>
+          </div>
+          {/* Imóvel Caixa badge */}
+          <div
+            style={{
+              background: 'linear-gradient(135deg, #1a2a12, #243318)',
+              border: goldBorder,
+              borderRadius: '14px',
+              padding: '10px 20px',
+              boxShadow: goldShadow,
+            }}
+          >
+            <p style={{ fontSize: '11px', color: 'rgba(212,175,55,0.7)', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', lineHeight: 1, marginBottom: '3px' }}>
+              Imóvel
+            </p>
+            <p style={{ fontSize: '22px', color: '#d4b84a', fontWeight: 900, lineHeight: 1 }}>CAIXA</p>
+          </div>
+        </div>
+
+        {/* 🔥 ACHADO DO DIA pill */}
         <div
-          className="flex items-center gap-3"
           style={{
-            background: 'rgba(255,255,255,0.08)',
-            backdropFilter: 'blur(20px)',
-            WebkitBackdropFilter: 'blur(20px)',
-            border: '1px solid rgba(255,255,255,0.14)',
+            background: 'linear-gradient(135deg, #1b2a10, #243318)',
+            border: goldBorder,
             borderRadius: '100px',
-            padding: '14px 26px 14px 18px',
+            padding: '16px 36px',
+            boxShadow: goldShadow,
+            alignSelf: 'center',
           }}
         >
-          <img
-            src={logoVDH}
-            alt="VDH"
-            style={{ height: '36px', width: '36px', borderRadius: '8px', objectFit: 'cover' }}
-          />
-          <span style={{ fontSize: '20px', color: 'rgba(255,255,255,0.85)', fontWeight: 600, letterSpacing: '0.02em' }}>
-            Venda Direta Hoje
+          <span style={{ fontSize: '34px', color: '#f0d060', fontWeight: 900, letterSpacing: '0.04em', textTransform: 'uppercase' }}>
+            🔥 ACHADO DO DIA!
           </span>
         </div>
 
-        {/* Caixa badge */}
-        <div
-          style={{
-            background: 'linear-gradient(135deg, #f5a623, #d4660f)',
-            borderRadius: '14px',
-            padding: '12px 24px',
-            boxShadow: '0 6px 28px rgba(232,100,15,0.5)',
-          }}
-        >
-          <p style={{ fontSize: '15px', color: 'rgba(255,255,255,0.75)', fontWeight: 600, lineHeight: 1, letterSpacing: '0.1em' }}>IMÓVEL</p>
-          <p style={{ fontSize: '28px', color: '#fff', fontWeight: 900, lineHeight: 1 }}>CAIXA</p>
-        </div>
-      </div>
-
-      {/* ══════════════════════════════════
-          MIDDLE: DISCOUNT HERO
-      ══════════════════════════════════ */}
-      {hasDiscount && (
-        <div
-          className="absolute z-20 flex flex-col items-center justify-center"
-          style={{
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -62%)',
-          }}
-        >
-          {/* Glow ring */}
+        {/* Discount row */}
+        {hasDiscount && (
           <div
             style={{
-              position: 'relative',
-              width: '340px',
-              height: '340px',
-              borderRadius: '50%',
-              background: 'linear-gradient(135deg, rgba(232,100,15,0.22), rgba(245,166,35,0.12))',
-              border: '2px solid rgba(232,100,15,0.35)',
-              boxShadow: '0 0 80px rgba(232,100,15,0.3), inset 0 0 60px rgba(232,100,15,0.08)',
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              justifyContent: 'center',
-              backdropFilter: 'blur(8px)',
-              WebkitBackdropFilter: 'blur(8px)',
+              background: 'linear-gradient(135deg, #1b2a10, #243318)',
+              border: goldBorder,
+              borderRadius: '18px',
+              padding: '16px 40px',
+              boxShadow: goldShadow,
+              alignSelf: 'center',
+              textAlign: 'center',
             }}
           >
-            <p style={{ fontSize: '22px', color: '#f5a623', fontWeight: 700, letterSpacing: '0.22em', textTransform: 'uppercase', lineHeight: 1, marginBottom: '4px' }}>
-              desconto de
+            <p style={{ fontSize: '72px', color: '#f5d060', fontWeight: 900, lineHeight: 1, letterSpacing: '-0.01em' }}>
+              {discountNum}% OFF
             </p>
-            <p style={{
-              fontSize: '140px',
-              color: '#fff',
-              fontWeight: 900,
-              lineHeight: 0.85,
-              textShadow: '0 0 60px rgba(232,100,15,0.6)',
-            }}>
-              {discountNum}%
-            </p>
-            <p style={{ fontSize: '26px', color: '#f5a623', fontWeight: 800, letterSpacing: '0.3em', textTransform: 'uppercase', lineHeight: 1, marginTop: '6px' }}>
-              OFF
-            </p>
+            {locationLine && (
+              <p style={{ fontSize: '22px', color: 'rgba(255,255,255,0.7)', fontWeight: 500, marginTop: '4px' }}>
+                {locationLine}
+              </p>
+            )}
           </div>
-        </div>
-      )}
+        )}
+      </div>
 
-      {/* ══════════════════════════════════
-          BOTTOM INFO CARD
-      ══════════════════════════════════ */}
+      {/* ── BOTTOM CARD ── */}
       <div
         className="absolute z-20"
-        style={{
-          bottom: '50px',
-          left: '44px',
-          right: '44px',
-        }}
+        style={{ bottom: '44px', left: '44px', right: '44px' }}
       >
         <div
           style={{
-            background: 'rgba(8,12,20,0.82)',
-            backdropFilter: 'blur(24px)',
-            WebkitBackdropFilter: 'blur(24px)',
+            background: 'linear-gradient(160deg, rgba(18,28,10,0.96), rgba(12,20,6,0.98))',
+            border: goldBorder,
             borderRadius: '28px',
-            border: '1px solid rgba(255,255,255,0.1)',
             overflow: 'hidden',
+            boxShadow: goldShadow,
           }}
         >
-          {/* Top content padding */}
-          <div style={{ padding: '36px 40px 0' }}>
+          {/* Inner content */}
+          <div style={{ padding: '30px 36px 24px' }}>
 
-            {/* Type tag */}
-            <div className="flex items-center gap-3" style={{ marginBottom: '10px' }}>
-              <div style={{ width: '28px', height: '3px', background: '#e87722', borderRadius: '100px' }} />
-              <span style={{ fontSize: '18px', color: '#e87722', fontWeight: 700, letterSpacing: '0.2em', textTransform: 'uppercase' }}>
-                {data.type || 'Imóvel'}
-              </span>
+            {/* Property type + specs row */}
+            <div className="flex items-center gap-3" style={{ marginBottom: '18px' }}>
+              <Building2 style={{ width: '34px', height: '34px', color: '#d4b84a', flexShrink: 0 }} />
+              <div>
+                <p style={{ fontSize: '22px', color: '#d4b84a', fontWeight: 700, lineHeight: 1, textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+                  {propertyType}
+                </p>
+                {specs.length > 0 && (
+                  <div className="flex items-center gap-3" style={{ marginTop: '6px' }}>
+                    {specs.map((s, i) => {
+                      const Icon = s.icon;
+                      return (
+                        <span key={i} className="flex items-center gap-1">
+                          {i > 0 && <span style={{ color: 'rgba(212,175,55,0.3)', fontSize: '18px' }}>·</span>}
+                          <Icon style={{ width: '18px', height: '18px', color: 'rgba(212,175,55,0.7)' }} />
+                          <span style={{ fontSize: '20px', color: '#fff', fontWeight: 600 }}>{s.value} {s.label}</span>
+                        </span>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
             </div>
 
-            {/* Title */}
-            <h1 style={{
-              fontSize: title.length > 22 ? '46px' : '58px',
-              color: '#fff',
-              fontWeight: 800,
-              lineHeight: 1.05,
-              marginBottom: '14px',
-            }}>
-              {title}
-            </h1>
+            {/* FGTS / Financing badges */}
+            {(acceptsFGTS || acceptsFinancing) && (
+              <div className="flex flex-col gap-2" style={{ marginBottom: '18px' }}>
+                {acceptsFGTS && (
+                  <div className="flex items-center gap-2">
+                    <CheckCircle2 style={{ width: '24px', height: '24px', color: '#7ed348', flexShrink: 0 }} />
+                    <span style={{ fontSize: '22px', color: 'rgba(255,255,255,0.9)', fontWeight: 500 }}>
+                      <strong style={{ color: '#a8e070' }}>Aceita</strong> FGTS
+                    </span>
+                  </div>
+                )}
+                {acceptsFinancing && (
+                  <div className="flex items-center gap-2">
+                    <CheckCircle2 style={{ width: '24px', height: '24px', color: '#7ed348', flexShrink: 0 }} />
+                    <span style={{ fontSize: '22px', color: 'rgba(255,255,255,0.9)', fontWeight: 500 }}>
+                      <strong style={{ color: '#a8e070' }}>Aceita</strong> financiamento
+                    </span>
+                  </div>
+                )}
+              </div>
+            )}
 
-            {/* Location */}
-            {locationLine && (
-              <div className="flex items-center gap-2" style={{ marginBottom: '24px' }}>
-                <MapPin style={{ width: '22px', height: '22px', color: '#e87722', flexShrink: 0 }} />
-                <span style={{ fontSize: '22px', color: 'rgba(255,255,255,0.6)', fontWeight: 400 }}>
-                  {locationLine}
+            {/* Price pill */}
+            {price && (
+              <div
+                style={{
+                  background: 'linear-gradient(135deg, #c8a832, #e8c840)',
+                  borderRadius: '100px',
+                  padding: '18px 36px',
+                  display: 'inline-block',
+                  marginBottom: '20px',
+                  boxShadow: '0 4px 20px rgba(200,168,50,0.4)',
+                }}
+              >
+                <span style={{ fontSize: '46px', color: '#1a2410', fontWeight: 900, lineHeight: 1 }}>
+                  {price}
                 </span>
               </div>
             )}
-
-            {/* Specs */}
-            {specs.length > 0 && (
-              <div className="flex items-center gap-4" style={{ marginBottom: '28px' }}>
-                {specs.map((s, i) => {
-                  const Icon = s.icon;
-                  return (
-                    <div key={i} className="flex items-center gap-2">
-                      {i > 0 && (
-                        <div style={{ width: '4px', height: '4px', borderRadius: '50%', background: 'rgba(255,255,255,0.2)', marginRight: '8px' }} />
-                      )}
-                      <Icon style={{ width: '26px', height: '26px', color: '#e87722' }} />
-                      <span style={{ fontSize: '26px', color: '#fff', fontWeight: 700 }}>{s.value}</span>
-                      <span style={{ fontSize: '20px', color: 'rgba(255,255,255,0.45)', fontWeight: 400 }}>{s.label}</span>
-                    </div>
-                  );
-                })}
-              </div>
-            )}
-
-            {/* Divider */}
-            <div style={{ height: '1px', background: 'rgba(255,255,255,0.08)', marginBottom: '24px' }} />
-
-            {/* Price + badges */}
-            <div className="flex items-center justify-between" style={{ marginBottom: '28px' }}>
-              <div>
-                {price ? (
-                  <>
-                    <p style={{ fontSize: '16px', color: 'rgba(255,255,255,0.35)', fontWeight: 500, letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '2px' }}>
-                      a partir de
-                    </p>
-                    <p style={{ fontSize: '50px', color: '#e87722', fontWeight: 900, lineHeight: 1 }}>
-                      {price}
-                    </p>
-                  </>
-                ) : (
-                  <p style={{ fontSize: '28px', color: 'rgba(255,255,255,0.5)', fontWeight: 500 }}>Consulte condições</p>
-                )}
-              </div>
-
-              <div className="flex flex-col gap-2 items-end">
-                {acceptsFGTS && (
-                  <span style={{
-                    fontSize: '19px', color: '#4ade80', fontWeight: 700,
-                    background: 'rgba(34,197,94,0.12)', border: '1px solid rgba(34,197,94,0.3)',
-                    borderRadius: '100px', padding: '6px 16px',
-                  }}>
-                    ✓ Aceita FGTS
-                  </span>
-                )}
-                {acceptsFinancing && (
-                  <span style={{
-                    fontSize: '19px', color: '#60a5fa', fontWeight: 700,
-                    background: 'rgba(96,165,250,0.12)', border: '1px solid rgba(96,165,250,0.3)',
-                    borderRadius: '100px', padding: '6px 16px',
-                  }}>
-                    ✓ Financiável
-                  </span>
-                )}
-              </div>
-            </div>
           </div>
 
-          {/* CTA button full-width */}
+          {/* CTA full-width */}
           <div
             className="flex items-center justify-center gap-3"
             style={{
-              background: 'linear-gradient(90deg, #e87722 0%, #f5a623 100%)',
-              padding: '30px 40px',
+              background: 'linear-gradient(135deg, #1e3a12, #2a4d18)',
+              borderTop: goldBorder,
+              padding: '26px 36px',
             }}
           >
-            <span style={{ fontSize: '26px', color: '#fff', fontWeight: 800, letterSpacing: '0.05em' }}>
-              QUERO SABER MAIS
+            {/* WhatsApp icon */}
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="#4ade80">
+              <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+            </svg>
+            <span style={{ fontSize: '28px', color: '#fff', fontWeight: 800, letterSpacing: '0.05em' }}>
+              Falar com o Corretor
             </span>
-            <ChevronRight style={{ width: '30px', height: '30px', color: '#fff' }} />
           </div>
         </div>
       </div>
