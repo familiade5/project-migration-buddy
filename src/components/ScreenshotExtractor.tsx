@@ -171,12 +171,12 @@ export const ScreenshotExtractor = ({ onExtract }: ScreenshotExtractorProps) => 
 
           {/* Extracted fields */}
           {extractedFields.length > 0 && (
-            <div className="bg-green-500/10 border border-green-500/30 rounded-xl p-4">
+            <div className="bg-accent/10 border border-accent/30 rounded-xl p-4">
               <div className="flex items-center gap-2 mb-3">
-                <div className="p-1 rounded-full bg-green-500/20">
-                  <Check className="w-4 h-4 text-green-400" />
+                <div className="p-1 rounded-full bg-accent/20">
+                  <Check className="w-4 h-4 text-accent" />
                 </div>
-                <span className="font-medium text-green-400">
+                <span className="font-medium text-accent">
                   {extractedFields.length} campos extraídos
                 </span>
               </div>
@@ -184,7 +184,7 @@ export const ScreenshotExtractor = ({ onExtract }: ScreenshotExtractorProps) => 
                 {extractedFields.map((field) => (
                   <span
                     key={field}
-                    className="px-2.5 py-1 bg-green-500/15 text-green-400 text-xs rounded-full font-medium"
+                    className="px-2.5 py-1 bg-accent/15 text-accent text-xs rounded-full font-medium"
                   >
                     {field}
                   </span>
