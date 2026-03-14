@@ -270,7 +270,7 @@ export const AMStory4_T4_Slide2 = ({
           <div style={{ backgroundColor: '#F47920', borderRadius: 30, padding: '4px 16px', display: 'flex', alignItems: 'center', gap: 5 }}>
             <span style={{ fontSize: 10 }}>📍</span>
             <span style={{ color: 'white', fontSize: 10, fontWeight: 700 }}>
-              {data.neighborhood}{data.city ? `, ${data.city}` : ''}
+              {data.neighborhood}
             </span>
           </div>
         </div>
