@@ -109,7 +109,13 @@ const Index = () => {
                   <PhotoUpload photos={photos} onChange={setPhotos} onClear={() => setPhotos([])} />
                 ) : (
                   <PhotoSearcher
-                    address={propertyData.fullAddress || `${propertyData.street}, ${propertyData.neighborhood}, ${propertyData.city} - ${propertyData.state}`}
+                    address={propertyData.fullAddress || [
+                      propertyData.street,
+                      propertyData.number,
+                      propertyData.neighborhood,
+                      propertyData.city,
+                      propertyData.state
+                    ].filter(Boolean).join(', ')}
                     propertyType={propertyData.type}
                     onPhotosSelected={(selectedPhotos) => {
                       setPhotos(prev => [...prev, ...selectedPhotos].slice(0, 4));
