@@ -10,14 +10,8 @@ import {
   X,
   Shield,
   MoreVertical,
-  Crown,
-  Gem,
-  Home,
-  LayoutDashboard,
-  Calculator,
-  Key,
   BookOpen,
-  Video,
+  Calculator,
 } from 'lucide-react';
 import {
   DropdownMenu,
