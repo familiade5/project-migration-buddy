@@ -97,27 +97,20 @@ export const AMStory4_T4_Slide1 = ({
           </div>
         </div>
 
-        {/* CAIXA — SVG fiel à identidade visual da Caixa Econômica Federal */}
+        {/* CAIXA — SVG exato conforme modelo fornecido */}
         {data.acceptsFinancing && (
           <div style={{
-            display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-            backgroundColor: '#ffffff', width: 72, height: 72,
-            borderRadius: 10, boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
-            border: '1px solid #e2e8f0', flexShrink: 0,
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            background: '#ffffff', width: 72, height: 72,
+            borderRadius: 14, boxShadow: '0 4px 12px rgba(0,0,0,0.08)', flexShrink: 0,
           }}>
-            <svg width="54" height="22" viewBox="0 0 120 40">
-              {/* C */}
+            <svg width="56" height="22" viewBox="0 0 120 40">
               <text x="0" y="28" fontFamily="Arial, Helvetica, sans-serif" fontWeight="700" fontSize="28" fill="#1F4E8C">C</text>
-              {/* A */}
               <text x="22" y="28" fontFamily="Arial, Helvetica, sans-serif" fontWeight="700" fontSize="28" fill="#1F4E8C">A</text>
-              {/* I */}
-              <text x="47" y="28" fontFamily="Arial, Helvetica, sans-serif" fontWeight="700" fontSize="28" fill="#1F4E8C">I</text>
-              {/* X metade azul */}
-              <polygon points="58,6 66,6 78,34 70,34" fill="#1F4E8C" />
-              {/* X metade laranja */}
-              <polygon points="70,6 78,6 66,34 58,34" fill="#F39200" />
-              {/* A */}
-              <text x="84" y="28" fontFamily="Arial, Helvetica, sans-serif" fontWeight="700" fontSize="28" fill="#1F4E8C">A</text>
+              <text x="44" y="28" fontFamily="Arial, Helvetica, sans-serif" fontWeight="700" fontSize="28" fill="#1F4E8C">I</text>
+              <polygon points="56,6 62,6 74,34 68,34" fill="#1F4E8C" />
+              <polygon points="62,6 70,6 58,34 50,34" fill="#F39200" />
+              <text x="78" y="28" fontFamily="Arial, Helvetica, sans-serif" fontWeight="700" fontSize="28" fill="#1F4E8C">A</text>
             </svg>
           </div>
         )}
