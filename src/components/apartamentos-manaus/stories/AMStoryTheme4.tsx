@@ -697,7 +697,11 @@ export const AMStory4_T4_Slide5 = ({
       }}>
         <Logo size={82} white />
         {data.neighborhood && (
-          <div style={{ backgroundColor: 'rgba(244,121,32,0.95)', borderRadius: 30, padding: '3px 14px', display: 'flex', alignItems: 'center', gap: 4 }}>
+          <div style={{
+            position: 'absolute', top: 14, right: 16,
+            backgroundColor: 'rgba(244,121,32,0.95)', borderRadius: 30, padding: '3px 14px',
+            display: 'flex', alignItems: 'center', gap: 4,
+          }}>
             <span style={{ fontSize: 9 }}>📍</span>
             <span style={{ color: 'white', fontSize: 9, fontWeight: 700 }}>{data.neighborhood}</span>
           </div>
