@@ -14,7 +14,6 @@ export const CaptionGenerator = ({ data }: CaptionGeneratorProps) => {
   const generateCaption = (): string => {
     const lines: string[] = [];
 
-    // Título do imóvel - usa nome do condomínio se disponível
     if (data.propertyName && data.propertyName !== '') {
       lines.push(`🏡 ${data.propertyName.toUpperCase()}`);
     } else if (data.neighborhood && data.neighborhood !== '') {
@@ -24,15 +23,12 @@ export const CaptionGenerator = ({ data }: CaptionGeneratorProps) => {
     }
     lines.push('');
 
-    // Valores
     lines.push(`💰 Valor de Avaliação: ${data.evaluationValue}`);
     lines.push(`🔥 Valor Mínimo de Venda: ${data.minimumValue} (desconto de ${data.discount}%)`);
     lines.push('');
 
-    // Forma de pagamento
     lines.push(`💵 ${data.paymentMethod}`);
     
-    // FGTS e Financiamento
     if (data.acceptsFGTS) {
       lines.push('💼 Aceita FGTS');
     } else {
@@ -44,7 +40,6 @@ export const CaptionGenerator = ({ data }: CaptionGeneratorProps) => {
       lines.push('❌ Não Aceita Financiamento');
     }
     
-    // Entrada facilitada
     if (data.hasEasyEntry && data.entryValue) {
       lines.push(`📥 Entrada Facilitada: ${data.entryValue}`);
     } else if (data.hasEasyEntry) {
@@ -52,56 +47,40 @@ export const CaptionGenerator = ({ data }: CaptionGeneratorProps) => {
     }
     lines.push('');
 
-    // Características do Imóvel
     lines.push('📌 Características do Imóvel:');
     lines.push(`🏠 Tipo: ${data.type}`);
     
     if (data.bedrooms && data.bedrooms !== '0') {
       lines.push(`🛏️ ${data.bedrooms} Quarto${Number(data.bedrooms) > 1 ? 's' : ''}`);
     }
-    if (data.hasSala) {
-      lines.push('🛋️ Sala');
-    }
-    if (data.hasCozinha) {
-      lines.push('🍽️ Cozinha');
-    }
+    if (data.hasSala) lines.push('🛋️ Sala');
+    if (data.hasCozinha) lines.push('🍽️ Cozinha');
     if (data.bathrooms && data.bathrooms !== '0') {
       lines.push(`🚿 ${data.bathrooms} Banheiro${Number(data.bathrooms) > 1 ? 's' : ''}`);
     }
-    if (data.hasAreaServico) {
-      lines.push('🧺 Área de Serviço');
-    }
+    if (data.hasAreaServico) lines.push('🧺 Área de Serviço');
     if (data.garageSpaces && data.garageSpaces !== '0') {
       lines.push(`🚗 ${data.garageSpaces} Vaga${Number(data.garageSpaces) > 1 ? 's' : ''} de Garagem`);
     }
     
-    // Features extras
     data.features.forEach(feature => {
-      if (feature !== 'Vaga de Garagem') { // Já incluído acima
+      if (feature !== 'Vaga de Garagem') {
         const emoji = getFeatureEmoji(feature);
         lines.push(`${emoji} ${feature}`);
       }
     });
     lines.push('');
 
-    // Áreas
     if (data.areaTotal || data.areaPrivativa || data.areaTerreno || data.area) {
-      if (data.areaTotal) {
-        lines.push(`📐 Área Total: ${data.areaTotal} m²`);
-      }
-      if (data.areaPrivativa) {
-        lines.push(`📐 Área Privativa: ${data.areaPrivativa} m²`);
-      }
-      if (data.areaTerreno) {
-        lines.push(`📐 Área do Terreno: ${data.areaTerreno} m²`);
-      }
+      if (data.areaTotal) lines.push(`📐 Área Total: ${data.areaTotal} m²`);
+      if (data.areaPrivativa) lines.push(`📐 Área Privativa: ${data.areaPrivativa} m²`);
+      if (data.areaTerreno) lines.push(`📐 Área do Terreno: ${data.areaTerreno} m²`);
       if (data.area && !data.areaTotal && !data.areaPrivativa && !data.areaTerreno) {
         lines.push(`📐 Área: ${data.area} m²`);
       }
       lines.push('');
     }
 
-    // Endereço
     lines.push('📍 Endereço:');
     if (data.street) {
       let addressLine = `📍 ${data.street}`;
@@ -111,51 +90,30 @@ export const CaptionGenerator = ({ data }: CaptionGeneratorProps) => {
     }
     lines.push(`📍 ${data.neighborhood}`);
     lines.push(`📍 ${data.city} – ${data.state}`);
-    if (data.cep) {
-      lines.push(`📮 CEP: ${data.cep}`);
-    }
+    if (data.cep) lines.push(`📮 CEP: ${data.cep}`);
     lines.push('');
 
-    // Regras de despesas
     if (data.condominiumRules || data.taxRules) {
       lines.push('⚠️ Regras sobre despesas:');
-      if (data.condominiumRules) {
-        lines.push(`🏘️ Condomínio: ${data.condominiumRules}`);
-      }
-      if (data.taxRules) {
-        lines.push(`💸 Tributos: ${data.taxRules}`);
-      }
+      if (data.condominiumRules) lines.push(`🏘️ Condomínio: ${data.condominiumRules}`);
+      if (data.taxRules) lines.push(`💸 Tributos: ${data.taxRules}`);
       lines.push('');
     }
 
-    // Contato
     lines.push('📞 Mais informações:');
-    if (data.contactName) {
-      lines.push(`👤 ${data.contactName}`);
-    }
-    if (data.creci) {
-      lines.push(`📄 ${data.creci}`);
-    }
-    if (data.contactPhone) {
-      lines.push(`📱 ${data.contactPhone}`);
-    }
+    if (data.contactName) lines.push(`👤 ${data.contactName}`);
+    if (data.creci) lines.push(`📄 ${data.creci}`);
+    if (data.contactPhone) lines.push(`📱 ${data.contactPhone}`);
 
     return lines.join('\n');
   };
 
   const getFeatureEmoji = (feature: string): string => {
     const emojiMap: Record<string, string> = {
-      'Piscina': '🏊',
-      'Churrasqueira': '🍖',
-      'Área de Lazer': '🎯',
-      'Portaria 24h': '🔐',
-      'Academia': '💪',
-      'Ar Condicionado': '❄️',
-      'Mobiliado': '🛋️',
-      'Quintal': '🌳',
-      'Varanda': '🌅',
-      'Elevador': '🛗',
-      'Pet Friendly': '🐕',
+      'Piscina': '🏊', 'Churrasqueira': '🍖', 'Área de Lazer': '🎯',
+      'Portaria 24h': '🔐', 'Academia': '💪', 'Ar Condicionado': '❄️',
+      'Mobiliado': '🛋️', 'Quintal': '🌳', 'Varanda': '🌅',
+      'Elevador': '🛗', 'Pet Friendly': '🐕',
     };
     return emojiMap[feature] || '✨';
   };
@@ -193,8 +151,8 @@ export const CaptionGenerator = ({ data }: CaptionGeneratorProps) => {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h3 className="font-display text-lg text-gold flex items-center gap-2">
-          <FileText className="w-5 h-5" />
+        <h3 className="font-semibold text-base text-gray-800 flex items-center gap-2">
+          <FileText className="w-5 h-5" style={{ color: '#c9a84c' }} />
           Legenda do Post
         </h3>
         <div className="flex gap-2">
@@ -202,7 +160,7 @@ export const CaptionGenerator = ({ data }: CaptionGeneratorProps) => {
             variant="outline"
             size="sm"
             onClick={handleCopy}
-            className="gap-2"
+            className="gap-2 border-gray-200 text-gray-600 hover:bg-gray-50"
           >
             {copied ? (
               <Check className="w-4 h-4 text-green-500" />
@@ -214,7 +172,8 @@ export const CaptionGenerator = ({ data }: CaptionGeneratorProps) => {
           <Button
             size="sm"
             onClick={handleDownload}
-            className="gap-2 bg-gold hover:bg-gold-dark text-primary-foreground"
+            className="gap-2 text-white"
+            style={{ backgroundColor: '#1a3a6b' }}
           >
             <Download className="w-4 h-4" />
             Baixar .txt
@@ -223,13 +182,13 @@ export const CaptionGenerator = ({ data }: CaptionGeneratorProps) => {
       </div>
 
       {/* Preview da legenda */}
-      <div className="bg-surface rounded-xl p-4 max-h-[400px] overflow-y-auto">
-        <pre className="text-sm text-foreground/90 whitespace-pre-wrap font-sans leading-relaxed">
+      <div className="bg-gray-50 border border-gray-200 rounded-xl p-4 max-h-[400px] overflow-y-auto">
+        <pre className="text-sm text-gray-700 whitespace-pre-wrap font-sans leading-relaxed">
           {caption}
         </pre>
       </div>
 
-      <p className="text-xs text-muted-foreground text-center">
+      <p className="text-xs text-gray-400 text-center">
         💡 Preencha os campos do formulário para gerar a legenda automaticamente
       </p>
     </div>
