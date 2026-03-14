@@ -7,6 +7,7 @@
 
 import { AMPropertyData } from '@/types/apartamentosManaus';
 import logoAM from '@/assets/logo-apartamentos-manaus.png';
+import { AMStoryRevealSlide } from './AMStoryRevealSlide';
 
 const STORY_W = 360;
 const STORY_H = 640;
