@@ -17,6 +17,25 @@ interface PlaceResult {
   types?: string[];
 }
 
+// Fetch a Google API URL and convert to base64 (server-side, no CORS/key restriction issues)
+async function fetchAsBase64(url: string): Promise<string | null> {
+  try {
+    const response = await fetch(url);
+    if (!response.ok) return null;
+    const contentType = response.headers.get('content-type') || 'image/jpeg';
+    const arrayBuffer = await response.arrayBuffer();
+    const bytes = new Uint8Array(arrayBuffer);
+    let binary = '';
+    const chunkSize = 8192;
+    for (let i = 0; i < bytes.length; i += chunkSize) {
+      binary += String.fromCharCode(...bytes.subarray(i, i + chunkSize));
+    }
+    return `data:${contentType};base64,${btoa(binary)}`;
+  } catch {
+    return null;
+  }
+}
+
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
@@ -34,134 +53,132 @@ serve(async (req) => {
 
     const GOOGLE_API_KEY = Deno.env.get("GOOGLE_PLACES_API_KEY");
     if (!GOOGLE_API_KEY) {
-      console.error("GOOGLE_PLACES_API_KEY not configured");
       return new Response(
         JSON.stringify({ error: "API do Google não configurada" }),
         { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
-    console.log(`Searching for property at: ${address}, type: ${propertyType}`);
+    console.log(`Searching for: ${address}, type: ${propertyType}`);
 
     let condominiumName = "";
-    let photoReferences: Array<{ reference: string }> = [];
+    let photoReferences: string[] = [];
     let foundPlaces: PlaceResult[] = [];
 
-    // Busca principal pelo endereço
-    const searchQuery = encodeURIComponent(address);
-    const textSearchUrl = `https://maps.googleapis.com/maps/api/place/textsearch/json?query=${searchQuery}&key=${GOOGLE_API_KEY}&language=pt-BR`;
+    // ─── 1. Busca principal + condomínio em paralelo ───────────────────────
+    const mainQuery = encodeURIComponent(address);
+    const mainSearchPromise = fetch(
+      `https://maps.googleapis.com/maps/api/place/textsearch/json?query=${mainQuery}&key=${GOOGLE_API_KEY}&language=pt-BR`
+    ).then(r => r.json());
 
-    console.log("Performing text search...");
-    const textSearchResponse = await fetch(textSearchUrl);
-    const textSearchData = await textSearchResponse.json();
+    const isApartment = propertyType?.toLowerCase().includes('apartamento');
+    const condoSearchPromise = isApartment
+      ? fetch(
+          `https://maps.googleapis.com/maps/api/place/textsearch/json?query=${encodeURIComponent(`condomínio ${address}`)}&key=${GOOGLE_API_KEY}&language=pt-BR`
+        ).then(r => r.json())
+      : Promise.resolve(null);
 
-    if (textSearchData.status === "OK") {
-      foundPlaces = textSearchData.results || [];
-    } else if (textSearchData.status !== "ZERO_RESULTS") {
-      console.error("Google Places API error:", textSearchData.status, textSearchData.error_message);
+    const [mainData, condoData] = await Promise.all([mainSearchPromise, condoSearchPromise]);
+
+    if (mainData.status === "OK") {
+      foundPlaces = mainData.results || [];
     }
 
-    // Se for apartamento, buscar também por condomínio
-    if (propertyType?.toLowerCase().includes('apartamento')) {
-      const condoSearchQuery = encodeURIComponent(`condomínio ${address}`);
-      const condoSearchUrl = `https://maps.googleapis.com/maps/api/place/textsearch/json?query=${condoSearchQuery}&key=${GOOGLE_API_KEY}&language=pt-BR`;
-
-      console.log("Searching for condominium...");
-      const condoSearchResponse = await fetch(condoSearchUrl);
-      const condoSearchData = await condoSearchResponse.json();
-
-      if (condoSearchData.status === "OK" && condoSearchData.results?.length > 0) {
-        const condoResult = condoSearchData.results.find((place: PlaceResult) =>
-          place.types?.some(t =>
-            ['premise', 'subpremise', 'establishment', 'point_of_interest', 'real_estate_agency'].includes(t)
-          ) ||
-          place.name?.toLowerCase().includes('condomínio') ||
-          place.name?.toLowerCase().includes('residencial') ||
-          place.name?.toLowerCase().includes('edifício')
-        );
-
-        if (condoResult) {
-          condominiumName = condoResult.name;
-          foundPlaces = [condoResult, ...foundPlaces];
-          console.log(`Found condominium: ${condominiumName}`);
-        }
+    if (condoData?.status === "OK" && condoData.results?.length > 0) {
+      const condoResult = condoData.results.find((place: PlaceResult) =>
+        place.types?.some(t =>
+          ['premise', 'subpremise', 'establishment', 'point_of_interest'].includes(t)
+        ) ||
+        place.name?.toLowerCase().includes('condomínio') ||
+        place.name?.toLowerCase().includes('residencial') ||
+        place.name?.toLowerCase().includes('edifício')
+      );
+      if (condoResult) {
+        condominiumName = condoResult.name;
+        foundPlaces = [condoResult, ...foundPlaces];
+        console.log(`Found condominium: ${condominiumName}`);
       }
     }
 
-    // Buscar fotos dos lugares encontrados via Place Details
-    const processedPlaceIds = new Set<string>();
+    // ─── 2. Buscar detalhes de todos os lugares em paralelo ────────────────
+    const processedIds = new Set<string>();
+    const uniquePlaces = foundPlaces.slice(0, 5).filter(p => {
+      if (processedIds.has(p.place_id)) return false;
+      processedIds.add(p.place_id);
+      return true;
+    });
 
-    for (const place of foundPlaces.slice(0, 5)) {
-      if (processedPlaceIds.has(place.place_id)) continue;
-      processedPlaceIds.add(place.place_id);
+    const detailsResults = await Promise.all(
+      uniquePlaces.map(place =>
+        fetch(
+          `https://maps.googleapis.com/maps/api/place/details/json?place_id=${place.place_id}&fields=name,photos&key=${GOOGLE_API_KEY}&language=pt-BR`
+        ).then(r => r.json()).catch(() => null)
+      )
+    );
 
-      const detailsUrl = `https://maps.googleapis.com/maps/api/place/details/json?place_id=${place.place_id}&fields=name,photos,formatted_address&key=${GOOGLE_API_KEY}&language=pt-BR`;
-
-      try {
-        const detailsResponse = await fetch(detailsUrl);
-        const detailsData = await detailsResponse.json();
-
-        if (detailsData.status === "OK" && detailsData.result?.photos) {
-          for (const photo of detailsData.result.photos.slice(0, 10)) {
-            photoReferences.push({ reference: photo.photo_reference });
-          }
+    for (const details of detailsResults) {
+      if (details?.status === "OK" && details.result?.photos) {
+        for (const photo of details.result.photos.slice(0, 10)) {
+          photoReferences.push(photo.photo_reference);
         }
-      } catch (err) {
-        console.error(`Error fetching details for place ${place.place_id}:`, err);
       }
     }
 
     // Remover duplicatas
-    const uniqueReferences = photoReferences.filter((photo, index, self) =>
-      index === self.findIndex(p => p.reference === photo.reference)
-    );
+    photoReferences = [...new Set(photoReferences)];
+    console.log(`Found ${photoReferences.length} unique photo references`);
 
-    console.log(`Found ${uniqueReferences.length} unique photo references`);
+    let photos: Array<{ url: string; reference: string }> = [];
 
-    // Montar URLs diretas do Places Photo (sem base64, sem timeout)
-    const photos: Array<{ url: string; reference: string }> = [];
+    if (photoReferences.length > 0) {
+      // ─── 3. Converter até 12 fotos em PARALELO (sem timeout) ──────────
+      const MAX_PHOTOS = Math.min(photoReferences.length, 12);
+      const refsToFetch = photoReferences.slice(0, MAX_PHOTOS);
 
-    if (uniqueReferences.length > 0) {
-      // Usar URLs diretas da API do Google Places Photo
-      for (const ref of uniqueReferences.slice(0, 15)) {
-        const photoUrl = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=800&photo_reference=${ref.reference}&key=${GOOGLE_API_KEY}`;
-        photos.push({ url: photoUrl, reference: ref.reference });
-      }
-      console.log(`Returning ${photos.length} Places photos as direct URLs`);
+      console.log(`Converting ${refsToFetch.length} photos to base64 in parallel...`);
+
+      const base64Results = await Promise.all(
+        refsToFetch.map(async (ref) => {
+          const photoUrl = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=800&photo_reference=${ref}&key=${GOOGLE_API_KEY}`;
+          const base64 = await fetchAsBase64(photoUrl);
+          return base64 ? { url: base64, reference: ref } : null;
+        })
+      );
+
+      photos = base64Results.filter((p): p is { url: string; reference: string } => p !== null);
+      console.log(`Successfully converted ${photos.length} Places photos`);
+
     } else {
-      // Fallback: Street View com ângulos diferentes + mapa satélite
-      console.log("No Places photos found, falling back to Street View and Satellite Map...");
-
+      // ─── 4. Fallback: Street View (4 ângulos) + satélite em paralelo ──
+      console.log("No Places photos found, falling back to Street View + Satellite...");
       const encodedAddress = encodeURIComponent(address);
 
-      // Street View em 4 ângulos (0°, 90°, 180°, 270°)
-      const headings = [0, 90, 180, 270];
-      for (const heading of headings) {
-        const svUrl = `https://maps.googleapis.com/maps/api/streetview?size=800x600&location=${encodedAddress}&heading=${heading}&pitch=10&fov=80&key=${GOOGLE_API_KEY}`;
-        photos.push({ url: svUrl, reference: `streetview_${heading}` });
-      }
+      const streetViewPromises = [0, 90, 180, 270].map(async (heading) => {
+        const url = `https://maps.googleapis.com/maps/api/streetview?size=800x600&location=${encodedAddress}&heading=${heading}&pitch=10&fov=80&key=${GOOGLE_API_KEY}`;
+        const base64 = await fetchAsBase64(url);
+        return base64 ? { url: base64, reference: `streetview_${heading}` } : null;
+      });
 
-      // Mapa satélite
-      const mapUrl = `https://maps.googleapis.com/maps/api/staticmap?center=${encodedAddress}&zoom=19&size=800x600&maptype=satellite&key=${GOOGLE_API_KEY}`;
-      photos.push({ url: mapUrl, reference: "satellite_map" });
+      const satellitePromise = (async () => {
+        const url = `https://maps.googleapis.com/maps/api/staticmap?center=${encodedAddress}&zoom=19&size=800x600&maptype=satellite&key=${GOOGLE_API_KEY}`;
+        const base64 = await fetchAsBase64(url);
+        return base64 ? { url: base64, reference: "satellite_map" } : null;
+      })();
 
+      const fallbackResults = await Promise.all([...streetViewPromises, satellitePromise]);
+      photos = fallbackResults.filter((p): p is { url: string; reference: string } => p !== null);
       console.log(`Got ${photos.length} Street View + Satellite photos`);
     }
 
-    console.log(`Total photos: ${photos.length}, condominium name: ${condominiumName || 'not found'}`);
+    console.log(`Total: ${photos.length} photos, condo: ${condominiumName || 'not found'}`);
 
     return new Response(
-      JSON.stringify({
-        success: true,
-        condominiumName,
-        photos,
-        totalFound: photos.length
-      }),
+      JSON.stringify({ success: true, condominiumName, photos, totalFound: photos.length }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
 
   } catch (error) {
-    console.error("Error searching property photos:", error);
+    console.error("Error:", error);
     return new Response(
       JSON.stringify({ error: error instanceof Error ? error.message : "Erro ao buscar fotos" }),
       { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
