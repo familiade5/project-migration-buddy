@@ -98,7 +98,7 @@ export const AMStory4_T4_Slide1 = ({
           </div>
         </div>
 
-        {/* CAIXA — container transparente (fundo do slide já é branco), zoom para cortar margens */}
+        {/* CAIXA — mesmo height do card laranja, sem fundo extra */}
         {data.acceptsFinancing && (
           <div style={{
             width: 85, alignSelf: 'stretch', borderRadius: 10, overflow: 'hidden',
@@ -108,7 +108,7 @@ export const AMStory4_T4_Slide1 = ({
             <img
               src={logoCaixa}
               alt="CAIXA"
-              style={{ width: '220%', height: 'auto', display: 'block' }}
+              style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
             />
           </div>
         )}
