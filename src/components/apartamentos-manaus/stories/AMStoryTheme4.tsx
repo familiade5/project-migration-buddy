@@ -60,12 +60,14 @@ export const AMStory4_T4_Slide1 = ({
       backgroundColor: '#ffffff', fontFamily: 'Arial, sans-serif', overflow: 'hidden',
     }}>
       {/* ── Endereço topo ── */}
-      <div style={{ padding: '16px 18px 0', display: 'flex', alignItems: 'center', gap: 6 }}>
-        <span style={{ color: '#F47920', fontSize: 13 }}>📍</span>
-        <p style={{ color: '#555', fontSize: 11, margin: 0, fontWeight: 500 }}>
-          {data.address || data.neighborhood || 'Manaus'}{data.city ? ` - ${data.city}, ${data.state || 'AM'}` : ''}
-        </p>
-      </div>
+      {data.address && (
+        <div style={{ padding: '16px 18px 0', display: 'flex', alignItems: 'center', gap: 6 }}>
+          <span style={{ color: '#F47920', fontSize: 13 }}>📍</span>
+          <p style={{ color: '#555', fontSize: 11, margin: 0, fontWeight: 500 }}>
+            {data.address}
+          </p>
+        </div>
+      )}
 
       {/* ── Header row: título + banco ── */}
       <div style={{ padding: '10px 18px 0', display: 'flex', alignItems: 'stretch', gap: 10 }}>
@@ -95,15 +97,23 @@ export const AMStory4_T4_Slide1 = ({
           </div>
         </div>
 
-        {/* Bank logo card */}
+        {/* CAIXA logo card — tipografia fiel à identidade visual */}
         {data.acceptsFinancing && (
           <div style={{
-            width: 72, backgroundColor: 'white', borderRadius: 10, border: '1px solid #e5e7eb',
-            display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 8,
-            boxShadow: '0 1px 6px rgba(0,0,0,0.07)',
+            width: 72, backgroundColor: '#003E7E', borderRadius: 10,
+            display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '8px 6px',
+            boxShadow: '0 1px 6px rgba(0,0,0,0.15)',
           }}>
-            <span style={{ fontSize: 11, color: '#1B5EA6', fontWeight: 800, textAlign: 'center', lineHeight: 1.2 }}>
-              🏦{'\n'}CAIXA
+            <span style={{
+              color: '#ffffff',
+              fontSize: 16,
+              fontWeight: 900,
+              fontFamily: 'Arial Black, Arial, sans-serif',
+              letterSpacing: '0.04em',
+              textAlign: 'center',
+              lineHeight: 1,
+            }}>
+              CAIXA
             </span>
           </div>
         )}
@@ -150,21 +160,25 @@ export const AMStory4_T4_Slide1 = ({
             flex: 1, height: 100, backgroundColor: '#1B5EA6', borderRadius: 10,
             display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '8px 12px',
           }}>
-            <span style={{
-              display: 'inline-block', backgroundColor: 'rgba(255,255,255,0.2)',
-              color: 'white', fontSize: 8, fontWeight: 700, letterSpacing: '0.1em',
-              textTransform: 'uppercase', padding: '2px 7px', borderRadius: 20, marginBottom: 5, alignSelf: 'flex-start',
-            }}>
-              {data.isRental ? 'ALUGUEL' : 'VENDA'}
-            </span>
-            <div style={{ display: 'flex', alignItems: 'baseline', gap: 1 }}>
+            <div style={{ display: 'flex', alignItems: 'baseline', gap: 1, marginBottom: 4 }}>
               <span style={{ color: 'rgba(255,255,255,0.8)', fontSize: 10, fontWeight: 600 }}>{priceParts.prefix} </span>
-              <span style={{ color: 'white', fontSize: 22, fontWeight: 900, lineHeight: 1 }}>{priceParts.main}</span>
+              <span style={{ color: 'white', fontSize: 20, fontWeight: 900, lineHeight: 1 }}>{priceParts.main}</span>
               <span style={{ color: 'rgba(255,255,255,0.7)', fontSize: 10 }}>{priceParts.cents}</span>
             </div>
-            <div style={{ marginTop: 5, display: 'flex', flexDirection: 'column', gap: 2 }}>
-              {data.cashOnly && <span style={{ color: 'rgba(255,255,255,0.85)', fontSize: 9 }}>À vista</span>}
-              {data.acceptsFinancing && <span style={{ color: 'rgba(255,255,255,0.85)', fontSize: 9 }}>Apto para financiamento</span>}
+            {/* À vista / barra / Aceita Financiamento — igual ao feed */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: 3, flexWrap: 'wrap' }}>
+              {data.cashOnly && (
+                <span style={{ color: 'rgba(255,255,255,0.9)', fontSize: 8, fontWeight: 700 }}>À vista</span>
+              )}
+              {data.cashOnly && data.acceptsFinancing && (
+                <span style={{ color: 'rgba(255,255,255,0.55)', fontSize: 8 }}>|</span>
+              )}
+              {data.acceptsFinancing && (
+                <span style={{ color: 'rgba(255,255,255,0.9)', fontSize: 8, fontWeight: 700 }}>Aceita Financiamento</span>
+              )}
+              {!data.cashOnly && !data.acceptsFinancing && (
+                <span style={{ color: 'rgba(255,255,255,0.7)', fontSize: 8 }}>Consulte condições</span>
+              )}
             </div>
           </div>
         </div>
