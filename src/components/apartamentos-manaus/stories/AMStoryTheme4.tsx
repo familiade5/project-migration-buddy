@@ -470,8 +470,8 @@ export const AMStory4_T4_Slide3 = ({
 };
 
 /* ─────────────────────────────────────────────────────────────────
-   SLIDE 4 — Galeria mosaico com preço lateral
-   Layout: strip branca topo (logo + bairro) · mosaico de fotos · card preço sobreponível
+   SLIDE 4 — Bento Gallery (6 fotos) com preço rodapé
+   Layout: strip branca topo · pirâmide 1→2→3 fotos · rodapé escuro
    ───────────────────────────────────────────────────────────────── */
 export const AMStory4_T4_Slide4 = ({
   data,
@@ -484,14 +484,24 @@ export const AMStory4_T4_Slide4 = ({
   const imgs = photos && photos.length > 0 ? photos : [];
   const img = (i: number) => imgs[i] ?? imgs[0] ?? undefined;
 
+  const FOOTER_H = 110;
+  const TOP_H = 68;
+  const PHOTO_ZONE = STORY_H - TOP_H - FOOTER_H; // 462px
+  const GAP = 4;
+
+  // Row heights que somam exatamente PHOTO_ZONE com gaps
+  const R1 = Math.round(PHOTO_ZONE * 0.40); // ~185px — hero única
+  const R2 = Math.round(PHOTO_ZONE * 0.32); // ~148px — 2 colunas
+  const R3 = PHOTO_ZONE - R1 - R2 - GAP * 2; // restante — 3 colunas
+
   return (
     <div style={{
       position: 'relative', width: STORY_W, height: STORY_H,
-      backgroundColor: '#111827', fontFamily: 'Arial, sans-serif', overflow: 'hidden',
+      backgroundColor: '#0a0f1e', fontFamily: 'Arial, sans-serif', overflow: 'hidden',
     }}>
       {/* ── Top strip branca ── */}
       <div style={{
-        position: 'absolute', top: 0, left: 0, right: 0, height: 68, zIndex: 20,
+        position: 'absolute', top: 0, left: 0, right: 0, height: TOP_H, zIndex: 20,
         backgroundColor: 'white',
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
         padding: '0 16px',
@@ -505,45 +515,69 @@ export const AMStory4_T4_Slide4 = ({
         )}
       </div>
 
-      {/* ── Mosaico de fotos — ocupa tudo menos o topo e rodapé ── */}
-      <div style={{ position: 'absolute', top: 68, left: 0, right: 0, bottom: 110, overflow: 'hidden' }}>
-        {/* Layout: col esq 60% + col dir 40% */}
-        <div style={{ position: 'absolute', inset: 0, display: 'flex', gap: 3 }}>
-          {/* Coluna esquerda: 1 foto grande */}
-          <div style={{ flex: 3, overflow: 'hidden' }}>
-            {img(0) ? (
-              <img src={img(0)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+      {/* ── Bento Grid: pirâmide 1 → 2 → 3 ── */}
+      <div style={{
+        position: 'absolute', top: TOP_H, left: 0, right: 0, height: PHOTO_ZONE,
+        display: 'flex', flexDirection: 'column', gap: GAP, padding: `${GAP}px`,
+        boxSizing: 'border-box',
+      }}>
+        {/* Linha 1 — hero full width */}
+        <div style={{ height: R1, borderRadius: 12, overflow: 'hidden', flexShrink: 0, position: 'relative' }}>
+          {img(0) ? (
+            <img src={img(0)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+          ) : (
+            <div style={{ width: '100%', height: '100%', backgroundColor: '#1e293b' }} />
+          )}
+          {/* Label overlay sutil */}
+          <div style={{
+            position: 'absolute', bottom: 8, left: 10,
+            backgroundColor: 'rgba(0,0,0,0.45)', backdropFilter: 'blur(4px)',
+            borderRadius: 20, padding: '3px 10px',
+          }}>
+            <span style={{ color: 'white', fontSize: 9, fontWeight: 700 }}>
+              {data.title || 'Apartamento'}
+            </span>
+          </div>
+        </div>
+
+        {/* Linha 2 — 2 colunas (55% / 45%) */}
+        <div style={{ height: R2, display: 'flex', gap: GAP, flexShrink: 0 }}>
+          <div style={{ flex: 11, borderRadius: 12, overflow: 'hidden' }}>
+            {img(1) ? (
+              <img src={img(1)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
             ) : (
               <div style={{ width: '100%', height: '100%', backgroundColor: '#1e293b' }} />
             )}
           </div>
-          {/* Coluna direita: 3 fotos empilhadas */}
-          <div style={{ flex: 2, display: 'flex', flexDirection: 'column', gap: 3 }}>
-            {[1, 2, 3].map((idx) => (
-              <div key={idx} style={{ flex: 1, overflow: 'hidden', position: 'relative' }}>
-                {img(idx) ? (
-                  <img src={img(idx)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                ) : (
-                  <div style={{ width: '100%', height: '100%', backgroundColor: `hsl(${220 + idx * 10}, 30%, ${15 + idx * 3}%)` }} />
-                )}
-                {imgs.length > 4 && idx === 3 && (
-                  <div style={{ position: 'absolute', inset: 0, backgroundColor: 'rgba(0,0,0,0.6)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <p style={{ color: 'white', fontSize: 20, fontWeight: 900, margin: 0 }}>+{imgs.length - 4}</p>
-                  </div>
-                )}
-              </div>
-            ))}
+          <div style={{ flex: 9, borderRadius: 12, overflow: 'hidden' }}>
+            {img(2) ? (
+              <img src={img(2)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+            ) : (
+              <div style={{ width: '100%', height: '100%', backgroundColor: '#1e293b' }} />
+            )}
           </div>
         </div>
-        {/* Gradient bottom */}
-        <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 40, background: 'linear-gradient(to bottom, transparent, #111827)' }} />
+
+        {/* Linha 3 — 3 colunas iguais */}
+        <div style={{ height: R3, display: 'flex', gap: GAP, flexShrink: 0 }}>
+          {[3, 4, 5].map((idx) => (
+            <div key={idx} style={{ flex: 1, borderRadius: 10, overflow: 'hidden' }}>
+              {img(idx) ? (
+                <img src={img(idx)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+              ) : (
+                <div style={{ width: '100%', height: '100%', backgroundColor: '#1e293b' }} />
+              )}
+            </div>
+          ))}
+        </div>
       </div>
 
       {/* ── Rodapé: info + preço ── */}
       <div style={{
-        position: 'absolute', bottom: 0, left: 0, right: 0, height: 110,
-        backgroundColor: '#111827', padding: '10px 16px',
+        position: 'absolute', bottom: 0, left: 0, right: 0, height: FOOTER_H,
+        backgroundColor: '#0a0f1e', padding: '10px 16px',
         display: 'flex', flexDirection: 'column', justifyContent: 'space-between',
+        borderTop: '1px solid rgba(255,255,255,0.07)',
       }}>
         <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
           <div>
