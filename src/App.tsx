@@ -5,21 +5,14 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
-import { SuperAdminRoute } from "@/components/SuperAdminRoute";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import Library from "./pages/Library";
 import Admin from "./pages/Admin";
 import Settings from "./pages/Settings";
 import Imobiliaria from "./pages/Imobiliaria";
-import CRM from "./pages/CRM";
-import CRMLocacao from "./pages/CRMLocacao";
 import FinancingCalculator from "./pages/FinancingCalculator";
-import ElitePostGenerator from "./pages/ElitePostGenerator";
-import RevendaPostGenerator from "./pages/RevendaPostGenerator";
-import LocacaoPostGenerator from "./pages/LocacaoPostGenerator";
 import EducationalPostGenerator from "./pages/EducationalPostGenerator";
-import VideoPostGenerator from "./pages/VideoPostGenerator";
 import NotFound from "./pages/NotFound";
 import AMAuth from "./pages/am/AMAuth";
 import ApartamentosManausPage from "./pages/am/ApartamentosManausPage";
@@ -57,16 +50,6 @@ const App = () => (
                 <Imobiliaria />
               </ProtectedRoute>
             } />
-            <Route path="/crm" element={
-              <ProtectedRoute>
-                <CRM />
-              </ProtectedRoute>
-            } />
-            <Route path="/crm-locacao" element={
-              <ProtectedRoute>
-                <CRMLocacao />
-              </ProtectedRoute>
-            } />
             <Route path="/calculadora" element={
               <ProtectedRoute>
                 <FinancingCalculator />
@@ -76,26 +59,6 @@ const App = () => (
               <ProtectedRoute>
                 <Settings />
               </ProtectedRoute>
-            } />
-            <Route path="/revenda" element={
-              <ProtectedRoute>
-                <RevendaPostGenerator />
-              </ProtectedRoute>
-            } />
-            <Route path="/locacao" element={
-              <ProtectedRoute>
-                <LocacaoPostGenerator />
-              </ProtectedRoute>
-            } />
-            <Route path="/elite" element={
-              <SuperAdminRoute>
-                <ElitePostGenerator />
-              </SuperAdminRoute>
-            } />
-            <Route path="/videos" element={
-              <SuperAdminRoute>
-                <VideoPostGenerator />
-              </SuperAdminRoute>
             } />
             <Route path="/educativo" element={
               <ProtectedRoute>

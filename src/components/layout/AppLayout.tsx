@@ -162,62 +162,6 @@ export function AppLayout({ children }: AppLayoutProps) {
               </>
             )}
 
-            {/* Super Admin exclusive */}
-            {isSuperAdmin && (
-              <>
-                <div className="pt-4 pb-2">
-                  <p className="px-4 text-xs font-medium uppercase tracking-wider" style={{ color: '#D97706' }}>
-                    Projetos Exclusivos
-                  </p>
-                </div>
-                <Link
-                  to="/elite"
-                  onClick={() => setSidebarOpen(false)}
-                  className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all"
-                  style={
-                    isActive('/elite')
-                      ? { backgroundColor: '#FFFBEB', color: '#B45309', border: '1px solid #FDE68A' }
-                      : { color: '#D97706' }
-                  }
-                  onMouseEnter={(e) => {
-                    if (!isActive('/elite')) {
-                      (e.currentTarget as HTMLElement).style.backgroundColor = '#FFFBEB';
-                    }
-                  }}
-                  onMouseLeave={(e) => {
-                    if (!isActive('/elite')) {
-                      (e.currentTarget as HTMLElement).style.backgroundColor = 'transparent';
-                    }
-                  }}
-                >
-                  <Crown className="w-5 h-5 flex-shrink-0" />
-                  Élite Imóveis
-                </Link>
-                <Link
-                  to="/videos"
-                  onClick={() => setSidebarOpen(false)}
-                  className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all"
-                  style={
-                    isActive('/videos')
-                      ? { backgroundColor: '#F5F3FF', color: '#7C3AED', border: '1px solid #DDD6FE' }
-                      : { color: '#8B5CF6' }
-                  }
-                  onMouseEnter={(e) => {
-                    if (!isActive('/videos')) {
-                      (e.currentTarget as HTMLElement).style.backgroundColor = '#F5F3FF';
-                    }
-                  }}
-                  onMouseLeave={(e) => {
-                    if (!isActive('/videos')) {
-                      (e.currentTarget as HTMLElement).style.backgroundColor = 'transparent';
-                    }
-                  }}
-                >
-                  <Video className="w-5 h-5 flex-shrink-0" />
-                  Vídeos IA
-                </Link>
-              </>
-            )}
           </nav>
 
           {/* User footer */}
