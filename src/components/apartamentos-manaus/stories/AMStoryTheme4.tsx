@@ -98,25 +98,19 @@ export const AMStory4_T4_Slide1 = ({
           </div>
         </div>
 
-        {/* CAIXA — logo oficial com zoom para preencher o quadro */}
+        {/* CAIXA — logo sem container extra */}
         {data.acceptsFinancing && (
-          <div style={{
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            background: '#ffffff', width: 72, height: 72,
-            borderRadius: 14, boxShadow: '0 4px 12px rgba(0,0,0,0.08)', flexShrink: 0,
-            overflow: 'hidden', padding: 0,
-          }}>
-            <img
-              src={logoCaixa}
-              alt="CAIXA"
-              style={{
-                width: '200%',
-                height: 'auto',
-                display: 'block',
-                marginLeft: '-50%',
-              }}
-            />
-          </div>
+          <img
+            src={logoCaixa}
+            alt="CAIXA"
+            style={{
+              width: 72,
+              height: 72,
+              objectFit: 'contain',
+              flexShrink: 0,
+              borderRadius: 14,
+            }}
+          />
         )}
       </div>
 
