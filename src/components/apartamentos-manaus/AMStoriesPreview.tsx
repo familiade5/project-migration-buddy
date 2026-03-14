@@ -129,7 +129,7 @@ export function AMStoriesPreview({ data, photos }: AMStoriesPreviewProps) {
     4: [
       <AMStory4_T4_Slide1 data={data} photos={photos} />,
       <AMStory4_T4_Slide2 data={data} photo={p0} photos={photos} />,
-      <AMStory4_T4_Slide3 data={data} photo={p0} />,
+      <AMStory4_T4_Slide3 data={data} photo={p0} photos={photos} />,
       <AMStory4_T4_Slide4 data={data} photos={photos} />,
       <AMStory4_T4_Slide5 data={data} photo={pLast} />,
     ],
