@@ -197,74 +197,118 @@ export const AMStory4_T4_Slide1 = ({
 };
 
 /* ─────────────────────────────────────────────────────────────────
-   SLIDE 2 — Hero foto centralizada + preço em destaque
-   Layout: foto hero sangrada · overlay gradiente · preço grande centralizado · especificações · logo
+   SLIDE 2 — Composição triangular de 3 fotos + preço em destaque
+   Layout: hero diagonal topo · 2 cards embaixo · logo sem fundo · preço
    ───────────────────────────────────────────────────────────────── */
 export const AMStory4_T4_Slide2 = ({
   data,
   photo,
+  photos,
 }: {
   data: AMPropertyData;
   photo?: string;
+  photos?: string[];
 }) => {
   const price = data.isRental ? data.rentalPrice : data.salePrice;
+  const imgs = photos && photos.length > 0 ? photos : photo ? [photo] : [];
+  const img = (i: number) => imgs[i] ?? imgs[0] ?? undefined;
 
   return (
     <div style={{
       position: 'relative', width: STORY_W, height: STORY_H,
       backgroundColor: '#0a0f1e', fontFamily: 'Arial, sans-serif', overflow: 'hidden',
     }}>
-      {/* Full-bleed foto hero */}
-      {photo ? (
-        <img src={photo} alt="" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', filter: 'brightness(0.45)' }} />
-      ) : (
-        <div style={{ position: 'absolute', inset: 0, backgroundColor: '#1e293b' }} />
-      )}
 
-      {/* Gradiente escuro na metade inferior */}
+      {/* ── ZONA DE FOTOS — composição triangular ── */}
+
+      {/* Foto 0 — hero topo, corte diagonal na base */}
       <div style={{
-        position: 'absolute', bottom: 0, left: 0, right: 0, height: '70%',
-        background: 'linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.7) 50%, transparent 100%)',
-      }} />
-
-      {/* Logo topo */}
-      <div style={{ position: 'absolute', top: 22, left: 0, right: 0, display: 'flex', justifyContent: 'center', zIndex: 10 }}>
-        <div style={{ backgroundColor: 'rgba(255,255,255,0.12)', backdropFilter: 'blur(8px)', borderRadius: 8, padding: '6px 14px' }}>
-          <Logo size={80} white />
-        </div>
+        position: 'absolute', top: 0, left: 0, right: 0, height: 265,
+        clipPath: 'polygon(0 0, 100% 0, 100% 78%, 50% 100%, 0 78%)',
+        overflow: 'hidden',
+      }}>
+        {img(0) ? (
+          <img src={img(0)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+        ) : (
+          <div style={{ width: '100%', height: '100%', backgroundColor: '#1e293b' }} />
+        )}
+        {/* Escurecer base para separar das fotos abaixo */}
+        <div style={{
+          position: 'absolute', inset: 0,
+          background: 'linear-gradient(to bottom, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.5) 100%)',
+        }} />
       </div>
 
-      {/* Bairro pill centralizada */}
+      {/* Foto 1 — card inferior esquerdo */}
+      <div style={{
+        position: 'absolute', top: 230, left: 16,
+        width: 152, height: 118, borderRadius: 14, overflow: 'hidden',
+        boxShadow: '0 6px 24px rgba(0,0,0,0.55)',
+        border: '2px solid rgba(255,255,255,0.12)',
+      }}>
+        {img(1) ? (
+          <img src={img(1)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+        ) : (
+          <div style={{ width: '100%', height: '100%', backgroundColor: '#1e293b' }} />
+        )}
+      </div>
+
+      {/* Foto 2 — card inferior direito */}
+      <div style={{
+        position: 'absolute', top: 230, right: 16,
+        width: 152, height: 118, borderRadius: 14, overflow: 'hidden',
+        boxShadow: '0 6px 24px rgba(0,0,0,0.55)',
+        border: '2px solid rgba(255,255,255,0.12)',
+      }}>
+        {img(2) ? (
+          <img src={img(2)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+        ) : (
+          <div style={{ width: '100%', height: '100%', backgroundColor: '#334155' }} />
+        )}
+      </div>
+
+      {/* Gradiente escuro da zona de fotos para o conteúdo */}
+      <div style={{
+        position: 'absolute', top: 310, left: 0, right: 0, bottom: 0,
+        background: 'linear-gradient(to bottom, transparent 0%, #0a0f1e 30%)',
+      }} />
+
+      {/* ── Logo topo — sem fundo, só a logo branca ── */}
+      <div style={{ position: 'absolute', top: 18, left: 0, right: 0, display: 'flex', justifyContent: 'center', zIndex: 20 }}>
+        <Logo size={78} white />
+      </div>
+
+      {/* ── Bairro pill ── */}
       {data.neighborhood && (
-        <div style={{ position: 'absolute', top: 110, left: 0, right: 0, display: 'flex', justifyContent: 'center', zIndex: 10 }}>
-          <div style={{ backgroundColor: '#F47920', borderRadius: 30, padding: '5px 18px', display: 'flex', alignItems: 'center', gap: 5 }}>
-            <span style={{ fontSize: 11 }}>📍</span>
-            <span style={{ color: 'white', fontSize: 11, fontWeight: 700 }}>{data.neighborhood}, {data.city || 'Manaus'}</span>
+        <div style={{ position: 'absolute', top: 88, left: 0, right: 0, display: 'flex', justifyContent: 'center', zIndex: 20 }}>
+          <div style={{ backgroundColor: '#F47920', borderRadius: 30, padding: '4px 16px', display: 'flex', alignItems: 'center', gap: 5 }}>
+            <span style={{ fontSize: 10 }}>📍</span>
+            <span style={{ color: 'white', fontSize: 10, fontWeight: 700 }}>{data.neighborhood}, {data.city || 'Manaus'}</span>
           </div>
         </div>
       )}
 
-      {/* Bloco central de conteúdo */}
-      <div style={{ position: 'absolute', bottom: 32, left: 0, right: 0, zIndex: 10, padding: '0 24px' }}>
+      {/* ── Bloco de conteúdo ── */}
+      <div style={{ position: 'absolute', bottom: 28, left: 0, right: 0, zIndex: 10, padding: '0 20px' }}>
         {/* Título */}
-        <p style={{ color: 'white', fontSize: 20, fontWeight: 900, textAlign: 'center', margin: '0 0 14px', lineHeight: 1.2 }}>
+        <p style={{ color: 'white', fontSize: 19, fontWeight: 900, textAlign: 'center', margin: '0 0 12px', lineHeight: 1.2 }}>
           {data.title || 'Apartamento Disponível'}
         </p>
 
         {/* Especificações em linha */}
-        <div style={{ display: 'flex', justifyContent: 'center', gap: 8, flexWrap: 'wrap', marginBottom: 16 }}>
+        <div style={{ display: 'flex', justifyContent: 'center', gap: 6, flexWrap: 'wrap', marginBottom: 14 }}>
           {data.bedrooms > 0 && (
-            <div style={{ backgroundColor: 'rgba(255,255,255,0.12)', backdropFilter: 'blur(8px)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: 20, padding: '4px 12px' }}>
+            <div style={{ backgroundColor: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: 20, padding: '4px 10px' }}>
               <span style={{ color: 'white', fontSize: 10, fontWeight: 600 }}>🛏 {data.bedrooms} Qto{data.bedrooms > 1 ? 's' : ''}</span>
             </div>
           )}
           {data.area > 0 && (
-            <div style={{ backgroundColor: 'rgba(255,255,255,0.12)', backdropFilter: 'blur(8px)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: 20, padding: '4px 12px' }}>
+            <div style={{ backgroundColor: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: 20, padding: '4px 10px' }}>
               <span style={{ color: 'white', fontSize: 10, fontWeight: 600 }}>📐 {data.area}m²</span>
             </div>
           )}
           {data.garageSpaces > 0 && (
-            <div style={{ backgroundColor: 'rgba(255,255,255,0.12)', backdropFilter: 'blur(8px)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: 20, padding: '4px 12px' }}>
+            <div style={{ backgroundColor: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: 20, padding: '4px 10px' }}>
               <span style={{ color: 'white', fontSize: 10, fontWeight: 600 }}>🚗 {data.garageSpaces} Vaga{data.garageSpaces > 1 ? 's' : ''}</span>
             </div>
           )}
@@ -272,7 +316,7 @@ export const AMStory4_T4_Slide2 = ({
 
         {/* Card de preço */}
         <div style={{
-          backgroundColor: 'white', borderRadius: 16, padding: '16px 20px',
+          backgroundColor: 'white', borderRadius: 16, padding: '14px 18px',
           display: 'flex', alignItems: 'center', justifyContent: 'space-between',
           boxShadow: '0 8px 32px rgba(0,0,0,0.4)',
         }}>
@@ -280,7 +324,7 @@ export const AMStory4_T4_Slide2 = ({
             <p style={{ color: '#64748b', fontSize: 10, margin: '0 0 2px', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
               {data.isRental ? 'Aluguel' : 'Valor de Venda'}
             </p>
-            <p style={{ color: '#1B5EA6', fontSize: 26, fontWeight: 900, margin: 0, lineHeight: 1 }}>
+            <p style={{ color: '#1B5EA6', fontSize: 24, fontWeight: 900, margin: 0, lineHeight: 1 }}>
               {formatPrice(price)}
             </p>
           </div>
