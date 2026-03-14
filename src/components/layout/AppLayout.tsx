@@ -10,14 +10,8 @@ import {
   X,
   Shield,
   MoreVertical,
-  Crown,
-  Gem,
-  Home,
-  LayoutDashboard,
   Calculator,
-  Key,
   BookOpen,
-  Video,
 } from 'lucide-react';
 import {
   DropdownMenu,
@@ -33,17 +27,11 @@ interface AppLayoutProps {
   children: React.ReactNode;
 }
 
-const SUPER_ADMIN_EMAIL = 'neto@vendadiretahoje.com.br';
-
 const navigation = [
   { name: 'Criar Post', href: '/', icon: Building2 },
-  { name: 'Revenda +', href: '/revenda', icon: Gem },
-  { name: 'Locação & Gestão', href: '/locacao', icon: Home },
   { name: 'Posts Educativos', href: '/educativo', icon: BookOpen },
   { name: 'Biblioteca', href: '/library', icon: Calendar },
   { name: 'Calculadora', href: '/calculadora', icon: Calculator },
-  { name: 'CRM Imóveis', href: '/crm', icon: LayoutDashboard },
-  { name: 'CRM Locação', href: '/crm-locacao', icon: Key },
 ];
 
 const adminNavigation = [
