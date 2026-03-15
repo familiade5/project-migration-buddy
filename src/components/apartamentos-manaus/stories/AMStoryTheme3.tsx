@@ -98,8 +98,8 @@ export const AMStory3_T3_Curiosity = ({
 
       {/* Subtext */}
       <div style={{
-        backgroundColor: 'rgba(255,255,255,0.08)', borderRadius: 12, padding: '12px 16px',
-        border: '1px solid rgba(255,255,255,0.1)', backdropFilter: 'blur(10px)',
+        backgroundColor: 'rgba(30,30,40,0.85)', borderRadius: 12, padding: '12px 16px',
+        border: '1px solid rgba(255,255,255,0.1)',
       }}>
         <p style={{ color: 'rgba(255,255,255,0.85)', fontSize: 13, margin: 0, lineHeight: 1.5 }}>
           {data.bedrooms > 0 ? `${data.bedrooms} quartos` : 'Apartamento'}
