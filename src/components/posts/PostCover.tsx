@@ -204,7 +204,7 @@ export const PostCover = ({ data, photo }: PostCoverProps) => {
               </div>
             )}
             {data.acceptsFGTS && (
-              <p style={{ fontSize: '19px', color: 'rgba(255,255,255,0.85)', fontWeight: 600 }}>✓ Aceita FGTS</p>
+              <p style={{ fontSize: '19px', color: '#fff', fontWeight: 600 }}>✓ Aceita FGTS</p>
             )}
           </div>
         </div>
