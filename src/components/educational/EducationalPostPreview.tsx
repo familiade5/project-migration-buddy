@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
+import { safePixelRatio } from '@/lib/exportUtils';
 import { EducationalPostData } from '@/types/educational';
 import { EducationalCoverSlide } from './slides/EducationalCoverSlide';
 import { EducationalContentSlide } from './slides/EducationalContentSlide';

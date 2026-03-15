@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react';
 import { toPng } from 'html-to-image';
+import { safePixelRatio } from '@/lib/exportUtils';
 import JSZip from 'jszip';
 import { Download, ChevronLeft, ChevronRight, Loader2, Square, Smartphone, Sparkles } from 'lucide-react';
 import { PropertyData } from '@/types/property';

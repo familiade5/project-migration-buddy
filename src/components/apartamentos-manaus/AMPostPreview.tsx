@@ -1,5 +1,6 @@
 import { useRef, useState, useEffect } from 'react';
 import { toPng } from 'html-to-image';
+import { safePixelRatio } from '@/lib/exportUtils';
 import JSZip from 'jszip';
 import { Download, ChevronLeft, ChevronRight, Loader2, Square, Smartphone } from 'lucide-react';
 import { AMPropertyData } from '@/types/apartamentosManaus';

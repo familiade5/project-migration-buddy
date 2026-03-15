@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
+import { safePixelRatio } from '@/lib/exportUtils';
 import { RevendaPropertyData, CategorizedPhoto, photoCategoryLabels, PhotoCategory } from '@/types/revenda';
 import { RevendaCoverFeed } from './feed/RevendaCoverFeed';
 import { RevendaPhotoFeed } from './feed/RevendaPhotoFeed';

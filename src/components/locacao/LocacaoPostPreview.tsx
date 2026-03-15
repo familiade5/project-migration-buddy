@@ -1,4 +1,5 @@
 import { useState, useRef } from 'react';
+import { safePixelRatio } from '@/lib/exportUtils';
 import { LocacaoPropertyData, LocacaoManagementData, LocacaoCategorizedPhoto, LocacaoCreativeType, locacaoPhotoCategoryLabels, LocacaoPhotoCategory } from '@/types/locacao';
 import { LocacaoCoverFeed } from './feed/LocacaoCoverFeed';
 import { LocacaoPhotoFeed } from './feed/LocacaoPhotoFeed';

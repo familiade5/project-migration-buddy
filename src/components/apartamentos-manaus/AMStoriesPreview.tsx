@@ -3,6 +3,7 @@
  */
 
 import { useState, useRef } from 'react';
+import { safePixelRatio } from '@/lib/exportUtils';
 import { toPng } from 'html-to-image';
 import JSZip from 'jszip';
 import { Download, Loader2, ChevronLeft, ChevronRight, Sparkles } from 'lucide-react';
