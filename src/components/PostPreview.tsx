@@ -111,6 +111,7 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
   ];
 
   const posts = format === 'feed' ? feedPosts : format === 'story' ? storyPosts : vdhPosts;
+  // postRefs used ONLY for export single (hidden slides) — previewRef is separate
   const postRefs = format === 'feed' ? feedRefs : format === 'story' ? storyRefs : vdhRefs;
 
   // Generate a title based on property data
