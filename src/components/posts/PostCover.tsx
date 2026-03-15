@@ -119,11 +119,11 @@ export const PostCover = ({ data, photo }: PostCoverProps) => {
         </div>
       </div>
 
-      {/* Logo VDH no topo direito */}
+      {/* Logo VDH no topo direito - base64 para garantir export */}
       <div className="absolute z-20" style={{ top: '20px', right: '20px' }}>
         <div className="rounded-lg overflow-hidden shadow-2xl" style={{ background: 'rgba(0,0,0,0.55)', padding: '8px 16px' }}>
           <img 
-            src={logoVDH} 
+            src={logoBase64} 
             alt="VDH" 
             className="object-contain"
             style={{ height: '72px' }}
@@ -133,7 +133,7 @@ export const PostCover = ({ data, photo }: PostCoverProps) => {
 
       {/* Rodapé */}
       <div className="absolute bottom-0 left-0 right-0 bg-[#2a3142] z-10">
-        <div className="flex items-stretch" style={{ minHeight: '140px' }}>
+        <div className="flex items-stretch" style={{ minHeight: '170px' }}>
 
           {/* Badge financiamento - ocupa toda altura */}
           <div 
