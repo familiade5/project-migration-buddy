@@ -395,10 +395,11 @@ export const AMLocationSlide = ({
   // Apenas o endereço digitado — cidade/estado e bairro NÃO são adicionados automaticamente
   const address = data.address || '';
 
-  // Notch azul reduzido: card 124×120 em top=14,left=14 → notch x:14→150, y:14→148
-  // Notch logo reduzido: card 96×32 em bottom=14,right=14 → notch x:250→346, y:300→346
+  // Notch azul: card 124×120 em top=14,left=14 → termina em x=138, y=134
+  // Notch cola no card com 2px de folga: direita x=140, baixo y=136
+  // Notch logo: card 96×32 em bottom=14,right=14 → x=250→346, y=314→346
   const shapePath = [
-    'M 172 14',              // top edge start (150+22=172)
+    'M 162 14',              // top edge start (140+22=162)
     'H 324',
     'A 22 22 0 0 1 346 36',
     'V 278',
@@ -409,12 +410,12 @@ export const AMLocationSlide = ({
     'A 22 22 0 0 1 228 346',
     'H 36',
     'A 22 22 0 0 1 14 324',
-    'V 170',                 // left edge up (148+22=170)
-    'Q 14 148 36 148',       // concave bottom-left of blue notch
-    'H 128',                 // blue notch bottom (150-22=128)
-    'Q 150 148 150 126',     // concave bottom-right (148-22=126)
+    'V 158',                 // left edge up (136+22=158)
+    'Q 14 136 36 136',       // concave bottom-left of blue notch (notch baixo y=136)
+    'H 118',                 // blue notch bottom rightward (140-22=118)
+    'Q 140 136 140 114',     // concave bottom-right (136-22=114)
     'V 36',
-    'A 22 22 0 0 1 172 14',
+    'A 22 22 0 0 1 162 14',
     'Z',
   ].join(' ');
 
@@ -479,7 +480,7 @@ export const AMLocationSlide = ({
           zIndex: 20,
           backgroundColor: '#1B5EA6',
           borderRadius: 15,
-          padding: '11px 11px 10px',
+          padding: '10px 10px 9px',
           width: 124,
           height: 120,
           boxSizing: 'border-box',
@@ -489,17 +490,36 @@ export const AMLocationSlide = ({
           justifyContent: 'space-between',
         }}
       >
-        <div>
-          <p style={{ color: 'white', fontWeight: 700, fontSize: 12, lineHeight: 1.3, margin: '0 0 5px' }}>
+        <div style={{ overflow: 'hidden', flex: 1, minHeight: 0 }}>
+          <p style={{
+            color: 'white', fontWeight: 700, fontSize: 11, lineHeight: 1.3,
+            margin: '0 0 4px',
+            display: '-webkit-box',
+            WebkitLineClamp: 3,
+            WebkitBoxOrient: 'vertical',
+            overflow: 'hidden',
+          }}>
             {data.title || 'Imóveis bem localizados em Manaus'}
           </p>
           {address && (
-            <p style={{ color: 'white', fontSize: 9, opacity: 0.82, lineHeight: 1.4, margin: 0 }}>
+            <p style={{
+              color: 'white', fontSize: 8, opacity: 0.82, lineHeight: 1.35, margin: 0,
+              display: '-webkit-box',
+              WebkitLineClamp: 2,
+              WebkitBoxOrient: 'vertical',
+              overflow: 'hidden',
+            }}>
               {address}
             </p>
           )}
           {data.referencePoint && (
-            <p style={{ color: 'white', fontSize: 9, opacity: 0.7, lineHeight: 1.4, margin: '3px 0 0' }}>
+            <p style={{
+              color: 'white', fontSize: 8, opacity: 0.7, lineHeight: 1.35, margin: '3px 0 0',
+              display: '-webkit-box',
+              WebkitLineClamp: 1,
+              WebkitBoxOrient: 'vertical',
+              overflow: 'hidden',
+            }}>
               {data.referencePoint}
             </p>
           )}
@@ -512,10 +532,11 @@ export const AMLocationSlide = ({
             backgroundColor: 'rgba(255,255,255,0.15)',
             border: '1px solid rgba(255,255,255,0.35)',
             borderRadius: 20,
-            padding: '3px 8px',
-            fontSize: 8,
+            padding: '3px 7px',
+            fontSize: 7,
             color: 'white',
             alignSelf: 'flex-start',
+            flexShrink: 0,
           }}
         >
           Arraste para o lado →
