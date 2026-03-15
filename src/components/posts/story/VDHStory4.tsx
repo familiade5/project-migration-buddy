@@ -89,7 +89,7 @@ export const VDHStory4 = ({ data, photo }: VDHStory4Props) => {
             style={{ height: '60px' }}
           />
           <p className="text-white/60" style={{ fontSize: '20px' }}>
-            {data.creci || 'CRECI 14851 MS PJ'}
+            CRECI 14851 MS PJ
           </p>
         </div>
       </div>
