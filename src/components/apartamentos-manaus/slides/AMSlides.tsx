@@ -282,21 +282,21 @@ export const AMSpecsSlide = ({
   // Path starts at (330, 8) — the exact entry point of the top-right arc —
   // so the arc comes FIRST with no straight segment before it.
   // The top edge (168→330 at y=8) is the LAST segment before Z.
-  // Notch reduzido: w=120, h=56 (era 164×76) → mais área de foto visível
+  // Notch top-left reduzido: w=120, h=52. Bordas externas mantidas (330→352, etc.)
   const shapePath = [
-    'M 286 8',               // start at top-right arc entry (264+22=286)
-    'A 22 22 0 0 1 308 30',  // top-right outer corner (r=22)
-    'V 286',                 // right edge downward
-    'A 22 22 0 0 1 286 308', // bottom-right outer corner (r=22)
-    'H 30',                  // bottom edge leftward
-    'A 22 22 0 0 1 8 286',   // bottom-left outer corner (r=22)
-    'V 76',                  // left edge upward to notch start (56+22-2=76)
-    'Q 8 56 26 56',          // smooth concave curve into notch bottom-left
-    'H 100',                 // notch bottom rightward (120-22+2=100)
-    'Q 120 56 120 36',       // smooth convex curve up notch bottom-right
-    'V 30',                  // up notch right edge
-    'A 22 22 0 0 1 142 8',   // round the top-notch corner
-    'H 286',                 // top edge back to arc start
+    'M 330 8',               // top-right arc entry — borda externa mantida
+    'A 22 22 0 0 1 352 30',  // top-right outer corner
+    'V 330',                 // right edge full height
+    'A 22 22 0 0 1 330 352', // bottom-right outer corner
+    'H 30',                  // bottom edge full width
+    'A 22 22 0 0 1 8 330',   // bottom-left outer corner
+    'V 74',                  // left edge up to notch start (52+22=74)
+    'Q 8 52 26 52',          // concave into notch bottom-left
+    'H 98',                  // notch bottom (120-22=98)
+    'Q 120 52 120 30',       // convex up notch right corner (52-22=30)
+    'V 30',                  // up notch right wall to arc
+    'A 22 22 0 0 1 142 8',   // round top-notch corner (120+22=142)
+    'H 330',                 // top edge back
     'Z',
   ].join(' ');
 
@@ -396,28 +396,26 @@ export const AMLocationSlide = ({
   const address = data.address || '';
 
   // Clip path com DOIS nichos: superior-esquerdo (card azul) e inferior-direito (card logo).
-  // Notch azul: x 14→170, y 14→172. Notch logo: x 210→346, y 282→346.
-  // Card logo: bottom=14, right=14, width=120, height=52.
-  // Card top: y=360-14-52=294. Notch top y=282 (12px acima do card → gap visual correto).
-  // Left wall: y=304→324 = 20px reta (sem deformação).
+  // Notch azul: x 14→170, y 14→172 (mantido). Notch logo reduzido: x 250→346, y 300→346.
+  // Card logo: bottom=14, right=14, width=96, height=32.
   const shapePath = [
-    'M 192 14',              // top edge start (notch-azul right x=170 + r=22)
+    'M 192 14',              // top edge start
     'H 324',                 // top edge rightward
     'A 22 22 0 0 1 346 36',  // top-right outer convex corner
-    'V 260',                 // right edge down (282-22=260)
-    'Q 346 282 324 282',     // concave at top-right of logo notch (notch topo y=282)
-    'H 232',                 // logo notch top leftward (210+22=232)
-    'Q 210 282 210 304',     // concave at top-left of logo notch (282+22=304)
-    'V 324',                 // down logo notch left wall 304→324 = 20px reta
-    'A 22 22 0 0 1 188 346', // canto inferior-esquerdo (210-22=188, down→left, CW)
+    'V 278',                 // right edge down (300-22=278)
+    'Q 346 300 324 300',     // concave at top-right of logo notch
+    'H 272',                 // logo notch top leftward (250+22=272)
+    'Q 250 300 250 322',     // concave at top-left of logo notch
+    'V 324',                 // down logo notch left wall
+    'A 22 22 0 0 1 228 346', // canto inferior-esquerdo (250-22=228)
     'H 36',                  // bottom edge leftward
     'A 22 22 0 0 1 14 324',  // bottom-left outer convex corner
-    'V 194',                 // left edge upward to blue notch (172+22=194)
+    'V 194',                 // left edge upward to blue notch
     'Q 14 172 36 172',       // concave at bottom-left of blue notch
-    'H 148',                 // blue notch bottom (170-22=148)
-    'Q 170 172 170 150',     // concave at bottom-right of blue notch (172-22=150)
-    'V 36',                  // up notch right edge (stopping r=22 before top)
-    'A 22 22 0 0 1 192 14',  // convex outer corner at top of notch
+    'H 148',                 // blue notch bottom
+    'Q 170 172 170 150',     // concave at bottom-right of blue notch
+    'V 36',
+    'A 22 22 0 0 1 192 14',
     'Z',
   ].join(' ');
 
@@ -533,9 +531,9 @@ export const AMLocationSlide = ({
           right: 14,
           zIndex: 20,
           backgroundColor: '#ffffff',
-          borderRadius: 12,
-          width: 120,
-          height: 52,
+          borderRadius: 10,
+          width: 96,
+          height: 32,
           overflow: 'hidden',
           display: 'flex',
           alignItems: 'center',
@@ -544,7 +542,7 @@ export const AMLocationSlide = ({
           padding: '2px 4px',
         }}
       >
-        <AMLogo width={116} variant="color" />
+        <AMLogo width={88} variant="color" />
       </div>
     </div>
   );
@@ -565,21 +563,21 @@ export const AMPhotoSlide = ({
   const uid = useId();
   const clipId = `am-photo-${uid}`;
 
-  // Notch reduzido: w=120, h=56 (era 164×76) → mais área de foto visível
+  // Notch top-left reduzido: w=120, h=52. Bordas externas mantidas (330→352, etc.)
   const shapePath = [
-    'M 286 8',
-    'A 22 22 0 0 1 308 30',
-    'V 286',
-    'A 22 22 0 0 1 286 308',
+    'M 330 8',
+    'A 22 22 0 0 1 352 30',
+    'V 330',
+    'A 22 22 0 0 1 330 352',
     'H 30',
-    'A 22 22 0 0 1 8 286',
-    'V 76',
-    'Q 8 56 26 56',
-    'H 100',
-    'Q 120 56 120 36',
+    'A 22 22 0 0 1 8 330',
+    'V 74',
+    'Q 8 52 26 52',
+    'H 98',
+    'Q 120 52 120 30',
     'V 30',
     'A 22 22 0 0 1 142 8',
-    'H 286',
+    'H 330',
     'Z',
   ].join(' ');
 
