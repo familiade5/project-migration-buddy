@@ -1,5 +1,6 @@
 import { PropertyData } from '@/types/property';
 import logoVDH from '@/assets/logo-vdh.jpg';
+import logoCaixa from '@/assets/logo-caixa.png';
 import { useLogoBase64 } from '@/hooks/useLogoBase64';
 
 interface VDHStory1Props {
@@ -10,6 +11,7 @@ interface VDHStory1Props {
 
 export const VDHStory1 = ({ data, photo }: VDHStory1Props) => {
   const logoBase64 = useLogoBase64(logoVDH);
+  const logoCaixaBase64 = useLogoBase64(logoCaixa);
 
   const discountRaw = data.discount ?? '';
   const discountNum = discountRaw ? parseFloat(discountRaw.replace(',', '.')) : 0;
@@ -28,11 +30,11 @@ export const VDHStory1 = ({ data, photo }: VDHStory1Props) => {
     return `R$ ${val}`;
   };
   const price = formatPrice(data.minimumValue) || formatPrice(data.evaluationValue);
+  const evaluationFormatted = formatPrice(data.evaluationValue);
   const entryFormatted = data.entryValue ? formatPrice(data.entryValue) : null;
 
   const propertyType = data.type || 'Imóvel';
   const title = data.propertyName?.trim() || propertyType;
-  const propertySource = data.propertySource || 'Imóvel Caixa';
 
   // Endereço completo automático
   const displayAddress = data.fullAddress ||
@@ -127,7 +129,7 @@ export const VDHStory1 = ({ data, photo }: VDHStory1Props) => {
               {discountDisplay}% OFF
             </p>
             {displayAddress && (
-              <p style={{ fontSize: '28px', color: 'rgba(255,255,255,0.75)', fontWeight: 500, marginTop: '8px', letterSpacing: '0.03em' }}>
+              <p style={{ fontSize: '28px', color: '#fff', fontWeight: 500, marginTop: '8px', letterSpacing: '0.03em' }}>
                 {displayAddress}
               </p>
             )}
@@ -151,7 +153,7 @@ export const VDHStory1 = ({ data, photo }: VDHStory1Props) => {
 
           <div style={{ display: 'flex', minHeight: '280px' }}>
 
-            {/* Badge financiamento */}
+            {/* Badge financiamento — logo Caixa no lugar do texto */}
             <div
               style={{
                 flexShrink: 0,
@@ -169,10 +171,12 @@ export const VDHStory1 = ({ data, photo }: VDHStory1Props) => {
               <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, rgba(255,255,255,0.20) 0%, transparent 100%)' }} />
               <div className="absolute inset-0" style={{ boxShadow: 'inset 0 0 20px rgba(0,0,0,0.15), inset 0 2px 0 rgba(255,255,255,0.25)' }} />
               <div className="relative" style={{ padding: '16px 20px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px' }}>
-                {/* Fonte do imóvel — MAIOR e DESTACADA */}
-                <span style={{ fontSize: '30px', fontWeight: 900, color: '#fff', letterSpacing: '0.02em', lineHeight: 1.2, display: 'block', marginBottom: '8px', textShadow: '0 2px 8px rgba(0,0,0,0.5)' }}>
-                  {propertySource}
-                </span>
+                {/* Logo Caixa no lugar do texto "Imóvel Caixa" */}
+                <img
+                  src={logoCaixaBase64}
+                  alt="Caixa"
+                  style={{ height: '52px', objectFit: 'contain', marginBottom: '8px', filter: 'brightness(0) invert(1)' }}
+                />
                 {/* Divider */}
                 <div style={{ width: '80%', height: '2px', background: 'rgba(255,255,255,0.4)', marginBottom: '10px' }} />
                 {/* Linhas de financiamento */}
@@ -185,7 +189,7 @@ export const VDHStory1 = ({ data, photo }: VDHStory1Props) => {
                   <>
                     <span style={{ fontSize: '32px', fontWeight: 900, color: '#fff', letterSpacing: '0.04em', lineHeight: 1.1, textShadow: '0 2px 8px rgba(0,0,0,0.3)' }}>ACEITA</span>
                     <span style={{ fontSize: '32px', fontWeight: 900, color: '#fff', letterSpacing: '0.04em', lineHeight: 1.1, textShadow: '0 2px 8px rgba(0,0,0,0.3)' }}>FINANCIAMENTO</span>
-                    <span style={{ fontSize: '28px', fontWeight: 700, color: 'rgba(255,255,255,0.95)', letterSpacing: '0.04em', lineHeight: 1.1, textShadow: '0 2px 8px rgba(0,0,0,0.3)' }}>BANCÁRIO</span>
+                    <span style={{ fontSize: '28px', fontWeight: 700, color: '#fff', letterSpacing: '0.04em', lineHeight: 1.1, textShadow: '0 2px 8px rgba(0,0,0,0.3)' }}>BANCÁRIO</span>
                   </>
                 )}
               </div>
@@ -196,10 +200,10 @@ export const VDHStory1 = ({ data, photo }: VDHStory1Props) => {
 
             {/* Informações do imóvel */}
             <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '20px 24px', gap: '4px' }}>
-              {/* Logo VDH */}
+              {/* Logo VDH — sem fundo */}
               <img src={logoBase64} alt="VDH" style={{ height: '46px', objectFit: 'contain', objectPosition: 'left', marginBottom: '8px' }} />
 
-              {/* Nome do condomínio — DESTAQUE, primeira linha — alinhado com preço */}
+              {/* Nome do condomínio */}
               <p style={{ fontSize: '38px', fontWeight: 900, color: GOLD_BRIGHT, lineHeight: 1.1, letterSpacing: '-0.01em' }}>
                 {title}
               </p>
@@ -212,7 +216,7 @@ export const VDHStory1 = ({ data, photo }: VDHStory1Props) => {
                   : ''}
               </p>
 
-              {/* Endereço completo automático */}
+              {/* Endereço completo */}
               {displayAddress && (
                 <p style={{ fontSize: '20px', color: '#fff', lineHeight: 1.3 }}>
                   {displayAddress}
@@ -220,15 +224,34 @@ export const VDHStory1 = ({ data, photo }: VDHStory1Props) => {
               )}
 
               {/* Divider */}
-              <div style={{ height: '1px', background: 'rgba(255,255,255,0.15)', margin: '6px 0' }} />
+              <div style={{ height: '1px', background: 'rgba(255,255,255,0.20)', margin: '6px 0' }} />
 
-              {/* Preço de venda — DESTAQUE — alinhado com nome */}
+              {/* Preço de venda */}
               {price && (
                 <p style={{ fontSize: '44px', fontWeight: 900, color: GOLD_BRIGHT, letterSpacing: '-0.01em', lineHeight: 1 }}>{price}</p>
               )}
 
-              {/* Entrada a partir de — na mesma linha */}
-              {entryFormatted && (
+              {/* Valor de avaliação com linha branca cortando */}
+              {evaluationFormatted && evaluationFormatted !== price && (
+                <div style={{ position: 'relative', display: 'inline-block' }}>
+                  <span style={{ fontSize: '28px', fontWeight: 500, color: '#fff', lineHeight: 1, position: 'relative' }}>
+                    {evaluationFormatted}
+                    <span style={{
+                      position: 'absolute',
+                      top: '50%',
+                      left: 0,
+                      right: 0,
+                      height: '2px',
+                      background: '#fff',
+                      transform: 'translateY(-50%)',
+                      display: 'block',
+                    }} />
+                  </span>
+                </div>
+              )}
+
+              {/* Entrada a partir de — quando aceita financiamento */}
+              {acceptsFinancing && entryFormatted && (
                 <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'baseline', gap: '8px', flexWrap: 'wrap' }}>
                   <span style={{ fontSize: '20px', color: '#fff', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.03em', whiteSpace: 'nowrap' }}>
                     Entrada a partir de

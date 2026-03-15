@@ -105,16 +105,14 @@ export const PostCover = ({ data, photo }: PostCoverProps) => {
         </div>
       </div>
 
-      {/* Logo VDH no topo direito */}
+      {/* Logo VDH no topo direito — sem fundo */}
       <div className="absolute z-20" style={{ top: '20px', right: '20px' }}>
-        <div className="rounded-lg overflow-hidden shadow-2xl" style={{ background: 'rgba(0,0,0,0.55)', padding: '8px 16px' }}>
-          <img
-            src={logoBase64}
-            alt="VDH"
-            className="object-contain"
-            style={{ height: '72px' }}
-          />
-        </div>
+        <img
+          src={logoBase64}
+          alt="VDH"
+          className="object-contain drop-shadow-2xl"
+          style={{ height: '72px' }}
+        />
       </div>
 
       {/* Rodapé */}
@@ -144,12 +142,11 @@ export const PostCover = ({ data, photo }: PostCoverProps) => {
               }}
             />
             <div className="relative flex flex-col items-center" style={{ padding: '14px 20px', gap: '4px' }}>
-              {/* Fonte do imóvel - MAIOR */}
+              {/* Fonte do imóvel */}
               <span style={{ fontSize: '26px', fontWeight: 800, color: '#fff', letterSpacing: '0.01em', lineHeight: 1.2, textAlign: 'center', textShadow: '0 1px 6px rgba(0,0,0,0.5)' }}>
                 {propertySource}
               </span>
               <div style={{ width: '75%', height: '1px', background: 'rgba(255,255,255,0.4)', margin: '5px 0' }} />
-              
               <span style={{ fontSize: '30px', fontWeight: 900, color: '#fff', letterSpacing: '0.03em', lineHeight: 1.15, textAlign: 'center', textShadow: '0 2px 8px rgba(0,0,0,0.4)' }}>
                 {data.acceptsFinancing
                   ? <><span style={{ display: 'block' }}>ACEITA</span><span style={{ display: 'block' }}>FINANCIAMENTO</span><span style={{ display: 'block', fontSize: '26px', fontWeight: 700 }}>BANCÁRIO</span></>
@@ -186,19 +183,38 @@ export const PostCover = ({ data, photo }: PostCoverProps) => {
           {/* Separador vertical */}
           <div className="self-stretch w-px bg-white/20 flex-shrink-0 my-3" />
 
-          {/* Valores — alinhado com nome */}
-          <div className="flex-shrink-0 text-right flex flex-col justify-center" style={{ padding: '16px 22px', gap: '6px' }}>
-            {/* Preço principal — DESTAQUE */}
+          {/* Valores */}
+          <div className="flex-shrink-0 text-right flex flex-col justify-center" style={{ padding: '16px 22px', gap: '5px' }}>
+            {/* Preço de venda — DESTAQUE */}
             <p style={{ fontSize: '38px', fontWeight: 900, color: '#f5d485', letterSpacing: '-0.01em', lineHeight: 1 }}>
               {data.minimumValue}
             </p>
-            {/* Entrada na mesma linha */}
-            {data.entryValue && (
-              <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'baseline', gap: '8px', justifyContent: 'flex-end', flexWrap: 'wrap' }}>
-                <span style={{ fontSize: '17px', color: '#fff', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.03em', whiteSpace: 'nowrap' }}>
+            {/* Valor de avaliação com linha cortando — abaixo do preço */}
+            {data.evaluationValue && (
+              <div style={{ position: 'relative', display: 'inline-block', textAlign: 'right' }}>
+                <p style={{ fontSize: '26px', fontWeight: 500, color: '#fff', lineHeight: 1, position: 'relative' }}>
+                  {data.evaluationValue}
+                  {/* Linha fina branca cortando */}
+                  <span style={{
+                    position: 'absolute',
+                    top: '50%',
+                    left: 0,
+                    right: 0,
+                    height: '2px',
+                    background: '#fff',
+                    transform: 'translateY(-50%)',
+                    display: 'block',
+                  }} />
+                </p>
+              </div>
+            )}
+            {/* Entrada a partir de — quando aceita financiamento */}
+            {data.acceptsFinancing && data.entryValue && (
+              <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'baseline', gap: '6px', justifyContent: 'flex-end', flexWrap: 'wrap', marginTop: '2px' }}>
+                <span style={{ fontSize: '16px', color: '#fff', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.03em', whiteSpace: 'nowrap' }}>
                   Entrada a partir de
                 </span>
-                <span style={{ fontSize: '28px', fontWeight: 800, color: '#fff', lineHeight: 1, whiteSpace: 'nowrap' }}>
+                <span style={{ fontSize: '26px', fontWeight: 800, color: '#fff', lineHeight: 1, whiteSpace: 'nowrap' }}>
                   {data.entryValue}
                 </span>
               </div>
