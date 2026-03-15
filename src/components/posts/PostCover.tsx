@@ -176,7 +176,7 @@ export const PostCover = ({ data, photo }: PostCoverProps) => {
               </p>
             )}
             <p style={{ fontSize: '16px', color: 'rgba(255,255,255,0.70)', marginTop: '2px' }}>
-              VENDA DIRETA CRECI 14851 MS PJ
+              VENDA DIRETA {data.creci}
             </p>
           </div>
 

@@ -185,7 +185,7 @@ export const PostCoverStory = ({ data, photo }: PostCoverStoryProps) => {
               </p>
             )}
             <p style={{ fontSize: '20px', color: 'rgba(255,255,255,0.70)', marginTop: '4px' }}>
-              VENDA DIRETA CRECI 14851 MS PJ
+              VENDA DIRETA {data.creci}
             </p>
 
             {/* Divider */}
