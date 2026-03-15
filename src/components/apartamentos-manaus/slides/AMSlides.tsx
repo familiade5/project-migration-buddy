@@ -361,8 +361,7 @@ export const AMSpecsSlide = ({
       {specs.length > 0 && (
         <div style={{
           position: 'absolute', bottom: 18, right: 18, zIndex: 20,
-          backgroundColor: 'rgba(0,0,0,0.45)', backdropFilter: 'blur(10px)',
-          WebkitBackdropFilter: 'blur(10px)',
+          backgroundColor: 'rgba(20,20,30,0.82)',
           borderRadius: 8, padding: '3px 9px', maxWidth: 116,
           border: '1px solid rgba(255,255,255,0.10)',
         }}>
@@ -841,22 +840,22 @@ export const AMStoryCoverSlide = ({
         {/* Specs row */}
         <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 14 }}>
           {data.bedrooms > 0 && (
-            <div style={{ backgroundColor: 'rgba(255,255,255,0.12)', backdropFilter: 'blur(8px)', borderRadius: 8, padding: '5px 10px', border: '1px solid rgba(255,255,255,0.2)' }}>
+            <div style={{ backgroundColor: 'rgba(255,255,255,0.18)', borderRadius: 8, padding: '5px 10px', border: '1px solid rgba(255,255,255,0.2)' }}>
               <span style={{ color: 'white', fontSize: 11, fontWeight: 600 }}>🛏 {data.bedrooms} Qto{data.bedrooms > 1 ? 's' : ''}</span>
             </div>
           )}
           {data.area > 0 && (
-            <div style={{ backgroundColor: 'rgba(255,255,255,0.12)', backdropFilter: 'blur(8px)', borderRadius: 8, padding: '5px 10px', border: '1px solid rgba(255,255,255,0.2)' }}>
+            <div style={{ backgroundColor: 'rgba(255,255,255,0.18)', borderRadius: 8, padding: '5px 10px', border: '1px solid rgba(255,255,255,0.2)' }}>
               <span style={{ color: 'white', fontSize: 11, fontWeight: 600 }}>📐 {data.area}m²</span>
             </div>
           )}
           {data.garageSpaces > 0 && (
-            <div style={{ backgroundColor: 'rgba(255,255,255,0.12)', backdropFilter: 'blur(8px)', borderRadius: 8, padding: '5px 10px', border: '1px solid rgba(255,255,255,0.2)' }}>
+            <div style={{ backgroundColor: 'rgba(255,255,255,0.18)', borderRadius: 8, padding: '5px 10px', border: '1px solid rgba(255,255,255,0.2)' }}>
               <span style={{ color: 'white', fontSize: 11, fontWeight: 600 }}>🚗 {data.garageSpaces} Vaga{data.garageSpaces > 1 ? 's' : ''}</span>
             </div>
           )}
           {data.floor && (
-            <div style={{ backgroundColor: 'rgba(255,255,255,0.12)', backdropFilter: 'blur(8px)', borderRadius: 8, padding: '5px 10px', border: '1px solid rgba(255,255,255,0.2)' }}>
+            <div style={{ backgroundColor: 'rgba(255,255,255,0.18)', borderRadius: 8, padding: '5px 10px', border: '1px solid rgba(255,255,255,0.2)' }}>
               <span style={{ color: 'white', fontSize: 11, fontWeight: 600 }}>🏢 {data.floor}° And.</span>
             </div>
           )}
@@ -960,7 +959,7 @@ export const AMStorySpecsSlide = ({
         <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
           {specs.slice(0, 8).map((spec, i) => (
             <div key={i} style={{
-              backgroundColor: 'rgba(255,255,255,0.08)', backdropFilter: 'blur(8px)',
+              backgroundColor: 'rgba(30,30,50,0.82)',
               borderRadius: 12, padding: '10px 14px', border: '1px solid rgba(255,255,255,0.1)',
               display: 'flex', alignItems: 'center', gap: 10,
             }}>
@@ -1020,7 +1019,7 @@ export const AMStoryLocationSlide = ({
       {/* Bottom info card */}
       <div style={{ position: 'absolute', bottom: 30, left: 20, right: 20, zIndex: 10 }}>
         <div style={{
-          backgroundColor: 'rgba(10,15,30,0.85)', backdropFilter: 'blur(16px)',
+          backgroundColor: 'rgba(8,12,28,0.92)',
           borderRadius: 20, padding: '18px 20px',
           border: '1px solid rgba(27,94,166,0.4)',
         }}>

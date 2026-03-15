@@ -112,8 +112,7 @@ export const AMStory1_T1_Curiosity = ({
         position: 'absolute', top: 12, left: 0, right: 0, display: 'flex', justifyContent: 'center', zIndex: 10,
       }}>
         <div style={{
-          backgroundColor: 'rgba(244,121,32,0.9)', borderRadius: 20, padding: '4px 16px',
-          backdropFilter: 'blur(8px)',
+          backgroundColor: 'rgba(244,121,32,0.95)', borderRadius: 20, padding: '4px 16px',
         }}>
           <p style={{ color: 'white', fontSize: 10, fontWeight: 700, margin: 0, letterSpacing: '0.1em' }}>
             📸 VER IMÓVEL ↑

@@ -98,8 +98,8 @@ export const AMStory3_T3_Curiosity = ({
 
       {/* Subtext */}
       <div style={{
-        backgroundColor: 'rgba(255,255,255,0.08)', borderRadius: 12, padding: '12px 16px',
-        border: '1px solid rgba(255,255,255,0.1)', backdropFilter: 'blur(10px)',
+        backgroundColor: 'rgba(30,30,40,0.85)', borderRadius: 12, padding: '12px 16px',
+        border: '1px solid rgba(255,255,255,0.1)',
       }}>
         <p style={{ color: 'rgba(255,255,255,0.85)', fontSize: 13, margin: 0, lineHeight: 1.5 }}>
           {data.bedrooms > 0 ? `${data.bedrooms} quartos` : 'Apartamento'}
@@ -223,22 +223,22 @@ export const AMStory3_T3_Reveal = ({
         {/* Specs row */}
         <div style={{ display: 'flex', gap: 6, marginBottom: 8, flexWrap: 'wrap' }}>
           {data.bedrooms > 0 && (
-            <div style={{ backgroundColor: 'rgba(255,255,255,0.1)', backdropFilter: 'blur(10px)', borderRadius: 10, padding: '4px 10px', border: '1px solid rgba(255,255,255,0.15)' }}>
+            <div style={{ backgroundColor: 'rgba(255,255,255,0.18)', borderRadius: 10, padding: '4px 10px', border: '1px solid rgba(255,255,255,0.25)' }}>
               <p style={{ color: 'white', fontSize: 10, fontWeight: 600, margin: 0 }}>🛏 {data.bedrooms} Qto{data.bedrooms > 1 ? 's' : ''}</p>
             </div>
           )}
           {data.area > 0 && (
-            <div style={{ backgroundColor: 'rgba(255,255,255,0.1)', backdropFilter: 'blur(10px)', borderRadius: 10, padding: '4px 10px', border: '1px solid rgba(255,255,255,0.15)' }}>
+            <div style={{ backgroundColor: 'rgba(255,255,255,0.18)', borderRadius: 10, padding: '4px 10px', border: '1px solid rgba(255,255,255,0.25)' }}>
               <p style={{ color: 'white', fontSize: 10, fontWeight: 600, margin: 0 }}>📐 {data.area}m²</p>
             </div>
           )}
           {data.garageSpaces > 0 && (
-            <div style={{ backgroundColor: 'rgba(255,255,255,0.1)', backdropFilter: 'blur(10px)', borderRadius: 10, padding: '4px 10px', border: '1px solid rgba(255,255,255,0.15)' }}>
+            <div style={{ backgroundColor: 'rgba(255,255,255,0.18)', borderRadius: 10, padding: '4px 10px', border: '1px solid rgba(255,255,255,0.25)' }}>
               <p style={{ color: 'white', fontSize: 10, fontWeight: 600, margin: 0 }}>🚗 {data.garageSpaces} Vaga{data.garageSpaces > 1 ? 's' : ''}</p>
             </div>
           )}
           {data.floor && (
-            <div style={{ backgroundColor: 'rgba(255,255,255,0.1)', backdropFilter: 'blur(10px)', borderRadius: 10, padding: '4px 10px', border: '1px solid rgba(255,255,255,0.15)' }}>
+            <div style={{ backgroundColor: 'rgba(255,255,255,0.18)', borderRadius: 10, padding: '4px 10px', border: '1px solid rgba(255,255,255,0.25)' }}>
               <p style={{ color: 'white', fontSize: 10, fontWeight: 600, margin: 0 }}>🏢 {data.floor}° And.</p>
             </div>
           )}
@@ -362,8 +362,8 @@ export const AMStory3_T3_CTA = ({
 
         {/* Broker name & info */}
         <div style={{
-          width: '100%', backgroundColor: 'rgba(255,255,255,0.07)', borderRadius: 14, padding: '12px 16px',
-          border: '1px solid rgba(255,255,255,0.1)', backdropFilter: 'blur(10px)',
+          width: '100%', backgroundColor: 'rgba(25,25,40,0.88)', borderRadius: 14, padding: '12px 16px',
+          border: '1px solid rgba(255,255,255,0.1)',
           marginBottom: 12,
         }}>
           <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: 10, margin: '0 0 2px', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Corretor responsável</p>
