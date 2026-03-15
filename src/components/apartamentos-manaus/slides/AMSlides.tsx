@@ -471,7 +471,7 @@ export const AMLocationSlide = ({
         />
       )}
 
-      {/* Blue info card — height:150 → bottom at y=164, alinhado ao notch */}
+      {/* Blue info card */}
       <div
         style={{
           position: 'absolute',
@@ -479,10 +479,10 @@ export const AMLocationSlide = ({
           left: 14,
           zIndex: 20,
           backgroundColor: '#1B5EA6',
-          borderRadius: 18,
-          padding: '14px 13px 12px',
-          width: 148,
-          height: 150,
+          borderRadius: 15,
+          padding: '11px 11px 10px',
+          width: 124,
+          height: 120,
           boxSizing: 'border-box',
           overflow: 'hidden',
           display: 'flex',
@@ -491,16 +491,16 @@ export const AMLocationSlide = ({
         }}
       >
         <div>
-          <p style={{ color: 'white', fontWeight: 700, fontSize: 14, lineHeight: 1.3, margin: '0 0 6px' }}>
+          <p style={{ color: 'white', fontWeight: 700, fontSize: 12, lineHeight: 1.3, margin: '0 0 5px' }}>
             {data.title || 'Imóveis bem localizados em Manaus'}
           </p>
           {address && (
-            <p style={{ color: 'white', fontSize: 10, opacity: 0.82, lineHeight: 1.4, margin: 0 }}>
+            <p style={{ color: 'white', fontSize: 9, opacity: 0.82, lineHeight: 1.4, margin: 0 }}>
               {address}
             </p>
           )}
           {data.referencePoint && (
-            <p style={{ color: 'white', fontSize: 10, opacity: 0.7, lineHeight: 1.4, margin: '4px 0 0' }}>
+            <p style={{ color: 'white', fontSize: 9, opacity: 0.7, lineHeight: 1.4, margin: '3px 0 0' }}>
               {data.referencePoint}
             </p>
           )}
@@ -513,8 +513,8 @@ export const AMLocationSlide = ({
             backgroundColor: 'rgba(255,255,255,0.15)',
             border: '1px solid rgba(255,255,255,0.35)',
             borderRadius: 20,
-            padding: '4px 10px',
-            fontSize: 9,
+            padding: '3px 8px',
+            fontSize: 8,
             color: 'white',
             alignSelf: 'flex-start',
           }}
