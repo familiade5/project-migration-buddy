@@ -89,7 +89,7 @@ export const ElitePostPreview = ({ data, photos }: ElitePostPreviewProps) => {
     try {
       const dataUrl = await toPng(ref, {
         quality: 1.0,
-        pixelRatio: 2,
+        pixelRatio: safePixelRatio(),
         cacheBust: true,
       });
 

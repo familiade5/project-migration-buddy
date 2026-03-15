@@ -315,7 +315,7 @@ export const RevendaPostPreview = ({ data, photos }: RevendaPostPreviewProps) =>
     if (!ref) return;
 
     try {
-      const dataUrl = await toPng(ref, { quality: 1, pixelRatio: 2 });
+      const dataUrl = await toPng(ref, { quality: 1, pixelRatio: safePixelRatio() });
       const link = document.createElement('a');
       link.download = `revenda-${format}-${index + 1}.png`;
       link.href = dataUrl;
