@@ -13,19 +13,14 @@ export const PostCover = ({ data, photo }: PostCoverProps) => {
   const [logoBase64, setLogoBase64] = useState<string>(logoVDH);
 
   useEffect(() => {
-    const img = new Image();
-    img.crossOrigin = 'anonymous';
-    img.onload = () => {
-      const canvas = document.createElement('canvas');
-      canvas.width = img.naturalWidth;
-      canvas.height = img.naturalHeight;
-      const ctx = canvas.getContext('2d');
-      if (ctx) {
-        ctx.drawImage(img, 0, 0);
-        setLogoBase64(canvas.toDataURL('image/jpeg'));
-      }
-    };
-    img.src = logoVDH;
+    fetch(logoVDH)
+      .then(res => res.blob())
+      .then(blob => {
+        const reader = new FileReader();
+        reader.onloadend = () => setLogoBase64(reader.result as string);
+        reader.readAsDataURL(blob);
+      })
+      .catch(() => setLogoBase64(logoVDH));
   }, []);
 
   // Endereço completo automático
@@ -165,7 +160,7 @@ export const PostCover = ({ data, photo }: PostCoverProps) => {
                 {propertySource}
               </span>
               <div style={{ width: '75%', height: '1px', background: 'rgba(255,255,255,0.4)', margin: '5px 0' }} />
-              {data.acceptsFinancing && <Check style={{ width: '22px', height: '22px', color: '#ffffff' }} />}
+              
               <span style={{ fontSize: '30px', fontWeight: 900, color: '#fff', letterSpacing: '0.03em', lineHeight: 1.15, textAlign: 'center', textShadow: '0 2px 8px rgba(0,0,0,0.4)' }}>
                 {data.acceptsFinancing
                   ? <><span style={{ display: 'block' }}>ACEITA</span><span style={{ display: 'block' }}>FINANCIAMENTO</span><span style={{ display: 'block', fontSize: '26px', fontWeight: 700 }}>BANCÁRIO</span></>

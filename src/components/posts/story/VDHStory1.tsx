@@ -12,19 +12,14 @@ export const VDHStory1 = ({ data, photo }: VDHStory1Props) => {
   const [logoBase64, setLogoBase64] = useState<string>(logoVDH);
 
   useEffect(() => {
-    const img = new Image();
-    img.crossOrigin = 'anonymous';
-    img.onload = () => {
-      const canvas = document.createElement('canvas');
-      canvas.width = img.naturalWidth;
-      canvas.height = img.naturalHeight;
-      const ctx = canvas.getContext('2d');
-      if (ctx) {
-        ctx.drawImage(img, 0, 0);
-        setLogoBase64(canvas.toDataURL('image/jpeg'));
-      }
-    };
-    img.src = logoVDH;
+    fetch(logoVDH)
+      .then(res => res.blob())
+      .then(blob => {
+        const reader = new FileReader();
+        reader.onloadend = () => setLogoBase64(reader.result as string);
+        reader.readAsDataURL(blob);
+      })
+      .catch(() => setLogoBase64(logoVDH));
   }, []);
 
   const discountRaw = data.discount ?? '';
@@ -191,11 +186,6 @@ export const VDHStory1 = ({ data, photo }: VDHStory1Props) => {
                 </span>
                 {/* Divider */}
                 <div style={{ width: '80%', height: '2px', background: 'rgba(255,255,255,0.4)', marginBottom: '10px' }} />
-                {!isCashOnly && (
-                  <svg width="30" height="30" viewBox="0 0 24 24" fill="#fff" style={{ marginBottom: '4px' }}>
-                    <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
-                  </svg>
-                )}
                 {/* Linhas de financiamento */}
                 {isCashOnly ? (
                   <>
