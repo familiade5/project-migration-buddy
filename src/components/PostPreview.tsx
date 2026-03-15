@@ -240,21 +240,18 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
 
     try {
       setIsExporting(true);
-      const dataUrl = await toPng(ref.current, {
-        quality: 1,
-        pixelRatio: 2,
-        cacheBust: true,
-      });
+      // Render twice for Safari/iPad (first pass loads images, second captures correctly)
+      await toPng(ref.current, { quality: 1, pixelRatio: 2, cacheBust: true });
+      const dataUrl = await toPng(ref.current, { quality: 1, pixelRatio: 2, cacheBust: true });
 
       const link = document.createElement('a');
-      const formatSuffix = format;
-      link.download = `post-${index + 1}-${posts[index].name.toLowerCase()}-${formatSuffix}.png`;
+      link.download = `post-${index + 1}-${posts[index].name.toLowerCase()}-${format}.png`;
       link.href = dataUrl;
+      document.body.appendChild(link);
       link.click();
+      document.body.removeChild(link);
 
-      // Save to library automatically with the exported image
       await saveCreativeWithExports([{ dataUrl, format, index }], format);
-
       toast.success(`Post exportado e salvo na biblioteca!`);
     } catch (error) {
       toast.error('Erro ao exportar imagem');
@@ -264,63 +261,51 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
     }
   };
 
+  // Helper: download all as ZIP (compatible with Safari/iPad)
+  const downloadAsZip = async (
+    dataUrls: string[],
+    labels: string[],
+    zipName: string
+  ) => {
+    const zip = new JSZip();
+    for (let i = 0; i < dataUrls.length; i++) {
+      const base64 = dataUrls[i].split(',')[1];
+      zip.file(`${i + 1}-${labels[i]}.png`, base64, { base64: true });
+    }
+    const zipBlob = await zip.generateAsync({ type: 'blob' });
+    const url = URL.createObjectURL(zipBlob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = zipName;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  };
+
   const handleExportAll = async () => {
     setIsExporting(true);
     try {
-      const formatSuffix = format;
       const currentRefs = format === 'feed' ? feedRefs : format === 'story' ? storyRefs : vdhRefs;
       const currentPosts = format === 'feed' ? feedPosts : format === 'story' ? storyPosts : vdhPosts;
       const exportedImages: { dataUrl: string; format: 'feed' | 'story' | 'vdh'; index: number }[] = [];
-
-      // Generate all images
       const allDataUrls: string[] = [];
+
       for (let i = 0; i < currentRefs.length; i++) {
         const ref = currentRefs[i];
         if (!ref.current) continue;
-
-        const dataUrl = await toPng(ref.current, {
-          quality: 1,
-          pixelRatio: 2,
-          cacheBust: true,
-        });
-
+        // Render twice to ensure images are fully loaded (Safari fix)
+        await toPng(ref.current, { quality: 1, pixelRatio: 2, cacheBust: true });
+        const dataUrl = await toPng(ref.current, { quality: 1, pixelRatio: 2, cacheBust: true });
         allDataUrls.push(dataUrl);
         exportedImages.push({ dataUrl, format, index: i });
       }
 
-      // Download: for VDH, use a ZIP to avoid browser blocking multiple downloads
-      if (format === 'vdh') {
-        const zip = new JSZip();
-        for (let i = 0; i < allDataUrls.length; i++) {
-          const res = await fetch(allDataUrls[i]);
-          const blob = await res.blob();
-          const filename = `post-${i + 1}-${currentPosts[i].name.toLowerCase()}-${formatSuffix}.png`;
-          zip.file(filename, blob);
-        }
-
-        const zipBlob = await zip.generateAsync({ type: 'blob' });
-        const url = URL.createObjectURL(zipBlob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = `posts-${formatSuffix}.zip`;
-        link.click();
-        URL.revokeObjectURL(url);
-      } else {
-        // Then download all of them (feed/story)
-        for (let i = 0; i < allDataUrls.length; i++) {
-          const link = document.createElement('a');
-          link.download = `post-${i + 1}-${currentPosts[i].name.toLowerCase()}-${formatSuffix}.png`;
-          link.href = allDataUrls[i];
-          link.click();
-
-          await new Promise((resolve) => setTimeout(resolve, 500));
-        }
-      }
-
-      // Save to library with all exported images
-      await saveCreativeWithExports(exportedImages, format);
-
+      const labels = currentPosts.map(p => p.name.toLowerCase());
       const formatLabel = format === 'feed' ? 'Feed' : format === 'story' ? 'Story' : 'VDH';
+      await downloadAsZip(allDataUrls, labels, `posts-${format}.zip`);
+
+      await saveCreativeWithExports(exportedImages, format);
       toast.success(`Todos os posts (${formatLabel}) exportados e salvos!`);
     } catch (error) {
       toast.error('Erro ao exportar imagens');
@@ -334,52 +319,33 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
     setIsExporting(true);
     try {
       const exportedImages: { dataUrl: string; format: 'feed' | 'story' | 'vdh'; index: number }[] = [];
-      
-      // Exportar formato feed
+      const allDataUrls: string[] = [];
+      const allLabels: string[] = [];
+
+      // Render feed slides (double-render for Safari fix)
       for (let i = 0; i < feedRefs.length; i++) {
         const ref = feedRefs[i];
         if (!ref.current) continue;
-
-        const dataUrl = await toPng(ref.current, {
-          quality: 1,
-          pixelRatio: 2,
-          cacheBust: true,
-        });
-        
+        await toPng(ref.current, { quality: 1, pixelRatio: 2, cacheBust: true });
+        const dataUrl = await toPng(ref.current, { quality: 1, pixelRatio: 2, cacheBust: true });
         exportedImages.push({ dataUrl, format: 'feed', index: i });
-        
-        const link = document.createElement('a');
-        link.download = `post-${i + 1}-${feedPosts[i].name.toLowerCase()}-feed.png`;
-        link.href = dataUrl;
-        link.click();
-        
-        await new Promise(resolve => setTimeout(resolve, 200));
+        allDataUrls.push(dataUrl);
+        allLabels.push(`feed-${feedPosts[i].name.toLowerCase()}`);
       }
 
-      // Exportar formato story
+      // Render story slides (double-render for Safari fix)
       for (let i = 0; i < storyRefs.length; i++) {
         const ref = storyRefs[i];
         if (!ref.current) continue;
-
-        const dataUrl = await toPng(ref.current, {
-          quality: 1,
-          pixelRatio: 2,
-          cacheBust: true,
-        });
-        
+        await toPng(ref.current, { quality: 1, pixelRatio: 2, cacheBust: true });
+        const dataUrl = await toPng(ref.current, { quality: 1, pixelRatio: 2, cacheBust: true });
         exportedImages.push({ dataUrl, format: 'story', index: i });
-        
-        const link = document.createElement('a');
-        link.download = `post-${i + 1}-${storyPosts[i].name.toLowerCase()}-story.png`;
-        link.href = dataUrl;
-        link.click();
-        
-        await new Promise(resolve => setTimeout(resolve, 200));
+        allDataUrls.push(dataUrl);
+        allLabels.push(`story-${storyPosts[i].name.toLowerCase()}`);
       }
 
-      // Save to library with all exported images
+      await downloadAsZip(allDataUrls, allLabels, 'posts-feed-story.zip');
       await saveCreativeWithExports(exportedImages, 'both');
-
       toast.success('Todos os 8 posts (Feed + Story) exportados e salvos!');
     } catch (error) {
       toast.error('Erro ao exportar imagens');
