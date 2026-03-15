@@ -36,11 +36,9 @@ export const VDHStory1 = ({ data, photo }: VDHStory1Props) => {
   const propertyType = data.type || 'Imóvel';
   const title = data.propertyName?.trim() || propertyType;
 
-  // Endereço completo automático
-  const displayAddress = data.fullAddress ||
-    (data.street
-      ? `${data.street}${data.number ? `, ${data.number}` : ''}${data.complement ? ` ${data.complement}` : ''} - ${data.neighborhood}, ${data.city}/${(data.state || '').trim().slice(0, 2).toUpperCase()}`
-      : [data.neighborhood, data.city, (data.state || '').trim().slice(0, 2).toUpperCase()].filter(Boolean).join(' - '));
+  // Endereço resumido: apenas bairro + cidade + estado
+  const stateShort = (data.state || '').trim().slice(0, 2).toUpperCase();
+  const displayAddress = [data.neighborhood, data.city, stateShort].filter(Boolean).join(' - ');
 
   const GOLD        = '#D4AF37';
   const GOLD_BRIGHT = '#F5D060';
