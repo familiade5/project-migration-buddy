@@ -186,11 +186,6 @@ export const VDHStory1 = ({ data, photo }: VDHStory1Props) => {
                 </span>
                 {/* Divider */}
                 <div style={{ width: '80%', height: '2px', background: 'rgba(255,255,255,0.4)', marginBottom: '10px' }} />
-                {!isCashOnly && (
-                  <svg width="30" height="30" viewBox="0 0 24 24" fill="#fff" style={{ marginBottom: '4px' }}>
-                    <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
-                  </svg>
-                )}
                 {/* Linhas de financiamento */}
                 {isCashOnly ? (
                   <>
