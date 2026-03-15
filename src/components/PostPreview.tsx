@@ -328,8 +328,8 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
       for (let i = 0; i < feedRefs.length; i++) {
         const ref = feedRefs[i];
         if (!ref.current) continue;
-        await toPng(ref.current, { quality: 1, pixelRatio: 2, cacheBust: true });
-        const dataUrl = await toPng(ref.current, { quality: 1, pixelRatio: 2, cacheBust: true });
+        await toPng(ref.current, { quality: 1, pixelRatio: safePixelRatio(), cacheBust: true });
+        const dataUrl = await toPng(ref.current, { quality: 1, pixelRatio: safePixelRatio(), cacheBust: true });
         exportedImages.push({ dataUrl, format: 'feed', index: i });
         allDataUrls.push(dataUrl);
         allLabels.push(`feed-${feedPosts[i].name.toLowerCase()}`);
@@ -339,8 +339,8 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
       for (let i = 0; i < storyRefs.length; i++) {
         const ref = storyRefs[i];
         if (!ref.current) continue;
-        await toPng(ref.current, { quality: 1, pixelRatio: 2, cacheBust: true });
-        const dataUrl = await toPng(ref.current, { quality: 1, pixelRatio: 2, cacheBust: true });
+        await toPng(ref.current, { quality: 1, pixelRatio: safePixelRatio(), cacheBust: true });
+        const dataUrl = await toPng(ref.current, { quality: 1, pixelRatio: safePixelRatio(), cacheBust: true });
         exportedImages.push({ dataUrl, format: 'story', index: i });
         allDataUrls.push(dataUrl);
         allLabels.push(`story-${storyPosts[i].name.toLowerCase()}`);
