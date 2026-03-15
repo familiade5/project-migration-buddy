@@ -36,18 +36,15 @@ export const VDHStory1 = ({ data, photo }: VDHStory1Props) => {
   const propertyType = data.type || 'Imóvel';
   const title = data.propertyName?.trim() || propertyType;
 
-  // Endereço resumido: apenas bairro + cidade + estado
-  const stateShort = (data.state || '').trim().slice(0, 2).toUpperCase();
-  const displayAddress = [data.neighborhood, data.city, stateShort].filter(Boolean).join(' - ');
+  // Endereço resumido: apenas bairro · cidade · estado (nome completo, maiúsculo)
+  const stateUpper = (data.state || '').trim().toUpperCase();
+  const displayAddress = [data.neighborhood, data.city, stateUpper].filter(Boolean).join(' · ');
 
   const GOLD        = '#D4AF37';
   const GOLD_BRIGHT = '#F5D060';
   const GOLD_GLOW   = 'rgba(212,175,55,0.45)';
   const GREEN_DEEP  = '#0d2210';
-
-  const financingBg = isCashOnly
-    ? 'linear-gradient(160deg, #c2410c 0%, #f97316 40%, #ea580c 100%)'
-    : 'linear-gradient(160deg, #15803d 0%, #22c55e 40%, #16a34a 100%)';
+  const GREEN_CARD  = '#0a1c0d';
 
   return (
     <div
@@ -135,142 +132,96 @@ export const VDHStory1 = ({ data, photo }: VDHStory1Props) => {
         </div>
       )}
 
-      {/* 3 · CARD CENTRAL — cinza + badge colorido */}
+      {/* 3 · CARD CENTRAL — verde escuro, layout original do screenshot */}
       <div className="absolute z-20" style={{ bottom: '230px', left: '52px', right: '52px' }}>
         <div
           style={{
-            background: '#2a3142',
-            border: `2.5px solid ${GOLD}`,
-            borderRadius: '28px',
+            background: GREEN_CARD,
+            border: `2px solid rgba(255,255,255,0.15)`,
+            borderRadius: '22px',
             overflow: 'hidden',
-            boxShadow: `0 0 0 6px rgba(212,175,55,0.08), 0 24px 80px rgba(0,0,0,0.65), 0 0 48px ${GOLD_GLOW}`,
-            position: 'relative',
+            boxShadow: `0 24px 80px rgba(0,0,0,0.65)`,
           }}
         >
-          <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '2px', background: `linear-gradient(90deg, transparent 0%, ${GOLD_BRIGHT} 50%, transparent 100%)` }} />
-
-          <div style={{ display: 'flex', minHeight: '280px' }}>
-
-            {/* Badge financiamento — logo Caixa */}
-            <div
-              style={{
-                flexShrink: 0,
-                minWidth: '240px',
-                position: 'relative',
-                overflow: 'hidden',
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: 'center',
+          {/* Header: "Imóvel" + logo Caixa | badge financiamento */}
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            padding: '20px 28px',
+            borderBottom: '1px solid rgba(255,255,255,0.10)',
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+              <span style={{ fontSize: '32px', color: '#fff', fontWeight: 600 }}>Imóvel</span>
+              <img
+                src={logoCaixaBase64}
+                alt="Caixa"
+                style={{ height: '28px', objectFit: 'contain', filter: 'brightness(0) invert(1)', opacity: 0.9 }}
+              />
+            </div>
+            {/* Badge financiamento/à vista */}
+            <div style={{
+              background: isCashOnly ? '#ea580c' : '#16a34a',
+              borderRadius: '8px',
+              padding: '8px 20px',
+              display: 'flex',
+              alignItems: 'center',
+            }}>
+              <span style={{
+                fontSize: '24px',
+                fontWeight: 800,
+                color: '#fff',
+                letterSpacing: '0.04em',
+                textTransform: 'uppercase',
+                lineHeight: 1.1,
                 textAlign: 'center',
-              }}
-            >
-              <div className="absolute inset-0" style={{ background: financingBg }} />
-              <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, rgba(255,255,255,0.20) 0%, transparent 100%)' }} />
-              <div className="absolute inset-0" style={{ boxShadow: 'inset 0 0 20px rgba(0,0,0,0.15), inset 0 2px 0 rgba(255,255,255,0.25)' }} />
-              <div className="relative" style={{ padding: '16px 20px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px' }}>
-                <img
-                  src={logoCaixaBase64}
-                  alt="Caixa"
-                  style={{ height: '52px', objectFit: 'contain', marginBottom: '8px', filter: 'brightness(0) invert(1)' }}
-                />
-                <div style={{ width: '80%', height: '2px', background: 'rgba(255,255,255,0.4)', marginBottom: '10px' }} />
-                {isCashOnly ? (
-                  <>
-                    <span style={{ fontSize: '34px', fontWeight: 900, color: '#fff', letterSpacing: '0.04em', lineHeight: 1.1, textShadow: '0 2px 8px rgba(0,0,0,0.3)' }}>SOMENTE</span>
-                    <span style={{ fontSize: '34px', fontWeight: 900, color: '#fff', letterSpacing: '0.04em', lineHeight: 1.1, textShadow: '0 2px 8px rgba(0,0,0,0.3)' }}>À VISTA</span>
-                  </>
-                ) : (
-                  <>
-                    <span style={{ fontSize: '32px', fontWeight: 900, color: '#fff', letterSpacing: '0.04em', lineHeight: 1.1, textShadow: '0 2px 8px rgba(0,0,0,0.3)' }}>ACEITA</span>
-                    <span style={{ fontSize: '32px', fontWeight: 900, color: '#fff', letterSpacing: '0.04em', lineHeight: 1.1, textShadow: '0 2px 8px rgba(0,0,0,0.3)' }}>FINANCIAMENTO</span>
-                    <span style={{ fontSize: '28px', fontWeight: 700, color: '#fff', letterSpacing: '0.04em', lineHeight: 1.1, textShadow: '0 2px 8px rgba(0,0,0,0.3)' }}>BANCÁRIO</span>
-                  </>
+              }}>
+                {isCashOnly ? 'SOMENTE\nÀ VISTA' : 'ACEITA\nFINANCIAMENTO'}
+              </span>
+            </div>
+          </div>
+
+          {/* Body */}
+          <div style={{ padding: '24px 28px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+            {/* Tipo + nome */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <span style={{ fontSize: '30px' }}>🏠</span>
+              <div>
+                <p style={{ fontSize: '38px', fontWeight: 800, color: GOLD_BRIGHT, lineHeight: 1 }}>{propertyType}</p>
+                {displayAddress && (
+                  <p style={{ fontSize: '26px', color: 'rgba(255,255,255,0.80)', lineHeight: 1.2, marginTop: '4px' }}>{displayAddress}</p>
                 )}
               </div>
             </div>
 
-            {/* Separador */}
-            <div style={{ width: '1px', background: 'rgba(255,255,255,0.15)', alignSelf: 'stretch', margin: '12px 0' }} />
-
-            {/* Informações do imóvel */}
-            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '20px 24px', gap: '4px' }}>
-              {/* Logo VDH */}
-              <img src={logoBase64} alt="VDH" style={{ height: '46px', objectFit: 'contain', objectPosition: 'left', marginBottom: '8px' }} />
-
-              {/* Nome do condomínio */}
-              <p style={{ fontSize: '38px', fontWeight: 900, color: GOLD_BRIGHT, lineHeight: 1.1, letterSpacing: '-0.01em' }}>
-                {title}
+            {/* Financiamento / FGTS */}
+            {acceptsFinancing && (
+              <p style={{ fontSize: '28px', color: '#4ade80', fontWeight: 600 }}>
+                ✅ Aceita financiamento
               </p>
+            )}
+            {acceptsFGTS && (
+              <p style={{ fontSize: '26px', color: '#4ade80', fontWeight: 600 }}>✅ Aceita FGTS</p>
+            )}
+            {isCashOnly && (
+              <p style={{ fontSize: '28px', color: '#fb923c', fontWeight: 600 }}>💰 Somente à vista</p>
+            )}
 
-              {/* Tipo do imóvel */}
-              <p style={{ fontSize: '26px', fontWeight: 600, color: '#fff', lineHeight: 1.2 }}>
-                {propertyType}
-                {data.bedrooms && data.bedrooms !== '' && data.bedrooms !== '0'
-                  ? ` · ${data.bedrooms} quarto${Number(data.bedrooms) > 1 ? 's' : ''}`
-                  : ''}
-              </p>
+            {/* Preço em pílula escura */}
+            {price && (
+              <div style={{
+                background: 'rgba(0,0,0,0.45)',
+                borderRadius: '50px',
+                padding: '16px 0',
+                textAlign: 'center',
+                marginTop: '4px',
+              }}>
+                <span style={{ fontSize: '52px', fontWeight: 900, color: '#fff', letterSpacing: '-0.01em' }}>{price}</span>
+              </div>
+            )}
 
-              {/* Endereço completo */}
-              {displayAddress && (
-                <p style={{ fontSize: '20px', color: '#fff', lineHeight: 1.3 }}>
-                  {displayAddress}
-                </p>
-              )}
-
-              {/* Divider */}
-              <div style={{ height: '1px', background: 'rgba(255,255,255,0.20)', margin: '6px 0' }} />
-
-              {/* Preço de venda */}
-              {price && (
-                <p style={{ fontSize: '44px', fontWeight: 900, color: GOLD_BRIGHT, letterSpacing: '-0.01em', lineHeight: 1 }}>{price}</p>
-              )}
-
-              {/* Valor de avaliação — label + somente o valor riscado */}
-              {evaluationFormatted && (
-                <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '10px', flexWrap: 'nowrap' }}>
-                  <span style={{ fontSize: '19px', color: '#fff', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.04em', whiteSpace: 'nowrap' }}>
-                    Valor de Avaliação
-                  </span>
-                  <div style={{ position: 'relative', display: 'inline-block' }}>
-                    <span style={{ fontSize: '26px', fontWeight: 500, color: '#fff', lineHeight: 1, whiteSpace: 'nowrap' }}>
-                      {evaluationFormatted}
-                    </span>
-                    <span style={{
-                      position: 'absolute',
-                      top: '50%',
-                      left: 0,
-                      right: 0,
-                      height: '2px',
-                      background: '#fff',
-                      transform: 'translateY(-50%)',
-                      display: 'block',
-                      pointerEvents: 'none',
-                    }} />
-                  </div>
-                </div>
-              )}
-
-              {/* Entrada a partir de */}
-              {acceptsFinancing && entryFormatted && (
-                <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'baseline', gap: '8px', flexWrap: 'wrap' }}>
-                  <span style={{ fontSize: '20px', color: '#fff', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.03em', whiteSpace: 'nowrap' }}>
-                    Entrada a partir de
-                  </span>
-                  <span style={{ fontSize: '30px', fontWeight: 800, color: '#fff', lineHeight: 1, whiteSpace: 'nowrap' }}>
-                    {entryFormatted}
-                  </span>
-                </div>
-              )}
-
-              {/* FGTS */}
-              {acceptsFGTS && (
-                <p style={{ fontSize: '22px', color: '#fff', fontWeight: 600 }}>✓ Aceita FGTS</p>
-              )}
-
-              {/* CRECI */}
-              <p style={{ fontSize: '17px', color: 'rgba(255,255,255,0.70)', marginTop: '2px' }}>VENDA DIRETA {data.creci}</p>
-            </div>
+            {/* CRECI */}
+            <p style={{ fontSize: '20px', color: 'rgba(255,255,255,0.55)', textAlign: 'center' }}>VENDA DIRETA {data.creci}</p>
           </div>
         </div>
       </div>
