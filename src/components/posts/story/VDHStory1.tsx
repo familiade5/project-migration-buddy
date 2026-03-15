@@ -214,7 +214,7 @@ export const VDHStory1 = ({ data, photo }: VDHStory1Props) => {
 
               {/* Endereço completo automático */}
               {displayAddress && (
-                <p style={{ fontSize: '20px', color: 'rgba(255,255,255,0.80)', lineHeight: 1.3 }}>
+                <p style={{ fontSize: '20px', color: '#fff', lineHeight: 1.3 }}>
                   {displayAddress}
                 </p>
               )}
