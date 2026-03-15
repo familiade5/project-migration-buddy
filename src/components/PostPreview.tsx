@@ -78,12 +78,12 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
   const { user, profile } = useAuth();
   const { logActivity } = useActivityLog();
   
-  // Refs para formato feed (1:1)
+  // Export refs — ONLY used by the hidden off-screen slides, never shared with the preview
   const feedRefs = [useRef<HTMLDivElement>(null), useRef<HTMLDivElement>(null), useRef<HTMLDivElement>(null), useRef<HTMLDivElement>(null)];
-  // Refs para formato story (9:16)
   const storyRefs = [useRef<HTMLDivElement>(null), useRef<HTMLDivElement>(null), useRef<HTMLDivElement>(null), useRef<HTMLDivElement>(null)];
-  // Refs para formato VDH (9:16)
   const vdhRefs = [useRef<HTMLDivElement>(null), useRef<HTMLDivElement>(null), useRef<HTMLDivElement>(null), useRef<HTMLDivElement>(null)];
+  // Preview ref — separate, never used for export
+  const previewRef = useRef<HTMLDivElement>(null);
 
   const feedPosts = [
     { name: 'Capa', component: PostCover, photoIndex: 0 },
@@ -111,6 +111,7 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
   ];
 
   const posts = format === 'feed' ? feedPosts : format === 'story' ? storyPosts : vdhPosts;
+  // postRefs used ONLY for export single (hidden slides) — previewRef is separate
   const postRefs = format === 'feed' ? feedRefs : format === 'story' ? storyRefs : vdhRefs;
 
   // Generate a title based on property data
@@ -486,7 +487,7 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
                   : 'scale(0.1667)'
               }}
             >
-              <div ref={postRefs[currentPost]}>
+              <div ref={previewRef}>
                 <CurrentPostComponent data={data} photo={currentPhoto} photos={photos} />
               </div>
             </div>
@@ -514,24 +515,27 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
         </div>
       </div>
 
-      {/* Hidden slides for export — use absolute+clip (iOS/Chrome fix: position:fixed breaks off-screen rendering) */}
-      <div style={{ position: 'absolute', left: 0, top: 0, width: '1px', height: '1px', overflow: 'hidden', pointerEvents: 'none', zIndex: -1 }}>
-        {/* FEED */}
+      {/*
+        Hidden export slides — iOS/WebKit fix:
+        - NO overflow:hidden on parent (clipping breaks canvas capture on iOS)
+        - NO position:fixed (iOS doesn't paint fixed elements off-viewport)
+        - opacity:0 + pointer-events:none + aria-hidden keeps them invisible but fully painted
+        - Each ref is UNIQUE (never shared with the preview ref above)
+      */}
+      <div aria-hidden="true" style={{ opacity: 0, pointerEvents: 'none', position: 'absolute', top: 0, left: 0, zIndex: -1 }}>
         {feedPosts.map((Post, index) => (
-          <div key={`feed-${index}`} ref={feedRefs[index]} style={{ position: 'absolute', left: 0, top: 0 }}>
-            <Post.component data={data} photo={photos[index] || photos[0] || null} photos={photos} />
+          <div key={`feed-export-${index}`} ref={feedRefs[index]}>
+            <Post.component data={data} photo={photos[Post.photoIndex] || photos[0] || null} photos={photos} />
           </div>
         ))}
-        {/* STORY */}
         {storyPosts.map((Post, index) => (
-          <div key={`story-${index}`} ref={storyRefs[index]} style={{ position: 'absolute', left: 0, top: 0 }}>
-            <Post.component data={data} photo={photos[index] || photos[0] || null} photos={photos} />
+          <div key={`story-export-${index}`} ref={storyRefs[index]}>
+            <Post.component data={data} photo={photos[Post.photoIndex] || photos[0] || null} photos={photos} />
           </div>
         ))}
-        {/* VDH */}
         {vdhPosts.map((Post, index) => (
-          <div key={`vdh-${index}`} ref={vdhRefs[index]} style={{ position: 'absolute', left: 0, top: 0 }}>
-            <Post.component data={data} photo={photos[index] || photos[0] || null} photos={photos} />
+          <div key={`vdh-export-${index}`} ref={vdhRefs[index]}>
+            <Post.component data={data} photo={photos[Post.photoIndex] || photos[0] || null} photos={photos} />
           </div>
         ))}
       </div>
