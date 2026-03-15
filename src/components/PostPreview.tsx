@@ -497,22 +497,24 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
       </div>
 
       {/*
-        ── Single hidden export element (iOS/iPad/Safari fix) ──────────────────
+        ── Single hidden export element (iOS/iPhone/iPad/Safari fix) ───────────
         Strategy:
-        - ONE element only: content is swapped per capture via flushSync
-        - position: fixed; top: 100vh → element is BELOW the viewport, not clipped
-        - iOS WebKit renders fixed elements even off-screen (unlike absolute)
-        - Photos are pre-converted to base64 before export to avoid CORS fetch failures
+        - position: fixed; top: 0; left: 0 → always in the iOS render area (regardless of slide height)
+        - clip-path: inset(0 0 0 100%) → visually hidden but FULLY RENDERED by WebKit
+          (unlike opacity:0 or visibility:hidden which may skip paint on iOS)
+        - zIndex: -9999 → behind all UI as extra safety
+        - Photos pre-converted to base64 to avoid CORS fetch failures on iOS
         - Double-render on iOS primes the image cache before final capture
       */}
       <div
         aria-hidden="true"
         style={{
           position: 'fixed',
-          top: '100vh',
+          top: 0,
           left: 0,
           pointerEvents: 'none',
-          zIndex: -1,
+          zIndex: -9999,
+          clipPath: 'inset(0 0 0 100%)',
         }}
       >
         <div ref={exportRef}>
