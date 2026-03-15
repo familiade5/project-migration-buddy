@@ -133,7 +133,7 @@ export const PostCover = ({ data, photo }: PostCoverProps) => {
 
       {/* Rodapé */}
       <div className="absolute bottom-0 left-0 right-0 bg-[#2a3142] z-10">
-        <div className="flex items-stretch" style={{ minHeight: '170px' }}>
+        <div className="flex items-stretch" style={{ minHeight: '200px' }}>
 
           {/* Badge financiamento - ocupa toda altura */}
           <div 
