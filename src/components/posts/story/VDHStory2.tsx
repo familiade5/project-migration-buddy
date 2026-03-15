@@ -103,7 +103,7 @@ export const VDHStory2 = ({ data, photo, photos }: VDHStory2Props) => {
           </div>
         )}
         {data.acceptsFGTS && (
-          <div className="bg-[#3b82f6]/90 backdrop-blur rounded-full flex items-center gap-2" style={{ padding: '12px 24px' }}>
+          <div className="rounded-full flex items-center gap-2" style={{ padding: '12px 24px', background: 'rgba(37,99,235,0.92)' }}>
             <span className="text-white font-semibold" style={{ fontSize: '22px' }}>✓ Usa FGTS</span>
           </div>
         )}
