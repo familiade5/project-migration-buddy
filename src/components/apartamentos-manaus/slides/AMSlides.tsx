@@ -395,27 +395,26 @@ export const AMLocationSlide = ({
   // Apenas o endereço digitado — cidade/estado e bairro NÃO são adicionados automaticamente
   const address = data.address || '';
 
-  // Clip path com DOIS nichos: superior-esquerdo (card azul) e inferior-direito (card logo).
-  // Notch azul: x 14→170, y 14→172 (mantido). Notch logo reduzido: x 250→346, y 300→346.
-  // Card logo: bottom=14, right=14, width=96, height=32.
+  // Notch azul reduzido: card 124×120 em top=14,left=14 → notch x:14→150, y:14→148
+  // Notch logo reduzido: card 96×32 em bottom=14,right=14 → notch x:250→346, y:300→346
   const shapePath = [
-    'M 192 14',              // top edge start
-    'H 324',                 // top edge rightward
-    'A 22 22 0 0 1 346 36',  // top-right outer convex corner
-    'V 278',                 // right edge down (300-22=278)
-    'Q 346 300 324 300',     // concave at top-right of logo notch
-    'H 272',                 // logo notch top leftward (250+22=272)
-    'Q 250 300 250 322',     // concave at top-left of logo notch
-    'V 324',                 // down logo notch left wall
-    'A 22 22 0 0 1 228 346', // canto inferior-esquerdo (250-22=228)
-    'H 36',                  // bottom edge leftward
-    'A 22 22 0 0 1 14 324',  // bottom-left outer convex corner
-    'V 194',                 // left edge upward to blue notch
-    'Q 14 172 36 172',       // concave at bottom-left of blue notch
-    'H 148',                 // blue notch bottom
-    'Q 170 172 170 150',     // concave at bottom-right of blue notch
+    'M 172 14',              // top edge start (150+22=172)
+    'H 324',
+    'A 22 22 0 0 1 346 36',
+    'V 278',
+    'Q 346 300 324 300',
+    'H 272',
+    'Q 250 300 250 322',
+    'V 324',
+    'A 22 22 0 0 1 228 346',
+    'H 36',
+    'A 22 22 0 0 1 14 324',
+    'V 170',                 // left edge up (148+22=170)
+    'Q 14 148 36 148',       // concave bottom-left of blue notch
+    'H 128',                 // blue notch bottom (150-22=128)
+    'Q 150 148 150 126',     // concave bottom-right (148-22=126)
     'V 36',
-    'A 22 22 0 0 1 192 14',
+    'A 22 22 0 0 1 172 14',
     'Z',
   ].join(' ');
 
@@ -471,7 +470,7 @@ export const AMLocationSlide = ({
         />
       )}
 
-      {/* Blue info card — height:150 → bottom at y=164, alinhado ao notch */}
+      {/* Blue info card */}
       <div
         style={{
           position: 'absolute',
@@ -479,10 +478,10 @@ export const AMLocationSlide = ({
           left: 14,
           zIndex: 20,
           backgroundColor: '#1B5EA6',
-          borderRadius: 18,
-          padding: '14px 13px 12px',
-          width: 148,
-          height: 150,
+          borderRadius: 15,
+          padding: '11px 11px 10px',
+          width: 124,
+          height: 120,
           boxSizing: 'border-box',
           overflow: 'hidden',
           display: 'flex',
@@ -491,16 +490,16 @@ export const AMLocationSlide = ({
         }}
       >
         <div>
-          <p style={{ color: 'white', fontWeight: 700, fontSize: 14, lineHeight: 1.3, margin: '0 0 6px' }}>
+          <p style={{ color: 'white', fontWeight: 700, fontSize: 12, lineHeight: 1.3, margin: '0 0 5px' }}>
             {data.title || 'Imóveis bem localizados em Manaus'}
           </p>
           {address && (
-            <p style={{ color: 'white', fontSize: 10, opacity: 0.82, lineHeight: 1.4, margin: 0 }}>
+            <p style={{ color: 'white', fontSize: 9, opacity: 0.82, lineHeight: 1.4, margin: 0 }}>
               {address}
             </p>
           )}
           {data.referencePoint && (
-            <p style={{ color: 'white', fontSize: 10, opacity: 0.7, lineHeight: 1.4, margin: '4px 0 0' }}>
+            <p style={{ color: 'white', fontSize: 9, opacity: 0.7, lineHeight: 1.4, margin: '3px 0 0' }}>
               {data.referencePoint}
             </p>
           )}
@@ -513,8 +512,8 @@ export const AMLocationSlide = ({
             backgroundColor: 'rgba(255,255,255,0.15)',
             border: '1px solid rgba(255,255,255,0.35)',
             borderRadius: 20,
-            padding: '4px 10px',
-            fontSize: 9,
+            padding: '3px 8px',
+            fontSize: 8,
             color: 'white',
             alignSelf: 'flex-start',
           }}
