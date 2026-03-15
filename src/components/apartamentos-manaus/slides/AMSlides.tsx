@@ -565,21 +565,21 @@ export const AMPhotoSlide = ({
   const uid = useId();
   const clipId = `am-photo-${uid}`;
 
-  // Mesmo path do Slide 2 — notch superior-esquerdo para o card da logo
+  // Notch reduzido: w=120, h=56 (era 164×76) → mais área de foto visível
   const shapePath = [
-    'M 330 8',
-    'A 22 22 0 0 1 352 30',
-    'V 330',
-    'A 22 22 0 0 1 330 352',
+    'M 286 8',
+    'A 22 22 0 0 1 308 30',
+    'V 286',
+    'A 22 22 0 0 1 286 308',
     'H 30',
-    'A 22 22 0 0 1 8 330',
-    'V 98',
-    'Q 8 80 26 80',
-    'H 150',
-    'Q 168 80 168 62',
+    'A 22 22 0 0 1 8 286',
+    'V 76',
+    'Q 8 56 26 56',
+    'H 100',
+    'Q 120 56 120 36',
     'V 30',
-    'A 22 22 0 0 1 190 8',
-    'H 330',
+    'A 22 22 0 0 1 142 8',
+    'H 286',
     'Z',
   ].join(' ');
 
