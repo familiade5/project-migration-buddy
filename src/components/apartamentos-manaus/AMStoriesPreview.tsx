@@ -3,6 +3,7 @@
  */
 
 import { useState, useRef } from 'react';
+import { safePixelRatio } from '@/lib/exportUtils';
 import { toPng } from 'html-to-image';
 import JSZip from 'jszip';
 import { Download, Loader2, ChevronLeft, ChevronRight, Sparkles } from 'lucide-react';
@@ -152,7 +153,7 @@ export function AMStoriesPreview({ data, photos }: AMStoriesPreviewProps) {
 
   const captureRef = async (ref: React.RefObject<HTMLDivElement>) => {
     if (!ref.current) return null;
-    return toPng(ref.current, { quality: 1, pixelRatio: 3, cacheBust: true });
+    return toPng(ref.current, { quality: 1, pixelRatio: safePixelRatio(), cacheBust: true });
   };
 
   const handleExportTheme = async () => {

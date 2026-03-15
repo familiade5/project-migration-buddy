@@ -1,4 +1,5 @@
 import { useState, useRef } from 'react';
+import { safePixelRatio } from '@/lib/exportUtils';
 import { LocacaoPropertyData, LocacaoManagementData, LocacaoCategorizedPhoto, LocacaoCreativeType, locacaoPhotoCategoryLabels, LocacaoPhotoCategory } from '@/types/locacao';
 import { LocacaoCoverFeed } from './feed/LocacaoCoverFeed';
 import { LocacaoPhotoFeed } from './feed/LocacaoPhotoFeed';
@@ -133,7 +134,7 @@ export const LocacaoPostPreview = ({
     if (!ref) return;
 
     try {
-      const dataUrl = await toPng(ref, { quality: 1, pixelRatio: 2 });
+      const dataUrl = await toPng(ref, { quality: 1, pixelRatio: safePixelRatio() });
       const link = document.createElement('a');
       link.download = `locacao-${format}-${index + 1}.png`;
       link.href = dataUrl;
@@ -151,7 +152,7 @@ export const LocacaoPostPreview = ({
       for (let i = 0; i < slides.length; i++) {
         const ref = postRefs.current[i];
         if (ref) {
-          const dataUrl = await toPng(ref, { quality: 1, pixelRatio: 2 });
+          const dataUrl = await toPng(ref, { quality: 1, pixelRatio: safePixelRatio() });
           const base64Data = dataUrl.split(',')[1];
           zip.file(`locacao-${format}-${i + 1}.png`, base64Data, { base64: true });
         }

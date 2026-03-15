@@ -1,5 +1,6 @@
 import { useRef, useState, useEffect } from 'react';
 import { toPng } from 'html-to-image';
+import { safePixelRatio } from '@/lib/exportUtils';
 import JSZip from 'jszip';
 import { Download, ChevronLeft, ChevronRight, Loader2, Square, Smartphone } from 'lucide-react';
 import { AMPropertyData } from '@/types/apartamentosManaus';
@@ -132,7 +133,7 @@ export function AMPostPreview({ data, photos }: AMPostPreviewProps) {
   // ── Export helpers ────────────────────────────────────────────────────────
   const captureRef = async (ref: React.RefObject<HTMLDivElement>) => {
     if (!ref.current) return null;
-    return toPng(ref.current, { quality: 1, pixelRatio: 3, cacheBust: true });
+    return toPng(ref.current, { quality: 1, pixelRatio: safePixelRatio(), cacheBust: true });
   };
 
   const buildZip = async (

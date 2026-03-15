@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
+import { safePixelRatio } from '@/lib/exportUtils';
 import { RevendaPropertyData, CategorizedPhoto, photoCategoryLabels, PhotoCategory } from '@/types/revenda';
 import { RevendaCoverFeed } from './feed/RevendaCoverFeed';
 import { RevendaPhotoFeed } from './feed/RevendaPhotoFeed';
@@ -314,7 +315,7 @@ export const RevendaPostPreview = ({ data, photos }: RevendaPostPreviewProps) =>
     if (!ref) return;
 
     try {
-      const dataUrl = await toPng(ref, { quality: 1, pixelRatio: 2 });
+      const dataUrl = await toPng(ref, { quality: 1, pixelRatio: safePixelRatio() });
       const link = document.createElement('a');
       link.download = `revenda-${format}-${index + 1}.png`;
       link.href = dataUrl;
@@ -343,7 +344,7 @@ export const RevendaPostPreview = ({ data, photos }: RevendaPostPreviewProps) =>
       for (let i = 0; i < slides.length; i++) {
         const ref = postRefs.current[i];
         if (ref) {
-          const dataUrl = await toPng(ref, { quality: 1, pixelRatio: 2 });
+          const dataUrl = await toPng(ref, { quality: 1, pixelRatio: safePixelRatio() });
           const base64Data = dataUrl.split(',')[1];
           zip.file(`revenda-${format}-${i + 1}.png`, base64Data, { base64: true });
           exportedImages.push({ dataUrl, index: i });

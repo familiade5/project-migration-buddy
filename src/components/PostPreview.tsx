@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react';
 import { toPng } from 'html-to-image';
+import { safePixelRatio } from '@/lib/exportUtils';
 import JSZip from 'jszip';
 import { Download, ChevronLeft, ChevronRight, Loader2, Square, Smartphone, Sparkles } from 'lucide-react';
 import { PropertyData } from '@/types/property';
@@ -242,8 +243,8 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
     try {
       setIsExporting(true);
       // Render twice for Safari/iPad (first pass loads images, second captures correctly)
-      await toPng(ref.current, { quality: 1, pixelRatio: 2, cacheBust: true });
-      const dataUrl = await toPng(ref.current, { quality: 1, pixelRatio: 2, cacheBust: true });
+      await toPng(ref.current, { quality: 1, pixelRatio: safePixelRatio(), cacheBust: true });
+      const dataUrl = await toPng(ref.current, { quality: 1, pixelRatio: safePixelRatio(), cacheBust: true });
 
       const link = document.createElement('a');
       link.download = `post-${index + 1}-${posts[index].name.toLowerCase()}-${format}.png`;
@@ -296,8 +297,8 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
         const ref = currentRefs[i];
         if (!ref.current) continue;
         // Render twice to ensure images are fully loaded (Safari fix)
-        await toPng(ref.current, { quality: 1, pixelRatio: 2, cacheBust: true });
-        const dataUrl = await toPng(ref.current, { quality: 1, pixelRatio: 2, cacheBust: true });
+        await toPng(ref.current, { quality: 1, pixelRatio: safePixelRatio(), cacheBust: true });
+        const dataUrl = await toPng(ref.current, { quality: 1, pixelRatio: safePixelRatio(), cacheBust: true });
         allDataUrls.push(dataUrl);
         exportedImages.push({ dataUrl, format, index: i });
       }
@@ -327,8 +328,8 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
       for (let i = 0; i < feedRefs.length; i++) {
         const ref = feedRefs[i];
         if (!ref.current) continue;
-        await toPng(ref.current, { quality: 1, pixelRatio: 2, cacheBust: true });
-        const dataUrl = await toPng(ref.current, { quality: 1, pixelRatio: 2, cacheBust: true });
+        await toPng(ref.current, { quality: 1, pixelRatio: safePixelRatio(), cacheBust: true });
+        const dataUrl = await toPng(ref.current, { quality: 1, pixelRatio: safePixelRatio(), cacheBust: true });
         exportedImages.push({ dataUrl, format: 'feed', index: i });
         allDataUrls.push(dataUrl);
         allLabels.push(`feed-${feedPosts[i].name.toLowerCase()}`);
@@ -338,8 +339,8 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
       for (let i = 0; i < storyRefs.length; i++) {
         const ref = storyRefs[i];
         if (!ref.current) continue;
-        await toPng(ref.current, { quality: 1, pixelRatio: 2, cacheBust: true });
-        const dataUrl = await toPng(ref.current, { quality: 1, pixelRatio: 2, cacheBust: true });
+        await toPng(ref.current, { quality: 1, pixelRatio: safePixelRatio(), cacheBust: true });
+        const dataUrl = await toPng(ref.current, { quality: 1, pixelRatio: safePixelRatio(), cacheBust: true });
         exportedImages.push({ dataUrl, format: 'story', index: i });
         allDataUrls.push(dataUrl);
         allLabels.push(`story-${storyPosts[i].name.toLowerCase()}`);
