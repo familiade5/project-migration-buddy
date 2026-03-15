@@ -231,11 +231,16 @@ export const VDHStory1 = ({ data, photo }: VDHStory1Props) => {
                 <p style={{ fontSize: '44px', fontWeight: 900, color: GOLD_BRIGHT, letterSpacing: '-0.01em', lineHeight: 1 }}>{price}</p>
               )}
 
-              {/* Valor de avaliação com linha branca cortando */}
+              {/* Valor de avaliação — label + valor riscado */}
               {evaluationFormatted && evaluationFormatted !== price && (
-                <div style={{ position: 'relative', display: 'inline-block' }}>
-                  <span style={{ fontSize: '28px', fontWeight: 500, color: '#fff', lineHeight: 1, position: 'relative' }}>
-                    {evaluationFormatted}
+                <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+                  <span style={{ fontSize: '18px', color: '#fff', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.04em', whiteSpace: 'nowrap' }}>
+                    Valor de Avaliação
+                  </span>
+                  <div style={{ position: 'relative', display: 'inline-block' }}>
+                    <span style={{ fontSize: '26px', fontWeight: 500, color: '#fff', lineHeight: 1 }}>
+                      {evaluationFormatted}
+                    </span>
                     <span style={{
                       position: 'absolute',
                       top: '50%',
@@ -246,7 +251,7 @@ export const VDHStory1 = ({ data, photo }: VDHStory1Props) => {
                       transform: 'translateY(-50%)',
                       display: 'block',
                     }} />
-                  </span>
+                  </div>
                 </div>
               )}
 
