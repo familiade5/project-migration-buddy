@@ -243,8 +243,8 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
     try {
       setIsExporting(true);
       // Render twice for Safari/iPad (first pass loads images, second captures correctly)
-      await toPng(ref.current, { quality: 1, pixelRatio: 2, cacheBust: true });
-      const dataUrl = await toPng(ref.current, { quality: 1, pixelRatio: 2, cacheBust: true });
+      await toPng(ref.current, { quality: 1, pixelRatio: safePixelRatio(), cacheBust: true });
+      const dataUrl = await toPng(ref.current, { quality: 1, pixelRatio: safePixelRatio(), cacheBust: true });
 
       const link = document.createElement('a');
       link.download = `post-${index + 1}-${posts[index].name.toLowerCase()}-${format}.png`;
