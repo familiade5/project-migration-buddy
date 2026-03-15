@@ -138,7 +138,7 @@ export const PostCover = ({ data, photo }: PostCoverProps) => {
           {/* Badge financiamento - ocupa toda altura */}
           <div 
             className="flex-shrink-0 relative overflow-hidden flex flex-col items-center justify-center text-center"
-            style={{ minWidth: '200px' }}
+            style={{ minWidth: '210px' }}
           >
             <div 
               className="absolute inset-0" 
@@ -157,13 +157,16 @@ export const PostCover = ({ data, photo }: PostCoverProps) => {
                   : 'inset 0 0 20px rgba(0,0,0,0.15), inset 0 2px 0 rgba(255,255,255,0.2)'
               }} 
             />
-            <div className="relative flex flex-col items-center" style={{ padding: '16px 24px', gap: '6px' }}>
-              <div className="flex items-center gap-2">
-                {data.acceptsFinancing && <Check style={{ width: '22px', height: '22px', color: '#ffffff', flexShrink: 0 }} />}
-                <span className="text-white font-black tracking-wide drop-shadow-md leading-tight text-center" style={{ fontSize: '26px' }}>
-                  {data.acceptsFinancing ? <>ACEITA<br/>FINANCIAMENTO</> : <>SOMENTE<br/>À VISTA</>}
-                </span>
-              </div>
+            <div className="relative flex flex-col items-center" style={{ padding: '12px 20px', gap: '3px' }}>
+              {/* Fonte do imóvel */}
+              <span className="text-white/90 font-bold tracking-wide text-center" style={{ fontSize: '18px', lineHeight: 1.2 }}>
+                {data.propertySource || 'Imóvel Caixa'}
+              </span>
+              <div style={{ width: '70%', height: '1px', background: 'rgba(255,255,255,0.35)', margin: '4px 0' }} />
+              {data.acceptsFinancing && <Check style={{ width: '20px', height: '20px', color: '#ffffff' }} />}
+              <span className="text-white font-black tracking-wide drop-shadow-md text-center" style={{ fontSize: '24px', lineHeight: 1.15 }}>
+                {data.acceptsFinancing ? <>ACEITA<br/>FINANCIAMENTO<br/><span style={{ fontSize: '20px', fontWeight: 700 }}>BANCÁRIO</span></> : <>SOMENTE<br/>À VISTA</>}
+              </span>
             </div>
           </div>
 
