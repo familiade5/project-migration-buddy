@@ -231,16 +231,17 @@ export const VDHStory1 = ({ data, photo }: VDHStory1Props) => {
                 <p style={{ fontSize: '44px', fontWeight: 900, color: GOLD_BRIGHT, letterSpacing: '-0.01em', lineHeight: 1 }}>{price}</p>
               )}
 
-              {/* Valor de avaliação — label + valor riscado */}
-              {evaluationFormatted && evaluationFormatted !== price && (
-                <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
-                  <span style={{ fontSize: '18px', color: '#fff', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.04em', whiteSpace: 'nowrap' }}>
+              {/* Valor de avaliação — label + somente o valor riscado */}
+              {evaluationFormatted && (
+                <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '10px', flexWrap: 'nowrap' }}>
+                  <span style={{ fontSize: '19px', color: '#fff', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.04em', whiteSpace: 'nowrap' }}>
                     Valor de Avaliação
                   </span>
                   <div style={{ position: 'relative', display: 'inline-block' }}>
-                    <span style={{ fontSize: '26px', fontWeight: 500, color: '#fff', lineHeight: 1 }}>
+                    <span style={{ fontSize: '26px', fontWeight: 500, color: '#fff', lineHeight: 1, whiteSpace: 'nowrap' }}>
                       {evaluationFormatted}
                     </span>
+                    {/* Linha cortando somente o valor */}
                     <span style={{
                       position: 'absolute',
                       top: '50%',
@@ -250,6 +251,7 @@ export const VDHStory1 = ({ data, photo }: VDHStory1Props) => {
                       background: '#fff',
                       transform: 'translateY(-50%)',
                       display: 'block',
+                      pointerEvents: 'none',
                     }} />
                   </div>
                 </div>
