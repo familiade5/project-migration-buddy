@@ -189,12 +189,16 @@ export const PostCover = ({ data, photo }: PostCoverProps) => {
             <p style={{ fontSize: '38px', fontWeight: 900, color: '#f5d485', letterSpacing: '-0.01em', lineHeight: 1 }}>
               {data.minimumValue}
             </p>
-            {/* Valor de avaliação com linha cortando — abaixo do preço */}
+            {/* Valor de avaliação — label + valor riscado */}
             {data.evaluationValue && (
-              <div style={{ position: 'relative', display: 'inline-block', textAlign: 'right' }}>
-                <p style={{ fontSize: '26px', fontWeight: 500, color: '#fff', lineHeight: 1, position: 'relative' }}>
-                  {data.evaluationValue}
-                  {/* Linha fina branca cortando */}
+              <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '8px', justifyContent: 'flex-end', flexWrap: 'wrap' }}>
+                <span style={{ fontSize: '15px', color: '#fff', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.04em', whiteSpace: 'nowrap' }}>
+                  Valor de Avaliação
+                </span>
+                <div style={{ position: 'relative', display: 'inline-block' }}>
+                  <span style={{ fontSize: '24px', fontWeight: 500, color: '#fff', lineHeight: 1 }}>
+                    {data.evaluationValue}
+                  </span>
                   <span style={{
                     position: 'absolute',
                     top: '50%',
@@ -205,7 +209,7 @@ export const PostCover = ({ data, photo }: PostCoverProps) => {
                     transform: 'translateY(-50%)',
                     display: 'block',
                   }} />
-                </p>
+                </div>
               </div>
             )}
             {/* Entrada a partir de — quando aceita financiamento */}
