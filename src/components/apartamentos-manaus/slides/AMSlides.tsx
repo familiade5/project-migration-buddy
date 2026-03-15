@@ -282,20 +282,21 @@ export const AMSpecsSlide = ({
   // Path starts at (330, 8) — the exact entry point of the top-right arc —
   // so the arc comes FIRST with no straight segment before it.
   // The top edge (168→330 at y=8) is the LAST segment before Z.
+  // Notch reduzido: w=120, h=56 (era 164×76) → mais área de foto visível
   const shapePath = [
-    'M 330 8',               // start directly at top-right arc entry
-    'A 22 22 0 0 1 352 30',  // top-right outer corner (r=22)
-    'V 330',                 // right edge downward
-    'A 22 22 0 0 1 330 352', // bottom-right outer corner (r=22)
+    'M 286 8',               // start at top-right arc entry (264+22=286)
+    'A 22 22 0 0 1 308 30',  // top-right outer corner (r=22)
+    'V 286',                 // right edge downward
+    'A 22 22 0 0 1 286 308', // bottom-right outer corner (r=22)
     'H 30',                  // bottom edge leftward
-    'A 22 22 0 0 1 8 330',   // bottom-left outer corner (r=22)
-    'V 98',                  // left edge upward to notch start
-    'Q 8 80 26 80',          // smooth concave curve into notch bottom-left
-    'H 150',                 // notch bottom rightward
-    'Q 168 80 168 62',       // smooth convex curve up notch bottom-right
-    'V 30',                  // up notch right edge — stop 22px before top
-    'A 22 22 0 0 1 190 8',   // round the top-notch corner (r=22, CW) ← corrected sweep
-    'H 330',                 // top edge back to arc start
+    'A 22 22 0 0 1 8 286',   // bottom-left outer corner (r=22)
+    'V 76',                  // left edge upward to notch start (56+22-2=76)
+    'Q 8 56 26 56',          // smooth concave curve into notch bottom-left
+    'H 100',                 // notch bottom rightward (120-22+2=100)
+    'Q 120 56 120 36',       // smooth convex curve up notch bottom-right
+    'V 30',                  // up notch right edge
+    'A 22 22 0 0 1 142 8',   // round the top-notch corner
+    'H 286',                 // top edge back to arc start
     'Z',
   ].join(' ');
 
@@ -342,18 +343,18 @@ export const AMSpecsSlide = ({
         position: 'absolute',
         top: 4,
         left: 4,
-        width: 164,
-        height: 76,
-        borderRadius: 18,
+        width: 116,
+        height: 52,
+        borderRadius: 14,
         backgroundColor: '#ffffff',
         zIndex: 5,
         display: 'flex',
         alignItems: 'center',
-        paddingLeft: 12,
-        paddingRight: 12,
+        paddingLeft: 8,
+        paddingRight: 8,
         boxSizing: 'border-box',
       }}>
-        <AMLogo width={140} variant="color" />
+        <AMLogo width={100} variant="color" />
       </div>
 
       {/* ── Specs card ── */}
@@ -564,21 +565,21 @@ export const AMPhotoSlide = ({
   const uid = useId();
   const clipId = `am-photo-${uid}`;
 
-  // Mesmo path do Slide 2 — notch superior-esquerdo para o card da logo
+  // Notch reduzido: w=120, h=56 (era 164×76) → mais área de foto visível
   const shapePath = [
-    'M 330 8',
-    'A 22 22 0 0 1 352 30',
-    'V 330',
-    'A 22 22 0 0 1 330 352',
+    'M 286 8',
+    'A 22 22 0 0 1 308 30',
+    'V 286',
+    'A 22 22 0 0 1 286 308',
     'H 30',
-    'A 22 22 0 0 1 8 330',
-    'V 98',
-    'Q 8 80 26 80',
-    'H 150',
-    'Q 168 80 168 62',
+    'A 22 22 0 0 1 8 286',
+    'V 76',
+    'Q 8 56 26 56',
+    'H 100',
+    'Q 120 56 120 36',
     'V 30',
-    'A 22 22 0 0 1 190 8',
-    'H 330',
+    'A 22 22 0 0 1 142 8',
+    'H 286',
     'Z',
   ].join(' ');
 
@@ -614,18 +615,18 @@ export const AMPhotoSlide = ({
         position: 'absolute',
         top: 4,
         left: 4,
-        width: 164,
-        height: 76,
-        borderRadius: 18,
+        width: 116,
+        height: 52,
+        borderRadius: 14,
         backgroundColor: '#ffffff',
         zIndex: 5,
         display: 'flex',
         alignItems: 'center',
-        paddingLeft: 12,
-        paddingRight: 12,
+        paddingLeft: 8,
+        paddingRight: 8,
         boxSizing: 'border-box',
       }}>
-        <AMLogo width={140} variant="color" />
+        <AMLogo width={100} variant="color" />
       </div>
     </div>
   );
