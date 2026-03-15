@@ -224,51 +224,50 @@ export const VDHStory1 = ({ data, photo }: VDHStory1Props) => {
             }}
           />
 
-          {/* CAIXA header */}
+          {/* CAIXA header — two rows to avoid overflow */}
           <div
             style={{
               background: `linear-gradient(90deg, #163a1e, #1f5028)`,
-              padding: '24px 40px',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '24px',
+              padding: '22px 40px',
               borderBottom: `1.5px solid rgba(212,175,55,0.25)`,
             }}
           >
-            <span
-              style={{
-                fontSize: '38px',
-                fontWeight: 700,
-                color: 'rgba(255,255,255,0.9)',
-                letterSpacing: '0.05em',
-              }}
-            >
-              Imóvel
-            </span>
-            <img
-              src={logoCaixa}
-              alt="CAIXA"
-              style={{ height: '46px', objectFit: 'contain' }}
-            />
-            {/* Financing pill — right side */}
-            <div style={{ marginLeft: 'auto' }}>
-              <div
+            {/* Row 1: Imóvel + logo CAIXA */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '20px', marginBottom: '14px' }}>
+              <span
                 style={{
-                  background: financingBg,
-                  border: `1.5px solid ${financingBorder}`,
-                  borderRadius: '14px',
-                  padding: '10px 24px',
-                  textAlign: 'center',
-                  boxShadow: `0 4px 20px ${financingGlow}`,
+                  fontSize: '38px',
+                  fontWeight: 700,
+                  color: 'rgba(255,255,255,0.9)',
+                  letterSpacing: '0.05em',
                 }}
               >
-                <p style={{ fontSize: '22px', color: '#fff', fontWeight: 900, lineHeight: 1.1, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
-                  {financingLine1}
-                </p>
-                <p style={{ fontSize: '22px', color: '#fff', fontWeight: 900, lineHeight: 1.1, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
-                  {financingLine2}
-                </p>
-              </div>
+                Imóvel
+              </span>
+              <img
+                src={logoCaixa}
+                alt="CAIXA"
+                style={{ height: '46px', objectFit: 'contain' }}
+              />
+            </div>
+            {/* Row 2: Financing badge — full width */}
+            <div
+              style={{
+                background: financingBg,
+                border: `1.5px solid ${financingBorder}`,
+                borderRadius: '14px',
+                padding: '14px 32px',
+                textAlign: 'center',
+                boxShadow: `0 4px 20px ${financingGlow}`,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '12px',
+              }}
+            >
+              <p style={{ fontSize: '30px', color: '#fff', fontWeight: 900, lineHeight: 1.1, textTransform: 'uppercase', letterSpacing: '0.04em', whiteSpace: 'nowrap' }}>
+                {financingLine1} {financingLine2}
+              </p>
             </div>
           </div>
 
