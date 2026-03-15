@@ -515,24 +515,27 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
         </div>
       </div>
 
-      {/* Hidden slides for export — use absolute+clip (iOS/Chrome fix: position:fixed breaks off-screen rendering) */}
-      <div style={{ position: 'absolute', left: 0, top: 0, width: '1px', height: '1px', overflow: 'hidden', pointerEvents: 'none', zIndex: -1 }}>
-        {/* FEED */}
+      {/*
+        Hidden export slides — iOS/WebKit fix:
+        - NO overflow:hidden on parent (clipping breaks canvas capture on iOS)
+        - NO position:fixed (iOS doesn't paint fixed elements off-viewport)
+        - opacity:0 + pointer-events:none + aria-hidden keeps them invisible but fully painted
+        - Each ref is UNIQUE (never shared with the preview ref above)
+      */}
+      <div aria-hidden="true" style={{ opacity: 0, pointerEvents: 'none', position: 'absolute', top: 0, left: 0, zIndex: -1 }}>
         {feedPosts.map((Post, index) => (
-          <div key={`feed-${index}`} ref={feedRefs[index]} style={{ position: 'absolute', left: 0, top: 0 }}>
-            <Post.component data={data} photo={photos[index] || photos[0] || null} photos={photos} />
+          <div key={`feed-export-${index}`} ref={feedRefs[index]}>
+            <Post.component data={data} photo={photos[Post.photoIndex] || photos[0] || null} photos={photos} />
           </div>
         ))}
-        {/* STORY */}
         {storyPosts.map((Post, index) => (
-          <div key={`story-${index}`} ref={storyRefs[index]} style={{ position: 'absolute', left: 0, top: 0 }}>
-            <Post.component data={data} photo={photos[index] || photos[0] || null} photos={photos} />
+          <div key={`story-export-${index}`} ref={storyRefs[index]}>
+            <Post.component data={data} photo={photos[Post.photoIndex] || photos[0] || null} photos={photos} />
           </div>
         ))}
-        {/* VDH */}
         {vdhPosts.map((Post, index) => (
-          <div key={`vdh-${index}`} ref={vdhRefs[index]} style={{ position: 'absolute', left: 0, top: 0 }}>
-            <Post.component data={data} photo={photos[index] || photos[0] || null} photos={photos} />
+          <div key={`vdh-export-${index}`} ref={vdhRefs[index]}>
+            <Post.component data={data} photo={photos[Post.photoIndex] || photos[0] || null} photos={photos} />
           </div>
         ))}
       </div>
