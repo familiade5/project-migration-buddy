@@ -240,21 +240,18 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
 
     try {
       setIsExporting(true);
-      const dataUrl = await toPng(ref.current, {
-        quality: 1,
-        pixelRatio: 2,
-        cacheBust: true,
-      });
+      // Render twice for Safari/iPad (first pass loads images, second captures correctly)
+      await toPng(ref.current, { quality: 1, pixelRatio: 2, cacheBust: true });
+      const dataUrl = await toPng(ref.current, { quality: 1, pixelRatio: 2, cacheBust: true });
 
       const link = document.createElement('a');
-      const formatSuffix = format;
-      link.download = `post-${index + 1}-${posts[index].name.toLowerCase()}-${formatSuffix}.png`;
+      link.download = `post-${index + 1}-${posts[index].name.toLowerCase()}-${format}.png`;
       link.href = dataUrl;
+      document.body.appendChild(link);
       link.click();
+      document.body.removeChild(link);
 
-      // Save to library automatically with the exported image
       await saveCreativeWithExports([{ dataUrl, format, index }], format);
-
       toast.success(`Post exportado e salvo na biblioteca!`);
     } catch (error) {
       toast.error('Erro ao exportar imagem');
