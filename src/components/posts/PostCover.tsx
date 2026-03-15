@@ -100,35 +100,26 @@ export const PostCover = ({ data, photo }: PostCoverProps) => {
         </div>
       </div>
 
-      {/* Badge Imóvel Caixa - SEMPRE fixo */}
+      {/* Logo VDH no topo direito */}
       <div className="absolute z-20" style={{ top: '20px', right: '20px' }}>
-        <div className="relative overflow-hidden rounded-lg shadow-2xl">
-          <div className="absolute inset-0 bg-gradient-to-br from-[#f5d485] via-[#d4a44c] to-[#b8862d]" />
-          <div className="absolute inset-0 bg-gradient-to-b from-white/30 to-transparent h-1/2" />
-          <div className="relative" style={{ padding: '16px 32px' }}>
-            <p className="text-[#2a1810] font-semibold leading-tight drop-shadow-sm" style={{ fontSize: '24px' }}>Imóvel</p>
-            <p className="text-[#1a0f08] font-black leading-none tracking-tight drop-shadow-sm" style={{ fontSize: '56px' }}>Caixa</p>
-          </div>
+        <div className="rounded-lg overflow-hidden shadow-2xl" style={{ background: 'rgba(0,0,0,0.55)', padding: '8px 16px' }}>
+          <img 
+            src={logoVDH} 
+            alt="VDH" 
+            className="object-contain"
+            style={{ height: '72px' }}
+          />
         </div>
       </div>
 
-      {/* Rodapé - ocupa toda a altura da barra cinza */}
+      {/* Rodapé */}
       <div className="absolute bottom-0 left-0 right-0 bg-[#2a3142] z-10">
-        <div className="flex items-stretch" style={{ minHeight: '100px' }}>
-          {/* Logo VDH */}
-          <div className="flex items-center justify-center flex-shrink-0" style={{ padding: '0 16px' }}>
-            <img 
-              src={logoVDH} 
-              alt="VDH" 
-              className="object-contain"
-              style={{ height: '64px' }}
-            />
-          </div>
-          
-          {/* Badge único unificado - ocupa toda altura */}
+        <div className="flex items-stretch" style={{ minHeight: '140px' }}>
+
+          {/* Badge financiamento - ocupa toda altura */}
           <div 
             className="flex-shrink-0 relative overflow-hidden flex flex-col items-center justify-center text-center"
-            style={{ minWidth: '170px' }}
+            style={{ minWidth: '200px' }}
           >
             <div 
               className="absolute inset-0" 
@@ -147,12 +138,10 @@ export const PostCover = ({ data, photo }: PostCoverProps) => {
                   : 'inset 0 0 20px rgba(0,0,0,0.15), inset 0 2px 0 rgba(255,255,255,0.2)'
               }} 
             />
-            <div className="relative flex flex-col items-center" style={{ padding: '12px 20px', gap: '4px' }}>
-              <span className="text-white font-black drop-shadow-md leading-tight" style={{ fontSize: '22px' }}>Imóvel Caixa</span>
-              <div className="w-full bg-white/30 rounded-full" style={{ height: '1px' }} />
-              <div className="flex items-center gap-1">
-                {data.acceptsFinancing && <Check style={{ width: '18px', height: '18px', color: '#ffffff', flexShrink: 0 }} />}
-                <span className="text-white font-black tracking-wide drop-shadow-md leading-tight text-center" style={{ fontSize: '21px' }}>
+            <div className="relative flex flex-col items-center" style={{ padding: '16px 24px', gap: '6px' }}>
+              <div className="flex items-center gap-2">
+                {data.acceptsFinancing && <Check style={{ width: '22px', height: '22px', color: '#ffffff', flexShrink: 0 }} />}
+                <span className="text-white font-black tracking-wide drop-shadow-md leading-tight text-center" style={{ fontSize: '26px' }}>
                   {data.acceptsFinancing ? <>ACEITA<br/>FINANCIAMENTO</> : <>SOMENTE<br/>À VISTA</>}
                 </span>
               </div>
@@ -163,30 +152,33 @@ export const PostCover = ({ data, photo }: PostCoverProps) => {
           <div className="self-stretch w-px bg-white/20 flex-shrink-0 my-3" />
 
           {/* Informações do imóvel */}
-          <div className="flex-1 flex flex-col justify-center" style={{ padding: '10px 14px', gap: '2px' }}>
-            <p className="text-white font-bold truncate" style={{ fontSize: '22px' }}>
+          <div className="flex-1 flex flex-col justify-center" style={{ padding: '14px 18px', gap: '4px' }}>
+            <p className="text-white font-bold truncate" style={{ fontSize: '26px' }}>
               {(data.propertyName && data.propertyName.trim()) || `${data.type || 'Casa'} - Ótima localização`}
             </p>
-            <p className="text-white/80" style={{ fontSize: '16px' }}>
+            <p className="text-white/80" style={{ fontSize: '20px' }}>
               {[data.neighborhood, data.city, (data.state || '').trim().length > 2 ? (data.state || '').trim().slice(0, 2).toUpperCase() : data.state]
                 .filter(Boolean)
                 .join(' - ')}
             </p>
-            <p className="text-white/80" style={{ fontSize: '16px' }}>
+            <p className="text-white/80" style={{ fontSize: '19px' }}>
               {propertySummary}
             </p>
-            <p className="text-white/60" style={{ fontSize: '14px' }}>
+            <p className="text-white/60" style={{ fontSize: '16px' }}>
               VENDA DIRETA HOJE {data.creci}
             </p>
           </div>
 
+          {/* Separador vertical */}
+          <div className="self-stretch w-px bg-white/20 flex-shrink-0 my-3" />
+
           {/* Valores e formas de pagamento */}
-          <div className="flex-shrink-0 text-right flex flex-col justify-center" style={{ padding: '10px 16px', gap: '2px' }}>
-            <p className="text-[#f5d485] font-bold" style={{ fontSize: '24px' }}>{data.minimumValue}</p>
-            <p className="text-white/80" style={{ fontSize: '16px' }}>Formas de pagamento</p>
-            <p className="text-white/80" style={{ fontSize: '16px' }}>Recursos próprios</p>
+          <div className="flex-shrink-0 text-right flex flex-col justify-center" style={{ padding: '14px 20px', gap: '4px' }}>
+            <p className="text-[#f5d485] font-bold" style={{ fontSize: '28px' }}>{data.minimumValue}</p>
+            <p className="text-white/80" style={{ fontSize: '18px' }}>Formas de pagamento</p>
+            <p className="text-white/80" style={{ fontSize: '18px' }}>Recursos próprios</p>
             {data.acceptsFGTS && (
-              <p className="text-white/80" style={{ fontSize: '16px' }}>Aceita FGTS</p>
+              <p className="text-white/80" style={{ fontSize: '18px' }}>Aceita FGTS</p>
             )}
           </div>
         </div>
