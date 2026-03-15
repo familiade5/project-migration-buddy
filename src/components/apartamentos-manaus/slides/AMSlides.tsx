@@ -396,10 +396,10 @@ export const AMLocationSlide = ({
   const address = data.address || '';
 
   // Notch azul: card 124×120 em top=14,left=14 → termina em x=138, y=134
-  // Notch cola no card com 2px de folga: direita x=140, baixo y=136
+  // Notch com 8px de folga: direita x=146, baixo y=142
   // Notch logo: card 96×32 em bottom=14,right=14 → x=250→346, y=314→346
   const shapePath = [
-    'M 162 14',              // top edge start (140+22=162)
+    'M 168 14',              // top edge start (146+22=168)
     'H 324',
     'A 22 22 0 0 1 346 36',
     'V 278',
@@ -410,12 +410,12 @@ export const AMLocationSlide = ({
     'A 22 22 0 0 1 228 346',
     'H 36',
     'A 22 22 0 0 1 14 324',
-    'V 158',                 // left edge up (136+22=158)
-    'Q 14 136 36 136',       // concave bottom-left of blue notch (notch baixo y=136)
-    'H 118',                 // blue notch bottom rightward (140-22=118)
-    'Q 140 136 140 114',     // concave bottom-right (136-22=114)
+    'V 164',                 // left edge up (142+22=164)
+    'Q 14 142 36 142',       // concave bottom-left of blue notch
+    'H 124',                 // blue notch bottom (146-22=124)
+    'Q 146 142 146 120',     // concave bottom-right (142-22=120)
     'V 36',
-    'A 22 22 0 0 1 162 14',
+    'A 22 22 0 0 1 168 14',
     'Z',
   ].join(' ');
 
