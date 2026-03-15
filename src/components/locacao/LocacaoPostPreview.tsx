@@ -152,7 +152,7 @@ export const LocacaoPostPreview = ({
       for (let i = 0; i < slides.length; i++) {
         const ref = postRefs.current[i];
         if (ref) {
-          const dataUrl = await toPng(ref, { quality: 1, pixelRatio: 2 });
+          const dataUrl = await toPng(ref, { quality: 1, pixelRatio: safePixelRatio() });
           const base64Data = dataUrl.split(',')[1];
           zip.file(`locacao-${format}-${i + 1}.png`, base64Data, { base64: true });
         }

@@ -124,7 +124,7 @@ export const ElitePostPreview = ({ data, photos }: ElitePostPreviewProps) => {
         if (ref) {
           const dataUrl = await toPng(ref, {
             quality: 1.0,
-            pixelRatio: 2,
+            pixelRatio: safePixelRatio(),
             cacheBust: true,
           });
           const base64Data = dataUrl.replace(/^data:image\/png;base64,/, '');

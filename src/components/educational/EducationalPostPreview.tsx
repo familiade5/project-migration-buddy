@@ -149,7 +149,7 @@ export const EducationalPostPreview = ({ data }: EducationalPostPreviewProps) =>
         if (slideElement) {
           const dataUrl = await toPng(slideElement, {
             quality: 1,
-            pixelRatio: 2,
+            pixelRatio: safePixelRatio(),
           });
           const base64Data = dataUrl.split(',')[1];
           folder?.file(`slide-${i + 1}.png`, base64Data, { base64: true });

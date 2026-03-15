@@ -344,7 +344,7 @@ export const RevendaPostPreview = ({ data, photos }: RevendaPostPreviewProps) =>
       for (let i = 0; i < slides.length; i++) {
         const ref = postRefs.current[i];
         if (ref) {
-          const dataUrl = await toPng(ref, { quality: 1, pixelRatio: 2 });
+          const dataUrl = await toPng(ref, { quality: 1, pixelRatio: safePixelRatio() });
           const base64Data = dataUrl.split(',')[1];
           zip.file(`revenda-${format}-${i + 1}.png`, base64Data, { base64: true });
           exportedImages.push({ dataUrl, index: i });

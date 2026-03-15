@@ -133,7 +133,7 @@ export function AMPostPreview({ data, photos }: AMPostPreviewProps) {
   // ── Export helpers ────────────────────────────────────────────────────────
   const captureRef = async (ref: React.RefObject<HTMLDivElement>) => {
     if (!ref.current) return null;
-    return toPng(ref.current, { quality: 1, pixelRatio: 3, cacheBust: true });
+    return toPng(ref.current, { quality: 1, pixelRatio: safePixelRatio(), cacheBust: true });
   };
 
   const buildZip = async (
