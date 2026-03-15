@@ -396,28 +396,26 @@ export const AMLocationSlide = ({
   const address = data.address || '';
 
   // Clip path com DOIS nichos: superior-esquerdo (card azul) e inferior-direito (card logo).
-  // Notch azul: x 14→170, y 14→172. Notch logo: x 210→346, y 282→346.
-  // Card logo: bottom=14, right=14, width=120, height=52.
-  // Card top: y=360-14-52=294. Notch top y=282 (12px acima do card → gap visual correto).
-  // Left wall: y=304→324 = 20px reta (sem deformação).
+  // Notch azul: x 14→170, y 14→172 (mantido). Notch logo reduzido: x 250→346, y 300→346.
+  // Card logo: bottom=14, right=14, width=96, height=32.
   const shapePath = [
-    'M 192 14',              // top edge start (notch-azul right x=170 + r=22)
+    'M 192 14',              // top edge start
     'H 324',                 // top edge rightward
     'A 22 22 0 0 1 346 36',  // top-right outer convex corner
-    'V 260',                 // right edge down (282-22=260)
-    'Q 346 282 324 282',     // concave at top-right of logo notch (notch topo y=282)
-    'H 232',                 // logo notch top leftward (210+22=232)
-    'Q 210 282 210 304',     // concave at top-left of logo notch (282+22=304)
-    'V 324',                 // down logo notch left wall 304→324 = 20px reta
-    'A 22 22 0 0 1 188 346', // canto inferior-esquerdo (210-22=188, down→left, CW)
+    'V 278',                 // right edge down (300-22=278)
+    'Q 346 300 324 300',     // concave at top-right of logo notch
+    'H 272',                 // logo notch top leftward (250+22=272)
+    'Q 250 300 250 322',     // concave at top-left of logo notch
+    'V 324',                 // down logo notch left wall
+    'A 22 22 0 0 1 228 346', // canto inferior-esquerdo (250-22=228)
     'H 36',                  // bottom edge leftward
     'A 22 22 0 0 1 14 324',  // bottom-left outer convex corner
-    'V 194',                 // left edge upward to blue notch (172+22=194)
+    'V 194',                 // left edge upward to blue notch
     'Q 14 172 36 172',       // concave at bottom-left of blue notch
-    'H 148',                 // blue notch bottom (170-22=148)
-    'Q 170 172 170 150',     // concave at bottom-right of blue notch (172-22=150)
-    'V 36',                  // up notch right edge (stopping r=22 before top)
-    'A 22 22 0 0 1 192 14',  // convex outer corner at top of notch
+    'H 148',                 // blue notch bottom
+    'Q 170 172 170 150',     // concave at bottom-right of blue notch
+    'V 36',
+    'A 22 22 0 0 1 192 14',
     'Z',
   ].join(' ');
 
