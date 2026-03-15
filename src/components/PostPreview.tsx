@@ -297,8 +297,8 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
         const ref = currentRefs[i];
         if (!ref.current) continue;
         // Render twice to ensure images are fully loaded (Safari fix)
-        await toPng(ref.current, { quality: 1, pixelRatio: 2, cacheBust: true });
-        const dataUrl = await toPng(ref.current, { quality: 1, pixelRatio: 2, cacheBust: true });
+        await toPng(ref.current, { quality: 1, pixelRatio: safePixelRatio(), cacheBust: true });
+        const dataUrl = await toPng(ref.current, { quality: 1, pixelRatio: safePixelRatio(), cacheBust: true });
         allDataUrls.push(dataUrl);
         exportedImages.push({ dataUrl, format, index: i });
       }
