@@ -78,12 +78,12 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
   const { user, profile } = useAuth();
   const { logActivity } = useActivityLog();
   
-  // Refs para formato feed (1:1)
+  // Export refs — ONLY used by the hidden off-screen slides, never shared with the preview
   const feedRefs = [useRef<HTMLDivElement>(null), useRef<HTMLDivElement>(null), useRef<HTMLDivElement>(null), useRef<HTMLDivElement>(null)];
-  // Refs para formato story (9:16)
   const storyRefs = [useRef<HTMLDivElement>(null), useRef<HTMLDivElement>(null), useRef<HTMLDivElement>(null), useRef<HTMLDivElement>(null)];
-  // Refs para formato VDH (9:16)
   const vdhRefs = [useRef<HTMLDivElement>(null), useRef<HTMLDivElement>(null), useRef<HTMLDivElement>(null), useRef<HTMLDivElement>(null)];
+  // Preview ref — separate, never used for export
+  const previewRef = useRef<HTMLDivElement>(null);
 
   const feedPosts = [
     { name: 'Capa', component: PostCover, photoIndex: 0 },
