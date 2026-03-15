@@ -565,21 +565,21 @@ export const AMPhotoSlide = ({
   const uid = useId();
   const clipId = `am-photo-${uid}`;
 
-  // Notch reduzido: w=120, h=56 (era 164×76) → mais área de foto visível
+  // Notch top-left reduzido: w=120, h=52. Bordas externas mantidas (330→352, etc.)
   const shapePath = [
-    'M 286 8',
-    'A 22 22 0 0 1 308 30',
-    'V 286',
-    'A 22 22 0 0 1 286 308',
+    'M 330 8',
+    'A 22 22 0 0 1 352 30',
+    'V 330',
+    'A 22 22 0 0 1 330 352',
     'H 30',
-    'A 22 22 0 0 1 8 286',
-    'V 76',
-    'Q 8 56 26 56',
-    'H 100',
-    'Q 120 56 120 36',
+    'A 22 22 0 0 1 8 330',
+    'V 74',
+    'Q 8 52 26 52',
+    'H 98',
+    'Q 120 52 120 30',
     'V 30',
     'A 22 22 0 0 1 142 8',
-    'H 286',
+    'H 330',
     'Z',
   ].join(' ');
 
