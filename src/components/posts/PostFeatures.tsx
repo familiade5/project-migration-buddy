@@ -170,10 +170,9 @@ export const PostFeatures = ({ data, photo, photos = [] }: PostFeaturesProps) =>
               className="flex items-center gap-4"
               style={{
                 padding: '24px 28px',
-                background: 'rgba(255,255,255,0.06)',
+              background: 'rgba(20,24,32,0.85)',
                 border: '1px solid rgba(212,175,55,0.25)',
                 borderRadius: '16px',
-                backdropFilter: 'blur(12px)',
               }}
             >
               <div

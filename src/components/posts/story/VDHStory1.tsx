@@ -204,10 +204,8 @@ export const VDHStory1 = ({ data, photo }: VDHStory1Props) => {
       >
         <div
           style={{
-            background: DARK,
-            backdropFilter: 'blur(24px)',
-            WebkitBackdropFilter: 'blur(24px)',
-            border: `2.5px solid ${GOLD}`,
+          background: DARK,
+          border: `2.5px solid ${GOLD}`,
             borderRadius: '28px',
             overflow: 'hidden',
             boxShadow: `0 0 0 6px rgba(212,175,55,0.08), 0 24px 80px rgba(0,0,0,0.65), 0 0 48px ${GOLD_GLOW}`,

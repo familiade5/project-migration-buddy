@@ -108,12 +108,12 @@ export const VDHStory2 = ({ data, photo, photos }: VDHStory2Props) => {
           </div>
         )}
         {data.bedrooms && data.bedrooms !== '0' && (
-          <div className="bg-white/20 backdrop-blur rounded-full flex items-center gap-2" style={{ padding: '12px 24px' }}>
+          <div className="rounded-full flex items-center gap-2" style={{ padding: '12px 24px', background: 'rgba(255,255,255,0.18)' }}>
             <span className="text-white font-semibold" style={{ fontSize: '22px' }}>{data.bedrooms} Quartos</span>
           </div>
         )}
         {(data.area || data.areaTotal) && (
-          <div className="bg-white/20 backdrop-blur rounded-full flex items-center gap-2" style={{ padding: '12px 24px' }}>
+          <div className="rounded-full flex items-center gap-2" style={{ padding: '12px 24px', background: 'rgba(255,255,255,0.18)' }}>
             <span className="text-white font-semibold" style={{ fontSize: '22px' }}>{data.area || data.areaTotal} m²</span>
           </div>
         )}
