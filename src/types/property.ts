@@ -123,6 +123,7 @@ export const defaultPropertyData: PropertyData = {
   
   condominiumRules: 'Responsabilidade do comprador (até 10% do valor de avaliação). A CAIXA arcará com o excedente.',
   taxRules: 'Responsabilidade do comprador.',
+  selectedBroker: 'iury',
 };
 
 export const propertyTypes = [
