@@ -214,7 +214,7 @@ export const VDHStory1 = ({ data, photo }: VDHStory1Props) => {
 
               {/* Endereço completo automático */}
               {displayAddress && (
-                <p style={{ fontSize: '20px', color: 'rgba(255,255,255,0.80)', lineHeight: 1.3 }}>
+                <p style={{ fontSize: '20px', color: '#fff', lineHeight: 1.3 }}>
                   {displayAddress}
                 </p>
               )}
@@ -241,11 +241,11 @@ export const VDHStory1 = ({ data, photo }: VDHStory1Props) => {
 
               {/* FGTS */}
               {acceptsFGTS && (
-                <p style={{ fontSize: '22px', color: 'rgba(255,255,255,0.85)', fontWeight: 600 }}>✓ Aceita FGTS</p>
+                <p style={{ fontSize: '22px', color: '#fff', fontWeight: 600 }}>✓ Aceita FGTS</p>
               )}
 
               {/* CRECI */}
-              <p style={{ fontSize: '17px', color: 'rgba(255,255,255,0.40)', marginTop: '2px' }}>VENDA DIRETA {data.creci}</p>
+              <p style={{ fontSize: '17px', color: 'rgba(255,255,255,0.70)', marginTop: '2px' }}>VENDA DIRETA {data.creci}</p>
             </div>
           </div>
         </div>
