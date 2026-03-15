@@ -362,8 +362,8 @@ export const AMStory3_T3_CTA = ({
 
         {/* Broker name & info */}
         <div style={{
-          width: '100%', backgroundColor: 'rgba(255,255,255,0.07)', borderRadius: 14, padding: '12px 16px',
-          border: '1px solid rgba(255,255,255,0.1)', backdropFilter: 'blur(10px)',
+          width: '100%', backgroundColor: 'rgba(25,25,40,0.88)', borderRadius: 14, padding: '12px 16px',
+          border: '1px solid rgba(255,255,255,0.1)',
           marginBottom: 12,
         }}>
           <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: 10, margin: '0 0 2px', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Corretor responsável</p>
