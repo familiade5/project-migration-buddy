@@ -1,5 +1,6 @@
 import { PropertyData } from '@/types/property';
-import logoCaixa from '@/assets/logo-caixa.png';
+import logoVDH from '@/assets/logo-vdh.jpg';
+import { useState, useEffect } from 'react';
 
 interface VDHStory1Props {
   data: PropertyData;
