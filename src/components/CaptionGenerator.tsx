@@ -101,9 +101,21 @@ export const CaptionGenerator = ({ data }: CaptionGeneratorProps) => {
     }
 
     lines.push('📞 Mais informações:');
-    if (data.contactName) lines.push(`👤 ${data.contactName}`);
-    if (data.creci) lines.push(`📄 ${data.creci}`);
-    if (data.contactPhone) lines.push(`📱 ${data.contactPhone}`);
+    if (data.selectedBroker === 'almir') {
+      // Almir aparece primeiro como Regional, depois repete Iury como Nacional
+      lines.push(`👤 Almir Neto - Regional`);
+      lines.push(`📄 CRECI 29013 CE`);
+      lines.push(`📱 (85) 99271-0485`);
+      lines.push('');
+      lines.push(`👤 Iury Sampaio - Nacional`);
+      lines.push(`📄 CRECI 14851 MS PJ`);
+      lines.push(`📱 (92) 98839-1098`);
+    } else {
+      // Padrão: somente Iury
+      if (data.contactName) lines.push(`👤 ${data.contactName}`);
+      if (data.creci) lines.push(`📄 ${data.creci}`);
+      if (data.contactPhone) lines.push(`📱 ${data.contactPhone}`);
+    }
 
     return lines.join('\n');
   };
