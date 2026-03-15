@@ -1,6 +1,7 @@
 import { useRef, useState } from 'react';
+import { flushSync } from 'react-dom';
 import { toPng } from 'html-to-image';
-import { safePixelRatio } from '@/lib/exportUtils';
+import { safePixelRatio, isIOS } from '@/lib/exportUtils';
 import JSZip from 'jszip';
 import { Download, ChevronLeft, ChevronRight, Loader2, Square, Smartphone, Sparkles } from 'lucide-react';
 import { PropertyData } from '@/types/property';
@@ -24,6 +25,28 @@ import { useActivityLog } from '@/hooks/useActivityLog';
 import { createCrmPropertyFromCreative, copyImageToCrmStorage } from '@/services/crmIntegration';
 import type { Json } from '@/integrations/supabase/types';
 
+// ── iOS CORS fix: convert external URLs to base64 data URLs ──────────────────
+const toBase64Url = async (url: string): Promise<string> => {
+  if (!url || url.startsWith('data:') || url.startsWith('blob:')) return url;
+  try {
+    const response = await fetch(url, { cache: 'force-cache' });
+    const blob = await response.blob();
+    return await new Promise<string>((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = () => resolve(reader.result as string);
+      reader.onerror = reject;
+      reader.readAsDataURL(blob);
+    });
+  } catch {
+    return url; // fallback to original
+  }
+};
+
+const getPhotosForExport = async (photos: string[]): Promise<string[]> => {
+  if (!isIOS()) return photos;
+  return Promise.all(photos.map(toBase64Url));
+};
+
 // Helper to convert data URL to Blob
 const dataURLtoBlob = (dataURL: string): Blob => {
   const arr = dataURL.split(',');
@@ -39,28 +62,28 @@ const dataURLtoBlob = (dataURL: string): Blob => {
 
 // Upload image to Supabase storage
 const uploadExportedImage = async (
-  dataUrl: string, 
-  userId: string, 
-  creativeId: string, 
+  dataUrl: string,
+  userId: string,
+  creativeId: string,
   index: number,
   format: 'feed' | 'story' | 'vdh'
 ): Promise<string> => {
   const blob = dataURLtoBlob(dataUrl);
   const fileName = `${userId}/${creativeId}/${format}-${index + 1}.png`;
-  
+
   const { error } = await supabase.storage
     .from('exported-creatives')
     .upload(fileName, blob, {
       contentType: 'image/png',
       upsert: true,
     });
-  
+
   if (error) throw error;
-  
+
   const { data: { publicUrl } } = supabase.storage
     .from('exported-creatives')
     .getPublicUrl(fileName);
-  
+
   return publicUrl;
 };
 
@@ -75,45 +98,37 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
   const [currentPost, setCurrentPost] = useState(0);
   const [isExporting, setIsExporting] = useState(false);
   const [format, setFormat] = useState<FormatType>('feed');
-  
-  const { user, profile } = useAuth();
-  const { logActivity } = useActivityLog();
-  
-  // Export refs — ONLY used by the hidden off-screen slides, never shared with the preview
-  const feedRefs = [useRef<HTMLDivElement>(null), useRef<HTMLDivElement>(null), useRef<HTMLDivElement>(null), useRef<HTMLDivElement>(null)];
-  const storyRefs = [useRef<HTMLDivElement>(null), useRef<HTMLDivElement>(null), useRef<HTMLDivElement>(null), useRef<HTMLDivElement>(null)];
-  const vdhRefs = [useRef<HTMLDivElement>(null), useRef<HTMLDivElement>(null), useRef<HTMLDivElement>(null), useRef<HTMLDivElement>(null)];
-  // Preview ref — separate, never used for export
-  const previewRef = useRef<HTMLDivElement>(null);
+  const [exportSlideEl, setExportSlideEl] = useState<React.ReactNode>(null);
 
+  const { user } = useAuth();
+  const { logActivity } = useActivityLog();
+
+  // Single export ref — content is swapped per capture (iOS-safe approach)
+  const exportRef = useRef<HTMLDivElement>(null);
+
+  // ── Slide definitions (original order — DO NOT swap) ─────────────────────
   const feedPosts = [
-    { name: 'Capa', component: PostCover, photoIndex: 0 },
-    // Slide 2 (Detalhes) = características do imóvel
-    { name: 'Detalhes', component: PostFeatures, photoIndex: 1 },
-    // Slide 3 (Diferenciais) = gatilhos de conversão
-    { name: 'Diferenciais', component: PostDetails, photoIndex: 2 },
-    { name: 'Contato', component: PostContact, photoIndex: 3 },
+    { name: 'Capa',         component: PostCover,    photoIndex: 0 },
+    { name: 'Detalhes',     component: PostDetails,  photoIndex: 1 },
+    { name: 'Diferenciais', component: PostFeatures, photoIndex: 2 },
+    { name: 'Contato',      component: PostContact,  photoIndex: 3 },
   ];
 
   const storyPosts = [
-    { name: 'Capa', component: PostCoverStory, photoIndex: 0 },
-    // Slide 2 (Detalhes) = características do imóvel
-    { name: 'Detalhes', component: PostFeaturesStory, photoIndex: 1 },
-    // Slide 3 (Diferenciais) = gatilhos de conversão
-    { name: 'Diferenciais', component: PostDetailsStory, photoIndex: 2 },
-    { name: 'Contato', component: PostContactStory, photoIndex: 3 },
+    { name: 'Capa',         component: PostCoverStory,    photoIndex: 0 },
+    { name: 'Detalhes',     component: PostDetailsStory,  photoIndex: 1 },
+    { name: 'Diferenciais', component: PostFeaturesStory, photoIndex: 2 },
+    { name: 'Contato',      component: PostContactStory,  photoIndex: 3 },
   ];
 
   const vdhPosts = [
-    { name: 'Atração', component: VDHStory1, photoIndex: 0 },
+    { name: 'Atração',   component: VDHStory1, photoIndex: 0 },
     { name: 'Interesse', component: VDHStory2, photoIndex: 1 },
-    { name: 'Decisão', component: VDHStory3, photoIndex: 2 },
-    { name: 'Ação', component: VDHStory4, photoIndex: 3 },
+    { name: 'Decisão',   component: VDHStory3, photoIndex: 2 },
+    { name: 'Ação',      component: VDHStory4, photoIndex: 3 },
   ];
 
   const posts = format === 'feed' ? feedPosts : format === 'story' ? storyPosts : vdhPosts;
-  // postRefs used ONLY for export single (hidden slides) — previewRef is separate
-  const postRefs = format === 'feed' ? feedRefs : format === 'story' ? storyRefs : vdhRefs;
 
   // Generate a title based on property data
   const generateTitle = () => {
@@ -122,6 +137,34 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
     const neighborhood = data.neighborhood || '';
     const location = [neighborhood, city].filter(Boolean).join(' - ') || 'Sem localização';
     return `${type} - ${location}`;
+  };
+
+  // ── Core capture function (iOS-safe) ─────────────────────────────────────
+  // Renders one slide at a time into the single exportRef, waits for images, captures.
+  const captureSlide = async (
+    Component: React.ComponentType<{ data: PropertyData; photo: string | null; photos?: string[] }>,
+    photo: string | null,
+    allPhotos: string[],
+  ): Promise<string> => {
+    // Synchronously update the hidden export element content
+    flushSync(() => {
+      setExportSlideEl(
+        <Component data={data} photo={photo} photos={allPhotos} />
+      );
+    });
+
+    // Allow browser to paint (longer on iOS for image decode)
+    await new Promise(r => setTimeout(r, isIOS() ? 600 : 150));
+
+    if (!exportRef.current) throw new Error('exportRef not mounted');
+
+    // On iOS: first render primes the image cache, second render captures correctly
+    if (isIOS()) {
+      await toPng(exportRef.current, { quality: 1, pixelRatio: 1, cacheBust: true });
+      await new Promise(r => setTimeout(r, 200));
+    }
+
+    return toPng(exportRef.current, { quality: 1, pixelRatio: safePixelRatio(), cacheBust: true });
   };
 
   // Save creative to database with exported images
@@ -136,8 +179,7 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
 
     try {
       const title = generateTitle();
-      
-      // First, create the creative entry to get an ID
+
       const { data: creative, error } = await supabase
         .from('creatives')
         .insert({
@@ -153,57 +195,30 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
 
       if (error) throw error;
 
-      // Upload all exported images to storage
       const uploadedUrls: string[] = [];
       for (const img of exportedImages) {
-        const url = await uploadExportedImage(
-          img.dataUrl, 
-          user.id, 
-          creative.id, 
-          img.index,
-          img.format
-        );
+        const url = await uploadExportedImage(img.dataUrl, user.id, creative.id, img.index, img.format);
         uploadedUrls.push(url);
       }
 
-      // Update creative with exported image URLs and thumbnail
-      const { error: updateError } = await supabase
+      await supabase
         .from('creatives')
-        .update({
-          exported_images: uploadedUrls,
-          thumbnail_url: uploadedUrls[0] || null,
-        })
+        .update({ exported_images: uploadedUrls, thumbnail_url: uploadedUrls[0] || null })
         .eq('id', creative.id);
 
-      if (updateError) throw updateError;
-
-      // Log the activity
       await logActivity('create_creative', 'creative', creative.id, {
-        title,
-        type: data.type,
-        city: data.city,
-        neighborhood: data.neighborhood,
-        photos_count: photos.length,
-        exported_count: uploadedUrls.length,
-        format: exportFormat,
+        title, type: data.type, city: data.city, neighborhood: data.neighborhood,
+        photos_count: photos.length, exported_count: uploadedUrls.length, format: exportFormat,
       });
 
-      // CRM Integration: Create property entry with cover image
       if (uploadedUrls[0]) {
-        // Generate a property code
         const propertyCode = `VDH-${creative.id.slice(0, 8).toUpperCase()}`;
-        
-        // Copy the cover image to permanent CRM storage
         const crmCoverUrl = await copyImageToCrmStorage(uploadedUrls[0], propertyCode);
-        
-        // Parse sale value from minimumValue
         const parseValue = (val: string): number => {
           if (!val) return 0;
           const numericStr = val.replace(/\D/g, '');
           return numericStr ? parseInt(numericStr, 10) / 100 : 0;
         };
-        
-        // Create CRM property entry
         await createCrmPropertyFromCreative({
           code: propertyCode,
           propertyType: mapPropertyType(data.type),
@@ -224,7 +239,6 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
     }
   };
 
-  // Helper to map property type from PropertyData to CRM type
   const mapPropertyType = (type?: string): 'casa' | 'apartamento' | 'terreno' | 'comercial' | 'rural' | 'outro' => {
     if (!type) return 'casa';
     const lower = type.toLowerCase();
@@ -236,39 +250,8 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
     return 'outro';
   };
 
-  const handleExportSingle = async (index: number) => {
-    const ref = postRefs[index];
-    if (!ref.current) return;
-
-    try {
-      setIsExporting(true);
-      // Render twice for Safari/iPad (first pass loads images, second captures correctly)
-      await toPng(ref.current, { quality: 1, pixelRatio: safePixelRatio(), cacheBust: true });
-      const dataUrl = await toPng(ref.current, { quality: 1, pixelRatio: safePixelRatio(), cacheBust: true });
-
-      const link = document.createElement('a');
-      link.download = `post-${index + 1}-${posts[index].name.toLowerCase()}-${format}.png`;
-      link.href = dataUrl;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-
-      await saveCreativeWithExports([{ dataUrl, format, index }], format);
-      toast.success(`Post exportado e salvo na biblioteca!`);
-    } catch (error) {
-      toast.error('Erro ao exportar imagem');
-      console.error(error);
-    } finally {
-      setIsExporting(false);
-    }
-  };
-
-  // Helper: download all as ZIP (compatible with Safari/iPad)
-  const downloadAsZip = async (
-    dataUrls: string[],
-    labels: string[],
-    zipName: string
-  ) => {
+  // Helper: download all as ZIP
+  const downloadAsZip = async (dataUrls: string[], labels: string[], zipName: string) => {
     const zip = new JSZip();
     for (let i = 0; i < dataUrls.length; i++) {
       const base64 = dataUrls[i].split(',')[1];
@@ -285,20 +268,44 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
     setTimeout(() => URL.revokeObjectURL(url), 1000);
   };
 
+  const handleExportSingle = async (index: number) => {
+    try {
+      setIsExporting(true);
+      const exportPhotos = await getPhotosForExport(photos);
+      const post = posts[index];
+      const photo = exportPhotos[post.photoIndex] || exportPhotos[0] || null;
+      const dataUrl = await captureSlide(post.component, photo, exportPhotos);
+
+      const link = document.createElement('a');
+      link.download = `post-${index + 1}-${post.name.toLowerCase()}-${format}.png`;
+      link.href = dataUrl;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      await saveCreativeWithExports([{ dataUrl, format, index }], format);
+      toast.success('Post exportado e salvo na biblioteca!');
+    } catch (error) {
+      toast.error('Erro ao exportar imagem');
+      console.error(error);
+    } finally {
+      setIsExporting(false);
+      setExportSlideEl(null);
+    }
+  };
+
   const handleExportAll = async () => {
     setIsExporting(true);
     try {
-      const currentRefs = format === 'feed' ? feedRefs : format === 'story' ? storyRefs : vdhRefs;
       const currentPosts = format === 'feed' ? feedPosts : format === 'story' ? storyPosts : vdhPosts;
+      const exportPhotos = await getPhotosForExport(photos);
       const exportedImages: { dataUrl: string; format: 'feed' | 'story' | 'vdh'; index: number }[] = [];
       const allDataUrls: string[] = [];
 
-      for (let i = 0; i < currentRefs.length; i++) {
-        const ref = currentRefs[i];
-        if (!ref.current) continue;
-        // Render twice to ensure images are fully loaded (Safari fix)
-        await toPng(ref.current, { quality: 1, pixelRatio: safePixelRatio(), cacheBust: true });
-        const dataUrl = await toPng(ref.current, { quality: 1, pixelRatio: safePixelRatio(), cacheBust: true });
+      for (let i = 0; i < currentPosts.length; i++) {
+        const post = currentPosts[i];
+        const photo = exportPhotos[post.photoIndex] || exportPhotos[0] || null;
+        const dataUrl = await captureSlide(post.component, photo, exportPhotos);
         allDataUrls.push(dataUrl);
         exportedImages.push({ dataUrl, format, index: i });
       }
@@ -306,7 +313,6 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
       const labels = currentPosts.map(p => p.name.toLowerCase());
       const formatLabel = format === 'feed' ? 'Feed' : format === 'story' ? 'Story' : 'VDH';
       await downloadAsZip(allDataUrls, labels, `posts-${format}.zip`);
-
       await saveCreativeWithExports(exportedImages, format);
       toast.success(`Todos os posts (${formatLabel}) exportados e salvos!`);
     } catch (error) {
@@ -314,36 +320,34 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
       console.error(error);
     } finally {
       setIsExporting(false);
+      setExportSlideEl(null);
     }
   };
 
   const handleExportBothFormats = async () => {
     setIsExporting(true);
     try {
+      const exportPhotos = await getPhotosForExport(photos);
       const exportedImages: { dataUrl: string; format: 'feed' | 'story' | 'vdh'; index: number }[] = [];
       const allDataUrls: string[] = [];
       const allLabels: string[] = [];
 
-      // Render feed slides (double-render for Safari fix)
-      for (let i = 0; i < feedRefs.length; i++) {
-        const ref = feedRefs[i];
-        if (!ref.current) continue;
-        await toPng(ref.current, { quality: 1, pixelRatio: safePixelRatio(), cacheBust: true });
-        const dataUrl = await toPng(ref.current, { quality: 1, pixelRatio: safePixelRatio(), cacheBust: true });
+      for (let i = 0; i < feedPosts.length; i++) {
+        const post = feedPosts[i];
+        const photo = exportPhotos[post.photoIndex] || exportPhotos[0] || null;
+        const dataUrl = await captureSlide(post.component, photo, exportPhotos);
         exportedImages.push({ dataUrl, format: 'feed', index: i });
         allDataUrls.push(dataUrl);
-        allLabels.push(`feed-${feedPosts[i].name.toLowerCase()}`);
+        allLabels.push(`feed-${post.name.toLowerCase()}`);
       }
 
-      // Render story slides (double-render for Safari fix)
-      for (let i = 0; i < storyRefs.length; i++) {
-        const ref = storyRefs[i];
-        if (!ref.current) continue;
-        await toPng(ref.current, { quality: 1, pixelRatio: safePixelRatio(), cacheBust: true });
-        const dataUrl = await toPng(ref.current, { quality: 1, pixelRatio: safePixelRatio(), cacheBust: true });
+      for (let i = 0; i < storyPosts.length; i++) {
+        const post = storyPosts[i];
+        const photo = exportPhotos[post.photoIndex] || exportPhotos[0] || null;
+        const dataUrl = await captureSlide(post.component, photo, exportPhotos);
         exportedImages.push({ dataUrl, format: 'story', index: i });
         allDataUrls.push(dataUrl);
-        allLabels.push(`story-${storyPosts[i].name.toLowerCase()}`);
+        allLabels.push(`story-${post.name.toLowerCase()}`);
       }
 
       await downloadAsZip(allDataUrls, allLabels, 'posts-feed-story.zip');
@@ -354,6 +358,7 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
       console.error(error);
     } finally {
       setIsExporting(false);
+      setExportSlideEl(null);
     }
   };
 
@@ -365,16 +370,12 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <h3 className="font-semibold text-base sm:text-lg text-gray-800">Preview do Carrossel</h3>
-        
+
         {/* Seletor de formato */}
         <div className="flex items-center gap-1 bg-gray-100 rounded-xl p-1 self-start border border-gray-200">
           <button
             onClick={() => { setFormat('feed'); setCurrentPost(0); }}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-all ${
-              format === 'feed'
-                ? 'text-white shadow-sm'
-                : 'text-gray-500 hover:text-gray-700'
-            }`}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-all ${format === 'feed' ? 'text-white shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
             style={format === 'feed' ? { backgroundColor: '#1a3a6b' } : {}}
           >
             <Square className="w-3 h-3 sm:w-4 sm:h-4" />
@@ -382,11 +383,7 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
           </button>
           <button
             onClick={() => { setFormat('story'); setCurrentPost(0); }}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-all ${
-              format === 'story'
-                ? 'text-white shadow-sm'
-                : 'text-gray-500 hover:text-gray-700'
-            }`}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-all ${format === 'story' ? 'text-white shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
             style={format === 'story' ? { backgroundColor: '#1a3a6b' } : {}}
           >
             <Smartphone className="w-3 h-3 sm:w-4 sm:h-4" />
@@ -394,11 +391,7 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
           </button>
           <button
             onClick={() => { setFormat('vdh'); setCurrentPost(0); }}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-all ${
-              format === 'vdh'
-                ? 'text-white shadow-sm'
-                : 'text-gray-500 hover:text-gray-700'
-            }`}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-all ${format === 'vdh' ? 'text-white shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
             style={format === 'vdh' ? { backgroundColor: '#1a3a6b' } : {}}
           >
             <Sparkles className="w-3 h-3 sm:w-4 sm:h-4" />
@@ -415,11 +408,7 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
           className="flex items-center justify-center gap-2 flex-1 px-4 py-2.5 rounded-xl text-sm font-medium text-white transition-all hover:opacity-90 disabled:opacity-50"
           style={{ backgroundColor: '#1a3a6b' }}
         >
-          {isExporting ? (
-            <Loader2 className="w-4 h-4 animate-spin" />
-          ) : (
-            <Download className="w-4 h-4" />
-          )}
+          {isExporting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
           Exportar {format === 'feed' ? 'Feed (4)' : format === 'story' ? 'Stories (4)' : 'VDH (4)'}
         </button>
         <button
@@ -428,15 +417,11 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
           className="flex items-center justify-center gap-2 flex-1 px-4 py-2.5 rounded-xl text-sm font-medium text-white transition-all hover:opacity-90 disabled:opacity-50"
           style={{ backgroundColor: '#c9a84c' }}
         >
-          {isExporting ? (
-            <Loader2 className="w-4 h-4 animate-spin" />
-          ) : (
-            <Download className="w-4 h-4" />
-          )}
+          {isExporting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
           Exportar Tudo (8)
         </button>
       </div>
-      
+
       <p className="text-xs text-gray-400 text-center">
         ✓ Os posts são salvos automaticamente na biblioteca ao exportar
       </p>
@@ -459,7 +444,7 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
         ))}
       </div>
 
-      {/* Current Post Preview - Responsive Container */}
+      {/* Current Post Preview */}
       <div className="relative">
         <div className="flex items-center justify-center gap-2 sm:gap-4">
           <button
@@ -469,28 +454,23 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
             <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5 text-gray-600" />
           </button>
 
-          {/* Preview container with proper scaling */}
-          <div 
+          <div
             className="relative rounded-xl overflow-hidden flex-shrink-0"
-            style={{ 
+            style={{
               width: format === 'feed' ? '280px' : '180px',
               height: format === 'feed' ? '280px' : '320px',
-              boxShadow: '0 8px 32px rgba(0,0,0,0.15)'
+              boxShadow: '0 8px 32px rgba(0,0,0,0.15)',
             }}
           >
-            <div 
+            <div
               className="origin-top-left"
-              style={{ 
-                width: format === 'feed' ? '1080px' : '1080px',
+              style={{
+                width: '1080px',
                 height: format === 'feed' ? '1080px' : '1920px',
-                transform: format === 'feed' 
-                  ? 'scale(0.2593)' 
-                  : 'scale(0.1667)'
+                transform: format === 'feed' ? 'scale(0.2593)' : 'scale(0.1667)',
               }}
             >
-              <div ref={previewRef}>
-                <CurrentPostComponent data={data} photo={currentPhoto} photos={photos} />
-              </div>
+              <CurrentPostComponent data={data} photo={currentPhoto} photos={photos} />
             </div>
           </div>
 
@@ -517,53 +497,50 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
       </div>
 
       {/*
-        Hidden export slides — iOS/WebKit fix:
-        - NO overflow:hidden on parent (clipping breaks canvas capture on iOS)
-        - NO position:fixed (iOS doesn't paint fixed elements off-viewport)
-        - opacity:0 + pointer-events:none + aria-hidden keeps them invisible but fully painted
-        - Each ref is UNIQUE (never shared with the preview ref above)
+        ── Single hidden export element (iOS/iPad/Safari fix) ──────────────────
+        Strategy:
+        - ONE element only: content is swapped per capture via flushSync
+        - position: fixed; top: 100vh → element is BELOW the viewport, not clipped
+        - iOS WebKit renders fixed elements even off-screen (unlike absolute)
+        - Photos are pre-converted to base64 before export to avoid CORS fetch failures
+        - Double-render on iOS primes the image cache before final capture
       */}
-      <div aria-hidden="true" style={{ opacity: 0, pointerEvents: 'none', position: 'absolute', top: 0, left: 0, zIndex: -1 }}>
-        {feedPosts.map((Post, index) => (
-          <div key={`feed-export-${index}`} ref={feedRefs[index]}>
-            <Post.component data={data} photo={photos[Post.photoIndex] || photos[0] || null} photos={photos} />
-          </div>
-        ))}
-        {storyPosts.map((Post, index) => (
-          <div key={`story-export-${index}`} ref={storyRefs[index]}>
-            <Post.component data={data} photo={photos[Post.photoIndex] || photos[0] || null} photos={photos} />
-          </div>
-        ))}
-        {vdhPosts.map((Post, index) => (
-          <div key={`vdh-export-${index}`} ref={vdhRefs[index]}>
-            <Post.component data={data} photo={photos[Post.photoIndex] || photos[0] || null} photos={photos} />
-          </div>
-        ))}
+      <div
+        aria-hidden="true"
+        style={{
+          position: 'fixed',
+          top: '100vh',
+          left: 0,
+          pointerEvents: 'none',
+          zIndex: -1,
+        }}
+      >
+        <div ref={exportRef}>
+          {exportSlideEl}
+        </div>
       </div>
 
-      {/* Thumbnails - Hidden on mobile */}
+      {/* Thumbnails */}
       <div className="hidden sm:flex gap-2 justify-center">
         {posts.map((Post, index) => (
           <button
             key={index}
             onClick={() => setCurrentPost(index)}
             className={`relative rounded-lg overflow-hidden transition-all flex-shrink-0 ${
-              currentPost === index
-                ? 'ring-2 ring-offset-2'
-                : 'opacity-60 hover:opacity-100'
+              currentPost === index ? 'ring-2 ring-offset-2' : 'opacity-60 hover:opacity-100'
             }`}
-            style={{ 
+            style={{
               width: format === 'feed' ? '80px' : '54px',
               height: format === 'feed' ? '80px' : '96px',
-              ...(currentPost === index ? { '--tw-ring-color': '#c9a84c' } as React.CSSProperties : {})
+              ...(currentPost === index ? { '--tw-ring-color': '#c9a84c' } as React.CSSProperties : {}),
             }}
           >
-            <div 
-              className="origin-top-left" 
-              style={{ 
-                transform: format === 'feed' ? 'scale(0.074)' : 'scale(0.05)', 
+            <div
+              className="origin-top-left"
+              style={{
+                transform: format === 'feed' ? 'scale(0.074)' : 'scale(0.05)',
                 width: '1080px',
-                height: format === 'feed' ? '1080px' : '1920px'
+                height: format === 'feed' ? '1080px' : '1920px',
               }}
             >
               <Post.component data={data} photo={photos[index] || photos[0] || null} photos={photos} />
