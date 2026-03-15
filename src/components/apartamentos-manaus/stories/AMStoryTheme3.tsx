@@ -223,22 +223,22 @@ export const AMStory3_T3_Reveal = ({
         {/* Specs row */}
         <div style={{ display: 'flex', gap: 6, marginBottom: 8, flexWrap: 'wrap' }}>
           {data.bedrooms > 0 && (
-            <div style={{ backgroundColor: 'rgba(255,255,255,0.1)', backdropFilter: 'blur(10px)', borderRadius: 10, padding: '4px 10px', border: '1px solid rgba(255,255,255,0.15)' }}>
+            <div style={{ backgroundColor: 'rgba(255,255,255,0.18)', borderRadius: 10, padding: '4px 10px', border: '1px solid rgba(255,255,255,0.25)' }}>
               <p style={{ color: 'white', fontSize: 10, fontWeight: 600, margin: 0 }}>🛏 {data.bedrooms} Qto{data.bedrooms > 1 ? 's' : ''}</p>
             </div>
           )}
           {data.area > 0 && (
-            <div style={{ backgroundColor: 'rgba(255,255,255,0.1)', backdropFilter: 'blur(10px)', borderRadius: 10, padding: '4px 10px', border: '1px solid rgba(255,255,255,0.15)' }}>
+            <div style={{ backgroundColor: 'rgba(255,255,255,0.18)', borderRadius: 10, padding: '4px 10px', border: '1px solid rgba(255,255,255,0.25)' }}>
               <p style={{ color: 'white', fontSize: 10, fontWeight: 600, margin: 0 }}>📐 {data.area}m²</p>
             </div>
           )}
           {data.garageSpaces > 0 && (
-            <div style={{ backgroundColor: 'rgba(255,255,255,0.1)', backdropFilter: 'blur(10px)', borderRadius: 10, padding: '4px 10px', border: '1px solid rgba(255,255,255,0.15)' }}>
+            <div style={{ backgroundColor: 'rgba(255,255,255,0.18)', borderRadius: 10, padding: '4px 10px', border: '1px solid rgba(255,255,255,0.25)' }}>
               <p style={{ color: 'white', fontSize: 10, fontWeight: 600, margin: 0 }}>🚗 {data.garageSpaces} Vaga{data.garageSpaces > 1 ? 's' : ''}</p>
             </div>
           )}
           {data.floor && (
-            <div style={{ backgroundColor: 'rgba(255,255,255,0.1)', backdropFilter: 'blur(10px)', borderRadius: 10, padding: '4px 10px', border: '1px solid rgba(255,255,255,0.15)' }}>
+            <div style={{ backgroundColor: 'rgba(255,255,255,0.18)', borderRadius: 10, padding: '4px 10px', border: '1px solid rgba(255,255,255,0.25)' }}>
               <p style={{ color: 'white', fontSize: 10, fontWeight: 600, margin: 0 }}>🏢 {data.floor}° And.</p>
             </div>
           )}

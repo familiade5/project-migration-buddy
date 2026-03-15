@@ -959,7 +959,7 @@ export const AMStorySpecsSlide = ({
         <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
           {specs.slice(0, 8).map((spec, i) => (
             <div key={i} style={{
-              backgroundColor: 'rgba(255,255,255,0.08)', backdropFilter: 'blur(8px)',
+              backgroundColor: 'rgba(30,30,50,0.82)',
               borderRadius: 12, padding: '10px 14px', border: '1px solid rgba(255,255,255,0.1)',
               display: 'flex', alignItems: 'center', gap: 10,
             }}>
