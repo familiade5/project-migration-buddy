@@ -282,21 +282,21 @@ export const AMSpecsSlide = ({
   // Path starts at (330, 8) — the exact entry point of the top-right arc —
   // so the arc comes FIRST with no straight segment before it.
   // The top edge (168→330 at y=8) is the LAST segment before Z.
-  // Notch reduzido: w=120, h=56 (era 164×76) → mais área de foto visível
+  // Notch top-left reduzido: w=120, h=52. Bordas externas mantidas (330→352, etc.)
   const shapePath = [
-    'M 286 8',               // start at top-right arc entry (264+22=286)
-    'A 22 22 0 0 1 308 30',  // top-right outer corner (r=22)
-    'V 286',                 // right edge downward
-    'A 22 22 0 0 1 286 308', // bottom-right outer corner (r=22)
-    'H 30',                  // bottom edge leftward
-    'A 22 22 0 0 1 8 286',   // bottom-left outer corner (r=22)
-    'V 76',                  // left edge upward to notch start (56+22-2=76)
-    'Q 8 56 26 56',          // smooth concave curve into notch bottom-left
-    'H 100',                 // notch bottom rightward (120-22+2=100)
-    'Q 120 56 120 36',       // smooth convex curve up notch bottom-right
-    'V 30',                  // up notch right edge
-    'A 22 22 0 0 1 142 8',   // round the top-notch corner
-    'H 286',                 // top edge back to arc start
+    'M 330 8',               // top-right arc entry — borda externa mantida
+    'A 22 22 0 0 1 352 30',  // top-right outer corner
+    'V 330',                 // right edge full height
+    'A 22 22 0 0 1 330 352', // bottom-right outer corner
+    'H 30',                  // bottom edge full width
+    'A 22 22 0 0 1 8 330',   // bottom-left outer corner
+    'V 74',                  // left edge up to notch start (52+22=74)
+    'Q 8 52 26 52',          // concave into notch bottom-left
+    'H 98',                  // notch bottom (120-22=98)
+    'Q 120 52 120 30',       // convex up notch right corner (52-22=30)
+    'V 30',                  // up notch right wall to arc
+    'A 22 22 0 0 1 142 8',   // round top-notch corner (120+22=142)
+    'H 330',                 // top edge back
     'Z',
   ].join(' ');
 
