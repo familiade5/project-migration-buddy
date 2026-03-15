@@ -514,28 +514,23 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
         </div>
       </div>
 
-      {/* All Posts Grid (hidden, used for export) - FEED */}
-      <div className="fixed -left-[9999px] top-0">
+      {/* Hidden slides for export — use absolute+clip (iOS/Chrome fix: position:fixed breaks off-screen rendering) */}
+      <div style={{ position: 'absolute', left: 0, top: 0, width: '1px', height: '1px', overflow: 'hidden', pointerEvents: 'none', zIndex: -1 }}>
+        {/* FEED */}
         {feedPosts.map((Post, index) => (
-          <div key={`feed-${index}`} ref={feedRefs[index]}>
+          <div key={`feed-${index}`} ref={feedRefs[index]} style={{ position: 'absolute', left: 0, top: 0 }}>
             <Post.component data={data} photo={photos[index] || photos[0] || null} photos={photos} />
           </div>
         ))}
-      </div>
-
-      {/* All Posts Grid (hidden, used for export) - STORY */}
-      <div className="fixed -left-[9999px] top-0">
+        {/* STORY */}
         {storyPosts.map((Post, index) => (
-          <div key={`story-${index}`} ref={storyRefs[index]}>
+          <div key={`story-${index}`} ref={storyRefs[index]} style={{ position: 'absolute', left: 0, top: 0 }}>
             <Post.component data={data} photo={photos[index] || photos[0] || null} photos={photos} />
           </div>
         ))}
-      </div>
-
-      {/* All Posts Grid (hidden, used for export) - VDH */}
-      <div className="fixed -left-[9999px] top-0">
+        {/* VDH */}
         {vdhPosts.map((Post, index) => (
-          <div key={`vdh-${index}`} ref={vdhRefs[index]}>
+          <div key={`vdh-${index}`} ref={vdhRefs[index]} style={{ position: 'absolute', left: 0, top: 0 }}>
             <Post.component data={data} photo={photos[index] || photos[0] || null} photos={photos} />
           </div>
         ))}
