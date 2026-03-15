@@ -1,7 +1,7 @@
 import { PropertyData } from '@/types/property';
-import { Check, Sparkles, TrendingDown, Zap } from 'lucide-react';
+import { Sparkles, TrendingDown, Zap } from 'lucide-react';
 import logoVDH from '@/assets/logo-vdh.jpg';
-import { useState, useEffect } from 'react';
+import { useLogoBase64 } from '@/hooks/useLogoBase64';
 
 interface PostCoverProps {
   data: PropertyData;
@@ -10,18 +10,7 @@ interface PostCoverProps {
 }
 
 export const PostCover = ({ data, photo }: PostCoverProps) => {
-  const [logoBase64, setLogoBase64] = useState<string>(logoVDH);
-
-  useEffect(() => {
-    fetch(logoVDH)
-      .then(res => res.blob())
-      .then(blob => {
-        const reader = new FileReader();
-        reader.onloadend = () => setLogoBase64(reader.result as string);
-        reader.readAsDataURL(blob);
-      })
-      .catch(() => setLogoBase64(logoVDH));
-  }, []);
+  const logoBase64 = useLogoBase64(logoVDH);
 
   // Endereço completo automático
   const displayAddress = data.fullAddress ||

@@ -153,8 +153,8 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
       );
     });
 
-    // Allow browser to paint (longer on iOS for image decode)
-    await new Promise(r => setTimeout(r, isIOS() ? 600 : 150));
+    // Allow browser to paint + logo base64 fetch to complete
+    await new Promise(r => setTimeout(r, isIOS() ? 800 : 400));
 
     if (!exportRef.current) throw new Error('exportRef not mounted');
 
