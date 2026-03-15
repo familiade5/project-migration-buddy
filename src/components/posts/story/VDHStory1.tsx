@@ -185,7 +185,7 @@ export const VDHStory1 = ({ data, photo }: VDHStory1Props) => {
               </p>
             )}
             <p style={{ fontSize: '20px', color: 'rgba(255,255,255,0.70)', marginTop: '4px' }}>
-              VENDA DIRETA {data.creci}
+              VENDA DIRETA CRECI 14851 MS PJ
             </p>
 
             {/* Divider */}
