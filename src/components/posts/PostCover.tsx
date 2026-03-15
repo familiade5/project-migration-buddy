@@ -169,16 +169,16 @@ export const PostCover = ({ data, photo }: PostCoverProps) => {
               {(data.propertyName && data.propertyName.trim()) || `${data.type || 'Casa'}`}
             </p>
             {/* Tipo do imóvel */}
-            <p style={{ fontSize: '22px', fontWeight: 600, color: 'rgba(255,255,255,0.90)', lineHeight: 1.2 }}>
+            <p style={{ fontSize: '22px', fontWeight: 600, color: '#fff', lineHeight: 1.2 }}>
               {propertySummary}
             </p>
             {/* Endereço completo automático */}
             {displayAddress && (
-              <p style={{ fontSize: '18px', color: 'rgba(255,255,255,0.75)', lineHeight: 1.3 }}>
+              <p style={{ fontSize: '18px', color: '#fff', lineHeight: 1.3 }}>
                 {displayAddress}
               </p>
             )}
-            <p style={{ fontSize: '16px', color: 'rgba(255,255,255,0.45)', marginTop: '2px' }}>
+            <p style={{ fontSize: '16px', color: 'rgba(255,255,255,0.70)', marginTop: '2px' }}>
               VENDA DIRETA {data.creci}
             </p>
           </div>
