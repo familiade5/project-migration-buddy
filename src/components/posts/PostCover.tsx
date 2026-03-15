@@ -1,6 +1,7 @@
 import { PropertyData } from '@/types/property';
-import { MapPin, Home, Check, Sparkles, TrendingDown, Zap, BadgeCheck } from 'lucide-react';
+import { Check, Sparkles, TrendingDown, Zap } from 'lucide-react';
 import logoVDH from '@/assets/logo-vdh.jpg';
+import { useState, useEffect } from 'react';
 
 interface PostCoverProps {
   data: PropertyData;
@@ -9,6 +10,24 @@ interface PostCoverProps {
 }
 
 export const PostCover = ({ data, photo }: PostCoverProps) => {
+  const [logoBase64, setLogoBase64] = useState<string>(logoVDH);
+
+  useEffect(() => {
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      canvas.width = img.naturalWidth;
+      canvas.height = img.naturalHeight;
+      const ctx = canvas.getContext('2d');
+      if (ctx) {
+        ctx.drawImage(img, 0, 0);
+        setLogoBase64(canvas.toDataURL('image/jpeg'));
+      }
+    };
+    img.src = logoVDH;
+  }, []);
+
   // Formatar resumo do imóvel (só mostra quartos/garagem se especificado)
   const getPropertySummary = () => {
     let summary = data.type;
