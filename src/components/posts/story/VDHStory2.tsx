@@ -98,7 +98,7 @@ export const VDHStory2 = ({ data, photo, photos }: VDHStory2Props) => {
       {/* Benefícios principais no topo */}
       <div className="absolute z-20 flex flex-wrap gap-3" style={{ top: '50px', left: '40px', right: '40px' }}>
         {data.acceptsFinancing && (
-          <div className="bg-[#22c55e]/90 backdrop-blur rounded-full flex items-center gap-2" style={{ padding: '12px 24px' }}>
+          <div className="rounded-full flex items-center gap-2" style={{ padding: '12px 24px', background: 'rgba(21,128,61,0.92)' }}>
             <span className="text-white font-semibold" style={{ fontSize: '22px' }}>✓ Aceita Financiamento</span>
           </div>
         )}
