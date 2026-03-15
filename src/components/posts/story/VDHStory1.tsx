@@ -36,18 +36,15 @@ export const VDHStory1 = ({ data, photo }: VDHStory1Props) => {
   const propertyType = data.type || 'Imóvel';
   const title = data.propertyName?.trim() || propertyType;
 
-  // Endereço resumido: apenas bairro + cidade + estado
-  const stateShort = (data.state || '').trim().slice(0, 2).toUpperCase();
-  const displayAddress = [data.neighborhood, data.city, stateShort].filter(Boolean).join(' - ');
+  // Endereço resumido: apenas bairro · cidade · estado (nome completo, maiúsculo)
+  const stateUpper = (data.state || '').trim().toUpperCase();
+  const displayAddress = [data.neighborhood, data.city, stateUpper].filter(Boolean).join(' · ');
 
   const GOLD        = '#D4AF37';
   const GOLD_BRIGHT = '#F5D060';
   const GOLD_GLOW   = 'rgba(212,175,55,0.45)';
   const GREEN_DEEP  = '#0d2210';
-
-  const financingBg = isCashOnly
-    ? 'linear-gradient(160deg, #c2410c 0%, #f97316 40%, #ea580c 100%)'
-    : 'linear-gradient(160deg, #15803d 0%, #22c55e 40%, #16a34a 100%)';
+  const GREEN_CARD  = '#0a1c0d';
 
   return (
     <div
