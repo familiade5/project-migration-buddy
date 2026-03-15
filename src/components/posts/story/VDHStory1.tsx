@@ -12,19 +12,14 @@ export const VDHStory1 = ({ data, photo }: VDHStory1Props) => {
   const [logoBase64, setLogoBase64] = useState<string>(logoVDH);
 
   useEffect(() => {
-    const img = new Image();
-    img.crossOrigin = 'anonymous';
-    img.onload = () => {
-      const canvas = document.createElement('canvas');
-      canvas.width = img.naturalWidth;
-      canvas.height = img.naturalHeight;
-      const ctx = canvas.getContext('2d');
-      if (ctx) {
-        ctx.drawImage(img, 0, 0);
-        setLogoBase64(canvas.toDataURL('image/jpeg'));
-      }
-    };
-    img.src = logoVDH;
+    fetch(logoVDH)
+      .then(res => res.blob())
+      .then(blob => {
+        const reader = new FileReader();
+        reader.onloadend = () => setLogoBase64(reader.result as string);
+        reader.readAsDataURL(blob);
+      })
+      .catch(() => setLogoBase64(logoVDH));
   }, []);
 
   const discountRaw = data.discount ?? '';
