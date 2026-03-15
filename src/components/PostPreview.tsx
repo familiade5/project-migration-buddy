@@ -106,18 +106,18 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
   // Single export ref — content is swapped per capture (iOS-safe approach)
   const exportRef = useRef<HTMLDivElement>(null);
 
-  // ── Slide definitions (original order — DO NOT swap) ─────────────────────
+  // ── Slide definitions (DO NOT change order) ──────────────────────────────
   const feedPosts = [
     { name: 'Capa',         component: PostCover,    photoIndex: 0 },
-    { name: 'Detalhes',     component: PostDetails,  photoIndex: 1 },
-    { name: 'Diferenciais', component: PostFeatures, photoIndex: 2 },
+    { name: 'Detalhes',     component: PostFeatures, photoIndex: 1 },
+    { name: 'Diferenciais', component: PostDetails,  photoIndex: 2 },
     { name: 'Contato',      component: PostContact,  photoIndex: 3 },
   ];
 
   const storyPosts = [
     { name: 'Capa',         component: PostCoverStory,    photoIndex: 0 },
-    { name: 'Detalhes',     component: PostDetailsStory,  photoIndex: 1 },
-    { name: 'Diferenciais', component: PostFeaturesStory, photoIndex: 2 },
+    { name: 'Detalhes',     component: PostFeaturesStory, photoIndex: 1 },
+    { name: 'Diferenciais', component: PostDetailsStory,  photoIndex: 2 },
     { name: 'Contato',      component: PostContactStory,  photoIndex: 3 },
   ];
 
