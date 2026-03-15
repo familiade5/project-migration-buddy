@@ -487,7 +487,7 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
                   : 'scale(0.1667)'
               }}
             >
-              <div ref={postRefs[currentPost]}>
+              <div ref={previewRef}>
                 <CurrentPostComponent data={data} photo={currentPhoto} photos={photos} />
               </div>
             </div>
