@@ -67,6 +67,9 @@ export interface PropertyData {
   // Regras de despesas
   condominiumRules: string;
   taxRules: string;
+
+  // Corretor selecionado
+  selectedBroker: 'iury' | 'almir';
 }
 
 export const defaultPropertyData: PropertyData = {
