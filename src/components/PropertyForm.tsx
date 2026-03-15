@@ -494,41 +494,66 @@ export const PropertyForm = ({ data, onChange }: PropertyFormProps) => {
 
           {/* Seletor de Corretor */}
           <div>
-            <Label className="text-gray-500 text-sm font-medium">Corretor Responsável</Label>
-            <div className="mt-1.5 grid grid-cols-2 gap-2">
-              {[
-                { key: 'iury', name: 'Iury Sampaio', creci: 'CRECI 14851 MS PJ', phone: '(92) 98839-1098', label: 'Nacional' },
-                { key: 'almir', name: 'Almir Neto', creci: 'CRECI 29013 CE', phone: '(85) 99271-0485', label: 'Regional' },
-              ].map((broker) => (
-                <button
-                  key={broker.key}
-                  type="button"
-                  onClick={() => {
-                    updateField('selectedBroker', broker.key as 'iury' | 'almir');
-                    if (broker.key === 'iury') {
-                      updateField('contactName', 'Iury Sampaio');
-                      updateField('contactPhone', '(92) 98839-1098');
-                      updateField('creci', 'CRECI 14851 MS PJ');
-                    } else {
-                      updateField('contactName', 'Almir Neto');
-                      updateField('contactPhone', '(85) 99271-0485');
-                      updateField('creci', 'CRECI 29013 CE');
-                    }
-                  }}
-                  className="p-3 rounded-xl border-2 text-left transition-all"
-                  style={{
-                    borderColor: data.selectedBroker === broker.key ? '#1a3a6b' : '#e5e7eb',
-                    background: data.selectedBroker === broker.key ? '#EEF2FF' : '#f9fafb',
-                  }}
-                >
-                  <p className="font-semibold text-sm" style={{ color: data.selectedBroker === broker.key ? '#1a3a6b' : '#374151' }}>
-                    {broker.name}
-                  </p>
-                  <p className="text-xs text-gray-500">{broker.label}</p>
-                  <p className="text-xs text-gray-400 mt-0.5">{broker.creci}</p>
-                </button>
-              ))}
+            <Label className="text-gray-500 text-sm font-medium mb-1.5 block">Corretor do Post</Label>
+
+            {/* Card do Iury (sempre visível, padrão) */}
+            <div
+              className="flex items-center justify-between p-3 rounded-xl border-2"
+              style={{
+                borderColor: data.selectedBroker !== 'almir' ? '#1a3a6b' : '#e5e7eb',
+                background: data.selectedBroker !== 'almir' ? '#EEF2FF' : '#f9fafb',
+              }}
+            >
+              <div>
+                <p className="font-semibold text-sm" style={{ color: '#1a3a6b' }}>
+                  Iury Sampaio{data.selectedBroker === 'almir' ? ' - Nacional' : ''}
+                </p>
+                <p className="text-xs text-gray-400">CRECI 14851 MS PJ · (92) 98839-1098</p>
+              </div>
+              {data.selectedBroker === 'almir' && (
+                <span className="text-xs px-2 py-0.5 rounded-full bg-blue-100 text-blue-700 font-medium">Nacional</span>
+              )}
             </div>
+
+            {/* Botão adicionar / remover Almir */}
+            {data.selectedBroker !== 'almir' ? (
+              <button
+                type="button"
+                onClick={() => onChange({
+                  ...data,
+                  selectedBroker: 'almir',
+                  contactName: 'Almir Neto',
+                  contactPhone: '(85) 99271-0485',
+                  creci: 'CRECI 29013 CE',
+                })}
+                className="mt-2 w-full flex items-center justify-center gap-2 py-2.5 rounded-xl border-2 border-dashed border-gray-300 text-gray-500 text-sm font-medium hover:border-blue-400 hover:text-blue-600 hover:bg-blue-50 transition-all"
+              >
+                <span className="text-base">＋</span> Adicionar Almir Neto como Regional
+              </button>
+            ) : (
+              <div
+                className="mt-2 flex items-center justify-between p-3 rounded-xl border-2"
+                style={{ borderColor: '#1a3a6b', background: '#EEF2FF' }}
+              >
+                <div>
+                  <p className="font-semibold text-sm" style={{ color: '#1a3a6b' }}>Almir Neto - Regional</p>
+                  <p className="text-xs text-gray-400">CRECI 29013 CE · (85) 99271-0485</p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => onChange({
+                    ...data,
+                    selectedBroker: 'iury',
+                    contactName: 'Iury Sampaio',
+                    contactPhone: '(92) 98839-1098',
+                    creci: 'CRECI 14851 MS PJ',
+                  })}
+                  className="text-xs text-red-400 hover:text-red-600 font-medium transition-colors ml-2 flex-shrink-0"
+                >
+                  ✕ Remover
+                </button>
+              </div>
+            )}
           </div>
 
           <div>
