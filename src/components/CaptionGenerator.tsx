@@ -108,7 +108,7 @@ export const CaptionGenerator = ({ data }: CaptionGeneratorProps) => {
       lines.push(`📱 (85) 99271-0485`);
       lines.push('');
       lines.push(`👤 Iury Sampaio - Nacional`);
-      lines.push(`📄 CRECI 14851 MS PJ`);
+      lines.push(`📄 ${data.creci}`);
       lines.push(`📱 (92) 98839-1098`);
     } else {
       // Padrão: somente Iury
