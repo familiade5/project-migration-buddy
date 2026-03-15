@@ -491,6 +491,46 @@ export const PropertyForm = ({ data, onChange }: PropertyFormProps) => {
           <span className="text-lg">📞</span> Contato
         </h3>
         <div className="grid gap-3">
+
+          {/* Seletor de Corretor */}
+          <div>
+            <Label className="text-gray-500 text-sm font-medium">Corretor Responsável</Label>
+            <div className="mt-1.5 grid grid-cols-2 gap-2">
+              {[
+                { key: 'iury', name: 'Iury Sampaio', creci: 'CRECI 14851 MS PJ', phone: '(92) 98839-1098', label: 'Nacional' },
+                { key: 'almir', name: 'Almir Neto', creci: 'CRECI 29013 CE', phone: '(85) 99271-0485', label: 'Regional' },
+              ].map((broker) => (
+                <button
+                  key={broker.key}
+                  type="button"
+                  onClick={() => {
+                    updateField('selectedBroker', broker.key as 'iury' | 'almir');
+                    if (broker.key === 'iury') {
+                      updateField('contactName', 'Iury Sampaio');
+                      updateField('contactPhone', '(92) 98839-1098');
+                      updateField('creci', 'CRECI 14851 MS PJ');
+                    } else {
+                      updateField('contactName', 'Almir Neto');
+                      updateField('contactPhone', '(85) 99271-0485');
+                      updateField('creci', 'CRECI 29013 CE');
+                    }
+                  }}
+                  className="p-3 rounded-xl border-2 text-left transition-all"
+                  style={{
+                    borderColor: data.selectedBroker === broker.key ? '#1a3a6b' : '#e5e7eb',
+                    background: data.selectedBroker === broker.key ? '#EEF2FF' : '#f9fafb',
+                  }}
+                >
+                  <p className="font-semibold text-sm" style={{ color: data.selectedBroker === broker.key ? '#1a3a6b' : '#374151' }}>
+                    {broker.name}
+                  </p>
+                  <p className="text-xs text-gray-500">{broker.label}</p>
+                  <p className="text-xs text-gray-400 mt-0.5">{broker.creci}</p>
+                </button>
+              ))}
+            </div>
+          </div>
+
           <div>
             <Label htmlFor="contactName" className="text-gray-500 text-sm font-medium">Nome do Corretor</Label>
             <Input
