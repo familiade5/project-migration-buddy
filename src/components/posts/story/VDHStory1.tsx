@@ -1,6 +1,6 @@
 import { PropertyData } from '@/types/property';
 import logoVDH from '@/assets/logo-vdh.jpg';
-import { useState, useEffect } from 'react';
+import { useLogoBase64 } from '@/hooks/useLogoBase64';
 
 interface VDHStory1Props {
   data: PropertyData;
@@ -9,18 +9,7 @@ interface VDHStory1Props {
 }
 
 export const VDHStory1 = ({ data, photo }: VDHStory1Props) => {
-  const [logoBase64, setLogoBase64] = useState<string>(logoVDH);
-
-  useEffect(() => {
-    fetch(logoVDH)
-      .then(res => res.blob())
-      .then(blob => {
-        const reader = new FileReader();
-        reader.onloadend = () => setLogoBase64(reader.result as string);
-        reader.readAsDataURL(blob);
-      })
-      .catch(() => setLogoBase64(logoVDH));
-  }, []);
+  const logoBase64 = useLogoBase64(logoVDH);
 
   const discountRaw = data.discount ?? '';
   const discountNum = discountRaw ? parseFloat(discountRaw.replace(',', '.')) : 0;
