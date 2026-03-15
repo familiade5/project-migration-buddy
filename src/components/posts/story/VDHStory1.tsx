@@ -44,16 +44,18 @@ export const VDHStory1 = ({ data, photo }: VDHStory1Props) => {
     return `R$ ${val}`;
   };
   const price = formatPrice(data.minimumValue) || formatPrice(data.evaluationValue);
+  const entryFormatted = data.entryValue ? formatPrice(data.entryValue) : null;
 
   const locationParts = [data.neighborhood, data.city, data.state].filter(Boolean);
   const locationLine = locationParts.join('  ·  ');
   const propertyType = data.type || 'Imóvel';
   const title = data.propertyName?.trim() || propertyType;
+  const propertySource = data.propertySource || 'Imóvel Caixa';
 
-  const GOLD       = '#D4AF37';
+  const GOLD        = '#D4AF37';
   const GOLD_BRIGHT = '#F5D060';
-  const GOLD_GLOW  = 'rgba(212,175,55,0.45)';
-  const GREEN_DEEP = '#0d2210';
+  const GOLD_GLOW   = 'rgba(212,175,55,0.45)';
+  const GREEN_DEEP  = '#0d2210';
 
   const financingBg = isCashOnly
     ? 'linear-gradient(160deg, #c2410c 0%, #f97316 40%, #ea580c 100%)'
@@ -86,7 +88,7 @@ export const VDHStory1 = ({ data, photo }: VDHStory1Props) => {
         }}
       />
 
-      {/* Gold glow at bottom */}
+      {/* Gold glow bottom */}
       <div
         className="absolute"
         style={{
@@ -97,7 +99,7 @@ export const VDHStory1 = ({ data, photo }: VDHStory1Props) => {
         }}
       />
 
-      {/* 1 · ACHADO DO DIA — topo */}
+      {/* 1 · ACHADO DO DIA */}
       <div className="absolute z-20 flex justify-center" style={{ top: '64px', left: 0, right: 0 }}>
         <div
           style={{
@@ -118,7 +120,7 @@ export const VDHStory1 = ({ data, photo }: VDHStory1Props) => {
         </div>
       </div>
 
-      {/* 2 · DESCONTO — canto superior esquerdo */}
+      {/* 2 · DESCONTO */}
       {hasDiscount && (
         <div className="absolute z-20" style={{ top: '226px', left: '64px' }}>
           <div
@@ -145,7 +147,7 @@ export const VDHStory1 = ({ data, photo }: VDHStory1Props) => {
         </div>
       )}
 
-      {/* 3 · CARD CENTRAL — estilo feed (cinza + badge colorido) */}
+      {/* 3 · CARD CENTRAL — cinza + badge colorido */}
       <div className="absolute z-20" style={{ bottom: '230px', left: '52px', right: '52px' }}>
         <div
           style={{
@@ -157,12 +159,11 @@ export const VDHStory1 = ({ data, photo }: VDHStory1Props) => {
             position: 'relative',
           }}
         >
-          {/* Shimmer top */}
           <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '2px', background: `linear-gradient(90deg, transparent 0%, ${GOLD_BRIGHT} 50%, transparent 100%)` }} />
 
-          <div style={{ display: 'flex', minHeight: '240px' }}>
+          <div style={{ display: 'flex', minHeight: '260px' }}>
 
-            {/* Badge financiamento — idêntico ao feed */}
+            {/* Badge financiamento com fonte/origem no topo */}
             <div
               style={{
                 flexShrink: 0,
@@ -179,42 +180,84 @@ export const VDHStory1 = ({ data, photo }: VDHStory1Props) => {
               <div className="absolute inset-0" style={{ background: financingBg }} />
               <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, rgba(255,255,255,0.20) 0%, transparent 100%)' }} />
               <div className="absolute inset-0" style={{ boxShadow: 'inset 0 0 20px rgba(0,0,0,0.15), inset 0 2px 0 rgba(255,255,255,0.25)' }} />
-              <div className="relative" style={{ padding: '16px 24px' }}>
+              <div className="relative" style={{ padding: '16px 20px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2px' }}>
+                {/* Linha 1: fonte (Imóvel Caixa, etc.) */}
+                <span style={{ fontSize: '22px', fontWeight: 700, color: 'rgba(255,255,255,0.9)', letterSpacing: '0.02em', lineHeight: 1.2, display: 'block', marginBottom: '6px', textShadow: '0 1px 6px rgba(0,0,0,0.4)' }}>
+                  {propertySource}
+                </span>
+                {/* Divider */}
+                <div style={{ width: '80%', height: '1px', background: 'rgba(255,255,255,0.3)', marginBottom: '8px' }} />
                 {!isCashOnly && (
-                  <svg width="28" height="28" viewBox="0 0 24 24" fill="#fff" style={{ margin: '0 auto 8px' }}>
+                  <svg width="26" height="26" viewBox="0 0 24 24" fill="#fff" style={{ marginBottom: '4px' }}>
                     <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
                   </svg>
                 )}
-                <span style={{ fontSize: '32px', fontWeight: 900, color: '#fff', letterSpacing: '0.04em', lineHeight: 1.15, display: 'block', textShadow: '0 2px 8px rgba(0,0,0,0.3)' }}>
-                  {isCashOnly ? <>SOMENTE<br />À VISTA</> : <>ACEITA<br />FINANCIAMENTO</>}
-                </span>
+                {/* Linhas de financiamento */}
+                {isCashOnly ? (
+                  <>
+                    <span style={{ fontSize: '30px', fontWeight: 900, color: '#fff', letterSpacing: '0.04em', lineHeight: 1.1, textShadow: '0 2px 8px rgba(0,0,0,0.3)' }}>SOMENTE</span>
+                    <span style={{ fontSize: '30px', fontWeight: 900, color: '#fff', letterSpacing: '0.04em', lineHeight: 1.1, textShadow: '0 2px 8px rgba(0,0,0,0.3)' }}>À VISTA</span>
+                  </>
+                ) : (
+                  <>
+                    <span style={{ fontSize: '28px', fontWeight: 900, color: '#fff', letterSpacing: '0.04em', lineHeight: 1.1, textShadow: '0 2px 8px rgba(0,0,0,0.3)' }}>ACEITA</span>
+                    <span style={{ fontSize: '28px', fontWeight: 900, color: '#fff', letterSpacing: '0.04em', lineHeight: 1.1, textShadow: '0 2px 8px rgba(0,0,0,0.3)' }}>FINANCIAMENTO</span>
+                    <span style={{ fontSize: '26px', fontWeight: 700, color: 'rgba(255,255,255,0.90)', letterSpacing: '0.04em', lineHeight: 1.1, textShadow: '0 2px 8px rgba(0,0,0,0.3)' }}>BANCÁRIO</span>
+                  </>
+                )}
               </div>
             </div>
 
             {/* Separador */}
             <div style={{ width: '1px', background: 'rgba(255,255,255,0.15)', alignSelf: 'stretch', margin: '12px 0' }} />
 
-            {/* Informações */}
-            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '20px 24px', gap: '6px' }}>
-              <img src={logoBase64} alt="VDH" style={{ height: '52px', objectFit: 'contain', objectPosition: 'left', marginBottom: '8px' }} />
-              <p style={{ fontSize: '32px', fontWeight: 800, color: '#fff', lineHeight: 1.2 }}>
+            {/* Informações do imóvel */}
+            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '20px 24px', gap: '5px' }}>
+              {/* Logo VDH */}
+              <img src={logoBase64} alt="VDH" style={{ height: '46px', objectFit: 'contain', objectPosition: 'left', marginBottom: '6px' }} />
+
+              {/* Nome do condomínio / imóvel — destaque, primeira linha */}
+              <p style={{ fontSize: '36px', fontWeight: 900, color: '#fff', lineHeight: 1.15, letterSpacing: '-0.01em' }}>
                 {title !== propertyType ? (
-                  <><span style={{ color: GOLD_BRIGHT }}>{propertyType}</span>{' '}
-                  <span style={{ fontWeight: 400, color: 'rgba(255,255,255,0.85)' }}>{title}</span></>
+                  <span style={{ color: GOLD_BRIGHT }}>{title}</span>
                 ) : (
                   <span style={{ color: GOLD_BRIGHT }}>{propertyType}</span>
                 )}
               </p>
+              {/* Tipo se nome diferente */}
+              {title !== propertyType && (
+                <p style={{ fontSize: '24px', fontWeight: 600, color: 'rgba(255,255,255,0.75)', lineHeight: 1.2 }}>
+                  {propertyType}
+                </p>
+              )}
+              {/* Localização */}
               {locationLine && (
-                <p style={{ fontSize: '24px', color: 'rgba(255,255,255,0.65)', lineHeight: 1.3 }}>{locationLine}</p>
+                <p style={{ fontSize: '22px', color: 'rgba(255,255,255,0.60)', lineHeight: 1.3 }}>{locationLine}</p>
               )}
-              {acceptsFGTS && (
-                <p style={{ fontSize: '22px', color: 'rgba(255,255,255,0.75)' }}>Aceita FGTS</p>
-              )}
+
+              {/* Divider */}
+              <div style={{ height: '1px', background: 'rgba(255,255,255,0.12)', margin: '4px 0' }} />
+
+              {/* Preço de venda — destaque */}
               {price && (
-                <p style={{ fontSize: '36px', fontWeight: 900, color: GOLD_BRIGHT, marginTop: '4px', letterSpacing: '-0.01em' }}>{price}</p>
+                <p style={{ fontSize: '40px', fontWeight: 900, color: GOLD_BRIGHT, letterSpacing: '-0.01em', lineHeight: 1 }}>{price}</p>
               )}
-              <p style={{ fontSize: '18px', color: 'rgba(255,255,255,0.4)', marginTop: '2px' }}>VENDA DIRETA {data.creci}</p>
+
+              {/* Entrada a partir de */}
+              {entryFormatted && (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '1px' }}>
+                  <span style={{ fontSize: '18px', color: 'rgba(255,255,255,0.55)', fontWeight: 500, letterSpacing: '0.04em', textTransform: 'uppercase' }}>Entrada a partir de</span>
+                  <span style={{ fontSize: '28px', fontWeight: 800, color: '#fff', lineHeight: 1.1 }}>{entryFormatted}</span>
+                </div>
+              )}
+
+              {/* FGTS */}
+              {acceptsFGTS && (
+                <p style={{ fontSize: '20px', color: 'rgba(255,255,255,0.70)' }}>✓ Aceita FGTS</p>
+              )}
+
+              {/* CRECI */}
+              <p style={{ fontSize: '17px', color: 'rgba(255,255,255,0.35)', marginTop: '2px' }}>VENDA DIRETA {data.creci}</p>
             </div>
           </div>
         </div>
