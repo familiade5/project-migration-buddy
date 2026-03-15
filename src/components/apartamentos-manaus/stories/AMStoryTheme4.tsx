@@ -530,8 +530,8 @@ export const AMStory4_T4_Slide4 = ({
           )}
           {/* Label overlay sutil */}
           <div style={{
-            position: 'absolute', bottom: 8, left: 10,
-            backgroundColor: 'rgba(0,0,0,0.45)', backdropFilter: 'blur(4px)',
+          position: 'absolute', bottom: 8, left: 10,
+            backgroundColor: 'rgba(10,10,15,0.75)',
             borderRadius: 20, padding: '3px 10px',
           }}>
             <span style={{ color: 'white', fontSize: 9, fontWeight: 700 }}>

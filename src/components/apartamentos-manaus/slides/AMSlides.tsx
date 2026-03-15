@@ -1019,7 +1019,7 @@ export const AMStoryLocationSlide = ({
       {/* Bottom info card */}
       <div style={{ position: 'absolute', bottom: 30, left: 20, right: 20, zIndex: 10 }}>
         <div style={{
-          backgroundColor: 'rgba(10,15,30,0.85)', backdropFilter: 'blur(16px)',
+          backgroundColor: 'rgba(8,12,28,0.92)',
           borderRadius: 20, padding: '18px 20px',
           border: '1px solid rgba(27,94,166,0.4)',
         }}>
