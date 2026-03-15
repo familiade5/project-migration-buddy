@@ -1,6 +1,7 @@
 import { PropertyData } from '@/types/property';
-import { MapPin, Home, Check, Sparkles, TrendingDown, Zap, BadgeCheck } from 'lucide-react';
+import { Check, Sparkles, TrendingDown, Zap } from 'lucide-react';
 import logoVDH from '@/assets/logo-vdh.jpg';
+import { useState, useEffect } from 'react';
 
 interface PostCoverProps {
   data: PropertyData;
@@ -9,6 +10,24 @@ interface PostCoverProps {
 }
 
 export const PostCover = ({ data, photo }: PostCoverProps) => {
+  const [logoBase64, setLogoBase64] = useState<string>(logoVDH);
+
+  useEffect(() => {
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      canvas.width = img.naturalWidth;
+      canvas.height = img.naturalHeight;
+      const ctx = canvas.getContext('2d');
+      if (ctx) {
+        ctx.drawImage(img, 0, 0);
+        setLogoBase64(canvas.toDataURL('image/jpeg'));
+      }
+    };
+    img.src = logoVDH;
+  }, []);
+
   // Formatar resumo do imóvel (só mostra quartos/garagem se especificado)
   const getPropertySummary = () => {
     let summary = data.type;
@@ -100,11 +119,11 @@ export const PostCover = ({ data, photo }: PostCoverProps) => {
         </div>
       </div>
 
-      {/* Logo VDH no topo direito */}
+      {/* Logo VDH no topo direito - base64 para garantir export */}
       <div className="absolute z-20" style={{ top: '20px', right: '20px' }}>
         <div className="rounded-lg overflow-hidden shadow-2xl" style={{ background: 'rgba(0,0,0,0.55)', padding: '8px 16px' }}>
           <img 
-            src={logoVDH} 
+            src={logoBase64} 
             alt="VDH" 
             className="object-contain"
             style={{ height: '72px' }}
@@ -114,7 +133,7 @@ export const PostCover = ({ data, photo }: PostCoverProps) => {
 
       {/* Rodapé */}
       <div className="absolute bottom-0 left-0 right-0 bg-[#2a3142] z-10">
-        <div className="flex items-stretch" style={{ minHeight: '140px' }}>
+        <div className="flex items-stretch" style={{ minHeight: '170px' }}>
 
           {/* Badge financiamento - ocupa toda altura */}
           <div 
