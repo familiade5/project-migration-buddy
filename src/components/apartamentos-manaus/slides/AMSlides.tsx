@@ -615,18 +615,18 @@ export const AMPhotoSlide = ({
         position: 'absolute',
         top: 4,
         left: 4,
-        width: 164,
-        height: 76,
-        borderRadius: 18,
+        width: 116,
+        height: 52,
+        borderRadius: 14,
         backgroundColor: '#ffffff',
         zIndex: 5,
         display: 'flex',
         alignItems: 'center',
-        paddingLeft: 12,
-        paddingRight: 12,
+        paddingLeft: 8,
+        paddingRight: 8,
         boxSizing: 'border-box',
       }}>
-        <AMLogo width={140} variant="color" />
+        <AMLogo width={100} variant="color" />
       </div>
     </div>
   );
