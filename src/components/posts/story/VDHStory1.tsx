@@ -145,13 +145,11 @@ export const VDHStory1 = ({ data, photo }: VDHStory1Props) => {
         >
           <div
             style={{
-              background: DARK,
-              backdropFilter: 'blur(20px)',
-              WebkitBackdropFilter: 'blur(20px)',
-              border: `2.5px solid ${GOLD}`,
-              borderRadius: '22px',
-              padding: '30px 50px 26px',
-              boxShadow: `0 0 0 5px rgba(212,175,55,0.08), 0 16px 60px rgba(0,0,0,0.55), 0 0 30px ${GOLD_GLOW}`,
+            background: DARK,
+            border: `2.5px solid ${GOLD}`,
+            borderRadius: '22px',
+            padding: '30px 50px 26px',
+            boxShadow: `0 0 0 5px rgba(212,175,55,0.08), 0 16px 60px rgba(0,0,0,0.55), 0 0 30px ${GOLD_GLOW}`,
               position: 'relative',
               overflow: 'hidden',
             }}
@@ -206,10 +204,8 @@ export const VDHStory1 = ({ data, photo }: VDHStory1Props) => {
       >
         <div
           style={{
-            background: DARK,
-            backdropFilter: 'blur(24px)',
-            WebkitBackdropFilter: 'blur(24px)',
-            border: `2.5px solid ${GOLD}`,
+          background: DARK,
+          border: `2.5px solid ${GOLD}`,
             borderRadius: '28px',
             overflow: 'hidden',
             boxShadow: `0 0 0 6px rgba(212,175,55,0.08), 0 24px 80px rgba(0,0,0,0.65), 0 0 48px ${GOLD_GLOW}`,
