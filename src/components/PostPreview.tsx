@@ -319,52 +319,33 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
     setIsExporting(true);
     try {
       const exportedImages: { dataUrl: string; format: 'feed' | 'story' | 'vdh'; index: number }[] = [];
-      
-      // Exportar formato feed
+      const allDataUrls: string[] = [];
+      const allLabels: string[] = [];
+
+      // Render feed slides (double-render for Safari fix)
       for (let i = 0; i < feedRefs.length; i++) {
         const ref = feedRefs[i];
         if (!ref.current) continue;
-
-        const dataUrl = await toPng(ref.current, {
-          quality: 1,
-          pixelRatio: 2,
-          cacheBust: true,
-        });
-        
+        await toPng(ref.current, { quality: 1, pixelRatio: 2, cacheBust: true });
+        const dataUrl = await toPng(ref.current, { quality: 1, pixelRatio: 2, cacheBust: true });
         exportedImages.push({ dataUrl, format: 'feed', index: i });
-        
-        const link = document.createElement('a');
-        link.download = `post-${i + 1}-${feedPosts[i].name.toLowerCase()}-feed.png`;
-        link.href = dataUrl;
-        link.click();
-        
-        await new Promise(resolve => setTimeout(resolve, 200));
+        allDataUrls.push(dataUrl);
+        allLabels.push(`feed-${feedPosts[i].name.toLowerCase()}`);
       }
 
-      // Exportar formato story
+      // Render story slides (double-render for Safari fix)
       for (let i = 0; i < storyRefs.length; i++) {
         const ref = storyRefs[i];
         if (!ref.current) continue;
-
-        const dataUrl = await toPng(ref.current, {
-          quality: 1,
-          pixelRatio: 2,
-          cacheBust: true,
-        });
-        
+        await toPng(ref.current, { quality: 1, pixelRatio: 2, cacheBust: true });
+        const dataUrl = await toPng(ref.current, { quality: 1, pixelRatio: 2, cacheBust: true });
         exportedImages.push({ dataUrl, format: 'story', index: i });
-        
-        const link = document.createElement('a');
-        link.download = `post-${i + 1}-${storyPosts[i].name.toLowerCase()}-story.png`;
-        link.href = dataUrl;
-        link.click();
-        
-        await new Promise(resolve => setTimeout(resolve, 200));
+        allDataUrls.push(dataUrl);
+        allLabels.push(`story-${storyPosts[i].name.toLowerCase()}`);
       }
 
-      // Save to library with all exported images
+      await downloadAsZip(allDataUrls, allLabels, 'posts-feed-story.zip');
       await saveCreativeWithExports(exportedImages, 'both');
-
       toast.success('Todos os 8 posts (Feed + Story) exportados e salvos!');
     } catch (error) {
       toast.error('Erro ao exportar imagens');
