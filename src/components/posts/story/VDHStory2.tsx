@@ -30,11 +30,11 @@ export const VDHStory2 = ({ data, photo, photos }: VDHStory2Props) => {
 
   const evalNum  = parseNum(data.evaluationValue || '');
   const minNum   = parseNum(data.minimumValue || '');
-  const discount = data.discount
-    ? `${data.discount}%`
+  const discountPct = data.discount
+    ? parseFloat(data.discount.replace(',', '.'))
     : (evalNum > 0 && minNum > 0)
-      ? `${Math.round((1 - minNum / evalNum) * 100)}%`
-      : null;
+      ? Math.round((1 - minNum / evalNum) * 100)
+      : 0;
   const savings  = evalNum > 0 && minNum > 0 ? evalNum - minNum : 0;
 
   const evalLabel    = evalNum  > 0 ? formatBRL(evalNum)  : data.evaluationValue  || null;
@@ -46,144 +46,243 @@ export const VDHStory2 = ({ data, photo, photos }: VDHStory2Props) => {
   const bathroomsNum = Number(data.bathrooms || 0);
   const areaValue    = (data.area || data.areaPrivativa || data.areaTotal || '').trim();
 
-  const specs = [
-    bedroomsNum  > 0 ? { icon: '🛏', label: bedroomsNum === 1 ? 'Quarto' : 'Quartos', value: `${bedroomsNum}` } : null,
-    bathroomsNum > 0 ? { icon: '🚿', label: bathroomsNum === 1 ? 'Banheiro' : 'Banheiros', value: `${bathroomsNum}` } : null,
-    garageNum    > 0 ? { icon: '🚗', label: garageNum === 1 ? 'Vaga' : 'Vagas', value: `${garageNum}` } : null,
-    areaValue && areaValue !== '0' ? { icon: '📐', label: 'Área', value: `${areaValue}m²` } : null,
-  ].filter(Boolean) as { icon: string; label: string; value: string }[];
+  const neighborhood = data.neighborhood || '';
+  const city = data.city || '';
+  const stateShort = (data.state || '').trim().slice(0, 2).toUpperCase();
+  const locationLine = [neighborhood, city, stateShort].filter(Boolean).join(' · ');
 
-  const locationStr = [data.neighborhood, data.city].filter(Boolean).join(' · ');
   const isCaixa = (data.propertySource || '').toLowerCase().includes('caixa');
+  const acceptsFGTS = data.acceptsFGTS;
+  const acceptsFinancing = data.acceptsFinancing;
+
+  /* ── Cores tema ─────────────────────────────────────────────────────────── */
+  const GOLD    = '#D4AF37';
+  const GOLD_LT = '#F0D060';
+  const BG      = '#07080c';
+  const CARD_BG = 'rgba(255,255,255,0.04)';
+
+  /* ── Tags de condições ───────────────────────────────────────────────────── */
+  const tags: { label: string; color: string; bg: string }[] = [];
+  if (acceptsFinancing)  tags.push({ label: 'Financiamento', color: '#bbf7d0', bg: 'rgba(22,163,74,0.18)' });
+  else                   tags.push({ label: 'Somente à Vista', color: '#fca5a5', bg: 'rgba(220,38,38,0.18)' });
+  if (acceptsFGTS)       tags.push({ label: 'FGTS', color: '#93c5fd', bg: 'rgba(37,99,235,0.18)' });
 
   return (
-    <div className="post-template-story relative overflow-hidden" style={{ background: '#06090f' }}>
+    <div
+      className="post-template-story relative overflow-hidden"
+      style={{ background: BG, fontFamily: 'system-ui, sans-serif' }}
+    >
 
-      {/* ── TOPO: 3 FOTOS IGUAIS ─────────────────────────────────────────────── */}
-      <div className="absolute top-0 left-0 right-0 flex" style={{ height: '42%', gap: '3px' }}>
-        {[p0, p1, p2].map((p, i) => (
-          <div key={i} className="relative overflow-hidden" style={{ flex: 1 }}>
-            {p ? (
-              <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${p})` }} />
-            ) : (
-              <div className="absolute inset-0" style={{ background: i === 0 ? '#1a2235' : '#0e131c' }} />
-            )}
-            {/* sem sombra nas fotos */}
-          </div>
-        ))}
-      </div>
+      {/* ── FUNDO COM FOTO DESFOCADA ─────────────────────────────────────────── */}
+      {p0 && (
+        <div
+          className="absolute inset-0"
+          style={{
+            backgroundImage: `url(${p0})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            filter: 'blur(22px) brightness(0.18) saturate(0.4)',
+            transform: 'scale(1.1)',
+          }}
+        />
+      )}
 
-      {/* ── PAINEL DE INFORMAÇÕES ────────────────────────────────────────────── */}
+      {/* ── OVERLAY GRADIENTE ───────────────────────────────────────────────── */}
       <div
-        className="absolute left-0 right-0 bottom-0 flex flex-col"
+        className="absolute inset-0"
         style={{
-          top: 'calc(42% - 2px)',
-          background: '#06090f',
-          padding: '28px 44px 44px',
+          background: `linear-gradient(170deg, rgba(7,8,12,0.55) 0%, rgba(7,8,12,0.82) 45%, rgba(7,8,12,0.98) 100%)`,
         }}
-      >
-        {/* Logos */}
-        <div className="flex items-center justify-between" style={{ marginBottom: '20px' }}>
+      />
+
+      {/* ── LINHA DE ACENTO DOURADA (TOPO) ──────────────────────────────────── */}
+      <div
+        className="absolute top-0 left-0 right-0"
+        style={{ height: '4px', background: `linear-gradient(90deg, transparent 0%, ${GOLD} 40%, ${GOLD_LT} 60%, transparent 100%)` }}
+      />
+
+      {/* ── CONTEÚDO ─────────────────────────────────────────────────────────── */}
+      <div className="absolute inset-0 flex flex-col" style={{ padding: '52px 44px 48px' }}>
+
+        {/* HEADER: logos */}
+        <div className="flex items-center justify-between" style={{ marginBottom: '36px' }}>
           <img src={logoVDH} alt="VDH" className="rounded-xl" style={{ height: '56px', opacity: 0.95 }} />
           {isCaixa && (
-            <img src={logoCaixa} alt="Caixa" className="rounded-lg" style={{ height: '72px', opacity: 0.95 }} />
+            <img src={logoCaixa} alt="Caixa" className="rounded-lg" style={{ height: '64px', filter: 'brightness(0) invert(1)', opacity: 0.85 }} />
           )}
         </div>
 
-        {/* Localização + tipo */}
-        <div style={{ marginBottom: '18px' }}>
-          {locationStr && (
-            <div className="flex items-center gap-3" style={{ marginBottom: '8px' }}>
-              <div style={{ width: '28px', height: '2.5px', background: '#D4AF37', flexShrink: 0, borderRadius: '2px' }} />
-              <span style={{ fontSize: '22px', color: '#D4AF37', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase' }}>
-                {locationStr}
-              </span>
-            </div>
-          )}
-          <p style={{ fontSize: '27px', color: 'rgba(255,255,255,0.55)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-            {data.type || 'Imóvel'} · Oportunidade
-          </p>
-        </div>
-
-        {/* Bloco de preços */}
+        {/* FOTO PRINCIPAL — moldura de destaque */}
         <div
           style={{
-            background: 'rgba(255,255,255,0.04)',
-            border: '1.5px solid rgba(212,175,55,0.2)',
+            position: 'relative',
             borderRadius: '20px',
-            padding: '24px 32px',
-            marginBottom: '20px',
+            overflow: 'hidden',
+            border: `2px solid rgba(212,175,55,0.4)`,
+            boxShadow: `0 0 60px rgba(212,175,55,0.12), 0 24px 60px rgba(0,0,0,0.7)`,
+            marginBottom: '28px',
+            flex: '0 0 auto',
+            height: '320px',
           }}
         >
-          {/* Avaliação riscada + desconto */}
-          {evalLabel && (
-            <div className="flex items-center gap-4" style={{ marginBottom: '10px' }}>
-              <span style={{ fontSize: '24px', color: 'rgba(255,255,255,0.35)', fontWeight: 500, textDecoration: 'line-through' }}>
-                Avaliado em {evalLabel}
-              </span>
-              {discount && (
-                <div style={{ padding: '4px 14px', borderRadius: '100px', background: '#dc2626', fontWeight: 800, fontSize: '22px', color: '#fff' }}>
-                  -{discount}
-                </div>
+          {/* Fotos em grid 2+1 */}
+          <div className="absolute inset-0 flex" style={{ gap: '2px' }}>
+            {/* Foto grande esquerda */}
+            <div style={{ flex: '0 0 60%', position: 'relative', overflow: 'hidden' }}>
+              {p0 ? (
+                <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${p0})` }} />
+              ) : (
+                <div className="absolute inset-0" style={{ background: '#1a2235' }} />
               )}
+            </div>
+            {/* Fotos direita empilhadas */}
+            <div className="flex flex-col" style={{ flex: 1, gap: '2px' }}>
+              {[p1, p2].map((p, i) => (
+                <div key={i} style={{ flex: 1, position: 'relative', overflow: 'hidden' }}>
+                  {p ? (
+                    <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${p})` }} />
+                  ) : (
+                    <div className="absolute inset-0" style={{ background: i === 0 ? '#121824' : '#0e131c' }} />
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Badge de desconto sobre a foto */}
+          {discountPct > 0 && (
+            <div
+              style={{
+                position: 'absolute',
+                top: '16px',
+                left: '16px',
+                background: 'linear-gradient(135deg, #dc2626 0%, #b91c1c 100%)',
+                borderRadius: '12px',
+                padding: '10px 18px',
+                boxShadow: '0 4px 16px rgba(220,38,38,0.5)',
+              }}
+            >
+              <p style={{ fontSize: '16px', color: 'rgba(255,255,255,0.8)', fontWeight: 600, lineHeight: 1 }}>desconto</p>
+              <p style={{ fontSize: '44px', fontWeight: 900, color: '#fff', lineHeight: 1 }}>-{discountPct}%</p>
             </div>
           )}
 
-          {/* Preço de venda */}
-          {minLabel && (
-            <div style={{ marginBottom: savingsLabel ? '16px' : '0' }}>
-              <p style={{ fontSize: '18px', color: 'rgba(255,255,255,0.4)', fontWeight: 500, marginBottom: '2px' }}>Preço de venda</p>
-              <p className="font-black" style={{ fontSize: '68px', color: '#ffffff', lineHeight: 0.95, letterSpacing: '-0.02em', textShadow: '0 4px 24px rgba(0,0,0,0.6)' }}>
-                {minLabel}
+          {/* Localização sobre a foto (bottom) */}
+          {locationLine && (
+            <div
+              style={{
+                position: 'absolute',
+                bottom: 0,
+                left: 0,
+                right: 0,
+                padding: '28px 20px 14px',
+                background: 'linear-gradient(to top, rgba(7,8,12,0.95) 0%, transparent 100%)',
+              }}
+            >
+              <p style={{ fontSize: '22px', color: GOLD, fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase' }}>
+                📍 {locationLine}
               </p>
             </div>
           )}
+        </div>
 
-          {/* Economia */}
-          {savingsLabel && (
-            <div
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '12px',
-                padding: '12px 20px',
-                borderRadius: '14px',
-                background: 'rgba(34,197,94,0.1)',
-                border: '1.5px solid rgba(34,197,94,0.5)',
-              }}
-            >
-              <span style={{ fontSize: '26px' }}>💰</span>
-              <div>
-                <p style={{ fontSize: '16px', color: '#86efac', fontWeight: 600 }}>Você economiza</p>
-                <p className="font-black" style={{ fontSize: '36px', color: '#22c55e', lineHeight: 1 }}>{savingsLabel}</p>
-              </div>
+        {/* TIPO + AVALIAÇÃO */}
+        <div style={{ marginBottom: '18px' }}>
+          <p style={{ fontSize: '28px', color: 'rgba(255,255,255,0.45)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '6px' }}>
+            {data.type || 'Imóvel'} · Oportunidade
+          </p>
+
+          {evalLabel && (
+            <div className="flex items-center gap-3">
+              <span style={{ fontSize: '26px', color: 'rgba(255,255,255,0.28)', fontWeight: 500, textDecoration: 'line-through' }}>
+                {evalLabel}
+              </span>
+              <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'rgba(255,255,255,0.2)' }} />
+              <span style={{ fontSize: '22px', color: 'rgba(255,255,255,0.3)', fontWeight: 500 }}>valor avaliado</span>
             </div>
           )}
         </div>
 
-        {/* Specs */}
-        {specs.length > 0 && (
+        {/* PREÇO DE VENDA */}
+        <div style={{ marginBottom: '18px' }}>
+          <p style={{ fontSize: '20px', color: 'rgba(212,175,55,0.6)', fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '4px' }}>
+            Preço de Venda
+          </p>
+          <p
+            className="font-black"
+            style={{
+              fontSize: '72px',
+              color: '#ffffff',
+              lineHeight: 0.9,
+              letterSpacing: '-0.02em',
+              textShadow: `0 0 40px rgba(212,175,55,0.2)`,
+            }}
+          >
+            {minLabel || 'Sob consulta'}
+          </p>
+          {savingsLabel && (
+            <p style={{ fontSize: '22px', color: '#4ade80', fontWeight: 700, marginTop: '6px' }}>
+              💰 Você economiza {savingsLabel}
+            </p>
+          )}
+        </div>
+
+        {/* SPECS + TAGS */}
+        <div className="flex items-end justify-between" style={{ marginTop: 'auto' }}>
+          {/* Specs */}
           <div className="flex gap-3">
-            {specs.map((spec, i) => (
+            {bedroomsNum > 0 && (
+              <div style={{ textAlign: 'center' }}>
+                <p style={{ fontSize: '30px', fontWeight: 900, color: '#fff' }}>{bedroomsNum}</p>
+                <p style={{ fontSize: '16px', color: 'rgba(255,255,255,0.4)', fontWeight: 600 }}>🛏 quarto{bedroomsNum > 1 ? 's' : ''}</p>
+              </div>
+            )}
+            {bathroomsNum > 0 && (
+              <div style={{ textAlign: 'center', borderLeft: '1px solid rgba(255,255,255,0.1)', paddingLeft: '12px' }}>
+                <p style={{ fontSize: '30px', fontWeight: 900, color: '#fff' }}>{bathroomsNum}</p>
+                <p style={{ fontSize: '16px', color: 'rgba(255,255,255,0.4)', fontWeight: 600 }}>🚿 banh.</p>
+              </div>
+            )}
+            {garageNum > 0 && (
+              <div style={{ textAlign: 'center', borderLeft: '1px solid rgba(255,255,255,0.1)', paddingLeft: '12px' }}>
+                <p style={{ fontSize: '30px', fontWeight: 900, color: '#fff' }}>{garageNum}</p>
+                <p style={{ fontSize: '16px', color: 'rgba(255,255,255,0.4)', fontWeight: 600 }}>🚗 vaga{garageNum > 1 ? 's' : ''}</p>
+              </div>
+            )}
+            {areaValue && areaValue !== '0' && (
+              <div style={{ textAlign: 'center', borderLeft: '1px solid rgba(255,255,255,0.1)', paddingLeft: '12px' }}>
+                <p style={{ fontSize: '30px', fontWeight: 900, color: '#fff' }}>{areaValue}</p>
+                <p style={{ fontSize: '16px', color: 'rgba(255,255,255,0.4)', fontWeight: 600 }}>📐 m²</p>
+              </div>
+            )}
+          </div>
+
+          {/* Tags de condições */}
+          <div className="flex flex-col gap-2" style={{ alignItems: 'flex-end' }}>
+            {tags.map((tag, i) => (
               <div
                 key={i}
                 style={{
-                  flex: 1,
-                  padding: '12px 8px',
-                  borderRadius: '14px',
-                  background: 'rgba(255,255,255,0.05)',
-                  border: '1px solid rgba(212,175,55,0.25)',
-                  textAlign: 'center',
+                  padding: '7px 16px',
+                  borderRadius: '100px',
+                  background: tag.bg,
+                  border: `1px solid ${tag.color}40`,
                 }}
               >
-                <span style={{ fontSize: '24px' }}>{spec.icon}</span>
-                <p className="font-black" style={{ fontSize: '30px', color: '#ffffff', lineHeight: 1, marginTop: '4px' }}>{spec.value}</p>
-                <p style={{ fontSize: '15px', color: 'rgba(255,255,255,0.45)', fontWeight: 600, marginTop: '3px' }}>{spec.label}</p>
+                <span style={{ fontSize: '20px', color: tag.color, fontWeight: 700 }}>{tag.label}</span>
               </div>
             ))}
           </div>
-        )}
+        </div>
+
       </div>
+
+      {/* ── LINHA DE ACENTO DOURADA (BAIXO) ─────────────────────────────────── */}
+      <div
+        className="absolute bottom-0 left-0 right-0"
+        style={{ height: '3px', background: `linear-gradient(90deg, transparent 0%, ${GOLD} 40%, ${GOLD_LT} 60%, transparent 100%)` }}
+      />
+
     </div>
   );
 };
