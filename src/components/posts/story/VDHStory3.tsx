@@ -231,7 +231,6 @@ export const VDHStory3 = ({ data, photo, photos }: VDHStory3Props) => {
   );
 };
 
-interface VDHStory3Props {
   data: PropertyData;
   photo: string | null;
   photos?: string[];
