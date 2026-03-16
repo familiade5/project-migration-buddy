@@ -98,7 +98,7 @@ Regras importantes:
                       },
                       propertySource: { 
                         type: "string", 
-                        description: "Origem do imóvel: Imóvel Caixa, Banco do Brasil, Santander, etc." 
+                        description: "Origem do imóvel. IMPORTANTE: Se for imóvel da Caixa Econômica Federal, use EXATAMENTE 'Imóvel Caixa' (nunca 'Caixa Econômica Federal'). Outros exemplos: 'Banco do Brasil', 'Santander', 'Bradesco', 'Particular'." 
                       },
                       city: { type: "string", description: "Cidade do imóvel" },
                       state: { type: "string", description: "Estado do imóvel (nome completo)" },
