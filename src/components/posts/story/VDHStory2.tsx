@@ -154,7 +154,7 @@ export const VDHStory2 = ({ data, photo, photos }: VDHStory2Props) => {
         )}
       </div>
 
-      {/* ── PAINEL DE INFORMAÇÕES — ocupa os 38% inferiores ─────────────────── */}
+      {/* ── PAINEL DE INFORMAÇÕES — ocupa os 30% inferiores ─────────────────── */}
       <div
         style={{
           position: 'absolute',
@@ -164,7 +164,7 @@ export const VDHStory2 = ({ data, photo, photos }: VDHStory2Props) => {
           bottom: 0,
           display: 'flex',
           flexDirection: 'column',
-          padding: '18px 36px 28px',
+          padding: '14px 36px 48px',
         }}
       >
         {/* Logos — VDH + "Imóvel Caixa" em texto */}
