@@ -22,6 +22,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import logoVDH from '@/assets/logo-vdh.jpg';
+import logoAM from '@/assets/logo-apartamentos-manaus.png';
 
 interface AppLayoutProps {
   children: React.ReactNode;
@@ -163,6 +164,19 @@ export function AppLayout({ children }: AppLayoutProps) {
             )}
 
           </nav>
+
+          {/* Cross-brand navigation */}
+          <div className="px-4 pb-3">
+            <Link
+              to="/apartamentos-manaus"
+              onClick={() => setSidebarOpen(false)}
+              className="flex items-center gap-3 w-full px-4 py-2.5 rounded-xl border transition-all hover:opacity-90"
+              style={{ backgroundColor: '#EBF2FC', borderColor: '#C3D9F0' }}
+            >
+              <img src={logoAM} alt="Apartamentos Manaus" className="h-6 w-auto object-contain" />
+              <span className="text-xs font-semibold truncate" style={{ color: '#1B5EA6' }}>Apartamentos Manaus</span>
+            </Link>
+          </div>
 
           {/* User footer */}
           <div className="p-4 border-t" style={{ borderColor: '#E5E7EB' }}>
