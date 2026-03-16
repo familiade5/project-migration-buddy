@@ -66,8 +66,8 @@ export const VDHStory2 = ({ data, photo, photos }: VDHStory2Props) => {
   else                   tags.push({ label: 'Somente à Vista', color: '#fca5a5', bg: 'rgba(220,38,38,0.18)' });
   if (acceptsFGTS)       tags.push({ label: 'FGTS', color: '#93c5fd', bg: 'rgba(37,99,235,0.18)' });
 
-  /* Story dimensions: 1080x1920 rendered at 540x960 → 50% = 480px */
-  const PHOTO_HEIGHT = '50%';
+  /* Fotos ocupam 62% do slide — info panel preenche os 38% restantes */
+  const PHOTO_HEIGHT = '62%';
 
   return (
     <div
