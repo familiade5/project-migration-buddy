@@ -48,7 +48,8 @@ export const PostCover = ({ data, photo }: PostCoverProps) => {
   const noEntryContent = getNoEntryContent();
   const NoEntryIcon = noEntryContent.icon;
 
-  const propertySource = data.propertySource || 'Imóvel Caixa';
+  const rawSource = data.propertySource || 'Imóvel Caixa';
+  const propertySource = rawSource.toLowerCase().includes('caixa') ? 'Imóvel Caixa' : rawSource;
 
   return (
     <div className="post-template relative overflow-hidden">
