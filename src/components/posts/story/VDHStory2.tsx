@@ -164,41 +164,38 @@ export const VDHStory2 = ({ data, photo, photos }: VDHStory2Props) => {
           bottom: 0,
           display: 'flex',
           flexDirection: 'column',
-          padding: '14px 36px 18px',
+          padding: '18px 36px 28px',
         }}
       >
         {/* Logos — VDH + "Imóvel Caixa" em texto */}
-        <div className="flex items-center justify-between" style={{ marginBottom: '10px' }}>
+        <div className="flex items-center justify-between" style={{ marginBottom: '12px' }}>
           <img src={logoVDH} alt="VDH" className="rounded-xl" style={{ height: '44px', opacity: 0.95 }} />
           {isCaixa && (
-            <div style={{ textAlign: 'right' }}>
-              <p style={{ fontSize: '13px', color: 'rgba(255,255,255,0.5)', fontWeight: 600, letterSpacing: '0.12em', textTransform: 'uppercase', lineHeight: 1, marginBottom: '2px' }}>origem</p>
-              <p style={{ fontSize: '22px', color: '#fff', fontWeight: 900, letterSpacing: '0.06em', textTransform: 'uppercase', lineHeight: 1 }}>IMÓVEL CAIXA</p>
-            </div>
+            <p style={{ fontSize: '28px', color: '#fff', fontWeight: 900, letterSpacing: '0.06em', textTransform: 'uppercase', lineHeight: 1 }}>IMÓVEL CAIXA</p>
           )}
         </div>
 
         {/* Divisor dourado */}
-        <div style={{ height: '1px', background: `linear-gradient(90deg, ${GOLD} 0%, rgba(212,175,55,0.1) 100%)`, marginBottom: '10px' }} />
+        <div style={{ height: '1px', background: `linear-gradient(90deg, ${GOLD} 0%, rgba(212,175,55,0.1) 100%)`, marginBottom: '12px' }} />
 
         {/* TIPO + AVALIAÇÃO */}
-        <div style={{ marginBottom: '6px' }}>
-          <p style={{ fontSize: '30px', color: 'rgba(255,255,255,0.75)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '3px' }}>
+        <div style={{ marginBottom: '8px' }}>
+          <p style={{ fontSize: '36px', color: '#ffffff', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '4px' }}>
             {data.type || 'Imóvel'} · Oportunidade
           </p>
 
           {evalLabel && (
             <div className="flex items-center gap-2">
-              <span style={{ fontSize: '28px', color: 'rgba(255,255,255,0.55)', fontWeight: 600, textDecoration: 'line-through' }}>
+              <span style={{ fontSize: '30px', color: '#ffffff', fontWeight: 600, textDecoration: 'line-through' }}>
                 {evalLabel}
               </span>
-              <span style={{ fontSize: '24px', color: 'rgba(255,255,255,0.55)', fontWeight: 600 }}>valor avaliado</span>
+              <span style={{ fontSize: '26px', color: '#ffffff', fontWeight: 600 }}>valor avaliado</span>
             </div>
           )}
         </div>
 
         {/* PREÇO DE VENDA */}
-        <div style={{ marginBottom: '6px' }}>
+        <div style={{ marginBottom: '8px' }}>
           <p style={{ fontSize: '24px', color: GOLD_LT, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '1px' }}>
             Preço de Venda
           </p>
