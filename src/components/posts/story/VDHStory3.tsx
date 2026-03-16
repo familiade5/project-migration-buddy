@@ -68,8 +68,8 @@ export const VDHStory3 = ({ data, photo, photos }: VDHStory3Props) => {
           bottom: 0,
           left: 0,
           right: 0,
-          height: '50%',
-          clipPath: 'polygon(0 28%, 100% 0, 100% 100%, 0 100%)',
+          height: '55%',
+          clipPath: 'polygon(0 26%, 100% 0, 100% 100%, 0 100%)',
           overflow: 'hidden',
         }}
       >
