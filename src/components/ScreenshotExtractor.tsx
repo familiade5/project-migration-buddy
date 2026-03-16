@@ -83,6 +83,7 @@ export const ScreenshotExtractor = ({ onExtract }: ScreenshotExtractorProps) => 
       if (extractedData.street) { propertyUpdate.street = extractedData.street; fieldsFound.push('Rua'); }
       if (extractedData.number) { propertyUpdate.number = extractedData.number; fieldsFound.push('Número'); }
       if (extractedData.complement) { propertyUpdate.complement = extractedData.complement; fieldsFound.push('Complemento'); }
+      if (extractedData.propertyName) { propertyUpdate.propertyName = extractedData.propertyName; fieldsFound.push('Nome do Condomínio'); }
       if (extractedData.cep) { propertyUpdate.cep = extractedData.cep; fieldsFound.push('CEP'); }
       if (extractedData.condominiumRules) { propertyUpdate.condominiumRules = extractedData.condominiumRules; fieldsFound.push('Regras Condomínio'); }
       if (extractedData.taxRules) { propertyUpdate.taxRules = extractedData.taxRules; fieldsFound.push('Regras Tributos'); }
