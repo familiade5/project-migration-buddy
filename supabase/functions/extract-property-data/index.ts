@@ -47,7 +47,7 @@ Regras importantes:
 - IMPORTANTE sobre quartos/banheiros/garagem: Só extraia se houver NÚMERO ESPECÍFICO mencionado. Se apenas mencionar "quarto" ou "banheiro" sem quantidade, DEIXE O CAMPO VAZIO. Não invente números.
 - Extraia o ENDEREÇO COMPLETO incluindo rua, número, complemento, bairro, cidade e estado
 - Para o paymentMethod, descreva as formas de pagamento disponíveis (ex: "À Vista, FGTS" ou "Financiamento Habitacional, FGTS")
-- IMPORTANTE sobre nome do condomínio/edifício (propertyName): Se no endereço ou título houver um nome próprio de condomínio ou edifício (ex: "EDIFÍCIO PIAZZA DE FIORE", "RESIDENCIAL VILLA VERDE", "CONDOMÍNIO JARDIM DAS FLORES"), extraia-o no campo propertyName em formato título (ex: "Edifício Piazza de Fiore"). Ignore unidades genéricas como "APTO. 302", "LOJA 01".\`;
+- IMPORTANTE sobre nome do condomínio/edifício (propertyName): Se no endereço ou título houver um nome próprio de condomínio ou edifício (ex: "EDIFÍCIO PIAZZA DE FIORE", "RESIDENCIAL VILLA VERDE", "CONDOMÍNIO JARDIM DAS FLORES"), extraia-o no campo propertyName em formato título (ex: "Edifício Piazza de Fiore"). Ignore unidades genéricas como "APTO. 302", "LOJA 01".`;
 
     // Retry logic for transient errors
     let response: Response | null = null;
