@@ -98,7 +98,7 @@ export const VDHStory3 = ({ data, photo, photos }: VDHStory3Props) => {
       <div
         style={{
           position: 'absolute',
-          top: '37%',
+          top: '43%',
           left: 0,
           right: 0,
           height: '3px',
