@@ -102,10 +102,10 @@ export const VDHStory2 = ({ data, photo, photos }: VDHStory2Props) => {
       />
 
       {/* ── CONTEÚDO ─────────────────────────────────────────────────────────── */}
-      <div className="absolute inset-0 flex flex-col" style={{ padding: '52px 44px 48px' }}>
+      <div className="absolute inset-0 flex flex-col" style={{ padding: '44px 44px 44px' }}>
 
         {/* HEADER: logos */}
-        <div className="flex items-center justify-between" style={{ marginBottom: '36px' }}>
+        <div className="flex items-center justify-between" style={{ marginBottom: '28px' }}>
           <img src={logoVDH} alt="VDH" className="rounded-xl" style={{ height: '56px', opacity: 0.95 }} />
           {isCaixa && (
             <img src={logoCaixa} alt="Caixa" className="rounded-lg" style={{ height: '64px', filter: 'brightness(0) invert(1)', opacity: 0.85 }} />
@@ -120,9 +120,9 @@ export const VDHStory2 = ({ data, photo, photos }: VDHStory2Props) => {
             overflow: 'hidden',
             border: `2px solid rgba(212,175,55,0.4)`,
             boxShadow: `0 0 60px rgba(212,175,55,0.12), 0 24px 60px rgba(0,0,0,0.7)`,
-            marginBottom: '28px',
+            marginBottom: '24px',
             flex: '0 0 auto',
-            height: '420px',
+            height: '500px',
           }}
         >
           {/* Fotos em grid 2+1 */}
