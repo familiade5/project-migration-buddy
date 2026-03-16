@@ -28,92 +28,96 @@ export const VDHStory3 = ({ data, photo, photos }: VDHStory3Props) => {
   return (
     <div className="post-template-story relative overflow-hidden" style={{ background: '#0d1420' }}>
 
-      {/* ── BLOCO DE FOTOS — exatamente 65% do topo ── */}
+      {/* ── BLOCO DE FOTOS — 65% do topo, divisão diagonal lateral ── */}
       <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '65%' }}>
 
-        {/* Foto 1 — ocupa tudo mas com corte diagonal na base direita */}
+        {/* Foto 1 — lado esquerdo com corte diagonal na borda direita */}
         <div
           style={{
             position: 'absolute',
             inset: 0,
-            clipPath: 'polygon(0 0, 100% 0, 100% 72%, 0 100%)',
+            clipPath: 'polygon(0 0, 58% 0, 42% 100%, 0 100%)',
             overflow: 'hidden',
           }}
         >
           {p0 ? (
             <div
-              className="absolute inset-0 bg-cover bg-center"
-              style={{ backgroundImage: `url(${p0})`, transform: 'scale(1.04)' }}
+              style={{
+                position: 'absolute',
+                inset: 0,
+                backgroundImage: `url(${p0})`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+              }}
             />
           ) : (
             <div className="absolute inset-0" style={{ background: 'linear-gradient(135deg, #2a3a55, #1a2535)' }} />
           )}
-          <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, transparent 55%, rgba(0,0,0,0.5) 100%)' }} />
         </div>
 
-        {/* Foto 2 — corte diagonal oposto no topo esquerdo */}
+        {/* Foto 2 — lado direito com corte diagonal na borda esquerda */}
         <div
           style={{
             position: 'absolute',
             inset: 0,
-            clipPath: 'polygon(0 36%, 100% 0, 100% 100%, 0 100%)',
+            clipPath: 'polygon(58% 0, 100% 0, 100% 100%, 42% 100%)',
             overflow: 'hidden',
           }}
         >
           {p1 ? (
             <div
-              className="absolute inset-0 bg-cover bg-center"
-              style={{ backgroundImage: `url(${p1})`, transform: 'scale(1.04)' }}
+              style={{
+                position: 'absolute',
+                inset: 0,
+                backgroundImage: `url(${p1})`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+              }}
             />
           ) : (
             <div className="absolute inset-0" style={{ background: 'linear-gradient(135deg, #1a2535, #0d1420)' }} />
           )}
-          <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(0,0,0,0.55) 0%, transparent 55%)' }} />
         </div>
 
-        {/* Faixa dourada diagonal entre as fotos */}
+        {/* Faixa dourada diagonal entre as duas fotos */}
         <div
           style={{
             position: 'absolute',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
+            inset: 0,
             pointerEvents: 'none',
             zIndex: 10,
           }}
         >
-          {/* Linha principal dourada */}
           <div style={{
             position: 'absolute',
-            top: '53%',
-            left: '-10%',
-            right: '-10%',
-            height: '3px',
-            background: `linear-gradient(90deg, transparent 0%, ${GOLD} 20%, #F0D870 50%, ${GOLD} 80%, transparent 100%)`,
-            transform: 'rotate(-17deg)',
-            boxShadow: `0 0 16px 4px rgba(212,175,55,0.4)`,
+            top: 0,
+            bottom: 0,
+            left: 'calc(50% - 3px)',
+            width: '6px',
+            background: `linear-gradient(180deg, rgba(212,175,55,0.6) 0%, ${GOLD} 30%, #F0D870 50%, ${GOLD} 70%, rgba(212,175,55,0.6) 100%)`,
+            transform: 'skewX(-16deg)',
+            boxShadow: `0 0 20px 4px rgba(212,175,55,0.5)`,
           }} />
-          {/* Linha secundária sutil */}
+          {/* Linha sutil secundária */}
           <div style={{
             position: 'absolute',
-            top: 'calc(53% + 8px)',
-            left: '-10%',
-            right: '-10%',
-            height: '1px',
-            background: `linear-gradient(90deg, transparent 0%, rgba(212,175,55,0.35) 20%, rgba(212,175,55,0.5) 50%, rgba(212,175,55,0.35) 80%, transparent 100%)`,
-            transform: 'rotate(-17deg)',
+            top: 0,
+            bottom: 0,
+            left: 'calc(50% + 7px)',
+            width: '2px',
+            background: `linear-gradient(180deg, transparent 0%, rgba(212,175,55,0.25) 30%, rgba(212,175,55,0.35) 50%, rgba(212,175,55,0.25) 70%, transparent 100%)`,
+            transform: 'skewX(-16deg)',
           }} />
         </div>
 
-        {/* Gradiente de transição suave para o painel */}
+        {/* Gradiente suave na base para transição */}
         <div
           style={{
             position: 'absolute',
             bottom: 0,
             left: 0,
             right: 0,
-            height: '30%',
+            height: '18%',
             background: 'linear-gradient(to bottom, transparent, #0d1420)',
             zIndex: 5,
           }}
