@@ -170,8 +170,8 @@ export const PostCoverStory = ({ data, photo }: PostCoverStoryProps) => {
 
           {/* Informações do imóvel */}
           <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '20px 28px', gap: '6px' }}>
-            {/* Nome do condomínio — ocupa linha inteira */}
-            <p style={{ fontSize: '46px', fontWeight: 900, color: '#f5d485', lineHeight: 1.1, letterSpacing: '-0.01em', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+            {/* Nome do condomínio */}
+            <p style={{ fontSize: '46px', fontWeight: 900, color: '#f5d485', lineHeight: 1.1, letterSpacing: '-0.01em' }}>
               {(data.propertyName && data.propertyName.trim()) || `${data.type || 'Casa'}`}
             </p>
             {/* Tipo do imóvel */}
@@ -196,28 +196,38 @@ export const PostCoverStory = ({ data, photo }: PostCoverStoryProps) => {
               {data.minimumValue}
             </p>
 
-            {/* Valor de avaliação — label em cima, valor riscado abaixo */}
+            {/* Valor de avaliação — label + valor riscado */}
             {data.evaluationValue && (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
-                <span style={{ fontSize: '20px', color: 'rgba(255,255,255,0.65)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+              <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '10px', flexWrap: 'nowrap' }}>
+                <span style={{ fontSize: '22px', color: '#fff', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.04em', whiteSpace: 'nowrap' }}>
                   Valor de Avaliação
                 </span>
                 <div style={{ position: 'relative', display: 'inline-block' }}>
-                  <span style={{ fontSize: '28px', fontWeight: 500, color: '#fff', lineHeight: 1 }}>
+                  <span style={{ fontSize: '30px', fontWeight: 500, color: '#fff', lineHeight: 1, whiteSpace: 'nowrap' }}>
                     {data.evaluationValue}
                   </span>
-                  <span style={{ position: 'absolute', top: '50%', left: 0, right: 0, height: '2px', background: '#fff', transform: 'translateY(-50%)', display: 'block', pointerEvents: 'none' }} />
+                  <span style={{
+                    position: 'absolute',
+                    top: '50%',
+                    left: 0,
+                    right: 0,
+                    height: '2px',
+                    background: '#fff',
+                    transform: 'translateY(-50%)',
+                    display: 'block',
+                    pointerEvents: 'none',
+                  }} />
                 </div>
               </div>
             )}
 
-            {/* Entrada a partir de */}
+            {/* Entrada a partir de — quando aceita financiamento */}
             {data.acceptsFinancing && data.entryValue && (
               <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'baseline', gap: '8px', flexWrap: 'wrap' }}>
-                <span style={{ fontSize: '20px', color: '#fff', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.03em', whiteSpace: 'nowrap' }}>
+                <span style={{ fontSize: '22px', color: '#fff', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.03em', whiteSpace: 'nowrap' }}>
                   Entrada a partir de
                 </span>
-                <span style={{ fontSize: '32px', fontWeight: 800, color: '#fff', lineHeight: 1, whiteSpace: 'nowrap' }}>
+                <span style={{ fontSize: '34px', fontWeight: 800, color: '#fff', lineHeight: 1, whiteSpace: 'nowrap' }}>
                   {data.entryValue}
                 </span>
               </div>
