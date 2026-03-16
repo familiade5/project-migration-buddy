@@ -164,14 +164,17 @@ export const VDHStory2 = ({ data, photo, photos }: VDHStory2Props) => {
           bottom: 0,
           display: 'flex',
           flexDirection: 'column',
-          padding: '16px 36px 20px',
+          padding: '14px 36px 18px',
         }}
       >
-        {/* Logos */}
+        {/* Logos — VDH + "Imóvel Caixa" em texto */}
         <div className="flex items-center justify-between" style={{ marginBottom: '10px' }}>
           <img src={logoVDH} alt="VDH" className="rounded-xl" style={{ height: '44px', opacity: 0.95 }} />
           {isCaixa && (
-            <img src={logoCaixa} alt="Caixa" className="rounded-lg" style={{ height: '48px', filter: 'brightness(0) invert(1)', opacity: 0.85 }} />
+            <div style={{ textAlign: 'right' }}>
+              <p style={{ fontSize: '13px', color: 'rgba(255,255,255,0.5)', fontWeight: 600, letterSpacing: '0.12em', textTransform: 'uppercase', lineHeight: 1, marginBottom: '2px' }}>origem</p>
+              <p style={{ fontSize: '22px', color: '#fff', fontWeight: 900, letterSpacing: '0.06em', textTransform: 'uppercase', lineHeight: 1 }}>IMÓVEL CAIXA</p>
+            </div>
           )}
         </div>
 
@@ -180,23 +183,23 @@ export const VDHStory2 = ({ data, photo, photos }: VDHStory2Props) => {
 
         {/* TIPO + AVALIAÇÃO */}
         <div style={{ marginBottom: '6px' }}>
-          <p style={{ fontSize: '28px', color: 'rgba(255,255,255,0.5)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '2px' }}>
+          <p style={{ fontSize: '30px', color: 'rgba(255,255,255,0.75)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '3px' }}>
             {data.type || 'Imóvel'} · Oportunidade
           </p>
 
           {evalLabel && (
             <div className="flex items-center gap-2">
-              <span style={{ fontSize: '26px', color: 'rgba(255,255,255,0.28)', fontWeight: 500, textDecoration: 'line-through' }}>
+              <span style={{ fontSize: '28px', color: 'rgba(255,255,255,0.55)', fontWeight: 600, textDecoration: 'line-through' }}>
                 {evalLabel}
               </span>
-              <span style={{ fontSize: '22px', color: 'rgba(255,255,255,0.28)', fontWeight: 500 }}>valor avaliado</span>
+              <span style={{ fontSize: '24px', color: 'rgba(255,255,255,0.55)', fontWeight: 600 }}>valor avaliado</span>
             </div>
           )}
         </div>
 
         {/* PREÇO DE VENDA */}
-        <div style={{ marginBottom: '8px' }}>
-          <p style={{ fontSize: '22px', color: 'rgba(212,175,55,0.65)', fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '1px' }}>
+        <div style={{ marginBottom: '6px' }}>
+          <p style={{ fontSize: '24px', color: GOLD_LT, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '1px' }}>
             Preço de Venda
           </p>
           <p
@@ -212,7 +215,7 @@ export const VDHStory2 = ({ data, photo, photos }: VDHStory2Props) => {
             {minLabel || 'Sob consulta'}
           </p>
           {savingsLabel && (
-            <p style={{ fontSize: '24px', color: '#4ade80', fontWeight: 700, marginTop: '4px' }}>
+            <p style={{ fontSize: '28px', color: '#22c55e', fontWeight: 800, marginTop: '5px' }}>
               💰 Você economiza {savingsLabel}
             </p>
           )}
@@ -225,25 +228,25 @@ export const VDHStory2 = ({ data, photo, photos }: VDHStory2Props) => {
             {bedroomsNum > 0 && (
               <div style={{ textAlign: 'center' }}>
                 <p style={{ fontSize: '46px', fontWeight: 900, color: '#fff', lineHeight: 1 }}>{bedroomsNum}</p>
-                <p style={{ fontSize: '22px', color: 'rgba(255,255,255,0.45)', fontWeight: 600 }}>🛏 quarto{bedroomsNum > 1 ? 's' : ''}</p>
+                <p style={{ fontSize: '22px', color: 'rgba(255,255,255,0.7)', fontWeight: 700 }}>🛏 quarto{bedroomsNum > 1 ? 's' : ''}</p>
               </div>
             )}
             {bathroomsNum > 0 && (
-              <div style={{ textAlign: 'center', borderLeft: '1px solid rgba(255,255,255,0.12)', paddingLeft: '16px' }}>
+              <div style={{ textAlign: 'center', borderLeft: '1px solid rgba(255,255,255,0.15)', paddingLeft: '16px' }}>
                 <p style={{ fontSize: '46px', fontWeight: 900, color: '#fff', lineHeight: 1 }}>{bathroomsNum}</p>
-                <p style={{ fontSize: '22px', color: 'rgba(255,255,255,0.45)', fontWeight: 600 }}>🚿 banh.</p>
+                <p style={{ fontSize: '22px', color: 'rgba(255,255,255,0.7)', fontWeight: 700 }}>🚿 banh.</p>
               </div>
             )}
             {garageNum > 0 && (
-              <div style={{ textAlign: 'center', borderLeft: '1px solid rgba(255,255,255,0.12)', paddingLeft: '16px' }}>
+              <div style={{ textAlign: 'center', borderLeft: '1px solid rgba(255,255,255,0.15)', paddingLeft: '16px' }}>
                 <p style={{ fontSize: '46px', fontWeight: 900, color: '#fff', lineHeight: 1 }}>{garageNum}</p>
-                <p style={{ fontSize: '22px', color: 'rgba(255,255,255,0.45)', fontWeight: 600 }}>🚗 vaga{garageNum > 1 ? 's' : ''}</p>
+                <p style={{ fontSize: '22px', color: 'rgba(255,255,255,0.7)', fontWeight: 700 }}>🚗 vaga{garageNum > 1 ? 's' : ''}</p>
               </div>
             )}
             {areaValue && areaValue !== '0' && (
-              <div style={{ textAlign: 'center', borderLeft: '1px solid rgba(255,255,255,0.12)', paddingLeft: '16px' }}>
+              <div style={{ textAlign: 'center', borderLeft: '1px solid rgba(255,255,255,0.15)', paddingLeft: '16px' }}>
                 <p style={{ fontSize: '46px', fontWeight: 900, color: '#fff', lineHeight: 1 }}>{areaValue}</p>
-                <p style={{ fontSize: '22px', color: 'rgba(255,255,255,0.45)', fontWeight: 600 }}>📐 m²</p>
+                <p style={{ fontSize: '22px', color: 'rgba(255,255,255,0.7)', fontWeight: 700 }}>📐 m²</p>
               </div>
             )}
           </div>
@@ -257,10 +260,10 @@ export const VDHStory2 = ({ data, photo, photos }: VDHStory2Props) => {
                   padding: '8px 18px',
                   borderRadius: '100px',
                   background: tag.bg,
-                  border: `1px solid ${tag.color}40`,
+                  border: `1px solid ${tag.color}60`,
                 }}
               >
-                <span style={{ fontSize: '22px', color: tag.color, fontWeight: 700 }}>{tag.label}</span>
+                <span style={{ fontSize: '24px', color: tag.color, fontWeight: 800 }}>{tag.label}</span>
               </div>
             ))}
           </div>
