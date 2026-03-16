@@ -21,6 +21,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { AMLogoSVG } from '@/components/apartamentos-manaus/AMLogo';
+import logoVDH from '@/assets/logo-vdh.jpg';
 
 interface AMLayoutProps {
   children: React.ReactNode;
