@@ -233,26 +233,26 @@ export const VDHStory2 = ({ data, photo, photos }: VDHStory2Props) => {
           <div className="flex gap-3">
             {bedroomsNum > 0 && (
               <div style={{ textAlign: 'center' }}>
-                <p style={{ fontSize: '30px', fontWeight: 900, color: '#fff' }}>{bedroomsNum}</p>
-                <p style={{ fontSize: '16px', color: 'rgba(255,255,255,0.4)', fontWeight: 600 }}>🛏 quarto{bedroomsNum > 1 ? 's' : ''}</p>
+                <p style={{ fontSize: '40px', fontWeight: 900, color: '#fff' }}>{bedroomsNum}</p>
+                <p style={{ fontSize: '20px', color: 'rgba(255,255,255,0.4)', fontWeight: 600 }}>🛏 quarto{bedroomsNum > 1 ? 's' : ''}</p>
               </div>
             )}
             {bathroomsNum > 0 && (
-              <div style={{ textAlign: 'center', borderLeft: '1px solid rgba(255,255,255,0.1)', paddingLeft: '12px' }}>
-                <p style={{ fontSize: '30px', fontWeight: 900, color: '#fff' }}>{bathroomsNum}</p>
-                <p style={{ fontSize: '16px', color: 'rgba(255,255,255,0.4)', fontWeight: 600 }}>🚿 banh.</p>
+              <div style={{ textAlign: 'center', borderLeft: '1px solid rgba(255,255,255,0.1)', paddingLeft: '16px' }}>
+                <p style={{ fontSize: '40px', fontWeight: 900, color: '#fff' }}>{bathroomsNum}</p>
+                <p style={{ fontSize: '20px', color: 'rgba(255,255,255,0.4)', fontWeight: 600 }}>🚿 banh.</p>
               </div>
             )}
             {garageNum > 0 && (
-              <div style={{ textAlign: 'center', borderLeft: '1px solid rgba(255,255,255,0.1)', paddingLeft: '12px' }}>
-                <p style={{ fontSize: '30px', fontWeight: 900, color: '#fff' }}>{garageNum}</p>
-                <p style={{ fontSize: '16px', color: 'rgba(255,255,255,0.4)', fontWeight: 600 }}>🚗 vaga{garageNum > 1 ? 's' : ''}</p>
+              <div style={{ textAlign: 'center', borderLeft: '1px solid rgba(255,255,255,0.1)', paddingLeft: '16px' }}>
+                <p style={{ fontSize: '40px', fontWeight: 900, color: '#fff' }}>{garageNum}</p>
+                <p style={{ fontSize: '20px', color: 'rgba(255,255,255,0.4)', fontWeight: 600 }}>🚗 vaga{garageNum > 1 ? 's' : ''}</p>
               </div>
             )}
             {areaValue && areaValue !== '0' && (
-              <div style={{ textAlign: 'center', borderLeft: '1px solid rgba(255,255,255,0.1)', paddingLeft: '12px' }}>
-                <p style={{ fontSize: '30px', fontWeight: 900, color: '#fff' }}>{areaValue}</p>
-                <p style={{ fontSize: '16px', color: 'rgba(255,255,255,0.4)', fontWeight: 600 }}>📐 m²</p>
+              <div style={{ textAlign: 'center', borderLeft: '1px solid rgba(255,255,255,0.1)', paddingLeft: '16px' }}>
+                <p style={{ fontSize: '40px', fontWeight: 900, color: '#fff' }}>{areaValue}</p>
+                <p style={{ fontSize: '20px', color: 'rgba(255,255,255,0.4)', fontWeight: 600 }}>📐 m²</p>
               </div>
             )}
           </div>
