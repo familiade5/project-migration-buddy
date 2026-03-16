@@ -46,7 +46,8 @@ Regras importantes:
 - Identifique o tipo de imóvel (Casa, Apartamento, Terreno, etc.)
 - IMPORTANTE sobre quartos/banheiros/garagem: Só extraia se houver NÚMERO ESPECÍFICO mencionado. Se apenas mencionar "quarto" ou "banheiro" sem quantidade, DEIXE O CAMPO VAZIO. Não invente números.
 - Extraia o ENDEREÇO COMPLETO incluindo rua, número, complemento, bairro, cidade e estado
-- Para o paymentMethod, descreva as formas de pagamento disponíveis (ex: "À Vista, FGTS" ou "Financiamento Habitacional, FGTS")`;
+- Para o paymentMethod, descreva as formas de pagamento disponíveis (ex: "À Vista, FGTS" ou "Financiamento Habitacional, FGTS")
+- IMPORTANTE sobre nome do condomínio/edifício (propertyName): Se no endereço ou título houver um nome próprio de condomínio ou edifício (ex: "EDIFÍCIO PIAZZA DE FIORE", "RESIDENCIAL VILLA VERDE", "CONDOMÍNIO JARDIM DAS FLORES"), extraia-o no campo propertyName em formato título (ex: "Edifício Piazza de Fiore"). Ignore unidades genéricas como "APTO. 302", "LOJA 01".\`;
 
     // Retry logic for transient errors
     let response: Response | null = null;
@@ -118,7 +119,8 @@ Regras importantes:
                       paymentMethod: { type: "string", description: "Formas de pagamento disponíveis (ex: 'À Vista, FGTS' ou 'Financiamento Habitacional')" },
                       street: { type: "string", description: "Nome completo da rua/avenida" },
                       number: { type: "string", description: "Número do endereço" },
-                      complement: { type: "string", description: "Complemento (apto, casa, bloco)" },
+                      complement: { type: "string", description: "Complemento (apto, casa, bloco, unidade)" },
+                      propertyName: { type: "string", description: "Nome do condomínio ou edifício (ex: 'Edifício Piazza de Fiore', 'Residencial Vista Verde'). Procure por nomes próprios no endereço ou no título do imóvel." },
                       cep: { type: "string", description: "CEP no formato 00000-000" },
                       fullAddress: { type: "string", description: "Endereço completo formatado" },
                       condominiumRules: { type: "string", description: "Regras de condomínio/despesas" },
