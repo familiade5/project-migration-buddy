@@ -137,6 +137,19 @@ export function AMLayout({ children }: AMLayoutProps) {
             )}
           </nav>
 
+          {/* Cross-brand navigation */}
+          <div className="px-4 pb-3">
+            <Link
+              to="/"
+              onClick={() => setSidebarOpen(false)}
+              className="flex items-center gap-3 w-full px-4 py-2.5 rounded-xl border transition-all hover:opacity-90"
+              style={{ backgroundColor: '#F5F0E8', borderColor: '#E0CFA0' }}
+            >
+              <img src={logoVDH} alt="Venda Direta Hoje" className="h-6 w-auto object-contain rounded" />
+              <span className="text-xs font-semibold truncate" style={{ color: '#1a3a6b' }}>Venda Direta Hoje</span>
+            </Link>
+          </div>
+
           {/* User footer */}
           <div className="p-4 border-t" style={{ borderColor: '#E5E7EB' }}>
             <div className="flex items-center gap-3 px-3 py-2 rounded-xl" style={{ backgroundColor: '#F3F4F6' }}>
