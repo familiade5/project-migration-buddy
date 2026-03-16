@@ -18,177 +18,245 @@ export const VDHStory3 = ({ data, photo, photos }: VDHStory3Props) => {
   const p1 = getPhoto(1);
 
   const getFinancingText = () => {
-    if (data.acceptsFinancing) return { text: 'Aceita Financiamento', color: '#22c55e' };
-    return { text: 'Somente à Vista', color: '#f97316' };
+    if (data.acceptsFinancing) return { text: 'Aceita Financiamento', color: '#22c55e', bg: 'rgba(34,197,94,0.12)' };
+    return { text: 'Somente à Vista', color: '#f97316', bg: 'rgba(249,115,22,0.12)' };
   };
 
   const financing = getFinancingText();
-
-  const PHOTO_HEIGHT = '62%';
   const GOLD = '#D4AF37';
 
   return (
-    <div className="post-template-story bg-[#2a3444] relative overflow-hidden">
+    <div className="post-template-story relative overflow-hidden" style={{ background: '#0d1420' }}>
 
-      {/* ── BLOCO DE IMAGENS — 62% do topo ─────────────────────────────────── */}
+      {/* ── FOTO 1 — diagonal top (60% da altura, corte diagonal na base) */}
       <div
         style={{
           position: 'absolute',
           top: 0,
           left: 0,
           right: 0,
-          height: PHOTO_HEIGHT,
+          height: '62%',
+          clipPath: 'polygon(0 0, 100% 0, 100% 78%, 0 100%)',
+          overflow: 'hidden',
         }}
       >
-        {/* Imagem principal esquerda — 63% */}
-        <div
-          style={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            width: 'calc(63% - 2px)',
-            bottom: 0,
-            overflow: 'hidden',
-          }}
-        >
-          {p0 ? (
-            <div
-              className="absolute inset-0 bg-cover bg-center"
-              style={{ backgroundImage: `url(${p0})` }}
-            />
-          ) : (
-            <div className="absolute inset-0 bg-gradient-to-br from-[#4a5565] to-[#3a4555]" />
-          )}
-        </div>
-
-        {/* Separador dourado vertical */}
-        <div
-          style={{
-            position: 'absolute',
-            top: '12px',
-            bottom: '12px',
-            left: 'calc(63% - 2px)',
-            width: '4px',
-            background: `linear-gradient(180deg, transparent 0%, ${GOLD} 30%, ${GOLD} 70%, transparent 100%)`,
-            zIndex: 10,
-          }}
-        />
-
-        {/* Imagem secundária direita — 37% */}
-        <div
-          style={{
-            position: 'absolute',
-            top: 0,
-            right: 0,
-            width: 'calc(37% - 2px)',
-            bottom: 0,
-            overflow: 'hidden',
-          }}
-        >
-          {p1 ? (
-            <div
-              className="absolute inset-0 bg-cover bg-center"
-              style={{ backgroundImage: `url(${p1})` }}
-            />
-          ) : (
-            <div className="absolute inset-0 bg-gradient-to-br from-[#3a4555] to-[#2a3444]" />
-          )}
-
-          {/* Overlay leve no canto da imagem menor para profundidade */}
+        {p0 ? (
           <div
-            style={{
-              position: 'absolute',
-              inset: 0,
-              background: 'linear-gradient(135deg, rgba(0,0,0,0.18) 0%, transparent 60%)',
-            }}
+            className="absolute inset-0 bg-cover bg-center"
+            style={{ backgroundImage: `url(${p0})`, transform: 'scale(1.05)' }}
           />
-        </div>
-
-        {/* Linha dourada inferior separando imagem do conteúdo */}
+        ) : (
+          <div
+            className="absolute inset-0"
+            style={{ background: 'linear-gradient(135deg, #2a3a55 0%, #1a2535 100%)' }}
+          />
+        )}
+        {/* Overlay escuro sutil na base para contraste */}
         <div
           style={{
             position: 'absolute',
-            bottom: 0,
-            left: 0,
-            right: 0,
-            height: '3px',
-            background: `linear-gradient(90deg, transparent 0%, ${GOLD} 30%, #F0D060 60%, transparent 100%)`,
-            zIndex: 10,
+            inset: 0,
+            background: 'linear-gradient(to bottom, transparent 50%, rgba(0,0,0,0.55) 100%)',
           }}
         />
       </div>
 
-      {/* Marca d'água VDH */}
-      <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-5" style={{ top: PHOTO_HEIGHT }}>
-        <p className="text-white font-bold tracking-wider" style={{ fontSize: '220px' }}>VDH</p>
-      </div>
-
-      {/* ── PAINEL DE INFORMAÇÕES — 38% inferior ────────────────────────────── */}
+      {/* ── FOTO 2 — diagonal bottom (a partir do meio, corte diagonal no topo) */}
       <div
         style={{
           position: 'absolute',
-          top: PHOTO_HEIGHT,
+          bottom: 0,
           left: 0,
           right: 0,
-          bottom: 0,
-          display: 'flex',
-          flexDirection: 'column',
-          padding: '24px 50px 48px',
+          height: '50%',
+          clipPath: 'polygon(0 28%, 100% 0, 100% 100%, 0 100%)',
+          overflow: 'hidden',
         }}
       >
-        {/* Bloco preços */}
-        <div className="bg-[#1a2433]/95 backdrop-blur rounded-2xl mb-5" style={{ padding: '28px 36px' }}>
+        {p1 ? (
+          <div
+            className="absolute inset-0 bg-cover bg-center"
+            style={{ backgroundImage: `url(${p1})`, transform: 'scale(1.05)' }}
+          />
+        ) : (
+          <div
+            className="absolute inset-0"
+            style={{ background: 'linear-gradient(135deg, #1a2535 0%, #0d1420 100%)' }}
+          />
+        )}
+        {/* Overlay escuro sutil no topo para contraste */}
+        <div
+          style={{
+            position: 'absolute',
+            inset: 0,
+            background: 'linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 60%)',
+          }}
+        />
+      </div>
+
+      {/* ── FAIXA DOURADA DIAGONAL no centro ─── */}
+      <div
+        style={{
+          position: 'absolute',
+          top: '37%',
+          left: 0,
+          right: 0,
+          height: '3px',
+          background: `linear-gradient(90deg, transparent 0%, ${GOLD} 20%, #F0D870 50%, ${GOLD} 80%, transparent 100%)`,
+          transform: 'rotate(-8deg) scaleX(1.3)',
+          zIndex: 20,
+          boxShadow: `0 0 18px 4px rgba(212,175,55,0.45)`,
+        }}
+      />
+      {/* segunda linha sutil */}
+      <div
+        style={{
+          position: 'absolute',
+          top: 'calc(37% + 10px)',
+          left: 0,
+          right: 0,
+          height: '1px',
+          background: `linear-gradient(90deg, transparent 0%, rgba(212,175,55,0.4) 25%, rgba(212,175,55,0.6) 50%, rgba(212,175,55,0.4) 75%, transparent 100%)`,
+          transform: 'rotate(-8deg) scaleX(1.3)',
+          zIndex: 20,
+        }}
+      />
+
+      {/* ── PAINEL DE INFORMAÇÕES — flutuando no centro-baixo ── */}
+      <div
+        style={{
+          position: 'absolute',
+          bottom: 0,
+          left: 0,
+          right: 0,
+          zIndex: 30,
+          padding: '0 44px 52px',
+        }}
+      >
+        {/* Card principal de preço */}
+        <div
+          style={{
+            background: 'rgba(10,16,28,0.88)',
+            border: `1px solid rgba(212,175,55,0.35)`,
+            borderRadius: '24px',
+            padding: '28px 36px 24px',
+            marginBottom: '18px',
+            boxShadow: '0 8px 40px rgba(0,0,0,0.6)',
+          }}
+        >
           {data.evaluationValue && (
-            <div className="text-center mb-3">
-              <p className="text-white/60 mb-1" style={{ fontSize: '22px' }}>Valor de avaliação</p>
-              <p className="text-white/50 line-through" style={{ fontSize: '42px' }}>
+            <div style={{ marginBottom: '10px', textAlign: 'center' }}>
+              <span
+                style={{
+                  fontSize: '20px',
+                  color: 'rgba(255,255,255,0.45)',
+                  textDecoration: 'line-through',
+                  letterSpacing: '0.03em',
+                }}
+              >
                 {data.evaluationValue}
-              </p>
+              </span>
             </div>
           )}
 
-          <div className="text-center">
-            <p className="text-[#22c55e] font-medium mb-1" style={{ fontSize: '24px' }}>Valor de Venda</p>
-            <p className="text-[#f5d485] font-bold" style={{ fontSize: '64px', lineHeight: 1 }}>
-              {data.minimumValue || 'R$ --'}
-            </p>
-          </div>
+          <p
+            style={{
+              fontSize: '22px',
+              color: `${GOLD}`,
+              textAlign: 'center',
+              letterSpacing: '0.12em',
+              textTransform: 'uppercase',
+              marginBottom: '6px',
+              fontWeight: 500,
+            }}
+          >
+            Valor de Venda
+          </p>
+          <p
+            style={{
+              fontSize: '66px',
+              fontWeight: 800,
+              color: '#ffffff',
+              textAlign: 'center',
+              lineHeight: 1,
+              letterSpacing: '-0.01em',
+              textShadow: `0 0 40px rgba(212,175,55,0.3)`,
+            }}
+          >
+            {data.minimumValue || 'R$ --'}
+          </p>
 
           {data.discount && parseFloat(data.discount.replace(',', '.')) > 0 && (
-            <div className="text-center mt-3 bg-[#e87722] rounded-xl" style={{ padding: '12px 24px' }}>
-              <p className="text-white font-bold" style={{ fontSize: '28px' }}>
+            <div
+              style={{
+                marginTop: '16px',
+                background: 'linear-gradient(135deg, #e87722, #f59e0b)',
+                borderRadius: '14px',
+                padding: '10px 24px',
+                textAlign: 'center',
+              }}
+            >
+              <p style={{ color: '#fff', fontWeight: 700, fontSize: '26px', letterSpacing: '0.02em' }}>
                 Economia de {data.discount}%
               </p>
             </div>
           )}
         </div>
 
-        {/* Card condições */}
-        <div className="bg-[#3a4555]/90 backdrop-blur rounded-2xl" style={{ padding: '22px 36px' }}>
-          <div className="flex items-center justify-between mb-4 pb-4 border-b border-white/10">
-            <span className="text-white/80" style={{ fontSize: '26px' }}>Pagamento</span>
-            <span className="font-bold" style={{ fontSize: '26px', color: financing.color }}>
+        {/* Pills de condições lado a lado */}
+        <div style={{ display: 'flex', gap: '14px', marginBottom: '22px' }}>
+          {/* Financiamento */}
+          <div
+            style={{
+              flex: 1,
+              background: financing.bg,
+              border: `1px solid ${financing.color}55`,
+              borderRadius: '16px',
+              padding: '16px 18px',
+              textAlign: 'center',
+            }}
+          >
+            <p style={{ fontSize: '17px', color: 'rgba(255,255,255,0.5)', marginBottom: '4px', letterSpacing: '0.05em', textTransform: 'uppercase' }}>
+              Pagamento
+            </p>
+            <p style={{ fontSize: '22px', fontWeight: 700, color: financing.color, lineHeight: 1.2 }}>
               {financing.text}
-            </span>
+            </p>
           </div>
-          <div className="flex items-center justify-between">
-            <span className="text-white/80" style={{ fontSize: '26px' }}>FGTS</span>
-            <span
-              className="font-bold"
-              style={{ fontSize: '26px', color: data.acceptsFGTS ? '#22c55e' : '#f97316' }}
+
+          {/* FGTS */}
+          <div
+            style={{
+              flex: 1,
+              background: data.acceptsFGTS ? 'rgba(34,197,94,0.12)' : 'rgba(249,115,22,0.12)',
+              border: `1px solid ${data.acceptsFGTS ? '#22c55e' : '#f97316'}55`,
+              borderRadius: '16px',
+              padding: '16px 18px',
+              textAlign: 'center',
+            }}
+          >
+            <p style={{ fontSize: '17px', color: 'rgba(255,255,255,0.5)', marginBottom: '4px', letterSpacing: '0.05em', textTransform: 'uppercase' }}>
+              FGTS
+            </p>
+            <p
+              style={{
+                fontSize: '22px',
+                fontWeight: 700,
+                color: data.acceptsFGTS ? '#22c55e' : '#f97316',
+                lineHeight: 1.2,
+              }}
             >
               {data.acceptsFGTS ? 'Pode usar FGTS' : 'Não aceita FGTS'}
-            </span>
+            </p>
           </div>
         </div>
 
-        {/* Footer logo */}
-        <div className="flex items-center justify-center mt-auto">
+        {/* Logo */}
+        <div style={{ display: 'flex', justifyContent: 'center' }}>
           <img
             src={logoVDH}
             alt="VDH"
-            className="object-contain rounded"
-            style={{ height: '52px' }}
+            style={{ height: '48px', objectFit: 'contain', borderRadius: '6px' }}
           />
         </div>
       </div>
