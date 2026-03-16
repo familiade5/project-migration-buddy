@@ -66,8 +66,8 @@ export const VDHStory2 = ({ data, photo, photos }: VDHStory2Props) => {
   else                   tags.push({ label: 'Somente à Vista', color: '#fca5a5', bg: 'rgba(220,38,38,0.18)' });
   if (acceptsFGTS)       tags.push({ label: 'FGTS', color: '#93c5fd', bg: 'rgba(37,99,235,0.18)' });
 
-  /* Fotos ocupam 62% do slide — info panel preenche os 38% restantes */
-  const PHOTO_HEIGHT = '62%';
+  /* Fotos ocupam 70% do slide — info panel preenche os 30% restantes */
+  const PHOTO_HEIGHT = '70%';
 
   return (
     <div
@@ -154,7 +154,7 @@ export const VDHStory2 = ({ data, photo, photos }: VDHStory2Props) => {
         )}
       </div>
 
-      {/* ── PAINEL DE INFORMAÇÕES — ocupa os 38% inferiores ─────────────────── */}
+      {/* ── PAINEL DE INFORMAÇÕES — ocupa os 30% inferiores ─────────────────── */}
       <div
         style={{
           position: 'absolute',
@@ -164,7 +164,7 @@ export const VDHStory2 = ({ data, photo, photos }: VDHStory2Props) => {
           bottom: 0,
           display: 'flex',
           flexDirection: 'column',
-          padding: '18px 36px 28px',
+          padding: '14px 36px 48px',
         }}
       >
         {/* Logos — VDH + "Imóvel Caixa" em texto */}
