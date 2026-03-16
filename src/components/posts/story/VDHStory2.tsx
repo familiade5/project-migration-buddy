@@ -187,31 +187,31 @@ export const VDHStory2 = ({ data, photo, photos }: VDHStory2Props) => {
         </div>
 
         {/* TIPO + AVALIAÇÃO */}
-        <div style={{ marginBottom: '18px' }}>
-          <p style={{ fontSize: '28px', color: 'rgba(255,255,255,0.45)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '6px' }}>
+        <div style={{ marginBottom: '14px' }}>
+          <p style={{ fontSize: '32px', color: 'rgba(255,255,255,0.45)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '6px' }}>
             {data.type || 'Imóvel'} · Oportunidade
           </p>
 
           {evalLabel && (
             <div className="flex items-center gap-3">
-              <span style={{ fontSize: '26px', color: 'rgba(255,255,255,0.28)', fontWeight: 500, textDecoration: 'line-through' }}>
+              <span style={{ fontSize: '30px', color: 'rgba(255,255,255,0.28)', fontWeight: 500, textDecoration: 'line-through' }}>
                 {evalLabel}
               </span>
               <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'rgba(255,255,255,0.2)' }} />
-              <span style={{ fontSize: '22px', color: 'rgba(255,255,255,0.3)', fontWeight: 500 }}>valor avaliado</span>
+              <span style={{ fontSize: '26px', color: 'rgba(255,255,255,0.3)', fontWeight: 500 }}>valor avaliado</span>
             </div>
           )}
         </div>
 
         {/* PREÇO DE VENDA */}
-        <div style={{ marginBottom: '18px' }}>
-          <p style={{ fontSize: '20px', color: 'rgba(212,175,55,0.6)', fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '4px' }}>
+        <div style={{ marginBottom: '14px' }}>
+          <p style={{ fontSize: '24px', color: 'rgba(212,175,55,0.6)', fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '4px' }}>
             Preço de Venda
           </p>
           <p
             className="font-black"
             style={{
-              fontSize: '72px',
+              fontSize: '86px',
               color: '#ffffff',
               lineHeight: 0.9,
               letterSpacing: '-0.02em',
@@ -221,7 +221,7 @@ export const VDHStory2 = ({ data, photo, photos }: VDHStory2Props) => {
             {minLabel || 'Sob consulta'}
           </p>
           {savingsLabel && (
-            <p style={{ fontSize: '22px', color: '#4ade80', fontWeight: 700, marginTop: '6px' }}>
+            <p style={{ fontSize: '26px', color: '#4ade80', fontWeight: 700, marginTop: '6px' }}>
               💰 Você economiza {savingsLabel}
             </p>
           )}
@@ -230,29 +230,29 @@ export const VDHStory2 = ({ data, photo, photos }: VDHStory2Props) => {
         {/* SPECS + TAGS */}
         <div className="flex items-end justify-between" style={{ marginTop: 'auto' }}>
           {/* Specs */}
-          <div className="flex gap-3">
+          <div className="flex gap-4">
             {bedroomsNum > 0 && (
               <div style={{ textAlign: 'center' }}>
-                <p style={{ fontSize: '40px', fontWeight: 900, color: '#fff' }}>{bedroomsNum}</p>
-                <p style={{ fontSize: '20px', color: 'rgba(255,255,255,0.4)', fontWeight: 600 }}>🛏 quarto{bedroomsNum > 1 ? 's' : ''}</p>
+                <p style={{ fontSize: '48px', fontWeight: 900, color: '#fff' }}>{bedroomsNum}</p>
+                <p style={{ fontSize: '24px', color: 'rgba(255,255,255,0.4)', fontWeight: 600 }}>🛏 quarto{bedroomsNum > 1 ? 's' : ''}</p>
               </div>
             )}
             {bathroomsNum > 0 && (
               <div style={{ textAlign: 'center', borderLeft: '1px solid rgba(255,255,255,0.1)', paddingLeft: '16px' }}>
-                <p style={{ fontSize: '40px', fontWeight: 900, color: '#fff' }}>{bathroomsNum}</p>
-                <p style={{ fontSize: '20px', color: 'rgba(255,255,255,0.4)', fontWeight: 600 }}>🚿 banh.</p>
+                <p style={{ fontSize: '48px', fontWeight: 900, color: '#fff' }}>{bathroomsNum}</p>
+                <p style={{ fontSize: '24px', color: 'rgba(255,255,255,0.4)', fontWeight: 600 }}>🚿 banh.</p>
               </div>
             )}
             {garageNum > 0 && (
               <div style={{ textAlign: 'center', borderLeft: '1px solid rgba(255,255,255,0.1)', paddingLeft: '16px' }}>
-                <p style={{ fontSize: '40px', fontWeight: 900, color: '#fff' }}>{garageNum}</p>
-                <p style={{ fontSize: '20px', color: 'rgba(255,255,255,0.4)', fontWeight: 600 }}>🚗 vaga{garageNum > 1 ? 's' : ''}</p>
+                <p style={{ fontSize: '48px', fontWeight: 900, color: '#fff' }}>{garageNum}</p>
+                <p style={{ fontSize: '24px', color: 'rgba(255,255,255,0.4)', fontWeight: 600 }}>🚗 vaga{garageNum > 1 ? 's' : ''}</p>
               </div>
             )}
             {areaValue && areaValue !== '0' && (
               <div style={{ textAlign: 'center', borderLeft: '1px solid rgba(255,255,255,0.1)', paddingLeft: '16px' }}>
-                <p style={{ fontSize: '40px', fontWeight: 900, color: '#fff' }}>{areaValue}</p>
-                <p style={{ fontSize: '20px', color: 'rgba(255,255,255,0.4)', fontWeight: 600 }}>📐 m²</p>
+                <p style={{ fontSize: '48px', fontWeight: 900, color: '#fff' }}>{areaValue}</p>
+                <p style={{ fontSize: '24px', color: 'rgba(255,255,255,0.4)', fontWeight: 600 }}>📐 m²</p>
               </div>
             )}
           </div>
@@ -263,13 +263,13 @@ export const VDHStory2 = ({ data, photo, photos }: VDHStory2Props) => {
               <div
                 key={i}
                 style={{
-                  padding: '7px 16px',
+                  padding: '9px 20px',
                   borderRadius: '100px',
                   background: tag.bg,
                   border: `1px solid ${tag.color}40`,
                 }}
               >
-                <span style={{ fontSize: '20px', color: tag.color, fontWeight: 700 }}>{tag.label}</span>
+                <span style={{ fontSize: '24px', color: tag.color, fontWeight: 700 }}>{tag.label}</span>
               </div>
             ))}
           </div>
