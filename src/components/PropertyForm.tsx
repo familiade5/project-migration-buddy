@@ -13,6 +13,29 @@ interface PropertyFormProps {
   onChange: (data: PropertyData) => void;
 }
 
+// Map of full state names to UF abbreviations (for auto-detection)
+const STATE_UF_MAP: Record<string, string> = {
+  'acre': 'AC', 'alagoas': 'AL', 'amapá': 'AP', 'amapa': 'AP',
+  'amazonas': 'AM', 'bahia': 'BA', 'ceará': 'CE', 'ceara': 'CE',
+  'distrito federal': 'DF', 'espírito santo': 'ES', 'espirito santo': 'ES',
+  'goiás': 'GO', 'goias': 'GO', 'maranhão': 'MA', 'maranhao': 'MA',
+  'mato grosso do sul': 'MS', 'mato grosso': 'MT',
+  'minas gerais': 'MG', 'pará': 'PA', 'para': 'PA',
+  'paraíba': 'PB', 'paraiba': 'PB', 'paraná': 'PR', 'parana': 'PR',
+  'pernambuco': 'PE', 'piauí': 'PI', 'piaui': 'PI',
+  'rio de janeiro': 'RJ', 'rio grande do norte': 'RN',
+  'rio grande do sul': 'RS', 'rondônia': 'RO', 'rondonia': 'RO',
+  'roraima': 'RR', 'santa catarina': 'SC', 'são paulo': 'SP', 'sao paulo': 'SP',
+  'sergipe': 'SE', 'tocantins': 'TO',
+};
+
+// Resolve state input (full name or abbreviation) to UF
+const resolveUF = (stateInput: string): string => {
+  const clean = stateInput.trim().toLowerCase();
+  if (clean.length === 2) return clean.toUpperCase();
+  return STATE_UF_MAP[clean] || stateInput.trim().slice(0, 2).toUpperCase();
+};
+
 export const PropertyForm = ({ data, onChange }: PropertyFormProps) => {
   const { crecis, defaultCreci, formatCreci } = useCrecis();
 
@@ -21,6 +44,20 @@ export const PropertyForm = ({ data, onChange }: PropertyFormProps) => {
       onChange({ ...data, creci: defaultCreci });
     }
   }, [defaultCreci]);
+
+  // Auto-update CRECI state suffix when state field changes
+  useEffect(() => {
+    if (!data.state || !data.creci) return;
+    const uf = resolveUF(data.state);
+    // Extract the numeric portion of the CRECI (e.g. "14851" from "CRECI 14851 MS PJ")
+    const match = data.creci.match(/(\d[\d./-]*)/);
+    if (!match) return;
+    const creciNumber = match[1];
+    const newCreci = `CRECI ${creciNumber} ${uf} PJ`;
+    if (data.creci !== newCreci) {
+      onChange({ ...data, creci: newCreci });
+    }
+  }, [data.state]);
 
   const updateField = <K extends keyof PropertyData>(field: K, value: PropertyData[K]) => {
     onChange({ ...data, [field]: value });
