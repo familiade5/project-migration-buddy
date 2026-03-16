@@ -48,7 +48,8 @@ export const PostCoverStory = ({ data, photo }: PostCoverStoryProps) => {
   const noEntryContent = getNoEntryContent();
   const NoEntryIcon = noEntryContent.icon;
 
-  const propertySource = data.propertySource || 'Imóvel Caixa';
+  const rawSource = data.propertySource || 'Imóvel Caixa';
+  const propertySource = rawSource.toLowerCase().includes('caixa') ? 'Imóvel Caixa' : rawSource;
 
   return (
     <div className="post-template-story relative overflow-hidden" style={{ fontFamily: 'Arial, Helvetica, sans-serif' }}>
