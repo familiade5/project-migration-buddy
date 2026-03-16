@@ -552,7 +552,7 @@ export const AMLocationSlide = ({
           backgroundColor: '#ffffff',
           borderRadius: 10,
           width: 96,
-          height: 32,
+          height: 46,
           overflow: 'hidden',
           display: 'flex',
           alignItems: 'center',
