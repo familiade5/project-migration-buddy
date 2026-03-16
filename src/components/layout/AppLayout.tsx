@@ -99,11 +99,10 @@ export function AppLayout({ children }: AppLayoutProps) {
             <Link
               to="/apartamentos-manaus"
               onClick={() => setSidebarOpen(false)}
-              className="flex items-center gap-3 w-full px-4 py-2.5 rounded-xl border transition-all hover:opacity-90"
+              className="flex items-center justify-center w-full px-4 py-2.5 rounded-xl border transition-all hover:opacity-90"
               style={{ backgroundColor: '#EBF2FC', borderColor: '#C3D9F0' }}
             >
-              <img src={logoAM} alt="Apartamentos Manaus" className="h-6 w-auto object-contain" />
-              <span className="text-xs font-semibold truncate" style={{ color: '#1B5EA6' }}>Apartamentos Manaus</span>
+              <img src={logoAM} alt="Apartamentos Manaus" className="h-10 w-auto object-contain" />
             </Link>
           </div>
 
