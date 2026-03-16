@@ -266,7 +266,6 @@ export const VDHStory2 = ({ data, photo, photos }: VDHStory2Props) => {
           </div>
         </div>
       </div>
-      </div>
 
       {/* ── LINHA DE ACENTO DOURADA (BAIXO) ─────────────────────────────────── */}
       <div
