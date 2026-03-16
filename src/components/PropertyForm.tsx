@@ -45,19 +45,20 @@ export const PropertyForm = ({ data, onChange }: PropertyFormProps) => {
     }
   }, [defaultCreci]);
 
-  // Auto-update CRECI state suffix when state field changes
+  // Auto-update CRECI when state changes: look up the registered CRECI for that state
   useEffect(() => {
-    if (!data.state || !data.creci) return;
+    if (!data.state || crecis.length === 0) return;
     const uf = resolveUF(data.state);
-    // Extract the numeric portion of the CRECI (e.g. "14851" from "CRECI 14851 MS PJ")
-    const match = data.creci.match(/(\d[\d./-]*)/);
-    if (!match) return;
-    const creciNumber = match[1];
-    const newCreci = `CRECI ${creciNumber} ${uf} PJ`;
-    if (data.creci !== newCreci) {
-      onChange({ ...data, creci: newCreci });
+    // Find a CRECI registered for this state in the database
+    const matchingCreci = crecis.find(c => c.state.toUpperCase() === uf);
+    if (matchingCreci) {
+      const newCreci = formatCreci(matchingCreci);
+      if (data.creci !== newCreci) {
+        onChange({ ...data, creci: newCreci });
+      }
     }
-  }, [data.state]);
+    // If no matching CRECI found for the state, keep the current one
+  }, [data.state, crecis]);
 
   const updateField = <K extends keyof PropertyData>(field: K, value: PropertyData[K]) => {
     onChange({ ...data, [field]: value });
