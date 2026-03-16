@@ -173,17 +173,27 @@ export const VDHStory1 = ({ data, photo }: VDHStory1Props) => {
                 background: isCashOnly
                   ? 'linear-gradient(135deg, #7c2d12 0%, #c2410c 100%)'
                   : 'linear-gradient(135deg, #14532d 0%, #15803d 100%)',
-                borderRadius: '50px',
-                padding: '10px 24px',
+                borderRadius: '12px',
+                padding: '10px 20px',
                 boxShadow: isCashOnly
                   ? '0 0 20px rgba(234,88,12,0.35)'
                   : '0 0 20px rgba(21,128,61,0.35)',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                gap: '2px',
               }}>
                 <span style={{
-                  fontSize: '21px', fontWeight: 800, color: '#fff',
-                  letterSpacing: '0.06em', textTransform: 'uppercase', whiteSpace: 'nowrap',
+                  fontSize: '18px', fontWeight: 700, color: 'rgba(255,255,255,0.80)',
+                  letterSpacing: '0.10em', textTransform: 'uppercase', whiteSpace: 'nowrap',
                 }}>
-                  {isCashOnly ? 'SOMENTE À VISTA' : 'ACEITA FINANCIAMENTO'}
+                  IMÓVEL CAIXA
+                </span>
+                <span style={{
+                  fontSize: '20px', fontWeight: 900, color: '#fff',
+                  letterSpacing: '0.05em', textTransform: 'uppercase', whiteSpace: 'nowrap',
+                }}>
+                  {isCashOnly ? 'SOMENTE À VISTA' : 'ACEITA FINANCIAMENTO BANCÁRIO'}
                 </span>
               </div>
             </div>
