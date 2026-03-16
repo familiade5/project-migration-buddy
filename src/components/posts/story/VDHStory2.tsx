@@ -122,7 +122,7 @@ export const VDHStory2 = ({ data, photo, photos }: VDHStory2Props) => {
             boxShadow: `0 0 60px rgba(212,175,55,0.12), 0 24px 60px rgba(0,0,0,0.7)`,
             marginBottom: '28px',
             flex: '0 0 auto',
-            height: '320px',
+            height: '420px',
           }}
         >
           {/* Fotos em grid 2+1 */}

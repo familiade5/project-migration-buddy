@@ -21,8 +21,8 @@ export const VDHStory1 = ({ data, photo }: VDHStory1Props) => {
   const acceptsFGTS = data.acceptsFGTS || data.canUseFGTS;
   const acceptsFinancing =
     data.acceptsFinancing || data.paymentMethod?.toLowerCase().includes('financ');
-  const isCashOnly =
-    !acceptsFinancing && data.paymentMethod?.toLowerCase().includes('vista');
+  // Padrão é à vista — verde apenas quando explicitamente aceita financiamento
+  const isCashOnly = !acceptsFinancing;
 
   const formatPrice = (val: string) => {
     if (!val) return null;
