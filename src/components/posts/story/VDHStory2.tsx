@@ -154,7 +154,7 @@ export const VDHStory2 = ({ data, photo, photos }: VDHStory2Props) => {
         )}
       </div>
 
-      {/* ── PAINEL DE INFORMAÇÕES — ocupa os 50% inferiores ─────────────────── */}
+      {/* ── PAINEL DE INFORMAÇÕES — ocupa os 38% inferiores ─────────────────── */}
       <div
         style={{
           position: 'absolute',
@@ -164,45 +164,45 @@ export const VDHStory2 = ({ data, photo, photos }: VDHStory2Props) => {
           bottom: 0,
           display: 'flex',
           flexDirection: 'column',
-          padding: '28px 40px 32px',
+          padding: '16px 36px 20px',
         }}
       >
         {/* Logos */}
-        <div className="flex items-center justify-between" style={{ marginBottom: '20px' }}>
-          <img src={logoVDH} alt="VDH" className="rounded-xl" style={{ height: '52px', opacity: 0.95 }} />
+        <div className="flex items-center justify-between" style={{ marginBottom: '10px' }}>
+          <img src={logoVDH} alt="VDH" className="rounded-xl" style={{ height: '44px', opacity: 0.95 }} />
           {isCaixa && (
-            <img src={logoCaixa} alt="Caixa" className="rounded-lg" style={{ height: '58px', filter: 'brightness(0) invert(1)', opacity: 0.85 }} />
+            <img src={logoCaixa} alt="Caixa" className="rounded-lg" style={{ height: '48px', filter: 'brightness(0) invert(1)', opacity: 0.85 }} />
           )}
         </div>
 
         {/* Divisor dourado */}
-        <div style={{ height: '1px', background: `linear-gradient(90deg, ${GOLD} 0%, rgba(212,175,55,0.1) 100%)`, marginBottom: '18px' }} />
+        <div style={{ height: '1px', background: `linear-gradient(90deg, ${GOLD} 0%, rgba(212,175,55,0.1) 100%)`, marginBottom: '10px' }} />
 
         {/* TIPO + AVALIAÇÃO */}
-        <div style={{ marginBottom: '10px' }}>
-          <p style={{ fontSize: '34px', color: 'rgba(255,255,255,0.5)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '4px' }}>
+        <div style={{ marginBottom: '6px' }}>
+          <p style={{ fontSize: '28px', color: 'rgba(255,255,255,0.5)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '2px' }}>
             {data.type || 'Imóvel'} · Oportunidade
           </p>
 
           {evalLabel && (
-            <div className="flex items-center gap-3">
-              <span style={{ fontSize: '32px', color: 'rgba(255,255,255,0.28)', fontWeight: 500, textDecoration: 'line-through' }}>
+            <div className="flex items-center gap-2">
+              <span style={{ fontSize: '26px', color: 'rgba(255,255,255,0.28)', fontWeight: 500, textDecoration: 'line-through' }}>
                 {evalLabel}
               </span>
-              <span style={{ fontSize: '28px', color: 'rgba(255,255,255,0.28)', fontWeight: 500 }}>valor avaliado</span>
+              <span style={{ fontSize: '22px', color: 'rgba(255,255,255,0.28)', fontWeight: 500 }}>valor avaliado</span>
             </div>
           )}
         </div>
 
         {/* PREÇO DE VENDA */}
-        <div style={{ marginBottom: '10px' }}>
-          <p style={{ fontSize: '26px', color: 'rgba(212,175,55,0.65)', fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '2px' }}>
+        <div style={{ marginBottom: '8px' }}>
+          <p style={{ fontSize: '22px', color: 'rgba(212,175,55,0.65)', fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '1px' }}>
             Preço de Venda
           </p>
           <p
             className="font-black"
             style={{
-              fontSize: '78px',
+              fontSize: '68px',
               color: '#ffffff',
               lineHeight: 0.9,
               letterSpacing: '-0.02em',
@@ -212,7 +212,7 @@ export const VDHStory2 = ({ data, photo, photos }: VDHStory2Props) => {
             {minLabel || 'Sob consulta'}
           </p>
           {savingsLabel && (
-            <p style={{ fontSize: '28px', color: '#4ade80', fontWeight: 700, marginTop: '6px' }}>
+            <p style={{ fontSize: '24px', color: '#4ade80', fontWeight: 700, marginTop: '4px' }}>
               💰 Você economiza {savingsLabel}
             </p>
           )}
@@ -221,29 +221,29 @@ export const VDHStory2 = ({ data, photo, photos }: VDHStory2Props) => {
         {/* SPECS + TAGS */}
         <div className="flex items-end justify-between" style={{ marginTop: 'auto' }}>
           {/* Specs */}
-          <div className="flex gap-5">
+          <div className="flex gap-4">
             {bedroomsNum > 0 && (
               <div style={{ textAlign: 'center' }}>
-                <p style={{ fontSize: '54px', fontWeight: 900, color: '#fff', lineHeight: 1 }}>{bedroomsNum}</p>
-                <p style={{ fontSize: '26px', color: 'rgba(255,255,255,0.45)', fontWeight: 600 }}>🛏 quarto{bedroomsNum > 1 ? 's' : ''}</p>
+                <p style={{ fontSize: '46px', fontWeight: 900, color: '#fff', lineHeight: 1 }}>{bedroomsNum}</p>
+                <p style={{ fontSize: '22px', color: 'rgba(255,255,255,0.45)', fontWeight: 600 }}>🛏 quarto{bedroomsNum > 1 ? 's' : ''}</p>
               </div>
             )}
             {bathroomsNum > 0 && (
-              <div style={{ textAlign: 'center', borderLeft: '1px solid rgba(255,255,255,0.12)', paddingLeft: '20px' }}>
-                <p style={{ fontSize: '54px', fontWeight: 900, color: '#fff', lineHeight: 1 }}>{bathroomsNum}</p>
-                <p style={{ fontSize: '26px', color: 'rgba(255,255,255,0.45)', fontWeight: 600 }}>🚿 banh.</p>
+              <div style={{ textAlign: 'center', borderLeft: '1px solid rgba(255,255,255,0.12)', paddingLeft: '16px' }}>
+                <p style={{ fontSize: '46px', fontWeight: 900, color: '#fff', lineHeight: 1 }}>{bathroomsNum}</p>
+                <p style={{ fontSize: '22px', color: 'rgba(255,255,255,0.45)', fontWeight: 600 }}>🚿 banh.</p>
               </div>
             )}
             {garageNum > 0 && (
-              <div style={{ textAlign: 'center', borderLeft: '1px solid rgba(255,255,255,0.12)', paddingLeft: '20px' }}>
-                <p style={{ fontSize: '54px', fontWeight: 900, color: '#fff', lineHeight: 1 }}>{garageNum}</p>
-                <p style={{ fontSize: '26px', color: 'rgba(255,255,255,0.45)', fontWeight: 600 }}>🚗 vaga{garageNum > 1 ? 's' : ''}</p>
+              <div style={{ textAlign: 'center', borderLeft: '1px solid rgba(255,255,255,0.12)', paddingLeft: '16px' }}>
+                <p style={{ fontSize: '46px', fontWeight: 900, color: '#fff', lineHeight: 1 }}>{garageNum}</p>
+                <p style={{ fontSize: '22px', color: 'rgba(255,255,255,0.45)', fontWeight: 600 }}>🚗 vaga{garageNum > 1 ? 's' : ''}</p>
               </div>
             )}
             {areaValue && areaValue !== '0' && (
-              <div style={{ textAlign: 'center', borderLeft: '1px solid rgba(255,255,255,0.12)', paddingLeft: '20px' }}>
-                <p style={{ fontSize: '54px', fontWeight: 900, color: '#fff', lineHeight: 1 }}>{areaValue}</p>
-                <p style={{ fontSize: '26px', color: 'rgba(255,255,255,0.45)', fontWeight: 600 }}>📐 m²</p>
+              <div style={{ textAlign: 'center', borderLeft: '1px solid rgba(255,255,255,0.12)', paddingLeft: '16px' }}>
+                <p style={{ fontSize: '46px', fontWeight: 900, color: '#fff', lineHeight: 1 }}>{areaValue}</p>
+                <p style={{ fontSize: '22px', color: 'rgba(255,255,255,0.45)', fontWeight: 600 }}>📐 m²</p>
               </div>
             )}
           </div>
@@ -254,17 +254,18 @@ export const VDHStory2 = ({ data, photo, photos }: VDHStory2Props) => {
               <div
                 key={i}
                 style={{
-                  padding: '10px 22px',
+                  padding: '8px 18px',
                   borderRadius: '100px',
                   background: tag.bg,
                   border: `1px solid ${tag.color}40`,
                 }}
               >
-                <span style={{ fontSize: '26px', color: tag.color, fontWeight: 700 }}>{tag.label}</span>
+                <span style={{ fontSize: '22px', color: tag.color, fontWeight: 700 }}>{tag.label}</span>
               </div>
             ))}
           </div>
         </div>
+      </div>
       </div>
 
       {/* ── LINHA DE ACENTO DOURADA (BAIXO) ─────────────────────────────────── */}
