@@ -7,6 +7,61 @@ interface VDHStory3Props {
   photos?: string[];
 }
 
+// Hexágono flat-top: width% e height% são iguais na proporção do story (9:16 × 65% ≈ 0.866)
+const HEX = 'polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%)';
+const GOLD = '#D4AF37';
+
+const HexPhoto = ({
+  src,
+  size,
+  style,
+}: {
+  src: string | null;
+  size: string; // ex: '46%'
+  style?: React.CSSProperties;
+}) => (
+  // Camada externa dourada (borda)
+  <div
+    style={{
+      position: 'absolute',
+      width: size,
+      aspectRatio: '1 / 0.866',
+      clipPath: HEX,
+      background: `linear-gradient(135deg, ${GOLD}, #F0D870 50%, ${GOLD})`,
+      filter: `drop-shadow(0 0 18px rgba(212,175,55,0.55))`,
+      ...style,
+    }}
+  >
+    {/* Camada interna — foto (92% do hex) */}
+    <div
+      style={{
+        position: 'absolute',
+        top: '4%',
+        left: '4%',
+        width: '92%',
+        height: '92%',
+        clipPath: HEX,
+        overflow: 'hidden',
+        background: '#0d1420',
+      }}
+    >
+      {src ? (
+        <div
+          style={{
+            position: 'absolute',
+            inset: '-8%',
+            backgroundImage: `url(${src})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+          }}
+        />
+      ) : (
+        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(135deg, #1a2535, #0d1420)' }} />
+      )}
+    </div>
+  </div>
+);
+
 export const VDHStory3 = ({ data, photo, photos }: VDHStory3Props) => {
   const getPhoto = (index: number) => {
     if (photos && photos[index]) return photos[index];
@@ -24,13 +79,37 @@ export const VDHStory3 = ({ data, photo, photos }: VDHStory3Props) => {
   };
 
   const financing = getFinancingText();
-  const GOLD = '#D4AF37';
-  const GAP = 3; // px entre fotos
 
   return (
-    <div className="post-template-story relative overflow-hidden" style={{ background: '#080e18' }}>
+    <div className="post-template-story relative overflow-hidden" style={{ background: '#07101c' }}>
 
-      {/* ══ GRADE DE FOTOS — 65% superior ══════════════════════════════ */}
+      {/* ── Fundo: padrão de pontos suave ── */}
+      <div
+        style={{
+          position: 'absolute',
+          inset: 0,
+          backgroundImage: `radial-gradient(circle, rgba(212,175,55,0.08) 1px, transparent 1px)`,
+          backgroundSize: '36px 36px',
+          zIndex: 0,
+        }}
+      />
+
+      {/* ── Halo central ── */}
+      <div
+        style={{
+          position: 'absolute',
+          top: '10%',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          width: '80%',
+          height: '55%',
+          background: 'radial-gradient(ellipse, rgba(212,175,55,0.07) 0%, transparent 70%)',
+          zIndex: 0,
+          pointerEvents: 'none',
+        }}
+      />
+
+      {/* ══ ÁREA DE HEXÁGONOS — 65% superior ══ */}
       <div
         style={{
           position: 'absolute',
@@ -38,98 +117,70 @@ export const VDHStory3 = ({ data, photo, photos }: VDHStory3Props) => {
           left: 0,
           right: 0,
           height: '65%',
-          display: 'flex',
-          gap: `${GAP}px`,
-          padding: `${GAP}px`,
-          background: GOLD,           // o gap dourado vem do fundo
+          zIndex: 2,
         }}
       >
-        {/* ── Foto 1 — hero à esquerda, full height ── */}
-        <div style={{ flex: '1.15', overflow: 'hidden', position: 'relative' }}>
-          {p0 ? (
-            <div
-              style={{
-                position: 'absolute',
-                inset: 0,
-                backgroundImage: `url(${p0})`,
-                backgroundSize: 'cover',
-                backgroundPosition: 'center',
-              }}
-            />
-          ) : (
-            <div style={{ position: 'absolute', inset: 0, background: '#1a2535' }} />
-          )}
-        </div>
+        {/*
+          Layout em pirâmide invertida:
+          - Hex 1 (grande, centro-topo): 46% wide, top: 2%
+          - Hex 2 (médio, esq-baixo):   36% wide, bottom: 2%
+          - Hex 3 (médio, dir-baixo):   36% wide, bottom: 2%
+          Linha dourada conectando os 3 centros
+        */}
 
-        {/* ── Coluna direita: 2 fotos empilhadas ── */}
-        <div style={{ flex: '0.85', display: 'flex', flexDirection: 'column', gap: `${GAP}px` }}>
-          {/* Foto 2 */}
-          <div style={{ flex: 1, overflow: 'hidden', position: 'relative' }}>
-            {p1 ? (
-              <div
-                style={{
-                  position: 'absolute',
-                  inset: 0,
-                  backgroundImage: `url(${p1})`,
-                  backgroundSize: 'cover',
-                  backgroundPosition: 'center',
-                }}
-              />
-            ) : (
-              <div style={{ position: 'absolute', inset: 0, background: '#1e2c42' }} />
-            )}
-          </div>
+        {/* Linha conectora: hex1 → hex2 */}
+        <svg
+          style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', zIndex: 1, pointerEvents: 'none' }}
+          viewBox="0 0 100 100"
+          preserveAspectRatio="none"
+        >
+          {/* Centro do hex1 ≈ (50, 25), hex2 ≈ (22, 76), hex3 ≈ (78, 76) */}
+          <line x1="50" y1="25" x2="22" y2="76" stroke={`${GOLD}55`} strokeWidth="0.4" strokeDasharray="1.5 2" />
+          <line x1="50" y1="25" x2="78" y2="76" stroke={`${GOLD}55`} strokeWidth="0.4" strokeDasharray="1.5 2" />
+          <line x1="22" y1="76" x2="78" y2="76" stroke={`${GOLD}33`} strokeWidth="0.3" strokeDasharray="1.5 2" />
+          {/* Pontos nos vértices */}
+          <circle cx="50" cy="25" r="0.8" fill={GOLD} opacity="0.6" />
+          <circle cx="22" cy="76" r="0.8" fill={GOLD} opacity="0.6" />
+          <circle cx="78" cy="76" r="0.8" fill={GOLD} opacity="0.6" />
+        </svg>
 
-          {/* Foto 3 */}
-          <div style={{ flex: 1, overflow: 'hidden', position: 'relative' }}>
-            {p2 ? (
-              <div
-                style={{
-                  position: 'absolute',
-                  inset: 0,
-                  backgroundImage: `url(${p2})`,
-                  backgroundSize: 'cover',
-                  backgroundPosition: 'center',
-                }}
-              />
-            ) : (
-              <div style={{ position: 'absolute', inset: 0, background: '#151f30' }} />
-            )}
+        {/* Hex 1 — grande, topo centro */}
+        <HexPhoto
+          src={p0}
+          size="48%"
+          style={{ left: '26%', top: '1%' }}
+        />
 
-            {/* Badge de canto com nº de fotos */}
-            <div
-              style={{
-                position: 'absolute',
-                bottom: 10,
-                right: 10,
-                background: 'rgba(8,14,24,0.75)',
-                border: `1px solid ${GOLD}66`,
-                borderRadius: '8px',
-                padding: '5px 10px',
-                backdropFilter: 'blur(6px)',
-              }}
-            >
-              <span style={{ color: GOLD, fontSize: '20px', fontWeight: 600, letterSpacing: '0.05em' }}>3 fotos</span>
-            </div>
-          </div>
-        </div>
+        {/* Hex 2 — médio, esquerda baixo */}
+        <HexPhoto
+          src={p1}
+          size="37%"
+          style={{ left: '4%', bottom: '2%' }}
+        />
+
+        {/* Hex 3 — médio, direita baixo */}
+        <HexPhoto
+          src={p2}
+          size="37%"
+          style={{ right: '4%', bottom: '2%' }}
+        />
       </div>
 
-      {/* Gradiente suave de transição foto → painel */}
+      {/* Fade suave para o painel */}
       <div
         style={{
           position: 'absolute',
-          top: 'calc(65% - 60px)',
+          top: 'calc(65% - 50px)',
           left: 0,
           right: 0,
-          height: '80px',
-          background: 'linear-gradient(to bottom, transparent, #080e18)',
-          zIndex: 5,
+          height: '60px',
+          background: 'linear-gradient(to bottom, transparent, #07101c)',
+          zIndex: 3,
           pointerEvents: 'none',
         }}
       />
 
-      {/* ══ PAINEL DE INFORMAÇÕES — 35% inferior ═══════════════════════ */}
+      {/* ══ PAINEL DE INFORMAÇÕES — 35% inferior ══ */}
       <div
         style={{
           position: 'absolute',
@@ -139,75 +190,55 @@ export const VDHStory3 = ({ data, photo, photos }: VDHStory3Props) => {
           bottom: 0,
           display: 'flex',
           flexDirection: 'column',
-          padding: '18px 44px 46px',
-          zIndex: 20,
+          padding: '14px 42px 44px',
+          zIndex: 10,
         }}
       >
-        {/* Linha decorativa dourada */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
-          <div style={{ flex: 1, height: '1px', background: `linear-gradient(to right, transparent, ${GOLD}88)` }} />
-          <span style={{ color: GOLD, fontSize: '18px', letterSpacing: '0.25em', textTransform: 'uppercase', fontWeight: 500, opacity: 0.7 }}>
-            Oportunidade
-          </span>
-          <div style={{ flex: 1, height: '1px', background: `linear-gradient(to left, transparent, ${GOLD}88)` }} />
+        {/* Divisor dourado */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '14px' }}>
+          <div style={{ flex: 1, height: '1px', background: `linear-gradient(to right, transparent, ${GOLD}70)` }} />
+          <div style={{ width: 6, height: 6, background: GOLD, transform: 'rotate(45deg)', opacity: 0.8 }} />
+          <div style={{ flex: 1, height: '1px', background: `linear-gradient(to left, transparent, ${GOLD}70)` }} />
         </div>
 
         {/* Card de preço */}
         <div
           style={{
-            background: 'rgba(10,16,28,0.95)',
-            border: `1px solid ${GOLD}44`,
-            borderRadius: '20px',
-            padding: '18px 30px 16px',
-            marginBottom: '14px',
-            boxShadow: `0 4px 32px rgba(0,0,0,0.5), inset 0 1px 0 rgba(212,175,55,0.1)`,
+            background: 'rgba(7,16,28,0.96)',
+            border: `1px solid ${GOLD}40`,
+            borderRadius: '18px',
+            padding: '16px 28px 14px',
+            marginBottom: '12px',
+            boxShadow: `0 6px 28px rgba(0,0,0,0.6), inset 0 1px 0 rgba(212,175,55,0.08)`,
           }}
         >
           {data.evaluationValue && (
-            <p style={{ fontSize: '18px', color: 'rgba(255,255,255,0.38)', textDecoration: 'line-through', textAlign: 'center', marginBottom: '2px' }}>
+            <p style={{ fontSize: '17px', color: 'rgba(255,255,255,0.35)', textDecoration: 'line-through', textAlign: 'center', marginBottom: '2px' }}>
               {data.evaluationValue}
             </p>
           )}
-          <p style={{ fontSize: '16px', color: GOLD, textAlign: 'center', letterSpacing: '0.14em', textTransform: 'uppercase', marginBottom: '4px', fontWeight: 500, opacity: 0.85 }}>
+          <p style={{ fontSize: '15px', color: GOLD, textAlign: 'center', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '4px', fontWeight: 500, opacity: 0.8 }}>
             Valor de Venda
           </p>
-          <p style={{ fontSize: '56px', fontWeight: 800, color: '#ffffff', textAlign: 'center', lineHeight: 1, letterSpacing: '-0.01em' }}>
+          <p style={{ fontSize: '54px', fontWeight: 800, color: '#ffffff', textAlign: 'center', lineHeight: 1, letterSpacing: '-0.01em' }}>
             {data.minimumValue || 'R$ --'}
           </p>
           {data.discount && parseFloat(data.discount.replace(',', '.')) > 0 && (
             <div style={{ marginTop: '10px', background: 'linear-gradient(135deg, #e87722, #f59e0b)', borderRadius: '10px', padding: '7px 18px', textAlign: 'center' }}>
-              <p style={{ color: '#fff', fontWeight: 700, fontSize: '20px' }}>Economia de {data.discount}%</p>
+              <p style={{ color: '#fff', fontWeight: 700, fontSize: '19px' }}>Economia de {data.discount}%</p>
             </div>
           )}
         </div>
 
-        {/* Pills de condições */}
-        <div style={{ display: 'flex', gap: '10px', marginBottom: '16px' }}>
-          <div
-            style={{
-              flex: 1,
-              background: financing.bg,
-              border: `1px solid ${financing.color}44`,
-              borderRadius: '14px',
-              padding: '11px 12px',
-              textAlign: 'center',
-            }}
-          >
-            <p style={{ fontSize: '13px', color: 'rgba(255,255,255,0.4)', marginBottom: '3px', letterSpacing: '0.07em', textTransform: 'uppercase' }}>Pagamento</p>
-            <p style={{ fontSize: '17px', fontWeight: 700, color: financing.color, lineHeight: 1.2 }}>{financing.text}</p>
+        {/* Pills lado a lado */}
+        <div style={{ display: 'flex', gap: '10px', marginBottom: '14px' }}>
+          <div style={{ flex: 1, background: financing.bg, border: `1px solid ${financing.color}44`, borderRadius: '13px', padding: '10px 12px', textAlign: 'center' }}>
+            <p style={{ fontSize: '12px', color: 'rgba(255,255,255,0.4)', marginBottom: '3px', letterSpacing: '0.07em', textTransform: 'uppercase' }}>Pagamento</p>
+            <p style={{ fontSize: '16px', fontWeight: 700, color: financing.color, lineHeight: 1.2 }}>{financing.text}</p>
           </div>
-          <div
-            style={{
-              flex: 1,
-              background: data.acceptsFGTS ? 'rgba(34,197,94,0.12)' : 'rgba(249,115,22,0.12)',
-              border: `1px solid ${data.acceptsFGTS ? '#22c55e' : '#f97316'}44`,
-              borderRadius: '14px',
-              padding: '11px 12px',
-              textAlign: 'center',
-            }}
-          >
-            <p style={{ fontSize: '13px', color: 'rgba(255,255,255,0.4)', marginBottom: '3px', letterSpacing: '0.07em', textTransform: 'uppercase' }}>FGTS</p>
-            <p style={{ fontSize: '17px', fontWeight: 700, color: data.acceptsFGTS ? '#22c55e' : '#f97316', lineHeight: 1.2 }}>
+          <div style={{ flex: 1, background: data.acceptsFGTS ? 'rgba(34,197,94,0.12)' : 'rgba(249,115,22,0.12)', border: `1px solid ${data.acceptsFGTS ? '#22c55e' : '#f97316'}44`, borderRadius: '13px', padding: '10px 12px', textAlign: 'center' }}>
+            <p style={{ fontSize: '12px', color: 'rgba(255,255,255,0.4)', marginBottom: '3px', letterSpacing: '0.07em', textTransform: 'uppercase' }}>FGTS</p>
+            <p style={{ fontSize: '16px', fontWeight: 700, color: data.acceptsFGTS ? '#22c55e' : '#f97316', lineHeight: 1.2 }}>
               {data.acceptsFGTS ? 'Pode usar FGTS' : 'Não aceita FGTS'}
             </p>
           </div>
@@ -215,7 +246,7 @@ export const VDHStory3 = ({ data, photo, photos }: VDHStory3Props) => {
 
         {/* Logo */}
         <div style={{ display: 'flex', justifyContent: 'center', marginTop: 'auto' }}>
-          <img src={logoVDH} alt="VDH" style={{ height: '42px', objectFit: 'contain', borderRadius: '6px' }} />
+          <img src={logoVDH} alt="VDH" style={{ height: '40px', objectFit: 'contain', borderRadius: '6px' }} />
         </div>
       </div>
 
