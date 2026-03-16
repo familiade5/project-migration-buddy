@@ -161,8 +161,8 @@ export const PostCover = ({ data, photo }: PostCoverProps) => {
 
           {/* Informações do imóvel */}
           <div className="flex-1 flex flex-col justify-center" style={{ padding: '16px 20px', gap: '4px' }}>
-            {/* Nome do condomínio — DESTAQUE, primeira linha */}
-            <p style={{ fontSize: '34px', fontWeight: 900, color: '#f5d485', lineHeight: 1.1, letterSpacing: '-0.01em' }}>
+            {/* Nome do condomínio — ocupa linha inteira */}
+            <p style={{ fontSize: '34px', fontWeight: 900, color: '#f5d485', lineHeight: 1.1, letterSpacing: '-0.01em', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
               {(data.propertyName && data.propertyName.trim()) || `${data.type || 'Casa'}`}
             </p>
             {/* Tipo do imóvel */}
@@ -178,53 +178,39 @@ export const PostCover = ({ data, photo }: PostCoverProps) => {
             <p style={{ fontSize: '16px', color: 'rgba(255,255,255,0.70)', marginTop: '2px' }}>
               VENDA DIRETA {data.creci}
             </p>
-          </div>
-
-          {/* Separador vertical */}
-          <div className="self-stretch w-px bg-white/20 flex-shrink-0 my-3" />
-
-          {/* Valores */}
-          <div className="flex-shrink-0 text-right flex flex-col justify-center" style={{ padding: '16px 22px', gap: '5px' }}>
+            {/* Divider */}
+            <div style={{ height: '1px', background: 'rgba(255,255,255,0.20)', margin: '6px 0' }} />
             {/* Preço de venda — DESTAQUE */}
             <p style={{ fontSize: '38px', fontWeight: 900, color: '#f5d485', letterSpacing: '-0.01em', lineHeight: 1 }}>
               {data.minimumValue}
             </p>
-            {/* Valor de avaliação — label + valor riscado */}
+            {/* Valor de avaliação — label em cima, valor riscado abaixo */}
             {data.evaluationValue && (
-              <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '8px', justifyContent: 'flex-end', flexWrap: 'wrap' }}>
-                <span style={{ fontSize: '15px', color: '#fff', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.04em', whiteSpace: 'nowrap' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0px' }}>
+                <span style={{ fontSize: '14px', color: 'rgba(255,255,255,0.65)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
                   Valor de Avaliação
                 </span>
                 <div style={{ position: 'relative', display: 'inline-block' }}>
-                  <span style={{ fontSize: '24px', fontWeight: 500, color: '#fff', lineHeight: 1 }}>
+                  <span style={{ fontSize: '22px', fontWeight: 500, color: '#fff', lineHeight: 1 }}>
                     {data.evaluationValue}
                   </span>
-                  <span style={{
-                    position: 'absolute',
-                    top: '50%',
-                    left: 0,
-                    right: 0,
-                    height: '2px',
-                    background: '#fff',
-                    transform: 'translateY(-50%)',
-                    display: 'block',
-                  }} />
+                  <span style={{ position: 'absolute', top: '50%', left: 0, right: 0, height: '2px', background: '#fff', transform: 'translateY(-50%)', display: 'block' }} />
                 </div>
               </div>
             )}
-            {/* Entrada a partir de — quando aceita financiamento */}
+            {/* Entrada a partir de */}
             {data.acceptsFinancing && data.entryValue && (
-              <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'baseline', gap: '6px', justifyContent: 'flex-end', flexWrap: 'wrap', marginTop: '2px' }}>
-                <span style={{ fontSize: '16px', color: '#fff', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.03em', whiteSpace: 'nowrap' }}>
+              <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'baseline', gap: '6px', flexWrap: 'wrap', marginTop: '2px' }}>
+                <span style={{ fontSize: '14px', color: '#fff', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.03em', whiteSpace: 'nowrap' }}>
                   Entrada a partir de
                 </span>
-                <span style={{ fontSize: '26px', fontWeight: 800, color: '#fff', lineHeight: 1, whiteSpace: 'nowrap' }}>
+                <span style={{ fontSize: '24px', fontWeight: 800, color: '#fff', lineHeight: 1, whiteSpace: 'nowrap' }}>
                   {data.entryValue}
                 </span>
               </div>
             )}
             {data.acceptsFGTS && (
-              <p style={{ fontSize: '19px', color: '#fff', fontWeight: 600 }}>✓ Aceita FGTS</p>
+              <p style={{ fontSize: '17px', color: '#fff', fontWeight: 600 }}>✓ Aceita FGTS</p>
             )}
           </div>
         </div>
