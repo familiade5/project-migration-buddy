@@ -28,15 +28,15 @@ export const VDHStory3 = ({ data, photo, photos }: VDHStory3Props) => {
   return (
     <div className="post-template-story relative overflow-hidden" style={{ background: '#0d1420' }}>
 
-      {/* ── FOTO 1 — diagonal top (60% da altura, corte diagonal na base) */}
+      {/* ── FOTO 1 — diagonal top (65% da altura, corte diagonal na base) */}
       <div
         style={{
           position: 'absolute',
           top: 0,
           left: 0,
           right: 0,
-          height: '62%',
-          clipPath: 'polygon(0 0, 100% 0, 100% 78%, 0 100%)',
+          height: '68%',
+          clipPath: 'polygon(0 0, 100% 0, 100% 80%, 0 100%)',
           overflow: 'hidden',
         }}
       >
@@ -68,8 +68,8 @@ export const VDHStory3 = ({ data, photo, photos }: VDHStory3Props) => {
           bottom: 0,
           left: 0,
           right: 0,
-          height: '50%',
-          clipPath: 'polygon(0 28%, 100% 0, 100% 100%, 0 100%)',
+          height: '55%',
+          clipPath: 'polygon(0 26%, 100% 0, 100% 100%, 0 100%)',
           overflow: 'hidden',
         }}
       >
@@ -98,7 +98,7 @@ export const VDHStory3 = ({ data, photo, photos }: VDHStory3Props) => {
       <div
         style={{
           position: 'absolute',
-          top: '37%',
+          top: '43%',
           left: 0,
           right: 0,
           height: '3px',
@@ -112,7 +112,7 @@ export const VDHStory3 = ({ data, photo, photos }: VDHStory3Props) => {
       <div
         style={{
           position: 'absolute',
-          top: 'calc(37% + 10px)',
+          top: 'calc(43% + 10px)',
           left: 0,
           right: 0,
           height: '1px',
