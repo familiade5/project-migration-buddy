@@ -230,8 +230,6 @@ export const VDHStory3 = ({ data, photo, photos }: VDHStory3Props) => {
     </div>
   );
 };
-
-  data: PropertyData;
   photo: string | null;
   photos?: string[];
 }
