@@ -74,8 +74,8 @@ export function AMPostPreview({ data, photos }: AMPostPreviewProps) {
     const slides = [];
 
     slides.push({ id: 'cover',    name: 'Capa',     el: <AMCoverSlide data={data} photo={p[0]} /> });
-    slides.push({ id: 'specs',    name: 'Especif.',  el: <AMSpecsSlide data={data} photo={p[1] ?? p[0]} /> });
-    slides.push({ id: 'location', name: 'Local',     el: <AMLocationSlide data={data} photo={p[2] ?? p[1] ?? p[0]} /> });
+    slides.push({ id: 'specs',    name: 'Especif.',  el: <AMSpecsSlide data={data} photos={p} /> });
+    slides.push({ id: 'location', name: 'Local',     el: <AMLocationSlide data={data} photos={p} /> });
 
     const photoSliceEnd = Math.max(3, p.length - 1);
     for (let i = 3; i < photoSliceEnd; i++) {
