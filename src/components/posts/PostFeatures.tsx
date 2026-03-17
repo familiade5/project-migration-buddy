@@ -8,13 +8,16 @@ interface PostFeaturesProps {
   photos?: string[];
 }
 
+const GOLD = '#D4AF37';
+
 export const PostFeatures = ({ data, photo, photos = [] }: PostFeaturesProps) => {
-  const getPhoto = (index: number) => {
-    if (photos.length > 0) return photos[index % photos.length] || photo;
+  const getPhoto = (index: number): string | null => {
+    if (photos.length > index) return photos[index];
+    if (photos.length > 0) return photos[0];
     return photo;
   };
 
-  // SLIDE 2 - Foco: DETALHES DO IMÓVEL (mesmo conteúdo do Story slide 2)
+  // SLIDE 2 - Foco: DETALHES DO IMÓVEL
   const getHighlightFeatures = () => {
     if (data.customSlide2Texts && data.customSlide2Texts.some(t => t && t.trim() !== '')) {
       const customTexts = data.customSlide2Texts.filter(t => t && t.trim() !== '');
@@ -49,60 +52,86 @@ export const PostFeatures = ({ data, photo, photos = [] }: PostFeaturesProps) =>
   };
 
   const displayFeatures = getHighlightFeatures();
+  const p0 = getPhoto(0);
+  const p1 = getPhoto(1);
 
   return (
-    <div className="post-template bg-[#1a1f2e] relative overflow-hidden">
-      {/* Layout dividido — Foto à esquerda, texto à direita (espelho do slide 3) */}
+    <div className="post-template relative overflow-hidden" style={{ background: '#0d1117' }}>
       <div className="absolute inset-0 flex">
 
-        {/* Foto à esquerda */}
-        <div className="w-[50%] h-full relative">
-          {getPhoto(0) ? (
-            <div
-              className="absolute inset-0 bg-cover bg-center brightness-110"
-              style={{ backgroundImage: `url(${getPhoto(0)})` }}
-            />
-          ) : (
-            <div className="absolute inset-0 bg-gradient-to-br from-[#2a3142] to-[#1a1f2e]" />
-          )}
-          {/* Marca d'água VDH sutil */}
-          <div className="absolute inset-0 flex items-center justify-center">
-            <p className="text-white/15 font-bold tracking-wider" style={{ fontSize: '140px' }}>VDH</p>
+        {/* === COLUNA ESQUERDA: 2 fotos empilhadas === */}
+        <div className="w-[50%] h-full flex flex-col" style={{ padding: '24px 12px 24px 24px', gap: '12px' }}>
+          {/* Foto superior */}
+          <div
+            className="flex-1 relative overflow-hidden"
+            style={{
+              borderRadius: '16px',
+              border: `2px solid ${GOLD}`,
+              boxShadow: `0 0 20px rgba(212,175,55,0.2)`,
+            }}
+          >
+            {p0 ? (
+              <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${p0})` }} />
+            ) : (
+              <div className="absolute inset-0" style={{ background: '#1a2535' }} />
+            )}
+          </div>
+
+          {/* Foto inferior */}
+          <div
+            className="flex-1 relative overflow-hidden"
+            style={{
+              borderRadius: '16px',
+              border: `2px solid ${GOLD}`,
+              boxShadow: `0 0 20px rgba(212,175,55,0.2)`,
+            }}
+          >
+            {p1 ? (
+              <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${p1})` }} />
+            ) : (
+              <div className="absolute inset-0" style={{ background: '#1e2c42' }} />
+            )}
           </div>
         </div>
 
-        {/* Painel de texto à direita */}
-        <div className="w-[50%] h-full flex flex-col justify-center bg-[#2a3142]" style={{ padding: '80px' }}>
-          {/* Marca d'água VDH sutil no fundo */}
-          <div className="absolute opacity-5" style={{ top: '25%', right: '80px' }}>
-            <p className="font-bold tracking-wider text-white" style={{ fontSize: '160px' }}>VDH</p>
-          </div>
+        {/* === COLUNA DIREITA: painel de texto === */}
+        <div
+          className="w-[50%] h-full flex flex-col justify-center"
+          style={{ padding: '80px 60px 80px 50px', background: '#161b27' }}
+        >
+          {/* Linha dourada decorativa */}
+          <div style={{ width: '60px', height: '3px', background: GOLD, marginBottom: '40px', borderRadius: '2px' }} />
 
-          <div className="relative z-10" style={{ display: 'flex', flexDirection: 'column', gap: '60px' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '52px' }}>
             {displayFeatures.map((feature, index) => (
-              <div
-                key={index}
-                className="flex items-start"
-                style={{ gap: '40px' }}
-              >
+              <div key={index} className="flex items-start" style={{ gap: '32px' }}>
                 <div
-                  className="rounded bg-[#d4a44c] flex items-center justify-center flex-shrink-0"
-                  style={{ width: '80px', height: '80px', marginTop: '4px' }}
+                  className="flex items-center justify-center flex-shrink-0"
+                  style={{
+                    width: '72px',
+                    height: '72px',
+                    borderRadius: '12px',
+                    background: `linear-gradient(135deg, ${GOLD}, #f5d485)`,
+                    boxShadow: `0 4px 20px rgba(212,175,55,0.3)`,
+                    marginTop: '4px',
+                  }}
                 >
-                  <Check className="text-[#1a1f2e]" style={{ width: '50px', height: '50px' }} />
+                  <Check style={{ width: '44px', height: '44px', color: '#0d1117' }} />
                 </div>
-                <span className="text-white font-semibold leading-tight" style={{ fontSize: '52px' }}>
+                <span style={{ fontSize: '48px', color: '#ffffff', fontWeight: 600, lineHeight: 1.2 }}>
                   {feature}
                 </span>
               </div>
             ))}
           </div>
-        </div>
-      </div>
 
-      {/* Logo VDH no canto inferior esquerdo */}
-      <div className="absolute z-10" style={{ bottom: '40px', left: '40px' }}>
-        <img src={logoVDH} alt="VDH" className="rounded" style={{ height: '100px' }} />
+          {/* Logo VDH */}
+          <div style={{ marginTop: 'auto', paddingTop: '60px' }}>
+            <div style={{ border: `1.5px solid ${GOLD}55`, borderRadius: '10px', padding: '6px 16px', display: 'inline-block' }}>
+              <img src={logoVDH} alt="VDH" style={{ height: '52px', objectFit: 'contain', borderRadius: '6px', display: 'block' }} />
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
