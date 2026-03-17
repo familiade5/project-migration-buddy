@@ -237,37 +237,25 @@ export const AMCoverSlide = ({
 };
 
 // ─── Slide 2: ESPECIFICAÇÕES ─────────────────────────────────────────────────
-//
-// SINGLE CONTINUOUS PATH with SMOOTH BEZIER CURVES:
-//   One vector path defines the entire image container shape.
-//   Outer corners use arc segments (r=22).
-//   Notch corners use quadratic bezier curves (Q) for smooth, organic transitions.
-//
-//   Path walkthrough (clockwise from top, right of notch):
-//     M 168 8          → start at top edge, right end of notch
-//     H 330            → right along top edge
-//     A 22,22 → 352,30 → top-right outer convex corner
-//     V 330            → down right edge
-//     A 22,22 → 330,352→ bottom-right outer convex corner
-//     H 30             → left along bottom edge
-//     A 22,22 → 8,330  → bottom-left outer convex corner
-//     V 98             → up left edge, stop before notch bottom
-//     Q 8,80 → 26,80   → smooth concave curve into notch bottom-left corner
-//     H 150            → along notch bottom
-//     Q 168,80 → 168,62→ smooth convex curve out of notch bottom-right corner
-//     V 8 Z            → up right notch edge to start
-//
-//   Logo card: top=4, left=4, w=164, h=76, r=18
-//   Notch: x 8→168, y 8→80, Q radius ≈ 18
+// Layout: imagem grande à direita (shape recortado) + imagem menor à esquerda
+// embaixo do card de logo. Borda branca de 6px separa as duas imagens.
+// Se só houver 1 foto, ambos os slots mostram a mesma (nunca repete a capa se
+// houver mais de 1 foto no array).
 export const AMSpecsSlide = ({
   data,
-  photo,
+  photos = [],
 }: {
   data: AMPropertyData;
-  photo?: string;
+  photos?: string[];
 }) => {
   const uid = useId();
   const clipId = `am-specs-${uid}`;
+
+  // Foto principal: preferencialmente photos[1], senão photos[0]
+  const photoA = photos[1] ?? photos[0] ?? undefined;
+  // Foto secundária: preferencialmente photos[2], senão photos[1] ?? photos[0]
+  const photoB = photos[2] ?? photos[1] ?? photos[0] ?? undefined;
+
   const specs: string[] = [
     data.bedrooms > 0 ? `${data.bedrooms} quarto${data.bedrooms > 1 ? 's' : ''}` : '',
     ...(data.rooms ? data.rooms.split('\n').filter(Boolean) : []),
@@ -277,87 +265,82 @@ export const AMSpecsSlide = ({
     data.suites > 0 ? `${data.suites} suíte${data.suites > 1 ? 's' : ''}` : '',
   ].filter(Boolean).slice(0, 6);
 
-  // One continuous path — smooth Q bezier curves at the notch corners,
-  // standard A arcs at the three outer rounded corners.
-  // Path starts at (330, 8) — the exact entry point of the top-right arc —
-  // so the arc comes FIRST with no straight segment before it.
-  // The top edge (168→330 at y=8) is the LAST segment before Z.
-  // Notch top-left reduzido: w=120, h=52. Bordas externas mantidas (330→352, etc.)
-  const shapePath = [
-    'M 330 8',               // top-right arc entry — borda externa mantida
-    'A 22 22 0 0 1 352 30',  // top-right outer corner
-    'V 330',                 // right edge full height
-    'A 22 22 0 0 1 330 352', // bottom-right outer corner
-    'H 30',                  // bottom edge full width
-    'A 22 22 0 0 1 8 330',   // bottom-left outer corner
-    'V 74',                  // left edge up to notch start (52+22=74)
-    'Q 8 52 26 52',          // concave into notch bottom-left
-    'H 98',                  // notch bottom (120-22=98)
-    'Q 120 52 120 30',       // convex up notch right corner (52-22=30)
-    'V 30',                  // up notch right wall to arc
-    'A 22 22 0 0 1 142 8',   // round top-notch corner (120+22=142)
-    'H 330',                 // top edge back
+  // Shape principal: ocupa todo o slide menos o notch top-left (logo) e um
+  // retângulo bottom-left reservado para a segunda imagem.
+  // Notch logo: top=4,left=4,w=120,h=52 → borda foto: x=128, y=60
+  // Segunda imagem: left=8, top=68, w=156, h=284 (com 6px de gap acima)
+  // Foto principal: x=172..352, y=8..352 (separação de 6px na borda esquerda)
+  const mainClipId = `am-specs-main-${uid}`;
+  const secClipId  = `am-specs-sec-${uid}`;
+
+  // Foto principal — lado direito, quase full-height, com notch top-left
+  const mainPath = [
+    'M 330 8',
+    'A 22 22 0 0 1 352 30',
+    'V 330',
+    'A 22 22 0 0 1 330 352',
+    'H 194',                   // borda inferior esquerda (172 + 22)
+    'A 22 22 0 0 0 172 330',   // canto inferior-esquerdo côncavo
+    'V 30',
+    'A 22 22 0 0 1 194 8',     // canto superior-esquerdo
+    'H 330',
     'Z',
   ].join(' ');
+
+  // Foto secundária — lado esquerdo, abaixo do card de logo
+  const secPath = [
+    'M 8 90',                   // topo (68 + 22)
+    'A 22 22 0 0 1 30 68',
+    'H 142',                    // direita (164 - 22)
+    'A 22 22 0 0 1 164 90',
+    'V 330',
+    'A 22 22 0 0 1 142 352',
+    'H 30',
+    'A 22 22 0 0 1 8 330',
+    'Z',
+  ].join(' ');
+
+  const imgStyle = (src?: string): React.CSSProperties => ({
+    width: '100%', height: '100%', objectFit: 'cover', display: 'block',
+    backgroundColor: src ? undefined : '#d1d5db',
+  });
 
   return (
     <div style={{ position: 'relative', width: 360, height: 360, backgroundColor: '#ffffff', fontFamily: 'Arial, sans-serif', overflow: 'hidden' }}>
 
-      {/* ── clipPath definition — 0×0 SVG keeps it out of flow but in the DOM ── */}
-      <svg
-        aria-hidden="true"
-        style={{ position: 'absolute', width: 0, height: 0, overflow: 'hidden' }}
-      >
+      <svg aria-hidden="true" style={{ position: 'absolute', width: 0, height: 0, overflow: 'hidden' }}>
         <defs>
-          <clipPath id={clipId} clipPathUnits="userSpaceOnUse">
-            <path d={shapePath} />
-          </clipPath>
+          <clipPath id={mainClipId} clipPathUnits="userSpaceOnUse"><path d={mainPath} /></clipPath>
+          <clipPath id={secClipId}  clipPathUnits="userSpaceOnUse"><path d={secPath}  /></clipPath>
         </defs>
       </svg>
 
-      {/* ── Image container — clip-path applied directly to this div ── */}
-      <div
-        style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          width: 360,
-          height: 360,
-          clipPath: `url(#${clipId})`,
-          zIndex: 10,
-        }}
-      >
-        {photo ? (
-          <img
-            src={photo}
-            alt=""
-            style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
-          />
-        ) : (
-          <div style={{ width: '100%', height: '100%', backgroundColor: '#d1d5db' }} />
-        )}
+      {/* ── Foto principal (direita) ── */}
+      <div style={{ position: 'absolute', top: 0, left: 0, width: 360, height: 360, clipPath: `url(#${mainClipId})`, zIndex: 10 }}>
+        {photoA
+          ? <img src={photoA} alt="" style={imgStyle(photoA)} />
+          : <div style={{ ...imgStyle(), backgroundColor: '#d1d5db' }} />}
       </div>
 
-      {/* ── Logo card — sits in the notch (z-index below image) ── */}
+      {/* ── Foto secundária (esquerda-baixo) ── */}
+      <div style={{ position: 'absolute', top: 0, left: 0, width: 360, height: 360, clipPath: `url(#${secClipId})`, zIndex: 10 }}>
+        {photoB
+          ? <img src={photoB} alt="" style={imgStyle(photoB)} />
+          : <div style={{ ...imgStyle(), backgroundColor: '#c4c9d1' }} />}
+      </div>
+
+      {/* ── Logo card (notch top-left) ── */}
       <div style={{
-        position: 'absolute',
-        top: 4,
-        left: 4,
-        width: 116,
-        height: 52,
-        borderRadius: 14,
-        backgroundColor: '#ffffff',
-        zIndex: 5,
-        display: 'flex',
-        alignItems: 'center',
-        paddingLeft: 8,
-        paddingRight: 8,
-        boxSizing: 'border-box',
+        position: 'absolute', top: 4, left: 4,
+        width: 116, height: 52, borderRadius: 14,
+        backgroundColor: '#ffffff', zIndex: 20,
+        display: 'flex', alignItems: 'center',
+        paddingLeft: 8, paddingRight: 8, boxSizing: 'border-box',
       }}>
         <AMLogo width={100} variant="color" />
       </div>
 
-      {/* ── Specs card ── */}
+      {/* ── Specs card (sobre a foto principal) ── */}
       {specs.length > 0 && (
         <div style={{
           position: 'absolute', bottom: 18, right: 18, zIndex: 20,
