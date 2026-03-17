@@ -1,10 +1,11 @@
 /**
  * AMPhotoManager
  * - Upload + drag-and-drop reordering of photos
+ * - Buttons to move left/right and promote to cover
  * - The order here drives the slide order in AMPostPreview
  */
 import { useRef } from 'react';
-import { GripVertical, X, Upload } from 'lucide-react';
+import { GripVertical, X, Upload, ChevronLeft, ChevronRight, Star } from 'lucide-react';
 
 interface AMPhotoManagerProps {
   photos: string[];
@@ -40,7 +41,22 @@ export function AMPhotoManager({ photos, onChange }: AMPhotoManagerProps) {
   };
 
   const removePhoto = (index: number) => {
-    const next = photos.filter((_, i) => i !== index);
+    onChange(photos.filter((_, i) => i !== index));
+  };
+
+  const movePhoto = (from: number, to: number) => {
+    if (to < 0 || to >= photos.length) return;
+    const next = [...photos];
+    const [moved] = next.splice(from, 1);
+    next.splice(to, 0, moved);
+    onChange(next);
+  };
+
+  const makeCover = (index: number) => {
+    if (index === 0) return;
+    const next = [...photos];
+    const [photo] = next.splice(index, 1);
+    next.unshift(photo);
     onChange(next);
   };
 
@@ -82,7 +98,7 @@ export function AMPhotoManager({ photos, onChange }: AMPhotoManagerProps) {
         </p>
         <p className="text-xs text-gray-500 mt-0.5">
           {photos.length > 0
-            ? `${photos.length} foto${photos.length > 1 ? 's' : ''} adicionada${photos.length > 1 ? 's' : ''} — arraste para reordenar`
+            ? `${photos.length} foto${photos.length > 1 ? 's' : ''} adicionada${photos.length > 1 ? 's' : ''}`
             : 'A capa usa a 1ª foto; slides 2 e 3 usam a 2ª e 3ª foto'}
         </p>
         <input
@@ -95,7 +111,7 @@ export function AMPhotoManager({ photos, onChange }: AMPhotoManagerProps) {
         />
       </div>
 
-      {/* Photo grid with drag-to-reorder */}
+      {/* Photo grid with reorder controls */}
       {photos.length > 0 && (
         <div className="grid grid-cols-3 gap-2">
           {photos.map((photo, index) => (
@@ -114,9 +130,57 @@ export function AMPhotoManager({ photos, onChange }: AMPhotoManagerProps) {
             >
               <img src={photo} alt={`Foto ${index + 1}`} className="w-full h-full object-cover" />
 
-              {/* Overlay on hover */}
-              <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                <GripVertical className="w-6 h-6 text-white" />
+              {/* Overlay on hover with controls */}
+              <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-between p-1">
+                {/* Top row: move left/right + grip */}
+                <div className="flex items-center justify-between w-full">
+                  {/* Move left */}
+                  <button
+                    onClick={(e) => { e.stopPropagation(); movePhoto(index, index - 1); }}
+                    disabled={index === 0}
+                    className="w-6 h-6 rounded-full bg-white/80 flex items-center justify-center disabled:opacity-30 hover:bg-white transition-colors"
+                    title="Mover para esquerda"
+                  >
+                    <ChevronLeft className="w-3.5 h-3.5 text-gray-700" />
+                  </button>
+
+                  {/* Grip center */}
+                  <GripVertical className="w-5 h-5 text-white/80" />
+
+                  {/* Move right */}
+                  <button
+                    onClick={(e) => { e.stopPropagation(); movePhoto(index, index + 1); }}
+                    disabled={index === photos.length - 1}
+                    className="w-6 h-6 rounded-full bg-white/80 flex items-center justify-center disabled:opacity-30 hover:bg-white transition-colors"
+                    title="Mover para direita"
+                  >
+                    <ChevronRight className="w-3.5 h-3.5 text-gray-700" />
+                  </button>
+                </div>
+
+                {/* Middle: Make cover button */}
+                {index !== 0 && (
+                  <button
+                    onClick={(e) => { e.stopPropagation(); makeCover(index); }}
+                    className="flex items-center gap-1 px-2 py-1 rounded-full text-white text-xs font-semibold transition-colors"
+                    style={{ backgroundColor: '#F47920' }}
+                    title="Usar como capa"
+                  >
+                    <Star className="w-3 h-3 fill-white" />
+                    Capa
+                  </button>
+                )}
+
+                {/* Bottom: remove */}
+                <div className="flex justify-end w-full">
+                  <button
+                    onClick={(e) => { e.stopPropagation(); removePhoto(index); }}
+                    className="w-6 h-6 rounded-full bg-red-500 flex items-center justify-center hover:bg-red-600 transition-colors"
+                    title="Remover foto"
+                  >
+                    <X className="w-3 h-3 text-white" />
+                  </button>
+                </div>
               </div>
 
               {/* Slide label badge */}
@@ -130,13 +194,12 @@ export function AMPhotoManager({ photos, onChange }: AMPhotoManagerProps) {
                 {slideLabel(index)}
               </div>
 
-              {/* Remove button */}
-              <button
-                onClick={(e) => { e.stopPropagation(); removePhoto(index); }}
-                className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
-              >
-                <X className="w-3 h-3" />
-              </button>
+              {/* Cover star badge */}
+              {index === 0 && (
+                <div className="absolute top-1 left-1 w-5 h-5 rounded-full flex items-center justify-center" style={{ backgroundColor: '#F47920' }}>
+                  <Star className="w-2.5 h-2.5 fill-white text-white" />
+                </div>
+              )}
             </div>
           ))}
         </div>
@@ -144,7 +207,7 @@ export function AMPhotoManager({ photos, onChange }: AMPhotoManagerProps) {
 
       {photos.length > 0 && (
         <p className="text-xs text-gray-400 text-center">
-          💡 Arraste as fotos para mudar a ordem dos slides
+          💡 Passe o mouse sobre a foto para mover, definir capa ou remover
         </p>
       )}
     </div>
