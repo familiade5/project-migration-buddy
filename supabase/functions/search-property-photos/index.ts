@@ -190,9 +190,9 @@ serve(async (req) => {
       }
     }
 
-    // ─── FASE 3: Street View + Satélite (fallback final) ──────────────────────
-    if (photos.length === 0) {
-      console.log("No photos found anywhere, falling back to Street View + Satellite...");
+    // ─── FASE 3: Street View + Satélite (fallback se não encontrou ou encontrou poucas fotos) ──
+    if (photos.length < 3) {
+      console.log(`Only ${photos.length} photo(s) found, complementing with Street View + Satellite...`);
       const encodedAddress = encodeURIComponent(address);
 
       const streetViewPromises = [0, 90, 180, 270].map(async (heading) => {
@@ -208,8 +208,9 @@ serve(async (req) => {
       })();
 
       const fallbackResults = await Promise.all([...streetViewPromises, satellitePromise]);
-      photos = fallbackResults.filter((p): p is { url: string; reference: string } => p !== null);
-      console.log(`Got ${photos.length} Street View + Satellite photos`);
+      const fallbackPhotos = fallbackResults.filter((p): p is { url: string; reference: string } => p !== null);
+      photos = [...photos, ...fallbackPhotos];
+      console.log(`After Street View + Satellite complement: ${photos.length} total photos`);
     }
 
     console.log(`Total: ${photos.length} photos, condo: ${condominiumName || 'not found'}`);
