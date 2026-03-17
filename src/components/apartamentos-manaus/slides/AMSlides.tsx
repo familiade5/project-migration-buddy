@@ -362,42 +362,62 @@ export const AMSpecsSlide = ({
 
 
 // ─── Slide 3: LOCALIZAÇÃO ────────────────────────────────────────────────────
-// White bg • right photo (large, rounded) + bottom-left photo (smaller, rounded)
-// • blue info card top-left • white logo panel between cards on left
+// Layout: foto superior (larga, lado direito-alto) + foto inferior (menor, lado direito-baixo)
+// Borda branca de 6px separa as duas imagens. Card azul top-left, logo bottom-right.
+// Fallback: se só houver 1 foto, ambos os slots exibem a mesma (sem a capa quando possível).
 export const AMLocationSlide = ({
   data,
-  photo,
+  photos = [],
 }: {
   data: AMPropertyData;
-  photo?: string;
+  photos?: string[];
 }) => {
   const uid = useId();
-  const clipId = `am-location-${uid}`;
 
-  // Apenas o endereço digitado — cidade/estado e bairro NÃO são adicionados automaticamente
+  // Foto superior: photos[3] > photos[2] > photos[1] > photos[0]
+  const photoTop = photos[3] ?? photos[2] ?? photos[1] ?? photos[0] ?? undefined;
+  // Foto inferior: photos[4] > photos[3] > photos[2] > photos[1] > photos[0]
+  const photoBot = photos[4] ?? photos[3] ?? photos[2] ?? photos[1] ?? photos[0] ?? undefined;
+
   const address = data.address || '';
 
-  // Notch azul: card 124×120 em top=14,left=14 → termina em x=138, y=134
-  // Notch com 8px de folga: direita x=146, baixo y=142
-  // Notch logo: card 96×32 em bottom=14,right=14 → x=250→346, y=314→346
-  const shapePath = [
-    'M 168 14',              // top edge start (146+22=168)
+  // Foto superior: ocupa todo o quadrante direito, abaixo do notch do card azul
+  // Notch azul: top=14,left=14,w=124,h=120 → borda fotográfica começa em x=152
+  // Foto superior: x=152..346, y=14..192  (gap=6px no meio vertical e direita)
+  // Foto inferior: x=152..346, y=200..346
+  const topClipId = `am-loc-top-${uid}`;
+  const botClipId = `am-loc-bot-${uid}`;
+
+  // Foto superior — canto superior-direito com raios
+  const topPath = [
+    'M 174 14',              // topo (152+22)
     'H 324',
     'A 22 22 0 0 1 346 36',
-    'V 278',
-    'Q 346 300 324 300',
-    'H 272',
-    'Q 250 300 250 322',
-    'V 324',
-    'A 22 22 0 0 1 228 346',
-    'H 36',
-    'A 22 22 0 0 1 14 324',
-    'V 164',                 // left edge up (142+22=164)
-    'Q 14 142 36 142',       // concave bottom-left of blue notch
-    'H 124',                 // blue notch bottom (146-22=124)
-    'Q 146 142 146 120',     // concave bottom-right (142-22=120)
+    'V 170',                 // desce até a borda inferior da foto topo (192-22)
+    'A 22 22 0 0 1 324 192',
+    'H 174',                 // borda inferior
+    'A 22 22 0 0 1 152 170',
     'V 36',
-    'A 22 22 0 0 1 168 14',
+    'A 22 22 0 0 1 174 14',
+    'Z',
+  ].join(' ');
+
+  // Foto inferior — canto inferior-direito com notch para logo
+  // Notch logo: bottom=14,right=14 w=96,h=46 → x=236..332, y=286..332
+  const botPath = [
+    'M 174 200',             // topo esquerdo (152+22)
+    'H 324',
+    'A 22 22 0 0 1 346 222',
+    'V 280',                 // para antes do notch logo (286-6)
+    'Q 346 302 324 302',
+    'H 258',                 // (236+22)
+    'Q 236 302 236 324',
+    'V 324',
+    'A 22 22 0 0 1 214 346',
+    'H 174',
+    'A 22 22 0 0 1 152 324',
+    'V 222',
+    'A 22 22 0 0 1 174 200',
     'Z',
   ].join(' ');
 
