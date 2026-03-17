@@ -422,94 +422,51 @@ export const AMLocationSlide = ({
   ].join(' ');
 
   return (
-    <div
-      style={{
-        position: 'relative',
-        width: 360,
-        height: 360,
-        backgroundColor: '#ffffff',
-        fontFamily: 'Arial, sans-serif',
-        overflow: 'hidden',
-      }}
-    >
-      {/* clipPath definition */}
+    <div style={{ position: 'relative', width: 360, height: 360, backgroundColor: '#ffffff', fontFamily: 'Arial, sans-serif', overflow: 'hidden' }}>
+
       <svg aria-hidden="true" style={{ position: 'absolute', width: 0, height: 0, overflow: 'hidden' }}>
         <defs>
-          <clipPath id={clipId} clipPathUnits="userSpaceOnUse">
-            <path d={shapePath} />
-          </clipPath>
+          <clipPath id={topClipId} clipPathUnits="userSpaceOnUse"><path d={topPath} /></clipPath>
+          <clipPath id={botClipId} clipPathUnits="userSpaceOnUse"><path d={botPath} /></clipPath>
         </defs>
       </svg>
 
-      {/* Photo — single image, L-shaped clip */}
-      {photo ? (
-        <img
-          src={photo}
-          alt=""
-          style={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            width: 360,
-            height: 360,
-            objectFit: 'cover',
-            display: 'block',
-            clipPath: `url(#${clipId})`,
-            zIndex: 10,
-          }}
-        />
-      ) : (
-        <div
-          style={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            width: 360,
-            height: 360,
-            backgroundColor: '#d1d5db',
-            clipPath: `url(#${clipId})`,
-            zIndex: 10,
-          }}
-        />
-      )}
+      {/* ── Foto superior ── */}
+      <div style={{ position: 'absolute', top: 0, left: 0, width: 360, height: 360, clipPath: `url(#${topClipId})`, zIndex: 10 }}>
+        {photoTop
+          ? <img src={photoTop} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+          : <div style={{ width: '100%', height: '100%', backgroundColor: '#d1d5db' }} />}
+      </div>
 
-      {/* Blue info card */}
-      <div
-        style={{
-          position: 'absolute',
-          top: 14,
-          left: 14,
-          zIndex: 20,
-          backgroundColor: '#1B5EA6',
-          borderRadius: 15,
-          padding: '10px 10px 9px',
-          width: 124,
-          height: 120,
-          boxSizing: 'border-box',
-          overflow: 'hidden',
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'space-between',
-        }}
-      >
+      {/* ── Foto inferior ── */}
+      <div style={{ position: 'absolute', top: 0, left: 0, width: 360, height: 360, clipPath: `url(#${botClipId})`, zIndex: 10 }}>
+        {photoBot
+          ? <img src={photoBot} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+          : <div style={{ width: '100%', height: '100%', backgroundColor: '#c4c9d1' }} />}
+      </div>
+
+      {/* ── Card azul de localização ── */}
+      <div style={{
+        position: 'absolute', top: 14, left: 14, zIndex: 20,
+        backgroundColor: '#1B5EA6', borderRadius: 15,
+        padding: '10px 10px 9px', width: 124, height: 120,
+        boxSizing: 'border-box', overflow: 'hidden',
+        display: 'flex', flexDirection: 'column', justifyContent: 'space-between',
+      }}>
         <div style={{ overflow: 'hidden', flex: 1, minHeight: 0 }}>
           <p style={{
             color: 'white', fontWeight: 700, fontSize: 11, lineHeight: 1.3,
             margin: '0 0 4px',
-            display: '-webkit-box',
-            WebkitLineClamp: 3,
-            WebkitBoxOrient: 'vertical',
-            overflow: 'hidden',
+            display: '-webkit-box', WebkitLineClamp: 3,
+            WebkitBoxOrient: 'vertical', overflow: 'hidden',
           }}>
             {data.title || 'Imóveis bem localizados em Manaus'}
           </p>
           {address && (
             <p style={{
               color: 'white', fontSize: 8, opacity: 0.82, lineHeight: 1.35, margin: 0,
-              display: '-webkit-box',
-              WebkitLineClamp: 2,
-              WebkitBoxOrient: 'vertical',
-              overflow: 'hidden',
+              display: '-webkit-box', WebkitLineClamp: 2,
+              WebkitBoxOrient: 'vertical', overflow: 'hidden',
             }}>
               {address}
             </p>
@@ -517,54 +474,33 @@ export const AMLocationSlide = ({
           {data.referencePoint && (
             <p style={{
               color: 'white', fontSize: 8, opacity: 0.7, lineHeight: 1.35, margin: '3px 0 0',
-              display: '-webkit-box',
-              WebkitLineClamp: 1,
-              WebkitBoxOrient: 'vertical',
-              overflow: 'hidden',
+              display: '-webkit-box', WebkitLineClamp: 1,
+              WebkitBoxOrient: 'vertical', overflow: 'hidden',
             }}>
               {data.referencePoint}
             </p>
           )}
         </div>
-        <div
-          style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: 4,
-            backgroundColor: 'rgba(255,255,255,0.15)',
-            border: '1px solid rgba(255,255,255,0.35)',
-            borderRadius: 20,
-            padding: '3px 7px',
-            fontSize: 7,
-            color: 'white',
-            alignSelf: 'flex-start',
-            flexShrink: 0,
-          }}
-        >
+        <div style={{
+          display: 'inline-flex', alignItems: 'center', gap: 4,
+          backgroundColor: 'rgba(255,255,255,0.15)',
+          border: '1px solid rgba(255,255,255,0.35)',
+          borderRadius: 20, padding: '3px 7px',
+          fontSize: 7, color: 'white', alignSelf: 'flex-start', flexShrink: 0,
+        }}>
           Arraste para o lado →
         </div>
       </div>
 
-      {/* Logo card — encaixado no notch inferior-direito */}
-      <div
-        style={{
-          position: 'absolute',
-          bottom: 14,
-          right: 14,
-          zIndex: 20,
-          backgroundColor: '#ffffff',
-          borderRadius: 10,
-          width: 96,
-          height: 46,
-          overflow: 'hidden',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          boxSizing: 'border-box',
-          padding: '2px 4px',
-        }}
-      >
-        <AMLogo width={88} variant="color" />
+      {/* ── Logo card (bottom-left, fora da área de foto) ── */}
+      <div style={{
+        position: 'absolute', bottom: 14, left: 14, zIndex: 20,
+        backgroundColor: '#ffffff', borderRadius: 10,
+        width: 120, height: 46, overflow: 'hidden',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        boxSizing: 'border-box', padding: '2px 4px',
+      }}>
+        <AMLogo width={110} variant="color" />
       </div>
     </div>
   );
