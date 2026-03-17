@@ -146,6 +146,12 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
     photo: string | null,
     allPhotos: string[],
   ): Promise<string> => {
+    // First: clear previous content so WebKit re-paints fresh
+    if (isIOS()) {
+      flushSync(() => setExportSlideEl(null));
+      await new Promise(r => setTimeout(r, 150));
+    }
+
     // Synchronously update the hidden export element content
     flushSync(() => {
       setExportSlideEl(
@@ -154,14 +160,27 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
     });
 
     // Allow browser to paint + logo base64 fetch to complete
-    await new Promise(r => setTimeout(r, isIOS() ? 800 : 400));
+    // iOS needs extra time on subsequent exports (image cache may be stale)
+    await new Promise(r => setTimeout(r, isIOS() ? 1200 : 400));
+
+    // Retry waiting for ref up to 3x on iOS in case WebKit is slow to mount
+    if (isIOS()) {
+      for (let attempt = 0; attempt < 3; attempt++) {
+        if (exportRef.current) break;
+        await new Promise(r => setTimeout(r, 300));
+      }
+    }
 
     if (!exportRef.current) throw new Error('exportRef not mounted');
 
     // On iOS: first render primes the image cache, second render captures correctly
     if (isIOS()) {
-      await toPng(exportRef.current, { quality: 1, pixelRatio: 1, cacheBust: true });
-      await new Promise(r => setTimeout(r, 200));
+      try {
+        await toPng(exportRef.current, { quality: 1, pixelRatio: 1, cacheBust: true });
+      } catch {
+        // ignore prime errors
+      }
+      await new Promise(r => setTimeout(r, 400));
     }
 
     return toPng(exportRef.current, { quality: 1, pixelRatio: safePixelRatio(), cacheBust: true });
