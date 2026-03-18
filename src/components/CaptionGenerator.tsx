@@ -134,6 +134,8 @@ export const CaptionGenerator = ({ data }: CaptionGeneratorProps) => {
       lines.push('');
     }
 
+    const pjCreci = getPjCreci();
+
     lines.push('📞 Mais informações:');
     if (data.selectedBroker === 'almir') {
       // Almir aparece primeiro como Regional, depois repete Iury como Nacional
@@ -142,12 +144,12 @@ export const CaptionGenerator = ({ data }: CaptionGeneratorProps) => {
       lines.push(`📱 (85) 99271-0485`);
       lines.push('');
       lines.push(`👤 Iury Sampaio - Nacional`);
-      lines.push(`📄 ${data.creci}`);
+      lines.push(`📄 ${pjCreci}`);
       lines.push(`📱 (92) 98839-1098`);
     } else {
-      // Padrão: somente Iury
+      // Padrão: somente Iury/corretor selecionado — sempre CRECI PJ do estado
       if (data.contactName) lines.push(`👤 ${data.contactName}`);
-      if (data.creci) lines.push(`📄 ${data.creci}`);
+      if (data.creci) lines.push(`📄 ${pjCreci}`);
       if (data.contactPhone) lines.push(`📱 ${data.contactPhone}`);
     }
 
