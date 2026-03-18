@@ -31,12 +31,16 @@ export const useCrecis = () => {
 
       setCrecis(data || []);
       
-      // Set default CRECI
+      // Set default CRECI: prioritize PJ for default state
       const defaultOne = data?.find(c => c.is_default);
       if (defaultOne) {
-        setDefaultCreci(`${defaultOne.creci_number} ${defaultOne.state}${defaultOne.name ? ` ${defaultOne.name}` : ''}`);
+        // If default is not PJ, look for PJ of same state
+        const pjForState = data?.find(c => c.state === defaultOne.state && c.name === 'PJ');
+        const chosen = pjForState || defaultOne;
+        setDefaultCreci(`${chosen.creci_number} ${chosen.state}${chosen.name ? ` ${chosen.name}` : ''}`);
       } else if (data && data.length > 0) {
-        setDefaultCreci(`${data[0].creci_number} ${data[0].state}${data[0].name ? ` ${data[0].name}` : ''}`);
+        const pjFirst = data.find(c => c.name === 'PJ') || data[0];
+        setDefaultCreci(`${pjFirst.creci_number} ${pjFirst.state}${pjFirst.name ? ` ${pjFirst.name}` : ''}`);
       }
     } catch (error) {
       console.error('Error fetching CRECIs:', error);
