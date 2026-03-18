@@ -45,12 +45,13 @@ export const PropertyForm = ({ data, onChange }: PropertyFormProps) => {
     }
   }, [defaultCreci]);
 
-  // Auto-update CRECI when state changes: look up the registered CRECI for that state
+  // Auto-update CRECI when state changes: always use PJ CRECI for the selected state
   useEffect(() => {
     if (!data.state || crecis.length === 0) return;
     const uf = resolveUF(data.state);
-    // Find a CRECI registered for this state in the database
-    const matchingCreci = crecis.find(c => c.state.toUpperCase() === uf);
+    // Prioritize PJ CRECI for the state, fallback to any CRECI for that state
+    const pjCreci = crecis.find(c => c.state.toUpperCase() === uf && c.name === 'PJ');
+    const matchingCreci = pjCreci || crecis.find(c => c.state.toUpperCase() === uf && c.name !== 'PJ' && !c.name);
     if (matchingCreci) {
       const newCreci = formatCreci(matchingCreci);
       if (data.creci !== newCreci) {
