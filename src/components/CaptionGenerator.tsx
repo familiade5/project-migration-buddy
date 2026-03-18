@@ -3,13 +3,47 @@ import { PropertyData } from '@/types/property';
 import { Button } from '@/components/ui/button';
 import { Copy, Download, Check, FileText } from 'lucide-react';
 import { toast } from 'sonner';
+import { useCrecis } from '@/hooks/useCrecis';
 
 interface CaptionGeneratorProps {
   data: PropertyData;
 }
 
+const STATE_UF_MAP: Record<string, string> = {
+  'acre': 'AC', 'alagoas': 'AL', 'amapá': 'AP', 'amapa': 'AP',
+  'amazonas': 'AM', 'bahia': 'BA', 'ceará': 'CE', 'ceara': 'CE',
+  'distrito federal': 'DF', 'espírito santo': 'ES', 'espirito santo': 'ES',
+  'goiás': 'GO', 'goias': 'GO', 'maranhão': 'MA', 'maranhao': 'MA',
+  'mato grosso do sul': 'MS', 'mato grosso': 'MT',
+  'minas gerais': 'MG', 'pará': 'PA', 'para': 'PA',
+  'paraíba': 'PB', 'paraiba': 'PB', 'paraná': 'PR', 'parana': 'PR',
+  'pernambuco': 'PE', 'piauí': 'PI', 'piaui': 'PI',
+  'rio de janeiro': 'RJ', 'rio grande do norte': 'RN',
+  'rio grande do sul': 'RS', 'rondônia': 'RO', 'rondonia': 'RO',
+  'roraima': 'RR', 'santa catarina': 'SC', 'são paulo': 'SP', 'sao paulo': 'SP',
+  'sergipe': 'SE', 'tocantins': 'TO',
+};
+
+const resolveUF = (stateInput: string): string => {
+  const clean = stateInput.trim().toLowerCase();
+  if (clean.length === 2) return clean.toUpperCase();
+  return STATE_UF_MAP[clean] || stateInput.trim().slice(0, 2).toUpperCase();
+};
+
 export const CaptionGenerator = ({ data }: CaptionGeneratorProps) => {
   const [copied, setCopied] = useState(false);
+  const { crecis, formatCreci } = useCrecis();
+
+  const getPjCreci = (): string => {
+    if (!data.state || crecis.length === 0) return data.creci;
+    const uf = resolveUF(data.state);
+    const pjCreci = crecis.find(c => c.state.toUpperCase() === uf && c.name === 'PJ');
+    if (pjCreci) return formatCreci(pjCreci);
+    const stateCreci = crecis.find(c => c.state.toUpperCase() === uf);
+    if (stateCreci) return formatCreci(stateCreci);
+    const anyPj = crecis.find(c => c.name === 'PJ');
+    return anyPj ? formatCreci(anyPj) : data.creci;
+  };
 
   const generateCaption = (): string => {
     const lines: string[] = [];
@@ -100,6 +134,8 @@ export const CaptionGenerator = ({ data }: CaptionGeneratorProps) => {
       lines.push('');
     }
 
+    const pjCreci = getPjCreci();
+
     lines.push('📞 Mais informações:');
     if (data.selectedBroker === 'almir') {
       // Almir aparece primeiro como Regional, depois repete Iury como Nacional
@@ -108,12 +144,12 @@ export const CaptionGenerator = ({ data }: CaptionGeneratorProps) => {
       lines.push(`📱 (85) 99271-0485`);
       lines.push('');
       lines.push(`👤 Iury Sampaio - Nacional`);
-      lines.push(`📄 ${data.creci}`);
+      lines.push(`📄 ${pjCreci}`);
       lines.push(`📱 (92) 98839-1098`);
     } else {
-      // Padrão: somente Iury
+      // Padrão: somente Iury/corretor selecionado — sempre CRECI PJ do estado
       if (data.contactName) lines.push(`👤 ${data.contactName}`);
-      if (data.creci) lines.push(`📄 ${data.creci}`);
+      if (data.creci) lines.push(`📄 ${pjCreci}`);
       if (data.contactPhone) lines.push(`📱 ${data.contactPhone}`);
     }
 
