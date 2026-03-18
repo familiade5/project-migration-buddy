@@ -10,8 +10,46 @@ interface PostCoverProps {
   photos?: string[];
 }
 
+// Map of full state names to UF abbreviations
+const STATE_UF_MAP: Record<string, string> = {
+  'acre': 'AC', 'alagoas': 'AL', 'amapá': 'AP', 'amapa': 'AP',
+  'amazonas': 'AM', 'bahia': 'BA', 'ceará': 'CE', 'ceara': 'CE',
+  'distrito federal': 'DF', 'espírito santo': 'ES', 'espirito santo': 'ES',
+  'goiás': 'GO', 'goias': 'GO', 'maranhão': 'MA', 'maranhao': 'MA',
+  'mato grosso do sul': 'MS', 'mato grosso': 'MT',
+  'minas gerais': 'MG', 'pará': 'PA', 'para': 'PA',
+  'paraíba': 'PB', 'paraiba': 'PB', 'paraná': 'PR', 'parana': 'PR',
+  'pernambuco': 'PE', 'piauí': 'PI', 'piaui': 'PI',
+  'rio de janeiro': 'RJ', 'rio grande do norte': 'RN',
+  'rio grande do sul': 'RS', 'rondônia': 'RO', 'rondonia': 'RO',
+  'roraima': 'RR', 'santa catarina': 'SC', 'são paulo': 'SP', 'sao paulo': 'SP',
+  'sergipe': 'SE', 'tocantins': 'TO',
+};
+
+const resolveUF = (stateInput: string): string => {
+  const clean = stateInput.trim().toLowerCase();
+  if (clean.length === 2) return clean.toUpperCase();
+  return STATE_UF_MAP[clean] || stateInput.trim().slice(0, 2).toUpperCase();
+};
+
 export const PostCover = ({ data, photo }: PostCoverProps) => {
   const logoBase64 = useLogoBase64(logoVDH);
+  const { crecis, formatCreci } = useCrecis();
+
+  // CRECI da capa: sempre o PJ do estado do imóvel, nunca o do corretor
+  const getCoverCreci = () => {
+    if (!data.state || crecis.length === 0) return data.creci;
+    const uf = resolveUF(data.state);
+    const pjCreci = crecis.find(c => c.state.toUpperCase() === uf && c.name === 'PJ');
+    if (pjCreci) return formatCreci(pjCreci);
+    // fallback: qualquer creci do estado
+    const stateCreci = crecis.find(c => c.state.toUpperCase() === uf);
+    if (stateCreci) return formatCreci(stateCreci);
+    // fallback final: PJ de qualquer estado
+    const anyPj = crecis.find(c => c.name === 'PJ');
+    return anyPj ? formatCreci(anyPj) : data.creci;
+  };
+  const coverCreci = getCoverCreci();
 
   // Endereço completo automático
   const displayAddress = data.fullAddress ||
