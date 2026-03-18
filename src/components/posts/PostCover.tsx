@@ -2,6 +2,7 @@ import { PropertyData } from '@/types/property';
 import { Sparkles, TrendingDown, Zap } from 'lucide-react';
 import logoVDH from '@/assets/logo-vdh.jpg';
 import { useLogoBase64 } from '@/hooks/useLogoBase64';
+import { useCrecis } from '@/hooks/useCrecis';
 
 interface PostCoverProps {
   data: PropertyData;
