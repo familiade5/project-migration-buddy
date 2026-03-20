@@ -651,11 +651,12 @@ export const AMPhotoSlide = ({
 
 // ─── Último Slide: INFORMAÇÃO ─────────────────────────────────────────────────
 // Layout fiel ao Figma (canvas 1080×1080 → escala ÷3 = 360×360):
-//   • Foto full-bleed como fundo
-//   • Cartão branco arredondado (339×339 em 10,10) como moldura interna
-//   • Borda branca 2.5px sobre a foto
-//   • Gradiente escuro da ESQUERDA (texto) para transparente na DIREITA (foto)
-//   • Barra branca bottom-right (124×50 em 226,300) com logo colorida
+//   • Fundo branco (slide background = moldura visível)
+//   • Union white card (339×339 em 10,10 r=10) ATRÁS da foto — cria borda branca
+//   • Foto clipada ao shape do Union (border-radius 10px) — moldura branca aparece
+//   • Borda stroke branca 2.5px sobre a foto (Rectangle 148)
+//   • Gradiente escuro 270deg (dark LEFT, transparente RIGHT) sobre a foto
+//   • Barra branca bottom-right (124×50 em 226,300) com logo colorida sobreposta
 //   • Título branco 600 20px/20px (left:47, top:40)
 //   • Subtítulo branco 400 10.7px/15px (left:47, top:145)
 export const AMInfoSlide = ({
@@ -665,6 +666,9 @@ export const AMInfoSlide = ({
   data: AMPropertyData;
   photo?: string;
 }) => {
+  const uid = useId();
+  const clipId = `am-info-${uid}`;
+
   const headline =
     data.infoMessage ||
     'A Apartamentos Manaus acompanha você em todas as etapas da escolha do seu imóvel.';
@@ -682,87 +686,113 @@ export const AMInfoSlide = ({
         overflow: 'hidden',
       }}
     >
-      {/* ── Foto full-bleed (camada de fundo) ── */}
-      {photo ? (
-        <img
-          src={photo}
-          alt=""
-          style={{
-            position: 'absolute',
-            inset: 0,
-            width: '100%',
-            height: '100%',
-            objectFit: 'cover',
-            display: 'block',
-            zIndex: 1,
-          }}
-        />
-      ) : (
-        <div style={{ position: 'absolute', inset: 0, backgroundColor: '#374151', zIndex: 1 }} />
-      )}
+      {/* ── clipPath: rounded rect do Union (339×339 em 10,10 r=10) ── */}
+      <svg aria-hidden="true" style={{ position: 'absolute', width: 0, height: 0, overflow: 'hidden' }}>
+        <defs>
+          <clipPath id={clipId} clipPathUnits="userSpaceOnUse">
+            <rect x="10" y="10" width="339" height="339" rx="10" ry="10" />
+          </clipPath>
+        </defs>
+      </svg>
 
-      {/* ── Gradiente escuro: dark on LEFT, transparent on RIGHT (270deg) ── */}
+      {/* ── Foto clipada ao Union — revela moldura branca do slide ── */}
       <div
         style={{
           position: 'absolute',
-          inset: 0,
-          background: 'linear-gradient(270deg, rgba(0,0,0,0) -18.53%, rgba(0,0,0,0.85) 100%)',
-          zIndex: 2,
+          top: 0, left: 0,
+          width: 360, height: 360,
+          clipPath: `url(#${clipId})`,
+          zIndex: 1,
         }}
-      />
+      >
+        {photo ? (
+          <img
+            src={photo}
+            alt=""
+            style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+          />
+        ) : (
+          <div style={{ width: '100%', height: '100%', backgroundColor: '#374151' }} />
+        )}
+        {/* Gradiente escuro: dark LEFT → transparente RIGHT */}
+        <div style={{
+          position: 'absolute', inset: 0,
+          background: 'linear-gradient(270deg, rgba(0,0,0,0) -18.53%, rgba(0,0,0,0.85) 100%)',
+        }} />
+      </div>
 
-      {/* ── Cartão branco arredondado (moldura interna sobre a foto) ── */}
+      {/* ── Borda stroke branca (Rectangle 148) sobre a foto ── */}
       <div
         style={{
           position: 'absolute',
-          top: 10,
-          left: 10,
-          width: 339,
-          height: 339,
+          top: 10, left: 10,
+          width: 339, height: 339,
           borderRadius: 10,
           border: '2.5px solid #ffffff',
           boxSizing: 'border-box',
-          zIndex: 3,
+          zIndex: 2,
           pointerEvents: 'none',
         }}
       />
-
 
       {/* ── Título (left:47, top:40, 20px/20px, white 600) ── */}
       <h2
         style={{
           position: 'absolute',
-          left: 47,
-          top: 40,
-          width: 220,
+          left: 47, top: 40,
+          width: 185,
           color: '#ffffff',
-          fontWeight: 600,
+          fontWeight: 700,
           fontSize: 20,
-          lineHeight: '20px',
+          lineHeight: '22px',
           margin: 0,
-          zIndex: 6,
+          zIndex: 5,
         }}
       >
         {headline}
       </h2>
 
-      {/* ── Subtítulo (left:47, top:145, 10.7px/15px, white 400) ── */}
+      {/* ── Subtítulo (left:47, top:195, 10.7px/15px, white 400) ── */}
       <p
         style={{
           position: 'absolute',
-          left: 47,
-          top: 145,
-          width: 172,
+          left: 47, top: 195,
+          width: 165,
           color: '#ffffff',
           fontWeight: 400,
           fontSize: 10.7,
           lineHeight: '15px',
           margin: 0,
-          zIndex: 6,
+          zIndex: 5,
+          opacity: 0.92,
         }}
       >
         {subtitle}
       </p>
+
+      {/* ── Barra branca bottom-right (Rectangle 149: 124×50 em 226,300) ── */}
+      <div
+        style={{
+          position: 'absolute',
+          left: 226, top: 300,
+          width: 124, height: 50,
+          backgroundColor: '#ffffff',
+          zIndex: 6,
+        }}
+      />
+
+      {/* ── Logo colorida centrada na barra branca ── */}
+      <div
+        style={{
+          position: 'absolute',
+          left: 236, top: 309,
+          zIndex: 7,
+          display: 'flex',
+          alignItems: 'center',
+        }}
+      >
+        <AMLogo width={100} variant="color" />
+      </div>
     </div>
   );
 };
