@@ -696,7 +696,7 @@ export const AMInfoSlide = ({
         position: 'relative',
         width: 360,
         height: 360,
-        backgroundColor: '#ffffff',
+        backgroundColor: '#1a1a1a',
         fontFamily: 'Arial, sans-serif',
         overflow: 'hidden',
       }}
@@ -710,8 +710,8 @@ export const AMInfoSlide = ({
         </defs>
       </svg>
 
-      {/* ── Foto recortada pelo clipPath — fundo branco aparece como moldura ── */}
-      {photo ? (
+      {/* ── LAYER 1: Foto de fundo — preenche o slide inteiro, levemente escurecida ── */}
+      {photo && (
         <img
           src={photo}
           alt=""
@@ -722,24 +722,64 @@ export const AMInfoSlide = ({
             height: '100%',
             objectFit: 'cover',
             display: 'block',
-            clipPath: `url(#${clipId})`,
-            zIndex: 1,
+            filter: 'brightness(0.5) blur(2px)',
+            zIndex: 0,
           }}
         />
-      ) : (
-        <div style={{ position: 'absolute', inset: 0, backgroundColor: '#374151', clipPath: `url(#${clipId})`, zIndex: 1 }} />
       )}
 
-      {/* ── Gradiente escuro também recortado — não vaza sobre a moldura branca ── */}
+      {/* ── LAYER 2: Frame recortado com borda branca (outline via shadow) ── */}
       <div
         style={{
           position: 'absolute',
           inset: 0,
-          background: 'linear-gradient(270deg, rgba(0,0,0,0) -18.53%, rgba(0,0,0,0.85) 100%)',
-          clipPath: `url(#${clipId})`,
-          zIndex: 2,
+          zIndex: 1,
         }}
-      />
+      >
+        {/* Foto principal recortada pelo clipPath */}
+        {photo ? (
+          <img
+            src={photo}
+            alt=""
+            style={{
+              position: 'absolute',
+              inset: 0,
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
+              display: 'block',
+              clipPath: `url(#${clipId})`,
+              zIndex: 1,
+            }}
+          />
+        ) : (
+          <div style={{ position: 'absolute', inset: 0, backgroundColor: '#374151', clipPath: `url(#${clipId})`, zIndex: 1 }} />
+        )}
+
+        {/* Gradiente escuro recortado */}
+        <div
+          style={{
+            position: 'absolute',
+            inset: 0,
+            background: 'linear-gradient(270deg, rgba(0,0,0,0) -18.53%, rgba(0,0,0,0.85) 100%)',
+            clipPath: `url(#${clipId})`,
+            zIndex: 2,
+          }}
+        />
+
+        {/* Borda branca ao redor do shape recortado usando SVG stroke */}
+        <svg
+          style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', zIndex: 3, pointerEvents: 'none' }}
+          viewBox="0 0 360 360"
+        >
+          <path
+            d={shapePath}
+            fill="none"
+            stroke="white"
+            strokeWidth="2.5"
+          />
+        </svg>
+      </div>
 
       {/* ── Card logo — encaixado no notch inferior-direito (zIndex 20) ── */}
       <div
@@ -773,9 +813,9 @@ export const AMInfoSlide = ({
           color: '#ffffff',
           fontWeight: 600,
           fontSize: 20,
-          lineHeight: '20px',
+          lineHeight: '26px',
           margin: 0,
-          zIndex: 6,
+          zIndex: 10,
         }}
       >
         {headline}
@@ -786,14 +826,14 @@ export const AMInfoSlide = ({
         style={{
           position: 'absolute',
           left: 47,
-          top: 145,
+          top: 190,
           width: 172,
-          color: '#ffffff',
+          color: 'rgba(255,255,255,0.88)',
           fontWeight: 400,
           fontSize: 10.7,
           lineHeight: '15px',
           margin: 0,
-          zIndex: 6,
+          zIndex: 10,
         }}
       >
         {subtitle}
