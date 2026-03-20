@@ -727,15 +727,18 @@ export const AMInfoSlide = ({
         }}
       />
 
-      {/* ── Card logo — idêntico ao slide 3: bottom:14, right:14, borderRadius:10 ── */}
+      {/* ── Card logo — canto inf-dir flush com a moldura; outros 3 cantos arredondados ── */}
       <div
         style={{
           position: 'absolute',
-          bottom: 14,
-          right: 14,
+          bottom: 10,
+          right: 10,
           zIndex: 20,
           backgroundColor: '#ffffff',
-          borderRadius: 10,
+          borderTopLeftRadius: 10,
+          borderTopRightRadius: 10,
+          borderBottomLeftRadius: 10,
+          borderBottomRightRadius: 0,
           width: 96,
           height: 46,
           overflow: 'hidden',
