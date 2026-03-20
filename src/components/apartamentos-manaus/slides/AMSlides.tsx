@@ -785,26 +785,26 @@ export const AMInfoSlide = ({
         </svg>
       </div>
 
-      {/* ── Card logo — encaixado no notch inferior-direito (zIndex 20) ── */}
+      {/* ── Card logo — notch inferior-direito. Todos os 4 cantos r=12, afastado das bordas ── */}
+      {/* card: right=14, bottom=14, width=104, height=50 → todos os cantos visíveis */}
       <div
         style={{
           position: 'absolute',
-          bottom: 10,
-          right: 10,
+          bottom: 14,
+          right: 14,
           zIndex: 20,
           backgroundColor: '#ffffff',
-          borderRadius: 10,
-          width: 96,
-          height: 46,
-          overflow: 'hidden',
+          borderRadius: 12,
+          width: 104,
+          height: 50,
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
           boxSizing: 'border-box',
-          padding: '2px 4px',
+          padding: '2px 6px',
         }}
       >
-        <AMLogo width={88} variant="color" />
+        <AMLogo width={92} variant="color" />
       </div>
 
       {/* ── Título ── */}
@@ -812,10 +812,10 @@ export const AMInfoSlide = ({
         style={{
           position: 'absolute',
           left: 47,
-          top: 40,
-          width: 220,
+          top: 38,
+          width: 210,
           color: '#ffffff',
-          fontWeight: 600,
+          fontWeight: 700,
           fontSize: 20,
           lineHeight: '26px',
           margin: 0,
@@ -830,9 +830,9 @@ export const AMInfoSlide = ({
         style={{
           position: 'absolute',
           left: 47,
-          top: 190,
-          width: 172,
-          color: 'rgba(255,255,255,0.88)',
+          top: 192,
+          width: 170,
+          color: 'rgba(255,255,255,0.85)',
           fontWeight: 400,
           fontSize: 10.7,
           lineHeight: '15px',
