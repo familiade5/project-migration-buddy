@@ -650,9 +650,9 @@ export const AMPhotoSlide = ({
 };
 
 // ─── Último Slide: INFORMAÇÃO ─────────────────────────────────────────────────
-// Mesma técnica do Slide 3: fundo branco mostra-se como moldura via clipPath.
-// Notch bottom-right para o card da logo (96×46 em bottom:10, right:10).
-// r=10 em todos os cantos — idêntico ao Slide 3.
+// Logo card: bottom=14, right=14, width=104, height=50, r=12 em todos os cantos
+// Isso garante que todos os 4 cantos do card fiquem visíveis (longe das bordas do slide)
+// Frame: r=12 nos cantos externos + notch côncavo (Q) nos 2 cantos superiores do card
 export const AMInfoSlide = ({
   data,
   photo,
@@ -669,24 +669,28 @@ export const AMInfoSlide = ({
   const subtitle =
     'Encontrar o imóvel ideal pode ser mais simples do que parece. A Apartamentos Manaus orienta você sobre as possibilidades de financiamento e acompanha todo o processo com transparência.';
 
-  // Logo card: bottom:10, right:10 → top=304, left=254, right=350, bottom=350
-  // Clip path: r=10 outer corners + concave Q notch at bottom-right (same as Slide 3)
-  //   Q control radius = 10 → V 294 then Q 350 304 340 304 (top-right notch concave)
-  //                          → H 264 then Q 254 304 254 314 (top-left notch concave)
-  //                          → V 340 then A 10 10 → 244 350 (bottom-left notch convex)
+  // Logo card dimensions (all 4 corners visible, inset from slide edges):
+  // right=14, bottom=14, width=104, height=50
+  // → left=360-14-104=242, top=360-14-50=296, right=360-14=346, bottom=360-14=346
+  // r=12 on all corners of the card
+  //
+  // Frame notch (concave Q corners at card top-left and top-right):
+  //   top-right notch: V 284 → Q 346 296 334 296
+  //   top-left notch:  H 254 → Q 242 296 242 308
+  //   bottom-left notch corner: V 334 → A 12 12 0 0 1 230 346
   const shapePath = [
-    'M 340 10',
-    'A 10 10 0 0 1 350 20',
-    'V 294',
-    'Q 350 304 340 304',
-    'H 264',
-    'Q 254 304 254 314',
-    'V 340',
-    'A 10 10 0 0 1 244 350',
-    'H 20',
-    'A 10 10 0 0 1 10 340',
-    'V 20',
-    'A 10 10 0 0 1 20 10',
+    'M 336 12',
+    'A 12 12 0 0 1 348 24',
+    'V 284',
+    'Q 348 296 336 296',
+    'H 254',
+    'Q 242 296 242 308',
+    'V 334',
+    'A 12 12 0 0 1 230 346',
+    'H 24',
+    'A 12 12 0 0 1 12 334',
+    'V 24',
+    'A 12 12 0 0 1 24 12',
     'Z',
   ].join(' ');
 
