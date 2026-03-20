@@ -711,8 +711,9 @@ export const AMInfoSlide = ({
         }}
       />
 
-      {/* ── Moldura: notch sobe 10px para expor cantos arredondados do card ──
-           Notch começa em y=293 (10px acima do topo do card em y=303). ── */}
+      {/* ── Moldura interna: borda branca 2.5px com notch côncavo no canto inf-dir ──
+           Card logo: 96×46 em bottom:10,right:10 → x:254→349, y:303→349.
+           Notch Q raio=10 nos dois cantos côncavos. ── */}
       <svg
         aria-hidden="true"
         style={{ position: 'absolute', top: 0, left: 0, width: 360, height: 360, zIndex: 3, pointerEvents: 'none' }}
@@ -720,15 +721,21 @@ export const AMInfoSlide = ({
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
       >
+        {/*
+          Retângulo 10,10 → 349,349 r=10, com notch inf-dir para o card 96×46.
+          Notch: recorte de x=254→349, y=303→349.
+          Curva côncava superior-direita do notch: Q 349,303 → 339,303
+          Curva côncava superior-esquerda do notch: Q 254,303 → 254,313
+        */}
         <path
-          d="M 20 10 H 339 A 10 10 0 0 1 349 20 V 293 Q 349 303 339 303 H 264 Q 254 303 254 313 V 349 H 20 A 10 10 0 0 1 10 339 V 20 A 10 10 0 0 1 20 10 Z"
+          d="M 20 10 H 339 A 10 10 0 0 1 349 20 V 303 Q 349 313 339 313 H 264 Q 254 313 254 323 V 349 H 20 A 10 10 0 0 1 10 339 V 20 A 10 10 0 0 1 20 10 Z"
           stroke="white"
           strokeWidth="2.5"
           fill="none"
         />
       </svg>
 
-      {/* ── Card logo "Ap. Manaus" — exclusivo deste slide, cantos r=10 ── */}
+      {/* ── Card logo — todos os cantos arredondados r=10, igual ao slide 3 ── */}
       <div
         style={{
           position: 'absolute',
@@ -739,36 +746,15 @@ export const AMInfoSlide = ({
           borderRadius: 10,
           width: 96,
           height: 46,
+          overflow: 'hidden',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          gap: 5,
           boxSizing: 'border-box',
-          padding: '4px 6px',
-          overflow: 'hidden',
+          padding: '2px 4px',
         }}
       >
-        {/* Ícone da logo — mostra apenas a marca (lado esquerdo do PNG) */}
-        <div style={{ flexShrink: 0, width: 28, height: 28, overflow: 'hidden', position: 'relative' }}>
-          <img
-            src={logoAM}
-            alt=""
-            style={{
-              position: 'absolute',
-              left: 0,
-              top: '50%',
-              transform: 'translateY(-50%)',
-              height: 28,
-              width: 'auto',
-              maxWidth: 'none',
-            }}
-          />
-        </div>
-        {/* Texto "Ap. Manaus" */}
-        <div style={{ display: 'flex', flexDirection: 'column', lineHeight: 1.1 }}>
-          <span style={{ fontSize: 8, fontWeight: 700, color: '#1B5EA6', whiteSpace: 'nowrap' }}>Ap.</span>
-          <span style={{ fontSize: 8, fontWeight: 700, color: '#F47920', whiteSpace: 'nowrap' }}>Manaus</span>
-        </div>
+        <AMLogo width={88} variant="color" />
       </div>
 
       {/* ── Título (left:47, top:40, 20px/20px, white 600) ── */}
