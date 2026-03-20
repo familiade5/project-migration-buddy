@@ -727,6 +727,27 @@ export const AMInfoSlide = ({
         }}
       />
 
+      {/* ── Card logo — canto inferior-direito, fundido com a moldura branca ── */}
+      {/* O card branco preenche o canto da moldura: sem borda nos lados que encostam na moldura */}
+      <div
+        style={{
+          position: 'absolute',
+          bottom: 10,
+          right: 10,
+          width: 110,
+          height: 52,
+          backgroundColor: '#ffffff',
+          borderRadius: '0 0 10px 0',
+          zIndex: 4,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          boxSizing: 'border-box',
+          padding: '4px 8px',
+        }}
+      >
+        <AMLogo width={94} variant="color" />
+      </div>
 
       {/* ── Título (left:47, top:40, 20px/20px, white 600) ── */}
       <h2
