@@ -711,25 +711,44 @@ export const AMInfoSlide = ({
         }}
       />
 
-      {/* ── Cartão branco arredondado (moldura interna sobre a foto) ── */}
-      <div
-        style={{
-          position: 'absolute',
-          top: 10,
-          left: 10,
-          width: 339,
-          height: 339,
-          borderRadius: 10,
-          border: '2.5px solid #ffffff',
-          boxSizing: 'border-box',
-          zIndex: 3,
-          pointerEvents: 'none',
-        }}
-      />
+      {/* ── Moldura interna: SVG com notch côncavo no canto inf-dir para a logo ──
+           Moldura: 339×339 em (10,10). Logo card: 96×46 em (254,303).
+           Notch com folga de 8px: recorte de (246,295) a (349,349).
+           Cantos côncavos via curvas Q — idênticos ao Slide 3. ── */}
+      <svg
+        aria-hidden="true"
+        style={{ position: 'absolute', top: 0, left: 0, width: 360, height: 360, zIndex: 3, pointerEvents: 'none' }}
+        viewBox="0 0 360 360"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        {/* Moldura branca: rect 339×339 em (10,10) r=10, com notch no canto inf-dir */}
+        <path
+          d={[
+            'M 20 10',           // top-left arc start
+            'A 10 10 0 0 1 30 10', // essa linha não é usada — começo no canto
+            // Começa top-left
+            'M 10 20',
+            'A 10 10 0 0 1 20 10',
+            'H 339',
+            'A 10 10 0 0 1 349 20',
+            'V 295',             // desce até o notch (303 - 8 = 295)
+            'Q 349 303 341 303', // curva côncava canto sup-dir do notch
+            'H 254',             // topo do notch
+            'Q 246 303 246 311', // curva côncava canto sup-esq do notch
+            'V 349',             // desce até o bottom
+            'H 20',
+            'A 10 10 0 0 1 10 339',
+            'V 20',
+            'Z',
+          ].join(' ')}
+          stroke="white"
+          strokeWidth="2.5"
+          fill="none"
+        />
+      </svg>
 
-      {/* ── Card logo — flush no canto inf-dir da moldura (borderRadius 10).
-           O canto inf-dir encosta na moldura branca (raio coincide),
-           os outros 3 cantos são arredondados para criar o recorte visual. ── */}
+      {/* ── Card logo — encaixado no notch inf-dir, cantos côncavos criados pelo SVG acima ── */}
       <div
         style={{
           position: 'absolute',
@@ -738,9 +757,9 @@ export const AMInfoSlide = ({
           zIndex: 20,
           backgroundColor: '#ffffff',
           borderTopLeftRadius: 10,
-          borderTopRightRadius: 10,
-          borderBottomLeftRadius: 10,
-          borderBottomRightRadius: 10,
+          borderTopRightRadius: 0,
+          borderBottomLeftRadius: 0,
+          borderBottomRightRadius: 0,
           width: 96,
           height: 46,
           overflow: 'hidden',
