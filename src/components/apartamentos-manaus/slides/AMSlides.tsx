@@ -739,16 +739,13 @@ export const AMInfoSlide = ({
           borderRadius: 10,
           zIndex: 4,
           boxSizing: 'border-box',
+          overflow: 'hidden',
         }}
       >
-        {/* Group 166 Figma ÷3: left dentro do card = 249-226=23, top=313-300=13, w:76, h:23 */}
-        <AMLogo width={76} variant="color"
-          style={{
-            position: 'absolute',
-            left: 23,
-            top: 13,
-          } as React.CSSProperties}
-        />
+        {/* Group 166 Figma ÷3: offset dentro do card = left:23, top:13, w:76 */}
+        <div style={{ position: 'absolute', left: 23, top: 13 }}>
+          <AMLogo width={76} variant="color" />
+        </div>
       </div>
 
       {/* ── Título (left:47, top:40, 20px/20px, white 600) ── */}
