@@ -745,13 +745,17 @@ export const AMInfoSlide = ({
           width: 124,
           height: 68,
           display: 'flex',
+          flexDirection: 'column',
           alignItems: 'center',
           justifyContent: 'center',
           boxSizing: 'border-box',
-          padding: '2px 6px',
+          padding: '4px 8px',
         }}
       >
-        <AMLogo width={92} variant="color" />
+        {/* Logo texto "AP. Manaus" somente para o slide 4 */}
+        <span style={{ fontFamily: 'Arial, sans-serif', fontWeight: 900, fontSize: 15, color: '#1B5EA6', letterSpacing: '0.04em', lineHeight: 1.1 }}>AP.</span>
+        <span style={{ fontFamily: 'Arial, sans-serif', fontWeight: 700, fontSize: 11, color: '#1B5EA6', letterSpacing: '0.08em', lineHeight: 1.2, textTransform: 'uppercase' }}>Manaus</span>
+        <span style={{ fontFamily: 'Arial, sans-serif', fontWeight: 400, fontSize: 7, color: '#F47920', letterSpacing: '0.12em', textTransform: 'uppercase', marginTop: 1 }}>Imobiliária</span>
       </div>
 
       {/* ── LAYER 3: Frame recortado com borda branca ── */}
