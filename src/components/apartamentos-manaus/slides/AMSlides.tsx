@@ -711,10 +711,10 @@ export const AMInfoSlide = ({
         }}
       />
 
-      {/* ── Moldura interna: borda branca 2.5px r=10, com notch côncavo no canto inf-dir ──
-           A moldura é desenhada como stroke de um path SVG.
-           Moldura: 339×339 em (10,10). Card logo: 96×46 → canto inf-dir em (349,349).
-           Notch: recorte (246→349, 303→349). Curvas Q para cantos côncavos. ── */}
+      {/* ── Moldura interna: borda branca 2.5px com notch côncavo no canto inf-dir ──
+           Path: retângulo 10,10 → 349,349 (r=10), com notch no canto inf-dir.
+           Card logo: 96×46, posição bottom:10,right:10 → ocupa (254,303)→(349,349).
+           Notch com Q (raio 8) nos dois cantos côncavos. ── */}
       <svg
         aria-hidden="true"
         style={{ position: 'absolute', top: 0, left: 0, width: 360, height: 360, zIndex: 3, pointerEvents: 'none' }}
@@ -722,8 +722,14 @@ export const AMInfoSlide = ({
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
       >
+        {/*
+          Moldura com notch inferior-direito:
+          Começa no top-left (após arco), vai horário:
+          top → direita → desce até notch → curva côncava direita → vai para esquerda no notch →
+          curva côncava esquerda → desce até bottom-right → esquerda → bottom-left (arco) → sobe → Z
+        */}
         <path
-          d="M 20 10 H 339 A 10 10 0 0 1 349 20 V 295 Q 349 303 341 303 H 254 Q 246 303 246 311 V 349 H 20 A 10 10 0 0 1 10 339 V 20 A 10 10 0 0 1 20 10 Z"
+          d="M 20 10 H 339 A 10 10 0 0 1 349 20 V 303 Q 349 311 341 311 H 262 Q 254 311 254 319 V 349 H 20 A 10 10 0 0 1 10 339 V 20 A 10 10 0 0 1 20 10 Z"
           stroke="white"
           strokeWidth="2.5"
           fill="none"
@@ -738,12 +744,12 @@ export const AMInfoSlide = ({
           right: 10,
           zIndex: 20,
           backgroundColor: '#ffffff',
-          borderTopLeftRadius: 10,
+          borderTopLeftRadius: 8,
           borderTopRightRadius: 0,
           borderBottomLeftRadius: 0,
           borderBottomRightRadius: 0,
           width: 96,
-          height: 46,
+          height: 40,
           overflow: 'hidden',
           display: 'flex',
           alignItems: 'center',
