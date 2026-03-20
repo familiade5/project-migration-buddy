@@ -736,7 +736,7 @@ export const AMInfoSlide = ({
         />
       </svg>
 
-      {/* ── Card logo — encaixado no notch inf-dir ── */}
+      {/* ── Card logo — todos os cantos arredondados r=10, igual ao slide 3 ── */}
       <div
         style={{
           position: 'absolute',
@@ -744,12 +744,9 @@ export const AMInfoSlide = ({
           right: 10,
           zIndex: 20,
           backgroundColor: '#ffffff',
-          borderTopLeftRadius: 8,
-          borderTopRightRadius: 0,
-          borderBottomLeftRadius: 0,
-          borderBottomRightRadius: 0,
+          borderRadius: 10,
           width: 96,
-          height: 40,
+          height: 46,
           overflow: 'hidden',
           display: 'flex',
           alignItems: 'center',
