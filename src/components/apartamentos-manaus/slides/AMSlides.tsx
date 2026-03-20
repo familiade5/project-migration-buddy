@@ -732,12 +732,34 @@ export const AMInfoSlide = ({
         />
       )}
 
-      {/* ── LAYER 2: Frame recortado com borda branca (outline via shadow) ── */}
+      {/* ── LAYER 2: Quadro branco da logo — ATRÁS do frame recortado, NA FRENTE do fundo ── */}
+      {/* Maior que o notch → borda branca visível ao redor da logo */}
+      <div
+        style={{
+          position: 'absolute',
+          bottom: 8,
+          right: 8,
+          zIndex: 1,
+          backgroundColor: '#ffffff',
+          borderRadius: 16,
+          width: 124,
+          height: 68,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          boxSizing: 'border-box',
+          padding: '2px 6px',
+        }}
+      >
+        <AMLogo width={92} variant="color" />
+      </div>
+
+      {/* ── LAYER 3: Frame recortado com borda branca ── */}
       <div
         style={{
           position: 'absolute',
           inset: 0,
-          zIndex: 1,
+          zIndex: 2,
         }}
       >
         {/* Foto principal recortada pelo clipPath */}
@@ -753,11 +775,10 @@ export const AMInfoSlide = ({
               objectFit: 'cover',
               display: 'block',
               clipPath: `url(#${clipId})`,
-              zIndex: 1,
             }}
           />
         ) : (
-          <div style={{ position: 'absolute', inset: 0, backgroundColor: '#374151', clipPath: `url(#${clipId})`, zIndex: 1 }} />
+          <div style={{ position: 'absolute', inset: 0, backgroundColor: '#374151', clipPath: `url(#${clipId})` }} />
         )}
 
         {/* Gradiente escuro recortado */}
@@ -767,13 +788,12 @@ export const AMInfoSlide = ({
             inset: 0,
             background: 'linear-gradient(270deg, rgba(0,0,0,0) -18.53%, rgba(0,0,0,0.85) 100%)',
             clipPath: `url(#${clipId})`,
-            zIndex: 2,
           }}
         />
 
-        {/* Borda branca ao redor do shape recortado usando SVG stroke */}
+        {/* Borda branca ao redor do shape */}
         <svg
-          style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', zIndex: 3, pointerEvents: 'none' }}
+          style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', pointerEvents: 'none' }}
           viewBox="0 0 360 360"
         >
           <path
@@ -783,28 +803,6 @@ export const AMInfoSlide = ({
             strokeWidth="2.5"
           />
         </svg>
-      </div>
-
-      {/* ── Card logo — notch inferior-direito. Todos os 4 cantos r=12, afastado das bordas ── */}
-      {/* card: right=14, bottom=14, width=104, height=50 → todos os cantos visíveis */}
-      <div
-        style={{
-          position: 'absolute',
-          bottom: 14,
-          right: 14,
-          zIndex: 20,
-          backgroundColor: '#ffffff',
-          borderRadius: 12,
-          width: 104,
-          height: 50,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          boxSizing: 'border-box',
-          padding: '2px 6px',
-        }}
-      >
-        <AMLogo width={92} variant="color" />
       </div>
 
       {/* ── Título ── */}
