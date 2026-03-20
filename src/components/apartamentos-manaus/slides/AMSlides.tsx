@@ -730,18 +730,18 @@ export const AMInfoSlide = ({
         />
       )}
 
-      {/* ── LAYER 2: Quadro branco da logo — ATRÁS do frame recortado, NA FRENTE do fundo ── */}
-      {/* Maior que o notch → borda branca visível ao redor da logo */}
+      {/* ── LAYER 2: Quadro branco da logo — ATRÁS do frame, NA FRENTE do fundo ── */}
+      {/* right=12 alinha borda direita com o frame (x=348). bottom=26 sobe o card. */}
       <div
         style={{
           position: 'absolute',
-          bottom: 8,
-          right: 8,
+          bottom: 26,
+          right: 12,
           zIndex: 1,
           backgroundColor: '#ffffff',
           borderRadius: 16,
-          width: 124,
-          height: 68,
+          width: 120,
+          height: 66,
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
