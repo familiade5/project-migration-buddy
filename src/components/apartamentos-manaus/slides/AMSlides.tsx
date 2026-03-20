@@ -650,9 +650,10 @@ export const AMPhotoSlide = ({
 };
 
 // ─── Último Slide: INFORMAÇÃO ─────────────────────────────────────────────────
-// Mesma técnica do Slide 3: fundo branco mostra-se como moldura via clipPath.
-// Notch bottom-right para o card da logo (96×46 em bottom:10, right:10).
-// r=10 em todos os cantos — idêntico ao Slide 3.
+// Design: foto full-bleed com border-radius 22px, margem de 10px de cada lado.
+// O fundo branco do slide aparece pelos cantos arredondados = moldura branca.
+// Card da logo: canto inferior direito, fora da área da foto (sobre o fundo branco).
+// Idêntico ao padrão visual dos outros slides do carrossel AM.
 export const AMInfoSlide = ({
   data,
   photo,
@@ -660,35 +661,18 @@ export const AMInfoSlide = ({
   data: AMPropertyData;
   photo?: string;
 }) => {
-  const uid = useId();
-  const clipId = `am-info-${uid}`;
-
   const headline =
     data.infoMessage ||
     'A Apartamentos Manaus acompanha você em todas as etapas da escolha do seu imóvel.';
   const subtitle =
     'Encontrar o imóvel ideal pode ser mais simples do que parece. A Apartamentos Manaus orienta você sobre as possibilidades de financiamento e acompanha todo o processo com transparência.';
 
-  // Logo card: bottom:10, right:10 → top=304, left=254, right=350, bottom=350
-  // Clip path: r=10 outer corners + concave Q notch at bottom-right (same as Slide 3)
-  //   Q control radius = 10 → V 294 then Q 350 304 340 304 (top-right notch concave)
-  //                          → H 264 then Q 254 304 254 314 (top-left notch concave)
-  //                          → V 340 then A 10 10 → 244 350 (bottom-left notch convex)
-  const shapePath = [
-    'M 340 10',
-    'A 10 10 0 0 1 350 20',
-    'V 294',
-    'Q 350 304 340 304',
-    'H 264',
-    'Q 254 304 254 314',
-    'V 340',
-    'A 10 10 0 0 1 244 350',
-    'H 20',
-    'A 10 10 0 0 1 10 340',
-    'V 20',
-    'A 10 10 0 0 1 20 10',
-    'Z',
-  ].join(' ');
+  // Photo margins: 10px top/left/right, bottom leaves room for logo card (10px + 46px + 10px = 66px)
+  const MARGIN = 10;
+  const LOGO_H = 46;
+  const LOGO_W = 96;
+  const RADIUS = 22;
+  const photoBottom = MARGIN + LOGO_H + MARGIN; // 66px from bottom
 
   return (
     <div
@@ -701,79 +685,53 @@ export const AMInfoSlide = ({
         overflow: 'hidden',
       }}
     >
-      {/* ── clipPath definition ── */}
-      <svg aria-hidden="true" style={{ position: 'absolute', width: 0, height: 0, overflow: 'hidden' }}>
-        <defs>
-          <clipPath id={clipId} clipPathUnits="userSpaceOnUse">
-            <path d={shapePath} />
-          </clipPath>
-        </defs>
-      </svg>
-
-      {/* ── Foto recortada pelo clipPath — fundo branco aparece como moldura ── */}
-      {photo ? (
-        <img
-          src={photo}
-          alt=""
+      {/* ── Foto com border-radius — fundo branco visível nos cantos = moldura ── */}
+      <div
+        style={{
+          position: 'absolute',
+          top: MARGIN,
+          left: MARGIN,
+          right: MARGIN,
+          bottom: photoBottom,
+          borderRadius: RADIUS,
+          overflow: 'hidden',
+          zIndex: 1,
+          backgroundColor: '#374151',
+        }}
+      >
+        {photo && (
+          <img
+            src={photo}
+            alt=""
+            style={{
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
+              display: 'block',
+            }}
+          />
+        )}
+        {/* Gradiente escuro à esquerda para legibilidade do texto */}
+        <div
           style={{
             position: 'absolute',
             inset: 0,
-            width: '100%',
-            height: '100%',
-            objectFit: 'cover',
-            display: 'block',
-            clipPath: `url(#${clipId})`,
-            zIndex: 1,
+            background: 'linear-gradient(270deg, rgba(0,0,0,0) 20%, rgba(0,0,0,0.75) 100%)',
           }}
         />
-      ) : (
-        <div style={{ position: 'absolute', inset: 0, backgroundColor: '#374151', clipPath: `url(#${clipId})`, zIndex: 1 }} />
-      )}
-
-      {/* ── Gradiente escuro também recortado — não vaza sobre a moldura branca ── */}
-      <div
-        style={{
-          position: 'absolute',
-          inset: 0,
-          background: 'linear-gradient(270deg, rgba(0,0,0,0) -18.53%, rgba(0,0,0,0.85) 100%)',
-          clipPath: `url(#${clipId})`,
-          zIndex: 2,
-        }}
-      />
-
-      {/* ── Card logo — encaixado no notch inferior-direito (zIndex 20) ── */}
-      <div
-        style={{
-          position: 'absolute',
-          bottom: 10,
-          right: 10,
-          zIndex: 20,
-          backgroundColor: '#ffffff',
-          borderRadius: 10,
-          width: 96,
-          height: 46,
-          overflow: 'hidden',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          boxSizing: 'border-box',
-          padding: '2px 4px',
-        }}
-      >
-        <AMLogo width={88} variant="color" />
       </div>
 
       {/* ── Título ── */}
       <h2
         style={{
           position: 'absolute',
-          left: 47,
-          top: 40,
-          width: 220,
+          left: MARGIN + 16,
+          top: MARGIN + 20,
+          width: 200,
           color: '#ffffff',
-          fontWeight: 600,
-          fontSize: 20,
-          lineHeight: '20px',
+          fontWeight: 700,
+          fontSize: 19,
+          lineHeight: '23px',
           margin: 0,
           zIndex: 6,
         }}
@@ -785,19 +743,41 @@ export const AMInfoSlide = ({
       <p
         style={{
           position: 'absolute',
-          left: 47,
-          top: 145,
-          width: 172,
-          color: '#ffffff',
+          left: MARGIN + 16,
+          top: MARGIN + 135,
+          width: 170,
+          color: 'rgba(255,255,255,0.9)',
           fontWeight: 400,
-          fontSize: 10.7,
-          lineHeight: '15px',
+          fontSize: 10,
+          lineHeight: '14px',
           margin: 0,
           zIndex: 6,
         }}
       >
         {subtitle}
       </p>
+
+      {/* ── Card logo — canto inferior direito, sobre o fundo branco ── */}
+      <div
+        style={{
+          position: 'absolute',
+          bottom: MARGIN,
+          right: MARGIN,
+          zIndex: 20,
+          backgroundColor: '#ffffff',
+          borderRadius: RADIUS,
+          width: LOGO_W,
+          height: LOGO_H,
+          overflow: 'hidden',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          boxSizing: 'border-box',
+          padding: '2px 4px',
+        }}
+      >
+        <AMLogo width={88} variant="color" />
+      </div>
     </div>
   );
 };
