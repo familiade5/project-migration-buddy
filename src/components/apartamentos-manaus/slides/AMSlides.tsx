@@ -650,14 +650,9 @@ export const AMPhotoSlide = ({
 };
 
 // ─── Último Slide: INFORMAÇÃO ─────────────────────────────────────────────────
-// Layout fiel ao Figma (canvas 1080×1080 → escala ÷3 = 360×360):
-//   • Foto full-bleed como fundo
-//   • Cartão branco arredondado (339×339 em 10,10) como moldura interna
-//   • Borda branca 2.5px sobre a foto
-//   • Gradiente escuro da ESQUERDA (texto) para transparente na DIREITA (foto)
-//   • Barra branca bottom-right (124×50 em 226,300) com logo colorida
-//   • Título branco 600 20px/20px (left:47, top:40)
-//   • Subtítulo branco 400 10.7px/15px (left:47, top:145)
+// Mesma técnica do Slide 3: fundo branco mostra-se como moldura via clipPath.
+// Notch bottom-right para o card da logo (96×46 em bottom:10, right:10).
+// r=10 em todos os cantos — idêntico ao Slide 3.
 export const AMInfoSlide = ({
   data,
   photo,
@@ -665,11 +660,35 @@ export const AMInfoSlide = ({
   data: AMPropertyData;
   photo?: string;
 }) => {
+  const uid = useId();
+  const clipId = `am-info-${uid}`;
+
   const headline =
     data.infoMessage ||
     'A Apartamentos Manaus acompanha você em todas as etapas da escolha do seu imóvel.';
   const subtitle =
     'Encontrar o imóvel ideal pode ser mais simples do que parece. A Apartamentos Manaus orienta você sobre as possibilidades de financiamento e acompanha todo o processo com transparência.';
+
+  // Logo card: bottom:10, right:10 → top=304, left=254, right=350, bottom=350
+  // Clip path: r=10 outer corners + concave Q notch at bottom-right (same as Slide 3)
+  //   Q control radius = 10 → V 294 then Q 350 304 340 304 (top-right notch concave)
+  //                          → H 264 then Q 254 304 254 314 (top-left notch concave)
+  //                          → V 340 then A 10 10 → 244 350 (bottom-left notch convex)
+  const shapePath = [
+    'M 340 10',
+    'A 10 10 0 0 1 350 20',
+    'V 294',
+    'Q 350 304 340 304',
+    'H 264',
+    'Q 254 304 254 314',
+    'V 340',
+    'A 10 10 0 0 1 244 350',
+    'H 20',
+    'A 10 10 0 0 1 10 340',
+    'V 20',
+    'A 10 10 0 0 1 20 10',
+    'Z',
+  ].join(' ');
 
   return (
     <div
@@ -682,7 +701,16 @@ export const AMInfoSlide = ({
         overflow: 'hidden',
       }}
     >
-      {/* ── Foto full-bleed (camada de fundo) ── */}
+      {/* ── clipPath definition ── */}
+      <svg aria-hidden="true" style={{ position: 'absolute', width: 0, height: 0, overflow: 'hidden' }}>
+        <defs>
+          <clipPath id={clipId} clipPathUnits="userSpaceOnUse">
+            <path d={shapePath} />
+          </clipPath>
+        </defs>
+      </svg>
+
+      {/* ── Foto recortada pelo clipPath — fundo branco aparece como moldura ── */}
       {photo ? (
         <img
           src={photo}
@@ -694,48 +722,26 @@ export const AMInfoSlide = ({
             height: '100%',
             objectFit: 'cover',
             display: 'block',
+            clipPath: `url(#${clipId})`,
             zIndex: 1,
           }}
         />
       ) : (
-        <div style={{ position: 'absolute', inset: 0, backgroundColor: '#374151', zIndex: 1 }} />
+        <div style={{ position: 'absolute', inset: 0, backgroundColor: '#374151', clipPath: `url(#${clipId})`, zIndex: 1 }} />
       )}
 
-      {/* ── Gradiente escuro: dark on LEFT, transparent on RIGHT (270deg) ── */}
+      {/* ── Gradiente escuro também recortado — não vaza sobre a moldura branca ── */}
       <div
         style={{
           position: 'absolute',
           inset: 0,
           background: 'linear-gradient(270deg, rgba(0,0,0,0) -18.53%, rgba(0,0,0,0.85) 100%)',
+          clipPath: `url(#${clipId})`,
           zIndex: 2,
         }}
       />
 
-      {/* ── Moldura interna: borda branca 2.5px com notch côncavo no canto inf-dir ──
-           Card logo: 96×46 em bottom:10,right:10 → x:254→349, y:303→349.
-           Notch Q raio=10 nos dois cantos côncavos. ── */}
-      <svg
-        aria-hidden="true"
-        style={{ position: 'absolute', top: 0, left: 0, width: 360, height: 360, zIndex: 3, pointerEvents: 'none' }}
-        viewBox="0 0 360 360"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        {/*
-          Retângulo 10,10 → 349,349 r=10, com notch inf-dir para o card 96×46.
-          Notch: recorte de x=254→349, y=303→349.
-          Curva côncava superior-direita do notch: Q 349,303 → 339,303
-          Curva côncava superior-esquerda do notch: Q 254,303 → 254,313
-        */}
-        <path
-          d="M 20 10 H 339 A 10 10 0 0 1 349 20 V 303 Q 349 313 339 313 H 264 Q 254 313 254 323 V 349 H 20 A 10 10 0 0 1 10 339 V 20 A 10 10 0 0 1 20 10 Z"
-          stroke="white"
-          strokeWidth="2.5"
-          fill="none"
-        />
-      </svg>
-
-      {/* ── Card logo — todos os cantos arredondados r=10, igual ao slide 3 ── */}
+      {/* ── Card logo — encaixado no notch inferior-direito (zIndex 20) ── */}
       <div
         style={{
           position: 'absolute',
@@ -757,7 +763,7 @@ export const AMInfoSlide = ({
         <AMLogo width={88} variant="color" />
       </div>
 
-      {/* ── Título (left:47, top:40, 20px/20px, white 600) ── */}
+      {/* ── Título ── */}
       <h2
         style={{
           position: 'absolute',
@@ -775,7 +781,7 @@ export const AMInfoSlide = ({
         {headline}
       </h2>
 
-      {/* ── Subtítulo (left:47, top:145, 10.7px/15px, white 400) ── */}
+      {/* ── Subtítulo ── */}
       <p
         style={{
           position: 'absolute',
