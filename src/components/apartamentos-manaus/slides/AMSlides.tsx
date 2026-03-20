@@ -727,26 +727,28 @@ export const AMInfoSlide = ({
         }}
       />
 
-      {/* ── Card logo — canto inferior-direito, fundido com a moldura branca ── */}
-      {/* Todos os cantos r=10 (equivalente ao r=30 do SVG ÷3) — o branco funde com a moldura */}
+      {/* ── Card logo (Rectangle 149 Figma ÷3): left:226, top:300, w:124, h:50 ── */}
       <div
         style={{
           position: 'absolute',
-          bottom: 10,
-          right: 10,
+          left: 226,
+          top: 300,
           width: 124,
           height: 50,
           backgroundColor: '#ffffff',
           borderRadius: 10,
           zIndex: 4,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
           boxSizing: 'border-box',
-          padding: '4px 8px',
         }}
       >
-        <AMLogo width={108} variant="color" />
+        {/* Group 166 Figma ÷3: left dentro do card = 249-226=23, top=313-300=13, w:76, h:23 */}
+        <AMLogo width={76} variant="color"
+          style={{
+            position: 'absolute',
+            left: 23,
+            top: 13,
+          } as React.CSSProperties}
+        />
       </div>
 
       {/* ── Título (left:47, top:40, 20px/20px, white 600) ── */}
