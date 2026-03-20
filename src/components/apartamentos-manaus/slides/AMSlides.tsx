@@ -727,32 +727,6 @@ export const AMInfoSlide = ({
         }}
       />
 
-      {/* ── Barra branca bottom-right para logo ── */}
-      <div
-        style={{
-          position: 'absolute',
-          left: 226,
-          top: 300,
-          width: 124,
-          height: 50,
-          backgroundColor: '#ffffff',
-          zIndex: 4,
-        }}
-      />
-
-      {/* ── Logo colorida na barra branca ── */}
-      <div
-        style={{
-          position: 'absolute',
-          left: 249,
-          top: 313,
-          zIndex: 5,
-          display: 'flex',
-          alignItems: 'center',
-        }}
-      >
-        <AMLogo width={76} variant="color" />
-      </div>
 
       {/* ── Título (left:47, top:40, 20px/20px, white 600) ── */}
       <h2
