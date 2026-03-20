@@ -727,7 +727,9 @@ export const AMInfoSlide = ({
         }}
       />
 
-      {/* ── Card logo — canto inf-dir flush com a moldura; outros 3 cantos arredondados ── */}
+      {/* ── Card logo — flush no canto inf-dir da moldura (borderRadius 10).
+           O canto inf-dir encosta na moldura branca (raio coincide),
+           os outros 3 cantos são arredondados para criar o recorte visual. ── */}
       <div
         style={{
           position: 'absolute',
@@ -738,7 +740,7 @@ export const AMInfoSlide = ({
           borderTopLeftRadius: 10,
           borderTopRightRadius: 10,
           borderBottomLeftRadius: 10,
-          borderBottomRightRadius: 0,
+          borderBottomRightRadius: 10,
           width: 96,
           height: 46,
           overflow: 'hidden',
