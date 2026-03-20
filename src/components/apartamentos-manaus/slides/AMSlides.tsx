@@ -712,9 +712,8 @@ export const AMInfoSlide = ({
       />
 
       {/* ── Moldura interna: borda branca 2.5px com notch côncavo no canto inf-dir ──
-           Path: retângulo 10,10 → 349,349 (r=10), com notch no canto inf-dir.
-           Card logo: 96×46, posição bottom:10,right:10 → ocupa (254,303)→(349,349).
-           Notch com Q (raio 8) nos dois cantos côncavos. ── */}
+           Card logo: 96×46 em bottom:10,right:10 → x:254→349, y:303→349.
+           Notch Q raio=10 nos dois cantos côncavos. ── */}
       <svg
         aria-hidden="true"
         style={{ position: 'absolute', top: 0, left: 0, width: 360, height: 360, zIndex: 3, pointerEvents: 'none' }}
@@ -723,20 +722,20 @@ export const AMInfoSlide = ({
         xmlns="http://www.w3.org/2000/svg"
       >
         {/*
-          Moldura com notch inferior-direito:
-          Começa no top-left (após arco), vai horário:
-          top → direita → desce até notch → curva côncava direita → vai para esquerda no notch →
-          curva côncava esquerda → desce até bottom-right → esquerda → bottom-left (arco) → sobe → Z
+          Retângulo 10,10 → 349,349 r=10, com notch inf-dir para o card 96×46.
+          Notch: recorte de x=254→349, y=303→349.
+          Curva côncava superior-direita do notch: Q 349,303 → 339,303
+          Curva côncava superior-esquerda do notch: Q 254,303 → 254,313
         */}
         <path
-          d="M 20 10 H 339 A 10 10 0 0 1 349 20 V 303 Q 349 311 341 311 H 262 Q 254 311 254 319 V 349 H 20 A 10 10 0 0 1 10 339 V 20 A 10 10 0 0 1 20 10 Z"
+          d="M 20 10 H 339 A 10 10 0 0 1 349 20 V 303 Q 349 313 339 313 H 264 Q 254 313 254 323 V 349 H 20 A 10 10 0 0 1 10 339 V 20 A 10 10 0 0 1 20 10 Z"
           stroke="white"
           strokeWidth="2.5"
           fill="none"
         />
       </svg>
 
-      {/* ── Card logo — encaixado no notch inf-dir ── */}
+      {/* ── Card logo — todos os cantos arredondados r=10, igual ao slide 3 ── */}
       <div
         style={{
           position: 'absolute',
@@ -744,12 +743,9 @@ export const AMInfoSlide = ({
           right: 10,
           zIndex: 20,
           backgroundColor: '#ffffff',
-          borderTopLeftRadius: 8,
-          borderTopRightRadius: 0,
-          borderBottomLeftRadius: 0,
-          borderBottomRightRadius: 0,
+          borderRadius: 10,
           width: 96,
-          height: 40,
+          height: 46,
           overflow: 'hidden',
           display: 'flex',
           alignItems: 'center',
