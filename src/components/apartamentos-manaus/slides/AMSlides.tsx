@@ -727,25 +727,26 @@ export const AMInfoSlide = ({
         }}
       />
 
-      {/* ── Card logo (Rectangle 149 Figma ÷3): left:226, top:300, w:124, h:50 ── */}
+      {/* ── Card logo — idêntico ao slide 3: bottom:14, right:14, borderRadius:10 ── */}
       <div
         style={{
           position: 'absolute',
-          left: 226,
-          top: 300,
-          width: 124,
-          height: 50,
+          bottom: 14,
+          right: 14,
+          zIndex: 20,
           backgroundColor: '#ffffff',
           borderRadius: 10,
-          zIndex: 4,
-          boxSizing: 'border-box',
+          width: 96,
+          height: 46,
           overflow: 'hidden',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          boxSizing: 'border-box',
+          padding: '2px 4px',
         }}
       >
-        {/* Group 166 Figma ÷3: offset dentro do card = left:23, top:13, w:76 */}
-        <div style={{ position: 'absolute', left: 23, top: 13 }}>
-          <AMLogo width={76} variant="color" />
-        </div>
+        <AMLogo width={88} variant="color" />
       </div>
 
       {/* ── Título (left:47, top:40, 20px/20px, white 600) ── */}
