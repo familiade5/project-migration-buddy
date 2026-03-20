@@ -711,10 +711,10 @@ export const AMInfoSlide = ({
         }}
       />
 
-      {/* ── Moldura interna: SVG com notch côncavo no canto inf-dir para a logo ──
-           Moldura: 339×339 em (10,10). Logo card: 96×46 em (254,303).
-           Notch com folga de 8px: recorte de (246,295) a (349,349).
-           Cantos côncavos via curvas Q — idênticos ao Slide 3. ── */}
+      {/* ── Moldura interna: borda branca 2.5px r=10, com notch côncavo no canto inf-dir ──
+           A moldura é desenhada como stroke de um path SVG.
+           Moldura: 339×339 em (10,10). Card logo: 96×46 → canto inf-dir em (349,349).
+           Notch: recorte (246→349, 303→349). Curvas Q para cantos côncavos. ── */}
       <svg
         aria-hidden="true"
         style={{ position: 'absolute', top: 0, left: 0, width: 360, height: 360, zIndex: 3, pointerEvents: 'none' }}
@@ -722,33 +722,15 @@ export const AMInfoSlide = ({
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
       >
-        {/* Moldura branca: rect 339×339 em (10,10) r=10, com notch no canto inf-dir */}
         <path
-          d={[
-            'M 20 10',           // top-left arc start
-            'A 10 10 0 0 1 30 10', // essa linha não é usada — começo no canto
-            // Começa top-left
-            'M 10 20',
-            'A 10 10 0 0 1 20 10',
-            'H 339',
-            'A 10 10 0 0 1 349 20',
-            'V 295',             // desce até o notch (303 - 8 = 295)
-            'Q 349 303 341 303', // curva côncava canto sup-dir do notch
-            'H 254',             // topo do notch
-            'Q 246 303 246 311', // curva côncava canto sup-esq do notch
-            'V 349',             // desce até o bottom
-            'H 20',
-            'A 10 10 0 0 1 10 339',
-            'V 20',
-            'Z',
-          ].join(' ')}
+          d="M 20 10 H 339 A 10 10 0 0 1 349 20 V 295 Q 349 303 341 303 H 254 Q 246 303 246 311 V 349 H 20 A 10 10 0 0 1 10 339 V 20 A 10 10 0 0 1 20 10 Z"
           stroke="white"
           strokeWidth="2.5"
           fill="none"
         />
       </svg>
 
-      {/* ── Card logo — encaixado no notch inf-dir, cantos côncavos criados pelo SVG acima ── */}
+      {/* ── Card logo — encaixado no notch inf-dir ── */}
       <div
         style={{
           position: 'absolute',
