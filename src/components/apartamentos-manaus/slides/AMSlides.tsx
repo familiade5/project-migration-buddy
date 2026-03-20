@@ -737,8 +737,8 @@ export const AMInfoSlide = ({
       <div
         style={{
           position: 'absolute',
-          bottom: 8,
-          right: 8,
+          bottom: 18,
+          right: 18,
           zIndex: 1,
           backgroundColor: '#ffffff',
           borderRadius: 16,
