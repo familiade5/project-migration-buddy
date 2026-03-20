@@ -669,24 +669,26 @@ export const AMInfoSlide = ({
   const subtitle =
     'Encontrar o imóvel ideal pode ser mais simples do que parece. A Apartamentos Manaus orienta você sobre as possibilidades de financiamento e acompanha todo o processo com transparência.';
 
-  // Logo card: subido e deslocado para a esquerda para alinhar borda branca com o frame
-  // Card: right=12, bottom=26, width=120, height=66
-  // → right edge: 360-12=348 (alinhado com borda direita do frame)
-  // → bottom edge: 360-26=334
-  // → left edge: 360-12-120=228
-  // → top edge: 360-26-66=268
-  // Notch no shapePath ajustado para o novo tamanho do card (r=12 côncavo)
+  // Logo card dimensions (all 4 corners visible, inset from slide edges):
+  // right=14, bottom=14, width=104, height=50
+  // → left=360-14-104=242, top=360-14-50=296, right=360-14=346, bottom=360-14=346
+  // r=12 on all corners of the card
+  //
+  // Frame notch (concave Q corners at card top-left and top-right):
+  //   top-right notch: V 284 → Q 346 296 334 296
+  //   top-left notch:  H 254 → Q 242 296 242 308
+  //   bottom-left notch corner: V 334 → A 12 12 0 0 1 230 346
   const shapePath = [
     'M 336 12',
     'A 12 12 0 0 1 348 24',
-    'V 256',
-    'Q 348 268 336 268',
-    'H 240',
-    'Q 228 268 228 280',
-    'V 322',
-    'A 12 12 0 0 1 216 334',
+    'V 284',
+    'Q 348 296 336 296',
+    'H 254',
+    'Q 242 296 242 308',
+    'V 334',
+    'A 12 12 0 0 1 230 346',
     'H 24',
-    'A 12 12 0 0 1 12 322',
+    'A 12 12 0 0 1 12 334',
     'V 24',
     'A 12 12 0 0 1 24 12',
     'Z',
@@ -730,18 +732,18 @@ export const AMInfoSlide = ({
         />
       )}
 
-      {/* ── LAYER 2: Quadro branco da logo — ATRÁS do frame, NA FRENTE do fundo ── */}
-      {/* right=12 alinha borda direita com o frame (x=348). bottom=26 sobe o card. */}
+      {/* ── LAYER 2: Quadro branco da logo — ATRÁS do frame recortado, NA FRENTE do fundo ── */}
+      {/* Maior que o notch → borda branca visível ao redor da logo */}
       <div
         style={{
           position: 'absolute',
-          bottom: 26,
-          right: 12,
+          bottom: 8,
+          right: 8,
           zIndex: 1,
           backgroundColor: '#ffffff',
           borderRadius: 16,
-          width: 120,
-          height: 66,
+          width: 124,
+          height: 68,
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
