@@ -728,16 +728,16 @@ export const AMInfoSlide = ({
       />
 
       {/* ── Card logo — canto inferior-direito, fundido com a moldura branca ── */}
-      {/* O card branco preenche o canto da moldura: sem borda nos lados que encostam na moldura */}
+      {/* Todos os cantos r=10 (equivalente ao r=30 do SVG ÷3) — o branco funde com a moldura */}
       <div
         style={{
           position: 'absolute',
           bottom: 10,
           right: 10,
-          width: 110,
-          height: 52,
+          width: 124,
+          height: 50,
           backgroundColor: '#ffffff',
-          borderRadius: '0 0 10px 0',
+          borderRadius: 10,
           zIndex: 4,
           display: 'flex',
           alignItems: 'center',
@@ -746,7 +746,7 @@ export const AMInfoSlide = ({
           padding: '4px 8px',
         }}
       >
-        <AMLogo width={94} variant="color" />
+        <AMLogo width={108} variant="color" />
       </div>
 
       {/* ── Título (left:47, top:40, 20px/20px, white 600) ── */}
