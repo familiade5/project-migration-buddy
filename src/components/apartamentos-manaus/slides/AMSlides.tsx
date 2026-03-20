@@ -733,17 +733,17 @@ export const AMInfoSlide = ({
       )}
 
       {/* ── LAYER 2: Quadro branco da logo — ATRÁS do frame recortado, NA FRENTE do fundo ── */}
-      {/* Maior que o notch → borda branca visível ao redor da logo */}
+      {/* right:0 bottom:0 → lado direito e base alinham com borda do slide = linha branca do frame */}
       <div
         style={{
           position: 'absolute',
-          bottom: 18,
-          right: 18,
+          bottom: 0,
+          right: 0,
           zIndex: 1,
           backgroundColor: '#ffffff',
           borderRadius: 16,
-          width: 124,
-          height: 68,
+          width: 148,
+          height: 86,
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
