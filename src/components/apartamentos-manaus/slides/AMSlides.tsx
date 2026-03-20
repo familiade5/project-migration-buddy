@@ -711,23 +711,32 @@ export const AMInfoSlide = ({
         }}
       />
 
-      {/* ── Cartão branco arredondado (moldura interna sobre a foto) ── */}
-      <div
-        style={{
-          position: 'absolute',
-          top: 10,
-          left: 10,
-          width: 339,
-          height: 339,
-          borderRadius: 10,
-          border: '2.5px solid #ffffff',
-          boxSizing: 'border-box',
-          zIndex: 3,
-          pointerEvents: 'none',
-        }}
-      />
+      {/* ── Moldura interna: borda branca 2.5px com notch côncavo no canto inf-dir ──
+           Path: retângulo 10,10 → 349,349 (r=10), com notch no canto inf-dir.
+           Card logo: 96×46, posição bottom:10,right:10 → ocupa (254,303)→(349,349).
+           Notch com Q (raio 8) nos dois cantos côncavos. ── */}
+      <svg
+        aria-hidden="true"
+        style={{ position: 'absolute', top: 0, left: 0, width: 360, height: 360, zIndex: 3, pointerEvents: 'none' }}
+        viewBox="0 0 360 360"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        {/*
+          Moldura com notch inferior-direito:
+          Começa no top-left (após arco), vai horário:
+          top → direita → desce até notch → curva côncava direita → vai para esquerda no notch →
+          curva côncava esquerda → desce até bottom-right → esquerda → bottom-left (arco) → sobe → Z
+        */}
+        <path
+          d="M 20 10 H 339 A 10 10 0 0 1 349 20 V 303 Q 349 311 341 311 H 262 Q 254 311 254 319 V 349 H 20 A 10 10 0 0 1 10 339 V 20 A 10 10 0 0 1 20 10 Z"
+          stroke="white"
+          strokeWidth="2.5"
+          fill="none"
+        />
+      </svg>
 
-      {/* ── Card logo — canto inf-dir flush com a moldura; outros 3 cantos arredondados ── */}
+      {/* ── Card logo — encaixado no notch inf-dir ── */}
       <div
         style={{
           position: 'absolute',
@@ -735,12 +744,12 @@ export const AMInfoSlide = ({
           right: 10,
           zIndex: 20,
           backgroundColor: '#ffffff',
-          borderTopLeftRadius: 10,
-          borderTopRightRadius: 10,
-          borderBottomLeftRadius: 10,
+          borderTopLeftRadius: 8,
+          borderTopRightRadius: 0,
+          borderBottomLeftRadius: 0,
           borderBottomRightRadius: 0,
           width: 96,
-          height: 46,
+          height: 40,
           overflow: 'hidden',
           display: 'flex',
           alignItems: 'center',
