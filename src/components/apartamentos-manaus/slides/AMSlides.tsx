@@ -696,8 +696,8 @@ export const AMInfoSlide = ({
     'A 12 12 0 0 1 24 12',
     'Z',
   ].join(' ');
-...
-      {/* ── LAYER 2: Quadro branco da logo — ATRÁS do frame recortado, NA FRENTE do fundo ── */}
+
+      
       {/* right=12, bottom=14 → bordas direita/baixo alinhadas com o frame */}
       {/* width=128, height=72 → expandido para cima e para a esquerda; logo ancorada no canto inferior direito */}
       <div
