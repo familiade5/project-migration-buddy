@@ -114,23 +114,23 @@ export const AMCoverSlide = ({
         </defs>
       </svg>
 
-      {/* ── ORANGE BADGE — zIndex:5, sits inside the carved notch ── */}
+      {/* ── ORANGE BADGE — zIndex:5, top-left notch. Design: 640×143 @1080px → 213×48 @360px ── */}
       <div
         style={{
           position: 'absolute',
-          top: 8,
-          left: 4,
-          width: 210,
+          top: 10,
+          left: 10,
+          width: 213,
           zIndex: 5,
-          backgroundColor: '#F47920',
-          borderRadius: 12,
-          padding: '3px 12px 3px',
+          background: 'linear-gradient(180deg, #FF8D28 52.88%, #DF7110 100%)',
+          borderRadius: 10,
+          padding: '4px 12px 4px',
         }}
       >
         <p style={{ color: 'white', fontWeight: 700, fontSize: 12, lineHeight: 1.2, margin: 0 }}>
           {data.title || 'Nome do Imóvel'}
         </p>
-        <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'nowrap', gap: '3px 7px', marginTop: 1 }}>
+        <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'nowrap', gap: '3px 7px', marginTop: 2 }}>
           {data.neighborhood && (
             <span style={{ color: 'white', fontSize: 10, opacity: 0.95, display: 'flex', alignItems: 'center', gap: 2, whiteSpace: 'nowrap' }}>
               <svg width="8" height="10" viewBox="0 0 10 13" fill="white">
