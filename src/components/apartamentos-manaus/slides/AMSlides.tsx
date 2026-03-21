@@ -242,7 +242,7 @@ export const AMCoverSlide = ({
         </div>
 
         {/* Payment separator line */}
-        <div style={{ borderTop: '1px solid rgba(255,255,255,0.2)', marginTop: 4, paddingTop: 3 }}>
+        <div style={{ borderTop: '1px solid rgba(255,255,255,0.2)', marginTop: 2, paddingTop: 2 }}>
           <p style={{ color: 'white', fontSize: 9, opacity: 0.9, margin: 0, lineHeight: 1.3 }}>
             {paymentLine}
           </p>
