@@ -735,13 +735,12 @@ export const AMInfoSlide = ({
       )}
 
       {/* ── LAYER 2: Quadro branco da logo ── */}
-      {/* right=12, bottom=14 → bordas direita/baixo alinhadas com o frame */}
-      {/* width=128, height=72 → expandido para cima e para a esquerda; logo ancorada no canto inferior direito */}
+      {/* right=8, bottom=10 → ligeiramente mais para direita e para baixo */}
       <div
         style={{
           position: 'absolute',
-          bottom: 14,
-          right: 12,
+          bottom: 10,
+          right: 8,
           zIndex: 1,
           backgroundColor: '#ffffff',
           borderRadius: 16,
@@ -816,7 +815,8 @@ export const AMInfoSlide = ({
           top: 38,
           width: 210,
           color: '#ffffff',
-          fontWeight: 700,
+          fontFamily: "'Golos Text', Arial, sans-serif",
+          fontWeight: 600,
           fontSize: 20,
           lineHeight: '26px',
           margin: 0,
@@ -834,6 +834,7 @@ export const AMInfoSlide = ({
           top: 192,
           width: 170,
           color: 'rgba(255,255,255,0.85)',
+          fontFamily: "'Golos Text', Arial, sans-serif",
           fontWeight: 400,
           fontSize: 10.7,
           lineHeight: '15px',
