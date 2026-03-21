@@ -826,7 +826,7 @@ export const AMInfoSlide = ({
         {headline}
       </h2>
 
-      {/* ── Subtítulo ── */}
+      {/* ── Subtítulo ── fontSize 9.5px → ~6 linhas no width=170 */}
       <p
         style={{
           position: 'absolute',
@@ -836,8 +836,8 @@ export const AMInfoSlide = ({
           color: 'rgba(255,255,255,0.85)',
           fontFamily: "'Golos Text', Arial, sans-serif",
           fontWeight: 400,
-          fontSize: 10.7,
-          lineHeight: '15px',
+          fontSize: 9.5,
+          lineHeight: '13.5px',
           margin: 0,
           zIndex: 10,
         }}
