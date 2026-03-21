@@ -1,5 +1,22 @@
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
 
+@font-face {
+  font-family: 'Golos Text';
+  font-style: normal;
+  font-weight: 400;
+  font-display: block;
+  src: url('/fonts/GolosText-Regular.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Golos Text';
+  font-style: normal;
+  font-weight: 600;
+  font-display: block;
+  src: url('/fonts/GolosText-SemiBold.ttf') format('truetype');
+}
+
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
