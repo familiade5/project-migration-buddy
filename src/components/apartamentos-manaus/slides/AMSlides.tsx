@@ -233,7 +233,7 @@ export const AMCoverSlide = ({
         {/* Price */}
         <div style={{ display: 'flex', alignItems: 'baseline', gap: 2, color: 'white' }}>
           <span style={{ fontSize: 11, opacity: 0.75, marginRight: 2 }}>R$</span>
-          <span style={{ fontSize: 22, fontWeight: 700, lineHeight: 1 }}>
+          <span style={{ fontSize: 18, fontWeight: 700, lineHeight: 1 }}>
             {price > 0
               ? price.toLocaleString('pt-BR', { minimumFractionDigits: 0, maximumFractionDigits: 0 })
               : 'Consulte'}
