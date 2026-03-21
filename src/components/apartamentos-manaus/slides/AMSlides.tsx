@@ -453,12 +453,12 @@ export const AMLocationSlide = ({
     'M 152 8',
     'H 340',
     'A 12 12 0 0 1 352 20',
-    'V 290',
-    'Q 352 312 328 312',
-    'H 264',
-    'Q 240 312 240 334',
-    'V 340',
-    'A 12 12 0 0 1 228 352',
+    'V 294',              // borda direita até logo top−12 (306−12)
+    'Q 352 306 340 306',  // canto cima-direita do notch logo r=12
+    'H 268',              // topo do notch (256+12)
+    'Q 256 306 256 318',  // canto cima-esquerda do notch logo r=12
+    'V 340',              // borda esquerda do notch (352−12)
+    'A 12 12 0 0 1 244 352', // canto convexo baixo-esquerda do notch (256−12=244)
     'H 20',
     'A 12 12 0 0 1 8 340',
     'V 148',
