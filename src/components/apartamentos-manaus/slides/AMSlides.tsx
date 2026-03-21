@@ -413,8 +413,6 @@ export const AMSpecsSlide = ({
 
 
 // ─── Slide 3: LOCALIZAÇÃO ────────────────────────────────────────────────────
-// White bg • right photo (large, rounded) + bottom-left photo (smaller, rounded)
-// • blue info card top-left • white logo panel between cards on left
 export const AMLocationSlide = ({
   data,
   photo,
@@ -425,30 +423,28 @@ export const AMLocationSlide = ({
   const uid = useId();
   const clipId = `am-location-${uid}`;
 
-  // Apenas o endereço digitado — cidade/estado e bairro NÃO são adicionados automaticamente
   const address = data.address || '';
 
-  // Notch azul: card 124×120 em top=14,left=14 → termina em x=138, y=134
-  // Notch com 8px de folga: direita x=146, baixo y=142
-  // Notch logo: card 96×32 em bottom=14,right=14 → x=250→346, y=314→346
+  // Foto preenche tudo (0→360) com notch superior-esquerdo (card azul 124×120)
+  // e notch inferior-direito (card logo 96×46). Raio 12 em todas as curvas.
   const shapePath = [
-    'M 168 14',              // top edge start (146+22=168)
-    'H 324',
-    'A 22 22 0 0 1 346 36',
-    'V 278',
-    'Q 346 300 324 300',
-    'H 272',
-    'Q 250 300 250 322',
-    'V 324',
-    'A 22 22 0 0 1 228 346',
-    'H 36',
-    'A 22 22 0 0 1 14 324',
-    'V 164',                 // left edge up (142+22=164)
-    'Q 14 142 36 142',       // concave bottom-left of blue notch
-    'H 124',                 // blue notch bottom (146-22=124)
-    'Q 146 142 146 120',     // concave bottom-right (142-22=120)
-    'V 36',
-    'A 22 22 0 0 1 168 14',
+    'M 148 8',               // top edge — direita do notch azul (136+12=148)
+    'H 340',
+    'A 12 12 0 0 1 352 20',  // top-right r=12
+    'V 340',
+    'A 12 12 0 0 1 340 352', // bottom-right r=12
+    'H 258',                 // bottom edge — esquerda do notch logo (246+12=258)
+    'Q 246 352 246 340',     // concave bottom-right of logo notch r=12
+    'V 322',
+    'Q 246 310 234 310',     // concave top-left of logo notch r=12
+    'H 20',
+    'A 12 12 0 0 1 8 298',   // bottom-left r=12
+    'V 154',                 // left edge — above notch (142+12=154)
+    'Q 8 142 20 142',        // concave bottom-left of blue notch r=12
+    'H 124',
+    'Q 136 142 136 130',     // concave bottom-right of blue notch r=12
+    'V 20',
+    'A 12 12 0 0 1 148 8',   // notch top r=12
     'Z',
   ].join(' ');
 
@@ -472,7 +468,7 @@ export const AMLocationSlide = ({
         </defs>
       </svg>
 
-      {/* Photo — single image, L-shaped clip */}
+      {/* Photo — preenche 360×360, recortada pelo clipPath */}
       {photo ? (
         <img
           src={photo}
@@ -504,18 +500,18 @@ export const AMLocationSlide = ({
         />
       )}
 
-      {/* Blue info card */}
+      {/* Blue info card — notch superior-esquerdo */}
       <div
         style={{
           position: 'absolute',
-          top: 14,
-          left: 14,
+          top: 8,
+          left: 8,
           zIndex: 20,
           backgroundColor: '#1B5EA6',
-          borderRadius: 15,
+          borderRadius: 12,
           padding: '10px 10px 9px',
-          width: 124,
-          height: 120,
+          width: 128,
+          height: 122,
           boxSizing: 'border-box',
           overflow: 'hidden',
           display: 'flex',
@@ -576,17 +572,17 @@ export const AMLocationSlide = ({
         </div>
       </div>
 
-      {/* Logo card — encaixado no notch inferior-direito */}
+      {/* Logo card — notch inferior-direito */}
       <div
         style={{
           position: 'absolute',
-          bottom: 14,
-          right: 14,
+          bottom: 8,
+          right: 8,
           zIndex: 20,
           backgroundColor: '#ffffff',
-          borderRadius: 10,
-          width: 96,
-          height: 46,
+          borderRadius: 12,
+          width: 100,
+          height: 48,
           overflow: 'hidden',
           display: 'flex',
           alignItems: 'center',
@@ -595,11 +591,12 @@ export const AMLocationSlide = ({
           padding: '2px 4px',
         }}
       >
-        <AMLogo width={88} variant="color" />
+        <AMLogo width={90} variant="color" />
       </div>
     </div>
   );
 };
+
 
 // ─── Slide 4+: FOTO SIMPLES ──────────────────────────────────────────────────
 // Mesmo padrão do Slide 2: foto recortada com notch superior-esquerdo para o card da logo.
