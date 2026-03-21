@@ -697,7 +697,45 @@ export const AMInfoSlide = ({
     'Z',
   ].join(' ');
 
-      
+  return (
+    <div
+      style={{
+        position: 'relative',
+        width: 360,
+        height: 360,
+        backgroundColor: '#1a1a1a',
+        fontFamily: 'Arial, sans-serif',
+        overflow: 'hidden',
+      }}
+    >
+      {/* ── clipPath definition ── */}
+      <svg aria-hidden="true" style={{ position: 'absolute', width: 0, height: 0, overflow: 'hidden' }}>
+        <defs>
+          <clipPath id={clipId} clipPathUnits="userSpaceOnUse">
+            <path d={shapePath} />
+          </clipPath>
+        </defs>
+      </svg>
+
+      {/* ── LAYER 1: Foto de fundo ── */}
+      {photo && (
+        <img
+          src={photo}
+          alt=""
+          style={{
+            position: 'absolute',
+            inset: 0,
+            width: '100%',
+            height: '100%',
+            objectFit: 'cover',
+            display: 'block',
+            filter: 'brightness(0.5) blur(2px)',
+            zIndex: 0,
+          }}
+        />
+      )}
+
+      {/* ── LAYER 2: Quadro branco da logo ── */}
       {/* right=12, bottom=14 → bordas direita/baixo alinhadas com o frame */}
       {/* width=128, height=72 → expandido para cima e para a esquerda; logo ancorada no canto inferior direito */}
       <div
