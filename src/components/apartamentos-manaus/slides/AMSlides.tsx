@@ -395,7 +395,7 @@ export const AMSpecsSlide = ({
         <div style={{
           position: 'absolute', bottom: 18, right: 18, zIndex: 20,
           backgroundColor: 'rgba(10,10,14,0.58)',
-          borderRadius: 6, padding: '5px 9px', maxWidth: 160,
+          borderRadius: 6, padding: '5px 9px', maxWidth: 180,
           border: '1px solid rgba(255,255,255,0.12)',
           boxShadow: '0 2px 16px rgba(0,0,0,0.40)',
         }}>
