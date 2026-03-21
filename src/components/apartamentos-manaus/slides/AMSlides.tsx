@@ -15,30 +15,13 @@ export const AMLogo = ({
   const base64 = useLogoBase64(logoAM);
 
   if (variant === 'white') {
-    // Use SVG filter inline — compatible with html-to-image
     return (
-      <svg
+      <img
+        src={base64}
+        alt="Apartamentos Manaus"
         width={width}
-        height={width * 0.45}
-        xmlns="http://www.w3.org/2000/svg"
-        xmlnsXlink="http://www.w3.org/1999/xlink"
-        style={{ display: 'block', overflow: 'visible' }}
-      >
-        <defs>
-          <filter id="white-logo-filter" colorInterpolationFilters="sRGB">
-            <feColorMatrix type="matrix" values="-1 0 0 0 1  0 -1 0 0 1  0 0 -1 0 1  0 0 0 1 0" />
-          </filter>
-        </defs>
-        <image
-          href={base64}
-          x="0"
-          y="0"
-          width={width}
-          height={width * 0.45}
-          preserveAspectRatio="xMidYMid meet"
-          filter="url(#white-logo-filter)"
-        />
-      </svg>
+        style={{ display: 'block', filter: 'brightness(0) invert(1)' }}
+      />
     );
   }
 
@@ -137,13 +120,13 @@ export const AMCoverSlide = ({
           zIndex: 5,
           backgroundColor: '#F47920',
           borderRadius: 12,
-          padding: '8px 14px 9px',
+          padding: '5px 12px 5px',
         }}
       >
-        <p style={{ color: 'white', fontWeight: 700, fontSize: 15, lineHeight: 1.25, margin: 0 }}>
+        <p style={{ color: 'white', fontWeight: 700, fontSize: 13, lineHeight: 1.2, margin: 0 }}>
           {data.title || 'Nome do Imóvel'}
         </p>
-        <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'nowrap', gap: '3px 7px', marginTop: 5 }}>
+        <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'nowrap', gap: '3px 7px', marginTop: 2 }}>
           {data.neighborhood && (
             <span style={{ color: 'white', fontSize: 10, opacity: 0.95, display: 'flex', alignItems: 'center', gap: 2, whiteSpace: 'nowrap' }}>
               <svg width="8" height="10" viewBox="0 0 10 13" fill="white">
@@ -224,7 +207,7 @@ export const AMCoverSlide = ({
           zIndex: 20,
           backgroundColor: '#1B5EA6',
           borderRadius: 12,
-          padding: '3px 12px 4px',
+          padding: '2px 12px 2px',
           minWidth: 170,
           boxShadow: '0 0 0 5px #ffffff',
         }}
@@ -250,7 +233,7 @@ export const AMCoverSlide = ({
         {/* Price */}
         <div style={{ display: 'flex', alignItems: 'baseline', gap: 2, color: 'white' }}>
           <span style={{ fontSize: 11, opacity: 0.75, marginRight: 2 }}>R$</span>
-          <span style={{ fontSize: 22, fontWeight: 700, lineHeight: 1 }}>
+          <span style={{ fontSize: 18, fontWeight: 700, lineHeight: 1 }}>
             {price > 0
               ? price.toLocaleString('pt-BR', { minimumFractionDigits: 0, maximumFractionDigits: 0 })
               : 'Consulte'}
@@ -259,7 +242,7 @@ export const AMCoverSlide = ({
         </div>
 
         {/* Payment separator line */}
-        <div style={{ borderTop: '1px solid rgba(255,255,255,0.2)', marginTop: 4, paddingTop: 3 }}>
+        <div style={{ borderTop: '1px solid rgba(255,255,255,0.2)', marginTop: 2, paddingTop: 2 }}>
           <p style={{ color: 'white', fontSize: 9, opacity: 0.9, margin: 0, lineHeight: 1.3 }}>
             {paymentLine}
           </p>
