@@ -20,7 +20,6 @@ export const AMLogo = ({
       width={width}
       style={{
         ...(variant === 'white' ? { filter: 'brightness(0) invert(1)' } : {}),
-        imageRendering: 'high-quality',
       }}
     />
   );
