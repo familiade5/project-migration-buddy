@@ -394,15 +394,15 @@ export const AMSpecsSlide = ({
       {specs.length > 0 && (
         <div style={{
           position: 'absolute', bottom: 18, right: 18, zIndex: 20,
-          backgroundColor: 'rgba(15,18,26,0.62)',
-          borderRadius: 2, padding: '5px 8px', maxWidth: 120,
-          border: '1px solid rgba(255,255,255,0.10)',
-          boxShadow: 'inset 0 0 0 1px rgba(255,255,255,0.06), 0 2px 12px rgba(0,0,0,0.35)',
+          backgroundColor: 'rgba(110,115,125,0.52)',
+          borderRadius: 6, padding: '5px 9px', maxWidth: 124,
+          border: '1px solid rgba(255,255,255,0.22)',
+          boxShadow: '0 2px 14px rgba(0,0,0,0.22)',
         }}>
           {specs.map((spec, i) => (
             <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 3, marginBottom: i < specs.length - 1 ? 0.5 : 0 }}>
-              <span style={{ color: 'rgba(255,255,255,0.5)', fontFamily: "'Golos Text', Arial, sans-serif", fontWeight: 400, fontSize: 8, marginTop: 0.5, flexShrink: 0 }}>•</span>
-              <span style={{ color: 'rgba(255,255,255,0.92)', fontFamily: "'Golos Text', Arial, sans-serif", fontWeight: 400, fontSize: 8, lineHeight: '9px' }}>{spec}</span>
+              <span style={{ color: 'rgba(255,255,255,0.55)', fontFamily: "'Golos Text', Arial, sans-serif", fontWeight: 400, fontSize: 8, marginTop: 0.5, flexShrink: 0 }}>•</span>
+              <span style={{ color: 'rgba(255,255,255,0.95)', fontFamily: "'Golos Text', Arial, sans-serif", fontWeight: 400, fontSize: 8, lineHeight: '9px' }}>{spec}</span>
             </div>
           ))}
         </div>
