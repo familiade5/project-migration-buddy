@@ -650,9 +650,10 @@ export const AMPhotoSlide = ({
 };
 
 // ─── Último Slide: INFORMAÇÃO ─────────────────────────────────────────────────
-// Logo card: bottom=14, right=14, width=104, height=50, r=12 em todos os cantos
-// Isso garante que todos os 4 cantos do card fiquem visíveis (longe das bordas do slide)
-// Frame: r=12 nos cantos externos + notch côncavo (Q) nos 2 cantos superiores do card
+// Logo card: bottom=0, right=0, width=148, height=86, r=16
+// Frame notch encaixa exatamente no card: notch côncavo nos 2 cantos superiores do card
+// Card top = 360-86=274, card left = 360-148=212
+// Notch Q points: right V 262 → Q 360 274 348 274; left H 224 → Q 212 274 212 290
 export const AMInfoSlide = ({
   data,
   photo,
@@ -669,28 +670,55 @@ export const AMInfoSlide = ({
   const subtitle =
     'Encontrar o imóvel ideal pode ser mais simples do que parece. A Apartamentos Manaus orienta você sobre as possibilidades de financiamento e acompanha todo o processo com transparência.';
 
-  // Logo card dimensions (all 4 corners visible, inset from slide edges):
-  // right=14, bottom=14, width=104, height=50
-  // → left=360-14-104=242, top=360-14-50=296, right=360-14=346, bottom=360-14=346
-  // r=12 on all corners of the card
+  // Card: right=0, bottom=0, w=148, h=86 → left=212, top=274, right=360, bottom=360
+  // r=16 at all 4 corners of the card → top-left corner at (228,274), top-right at (344,274)
   //
-  // Frame notch (concave Q corners at card top-left and top-right):
-  //   top-right notch: V 284 → Q 346 296 334 296
-  //   top-left notch:  H 254 → Q 242 296 242 308
-  //   bottom-left notch corner: V 334 → A 12 12 0 0 1 230 346
+  // Frame path (clockwise from top-left outer corner):
+  //   Outer corners r=16
+  //   Right edge: goes down to y=262 (=274-12 concave entry), then Q concave into card top-right
+  //   Card bottom: right edge & bottom are slide edges — frame just ends there
+  //   Card top-left corner: Q concave from card left x=212 into card bottom-left arc
+  //   Bottom-left outer corner r=16
   const shapePath = [
-    'M 336 12',
-    'A 12 12 0 0 1 348 24',
-    'V 284',
-    'Q 348 296 336 296',
-    'H 254',
-    'Q 242 296 242 308',
-    'V 334',
-    'A 12 12 0 0 1 230 346',
-    'H 24',
-    'A 12 12 0 0 1 12 334',
-    'V 24',
-    'A 12 12 0 0 1 24 12',
+    'M 344 12',
+    'A 16 16 0 0 1 360 28',  // top-right outer — frame reaches slide right edge
+    // Actually the frame should NOT go to 360 on the right since it has a white border
+    // Let's keep it inset 12px with r=16 outer corners like the reference
+    // Recalculate: frame inset 12px → outer bounds 12 to 348, r=16
+    // Card: bottom=0, right=0, w=148, h=86 → left=212, top=274, right=360, bottom=360
+    // Frame right edge goes to x=348 (inset 12), but card extends to 360
+    // So on the right side: frame goes V 274 (card top) then hits card
+    // The notch: right edge at x=348, card top-right corner = (344, 274) with r=16
+    // Q concave: from (348, 262) → Q(348,274) → (336,274)
+    // Then H across card top to (224,274)
+    // Q concave left: from (224,274) → Q(212,274) → (212,286)
+    // Then down to bottom-left outer corner of frame at y=348 → A r=16 → (28,348)
+    // Then left to (28,348) then up
+  ].join(' ');
+
+  // Correct clean path:
+  // Frame outer bounds: 12,12 to 348,348 with r=16
+  // Card notch: card left=212, card top=274, card right extends to 360 (beyond frame)
+  // The frame's right edge at x=348 must curve into card at top
+  // Card top-right: frame right x=348, card top y=274
+  //   → right edge goes down to (348, 260) then Q(348,274)(336,274) → notch
+  // Card top-left: (224,274) then Q(212,274)(212,290) → down to bottom-left
+  //   bottom-left at (212,348) then A r16 (228,348) ← wait this is below frame
+  // Actually card bottom-left corner of frame at (28,348) → A16 → (12,332) → up
+  const path = [
+    'M 28 12',
+    'H 332',
+    'A 16 16 0 0 1 348 28',
+    'V 260',
+    'Q 348 274 336 274',
+    'H 228',
+    'Q 212 274 212 290',
+    'V 332',
+    'A 16 16 0 0 1 196 348',
+    'H 28',
+    'A 16 16 0 0 1 12 332',
+    'V 28',
+    'A 16 16 0 0 1 28 12',
     'Z',
   ].join(' ');
 
@@ -709,12 +737,12 @@ export const AMInfoSlide = ({
       <svg aria-hidden="true" style={{ position: 'absolute', width: 0, height: 0, overflow: 'hidden' }}>
         <defs>
           <clipPath id={clipId} clipPathUnits="userSpaceOnUse">
-            <path d={shapePath} />
+            <path d={path} />
           </clipPath>
         </defs>
       </svg>
 
-      {/* ── LAYER 1: Foto de fundo — preenche o slide inteiro, levemente escurecida ── */}
+      {/* ── LAYER 1: Foto de fundo — preenche o slide inteiro, desfocada ── */}
       {photo && (
         <img
           src={photo}
@@ -726,14 +754,18 @@ export const AMInfoSlide = ({
             height: '100%',
             objectFit: 'cover',
             display: 'block',
-            filter: 'brightness(0.5) blur(2px)',
+            filter: 'brightness(0.45) blur(3px)',
             zIndex: 0,
           }}
         />
       )}
+      {!photo && (
+        <div style={{ position: 'absolute', inset: 0, backgroundColor: '#2a3a5c', zIndex: 0 }} />
+      )}
 
-      {/* ── LAYER 2: Quadro branco da logo — ATRÁS do frame recortado, NA FRENTE do fundo ── */}
-      {/* right:0 bottom:0 → lado direito e base alinham com borda do slide = linha branca do frame */}
+      {/* ── LAYER 2: Quadro branco da logo — ATRÁS do frame, NA FRENTE do fundo ── */}
+      {/* bottom:0 right:0 → bordas direita e inferior tocam a borda do slide */}
+      {/* O frame recortado faz o notch côncavo em volta deste card */}
       <div
         style={{
           position: 'absolute',
@@ -748,10 +780,10 @@ export const AMInfoSlide = ({
           alignItems: 'center',
           justifyContent: 'center',
           boxSizing: 'border-box',
-          padding: '2px 6px',
+          padding: '4px 10px',
         }}
       >
-        <AMLogo width={92} variant="color" />
+        <AMLogo width={112} variant="color" />
       </div>
 
       {/* ── LAYER 3: Frame recortado com borda branca ── */}
@@ -778,15 +810,15 @@ export const AMInfoSlide = ({
             }}
           />
         ) : (
-          <div style={{ position: 'absolute', inset: 0, backgroundColor: '#374151', clipPath: `url(#${clipId})` }} />
+          <div style={{ position: 'absolute', inset: 0, backgroundColor: '#3a5080', clipPath: `url(#${clipId})` }} />
         )}
 
-        {/* Gradiente escuro recortado */}
+        {/* Gradiente escuro à esquerda para legibilidade */}
         <div
           style={{
             position: 'absolute',
             inset: 0,
-            background: 'linear-gradient(270deg, rgba(0,0,0,0) -18.53%, rgba(0,0,0,0.85) 100%)',
+            background: 'linear-gradient(270deg, rgba(0,0,0,0) 20%, rgba(0,0,0,0.82) 100%)',
             clipPath: `url(#${clipId})`,
           }}
         />
@@ -797,7 +829,7 @@ export const AMInfoSlide = ({
           viewBox="0 0 360 360"
         >
           <path
-            d={shapePath}
+            d={path}
             fill="none"
             stroke="white"
             strokeWidth="2.5"
@@ -805,17 +837,18 @@ export const AMInfoSlide = ({
         </svg>
       </div>
 
-      {/* ── Título ── */}
+      {/* ── LAYER 4: Textos ── */}
+      {/* Título — bold, grande, à esquerda */}
       <h2
         style={{
           position: 'absolute',
-          left: 47,
-          top: 38,
-          width: 210,
+          left: 30,
+          top: 32,
+          width: 195,
           color: '#ffffff',
-          fontWeight: 700,
-          fontSize: 20,
-          lineHeight: '26px',
+          fontWeight: 800,
+          fontSize: 24,
+          lineHeight: '30px',
           margin: 0,
           zIndex: 10,
         }}
@@ -823,17 +856,17 @@ export const AMInfoSlide = ({
         {headline}
       </h2>
 
-      {/* ── Subtítulo ── */}
+      {/* Subtítulo */}
       <p
         style={{
           position: 'absolute',
-          left: 47,
-          top: 192,
-          width: 170,
-          color: 'rgba(255,255,255,0.85)',
+          left: 30,
+          top: 200,
+          width: 175,
+          color: 'rgba(255,255,255,0.82)',
           fontWeight: 400,
-          fontSize: 10.7,
-          lineHeight: '15px',
+          fontSize: 12,
+          lineHeight: '17px',
           margin: 0,
           zIndex: 10,
         }}
