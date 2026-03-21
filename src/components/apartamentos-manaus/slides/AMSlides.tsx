@@ -650,10 +650,14 @@ export const AMPhotoSlide = ({
 };
 
 // ─── Último Slide: INFORMAÇÃO ─────────────────────────────────────────────────
-// Logo card: bottom=0, right=0, width=148, height=86, r=16
-// Frame notch encaixa exatamente no card: notch côncavo nos 2 cantos superiores do card
-// Card top = 360-86=274, card left = 360-148=212
-// Notch Q points: right V 262 → Q 360 274 348 274; left H 224 → Q 212 274 212 290
+// Layout fiel ao Figma (canvas 1080×1080 → escala ÷3 = 360×360):
+//   • Foto full-bleed como fundo
+//   • Cartão branco arredondado (339×339 em 10,10) como moldura interna
+//   • Borda branca 2.5px sobre a foto
+//   • Gradiente escuro da ESQUERDA (texto) para transparente na DIREITA (foto)
+//   • Barra branca bottom-right (124×50 em 226,300) com logo colorida
+//   • Título branco 600 20px/20px (left:47, top:40)
+//   • Subtítulo branco 400 10.7px/15px (left:47, top:145)
 export const AMInfoSlide = ({
   data,
   photo,
@@ -661,66 +665,11 @@ export const AMInfoSlide = ({
   data: AMPropertyData;
   photo?: string;
 }) => {
-  const uid = useId();
-  const clipId = `am-info-${uid}`;
-
   const headline =
     data.infoMessage ||
     'A Apartamentos Manaus acompanha você em todas as etapas da escolha do seu imóvel.';
   const subtitle =
     'Encontrar o imóvel ideal pode ser mais simples do que parece. A Apartamentos Manaus orienta você sobre as possibilidades de financiamento e acompanha todo o processo com transparência.';
-
-  // Card: right=0, bottom=0, w=148, h=86 → left=212, top=274, right=360, bottom=360
-  // r=16 at all 4 corners of the card → top-left corner at (228,274), top-right at (344,274)
-  //
-  // Frame path (clockwise from top-left outer corner):
-  //   Outer corners r=16
-  //   Right edge: goes down to y=262 (=274-12 concave entry), then Q concave into card top-right
-  //   Card bottom: right edge & bottom are slide edges — frame just ends there
-  //   Card top-left corner: Q concave from card left x=212 into card bottom-left arc
-  //   Bottom-left outer corner r=16
-  const shapePath = [
-    'M 344 12',
-    'A 16 16 0 0 1 360 28',  // top-right outer — frame reaches slide right edge
-    // Actually the frame should NOT go to 360 on the right since it has a white border
-    // Let's keep it inset 12px with r=16 outer corners like the reference
-    // Recalculate: frame inset 12px → outer bounds 12 to 348, r=16
-    // Card: bottom=0, right=0, w=148, h=86 → left=212, top=274, right=360, bottom=360
-    // Frame right edge goes to x=348 (inset 12), but card extends to 360
-    // So on the right side: frame goes V 274 (card top) then hits card
-    // The notch: right edge at x=348, card top-right corner = (344, 274) with r=16
-    // Q concave: from (348, 262) → Q(348,274) → (336,274)
-    // Then H across card top to (224,274)
-    // Q concave left: from (224,274) → Q(212,274) → (212,286)
-    // Then down to bottom-left outer corner of frame at y=348 → A r=16 → (28,348)
-    // Then left to (28,348) then up
-  ].join(' ');
-
-  // Correct clean path:
-  // Frame outer bounds: 12,12 to 348,348 with r=16
-  // Card notch: card left=212, card top=274, card right extends to 360 (beyond frame)
-  // The frame's right edge at x=348 must curve into card at top
-  // Card top-right: frame right x=348, card top y=274
-  //   → right edge goes down to (348, 260) then Q(348,274)(336,274) → notch
-  // Card top-left: (224,274) then Q(212,274)(212,290) → down to bottom-left
-  //   bottom-left at (212,348) then A r16 (228,348) ← wait this is below frame
-  // Actually card bottom-left corner of frame at (28,348) → A16 → (12,332) → up
-  const path = [
-    'M 28 12',
-    'H 332',
-    'A 16 16 0 0 1 348 28',
-    'V 260',
-    'Q 348 274 336 274',
-    'H 228',
-    'Q 212 274 212 290',
-    'V 332',
-    'A 16 16 0 0 1 196 348',
-    'H 28',
-    'A 16 16 0 0 1 12 332',
-    'V 28',
-    'A 16 16 0 0 1 28 12',
-    'Z',
-  ].join(' ');
 
   return (
     <div
@@ -728,22 +677,13 @@ export const AMInfoSlide = ({
         position: 'relative',
         width: 360,
         height: 360,
-        backgroundColor: '#1a1a1a',
+        backgroundColor: '#ffffff',
         fontFamily: 'Arial, sans-serif',
         overflow: 'hidden',
       }}
     >
-      {/* ── clipPath definition ── */}
-      <svg aria-hidden="true" style={{ position: 'absolute', width: 0, height: 0, overflow: 'hidden' }}>
-        <defs>
-          <clipPath id={clipId} clipPathUnits="userSpaceOnUse">
-            <path d={path} />
-          </clipPath>
-        </defs>
-      </svg>
-
-      {/* ── LAYER 1: Foto de fundo — preenche o slide inteiro, desfocada ── */}
-      {photo && (
+      {/* ── Foto full-bleed (camada de fundo) ── */}
+      {photo ? (
         <img
           src={photo}
           alt=""
@@ -754,121 +694,97 @@ export const AMInfoSlide = ({
             height: '100%',
             objectFit: 'cover',
             display: 'block',
-            filter: 'brightness(0.45) blur(3px)',
-            zIndex: 0,
+            zIndex: 1,
           }}
         />
-      )}
-      {!photo && (
-        <div style={{ position: 'absolute', inset: 0, backgroundColor: '#2a3a5c', zIndex: 0 }} />
+      ) : (
+        <div style={{ position: 'absolute', inset: 0, backgroundColor: '#374151', zIndex: 1 }} />
       )}
 
-      {/* ── LAYER 2: Quadro branco da logo — ATRÁS do frame, NA FRENTE do fundo ── */}
-      {/* bottom:0 right:0 → bordas direita e inferior tocam a borda do slide */}
-      {/* O frame recortado faz o notch côncavo em volta deste card */}
-      <div
-        style={{
-          position: 'absolute',
-          bottom: 0,
-          right: 0,
-          zIndex: 1,
-          backgroundColor: '#ffffff',
-          borderRadius: 16,
-          width: 148,
-          height: 86,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          boxSizing: 'border-box',
-          padding: '4px 10px',
-        }}
-      >
-        <AMLogo width={112} variant="color" />
-      </div>
-
-      {/* ── LAYER 3: Frame recortado com borda branca ── */}
+      {/* ── Gradiente escuro: dark on LEFT, transparent on RIGHT (270deg) ── */}
       <div
         style={{
           position: 'absolute',
           inset: 0,
+          background: 'linear-gradient(270deg, rgba(0,0,0,0) -18.53%, rgba(0,0,0,0.85) 100%)',
           zIndex: 2,
         }}
+      />
+
+      {/* ── Cartão branco arredondado (moldura interna sobre a foto) ── */}
+      <div
+        style={{
+          position: 'absolute',
+          top: 10,
+          left: 10,
+          width: 339,
+          height: 339,
+          borderRadius: 10,
+          border: '2.5px solid #ffffff',
+          boxSizing: 'border-box',
+          zIndex: 3,
+          pointerEvents: 'none',
+        }}
+      />
+
+      {/* ── Barra branca bottom-right para logo ── */}
+      <div
+        style={{
+          position: 'absolute',
+          left: 226,
+          top: 300,
+          width: 124,
+          height: 50,
+          backgroundColor: '#ffffff',
+          zIndex: 4,
+        }}
+      />
+
+      {/* ── Logo colorida na barra branca ── */}
+      <div
+        style={{
+          position: 'absolute',
+          left: 249,
+          top: 313,
+          zIndex: 5,
+          display: 'flex',
+          alignItems: 'center',
+        }}
       >
-        {/* Foto principal recortada pelo clipPath */}
-        {photo ? (
-          <img
-            src={photo}
-            alt=""
-            style={{
-              position: 'absolute',
-              inset: 0,
-              width: '100%',
-              height: '100%',
-              objectFit: 'cover',
-              display: 'block',
-              clipPath: `url(#${clipId})`,
-            }}
-          />
-        ) : (
-          <div style={{ position: 'absolute', inset: 0, backgroundColor: '#3a5080', clipPath: `url(#${clipId})` }} />
-        )}
-
-        {/* Gradiente escuro à esquerda para legibilidade */}
-        <div
-          style={{
-            position: 'absolute',
-            inset: 0,
-            background: 'linear-gradient(270deg, rgba(0,0,0,0) 20%, rgba(0,0,0,0.82) 100%)',
-            clipPath: `url(#${clipId})`,
-          }}
-        />
-
-        {/* Borda branca ao redor do shape */}
-        <svg
-          style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', pointerEvents: 'none' }}
-          viewBox="0 0 360 360"
-        >
-          <path
-            d={path}
-            fill="none"
-            stroke="white"
-            strokeWidth="2.5"
-          />
-        </svg>
+        <AMLogo width={76} variant="color" />
       </div>
 
-      {/* ── LAYER 4: Textos ── */}
-      {/* Título — bold, grande, à esquerda */}
+      {/* ── Título (left:47, top:40, 20px/20px, white 600) ── */}
       <h2
         style={{
           position: 'absolute',
-          left: 30,
-          top: 28,
-          width: 190,
+          left: 47,
+          top: 40,
+          width: 220,
           color: '#ffffff',
-          fontWeight: 800,
-          fontSize: 22,
-          lineHeight: '28px',
+          fontWeight: 600,
+          fontSize: 20,
+          lineHeight: '20px',
           margin: 0,
-          zIndex: 10,
+          zIndex: 6,
         }}
       >
         {headline}
       </h2>
 
-      {/* Subtítulo */}
+      {/* ── Subtítulo (left:47, top:145, 10.7px/15px, white 400) ── */}
       <p
         style={{
           position: 'absolute',
-          left: 30,
-          top: 210,
-          width: 178,
-          color: 'rgba(255,255,255,0.80)',
+          left: 47,
+          top: 145,
+          width: 172,
+          color: '#ffffff',
           fontWeight: 400,
-          fontSize: 11.5,
-          lineHeight: '16px',
+          fontSize: 10.7,
+          lineHeight: '15px',
           margin: 0,
-          zIndex: 10,
+          zIndex: 6,
         }}
       >
         {subtitle}
