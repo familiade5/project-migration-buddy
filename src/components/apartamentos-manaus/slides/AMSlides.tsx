@@ -678,18 +678,17 @@ export const AMInfoSlide = ({
   //   top-right notch: V 284 → Q 346 296 334 296
   //   top-left notch:  H 254 → Q 242 296 242 308
   //   bottom-left notch corner: V 334 → A 12 12 0 0 1 230 346
-  // Card: right=348(360-12), bottom=346(360-14), width=128, height=72
-  // → left=220(348-128), top=274(346-72)
-  // Notch curves follow card top-right (348,274) and top-left (220,274)
+  // Frame notch matches original card visible area (106x50 at right=12, bottom=14)
+  // White card (Layer 2) is larger (128x72) but hidden under the frame outside the notch
   const shapePath = [
     'M 336 12',
     'A 12 12 0 0 1 348 24',
-    'V 262',
-    'Q 348 274 336 274',
-    'H 232',
-    'Q 220 274 220 286',
+    'V 284',
+    'Q 348 296 336 296',
+    'H 254',
+    'Q 242 296 242 308',
     'V 334',
-    'A 12 12 0 0 1 208 346',
+    'A 12 12 0 0 1 230 346',
     'H 24',
     'A 12 12 0 0 1 12 334',
     'V 24',
