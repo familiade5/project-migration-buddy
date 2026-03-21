@@ -600,7 +600,7 @@ export const AMLocationSlide = ({
           position: 'absolute',
           bottom: 8,
           right: 8,
-          zIndex: 20,
+          zIndex: 5,
           backgroundColor: '#ffffff',
           borderRadius: 12,
           width: 96,
