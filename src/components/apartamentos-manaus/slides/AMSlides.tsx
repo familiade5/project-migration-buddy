@@ -735,12 +735,12 @@ export const AMInfoSlide = ({
       )}
 
       {/* ── LAYER 2: Quadro branco da logo ── */}
-      {/* right=10, bottom=12 → 2px a menos que antes */}
+      {/* right=10.5, bottom=12.5 → 0.5px a menos */}
       <div
         style={{
           position: 'absolute',
-          bottom: 12,
-          right: 10,
+          bottom: 12.5,
+          right: 10.5,
           zIndex: 1,
           backgroundColor: '#ffffff',
           borderRadius: 16,
@@ -826,7 +826,7 @@ export const AMInfoSlide = ({
         {headline}
       </h2>
 
-      {/* ── Subtítulo ── */}
+      {/* ── Subtítulo ── fontSize 9.5px → ~6 linhas no width=170 */}
       <p
         style={{
           position: 'absolute',
@@ -836,8 +836,8 @@ export const AMInfoSlide = ({
           color: 'rgba(255,255,255,0.85)',
           fontFamily: "'Golos Text', Arial, sans-serif",
           fontWeight: 400,
-          fontSize: 10.7,
-          lineHeight: '15px',
+          fontSize: 9.5,
+          lineHeight: '13.5px',
           margin: 0,
           zIndex: 10,
         }}
