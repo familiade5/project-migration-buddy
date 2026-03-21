@@ -394,10 +394,10 @@ export const AMSpecsSlide = ({
       {specs.length > 0 && (
         <div style={{
           position: 'absolute', bottom: 18, right: 18, zIndex: 20,
-          backgroundColor: 'rgba(110,115,125,0.52)',
-          borderRadius: 6, padding: '5px 9px', maxWidth: 124,
-          border: '1px solid rgba(255,255,255,0.22)',
-          boxShadow: '0 2px 14px rgba(0,0,0,0.22)',
+          backgroundColor: 'rgba(10,10,14,0.58)',
+          borderRadius: 6, padding: '5px 9px', maxWidth: 136,
+          border: '1px solid rgba(255,255,255,0.12)',
+          boxShadow: '0 2px 16px rgba(0,0,0,0.40)',
         }}>
           {specs.map((spec, i) => (
             <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 3, marginBottom: i < specs.length - 1 ? 0.5 : 0 }}>
