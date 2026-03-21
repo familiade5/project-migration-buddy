@@ -615,21 +615,21 @@ export const AMPhotoSlide = ({
   const uid = useId();
   const clipId = `am-photo-${uid}`;
 
-  // Notch top-left: raio 12 em todas as curvas (A e Q)
+  // Notch top-left: bordas externas mantidas (8→352), raio 12 em todas as curvas
   const shapePath = [
-    'M 330 8',
-    'A 12 12 0 0 1 342 20',
-    'V 330',
-    'A 12 12 0 0 1 330 342',
-    'H 30',
-    'A 12 12 0 0 1 18 330',
+    'M 340 8',
+    'A 12 12 0 0 1 352 20',
+    'V 340',
+    'A 12 12 0 0 1 340 352',
+    'H 20',
+    'A 12 12 0 0 1 8 340',
     'V 64',
-    'Q 18 52 30 52',
+    'Q 8 52 20 52',
     'H 100',
     'Q 120 52 120 40',
     'V 20',
     'A 12 12 0 0 1 132 8',
-    'H 330',
+    'H 340',
     'Z',
   ].join(' ');
 
