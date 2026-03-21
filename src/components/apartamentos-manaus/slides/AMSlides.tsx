@@ -70,23 +70,27 @@ export const AMCoverSlide = ({
       ].filter(Boolean) as string[];
   const paymentLine = paymentParts.join(' | ');
 
+  // Design source: 1080×1080px → scale 1/3 → 360×360px
+  // Orange badge: top:10, left:10, w:213, h:48 → right:223, bottom:58 → notch to x:227, y:62 (4px gap)
+  // Blue card: left:202, w:148 → right:350, top:298, h:52 → bottom:350 → notch from x:198, y:294 (4px gap)
   const shapePath = [
-    'M 352 256',
-    'A 12 12 0 0 1 340 268',
-    'H 192',
-    'Q 180 268 180 280',
-    'V 340',
-    'A 12 12 0 0 1 168 352',
-    'H 20',
-    'A 12 12 0 0 1 8 340',
-    'V 70',
-    'Q 8 58 20 58',
-    'H 206',
-    'Q 218 58 218 46',
-    'V 20',
-    'A 12 12 0 0 1 230 8',
-    'H 340',
-    'A 12 12 0 0 1 352 20',
+    'M 237 6',         // top edge, right of top-left notch corner (227+10)
+    'H 344',           // top edge going right (354-10)
+    'A 10 10 0 0 1 354 16',  // top-right outer convex corner
+    'V 284',           // right edge going down (294-10)
+    'Q 354 294 344 294', // concave curve into bottom-right notch top
+    'H 208',           // along notch top going left (198+10)
+    'Q 198 294 198 304', // convex curve down left side of notch
+    'V 344',           // down left side of notch (354-10)
+    'A 10 10 0 0 1 188 354', // bottom-left corner of notch arc (198-10)
+    'H 16',            // along bottom edge going left (6+10)
+    'A 10 10 0 0 1 6 344',   // outer bottom-left corner
+    'V 72',            // up left edge (62+10)
+    'Q 6 62 16 62',    // concave curve into top-left notch bottom
+    'H 217',           // along notch bottom going right (227-10)
+    'Q 227 62 227 52', // convex curve up right side of notch
+    'V 16',            // up right side of notch (6+10)
+    'A 10 10 0 0 1 237 6',   // arc back to start (top of notch right side)
     'Z',
   ].join(' ');
 
