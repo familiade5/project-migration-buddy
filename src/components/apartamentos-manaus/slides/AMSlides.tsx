@@ -70,23 +70,27 @@ export const AMCoverSlide = ({
       ].filter(Boolean) as string[];
   const paymentLine = paymentParts.join(' | ');
 
+  // Design source: 1080×1080px → scale 1/3 → 360×360px
+  // Orange badge: top:10, left:10, w:213, h:48 → right:223, bottom:58 → notch to x:227, y:62 (4px gap)
+  // Blue card: left:202, w:148 → right:350, top:298, h:52 → bottom:350 → notch from x:198, y:294 (4px gap)
   const shapePath = [
-    'M 352 256',
-    'A 12 12 0 0 1 340 268',
-    'H 192',
-    'Q 180 268 180 280',
-    'V 340',
-    'A 12 12 0 0 1 168 352',
-    'H 20',
-    'A 12 12 0 0 1 8 340',
-    'V 70',
-    'Q 8 58 20 58',
-    'H 206',
-    'Q 218 58 218 46',
-    'V 20',
-    'A 12 12 0 0 1 230 8',
-    'H 340',
-    'A 12 12 0 0 1 352 20',
+    'M 237 6',         // top edge, right of top-left notch corner (227+10)
+    'H 344',           // top edge going right (354-10)
+    'A 10 10 0 0 1 354 16',  // top-right outer convex corner
+    'V 284',           // right edge going down (294-10)
+    'Q 354 294 344 294', // concave curve into bottom-right notch top
+    'H 208',           // along notch top going left (198+10)
+    'Q 198 294 198 304', // convex curve down left side of notch
+    'V 344',           // down left side of notch (354-10)
+    'A 10 10 0 0 1 188 354', // bottom-left corner of notch arc (198-10)
+    'H 16',            // along bottom edge going left (6+10)
+    'A 10 10 0 0 1 6 344',   // outer bottom-left corner
+    'V 72',            // up left edge (62+10)
+    'Q 6 62 16 62',    // concave curve into top-left notch bottom
+    'H 217',           // along notch bottom going right (227-10)
+    'Q 227 62 227 52', // convex curve up right side of notch
+    'V 16',            // up right side of notch (6+10)
+    'A 10 10 0 0 1 237 6',   // arc back to start (top of notch right side)
     'Z',
   ].join(' ');
 
@@ -110,23 +114,23 @@ export const AMCoverSlide = ({
         </defs>
       </svg>
 
-      {/* ── ORANGE BADGE — zIndex:5, sits inside the carved notch ── */}
+      {/* ── ORANGE BADGE — zIndex:5, top-left notch. Design: 640×143 @1080px → 213×48 @360px ── */}
       <div
         style={{
           position: 'absolute',
-          top: 8,
-          left: 4,
-          width: 210,
+          top: 10,
+          left: 10,
+          width: 213,
           zIndex: 5,
-          backgroundColor: '#F47920',
-          borderRadius: 12,
-          padding: '3px 12px 3px',
+          background: 'linear-gradient(180deg, #FF8D28 52.88%, #DF7110 100%)',
+          borderRadius: 10,
+          padding: '4px 12px 4px',
         }}
       >
         <p style={{ color: 'white', fontWeight: 700, fontSize: 12, lineHeight: 1.2, margin: 0 }}>
           {data.title || 'Nome do Imóvel'}
         </p>
-        <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'nowrap', gap: '3px 7px', marginTop: 1 }}>
+        <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'nowrap', gap: '3px 7px', marginTop: 2 }}>
           {data.neighborhood && (
             <span style={{ color: 'white', fontSize: 10, opacity: 0.95, display: 'flex', alignItems: 'center', gap: 2, whiteSpace: 'nowrap' }}>
               <svg width="8" height="10" viewBox="0 0 10 13" fill="white">
@@ -198,18 +202,18 @@ export const AMCoverSlide = ({
         <AMLogo width={106} variant="white" />
       </div>
 
-      {/* ── BLUE PRICE CARD: compact height, white ring contour ── */}
+      {/* ── BLUE PRICE CARD: Design: 444×157 @1080px → 148×52 @360px ── */}
       <div
         style={{
           position: 'absolute',
-          bottom: 11,
+          bottom: 10,
           right: 10,
           zIndex: 20,
-          backgroundColor: '#1B5EA6',
-          borderRadius: 12,
-          padding: '1px 12px 1px',
-          minWidth: 170,
-          boxShadow: '0 0 0 5px #ffffff',
+          background: 'linear-gradient(180deg, #1476D4 36.06%, #044A8E 100%)',
+          borderRadius: 10,
+          padding: '5px 12px 5px',
+          width: 148,
+          boxShadow: '0 0 0 4px #ffffff',
         }}
       >
         {/* VENDA/LOCAÇÃO pill */}
@@ -218,13 +222,13 @@ export const AMCoverSlide = ({
             display: 'inline-block',
             color: 'white',
             fontWeight: 700,
-            fontSize: 9,
+            fontSize: 8,
             letterSpacing: '0.08em',
             backgroundColor: 'rgba(255,255,255,0.2)',
             border: '1px solid rgba(255,255,255,0.4)',
             borderRadius: 20,
-            padding: '1px 10px',
-            marginBottom: 4,
+            padding: '1px 8px',
+            marginBottom: 3,
           }}
         >
           {priceLabel}
@@ -232,18 +236,18 @@ export const AMCoverSlide = ({
 
         {/* Price */}
         <div style={{ display: 'flex', alignItems: 'baseline', gap: 2, color: 'white' }}>
-          <span style={{ fontSize: 11, opacity: 0.75, marginRight: 2 }}>R$</span>
-          <span style={{ fontSize: 18, fontWeight: 700, lineHeight: 1 }}>
+          <span style={{ fontSize: 10, opacity: 0.75, marginRight: 2 }}>R$</span>
+          <span style={{ fontSize: 16, fontWeight: 700, lineHeight: 1 }}>
             {price > 0
               ? price.toLocaleString('pt-BR', { minimumFractionDigits: 0, maximumFractionDigits: 0 })
               : 'Consulte'}
           </span>
-          {price > 0 && <span style={{ fontSize: 11, opacity: 0.75 }}>,00</span>}
+          {price > 0 && <span style={{ fontSize: 10, opacity: 0.75 }}>,00</span>}
         </div>
 
         {/* Payment separator line */}
         <div style={{ borderTop: '1px solid rgba(255,255,255,0.2)', marginTop: 2, paddingTop: 2 }}>
-          <p style={{ color: 'white', fontSize: 9, opacity: 0.9, margin: 0, lineHeight: 1.3 }}>
+          <p style={{ color: 'white', fontSize: 8, opacity: 0.9, margin: 0, lineHeight: 1.3 }}>
             {paymentLine}
           </p>
         </div>
