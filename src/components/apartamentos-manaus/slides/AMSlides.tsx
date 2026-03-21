@@ -114,19 +114,19 @@ export const AMCoverSlide = ({
       <div
         style={{
           position: 'absolute',
-          top: 4,
+          top: 8,
           left: 4,
           width: 210,
           zIndex: 5,
           backgroundColor: '#F47920',
           borderRadius: 12,
-          padding: '5px 12px 5px',
+          padding: '3px 12px 3px',
         }}
       >
-        <p style={{ color: 'white', fontWeight: 700, fontSize: 13, lineHeight: 1.2, margin: 0 }}>
+        <p style={{ color: 'white', fontWeight: 700, fontSize: 12, lineHeight: 1.2, margin: 0 }}>
           {data.title || 'Nome do Imóvel'}
         </p>
-        <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'nowrap', gap: '3px 7px', marginTop: 2 }}>
+        <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'nowrap', gap: '3px 7px', marginTop: 1 }}>
           {data.neighborhood && (
             <span style={{ color: 'white', fontSize: 10, opacity: 0.95, display: 'flex', alignItems: 'center', gap: 2, whiteSpace: 'nowrap' }}>
               <svg width="8" height="10" viewBox="0 0 10 13" fill="white">
@@ -207,7 +207,7 @@ export const AMCoverSlide = ({
           zIndex: 20,
           backgroundColor: '#1B5EA6',
           borderRadius: 12,
-          padding: '2px 12px 2px',
+          padding: '1px 12px 1px',
           minWidth: 170,
           boxShadow: '0 0 0 5px #ffffff',
         }}
