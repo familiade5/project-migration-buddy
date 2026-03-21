@@ -13,14 +13,41 @@ export const AMLogo = ({
   variant?: 'color' | 'white';
 }) => {
   const base64 = useLogoBase64(logoAM);
+
+  if (variant === 'white') {
+    // Use SVG filter inline — compatible with html-to-image
+    return (
+      <svg
+        width={width}
+        height={width * 0.45}
+        xmlns="http://www.w3.org/2000/svg"
+        xmlnsXlink="http://www.w3.org/1999/xlink"
+        style={{ display: 'block', overflow: 'visible' }}
+      >
+        <defs>
+          <filter id="white-logo-filter" colorInterpolationFilters="sRGB">
+            <feColorMatrix type="matrix" values="-1 0 0 0 1  0 -1 0 0 1  0 0 -1 0 1  0 0 0 1 0" />
+          </filter>
+        </defs>
+        <image
+          href={base64}
+          x="0"
+          y="0"
+          width={width}
+          height={width * 0.45}
+          preserveAspectRatio="xMidYMid meet"
+          filter="url(#white-logo-filter)"
+        />
+      </svg>
+    );
+  }
+
   return (
     <img
       src={base64}
       alt="Apartamentos Manaus"
       width={width}
-      style={{
-        ...(variant === 'white' ? { filter: 'brightness(0) invert(1)' } : {}),
-      }}
+      style={{ display: 'block' }}
     />
   );
 };
