@@ -735,13 +735,12 @@ export const AMInfoSlide = ({
       )}
 
       {/* ── LAYER 2: Quadro branco da logo ── */}
-      {/* right=12, bottom=14 → bordas direita/baixo alinhadas com o frame */}
-      {/* width=128, height=72 → expandido para cima e para a esquerda; logo ancorada no canto inferior direito */}
+      {/* right=8, bottom=10 → ligeiramente mais para direita e para baixo */}
       <div
         style={{
           position: 'absolute',
-          bottom: 14,
-          right: 12,
+          bottom: 10,
+          right: 8,
           zIndex: 1,
           backgroundColor: '#ffffff',
           borderRadius: 16,
