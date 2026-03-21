@@ -127,7 +127,7 @@ export const AMCoverSlide = ({
           position: 'absolute',
           top: 10,
           left: 10,
-          width: 160,
+          width: 190,
           zIndex: 5,
           background: 'linear-gradient(180deg, #FF8D28 52.88%, #DF7110 100%)',
           borderRadius: 10,
