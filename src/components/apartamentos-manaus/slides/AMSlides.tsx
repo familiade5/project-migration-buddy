@@ -733,17 +733,18 @@ export const AMInfoSlide = ({
       )}
 
       {/* ── LAYER 2: Quadro branco da logo — ATRÁS do frame recortado, NA FRENTE do fundo ── */}
-      {/* right:0 bottom:0 → lado direito e base alinham com borda do slide = linha branca do frame */}
+      {/* right=12, bottom=14 → alinha bordas externas do card com a linha branca do frame (path: x=348, y=346) */}
+      {/* width=106, height=50 → left edge = x=242, top edge = y=296 (notch corners do clipPath) */}
       <div
         style={{
           position: 'absolute',
-          bottom: 0,
-          right: 0,
+          bottom: 14,
+          right: 12,
           zIndex: 1,
           backgroundColor: '#ffffff',
           borderRadius: 16,
-          width: 148,
-          height: 86,
+          width: 106,
+          height: 50,
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
@@ -751,7 +752,7 @@ export const AMInfoSlide = ({
           padding: '2px 6px',
         }}
       >
-        <AMLogo width={92} variant="color" />
+        <AMLogo width={88} variant="color" />
       </div>
 
       {/* ── LAYER 3: Frame recortado com borda branca ── */}
