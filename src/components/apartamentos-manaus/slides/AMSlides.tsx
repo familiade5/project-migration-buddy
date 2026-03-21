@@ -735,12 +735,12 @@ export const AMInfoSlide = ({
       )}
 
       {/* ── LAYER 2: Quadro branco da logo ── */}
-      {/* right=8, bottom=10 → ligeiramente mais para direita e para baixo */}
+      {/* right=10, bottom=12 → 2px a menos que antes */}
       <div
         style={{
           position: 'absolute',
-          bottom: 10,
-          right: 8,
+          bottom: 12,
+          right: 10,
           zIndex: 1,
           backgroundColor: '#ffffff',
           borderRadius: 16,
@@ -831,7 +831,7 @@ export const AMInfoSlide = ({
         style={{
           position: 'absolute',
           left: 47,
-          top: 192,
+          top: 174,
           width: 170,
           color: 'rgba(255,255,255,0.85)',
           fontFamily: "'Golos Text', Arial, sans-serif",
