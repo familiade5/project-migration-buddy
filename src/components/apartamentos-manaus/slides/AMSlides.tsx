@@ -741,12 +741,12 @@ export const AMInfoSlide = ({
       )}
 
       {/* ── LAYER 2: Quadro branco da logo ── */}
-      {/* right=10.5, bottom=12.5 → 0.5px a menos */}
+      {/* right=11, bottom=13 → 0.5px a menos que antes */}
       <div
         style={{
           position: 'absolute',
-          bottom: 12.5,
-          right: 10.5,
+          bottom: 13,
+          right: 11,
           zIndex: 1,
           backgroundColor: '#ffffff',
           borderRadius: 16,
