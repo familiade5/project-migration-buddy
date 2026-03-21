@@ -71,28 +71,45 @@ export const AMCoverSlide = ({
   const paymentLine = paymentParts.join(' | ');
 
   // Design source: 1080×1080px → scale 1/3 → 360×360px
-  // Orange badge: top:10, left:10, w:213, h:48 → right:223, bottom:58 → notch to x:227, y:62 (4px gap)
-  // Blue card: left:202, w:148 → right:350, top:298, h:52 → bottom:350 → notch from x:198, y:294 (4px gap)
+  //
+  // ORANGE BADGE: 1080px → w:480, h:143, top:30, left:30
+  //   scaled: w:160, h:47.7≈48, top:10, left:10
+  //   right edge: 10+160=170 → notch x: 170+4=174, notch y top: 10+48+4=62
+  //
+  // BLUE CARD: 1080px → w:444, h:157, top:893, left:606
+  //   scaled: w:148, h:52, bottom:10, right:10
+  //   left edge: 360-10-148=202 → notch x: 202-4=198, notch y: 360-10-52-4=294
+  //
+  // Gap between orange badge right edge and image: 4px
+  // Gap between orange badge bottom and image: 4px
+  //
+  // ShapePath: image area with two notches:
+  //   Top-left notch: for orange badge (x:6..174, y:6..62)
+  //   Bottom-right notch: for blue card (x:198..354, y:294..354)
+  //
+  // Clockwise from top of top-right outer corner:
   const shapePath = [
-    'M 237 6',         // top edge, right of top-left notch corner (227+10)
-    'H 344',           // top edge going right (354-10)
-    'A 10 10 0 0 1 354 16',  // top-right outer convex corner
-    'V 284',           // right edge going down (294-10)
-    'Q 354 294 344 294', // concave curve into bottom-right notch top
-    'H 208',           // along notch top going left (198+10)
-    'Q 198 294 198 304', // convex curve down left side of notch
-    'V 344',           // down left side of notch (354-10)
-    'A 10 10 0 0 1 188 354', // bottom-left corner of notch arc (198-10)
-    'H 16',            // along bottom edge going left (6+10)
+    'M 184 6',               // top edge start (174+10)
+    'H 344',                 // top edge to right (354-10)
+    'A 10 10 0 0 1 354 16',  // top-right outer corner
+    'V 284',                 // right edge down (294-10)
+    'Q 354 294 344 294',     // concave into bottom-right notch top
+    'H 208',                 // notch top edge (198+10)
+    'Q 198 294 198 304',     // convex down notch left side
+    'V 344',                 // notch left side down (354-10)
+    'A 10 10 0 0 1 188 354', // bottom-left corner of blue notch
+    'H 16',                  // bottom edge (6+10)
     'A 10 10 0 0 1 6 344',   // outer bottom-left corner
-    'V 72',            // up left edge (62+10)
-    'Q 6 62 16 62',    // concave curve into top-left notch bottom
-    'H 217',           // along notch bottom going right (227-10)
-    'Q 227 62 227 52', // convex curve up right side of notch
-    'V 16',            // up right side of notch (6+10)
-    'A 10 10 0 0 1 237 6',   // arc back to start (top of notch right side)
+    'V 72',                  // left edge up (62+10)
+    'Q 6 62 16 62',          // concave into orange notch bottom-left
+    'H 164',                 // orange notch bottom edge (174-10)
+    'Q 174 62 174 52',       // convex up orange notch right side
+    'V 16',                  // orange notch right side up (6+10)
+    'A 10 10 0 0 1 184 6',   // arc back to start
     'Z',
   ].join(' ');
+
+  const golos = "'Golos Text', Arial, sans-serif";
 
   return (
     <div
@@ -101,7 +118,7 @@ export const AMCoverSlide = ({
         width: 360,
         height: 360,
         backgroundColor: '#ffffff',
-        fontFamily: 'Arial, sans-serif',
+        fontFamily: golos,
         overflow: 'hidden',
       }}
     >
@@ -114,25 +131,26 @@ export const AMCoverSlide = ({
         </defs>
       </svg>
 
-      {/* ── ORANGE BADGE — zIndex:5, top-left notch. Design: 640×143 @1080px → 213×48 @360px ── */}
+      {/* ── ORANGE BADGE — 160×48px, top:10, left:10 ── */}
       <div
         style={{
           position: 'absolute',
           top: 10,
           left: 10,
-          width: 213,
+          width: 160,
           zIndex: 5,
           background: 'linear-gradient(180deg, #FF8D28 52.88%, #DF7110 100%)',
           borderRadius: 10,
-          padding: '4px 12px 4px',
+          padding: '5px 12px 5px',
+          boxSizing: 'border-box',
         }}
       >
-        <p style={{ color: 'white', fontWeight: 700, fontSize: 12, lineHeight: 1.2, margin: 0 }}>
+        <p style={{ color: 'white', fontWeight: 700, fontSize: 12, lineHeight: 1.2, margin: 0, fontFamily: golos }}>
           {data.title || 'Nome do Imóvel'}
         </p>
         <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'nowrap', gap: '3px 7px', marginTop: 2 }}>
           {data.neighborhood && (
-            <span style={{ color: 'white', fontSize: 10, opacity: 0.95, display: 'flex', alignItems: 'center', gap: 2, whiteSpace: 'nowrap' }}>
+            <span style={{ color: 'white', fontSize: 10, opacity: 0.95, display: 'flex', alignItems: 'center', gap: 2, whiteSpace: 'nowrap', fontFamily: golos }}>
               <svg width="8" height="10" viewBox="0 0 10 13" fill="white">
                 <path d="M5 0C2.24 0 0 2.24 0 5c0 3.75 5 8 5 8s5-4.25 5-8C10 2.24 7.76 0 5 0zm0 7c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/>
               </svg>
@@ -140,7 +158,7 @@ export const AMCoverSlide = ({
             </span>
           )}
           {data.bedrooms > 0 && (
-            <span style={{ color: 'white', fontSize: 10, opacity: 0.95, display: 'flex', alignItems: 'center', gap: 2, whiteSpace: 'nowrap' }}>
+            <span style={{ color: 'white', fontSize: 10, opacity: 0.95, display: 'flex', alignItems: 'center', gap: 2, whiteSpace: 'nowrap', fontFamily: golos }}>
               <svg width="12" height="9" viewBox="0 0 18 12" fill="white">
                 <path d="M1 8V4a1 1 0 011-1h4a1 1 0 011 1v1h4V4a1 1 0 011-1h4a1 1 0 011 1v4H1zm0 1h16v3H1V9z"/>
               </svg>
@@ -148,7 +166,7 @@ export const AMCoverSlide = ({
             </span>
           )}
           {data.area > 0 && (
-            <span style={{ color: 'white', fontSize: 10, opacity: 0.95, display: 'flex', alignItems: 'center', gap: 2, whiteSpace: 'nowrap' }}>
+            <span style={{ color: 'white', fontSize: 10, opacity: 0.95, display: 'flex', alignItems: 'center', gap: 2, whiteSpace: 'nowrap', fontFamily: golos }}>
               <svg width="10" height="10" viewBox="0 0 12 12" fill="white">
                 <path d="M0 0v5l2-2 3 3 2-2-3-3 2-2H0zm12 12V7l-2 2-3-3-2 2 3 3-2 2h6z"/>
               </svg>
@@ -202,7 +220,7 @@ export const AMCoverSlide = ({
         <AMLogo width={106} variant="white" />
       </div>
 
-      {/* ── BLUE PRICE CARD: Design: 444×157 @1080px → 148×52 @360px ── */}
+      {/* ── BLUE PRICE CARD: 444×157 @1080px → 148×52 @360px, bottom:10, right:10 ── */}
       <div
         style={{
           position: 'absolute',
@@ -211,9 +229,14 @@ export const AMCoverSlide = ({
           zIndex: 20,
           background: 'linear-gradient(180deg, #1476D4 36.06%, #044A8E 100%)',
           borderRadius: 10,
-          padding: '5px 12px 5px',
+          padding: '5px 14px 5px',
           width: 148,
+          height: 52,
+          boxSizing: 'border-box',
           boxShadow: '0 0 0 4px #ffffff',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
         }}
       >
         {/* VENDA/LOCAÇÃO pill */}
@@ -229,6 +252,8 @@ export const AMCoverSlide = ({
             borderRadius: 20,
             padding: '1px 8px',
             marginBottom: 3,
+            alignSelf: 'flex-start',
+            fontFamily: golos,
           }}
         >
           {priceLabel}
@@ -236,18 +261,18 @@ export const AMCoverSlide = ({
 
         {/* Price */}
         <div style={{ display: 'flex', alignItems: 'baseline', gap: 2, color: 'white' }}>
-          <span style={{ fontSize: 10, opacity: 0.75, marginRight: 2 }}>R$</span>
-          <span style={{ fontSize: 16, fontWeight: 700, lineHeight: 1 }}>
+          <span style={{ fontSize: 10, opacity: 0.75, marginRight: 2, fontFamily: golos }}>R$</span>
+          <span style={{ fontSize: 16, fontWeight: 700, lineHeight: 1, fontFamily: golos }}>
             {price > 0
               ? price.toLocaleString('pt-BR', { minimumFractionDigits: 0, maximumFractionDigits: 0 })
               : 'Consulte'}
           </span>
-          {price > 0 && <span style={{ fontSize: 10, opacity: 0.75 }}>,00</span>}
+          {price > 0 && <span style={{ fontSize: 10, opacity: 0.75, fontFamily: golos }}>,00</span>}
         </div>
 
-        {/* Payment separator line */}
-        <div style={{ borderTop: '1px solid rgba(255,255,255,0.2)', marginTop: 2, paddingTop: 2 }}>
-          <p style={{ color: 'white', fontSize: 8, opacity: 0.9, margin: 0, lineHeight: 1.3 }}>
+        {/* Payment line */}
+        <div style={{ borderTop: '1px solid rgba(255,255,255,0.2)', marginTop: 3, paddingTop: 2 }}>
+          <p style={{ color: 'white', fontSize: 8, opacity: 0.9, margin: 0, lineHeight: 1.3, fontFamily: golos }}>
             {paymentLine}
           </p>
         </div>
