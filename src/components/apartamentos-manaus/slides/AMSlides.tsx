@@ -315,21 +315,21 @@ export const AMSpecsSlide = ({
   // Path starts at (330, 8) — the exact entry point of the top-right arc —
   // so the arc comes FIRST with no straight segment before it.
   // The top edge (168→330 at y=8) is the LAST segment before Z.
-  // Notch top-left reduzido: w=120, h=52. Bordas externas mantidas (330→352, etc.)
+  // Notch top-left: bordas externas 8→352, raio 12 em todas as curvas
   const shapePath = [
-    'M 330 8',               // top-right arc entry — borda externa mantida
-    'A 22 22 0 0 1 352 30',  // top-right outer corner
-    'V 330',                 // right edge full height
-    'A 22 22 0 0 1 330 352', // bottom-right outer corner
-    'H 30',                  // bottom edge full width
-    'A 22 22 0 0 1 8 330',   // bottom-left outer corner
-    'V 74',                  // left edge up to notch start (52+22=74)
-    'Q 8 52 26 52',          // concave into notch bottom-left
-    'H 98',                  // notch bottom (120-22=98)
-    'Q 120 52 120 30',       // convex up notch right corner (52-22=30)
-    'V 30',                  // up notch right wall to arc
-    'A 22 22 0 0 1 142 8',   // round top-notch corner (120+22=142)
-    'H 330',                 // top edge back
+    'M 340 8',               // top-right arc entry
+    'A 12 12 0 0 1 352 20',  // top-right outer corner r=12
+    'V 340',
+    'A 12 12 0 0 1 340 352', // bottom-right outer corner r=12
+    'H 20',
+    'A 12 12 0 0 1 8 340',   // bottom-left outer corner r=12
+    'V 64',                  // lateral esquerda mais alta
+    'Q 8 52 20 52',          // concave notch bottom-left r=12
+    'H 100',
+    'Q 120 52 120 40',       // notch bottom-right r=12
+    'V 20',
+    'A 12 12 0 0 1 132 8',   // notch top corner r=12
+    'H 340',
     'Z',
   ].join(' ');
 
