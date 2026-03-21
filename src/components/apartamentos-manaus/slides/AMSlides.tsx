@@ -235,13 +235,13 @@ export const AMCoverSlide = ({
             display: 'inline-block',
             color: 'white',
             fontWeight: 700,
-            fontSize: 8,
+            fontSize: 7,
             letterSpacing: '0.08em',
             backgroundColor: 'rgba(255,255,255,0.2)',
             border: '1px solid rgba(255,255,255,0.4)',
             borderRadius: 20,
-            padding: '1px 8px',
-            marginBottom: 3,
+            padding: '1px 6px',
+            marginBottom: 2,
             alignSelf: 'flex-start',
             fontFamily: golos,
           }}
@@ -251,8 +251,8 @@ export const AMCoverSlide = ({
 
         {/* Price */}
         <div style={{ display: 'flex', alignItems: 'baseline', gap: 2, color: 'white' }}>
-          <span style={{ fontSize: 10, opacity: 0.75, marginRight: 2, fontFamily: golos }}>R$</span>
-          <span style={{ fontSize: 16, fontWeight: 700, lineHeight: 1, fontFamily: golos }}>
+          <span style={{ fontSize: 9, opacity: 0.75, marginRight: 1, fontFamily: golos }}>R$</span>
+          <span style={{ fontSize: 12, fontWeight: 700, lineHeight: 1, fontFamily: golos }}>
             {price > 0
               ? price.toLocaleString('pt-BR', { minimumFractionDigits: 0, maximumFractionDigits: 0 })
               : 'Consulte'}
