@@ -394,14 +394,14 @@ export const AMSpecsSlide = ({
       {specs.length > 0 && (
         <div style={{
           position: 'absolute', bottom: 18, right: 18, zIndex: 20,
-          backgroundColor: 'rgba(80,85,100,0.55)',
+          backgroundColor: 'rgba(40,44,58,0.72)',
           borderRadius: 8, padding: '3px 9px', maxWidth: 116,
           border: '1px solid rgba(255,255,255,0.18)',
         }}>
           {specs.map((spec, i) => (
             <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 4, marginBottom: i < specs.length - 1 ? 1 : 0 }}>
-              <span style={{ color: 'rgba(255,255,255,0.6)', fontSize: 8, marginTop: 1, flexShrink: 0 }}>•</span>
-              <span style={{ color: 'white', fontSize: 8, lineHeight: 1.2 }}>{spec}</span>
+              <span style={{ color: 'rgba(255,255,255,0.6)', fontFamily: "'Golos Text', Arial, sans-serif", fontWeight: 400, fontSize: 8, marginTop: 1, flexShrink: 0 }}>•</span>
+              <span style={{ color: 'white', fontFamily: "'Golos Text', Arial, sans-serif", fontWeight: 400, fontSize: 8, lineHeight: '8.5px' }}>{spec}</span>
             </div>
           ))}
         </div>
