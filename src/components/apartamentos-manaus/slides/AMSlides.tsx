@@ -234,25 +234,27 @@ export const AMCoverSlide = ({
           justifyContent: 'center',
         }}
       >
-        {/* VENDA/LOCAÇÃO pill */}
-        <div
-          style={{
-            display: 'inline-block',
-            color: 'white',
-            fontWeight: 700,
-            fontSize: 7,
-            letterSpacing: '0.08em',
-            backgroundColor: 'rgba(255,255,255,0.2)',
-            border: '1px solid rgba(255,255,255,0.4)',
-            borderRadius: 20,
-            padding: '1px 6px',
-            marginBottom: 2,
-            alignSelf: 'flex-start',
-            fontFamily: golos,
-          }}
-        >
-          {priceLabel}
-        </div>
+        {/* VENDA pill — only shown for Venda mode */}
+        {!data.isRental && (
+          <div
+            style={{
+              display: 'inline-block',
+              color: 'white',
+              fontWeight: 700,
+              fontSize: 7,
+              letterSpacing: '0.08em',
+              backgroundColor: 'rgba(255,255,255,0.2)',
+              border: '1px solid rgba(255,255,255,0.4)',
+              borderRadius: 20,
+              padding: '1px 6px',
+              marginBottom: 2,
+              alignSelf: 'flex-start',
+              fontFamily: golos,
+            }}
+          >
+            VENDA
+          </div>
+        )}
 
         {/* Price */}
         <div style={{ display: 'flex', alignItems: 'baseline', gap: 2, color: 'white' }}>
