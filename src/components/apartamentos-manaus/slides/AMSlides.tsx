@@ -1,6 +1,7 @@
 import { useId } from 'react';
 import { AMPropertyData } from '@/types/apartamentosManaus';
 import logoAM from '@/assets/logo-apartamentos-manaus.png';
+import { useLogoBase64 } from '@/hooks/useLogoBase64';
 
 
 // ─── Logo ────────────────────────────────────────────────────────────────────
@@ -10,14 +11,20 @@ export const AMLogo = ({
 }: {
   width?: number;
   variant?: 'color' | 'white';
-}) => (
-  <img
-    src={logoAM}
-    alt="Apartamentos Manaus"
-    width={width}
-    style={variant === 'white' ? { filter: 'brightness(0) invert(1)' } : undefined}
-  />
-);
+}) => {
+  const base64 = useLogoBase64(logoAM);
+  return (
+    <img
+      src={base64}
+      alt="Apartamentos Manaus"
+      width={width}
+      style={{
+        ...(variant === 'white' ? { filter: 'brightness(0) invert(1)' } : {}),
+        imageRendering: 'high-quality',
+      }}
+    />
+  );
+};
 
 // ─── Slide 1: CAPA ──────────────────────────────────────────────────────────
 // Exact analysis of Capa_png-3.png:
