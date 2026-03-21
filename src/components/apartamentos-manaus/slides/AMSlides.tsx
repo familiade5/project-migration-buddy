@@ -859,7 +859,7 @@ export const AMInfoSlide = ({
         {headline}
       </h2>
 
-      {/* ── Subtítulo ── fontSize 10.5px → última linha: "o processo com transparência." */}
+      {/* ── Subtítulo ── fontSize 11px */}
       <p
         style={{
           position: 'absolute',
@@ -869,8 +869,8 @@ export const AMInfoSlide = ({
           color: '#ffffff',
           fontFamily: "'Golos Text', Arial, sans-serif",
           fontWeight: 600,
-          fontSize: 10.5,
-          lineHeight: '15px',
+          fontSize: 11,
+          lineHeight: '15.5px',
           margin: 0,
           zIndex: 10,
         }}
