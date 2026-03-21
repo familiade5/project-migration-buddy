@@ -133,7 +133,13 @@ export function AMPostPreview({ data, photos }: AMPostPreviewProps) {
   // ── Export helpers ────────────────────────────────────────────────────────
   const captureRef = async (ref: React.RefObject<HTMLDivElement>) => {
     if (!ref.current) return null;
-    return toPng(ref.current, { quality: 1, pixelRatio: safePixelRatio(), cacheBust: true });
+    const opts = { quality: 1, pixelRatio: safePixelRatio(), cacheBust: true };
+    // First pass: warms up the canvas and forces image/font loading
+    await toPng(ref.current, opts);
+    // Brief wait so fonts & images are fully painted
+    await new Promise(r => setTimeout(r, 120));
+    // Second pass: captures at full fidelity
+    return toPng(ref.current, opts);
   };
 
   const buildZip = async (
