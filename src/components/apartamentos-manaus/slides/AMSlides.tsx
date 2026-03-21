@@ -509,7 +509,7 @@ export const AMLocationSlide = ({
         />
       )}
 
-      {/* Blue info card — notch superior-esquerdo */}
+      {/* Blue info card — notch superior-esquerdo, h=152 para caber ponto de referência */}
       <div
         style={{
           position: 'absolute',
@@ -520,45 +520,50 @@ export const AMLocationSlide = ({
           borderRadius: 12,
           padding: '10px 10px 9px',
           width: 132,
-          height: 128,
+          height: 152,
           boxSizing: 'border-box',
           overflow: 'hidden',
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'space-between',
+          fontFamily: "'Golos Text', Arial, sans-serif",
         }}
       >
         <div style={{ overflow: 'hidden', flex: 1, minHeight: 0 }}>
           <p style={{
             color: 'white', fontWeight: 700, fontSize: 11, lineHeight: 1.3,
-            margin: '0 0 4px',
+            margin: '0 0 5px',
             display: '-webkit-box',
             WebkitLineClamp: 3,
             WebkitBoxOrient: 'vertical',
             overflow: 'hidden',
+            fontFamily: "'Golos Text', Arial, sans-serif",
           }}>
             {data.title || 'Imóveis bem localizados em Manaus'}
           </p>
           {address && (
             <p style={{
-              color: 'white', fontSize: 8, opacity: 0.82, lineHeight: 1.35, margin: 0,
+              color: 'white', fontSize: 8, opacity: 0.82, lineHeight: 1.4, margin: 0,
               display: '-webkit-box',
-              WebkitLineClamp: 2,
+              WebkitLineClamp: 3,
               WebkitBoxOrient: 'vertical',
               overflow: 'hidden',
+              fontFamily: "'Golos Text', Arial, sans-serif",
             }}>
               {address}
             </p>
           )}
           {data.referencePoint && (
             <p style={{
-              color: 'white', fontSize: 8, opacity: 0.7, lineHeight: 1.35, margin: '3px 0 0',
+              color: 'white', fontSize: 8, opacity: 0.75, lineHeight: 1.4,
+              margin: '4px 0 0',
               display: '-webkit-box',
-              WebkitLineClamp: 1,
+              WebkitLineClamp: 3,
               WebkitBoxOrient: 'vertical',
               overflow: 'hidden',
+              fontFamily: "'Golos Text', Arial, sans-serif",
             }}>
-              {data.referencePoint}
+              📍 {data.referencePoint}
             </p>
           )}
         </div>
@@ -575,6 +580,7 @@ export const AMLocationSlide = ({
             color: 'white',
             alignSelf: 'flex-start',
             flexShrink: 0,
+            fontFamily: "'Golos Text', Arial, sans-serif",
           }}
         >
           Arraste para o lado →
