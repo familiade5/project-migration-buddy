@@ -450,23 +450,23 @@ export const AMLocationSlide = ({
   //   V 20           → sobe borda direita do notch (8+12)
   //   A 12 12 ...152 8   → canto superior do notch azul (fecha)
   const shapePath = [
-    'M 152 8',
+    'M 160 8',
     'H 340',
     'A 12 12 0 0 1 352 20',
-    'V 294',              // borda direita até logo top−12 (306−12)
-    'Q 352 306 340 306',  // canto cima-direita do notch logo r=12
-    'H 268',              // topo do notch (256+12)
-    'Q 256 306 256 318',  // canto cima-esquerda do notch logo r=12
-    'V 340',              // borda esquerda do notch (352−12)
-    'A 12 12 0 0 1 244 352', // canto convexo baixo-esquerda do notch (256−12=244)
+    'V 294',
+    'Q 352 306 340 306',
+    'H 268',
+    'Q 256 306 256 318',
+    'V 340',
+    'A 12 12 0 0 1 244 352',
     'H 20',
     'A 12 12 0 0 1 8 340',
-    'V 148',
-    'Q 8 136 20 136',
-    'H 128',
-    'Q 140 136 140 124',
+    'V 156',              // card bottom(136)+gap(8)+r(12)=156
+    'Q 8 144 20 144',     // notch azul baixo-esq (card bottom 128+gap 8=136, +8=144)
+    'H 136',              // notch azul (card right 140-r 12=128... card right=132+8=140, 140-12=128) → 136
+    'Q 148 144 148 132',  // notch azul baixo-dir (notch_right=148=132+8+8, 144-12=132)
     'V 20',
-    'A 12 12 0 0 1 152 8',
+    'A 12 12 0 0 1 160 8', // 148+12=160
     'Z',
   ].join(' ');
 
@@ -532,8 +532,8 @@ export const AMLocationSlide = ({
           backgroundColor: '#1B5EA6',
           borderRadius: 12,
           padding: '10px 10px 9px',
-          width: 124,
-          height: 120,
+          width: 132,
+          height: 128,
           boxSizing: 'border-box',
           overflow: 'hidden',
           display: 'flex',
