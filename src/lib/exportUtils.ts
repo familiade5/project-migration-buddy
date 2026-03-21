@@ -12,5 +12,5 @@ export const isIOS = (): boolean => {
   );
 };
 
-/** Safe pixel ratio: 1 on iOS/iPad, 2 on desktop */
-export const safePixelRatio = (): number => (isIOS() ? 1 : 2);
+/** Safe pixel ratio: 1 on iOS/iPad, 3 on desktop (melhor qualidade de logo) */
+export const safePixelRatio = (): number => (isIOS() ? 1 : 3);

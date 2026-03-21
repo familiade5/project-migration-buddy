@@ -1,6 +1,7 @@
 import { useId } from 'react';
 import { AMPropertyData } from '@/types/apartamentosManaus';
 import logoAM from '@/assets/logo-apartamentos-manaus.png';
+import { useLogoBase64 } from '@/hooks/useLogoBase64';
 
 
 // ─── Logo ────────────────────────────────────────────────────────────────────
@@ -10,14 +11,19 @@ export const AMLogo = ({
 }: {
   width?: number;
   variant?: 'color' | 'white';
-}) => (
-  <img
-    src={logoAM}
-    alt="Apartamentos Manaus"
-    width={width}
-    style={variant === 'white' ? { filter: 'brightness(0) invert(1)' } : undefined}
-  />
-);
+}) => {
+  const base64 = useLogoBase64(logoAM);
+  return (
+    <img
+      src={base64}
+      alt="Apartamentos Manaus"
+      width={width}
+      style={{
+        ...(variant === 'white' ? { filter: 'brightness(0) invert(1)' } : {}),
+      }}
+    />
+  );
+};
 
 // ─── Slide 1: CAPA ──────────────────────────────────────────────────────────
 // Exact analysis of Capa_png-3.png:
@@ -735,12 +741,12 @@ export const AMInfoSlide = ({
       )}
 
       {/* ── LAYER 2: Quadro branco da logo ── */}
-      {/* right=10.5, bottom=12.5 → 0.5px a menos */}
+      {/* right=11, bottom=13 → 0.5px a menos que antes */}
       <div
         style={{
           position: 'absolute',
-          bottom: 12.5,
-          right: 10.5,
+          bottom: 13,
+          right: 11,
           zIndex: 1,
           backgroundColor: '#ffffff',
           borderRadius: 16,
