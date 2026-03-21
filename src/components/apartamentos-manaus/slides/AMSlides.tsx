@@ -831,7 +831,7 @@ export const AMInfoSlide = ({
         style={{
           position: 'absolute',
           left: 47,
-          top: 192,
+          top: 174,
           width: 170,
           color: 'rgba(255,255,255,0.85)',
           fontFamily: "'Golos Text', Arial, sans-serif",
