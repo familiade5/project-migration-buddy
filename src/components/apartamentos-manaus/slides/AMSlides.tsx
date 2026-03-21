@@ -432,30 +432,10 @@ export const AMLocationSlide = ({
 
   const address = data.address || '';
 
-  // Layout idêntico ao original (notch azul topo-esquerdo + notch logo baixo-direito)
-  // Margem reduzida de 14px → 8px e raio de 22 → 12 em todas as curvas.
-  //
-  // Card azul: top=8, left=8, 124×120 → right=132, bottom=128. Gap 8px → notch x≤140, y≤136.
-  // Card logo: right=8, bottom=8, 96×46 → left=256, top=306. Notch inicia em y=290, x_min=240.
-  //
-  // Path sentido horário:
-  //   M 152 8        → topo do notch azul (140+12)
-  //   H 340          → borda superior (352−12)
-  //   A 12 12 ...352 20  → canto superior-direito
-  //   V 290          → borda direita até o notch do logo (top_logo − 8)
-  //   Q 352 312 328 312  → curva côncava horizontal no notch logo
-  //   H 264          → traversal do notch logo
-  //   Q 240 312 240 334  → curva côncava vertical no notch logo
-  //   V 340          → até o canto (352−12)
-  //   A 12 12 ...228 352 → canto inferior-direito deslocado (ao lado do notch logo)
-  //   H 20           → borda inferior (8+12)
-  //   A 12 12 ...8 340   → canto inferior-esquerdo
-  //   V 148          → borda esquerda até notch azul (136+12)
-  //   Q 8 136 20 136 → curva côncava notch azul (baixo-esquerdo)
-  //   H 128          → traversal notch azul (140−12)
-  //   Q 140 136 140 124 → curva côncava notch azul (baixo-direito)
-  //   V 20           → sobe borda direita do notch (8+12)
-  //   A 12 12 ...152 8   → canto superior do notch azul (fecha)
+  // Card azul: top=8, left=8, w=132, h=152 → bottom=160. Gap 4px → notch y=164
+  //   notch_right = 8+132+4 = 144 → path x: 144+12=156
+  //   notch_bottom = 8+152+4 = 164 → path y: 164+12=176
+  // Card logo: right=8, bottom=8, 96×46 → left=256, top=306. Gap 4px → notch y=302
   const shapePath = [
     'M 156 8',
     'H 340',
@@ -468,12 +448,12 @@ export const AMLocationSlide = ({
     'A 12 12 0 0 1 244 352',
     'H 20',
     'A 12 12 0 0 1 8 340',
-    'V 152',              // gap 4px: card bottom(136)+gap(4)+r(12)=152
-    'Q 8 140 20 140',     // notch_bottom = 136+4 = 140
-    'H 132',              // notch_right(144)−r(12) = 132
-    'Q 144 140 144 128',  // notch_right=144, 140−12=128
+    'V 176',              // left edge up (164+12)
+    'Q 8 164 20 164',     // concave into blue notch bottom-left
+    'H 132',              // blue notch bottom edge (144-12)
+    'Q 144 164 144 152',  // convex up blue notch right side (164-12)
     'V 20',
-    'A 12 12 0 0 1 156 8', // 144+12=156
+    'A 12 12 0 0 1 156 8',
     'Z',
   ].join(' ');
 
@@ -529,7 +509,7 @@ export const AMLocationSlide = ({
         />
       )}
 
-      {/* Blue info card — notch superior-esquerdo */}
+      {/* Blue info card — notch superior-esquerdo, h=152 para caber ponto de referência */}
       <div
         style={{
           position: 'absolute',
@@ -540,45 +520,50 @@ export const AMLocationSlide = ({
           borderRadius: 12,
           padding: '10px 10px 9px',
           width: 132,
-          height: 128,
+          height: 152,
           boxSizing: 'border-box',
           overflow: 'hidden',
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'space-between',
+          fontFamily: "'Golos Text', Arial, sans-serif",
         }}
       >
         <div style={{ overflow: 'hidden', flex: 1, minHeight: 0 }}>
           <p style={{
             color: 'white', fontWeight: 700, fontSize: 11, lineHeight: 1.3,
-            margin: '0 0 4px',
+            margin: '0 0 5px',
             display: '-webkit-box',
             WebkitLineClamp: 3,
             WebkitBoxOrient: 'vertical',
             overflow: 'hidden',
+            fontFamily: "'Golos Text', Arial, sans-serif",
           }}>
             {data.title || 'Imóveis bem localizados em Manaus'}
           </p>
           {address && (
             <p style={{
-              color: 'white', fontSize: 8, opacity: 0.82, lineHeight: 1.35, margin: 0,
+              color: 'white', fontSize: 8, opacity: 0.82, lineHeight: 1.4, margin: 0,
               display: '-webkit-box',
-              WebkitLineClamp: 2,
+              WebkitLineClamp: 3,
               WebkitBoxOrient: 'vertical',
               overflow: 'hidden',
+              fontFamily: "'Golos Text', Arial, sans-serif",
             }}>
               {address}
             </p>
           )}
           {data.referencePoint && (
             <p style={{
-              color: 'white', fontSize: 8, opacity: 0.7, lineHeight: 1.35, margin: '3px 0 0',
+              color: 'white', fontSize: 8, opacity: 0.75, lineHeight: 1.4,
+              margin: '4px 0 0',
               display: '-webkit-box',
-              WebkitLineClamp: 1,
+              WebkitLineClamp: 3,
               WebkitBoxOrient: 'vertical',
               overflow: 'hidden',
+              fontFamily: "'Golos Text', Arial, sans-serif",
             }}>
-              {data.referencePoint}
+              📍 {data.referencePoint}
             </p>
           )}
         </div>
@@ -595,6 +580,7 @@ export const AMLocationSlide = ({
             color: 'white',
             alignSelf: 'flex-start',
             flexShrink: 0,
+            fontFamily: "'Golos Text', Arial, sans-serif",
           }}
         >
           Arraste para o lado →
