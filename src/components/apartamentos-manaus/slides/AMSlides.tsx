@@ -650,14 +650,9 @@ export const AMPhotoSlide = ({
 };
 
 // ─── Último Slide: INFORMAÇÃO ─────────────────────────────────────────────────
-// Layout fiel ao Figma (canvas 1080×1080 → escala ÷3 = 360×360):
-//   • Foto full-bleed como fundo
-//   • Cartão branco arredondado (339×339 em 10,10) como moldura interna
-//   • Borda branca 2.5px sobre a foto
-//   • Gradiente escuro da ESQUERDA (texto) para transparente na DIREITA (foto)
-//   • Barra branca bottom-right (124×50 em 226,300) com logo colorida
-//   • Título branco 600 20px/20px (left:47, top:40)
-//   • Subtítulo branco 400 10.7px/15px (left:47, top:145)
+// Logo card: bottom=14, right=14, width=104, height=50, r=12 em todos os cantos
+// Isso garante que todos os 4 cantos do card fiquem visíveis (longe das bordas do slide)
+// Frame: r=12 nos cantos externos + notch côncavo (Q) nos 2 cantos superiores do card
 export const AMInfoSlide = ({
   data,
   photo,
@@ -665,11 +660,39 @@ export const AMInfoSlide = ({
   data: AMPropertyData;
   photo?: string;
 }) => {
+  const uid = useId();
+  const clipId = `am-info-${uid}`;
+
   const headline =
     data.infoMessage ||
     'A Apartamentos Manaus acompanha você em todas as etapas da escolha do seu imóvel.';
   const subtitle =
     'Encontrar o imóvel ideal pode ser mais simples do que parece. A Apartamentos Manaus orienta você sobre as possibilidades de financiamento e acompanha todo o processo com transparência.';
+
+  // Logo card dimensions (all 4 corners visible, inset from slide edges):
+  // right=14, bottom=14, width=104, height=50
+  // → left=360-14-104=242, top=360-14-50=296, right=360-14=346, bottom=360-14=346
+  // r=12 on all corners of the card
+  //
+  // Frame notch (concave Q corners at card top-left and top-right):
+  //   top-right notch: V 284 → Q 346 296 334 296
+  //   top-left notch:  H 254 → Q 242 296 242 308
+  //   bottom-left notch corner: V 334 → A 12 12 0 0 1 230 346
+  const shapePath = [
+    'M 336 12',
+    'A 12 12 0 0 1 348 24',
+    'V 284',
+    'Q 348 296 336 296',
+    'H 254',
+    'Q 242 296 242 308',
+    'V 334',
+    'A 12 12 0 0 1 230 346',
+    'H 24',
+    'A 12 12 0 0 1 12 334',
+    'V 24',
+    'A 12 12 0 0 1 24 12',
+    'Z',
+  ].join(' ');
 
   return (
     <div
@@ -677,13 +700,22 @@ export const AMInfoSlide = ({
         position: 'relative',
         width: 360,
         height: 360,
-        backgroundColor: '#ffffff',
+        backgroundColor: '#1a1a1a',
         fontFamily: 'Arial, sans-serif',
         overflow: 'hidden',
       }}
     >
-      {/* ── Foto full-bleed (camada de fundo) ── */}
-      {photo ? (
+      {/* ── clipPath definition ── */}
+      <svg aria-hidden="true" style={{ position: 'absolute', width: 0, height: 0, overflow: 'hidden' }}>
+        <defs>
+          <clipPath id={clipId} clipPathUnits="userSpaceOnUse">
+            <path d={shapePath} />
+          </clipPath>
+        </defs>
+      </svg>
+
+      {/* ── LAYER 1: Foto de fundo — preenche o slide inteiro, levemente escurecida ── */}
+      {photo && (
         <img
           src={photo}
           alt=""
@@ -694,97 +726,116 @@ export const AMInfoSlide = ({
             height: '100%',
             objectFit: 'cover',
             display: 'block',
-            zIndex: 1,
+            filter: 'brightness(0.5) blur(2px)',
+            zIndex: 0,
           }}
         />
-      ) : (
-        <div style={{ position: 'absolute', inset: 0, backgroundColor: '#374151', zIndex: 1 }} />
       )}
 
-      {/* ── Gradiente escuro: dark on LEFT, transparent on RIGHT (270deg) ── */}
+      {/* ── LAYER 2: Quadro branco da logo — ATRÁS do frame recortado, NA FRENTE do fundo ── */}
+      {/* right:0 bottom:0 → lado direito e base alinham com borda do slide = linha branca do frame */}
+      <div
+        style={{
+          position: 'absolute',
+          bottom: 0,
+          right: 0,
+          zIndex: 1,
+          backgroundColor: '#ffffff',
+          borderRadius: 16,
+          width: 148,
+          height: 86,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          boxSizing: 'border-box',
+          padding: '2px 6px',
+        }}
+      >
+        <AMLogo width={92} variant="color" />
+      </div>
+
+      {/* ── LAYER 3: Frame recortado com borda branca ── */}
       <div
         style={{
           position: 'absolute',
           inset: 0,
-          background: 'linear-gradient(270deg, rgba(0,0,0,0) -18.53%, rgba(0,0,0,0.85) 100%)',
           zIndex: 2,
         }}
-      />
-
-      {/* ── Cartão branco arredondado (moldura interna sobre a foto) ── */}
-      <div
-        style={{
-          position: 'absolute',
-          top: 10,
-          left: 10,
-          width: 339,
-          height: 339,
-          borderRadius: 10,
-          border: '2.5px solid #ffffff',
-          boxSizing: 'border-box',
-          zIndex: 3,
-          pointerEvents: 'none',
-        }}
-      />
-
-      {/* ── Barra branca bottom-right para logo ── */}
-      <div
-        style={{
-          position: 'absolute',
-          left: 226,
-          top: 300,
-          width: 124,
-          height: 50,
-          backgroundColor: '#ffffff',
-          zIndex: 4,
-        }}
-      />
-
-      {/* ── Logo colorida na barra branca ── */}
-      <div
-        style={{
-          position: 'absolute',
-          left: 249,
-          top: 313,
-          zIndex: 5,
-          display: 'flex',
-          alignItems: 'center',
-        }}
       >
-        <AMLogo width={76} variant="color" />
+        {/* Foto principal recortada pelo clipPath */}
+        {photo ? (
+          <img
+            src={photo}
+            alt=""
+            style={{
+              position: 'absolute',
+              inset: 0,
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
+              display: 'block',
+              clipPath: `url(#${clipId})`,
+            }}
+          />
+        ) : (
+          <div style={{ position: 'absolute', inset: 0, backgroundColor: '#374151', clipPath: `url(#${clipId})` }} />
+        )}
+
+        {/* Gradiente escuro recortado */}
+        <div
+          style={{
+            position: 'absolute',
+            inset: 0,
+            background: 'linear-gradient(270deg, rgba(0,0,0,0) -18.53%, rgba(0,0,0,0.85) 100%)',
+            clipPath: `url(#${clipId})`,
+          }}
+        />
+
+        {/* Borda branca ao redor do shape */}
+        <svg
+          style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', pointerEvents: 'none' }}
+          viewBox="0 0 360 360"
+        >
+          <path
+            d={shapePath}
+            fill="none"
+            stroke="white"
+            strokeWidth="2.5"
+          />
+        </svg>
       </div>
 
-      {/* ── Título (left:47, top:40, 20px/20px, white 600) ── */}
+      {/* ── Título ── */}
       <h2
         style={{
           position: 'absolute',
           left: 47,
-          top: 40,
-          width: 220,
+          top: 38,
+          width: 210,
           color: '#ffffff',
-          fontWeight: 600,
+          fontWeight: 700,
           fontSize: 20,
-          lineHeight: '20px',
+          lineHeight: '26px',
           margin: 0,
-          zIndex: 6,
+          zIndex: 10,
         }}
       >
         {headline}
       </h2>
 
-      {/* ── Subtítulo (left:47, top:145, 10.7px/15px, white 400) ── */}
+      {/* ── Subtítulo ── */}
       <p
         style={{
           position: 'absolute',
           left: 47,
-          top: 145,
-          width: 172,
-          color: '#ffffff',
+          top: 192,
+          width: 170,
+          color: 'rgba(255,255,255,0.85)',
           fontWeight: 400,
           fontSize: 10.7,
           lineHeight: '15px',
           margin: 0,
-          zIndex: 6,
+          zIndex: 10,
         }}
       >
         {subtitle}
