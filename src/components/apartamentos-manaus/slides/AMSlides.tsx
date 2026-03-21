@@ -678,63 +678,28 @@ export const AMInfoSlide = ({
   //   top-right notch: V 284 → Q 346 296 334 296
   //   top-left notch:  H 254 → Q 242 296 242 308
   //   bottom-left notch corner: V 334 → A 12 12 0 0 1 230 346
+  // Card: right=348(360-12), bottom=346(360-14), width=128, height=72
+  // → left=220(348-128), top=274(346-72)
+  // Notch curves follow card top-right (348,274) and top-left (220,274)
   const shapePath = [
     'M 336 12',
     'A 12 12 0 0 1 348 24',
-    'V 284',
-    'Q 348 296 336 296',
-    'H 254',
-    'Q 242 296 242 308',
+    'V 262',
+    'Q 348 274 336 274',
+    'H 232',
+    'Q 220 274 220 286',
     'V 334',
-    'A 12 12 0 0 1 230 346',
+    'A 12 12 0 0 1 208 346',
     'H 24',
     'A 12 12 0 0 1 12 334',
     'V 24',
     'A 12 12 0 0 1 24 12',
     'Z',
   ].join(' ');
-
-  return (
-    <div
-      style={{
-        position: 'relative',
-        width: 360,
-        height: 360,
-        backgroundColor: '#1a1a1a',
-        fontFamily: 'Arial, sans-serif',
-        overflow: 'hidden',
-      }}
-    >
-      {/* ── clipPath definition ── */}
-      <svg aria-hidden="true" style={{ position: 'absolute', width: 0, height: 0, overflow: 'hidden' }}>
-        <defs>
-          <clipPath id={clipId} clipPathUnits="userSpaceOnUse">
-            <path d={shapePath} />
-          </clipPath>
-        </defs>
-      </svg>
-
-      {/* ── LAYER 1: Foto de fundo — preenche o slide inteiro, levemente escurecida ── */}
-      {photo && (
-        <img
-          src={photo}
-          alt=""
-          style={{
-            position: 'absolute',
-            inset: 0,
-            width: '100%',
-            height: '100%',
-            objectFit: 'cover',
-            display: 'block',
-            filter: 'brightness(0.5) blur(2px)',
-            zIndex: 0,
-          }}
-        />
-      )}
-
+...
       {/* ── LAYER 2: Quadro branco da logo — ATRÁS do frame recortado, NA FRENTE do fundo ── */}
-      {/* right=12, bottom=14 → alinha bordas externas do card com a linha branca do frame (path: x=348, y=346) */}
-      {/* width=106, height=50 → left edge = x=242, top edge = y=296 (notch corners do clipPath) */}
+      {/* right=12, bottom=14 → bordas direita/baixo alinhadas com o frame */}
+      {/* width=128, height=72 → expandido para cima e para a esquerda; logo ancorada no canto inferior direito */}
       <div
         style={{
           position: 'absolute',
@@ -743,13 +708,13 @@ export const AMInfoSlide = ({
           zIndex: 1,
           backgroundColor: '#ffffff',
           borderRadius: 16,
-          width: 106,
-          height: 50,
+          width: 128,
+          height: 72,
           display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
+          alignItems: 'flex-end',
+          justifyContent: 'flex-end',
           boxSizing: 'border-box',
-          padding: '2px 6px',
+          padding: '6px 8px',
         }}
       >
         <AMLogo width={88} variant="color" />
