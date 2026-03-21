@@ -390,17 +390,28 @@ export const AMSpecsSlide = ({
         <AMLogo width={100} variant="color" />
       </div>
 
-      {/* ── Specs card ── */}
+      {/* ── Specs card — layout copiado do design (÷3 do canvas 1080px) ── */}
       {specs.length > 0 && (
         <div style={{
-          position: 'absolute', bottom: 18, right: 18, zIndex: 20,
-          backgroundColor: 'rgba(40,44,58,0.72)',
-          borderRadius: 4, padding: '4px 7px', maxWidth: 116,
-          border: '1px solid rgba(255,255,255,0.18)',
+          position: 'absolute', bottom: 23, right: 19, zIndex: 20,
+          backgroundColor: 'rgba(47,53,58,0.4)',
+          borderRadius: 10,
+          width: 127,
+          height: 77,
+          paddingTop: 17,
+          paddingRight: 7,
+          paddingBottom: 21,
+          paddingLeft: 10,
+          boxSizing: 'border-box',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'flex-start',
+          gap: 6,
+          overflow: 'hidden',
         }}>
           {specs.map((spec, i) => (
-            <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 3, marginBottom: i < specs.length - 1 ? 0.5 : 0 }}>
-              <span style={{ color: 'rgba(255,255,255,0.6)', fontFamily: "'Golos Text', Arial, sans-serif", fontWeight: 400, fontSize: 8, marginTop: 0.5, flexShrink: 0 }}>•</span>
+            <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 3 }}>
+              <span style={{ color: 'rgba(255,255,255,0.6)', fontFamily: "'Golos Text', Arial, sans-serif", fontWeight: 400, fontSize: 8, flexShrink: 0 }}>•</span>
               <span style={{ color: 'white', fontFamily: "'Golos Text', Arial, sans-serif", fontWeight: 400, fontSize: 8, lineHeight: '9px' }}>{spec}</span>
             </div>
           ))}
