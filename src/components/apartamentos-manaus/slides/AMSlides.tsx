@@ -425,26 +425,48 @@ export const AMLocationSlide = ({
 
   const address = data.address || '';
 
-  // Foto preenche tudo (0→360) com notch superior-esquerdo (card azul 124×120)
-  // e notch inferior-direito (card logo 96×46). Raio 12 em todas as curvas.
+  // Layout idêntico ao original (notch azul topo-esquerdo + notch logo baixo-direito)
+  // Margem reduzida de 14px → 8px e raio de 22 → 12 em todas as curvas.
+  //
+  // Card azul: top=8, left=8, 124×120 → right=132, bottom=128. Gap 8px → notch x≤140, y≤136.
+  // Card logo: right=8, bottom=8, 96×46 → left=256, top=306. Notch inicia em y=290, x_min=240.
+  //
+  // Path sentido horário:
+  //   M 152 8        → topo do notch azul (140+12)
+  //   H 340          → borda superior (352−12)
+  //   A 12 12 ...352 20  → canto superior-direito
+  //   V 290          → borda direita até o notch do logo (top_logo − 8)
+  //   Q 352 312 328 312  → curva côncava horizontal no notch logo
+  //   H 264          → traversal do notch logo
+  //   Q 240 312 240 334  → curva côncava vertical no notch logo
+  //   V 340          → até o canto (352−12)
+  //   A 12 12 ...228 352 → canto inferior-direito deslocado (ao lado do notch logo)
+  //   H 20           → borda inferior (8+12)
+  //   A 12 12 ...8 340   → canto inferior-esquerdo
+  //   V 148          → borda esquerda até notch azul (136+12)
+  //   Q 8 136 20 136 → curva côncava notch azul (baixo-esquerdo)
+  //   H 128          → traversal notch azul (140−12)
+  //   Q 140 136 140 124 → curva côncava notch azul (baixo-direito)
+  //   V 20           → sobe borda direita do notch (8+12)
+  //   A 12 12 ...152 8   → canto superior do notch azul (fecha)
   const shapePath = [
-    'M 148 8',               // top edge — direita do notch azul (136+12=148)
+    'M 152 8',
     'H 340',
-    'A 12 12 0 0 1 352 20',  // top-right r=12
+    'A 12 12 0 0 1 352 20',
+    'V 290',
+    'Q 352 312 328 312',
+    'H 264',
+    'Q 240 312 240 334',
     'V 340',
-    'A 12 12 0 0 1 340 352', // bottom-right r=12
-    'H 258',                 // bottom edge — esquerda do notch logo (246+12=258)
-    'Q 246 352 246 340',     // concave bottom-right of logo notch r=12
-    'V 322',
-    'Q 246 310 234 310',     // concave top-left of logo notch r=12
+    'A 12 12 0 0 1 228 352',
     'H 20',
-    'A 12 12 0 0 1 8 298',   // bottom-left r=12
-    'V 154',                 // left edge — above notch (142+12=154)
-    'Q 8 142 20 142',        // concave bottom-left of blue notch r=12
-    'H 124',
-    'Q 136 142 136 130',     // concave bottom-right of blue notch r=12
+    'A 12 12 0 0 1 8 340',
+    'V 148',
+    'Q 8 136 20 136',
+    'H 128',
+    'Q 140 136 140 124',
     'V 20',
-    'A 12 12 0 0 1 148 8',   // notch top r=12
+    'A 12 12 0 0 1 152 8',
     'Z',
   ].join(' ');
 
@@ -468,7 +490,7 @@ export const AMLocationSlide = ({
         </defs>
       </svg>
 
-      {/* Photo — preenche 360×360, recortada pelo clipPath */}
+      {/* Photo — 360×360 recortada pelo clipPath */}
       {photo ? (
         <img
           src={photo}
@@ -510,8 +532,8 @@ export const AMLocationSlide = ({
           backgroundColor: '#1B5EA6',
           borderRadius: 12,
           padding: '10px 10px 9px',
-          width: 128,
-          height: 122,
+          width: 124,
+          height: 120,
           boxSizing: 'border-box',
           overflow: 'hidden',
           display: 'flex',
@@ -581,8 +603,8 @@ export const AMLocationSlide = ({
           zIndex: 20,
           backgroundColor: '#ffffff',
           borderRadius: 12,
-          width: 100,
-          height: 48,
+          width: 96,
+          height: 46,
           overflow: 'hidden',
           display: 'flex',
           alignItems: 'center',
@@ -591,11 +613,12 @@ export const AMLocationSlide = ({
           padding: '2px 4px',
         }}
       >
-        <AMLogo width={90} variant="color" />
+        <AMLogo width={88} variant="color" />
       </div>
     </div>
   );
 };
+
 
 
 // ─── Slide 4+: FOTO SIMPLES ──────────────────────────────────────────────────
