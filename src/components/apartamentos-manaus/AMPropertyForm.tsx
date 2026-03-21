@@ -114,20 +114,54 @@ export function AMPropertyForm({ data, onChange }: AMPropertyFormProps) {
 
       {/* Valores */}
       <Section title="Valores" color="#F47920">
+        {/* Toggle Venda / Locação */}
+        <div className="flex items-center gap-1 p-1 bg-gray-100 rounded-xl w-full">
+          <button
+            type="button"
+            onClick={() => set('isRental', false)}
+            className="flex-1 py-2 rounded-lg text-sm font-semibold transition-all"
+            style={!data.isRental
+              ? { backgroundColor: '#F47920', color: 'white', boxShadow: '0 1px 4px rgba(0,0,0,0.15)' }
+              : { color: '#6B7280', backgroundColor: 'transparent' }}
+          >
+            Venda
+          </button>
+          <button
+            type="button"
+            onClick={() => set('isRental', true)}
+            className="flex-1 py-2 rounded-lg text-sm font-semibold transition-all"
+            style={data.isRental
+              ? { backgroundColor: '#1B5EA6', color: 'white', boxShadow: '0 1px 4px rgba(0,0,0,0.15)' }
+              : { color: '#6B7280', backgroundColor: 'transparent' }}
+          >
+            Locação
+          </button>
+        </div>
+
         <div className="space-y-3">
-          <div className="space-y-1">
-            <Label className={labelClass}>Preço de Venda (R$)</Label>
-            <Input className={inputClass} type="number" placeholder="0"
-              value={data.salePrice || ''} onChange={(e) => set('salePrice', Number(e.target.value))} />
-          </div>
-          <div className="flex items-center gap-2">
-            <Switch className={switchClass} checked={data.acceptsFinancing} onCheckedChange={(v) => set('acceptsFinancing', v)} />
-            <Label className="text-sm text-gray-600">Aceita financiamento</Label>
-          </div>
-          <div className="flex items-center gap-2">
-            <Switch className={switchClass} checked={data.acceptsFGTS} onCheckedChange={(v) => set('acceptsFGTS', v)} />
-            <Label className="text-sm text-gray-600">Aceita FGTS</Label>
-          </div>
+          {!data.isRental ? (
+            <>
+              <div className="space-y-1">
+                <Label className={labelClass}>Preço de Venda (R$)</Label>
+                <Input className={inputClass} type="number" placeholder="0"
+                  value={data.salePrice || ''} onChange={(e) => set('salePrice', Number(e.target.value))} />
+              </div>
+              <div className="flex items-center gap-2">
+                <Switch className={switchClass} checked={data.acceptsFinancing} onCheckedChange={(v) => set('acceptsFinancing', v)} />
+                <Label className="text-sm text-gray-600">Aceita financiamento</Label>
+              </div>
+              <div className="flex items-center gap-2">
+                <Switch className={switchClass} checked={data.acceptsFGTS} onCheckedChange={(v) => set('acceptsFGTS', v)} />
+                <Label className="text-sm text-gray-600">Aceita FGTS</Label>
+              </div>
+            </>
+          ) : (
+            <div className="space-y-1">
+              <Label className={labelClass}>Valor do Aluguel (R$)</Label>
+              <Input className={inputClass} type="number" placeholder="0"
+                value={data.rentalPrice || ''} onChange={(e) => set('rentalPrice', Number(e.target.value))} />
+            </div>
+          )}
         </div>
 
         <div className="grid grid-cols-2 gap-3 pt-1">
