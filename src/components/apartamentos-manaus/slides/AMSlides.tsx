@@ -72,24 +72,14 @@ export const AMCoverSlide = ({
 
   // Design source: 1080×1080px → scale 1/3 → 360×360px
   //
-  // ORANGE BADGE: 1080px → w:480, h:143, top:30, left:30
-  //   scaled: w:160, h:47.7≈48, top:10, left:10
-  //   right edge: 10+160=170 → notch x: 170+4=174, notch y top: 10+48+4=62
+  // ORANGE BADGE: w:190, h:48, top:10, left:10
+  //   right edge: 10+190=200 → notch x: 200+4=204, notch y: 10+48+4=62
   //
-  // BLUE CARD: 1080px → w:444, h:157, top:893, left:606
-  //   scaled: w:148, h:52, bottom:10, right:10
+  // BLUE CARD: w:148, h:52, bottom:10, right:10
   //   left edge: 360-10-148=202 → notch x: 202-4=198, notch y: 360-10-52-4=294
   //
-  // Gap between orange badge right edge and image: 4px
-  // Gap between orange badge bottom and image: 4px
-  //
-  // ShapePath: image area with two notches:
-  //   Top-left notch: for orange badge (x:6..174, y:6..62)
-  //   Bottom-right notch: for blue card (x:198..354, y:294..354)
-  //
-  // Clockwise from top of top-right outer corner:
   const shapePath = [
-    'M 184 6',               // top edge start (174+10)
+    'M 214 6',               // top edge start (204+10)
     'H 344',                 // top edge to right (354-10)
     'A 10 10 0 0 1 354 16',  // top-right outer corner
     'V 284',                 // right edge down (294-10)
@@ -102,10 +92,10 @@ export const AMCoverSlide = ({
     'A 10 10 0 0 1 6 344',   // outer bottom-left corner
     'V 72',                  // left edge up (62+10)
     'Q 6 62 16 62',          // concave into orange notch bottom-left
-    'H 164',                 // orange notch bottom edge (174-10)
-    'Q 174 62 174 52',       // convex up orange notch right side
+    'H 194',                 // orange notch bottom edge (204-10)
+    'Q 204 62 204 52',       // convex up orange notch right side
     'V 16',                  // orange notch right side up (6+10)
-    'A 10 10 0 0 1 184 6',   // arc back to start
+    'A 10 10 0 0 1 214 6',   // arc back to start
     'Z',
   ].join(' ');
 
@@ -137,7 +127,7 @@ export const AMCoverSlide = ({
           position: 'absolute',
           top: 10,
           left: 10,
-          width: 160,
+          width: 190,
           zIndex: 5,
           background: 'linear-gradient(180deg, #FF8D28 52.88%, #DF7110 100%)',
           borderRadius: 10,
@@ -245,13 +235,13 @@ export const AMCoverSlide = ({
             display: 'inline-block',
             color: 'white',
             fontWeight: 700,
-            fontSize: 8,
+            fontSize: 7,
             letterSpacing: '0.08em',
             backgroundColor: 'rgba(255,255,255,0.2)',
             border: '1px solid rgba(255,255,255,0.4)',
             borderRadius: 20,
-            padding: '1px 8px',
-            marginBottom: 3,
+            padding: '1px 6px',
+            marginBottom: 2,
             alignSelf: 'flex-start',
             fontFamily: golos,
           }}
@@ -261,8 +251,8 @@ export const AMCoverSlide = ({
 
         {/* Price */}
         <div style={{ display: 'flex', alignItems: 'baseline', gap: 2, color: 'white' }}>
-          <span style={{ fontSize: 10, opacity: 0.75, marginRight: 2, fontFamily: golos }}>R$</span>
-          <span style={{ fontSize: 16, fontWeight: 700, lineHeight: 1, fontFamily: golos }}>
+          <span style={{ fontSize: 9, opacity: 0.75, marginRight: 1, fontFamily: golos }}>R$</span>
+          <span style={{ fontSize: 12, fontWeight: 700, lineHeight: 1, fontFamily: golos }}>
             {price > 0
               ? price.toLocaleString('pt-BR', { minimumFractionDigits: 0, maximumFractionDigits: 0 })
               : 'Consulte'}
