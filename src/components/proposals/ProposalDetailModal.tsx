@@ -73,16 +73,15 @@ export function ProposalDetailModal({ proposal, onClose, onUpdate, onDelete }: P
     <Dialog open={!!proposal} onOpenChange={onClose}>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-hidden flex flex-col p-0">
         {/* Header */}
-        <div className="px-6 pt-5 pb-4 border-b" style={{ backgroundColor: cfg.bgColor }}>
+        <div className="px-6 pt-5 pb-4 border-b" style={{ backgroundColor: cfg.color }}>
           <DialogHeader>
             <div className="flex items-start justify-between gap-3">
               <div>
-                <DialogTitle className="text-xl font-bold text-gray-900">{proposal.nome}</DialogTitle>
-                {proposal.produto && <p className="text-sm text-gray-500 mt-0.5">{proposal.produto}</p>}
+                <DialogTitle className="text-xl font-bold text-white">{proposal.nome}</DialogTitle>
+                {proposal.produto && <p className="text-sm text-white/80 mt-0.5">{proposal.produto}</p>}
               </div>
               <span
-                className="text-xs font-semibold px-3 py-1.5 rounded-full flex-shrink-0"
-                style={{ color: cfg.color, backgroundColor: cfg.bgColor, border: `1.5px solid ${cfg.borderColor}` }}
+                className="text-xs font-semibold px-3 py-1.5 rounded-full flex-shrink-0 bg-white/20 text-white border border-white/30"
               >
                 {cfg.label}
               </span>
@@ -92,10 +91,10 @@ export function ProposalDetailModal({ proposal, onClose, onUpdate, onDelete }: P
           {/* Checklist summary bar */}
           {totalItems > 0 && (
             <div className="mt-3">
-              <div className="flex items-center justify-between text-xs text-gray-500 mb-1">
+              <div className="flex items-center justify-between text-xs text-white/80 mb-1">
                 <span>Checklist: {conformeItems}/{totalItems} conforme</span>
                 {pendingItems > 0 && (
-                  <span className="text-red-500 font-medium">{pendingItems} pendente(s)</span>
+                  <span className="text-white font-semibold">{pendingItems} pendente(s)</span>
                 )}
               </div>
               <div className="h-2 rounded-full bg-gray-200 overflow-hidden">
