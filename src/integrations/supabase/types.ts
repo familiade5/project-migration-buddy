@@ -913,6 +913,172 @@ export type Database = {
         }
         Relationships: []
       }
+      proposal_checklist: {
+        Row: {
+          category: string
+          created_at: string
+          id: string
+          item_key: string
+          item_label: string
+          observacao: string | null
+          proposal_id: string
+          status: Database["public"]["Enums"]["checklist_status"]
+          updated_at: string
+          updated_by_user_id: string | null
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          id?: string
+          item_key: string
+          item_label: string
+          observacao?: string | null
+          proposal_id: string
+          status?: Database["public"]["Enums"]["checklist_status"]
+          updated_at?: string
+          updated_by_user_id?: string | null
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          id?: string
+          item_key?: string
+          item_label?: string
+          observacao?: string | null
+          proposal_id?: string
+          status?: Database["public"]["Enums"]["checklist_status"]
+          updated_at?: string
+          updated_by_user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "proposal_checklist_proposal_id_fkey"
+            columns: ["proposal_id"]
+            isOneToOne: false
+            referencedRelation: "proposals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      proposal_history: {
+        Row: {
+          action: string
+          created_at: string
+          from_stage: Database["public"]["Enums"]["proposal_stage"] | null
+          id: string
+          moved_by_name: string | null
+          moved_by_user_id: string | null
+          notes: string | null
+          proposal_id: string
+          to_stage: Database["public"]["Enums"]["proposal_stage"] | null
+        }
+        Insert: {
+          action: string
+          created_at?: string
+          from_stage?: Database["public"]["Enums"]["proposal_stage"] | null
+          id?: string
+          moved_by_name?: string | null
+          moved_by_user_id?: string | null
+          notes?: string | null
+          proposal_id: string
+          to_stage?: Database["public"]["Enums"]["proposal_stage"] | null
+        }
+        Update: {
+          action?: string
+          created_at?: string
+          from_stage?: Database["public"]["Enums"]["proposal_stage"] | null
+          id?: string
+          moved_by_name?: string | null
+          moved_by_user_id?: string | null
+          notes?: string | null
+          proposal_id?: string
+          to_stage?: Database["public"]["Enums"]["proposal_stage"] | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "proposal_history_proposal_id_fkey"
+            columns: ["proposal_id"]
+            isOneToOne: false
+            referencedRelation: "proposals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      proposals: {
+        Row: {
+          agencia: string | null
+          banco: string | null
+          cidade: string | null
+          corretor: string | null
+          cpf: string | null
+          created_at: string
+          created_by_user_id: string | null
+          email: string | null
+          id: string
+          imovel: string | null
+          matricula: string | null
+          nome: string
+          notas: string | null
+          oficio: string | null
+          produto: string | null
+          responsible_user_id: string | null
+          stage: Database["public"]["Enums"]["proposal_stage"]
+          stage_entered_at: string
+          status: string
+          telefone: string | null
+          updated_at: string
+          valor_financiamento: number | null
+        }
+        Insert: {
+          agencia?: string | null
+          banco?: string | null
+          cidade?: string | null
+          corretor?: string | null
+          cpf?: string | null
+          created_at?: string
+          created_by_user_id?: string | null
+          email?: string | null
+          id?: string
+          imovel?: string | null
+          matricula?: string | null
+          nome: string
+          notas?: string | null
+          oficio?: string | null
+          produto?: string | null
+          responsible_user_id?: string | null
+          stage?: Database["public"]["Enums"]["proposal_stage"]
+          stage_entered_at?: string
+          status?: string
+          telefone?: string | null
+          updated_at?: string
+          valor_financiamento?: number | null
+        }
+        Update: {
+          agencia?: string | null
+          banco?: string | null
+          cidade?: string | null
+          corretor?: string | null
+          cpf?: string | null
+          created_at?: string
+          created_by_user_id?: string | null
+          email?: string | null
+          id?: string
+          imovel?: string | null
+          matricula?: string | null
+          nome?: string
+          notas?: string | null
+          oficio?: string | null
+          produto?: string | null
+          responsible_user_id?: string | null
+          stage?: Database["public"]["Enums"]["proposal_stage"]
+          stage_entered_at?: string
+          status?: string
+          telefone?: string | null
+          updated_at?: string
+          valor_financiamento?: number | null
+        }
+        Relationships: []
+      }
       real_estate_agency: {
         Row: {
           address: string | null
@@ -1757,6 +1923,7 @@ export type Database = {
     }
     Enums: {
       app_role: "admin" | "user"
+      checklist_status: "pendente" | "conforme" | "nao_se_aplica"
       property_stage:
         | "novo_imovel"
         | "em_anuncio"
@@ -1775,6 +1942,14 @@ export type Database = {
         | "comercial"
         | "rural"
         | "outro"
+      proposal_stage:
+        | "proposta"
+        | "em_analise"
+        | "pendencia"
+        | "aprovado"
+        | "assinatura"
+        | "registro"
+        | "concluido"
       rental_contract_status:
         | "active"
         | "ending_soon"
@@ -1918,6 +2093,7 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["admin", "user"],
+      checklist_status: ["pendente", "conforme", "nao_se_aplica"],
       property_stage: [
         "novo_imovel",
         "em_anuncio",
@@ -1937,6 +2113,15 @@ export const Constants = {
         "comercial",
         "rural",
         "outro",
+      ],
+      proposal_stage: [
+        "proposta",
+        "em_analise",
+        "pendencia",
+        "aprovado",
+        "assinatura",
+        "registro",
+        "concluido",
       ],
       rental_contract_status: [
         "active",
