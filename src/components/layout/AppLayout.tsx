@@ -12,6 +12,7 @@ import {
   MoreVertical,
   Calculator,
   BookOpen,
+  ClipboardList,
 } from 'lucide-react';
 import {
   DropdownMenu,
@@ -29,6 +30,7 @@ interface AppLayoutProps {
 }
 
 const navigation = [
+  { name: 'CRM', href: '/crm', icon: ClipboardList },
   { name: 'Criar Post', href: '/', icon: Building2 },
   { name: 'Posts Educativos', href: '/educativo', icon: BookOpen },
   { name: 'Biblioteca', href: '/library', icon: Calendar },
