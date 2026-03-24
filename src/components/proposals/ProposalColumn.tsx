@@ -25,9 +25,8 @@ export function ProposalColumn({ stage, proposals, onCardClick, checklistSummari
         isOver ? 'ring-2 ring-offset-1' : ''
       }`}
       style={{
-        ringColor: cfg.color,
         backgroundColor: isOver ? cfg.bgColor : '#F8FAFC',
-        border: `1px solid ${isOver ? cfg.borderColor : '#E2E8F0'}`,
+        border: `2px solid ${isOver ? cfg.color : '#E2E8F0'}`,
         minHeight: 500,
       }}
     >

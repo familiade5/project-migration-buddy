@@ -55,7 +55,7 @@ export function ProposalCard({ proposal, onClick, checklistSummary }: ProposalCa
           )}
         </div>
         {isStale && (
-          <AlertTriangle className="w-3.5 h-3.5 text-amber-500 flex-shrink-0 mt-0.5" title={`${daysInStage} dias nesta etapa`} />
+          <AlertTriangle className="w-3.5 h-3.5 text-amber-500 flex-shrink-0 mt-0.5" />
         )}
       </div>
 
