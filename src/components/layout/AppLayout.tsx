@@ -12,6 +12,7 @@ import {
   MoreVertical,
   Calculator,
   BookOpen,
+  ClipboardList,
 } from 'lucide-react';
 import {
   DropdownMenu,
