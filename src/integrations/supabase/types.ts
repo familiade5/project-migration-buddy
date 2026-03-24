@@ -552,6 +552,162 @@ export type Database = {
           },
         ]
       }
+      crm_lead_history: {
+        Row: {
+          action: string
+          created_at: string
+          from_sales_stage: string | null
+          from_sdr_stage: string | null
+          id: string
+          lead_id: string
+          moved_by_name: string | null
+          moved_by_user_id: string | null
+          notes: string | null
+          to_sales_stage: string | null
+          to_sdr_stage: string | null
+        }
+        Insert: {
+          action: string
+          created_at?: string
+          from_sales_stage?: string | null
+          from_sdr_stage?: string | null
+          id?: string
+          lead_id: string
+          moved_by_name?: string | null
+          moved_by_user_id?: string | null
+          notes?: string | null
+          to_sales_stage?: string | null
+          to_sdr_stage?: string | null
+        }
+        Update: {
+          action?: string
+          created_at?: string
+          from_sales_stage?: string | null
+          from_sdr_stage?: string | null
+          id?: string
+          lead_id?: string
+          moved_by_name?: string | null
+          moved_by_user_id?: string | null
+          notes?: string | null
+          to_sales_stage?: string | null
+          to_sdr_stage?: string | null
+        }
+        Relationships: []
+      }
+      crm_lead_interactions: {
+        Row: {
+          created_at: string
+          created_by_name: string | null
+          created_by_user_id: string | null
+          descricao: string
+          id: string
+          lead_id: string
+          tipo: string
+        }
+        Insert: {
+          created_at?: string
+          created_by_name?: string | null
+          created_by_user_id?: string | null
+          descricao: string
+          id?: string
+          lead_id: string
+          tipo?: string
+        }
+        Update: {
+          created_at?: string
+          created_by_name?: string | null
+          created_by_user_id?: string | null
+          descricao?: string
+          id?: string
+          lead_id?: string
+          tipo?: string
+        }
+        Relationships: []
+      }
+      crm_leads: {
+        Row: {
+          anotacoes: string | null
+          cidade: string | null
+          classificacao: Database["public"]["Enums"]["lead_classificacao"]
+          created_at: string
+          created_by_user_id: string | null
+          data_entrada: string
+          id: string
+          momento_compra: boolean | null
+          nome: string
+          objecoes: string | null
+          origem_lead: string | null
+          proposal_id: string | null
+          sales_responsavel_id: string | null
+          sales_responsavel_nome: string | null
+          sales_stage: Database["public"]["Enums"]["lead_sales_stage"] | null
+          sdr_responsavel_id: string | null
+          sdr_responsavel_nome: string | null
+          sdr_stage: Database["public"]["Enums"]["lead_sdr_stage"]
+          stage_entered_at: string
+          telefone: string
+          tem_condicao_financeira: boolean | null
+          tem_interesse: boolean | null
+          ultima_interacao_at: string | null
+          updated_at: string
+          valor_estimado: number | null
+        }
+        Insert: {
+          anotacoes?: string | null
+          cidade?: string | null
+          classificacao?: Database["public"]["Enums"]["lead_classificacao"]
+          created_at?: string
+          created_by_user_id?: string | null
+          data_entrada?: string
+          id?: string
+          momento_compra?: boolean | null
+          nome: string
+          objecoes?: string | null
+          origem_lead?: string | null
+          proposal_id?: string | null
+          sales_responsavel_id?: string | null
+          sales_responsavel_nome?: string | null
+          sales_stage?: Database["public"]["Enums"]["lead_sales_stage"] | null
+          sdr_responsavel_id?: string | null
+          sdr_responsavel_nome?: string | null
+          sdr_stage?: Database["public"]["Enums"]["lead_sdr_stage"]
+          stage_entered_at?: string
+          telefone: string
+          tem_condicao_financeira?: boolean | null
+          tem_interesse?: boolean | null
+          ultima_interacao_at?: string | null
+          updated_at?: string
+          valor_estimado?: number | null
+        }
+        Update: {
+          anotacoes?: string | null
+          cidade?: string | null
+          classificacao?: Database["public"]["Enums"]["lead_classificacao"]
+          created_at?: string
+          created_by_user_id?: string | null
+          data_entrada?: string
+          id?: string
+          momento_compra?: boolean | null
+          nome?: string
+          objecoes?: string | null
+          origem_lead?: string | null
+          proposal_id?: string | null
+          sales_responsavel_id?: string | null
+          sales_responsavel_nome?: string | null
+          sales_stage?: Database["public"]["Enums"]["lead_sales_stage"] | null
+          sdr_responsavel_id?: string | null
+          sdr_responsavel_nome?: string | null
+          sdr_stage?: Database["public"]["Enums"]["lead_sdr_stage"]
+          stage_entered_at?: string
+          telefone?: string
+          tem_condicao_financeira?: boolean | null
+          tem_interesse?: boolean | null
+          ultima_interacao_at?: string | null
+          updated_at?: string
+          valor_estimado?: number | null
+        }
+        Relationships: []
+      }
       crm_properties: {
         Row: {
           address: string | null
@@ -1924,6 +2080,21 @@ export type Database = {
     Enums: {
       app_role: "admin" | "user"
       checklist_status: "pendente" | "conforme" | "nao_se_aplica"
+      lead_classificacao: "quente" | "morno" | "frio"
+      lead_sales_stage:
+        | "recebido_sdr"
+        | "em_atendimento_venda"
+        | "apresentacao_imoveis"
+        | "negociacao"
+        | "proposta_enviada"
+        | "fechado"
+        | "perdido"
+      lead_sdr_stage:
+        | "lead_recebido"
+        | "em_atendimento"
+        | "qualificando"
+        | "qualificado"
+        | "nao_qualificado"
       property_stage:
         | "novo_imovel"
         | "em_anuncio"
@@ -2094,6 +2265,23 @@ export const Constants = {
     Enums: {
       app_role: ["admin", "user"],
       checklist_status: ["pendente", "conforme", "nao_se_aplica"],
+      lead_classificacao: ["quente", "morno", "frio"],
+      lead_sales_stage: [
+        "recebido_sdr",
+        "em_atendimento_venda",
+        "apresentacao_imoveis",
+        "negociacao",
+        "proposta_enviada",
+        "fechado",
+        "perdido",
+      ],
+      lead_sdr_stage: [
+        "lead_recebido",
+        "em_atendimento",
+        "qualificando",
+        "qualificado",
+        "nao_qualificado",
+      ],
       property_stage: [
         "novo_imovel",
         "em_anuncio",
