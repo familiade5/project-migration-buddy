@@ -67,8 +67,6 @@ export default function AMAdmin() {
   const [resetPassword, setResetPassword] = useState<string | null>(null);
   const [processing, setProcessing] = useState(false);
 
-  if (!isAdmin) return <Navigate to="/apartamentos-manaus" replace />;
-
   const isMasterAdmin = MASTER_ADMINS.includes(currentUser?.email ?? '');
 
   const fetchUsers = async () => {
