@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { AFPropertyData, defaultAFPropertyData } from '@/types/apartamentosFortaleza';
 import { AFPostPreview } from '@/components/apartamentos-fortaleza/AFPostPreview';
 import { AFStoriesPreview } from '@/components/apartamentos-fortaleza/AFStoriesPreview';
@@ -10,11 +10,28 @@ import { Image, Edit3, Sparkles, FileText, LayoutGrid, Smartphone } from 'lucide
 
 const PRIMARY = '#0C7B8E';
 const ACCENT = '#E8562A';
+const STORAGE_KEY_DATA = 'af_property_data';
+const STORAGE_KEY_PHOTOS = 'af_photos';
+
+const loadFromStorage = <T,>(key: string, fallback: T): T => {
+  try {
+    const raw = localStorage.getItem(key);
+    return raw ? (JSON.parse(raw) as T) : fallback;
+  } catch { return fallback; }
+};
 
 const ApartamentosFortalezaPage = () => {
-  const [propertyData, setPropertyData] = useState<AFPropertyData>(defaultAFPropertyData);
-  const [photos, setPhotos] = useState<string[]>([]);
+  const [propertyData, setPropertyData] = useState<AFPropertyData>(() => loadFromStorage(STORAGE_KEY_DATA, defaultAFPropertyData));
+  const [photos, setPhotos] = useState<string[]>(() => loadFromStorage(STORAGE_KEY_PHOTOS, []));
   const [previewTab, setPreviewTab] = useState<'feed' | 'stories'>('feed');
+
+  useEffect(() => {
+    try { localStorage.setItem(STORAGE_KEY_DATA, JSON.stringify(propertyData)); } catch {}
+  }, [propertyData]);
+
+  useEffect(() => {
+    try { localStorage.setItem(STORAGE_KEY_PHOTOS, JSON.stringify(photos)); } catch {}
+  }, [photos]);
 
   return (
     <AFLayout>
