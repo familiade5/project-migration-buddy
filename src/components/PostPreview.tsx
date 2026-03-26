@@ -312,7 +312,7 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
       const exportPhotos = await getPhotosForExport(photos);
       const post = posts[index];
       const photo = exportPhotos[post.photoIndex] || exportPhotos[0] || null;
-      const dataUrl = await captureSlide(post.component, photo, exportPhotos);
+      const dataUrl = await captureSlide(post.component, photo, exportPhotos, { slideIndex: post.slideIndex, totalSlides: posts.length });
 
       const link = document.createElement('a');
       link.download = `post-${index + 1}-${post.name.toLowerCase()}-${format}.png`;
