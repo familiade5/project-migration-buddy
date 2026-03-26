@@ -122,6 +122,41 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
     { name: 'Contato',      component: PostContactStory,  photoIndex: 3 },
   ];
 
+  // Pre-create stable VDH slide wrapper components to avoid React reconciliation issues
+  const VDHSlide4 = useMemo(() => {
+    const C = (props: { data: PropertyData; photo: string | null; photos?: string[] }) => (
+      <VDHPhotoSlide {...props} slideIndex={4} totalSlides={Math.min(photos.length, 10)} />
+    ); C.displayName = 'VDHSlide4'; return C;
+  }, [photos.length]);
+  const VDHSlide5 = useMemo(() => {
+    const C = (props: { data: PropertyData; photo: string | null; photos?: string[] }) => (
+      <VDHPhotoSlide {...props} slideIndex={5} totalSlides={Math.min(photos.length, 10)} />
+    ); C.displayName = 'VDHSlide5'; return C;
+  }, [photos.length]);
+  const VDHSlide6 = useMemo(() => {
+    const C = (props: { data: PropertyData; photo: string | null; photos?: string[] }) => (
+      <VDHPhotoSlide {...props} slideIndex={6} totalSlides={Math.min(photos.length, 10)} />
+    ); C.displayName = 'VDHSlide6'; return C;
+  }, [photos.length]);
+  const VDHSlide7 = useMemo(() => {
+    const C = (props: { data: PropertyData; photo: string | null; photos?: string[] }) => (
+      <VDHPhotoSlide {...props} slideIndex={7} totalSlides={Math.min(photos.length, 10)} />
+    ); C.displayName = 'VDHSlide7'; return C;
+  }, [photos.length]);
+  const VDHSlide8 = useMemo(() => {
+    const C = (props: { data: PropertyData; photo: string | null; photos?: string[] }) => (
+      <VDHPhotoSlide {...props} slideIndex={8} totalSlides={Math.min(photos.length, 10)} />
+    ); C.displayName = 'VDHSlide8'; return C;
+  }, [photos.length]);
+  const VDHSlide9 = useMemo(() => {
+    const C = (props: { data: PropertyData; photo: string | null; photos?: string[] }) => (
+      <VDHPhotoSlide {...props} slideIndex={9} totalSlides={Math.min(photos.length, 10)} />
+    ); C.displayName = 'VDHSlide9'; return C;
+  }, [photos.length]);
+
+  const extraSlideComponents = [VDHSlide4, VDHSlide5, VDHSlide6, VDHSlide7, VDHSlide8, VDHSlide9];
+  const extraSlideNames = ['Destaque', 'Ambiente', 'Detalhes', 'Lifestyle', 'Premium', 'Exclusivo'];
+
   const vdhPosts = useMemo(() => {
     type SlideEntry = { name: string; component: any; photoIndex: number };
     const base: SlideEntry[] = [
@@ -131,22 +166,16 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
       { name: 'Ação',      component: VDHStory4, photoIndex: 3 },
     ];
     // Add dynamic photo slides for extra photos (up to 10 total slides)
-    const extraPhotos = Math.max(0, Math.min(photos.length - 4, 6));
-    for (let i = 0; i < extraPhotos; i++) {
-      const slideIdx = 4 + i;
-      const slideNames = ['Destaque', 'Ambiente', 'Detalhes', 'Lifestyle', 'Premium', 'Exclusivo'];
-      const SlideWrapper = (props: { data: PropertyData; photo: string | null; photos?: string[] }) => (
-        <VDHPhotoSlide {...props} slideIndex={slideIdx} totalSlides={4 + extraPhotos} />
-      );
-      SlideWrapper.displayName = `VDHSlide${slideIdx}`;
+    const extraCount = Math.max(0, Math.min(photos.length - 4, 6));
+    for (let i = 0; i < extraCount; i++) {
       base.push({
-        name: slideNames[i],
-        component: SlideWrapper,
-        photoIndex: slideIdx,
+        name: extraSlideNames[i],
+        component: extraSlideComponents[i],
+        photoIndex: 4 + i,
       });
     }
     return base;
-  }, [photos.length]);
+  }, [photos.length, ...extraSlideComponents]);
 
   const posts = format === 'feed' ? feedPosts : format === 'story' ? storyPosts : vdhPosts;
 
