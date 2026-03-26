@@ -115,6 +115,21 @@ export function AFPostPreview({ data, photos }: AFPostPreviewProps) {
     } finally { setIsExporting(false); }
   };
 
+  const [isExportingPdf, setIsExportingPdf] = useState(false);
+  const handleExportPDF = async () => {
+    setIsExportingPdf(true);
+    toast.info('Gerando PDF profissional...');
+    try {
+      await generateAFPropertyPDF(data, photos, logoAF);
+      toast.success('PDF gerado com sucesso!');
+    } catch (e) {
+      console.error(e);
+      toast.error('Erro ao gerar PDF');
+    } finally {
+      setIsExportingPdf(false);
+    }
+  };
+
   return (
     <div ref={containerRef} className="space-y-3 w-full overflow-hidden">
       <div className="flex items-center justify-between gap-2">
@@ -122,9 +137,19 @@ export function AFPostPreview({ data, photos }: AFPostPreviewProps) {
       </div>
 
       <div className="flex gap-2">
-        <Button variant="outline" size="sm" onClick={handleExportAll} disabled={isExporting} className="gap-1.5 flex-1 text-xs min-w-0">
+        <Button variant="outline" size="sm" onClick={handleExportAll} disabled={isExporting || isExportingPdf} className="gap-1.5 flex-1 text-xs min-w-0">
           {isExporting ? <Loader2 className="w-3.5 h-3.5 animate-spin flex-shrink-0" /> : <Download className="w-3.5 h-3.5 flex-shrink-0" />}
           <span className="truncate">Exportar Feed ({slides.length})</span>
+        </Button>
+        <Button
+          size="sm"
+          onClick={handleExportPDF}
+          disabled={isExportingPdf || isExporting}
+          className="gap-1.5 flex-1 text-xs min-w-0 text-white"
+          style={{ backgroundColor: '#E8562A' }}
+        >
+          {isExportingPdf ? <Loader2 className="w-3.5 h-3.5 animate-spin flex-shrink-0" /> : <FileText className="w-3.5 h-3.5 flex-shrink-0" />}
+          <span className="truncate">Exportar PDF</span>
         </Button>
       </div>
 
