@@ -19,6 +19,8 @@ import AMAuth from "./pages/am/AMAuth";
 import ApartamentosManausPage from "./pages/am/ApartamentosManausPage";
 import AMLibrary from "./pages/am/AMLibrary";
 import AMAdmin from "./pages/am/AMAdmin";
+import AFAuth from "./pages/af/AFAuth";
+import ApartamentosFortalezaPage from "./pages/af/ApartamentosFortalezaPage";
 
 const queryClient = new QueryClient();
 
