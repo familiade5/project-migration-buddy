@@ -108,14 +108,16 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
   const exportRef = useRef<HTMLDivElement>(null);
 
   // ── Slide definitions (DO NOT change order) ──────────────────────────────
-  const feedPosts = [
+  type SlideEntry = { name: string; component: React.ComponentType<any>; photoIndex: number; slideIndex?: number };
+
+  const feedPosts: SlideEntry[] = [
     { name: 'Capa',         component: PostCover,    photoIndex: 0 },
     { name: 'Detalhes',     component: PostFeatures, photoIndex: 1 },
     { name: 'Diferenciais', component: PostDetails,  photoIndex: 2 },
     { name: 'Contato',      component: PostContact,  photoIndex: 3 },
   ];
 
-  const storyPosts = [
+  const storyPosts: SlideEntry[] = [
     { name: 'Capa',         component: PostCoverStory,    photoIndex: 0 },
     { name: 'Detalhes',     component: PostFeaturesStory, photoIndex: 1 },
     { name: 'Diferenciais', component: PostDetailsStory,  photoIndex: 2 },
