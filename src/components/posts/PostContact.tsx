@@ -50,10 +50,10 @@ export const PostContact = ({ data, photo }: PostContactProps) => {
 
       {/* Footer com logo e WhatsApp */}
       <div className="absolute bottom-0 left-0 right-0 bg-[#1e3a2f] z-10">
-        <div className="flex items-center justify-between" style={{ padding: '40px 60px' }}>
+        <div className="flex items-center justify-between" style={{ padding: '20px 60px' }}>
           {/* Logo VDH */}
           <div className="flex items-center" style={{ gap: '20px' }}>
-            <img src={logoBase64} alt="VDH" style={{ height: '250px', objectFit: 'contain', filter: 'brightness(0) invert(1)' }} />
+            <img src={logoBase64} alt="VDH" style={{ height: '150px', objectFit: 'contain', filter: 'brightness(0) invert(1)' }} />
           </div>
 
           {/* Separador */}
