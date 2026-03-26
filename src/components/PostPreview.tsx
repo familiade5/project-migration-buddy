@@ -343,7 +343,7 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
       for (let i = 0; i < currentPosts.length; i++) {
         const post = currentPosts[i];
         const photo = exportPhotos[post.photoIndex] || exportPhotos[0] || null;
-        const dataUrl = await captureSlide(post.component, photo, exportPhotos);
+        const dataUrl = await captureSlide(post.component, photo, exportPhotos, { slideIndex: post.slideIndex, totalSlides: currentPosts.length });
         allDataUrls.push(dataUrl);
         exportedImages.push({ dataUrl, format, index: i });
       }
