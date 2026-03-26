@@ -73,22 +73,21 @@ const App = () => (
                 <EducationalPostGenerator />
               </ProtectedRoute>
             } />
-            {/* Apartamentos Manaus – separate brand, same auth */}
+            {/* Apartamentos Manaus */}
             <Route path="/am/auth" element={<AMAuth />} />
             <Route path="/apartamentos-manaus" element={
-              <ProtectedRoute>
-                <ApartamentosManausPage />
-              </ProtectedRoute>
+              <ProtectedRoute><ApartamentosManausPage /></ProtectedRoute>
             } />
             <Route path="/apartamentos-manaus/biblioteca" element={
-              <ProtectedRoute>
-                <AMLibrary />
-              </ProtectedRoute>
+              <ProtectedRoute><AMLibrary /></ProtectedRoute>
             } />
             <Route path="/apartamentos-manaus/admin" element={
-              <ProtectedRoute requireAdmin>
-                <AMAdmin />
-              </ProtectedRoute>
+              <ProtectedRoute requireAdmin><AMAdmin /></ProtectedRoute>
+            } />
+            {/* Apartamentos Fortaleza */}
+            <Route path="/af/auth" element={<AFAuth />} />
+            <Route path="/apartamentos-fortaleza" element={
+              <ProtectedRoute><ApartamentosFortalezaPage /></ProtectedRoute>
             } />
             <Route path="*" element={<NotFound />} />
           </Routes>
