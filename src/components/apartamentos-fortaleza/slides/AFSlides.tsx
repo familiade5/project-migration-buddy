@@ -395,7 +395,7 @@ export const AFInfoSlide = ({ data, photo }: { data: AFPropertyData; photo?: str
         display: 'flex', alignItems: 'flex-end', justifyContent: 'flex-end',
         boxSizing: 'border-box', padding: '6px 8px',
       }}>
-        <AFLogo width={88} variant="color" />
+        <AFLogo width={114} variant="color" />
       </div>
 
       {/* LAYER 2: Frame recortado com borda branca */}
