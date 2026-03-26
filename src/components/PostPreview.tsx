@@ -506,7 +506,7 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
                 transform: format === 'feed' ? 'scale(0.2593)' : 'scale(0.1667)',
               }}
             >
-              <CurrentPostComponent data={data} photo={currentPhoto} photos={photos} />
+              <CurrentPostComponent data={data} photo={currentPhoto} photos={photos} slideIndex={posts[currentPost]?.slideIndex} totalSlides={posts.length} />
             </div>
           </div>
 
