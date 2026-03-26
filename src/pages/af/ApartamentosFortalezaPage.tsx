@@ -6,7 +6,8 @@ import { AFPropertyForm } from '@/components/apartamentos-fortaleza/AFPropertyFo
 import { AFCaptionGenerator } from '@/components/apartamentos-fortaleza/AFCaptionGenerator';
 import { AFPhotoManager } from '@/components/apartamentos-fortaleza/AFPhotoManager';
 import { AFLayout } from '@/components/layout/AFLayout';
-import { Image, Edit3, Sparkles, FileText, LayoutGrid, Smartphone } from 'lucide-react';
+import { Image, Edit3, Sparkles, FileText, LayoutGrid, Smartphone, Zap } from 'lucide-react';
+import { AFPaidFeedPreview } from '@/components/apartamentos-fortaleza/AFPaidFeedPreview';
 
 const PRIMARY = '#0C7B8E';
 const ACCENT = '#E8562A';
