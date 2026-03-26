@@ -160,9 +160,10 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
   // ── Core capture function (iOS-safe) ─────────────────────────────────────
   // Renders one slide at a time into the single exportRef, waits for images, captures.
   const captureSlide = async (
-    Component: React.ComponentType<{ data: PropertyData; photo: string | null; photos?: string[] }>,
+    Component: React.ComponentType<any>,
     photo: string | null,
     allPhotos: string[],
+    extraProps?: { slideIndex?: number; totalSlides?: number },
   ): Promise<string> => {
     // First: clear previous content so WebKit re-paints fresh
     if (isIOS()) {
@@ -173,7 +174,7 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
     // Synchronously update the hidden export element content
     flushSync(() => {
       setExportSlideEl(
-        <Component data={data} photo={photo} photos={allPhotos} />
+        <Component data={data} photo={photo} photos={allPhotos} {...extraProps} />
       );
     });
 
