@@ -24,6 +24,7 @@ import {
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import logoVDH from '@/assets/logo-vdh.jpg';
 import logoAM from '@/assets/logo-apartamentos-manaus.png';
+import logoAF from '@/assets/logo-apartamentos-fortaleza.png';
 
 interface AppLayoutProps {
   children: React.ReactNode;
