@@ -487,7 +487,7 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
       <div className="relative">
         <div className="flex items-center justify-center gap-2 sm:gap-4">
           <button
-            onClick={() => setCurrentPost((prev) => (prev === 0 ? 3 : prev - 1))}
+            onClick={() => setCurrentPost((prev) => (prev === 0 ? posts.length - 1 : prev - 1))}
             className="p-2 rounded-full bg-white border border-gray-200 hover:bg-gray-50 transition-colors flex-shrink-0 shadow-sm"
           >
             <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5 text-gray-600" />
