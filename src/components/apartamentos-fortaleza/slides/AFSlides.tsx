@@ -276,21 +276,38 @@ export const AFLocationSlide = ({ data, photo }: { data: AFPropertyData; photo?:
   );
 };
 
-// ─── Slide 4+: FOTO ──────────────────────────────────────────────────────────
+// ─── Slide 4+: FOTO SIMPLES ──────────────────────────────────────────────────
+// Mesmo padrão do Slide 2: foto recortada com notch superior-esquerdo para o card da logo.
 export const AFPhotoSlide = ({
-  data, photo, photoIndex,
+  data,
+  photo,
+  photoIndex,
 }: { data: AFPropertyData; photo?: string; photoIndex: number }) => {
   const uid = useId();
   const clipId = `af-photo-${uid}`;
 
+  // Notch top-left: bordas externas 8→352, raio 12 em todas as curvas
   const shapePath = [
-    'M 340 8', 'A 12 12 0 0 1 352 20', 'V 340',
-    'A 12 12 0 0 1 340 352', 'H 20', 'A 12 12 0 0 1 8 340',
-    'V 20', 'A 12 12 0 0 1 20 8', 'H 340', 'Z',
+    'M 340 8',
+    'A 12 12 0 0 1 352 20',
+    'V 340',
+    'A 12 12 0 0 1 340 352',
+    'H 20',
+    'A 12 12 0 0 1 8 340',
+    'V 64',
+    'Q 8 52 20 52',
+    'H 100',
+    'Q 120 52 120 40',
+    'V 20',
+    'A 12 12 0 0 1 132 8',
+    'H 340',
+    'Z',
   ].join(' ');
 
   return (
     <div style={{ position: 'relative', width: 360, height: 360, backgroundColor: '#ffffff', fontFamily: golos, overflow: 'hidden' }}>
+
+      {/* clipPath definition */}
       <svg aria-hidden="true" style={{ position: 'absolute', width: 0, height: 0, overflow: 'hidden' }}>
         <defs>
           <clipPath id={clipId} clipPathUnits="userSpaceOnUse">
@@ -299,55 +316,60 @@ export const AFPhotoSlide = ({
         </defs>
       </svg>
 
+      {/* Foto recortada com notch superior-esquerdo */}
       <div style={{ position: 'absolute', top: 0, left: 0, width: 360, height: 360, clipPath: `url(#${clipId})`, zIndex: 10 }}>
         {photo ? (
           <img src={photo} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
         ) : (
           <div style={{ width: '100%', height: '100%', backgroundColor: '#cfe8eb' }} />
         )}
-        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(0,0,0,0.45) 0%, transparent 50%)' }} />
       </div>
 
-      <div style={{ position: 'absolute', bottom: 14, left: 14, zIndex: 20 }}>
-        <AFLogo width={90} variant="white" />
-      </div>
-
+      {/* Card da logo no notch superior-esquerdo */}
       <div style={{
-        position: 'absolute', top: 12, right: 12, zIndex: 20,
-        backgroundColor: `${PRIMARY}CC`, borderRadius: 20, padding: '3px 12px',
+        position: 'absolute', top: 4, left: 4, width: 116, height: 52, borderRadius: 14,
+        backgroundColor: '#ffffff', zIndex: 5, display: 'flex', alignItems: 'center',
+        paddingLeft: 8, paddingRight: 8, boxSizing: 'border-box',
       }}>
-        <p style={{ color: 'white', fontSize: 9, fontWeight: 700, margin: 0, fontFamily: golos }}>
-          {data.neighborhood || 'Fortaleza – CE'}
-        </p>
-      </div>
-
-      <div style={{
-        position: 'absolute', bottom: 14, right: 14, zIndex: 20,
-        backgroundColor: 'rgba(0,0,0,0.5)', borderRadius: 20, padding: '3px 10px',
-        border: '1px solid rgba(255,255,255,0.25)',
-      }}>
-        <p style={{ color: 'white', fontSize: 9, margin: 0, fontWeight: 600, fontFamily: golos }}>
-          {photoIndex - 1} / {photoIndex}
-        </p>
+        <AFLogo width={100} variant="color" />
       </div>
     </div>
   );
 };
 
-// ─── Slide N: INFO ───────────────────────────────────────────────────────────
+// ─── Último Slide: INFORMAÇÃO ────────────────────────────────────────────────
+// Mesmo padrão do AMInfoSlide: sandwich de camadas com borda branca SVG.
 export const AFInfoSlide = ({ data, photo }: { data: AFPropertyData; photo?: string }) => {
   const uid = useId();
   const clipId = `af-info-${uid}`;
-  const price = data.isRental ? data.rentalPrice : data.salePrice;
 
+  const headline =
+    data.infoMessage ||
+    'A Apartamentos Fortaleza acompanha você em todas as etapas da escolha do seu imóvel.';
+  const subtitle =
+    'Encontrar o imóvel ideal pode ser mais simples do que parece. A Apartamentos Fortaleza orienta você sobre as possibilidades de financiamento e acompanha todo o processo com transparência.';
+
+  // Mesmo shapePath do AMInfoSlide
   const shapePath = [
-    'M 340 8', 'A 12 12 0 0 1 352 20', 'V 340',
-    'A 12 12 0 0 1 340 352', 'H 20', 'A 12 12 0 0 1 8 340',
-    'V 20', 'A 12 12 0 0 1 20 8', 'H 340', 'Z',
+    'M 336 12',
+    'A 12 12 0 0 1 348 24',
+    'V 284',
+    'Q 348 296 336 296',
+    'H 254',
+    'Q 242 296 242 308',
+    'V 334',
+    'A 12 12 0 0 1 230 346',
+    'H 24',
+    'A 12 12 0 0 1 12 334',
+    'V 24',
+    'A 12 12 0 0 1 24 12',
+    'Z',
   ].join(' ');
 
   return (
-    <div style={{ position: 'relative', width: 360, height: 360, backgroundColor: '#ffffff', fontFamily: golos, overflow: 'hidden' }}>
+    <div style={{ position: 'relative', width: 360, height: 360, backgroundColor: '#1a1a1a', fontFamily: golos, overflow: 'hidden' }}>
+
+      {/* clipPath definition */}
       <svg aria-hidden="true" style={{ position: 'absolute', width: 0, height: 0, overflow: 'hidden' }}>
         <defs>
           <clipPath id={clipId} clipPathUnits="userSpaceOnUse">
@@ -356,78 +378,67 @@ export const AFInfoSlide = ({ data, photo }: { data: AFPropertyData; photo?: str
         </defs>
       </svg>
 
-      <div style={{ position: 'absolute', top: 0, left: 0, width: 360, height: 360, clipPath: `url(#${clipId})`, zIndex: 1 }}>
+      {/* LAYER 0: Foto de fundo desfocada */}
+      {photo && (
+        <img src={photo} alt="" style={{
+          position: 'absolute', inset: 0, width: '100%', height: '100%',
+          objectFit: 'cover', display: 'block',
+          filter: 'brightness(0.5) blur(2px)', zIndex: 0,
+        }} />
+      )}
+
+      {/* LAYER 1: Quadro branco da logo (128×72) */}
+      <div style={{
+        position: 'absolute', bottom: 13, right: 11, zIndex: 1,
+        backgroundColor: '#ffffff', borderRadius: 16,
+        width: 128, height: 72,
+        display: 'flex', alignItems: 'flex-end', justifyContent: 'flex-end',
+        boxSizing: 'border-box', padding: '6px 8px',
+      }}>
+        <AFLogo width={88} variant="color" />
+      </div>
+
+      {/* LAYER 2: Frame recortado com borda branca */}
+      <div style={{ position: 'absolute', inset: 0, zIndex: 2 }}>
         {photo ? (
-          <img src={photo} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block', filter: 'brightness(0.28)' }} />
+          <img src={photo} alt="" style={{
+            position: 'absolute', inset: 0, width: '100%', height: '100%',
+            objectFit: 'cover', display: 'block', clipPath: `url(#${clipId})`,
+          }} />
         ) : (
-          <div style={{ width: '100%', height: '100%', backgroundColor: '#0a1a1e' }} />
+          <div style={{ position: 'absolute', inset: 0, backgroundColor: '#374151', clipPath: `url(#${clipId})` }} />
         )}
-        <div style={{ position: 'absolute', inset: 0, background: `linear-gradient(160deg, ${PRIMARY}88 0%, #06101480 100%)` }} />
+
+        {/* Gradiente escuro recortado */}
+        <div style={{
+          position: 'absolute', inset: 0,
+          background: 'linear-gradient(270deg, rgba(0,0,0,0) -18.53%, rgba(0,0,0,0.85) 100%)',
+          clipPath: `url(#${clipId})`,
+        }} />
+
+        {/* Borda branca ao redor do shape */}
+        <svg style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', pointerEvents: 'none' }} viewBox="0 0 360 360">
+          <path d={shapePath} fill="none" stroke="white" strokeWidth="2.5" />
+        </svg>
       </div>
 
-      {/* Content overlay */}
-      <div style={{ position: 'absolute', inset: 0, zIndex: 20, display: 'flex', flexDirection: 'column', padding: '20px 22px', justifyContent: 'space-between' }}>
-        <AFLogo width={110} variant="white" />
+      {/* Título */}
+      <h2 style={{
+        position: 'absolute', left: 47, top: 38, width: 210,
+        color: '#ffffff', fontFamily: golos, fontWeight: 600,
+        fontSize: 20, lineHeight: '26px', margin: 0, zIndex: 10,
+      }}>
+        {headline}
+      </h2>
 
-        <div>
-          <p style={{ color: 'white', fontSize: 16, fontWeight: 900, lineHeight: 1.3, margin: '0 0 6px', fontFamily: golos }}>
-            {data.title || 'Apartamento à venda'}
-          </p>
-          {data.neighborhood && (
-            <div style={{ display: 'flex', alignItems: 'center', gap: 5, marginBottom: 12 }}>
-              <div style={{ width: 20, height: 2, backgroundColor: ACCENT, borderRadius: 2 }} />
-              <p style={{ color: `${ACCENT}`, fontSize: 11, fontWeight: 700, margin: 0, fontFamily: golos }}>
-                {data.neighborhood} • Fortaleza
-              </p>
-            </div>
-          )}
-
-          {/* Price */}
-          {price > 0 && (
-            <div style={{
-              backgroundColor: ACCENT, borderRadius: 10, padding: '8px 14px',
-              display: 'inline-flex', flexDirection: 'column', marginBottom: 12,
-            }}>
-              <p style={{ color: 'rgba(255,255,255,0.8)', fontSize: 8, margin: '0 0 2px', textTransform: 'uppercase', letterSpacing: '0.1em', fontFamily: golos }}>
-                {data.isRental ? 'Valor do aluguel' : 'Valor de venda'}
-              </p>
-              <p style={{ color: 'white', fontSize: 18, fontWeight: 900, margin: 0, lineHeight: 1, fontFamily: golos }}>
-                R$ {price.toLocaleString('pt-BR')},00
-              </p>
-            </div>
-          )}
-
-          {/* Acceptance badges */}
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 5, marginBottom: 10 }}>
-            {data.acceptsFinancing && (
-              <span style={{ backgroundColor: 'rgba(255,255,255,0.1)', border: `1px solid rgba(255,255,255,0.25)`, borderRadius: 20, padding: '3px 10px', color: '#a7f3d0', fontSize: 9, fontWeight: 600, fontFamily: golos }}>✓ Financiamento</span>
-            )}
-            {data.acceptsFGTS && (
-              <span style={{ backgroundColor: 'rgba(255,255,255,0.1)', border: `1px solid rgba(255,255,255,0.25)`, borderRadius: 20, padding: '3px 10px', color: '#a7f3d0', fontSize: 9, fontWeight: 600, fontFamily: golos }}>✓ FGTS</span>
-            )}
-          </div>
-
-          {/* Contact */}
-          {data.brokerPhone && (
-            <div style={{
-              backgroundColor: 'rgba(255,255,255,0.1)', borderRadius: 10, padding: '8px 12px',
-              display: 'flex', alignItems: 'center', gap: 8,
-            }}>
-              <span style={{ fontSize: 16 }}>📱</span>
-              <div>
-                <p style={{ color: 'rgba(255,255,255,0.65)', fontSize: 8, margin: '0 0 1px', fontFamily: golos }}>WhatsApp</p>
-                <p style={{ color: 'white', fontSize: 13, fontWeight: 800, margin: 0, fontFamily: golos }}>{data.brokerPhone}</p>
-              </div>
-            </div>
-          )}
-
-          {data.infoMessage && (
-            <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: 9, lineHeight: 1.5, marginTop: 8, margin: '8px 0 0', fontFamily: golos }}>
-              {data.infoMessage}
-            </p>
-          )}
-        </div>
-      </div>
+      {/* Subtítulo */}
+      <p style={{
+        position: 'absolute', left: 47, top: 174, width: 178,
+        color: '#ffffff', fontFamily: golos, fontWeight: 600,
+        fontSize: 11, lineHeight: '15.5px', margin: 0, zIndex: 10,
+      }}>
+        {subtitle}
+      </p>
     </div>
   );
 };
