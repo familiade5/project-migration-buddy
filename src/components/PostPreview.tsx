@@ -113,12 +113,10 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
 
   const feedPosts: SlideEntry[] = [
     { name: 'Capa', component: PostCover, photoIndex: 0 },
-    { name: 'Detalhes', component: PostFeatures, photoIndex: 1 },
-    { name: 'Diferenciais', component: PostDetails, photoIndex: 2 },
-    ...Array.from({ length: Math.max(0, Math.min(photos.length - 4, 6)) }, (_, i) => ({
+    ...Array.from({ length: Math.max(0, photos.length - 2) }, (_, i) => ({
       name: `Foto ${i + 1}`,
       component: VDHFeedPhotoSlide,
-      photoIndex: 3 + i,
+      photoIndex: 1 + i,
       slideIndex: i,
     })),
     { name: 'Contato', component: PostContact, photoIndex: Math.max(0, photos.length - 1) },
