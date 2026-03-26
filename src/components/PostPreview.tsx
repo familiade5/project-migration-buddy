@@ -108,74 +108,43 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
   const exportRef = useRef<HTMLDivElement>(null);
 
   // ── Slide definitions (DO NOT change order) ──────────────────────────────
-  const feedPosts = [
+  type SlideEntry = { name: string; component: React.ComponentType<any>; photoIndex: number; slideIndex?: number };
+
+  const feedPosts: SlideEntry[] = [
     { name: 'Capa',         component: PostCover,    photoIndex: 0 },
     { name: 'Detalhes',     component: PostFeatures, photoIndex: 1 },
     { name: 'Diferenciais', component: PostDetails,  photoIndex: 2 },
     { name: 'Contato',      component: PostContact,  photoIndex: 3 },
   ];
 
-  const storyPosts = [
+  const storyPosts: SlideEntry[] = [
     { name: 'Capa',         component: PostCoverStory,    photoIndex: 0 },
     { name: 'Detalhes',     component: PostFeaturesStory, photoIndex: 1 },
     { name: 'Diferenciais', component: PostDetailsStory,  photoIndex: 2 },
     { name: 'Contato',      component: PostContactStory,  photoIndex: 3 },
   ];
 
-  // Pre-create stable VDH slide wrapper components to avoid React reconciliation issues
-  const VDHSlide4 = useMemo(() => {
-    const C = (props: { data: PropertyData; photo: string | null; photos?: string[] }) => (
-      <VDHPhotoSlide {...props} slideIndex={4} totalSlides={Math.min(photos.length, 10)} />
-    ); C.displayName = 'VDHSlide4'; return C;
-  }, [photos.length]);
-  const VDHSlide5 = useMemo(() => {
-    const C = (props: { data: PropertyData; photo: string | null; photos?: string[] }) => (
-      <VDHPhotoSlide {...props} slideIndex={5} totalSlides={Math.min(photos.length, 10)} />
-    ); C.displayName = 'VDHSlide5'; return C;
-  }, [photos.length]);
-  const VDHSlide6 = useMemo(() => {
-    const C = (props: { data: PropertyData; photo: string | null; photos?: string[] }) => (
-      <VDHPhotoSlide {...props} slideIndex={6} totalSlides={Math.min(photos.length, 10)} />
-    ); C.displayName = 'VDHSlide6'; return C;
-  }, [photos.length]);
-  const VDHSlide7 = useMemo(() => {
-    const C = (props: { data: PropertyData; photo: string | null; photos?: string[] }) => (
-      <VDHPhotoSlide {...props} slideIndex={7} totalSlides={Math.min(photos.length, 10)} />
-    ); C.displayName = 'VDHSlide7'; return C;
-  }, [photos.length]);
-  const VDHSlide8 = useMemo(() => {
-    const C = (props: { data: PropertyData; photo: string | null; photos?: string[] }) => (
-      <VDHPhotoSlide {...props} slideIndex={8} totalSlides={Math.min(photos.length, 10)} />
-    ); C.displayName = 'VDHSlide8'; return C;
-  }, [photos.length]);
-  const VDHSlide9 = useMemo(() => {
-    const C = (props: { data: PropertyData; photo: string | null; photos?: string[] }) => (
-      <VDHPhotoSlide {...props} slideIndex={9} totalSlides={Math.min(photos.length, 10)} />
-    ); C.displayName = 'VDHSlide9'; return C;
-  }, [photos.length]);
-
-  const extraSlideComponents = [VDHSlide4, VDHSlide5, VDHSlide6, VDHSlide7, VDHSlide8, VDHSlide9];
   const extraSlideNames = ['Destaque', 'Ambiente', 'Detalhes', 'Lifestyle', 'Premium', 'Exclusivo'];
 
   const vdhPosts = useMemo(() => {
-    type SlideEntry = { name: string; component: any; photoIndex: number };
     const base: SlideEntry[] = [
       { name: 'Atração',   component: VDHStory1, photoIndex: 0 },
       { name: 'Interesse', component: VDHStory2, photoIndex: 1 },
       { name: 'Decisão',   component: VDHStory3, photoIndex: 2 },
       { name: 'Ação',      component: VDHStory4, photoIndex: 3 },
     ];
-    // Add dynamic photo slides for extra photos (up to 10 total slides)
+    const totalSlides = Math.min(photos.length, 10);
     const extraCount = Math.max(0, Math.min(photos.length - 4, 6));
     for (let i = 0; i < extraCount; i++) {
       base.push({
         name: extraSlideNames[i],
-        component: extraSlideComponents[i],
+        component: VDHPhotoSlide,
         photoIndex: 4 + i,
+        slideIndex: 4 + i,
       });
     }
     return base;
-  }, [photos.length, ...extraSlideComponents]);
+  }, [photos.length]);
 
   const posts = format === 'feed' ? feedPosts : format === 'story' ? storyPosts : vdhPosts;
 
@@ -191,9 +160,10 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
   // ── Core capture function (iOS-safe) ─────────────────────────────────────
   // Renders one slide at a time into the single exportRef, waits for images, captures.
   const captureSlide = async (
-    Component: React.ComponentType<{ data: PropertyData; photo: string | null; photos?: string[] }>,
+    Component: React.ComponentType<any>,
     photo: string | null,
     allPhotos: string[],
+    extraProps?: { slideIndex?: number; totalSlides?: number },
   ): Promise<string> => {
     // First: clear previous content so WebKit re-paints fresh
     if (isIOS()) {
@@ -204,7 +174,7 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
     // Synchronously update the hidden export element content
     flushSync(() => {
       setExportSlideEl(
-        <Component data={data} photo={photo} photos={allPhotos} />
+        <Component data={data} photo={photo} photos={allPhotos} {...extraProps} />
       );
     });
 
@@ -342,7 +312,7 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
       const exportPhotos = await getPhotosForExport(photos);
       const post = posts[index];
       const photo = exportPhotos[post.photoIndex] || exportPhotos[0] || null;
-      const dataUrl = await captureSlide(post.component, photo, exportPhotos);
+      const dataUrl = await captureSlide(post.component, photo, exportPhotos, { slideIndex: post.slideIndex, totalSlides: posts.length });
 
       const link = document.createElement('a');
       link.download = `post-${index + 1}-${post.name.toLowerCase()}-${format}.png`;
@@ -373,7 +343,7 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
       for (let i = 0; i < currentPosts.length; i++) {
         const post = currentPosts[i];
         const photo = exportPhotos[post.photoIndex] || exportPhotos[0] || null;
-        const dataUrl = await captureSlide(post.component, photo, exportPhotos);
+        const dataUrl = await captureSlide(post.component, photo, exportPhotos, { slideIndex: post.slideIndex, totalSlides: currentPosts.length });
         allDataUrls.push(dataUrl);
         exportedImages.push({ dataUrl, format, index: i });
       }
@@ -538,7 +508,7 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
                 transform: format === 'feed' ? 'scale(0.2593)' : 'scale(0.1667)',
               }}
             >
-              <CurrentPostComponent data={data} photo={currentPhoto} photos={photos} />
+              <CurrentPostComponent data={data} photo={currentPhoto} photos={photos} slideIndex={posts[currentPost]?.slideIndex} totalSlides={posts.length} />
             </div>
           </div>
 
@@ -613,7 +583,7 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
                 height: format === 'feed' ? '1080px' : '1920px',
               }}
             >
-              <Post.component data={data} photo={photos[index] || photos[0] || null} photos={photos} />
+              <Post.component data={data} photo={photos[Post.photoIndex] || photos[0] || null} photos={photos} slideIndex={Post.slideIndex} totalSlides={posts.length} />
             </div>
           </button>
         ))}
