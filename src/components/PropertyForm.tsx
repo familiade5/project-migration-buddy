@@ -64,12 +64,6 @@ export const PropertyForm = ({ data, onChange }: PropertyFormProps) => {
     onChange({ ...data, [field]: value });
   };
 
-  const toggleFeature = (feature: string) => {
-    const newFeatures = data.features.includes(feature)
-      ? data.features.filter(f => f !== feature)
-      : [...data.features, feature];
-    updateField('features', newFeatures);
-  };
 
   return (
     <div className="space-y-6 max-w-full overflow-hidden">
