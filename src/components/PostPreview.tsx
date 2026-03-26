@@ -514,7 +514,7 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
           </div>
 
           <button
-            onClick={() => setCurrentPost((prev) => (prev === 3 ? 0 : prev + 1))}
+            onClick={() => setCurrentPost((prev) => (prev === posts.length - 1 ? 0 : prev + 1))}
             className="p-2 rounded-full bg-white border border-gray-200 hover:bg-gray-50 transition-colors flex-shrink-0 shadow-sm"
           >
             <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5 text-gray-600" />
