@@ -9,6 +9,7 @@ import { PostCover } from './posts/PostCover';
 import { PostDetails } from './posts/PostDetails';
 import { PostFeatures } from './posts/PostFeatures';
 import { PostContact } from './posts/PostContact';
+import { VDHFeedPhotoSlide } from './posts/VDHFeedPhotoSlide';
 import { PostCoverStory } from './posts/story/PostCoverStory';
 import { PostDetailsStory } from './posts/story/PostDetailsStory';
 import { PostFeaturesStory } from './posts/story/PostFeaturesStory';
@@ -111,10 +112,16 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
   type SlideEntry = { name: string; component: React.ComponentType<any>; photoIndex: number; slideIndex?: number };
 
   const feedPosts: SlideEntry[] = [
-    { name: 'Capa',         component: PostCover,    photoIndex: 0 },
-    { name: 'Detalhes',     component: PostFeatures, photoIndex: 1 },
-    { name: 'Diferenciais', component: PostDetails,  photoIndex: 2 },
-    { name: 'Contato',      component: PostContact,  photoIndex: 3 },
+    { name: 'Capa', component: PostCover, photoIndex: 0 },
+    { name: 'Detalhes', component: PostFeatures, photoIndex: 1 },
+    { name: 'Diferenciais', component: PostDetails, photoIndex: 2 },
+    ...Array.from({ length: Math.max(0, Math.min(photos.length - 4, 6)) }, (_, i) => ({
+      name: `Foto ${i + 1}`,
+      component: VDHFeedPhotoSlide,
+      photoIndex: 3 + i,
+      slideIndex: i,
+    })),
+    { name: 'Contato', component: PostContact, photoIndex: Math.max(0, photos.length - 1) },
   ];
 
   const storyPosts: SlideEntry[] = [
