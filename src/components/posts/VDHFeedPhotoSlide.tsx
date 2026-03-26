@@ -13,10 +13,19 @@ interface VDHFeedPhotoSlideProps {
 
 const GRAY_BG = '#2a2a2a';
 
-export const VDHFeedPhotoSlide = ({ photo }: VDHFeedPhotoSlideProps) => {
+export const VDHFeedPhotoSlide = ({ data, photo, slideIndex = 0 }: VDHFeedPhotoSlideProps) => {
   const uid = useId();
   const clipId = `vdh-photo-${uid}`;
   const logoBase64 = useLogoBase64(logoVDH);
+
+  // Build specs from property data (only show on first photo slide, slideIndex 0)
+  const specs: string[] = slideIndex === 0 ? [
+    data.bedrooms && data.bedrooms !== '0' ? `${data.bedrooms} quarto${Number(data.bedrooms) > 1 ? 's' : ''}` : '',
+    data.bathrooms && data.bathrooms !== '0' ? `${data.bathrooms} banheiro${Number(data.bathrooms) > 1 ? 's' : ''}` : '',
+    data.garageSpaces && data.garageSpaces !== '0' ? `${data.garageSpaces} vaga${Number(data.garageSpaces) > 1 ? 's' : ''}` : '',
+    data.area ? `${data.area}m²` : '',
+    ...(data.features || []),
+  ].filter(Boolean).slice(0, 6) : [];
 
   // Notch matches card: top=10, left=10, w=308, h=132
   // Card bottom=142, card right=318, with 36px radius transitions
@@ -88,6 +97,29 @@ export const VDHFeedPhotoSlide = ({ photo }: VDHFeedPhotoSlideProps) => {
       >
         <img src={logoBase64} alt="VDH" style={{ height: 250, objectFit: 'contain', filter: 'brightness(0) invert(1)' }} />
       </div>
+
+      {/* Specs card — dark blurred overlay */}
+      {specs.length > 0 && (
+        <div style={{
+          position: 'absolute',
+          bottom: 54,
+          right: 54,
+          zIndex: 20,
+          backgroundColor: 'rgba(10,10,14,0.65)',
+          borderRadius: 18,
+          padding: '20px 28px',
+          maxWidth: 420,
+          border: '1px solid rgba(255,255,255,0.12)',
+          boxShadow: '0 4px 30px rgba(0,0,0,0.50)',
+        }}>
+          {specs.map((spec, i) => (
+            <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: i < specs.length - 1 ? 6 : 0 }}>
+              <span style={{ color: 'rgba(255,255,255,0.5)', fontSize: 26, lineHeight: 1 }}>•</span>
+              <span style={{ color: 'rgba(255,255,255,0.95)', fontSize: 26, fontWeight: 500, lineHeight: '32px' }}>{spec}</span>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 };
