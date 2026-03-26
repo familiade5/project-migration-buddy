@@ -10,6 +10,7 @@ interface PostContactProps {
 }
 
 export const PostContact = ({ data, photo }: PostContactProps) => {
+  const logoBase64 = useLogoBase64(logoVDH);
   return (
     <div className="post-template bg-[#1a1f2e] relative overflow-hidden">
       {/* Layout dividido - Foto à esquerda, CTA à direita */}
