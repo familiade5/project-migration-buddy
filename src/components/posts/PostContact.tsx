@@ -51,7 +51,7 @@ export const PostContact = ({ data, photo }: PostContactProps) => {
         <div className="flex items-center justify-between" style={{ padding: '40px 60px' }}>
           {/* Logo VDH */}
           <div className="flex items-center" style={{ gap: '20px' }}>
-            <img src={logoVDH} alt="VDH" style={{ height: '100px', objectFit: 'contain', filter: 'brightness(0) invert(1)' }} />
+            <img src={logoVDH} alt="VDH" style={{ height: '220px', objectFit: 'contain', filter: 'brightness(0) invert(1)' }} />
           </div>
 
           {/* Separador */}

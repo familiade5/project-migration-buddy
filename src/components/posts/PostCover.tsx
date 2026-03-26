@@ -146,7 +146,7 @@ export const PostCover = ({ data, photo }: PostCoverProps) => {
       </div>
 
       {/* Logo VDH no topo direito — sem fundo */}
-      <div className="absolute z-20" style={{ top: '8px', right: '8px' }}>
+      <div className="absolute z-20" style={{ top: '20px', right: '20px' }}>
         <img
           src={logoBase64}
           alt="VDH"
