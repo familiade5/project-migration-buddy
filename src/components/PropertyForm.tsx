@@ -471,6 +471,24 @@ export const PropertyForm = ({ data, onChange }: PropertyFormProps) => {
             />
           ))}
         </div>
+
+        <div className="space-y-3 p-4 bg-gray-50 border border-gray-200 rounded-lg">
+          <Label className="text-gray-700 text-sm font-medium">Slides de Foto - Características do Imóvel</Label>
+          <p className="text-xs text-gray-400">Itens que aparecem no quadro escuro sobre a foto (até 6 itens)</p>
+          {[0, 1, 2, 3, 4, 5].map((index) => (
+            <Input
+              key={`photo-spec-${index}`}
+              placeholder={`Item ${index + 1} (ex: 3 quartos, Piscina, 120m²)`}
+              value={data.customPhotoSpecs?.[index] || ''}
+              onChange={(e) => {
+                const newSpecs = [...(data.customPhotoSpecs || ['', '', '', '', '', ''])];
+                newSpecs[index] = e.target.value;
+                updateField('customPhotoSpecs', newSpecs);
+              }}
+              className="bg-white border-gray-200 text-gray-900"
+            />
+          ))}
+        </div>
       </div>
 
       {/* Extras do Imóvel */}

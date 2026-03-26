@@ -64,6 +64,9 @@ export interface PropertyData {
   cep: string;
   fullAddress: string; // Endereço completo extraído
   
+  // Specs editáveis para slides de foto VDH
+  customPhotoSpecs: string[];
+
   // Regras de despesas
   condominiumRules: string;
   taxRules: string;
@@ -121,6 +124,7 @@ export const defaultPropertyData: PropertyData = {
   cep: '',
   fullAddress: '',
   
+  customPhotoSpecs: [],
   condominiumRules: 'Responsabilidade do comprador (até 10% do valor de avaliação). A CAIXA arcará com o excedente.',
   taxRules: 'Responsabilidade do comprador.',
   selectedBroker: 'iury',
