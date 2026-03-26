@@ -1,6 +1,6 @@
 import { PropertyData } from '@/types/property';
 import { MessageCircle } from 'lucide-react';
-import logoVDH from '@/assets/logo-vdh.jpg';
+import logoVDH from '@/assets/logo-vdh-transparent.png';
 
 interface PostContactProps {
   data: PropertyData;
