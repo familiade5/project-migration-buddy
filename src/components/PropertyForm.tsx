@@ -1,8 +1,8 @@
-import { PropertyData, propertyTypes, propertySources, paymentMethods, featureOptions } from '@/types/property';
+import { PropertyData, propertyTypes, propertySources, paymentMethods } from '@/types/property';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Checkbox } from '@/components/ui/checkbox';
+import { Switch } from '@/components/ui/switch';
 import { Switch } from '@/components/ui/switch';
 import { Textarea } from '@/components/ui/textarea';
 import { useCrecis } from '@/hooks/useCrecis';
