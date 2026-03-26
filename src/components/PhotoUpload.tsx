@@ -11,14 +11,19 @@ interface PhotoUploadProps {
 export const PhotoUpload = ({ photos, onChange, onClear }: PhotoUploadProps) => {
   const handleFileChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
-    
-    files.forEach(file => {
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        const result = event.target?.result as string;
-        onChange([...photos, result]);
-      };
-      reader.readAsDataURL(file);
+    if (!files.length) return;
+
+    const readers = files.map(
+      (file) =>
+        new Promise<string>((resolve) => {
+          const reader = new FileReader();
+          reader.onload = (event) => resolve(event.target?.result as string);
+          reader.readAsDataURL(file);
+        }),
+    );
+
+    Promise.all(readers).then((results) => {
+      onChange([...photos, ...results]);
     });
 
     e.target.value = '';
