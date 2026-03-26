@@ -126,25 +126,18 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
 
   const extraSlideNames = ['Destaque', 'Ambiente', 'Detalhes', 'Lifestyle', 'Premium', 'Exclusivo'];
 
-  const vdhPosts = useMemo(() => {
-    const base: SlideEntry[] = [
-      { name: 'Atração',   component: VDHStory1, photoIndex: 0 },
-      { name: 'Interesse', component: VDHStory2, photoIndex: 1 },
-      { name: 'Decisão',   component: VDHStory3, photoIndex: 2 },
-      { name: 'Ação',      component: VDHStory4, photoIndex: 3 },
-    ];
-    const totalSlides = Math.min(photos.length, 10);
-    const extraCount = Math.max(0, Math.min(photos.length - 4, 6));
-    for (let i = 0; i < extraCount; i++) {
-      base.push({
-        name: extraSlideNames[i],
-        component: VDHPhotoSlide,
-        photoIndex: 4 + i,
-        slideIndex: 4 + i,
-      });
-    }
-    return base;
-  }, [photos.length]);
+  const vdhPosts: SlideEntry[] = [
+    { name: 'Atração', component: VDHStory1, photoIndex: 0 },
+    { name: 'Interesse', component: VDHStory2, photoIndex: 1 },
+    { name: 'Decisão', component: VDHStory3, photoIndex: 2 },
+    { name: 'Ação', component: VDHStory4, photoIndex: 3 },
+    ...Array.from({ length: Math.max(0, Math.min(photos.length - 4, 6)) }, (_, i) => ({
+      name: extraSlideNames[i],
+      component: VDHPhotoSlide,
+      photoIndex: 4 + i,
+      slideIndex: 4 + i,
+    })),
+  ];
 
   const posts = format === 'feed' ? feedPosts : format === 'story' ? storyPosts : vdhPosts;
 
