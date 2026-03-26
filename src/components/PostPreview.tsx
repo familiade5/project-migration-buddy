@@ -127,7 +127,6 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
   const extraSlideNames = ['Destaque', 'Ambiente', 'Detalhes', 'Lifestyle', 'Premium', 'Exclusivo'];
 
   const vdhPosts = useMemo(() => {
-    type SlideEntry = { name: string; component: React.ComponentType<any>; photoIndex: number; slideIndex?: number };
     const base: SlideEntry[] = [
       { name: 'Atração',   component: VDHStory1, photoIndex: 0 },
       { name: 'Interesse', component: VDHStory2, photoIndex: 1 },
