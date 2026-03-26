@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useRef } from 'react';
 import { Upload, X, Image as ImageIcon, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
@@ -9,6 +9,8 @@ interface PhotoUploadProps {
 }
 
 export const PhotoUpload = ({ photos, onChange, onClear }: PhotoUploadProps) => {
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
   const handleFileChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
     if (!files.length) return;
@@ -23,7 +25,7 @@ export const PhotoUpload = ({ photos, onChange, onClear }: PhotoUploadProps) => 
     );
 
     Promise.all(readers).then((results) => {
-      onChange([...photos, ...results]);
+      onChange([...photos, ...results].slice(0, 10));
     });
 
     e.target.value = '';
@@ -57,21 +59,28 @@ export const PhotoUpload = ({ photos, onChange, onClear }: PhotoUploadProps) => 
             </div>
           </div>
         ))}
-        
+
         {photos.length < 10 && (
-          <label className="aspect-square rounded-lg border-2 border-dashed border-gray-200 flex flex-col items-center justify-center gap-2 cursor-pointer hover:border-gray-300 hover:bg-gray-50 transition-all group">
+          <>
             <input
+              ref={fileInputRef}
               type="file"
-              accept="image/png,image/jpeg,image/jpg,image/webp,image/heic,image/*"
+              accept=".png,.jpg,.jpeg,.webp,.heic,image/*"
               multiple
               onChange={handleFileChange}
               className="hidden"
             />
-            <Upload className="w-8 h-8 text-gray-300 group-hover:text-gray-400 transition-colors" />
-            <span className="text-sm text-gray-400 group-hover:text-gray-500 transition-colors">
-              Adicionar foto
-            </span>
-          </label>
+            <button
+              type="button"
+              onClick={() => fileInputRef.current?.click()}
+              className="aspect-square rounded-lg border-2 border-dashed border-gray-200 flex flex-col items-center justify-center gap-2 cursor-pointer hover:border-gray-300 hover:bg-gray-50 transition-all group"
+            >
+              <Upload className="w-8 h-8 text-gray-300 group-hover:text-gray-400 transition-colors" />
+              <span className="text-sm text-gray-400 group-hover:text-gray-500 transition-colors">
+                Adicionar fotos
+              </span>
+            </button>
+          </>
         )}
       </div>
 
