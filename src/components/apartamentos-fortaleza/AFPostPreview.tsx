@@ -2,11 +2,13 @@ import { useRef, useState, useEffect } from 'react';
 import { toPng } from 'html-to-image';
 import { safePixelRatio } from '@/lib/exportUtils';
 import JSZip from 'jszip';
-import { Download, ChevronLeft, ChevronRight, Loader2, Square, Smartphone } from 'lucide-react';
+import { Download, ChevronLeft, ChevronRight, Loader2, FileText } from 'lucide-react';
 import { AFPropertyData } from '@/types/apartamentosFortaleza';
 import { AFCoverSlide, AFSpecsSlide, AFLocationSlide, AFPhotoSlide, AFInfoSlide } from './slides/AFSlides';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
+import { generateAFPropertyPDF } from '@/lib/af/generatePropertyPDF';
+import logoAF from '@/assets/logo-apartamentos-fortaleza.png';
 
 const PRIMARY = '#0C7B8E';
 const ACCENT  = '#E8562A';
