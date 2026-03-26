@@ -16,36 +16,26 @@ export const VDHFeedPhotoSlide = ({ photo }: VDHFeedPhotoSlideProps) => {
   const uid = useId();
   const clipId = `vdh-photo-${uid}`;
 
-  // Same notch shape as AM: top-left notch for logo card
+  // Same notch shape as AM but scaled 3x (360→1080)
   const shapePath = [
-    'M 340 8',
-    'A 12 12 0 0 1 352 20',
-    'V 340',
-    'A 12 12 0 0 1 340 352',
-    'H 20',
-    'A 12 12 0 0 1 8 340',
-    'V 64',
-    'Q 8 52 20 52',
-    'H 100',
-    'Q 120 52 120 40',
-    'V 20',
-    'A 12 12 0 0 1 132 8',
-    'H 340',
+    'M 1020 24',
+    'A 36 36 0 0 1 1056 60',
+    'V 1020',
+    'A 36 36 0 0 1 1020 1056',
+    'H 60',
+    'A 36 36 0 0 1 24 1020',
+    'V 192',
+    'Q 24 156 60 156',
+    'H 300',
+    'Q 360 156 360 120',
+    'V 60',
+    'A 36 36 0 0 1 396 24',
+    'H 1020',
     'Z',
   ].join(' ');
 
   return (
-    <div
-      className="post-template"
-      style={{
-        position: 'relative',
-        width: 360,
-        height: 360,
-        backgroundColor: GRAY_BG,
-        fontFamily: 'Arial, sans-serif',
-        overflow: 'hidden',
-      }}
-    >
+    <div className="post-template" style={{ backgroundColor: GRAY_BG }}>
       {/* clipPath definition */}
       <svg aria-hidden="true" style={{ position: 'absolute', width: 0, height: 0, overflow: 'hidden' }}>
         <defs>
@@ -61,8 +51,8 @@ export const VDHFeedPhotoSlide = ({ photo }: VDHFeedPhotoSlideProps) => {
           position: 'absolute',
           top: 0,
           left: 0,
-          width: 360,
-          height: 360,
+          width: 1080,
+          height: 1080,
           clipPath: `url(#${clipId})`,
           zIndex: 10,
         }}
@@ -74,26 +64,26 @@ export const VDHFeedPhotoSlide = ({ photo }: VDHFeedPhotoSlideProps) => {
         )}
       </div>
 
-      {/* Logo card — fits in the top-left notch (below photo z-index) */}
+      {/* Logo card — fits in the top-left notch */}
       <div
         style={{
           position: 'absolute',
-          top: 4,
-          left: 4,
-          width: 116,
-          height: 52,
-          borderRadius: 14,
+          top: 12,
+          left: 12,
+          width: 348,
+          height: 156,
+          borderRadius: 42,
           backgroundColor: GRAY_BG,
           zIndex: 5,
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          paddingLeft: 6,
-          paddingRight: 6,
+          paddingLeft: 18,
+          paddingRight: 18,
           boxSizing: 'border-box',
         }}
       >
-        <img src={logoVDH} alt="VDH" style={{ height: 40, borderRadius: 6, objectFit: 'contain' }} />
+        <img src={logoVDH} alt="VDH" style={{ height: 120, borderRadius: 18, objectFit: 'contain' }} />
       </div>
     </div>
   );
