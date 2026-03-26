@@ -122,12 +122,28 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
     { name: 'Contato',      component: PostContactStory,  photoIndex: 3 },
   ];
 
-  const vdhPosts = [
-    { name: 'Atração',   component: VDHStory1, photoIndex: 0 },
-    { name: 'Interesse', component: VDHStory2, photoIndex: 1 },
-    { name: 'Decisão',   component: VDHStory3, photoIndex: 2 },
-    { name: 'Ação',      component: VDHStory4, photoIndex: 3 },
-  ];
+  const vdhPosts = useMemo(() => {
+    const base = [
+      { name: 'Atração',   component: VDHStory1, photoIndex: 0 },
+      { name: 'Interesse', component: VDHStory2, photoIndex: 1 },
+      { name: 'Decisão',   component: VDHStory3, photoIndex: 2 },
+      { name: 'Ação',      component: VDHStory4, photoIndex: 3 },
+    ];
+    // Add dynamic photo slides for extra photos (up to 10 total slides)
+    const extraPhotos = Math.max(0, Math.min(photos.length - 4, 6));
+    for (let i = 0; i < extraPhotos; i++) {
+      const slideIdx = 4 + i;
+      const slideNames = ['Destaque', 'Ambiente', 'Detalhes', 'Lifestyle', 'Premium', 'Exclusivo'];
+      base.push({
+        name: slideNames[i] || `Foto ${i + 1}`,
+        component: ((props: { data: PropertyData; photo: string | null; photos?: string[] }) => (
+          <VDHPhotoSlide {...props} slideIndex={slideIdx} totalSlides={base.length + extraPhotos} />
+        )) as React.ComponentType<{ data: PropertyData; photo: string | null; photos?: string[] }>,
+        photoIndex: slideIdx,
+      });
+    }
+    return base;
+  }, [photos.length]);
 
   const posts = format === 'feed' ? feedPosts : format === 'story' ? storyPosts : vdhPosts;
 
