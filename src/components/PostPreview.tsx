@@ -583,7 +583,7 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
                 height: format === 'feed' ? '1080px' : '1920px',
               }}
             >
-              <Post.component data={data} photo={photos[index] || photos[0] || null} photos={photos} />
+              <Post.component data={data} photo={photos[Post.photoIndex] || photos[0] || null} photos={photos} slideIndex={Post.slideIndex} totalSlides={posts.length} />
             </div>
           </button>
         ))}
