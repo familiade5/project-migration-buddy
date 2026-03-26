@@ -84,7 +84,7 @@ export const VDHFeedPhotoSlide = ({ photo }: VDHFeedPhotoSlideProps) => {
           boxSizing: 'border-box',
         }}
       >
-        <img src={logoVDH} alt="VDH" style={{ height: 200, objectFit: 'contain', filter: 'brightness(0) invert(1)' }} />
+        <img src={logoVDH} alt="VDH" style={{ height: 220, objectFit: 'contain', filter: 'brightness(0) invert(1)' }} />
       </div>
     </div>
   );
