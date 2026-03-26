@@ -98,7 +98,7 @@ export function AppLayout({ children }: AppLayoutProps) {
           </div>
 
           {/* Cross-brand navigation */}
-          <div className="px-4 py-3 border-b" style={{ borderColor: '#E5E7EB' }}>
+          <div className="px-4 py-3 border-b space-y-2" style={{ borderColor: '#E5E7EB' }}>
             <Link
               to="/apartamentos-manaus"
               onClick={() => setSidebarOpen(false)}
@@ -107,6 +107,15 @@ export function AppLayout({ children }: AppLayoutProps) {
             >
               <img src={logoAM} alt="Apartamentos Manaus" className="h-9 w-auto object-contain" />
               <span className="text-xs font-semibold truncate" style={{ color: '#1B5EA6' }}>Apartamentos Manaus</span>
+            </Link>
+            <Link
+              to="/apartamentos-fortaleza"
+              onClick={() => setSidebarOpen(false)}
+              className="flex items-center gap-3 w-full px-4 py-2.5 rounded-xl border transition-all hover:opacity-90"
+              style={{ backgroundColor: '#EDF7F9', borderColor: '#B8DEE4' }}
+            >
+              <img src={logoAF} alt="Apartamentos Fortaleza" className="h-9 w-auto object-contain" />
+              <span className="text-xs font-semibold truncate" style={{ color: '#0C7B8E' }}>Apartamentos Fortaleza</span>
             </Link>
           </div>
 
