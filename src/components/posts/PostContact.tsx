@@ -37,7 +37,7 @@ export const PostContact = ({ data, photo }: PostContactProps) => {
         <p className="text-white text-center font-light" style={{ fontSize: 48, lineHeight: '64px', maxWidth: 850, letterSpacing: '0.5px' }}>
           Essa pode ser a{' '}
           <span className="font-bold" style={{ color: '#d4a44c' }}>oportunidade</span>{' '}
-          que você estava esperando para{' '}
+          que você estava esperando para começar a{' '}
           <span className="font-bold" style={{ color: '#d4a44c' }}>lucrar</span>{' '}
           no mercado imobiliário.
         </p>
