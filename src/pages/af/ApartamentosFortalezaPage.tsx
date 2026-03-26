@@ -26,7 +26,7 @@ const compressForStorage = (src: string, maxW = 1200, quality = 0.78): Promise<s
   return new Promise((resolve) => {
     // Already small enough (< 150KB base64) — skip compression
     if (src.length < 150_000) { resolve(src); return; }
-    const img = new Image();
+    const img = document.createElement('img') as HTMLImageElement;
     img.onload = () => {
       const ratio = Math.min(1, maxW / (img.naturalWidth || maxW));
       const canvas = document.createElement('canvas');
