@@ -72,8 +72,8 @@ export const VDHFeedPhotoSlide = ({ photo }: VDHFeedPhotoSlideProps) => {
           position: 'absolute',
           top: 10,
           left: 10,
-          width: 312,
-          height: 120,
+          width: 408,
+          height: 172,
           borderRadius: 28,
           backgroundColor: GRAY_BG,
           zIndex: 5,
@@ -82,6 +82,7 @@ export const VDHFeedPhotoSlide = ({ photo }: VDHFeedPhotoSlideProps) => {
           justifyContent: 'center',
           padding: '8px 16px',
           boxSizing: 'border-box',
+          overflow: 'visible',
         }}
       >
         <img src={logoVDH} alt="VDH" style={{ height: 220, objectFit: 'contain', filter: 'brightness(0) invert(1)' }} />
