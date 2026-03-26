@@ -38,7 +38,7 @@ export const VDHFeedPhotoSlide = ({ photo }: VDHFeedPhotoSlideProps) => {
   ].join(' ');
 
   return (
-    <div className="post-template" style={{ backgroundColor: GRAY_BG }}>
+    <div className="post-template" style={{ backgroundColor: GRAY_BG, overflow: 'visible' }}>
       {/* clipPath definition */}
       <svg aria-hidden="true" style={{ position: 'absolute', width: 0, height: 0, overflow: 'hidden' }}>
         <defs>
