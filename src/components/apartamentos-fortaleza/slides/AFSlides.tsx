@@ -345,9 +345,9 @@ export const AFInfoSlide = ({ data, photo }: { data: AFPropertyData; photo?: str
 
   const headline =
     data.infoMessage ||
-    'A Apartamentos Fortaleza acompanha você em todas as etapas da escolha do seu imóvel.';
+    'Fortaleza é onde o sol nasce primeiro — e onde o seu lar pode ser o próximo capítulo.';
   const subtitle =
-    'Encontrar o imóvel ideal pode ser mais simples do que parece. A Apartamentos Fortaleza orienta você sobre as possibilidades de financiamento e acompanha todo o processo com transparência.';
+    'Na Apartamentos Fortaleza, acreditamos que comprar um imóvel é muito mais do que uma decisão financeira. É a realização de um sonho construído com amor, planejado com cuidado e celebrado em família. Estamos ao seu lado em cada passo.';
 
   // Mesmo shapePath do AMInfoSlide
   const shapePath = [
