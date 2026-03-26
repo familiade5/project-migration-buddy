@@ -24,17 +24,17 @@ export const PostContact = ({ data, photo }: PostContactProps) => {
       )}
 
       {/* Content */}
-      <div className="absolute inset-0 flex flex-col items-center justify-center" style={{ padding: '80px 70px 220px' }}>
+      <div className="absolute inset-0 flex flex-col items-center justify-center" style={{ padding: '80px 70px 200px' }}>
         {/* Logo grande */}
-        <div style={{ marginBottom: '60px' }}>
-          <img src={logoBase64} alt="VDH" style={{ height: 200, objectFit: 'contain', filter: 'brightness(0) invert(1)' }} />
+        <div style={{ marginBottom: '50px' }}>
+          <img src={logoBase64} alt="VDH" style={{ height: 180, objectFit: 'contain', filter: 'brightness(0) invert(1)' }} />
         </div>
 
         {/* Linha decorativa */}
-        <div style={{ width: 120, height: 3, backgroundColor: '#d4a44c', marginBottom: 50 }} />
+        <div style={{ width: 120, height: 3, backgroundColor: '#d4a44c', marginBottom: 40 }} />
 
         {/* Frase principal */}
-        <p className="text-white text-center font-light" style={{ fontSize: 52, lineHeight: '68px', maxWidth: 850, letterSpacing: '0.5px' }}>
+        <p className="text-white text-center font-light" style={{ fontSize: 48, lineHeight: '64px', maxWidth: 850, letterSpacing: '0.5px' }}>
           Essa pode ser a{' '}
           <span className="font-bold" style={{ color: '#d4a44c' }}>oportunidade</span>{' '}
           que você estava esperando para{' '}
@@ -43,7 +43,22 @@ export const PostContact = ({ data, photo }: PostContactProps) => {
         </p>
 
         {/* Linha decorativa inferior */}
-        <div style={{ width: 120, height: 3, backgroundColor: '#d4a44c', marginTop: 50 }} />
+        <div style={{ width: 120, height: 3, backgroundColor: '#d4a44c', marginTop: 40, marginBottom: 44 }} />
+
+        {/* CTA Button */}
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: 16,
+          backgroundColor: '#25D366',
+          borderRadius: 14,
+          padding: '22px 48px',
+        }}>
+          <MessageCircle style={{ width: 40, height: 40, color: '#fff' }} />
+          <span className="text-white font-bold" style={{ fontSize: 36, letterSpacing: '1px', textTransform: 'uppercase' }}>
+            Fale com um especialista
+          </span>
+        </div>
       </div>
 
       {/* Footer */}
