@@ -1,6 +1,7 @@
 import { useId } from 'react';
 import { PropertyData } from '@/types/property';
 import logoVDH from '@/assets/logo-vdh-transparent.png';
+import { useLogoBase64 } from '@/hooks/useLogoBase64';
 
 interface VDHFeedPhotoSlideProps {
   data: PropertyData;
@@ -15,6 +16,7 @@ const GRAY_BG = '#2a2a2a';
 export const VDHFeedPhotoSlide = ({ photo }: VDHFeedPhotoSlideProps) => {
   const uid = useId();
   const clipId = `vdh-photo-${uid}`;
+  const logoBase64 = useLogoBase64(logoVDH);
 
   // Notch matches card: top=10, left=10, w=308, h=132
   // Card bottom=142, card right=318, with 36px radius transitions
@@ -84,7 +86,7 @@ export const VDHFeedPhotoSlide = ({ photo }: VDHFeedPhotoSlideProps) => {
           overflow: 'visible',
         }}
       >
-        <img src={logoVDH} alt="VDH" style={{ height: 220, objectFit: 'contain', filter: 'brightness(0) invert(1)' }} />
+        <img src={logoBase64} alt="VDH" style={{ height: 220, objectFit: 'contain', filter: 'brightness(0) invert(1)' }} />
       </div>
     </div>
   );

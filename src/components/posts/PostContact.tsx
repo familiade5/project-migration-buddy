@@ -1,6 +1,7 @@
 import { PropertyData } from '@/types/property';
 import { MessageCircle } from 'lucide-react';
 import logoVDH from '@/assets/logo-vdh-transparent.png';
+import { useLogoBase64 } from '@/hooks/useLogoBase64';
 
 interface PostContactProps {
   data: PropertyData;
@@ -9,6 +10,7 @@ interface PostContactProps {
 }
 
 export const PostContact = ({ data, photo }: PostContactProps) => {
+  const logoBase64 = useLogoBase64(logoVDH);
   return (
     <div className="post-template bg-[#1a1f2e] relative overflow-hidden">
       {/* Layout dividido - Foto à esquerda, CTA à direita */}
@@ -51,7 +53,7 @@ export const PostContact = ({ data, photo }: PostContactProps) => {
         <div className="flex items-center justify-between" style={{ padding: '40px 60px' }}>
           {/* Logo VDH */}
           <div className="flex items-center" style={{ gap: '20px' }}>
-            <img src={logoVDH} alt="VDH" style={{ height: '220px', objectFit: 'contain', filter: 'brightness(0) invert(1)' }} />
+            <img src={logoBase64} alt="VDH" style={{ height: '220px', objectFit: 'contain', filter: 'brightness(0) invert(1)' }} />
           </div>
 
           {/* Separador */}
