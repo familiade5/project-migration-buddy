@@ -10,104 +10,110 @@ interface VDHFeedPhotoSlideProps {
 }
 
 const GOLD = '#D4AF37';
-const DARK = '#101722';
-const DARK_SOFT = '#1a2332';
 
-export const VDHFeedPhotoSlide = ({ data, photo, slideIndex = 0, totalSlides = 10 }: VDHFeedPhotoSlideProps) => {
-  const badges = ['Destaque', 'Ambiente', 'Detalhes', 'Oportunidade', 'Exclusivo', 'Visita'];
-  const badge = badges[slideIndex % badges.length];
-  const location = [data.neighborhood, data.city, data.state].filter(Boolean).join(' • ');
-  const price = data.minimumValue?.trim() ? (data.minimumValue.includes('R$') ? data.minimumValue : `R$ ${data.minimumValue}`) : 'Consulte';
+export const VDHFeedPhotoSlide = ({ data, photo, photos = [], slideIndex = 0 }: VDHFeedPhotoSlideProps) => {
+  const getPhoto = (index: number): string | null => {
+    if (photos.length > index) return photos[index];
+    if (photos.length > 0) return photos[0];
+    return photo;
+  };
 
-  return (
-    <div className="post-template relative overflow-hidden" style={{ background: DARK }}>
-      {photo ? (
-        <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${photo})` }} />
-      ) : (
-        <div className="absolute inset-0" style={{ background: `linear-gradient(135deg, ${DARK} 0%, ${DARK_SOFT} 100%)` }} />
-      )}
+  // Each extra slide shows 2 photos based on slideIndex
+  // slideIndex here is 0-based for extra slides, but photoIndex offset is handled by parent
+  // We use the main photo and the next one
+  const p0 = getPhoto(slideIndex + 3);
+  const p1 = getPhoto(slideIndex + 4);
 
+  // Alternate layout: even slides = photos left, odd = photos right (like slides 2/3)
+  const isReversed = slideIndex % 2 === 1;
+
+  const photosColumn = (
+    <div className="w-[50%] h-full flex flex-col" style={{ padding: isReversed ? '24px 24px 24px 12px' : '24px 12px 24px 24px', gap: '12px' }}>
       <div
-        className="absolute inset-0"
+        className="flex-1 relative overflow-hidden"
         style={{
-          background:
-            'linear-gradient(180deg, rgba(6,10,18,0.15) 0%, rgba(6,10,18,0.35) 38%, rgba(6,10,18,0.88) 100%)',
+          borderRadius: '16px',
+          border: `2px solid ${GOLD}`,
+          boxShadow: `0 0 20px rgba(212,175,55,0.2)`,
         }}
-      />
-
-      <div className="absolute top-5 left-5 right-5 flex items-start justify-between z-10">
-        <div
-          style={{
-            background: 'rgba(16,23,34,0.86)',
-            border: `1px solid ${GOLD}`,
-            color: '#fff',
-            borderRadius: 999,
-            padding: '10px 18px',
-            fontSize: 20,
-            fontWeight: 800,
-            letterSpacing: '0.06em',
-            textTransform: 'uppercase',
-          }}
-        >
-          {badge}
-        </div>
-
-        <img src={logoVDH} alt="VDH" style={{ height: 50, borderRadius: 8, objectFit: 'contain' }} />
+      >
+        {p0 ? (
+          <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${p0})` }} />
+        ) : (
+          <div className="absolute inset-0" style={{ background: '#1a2535' }} />
+        )}
       </div>
 
-      <div className="absolute left-6 right-6 bottom-6 z-10">
-        <div
-          style={{
-            background: 'rgba(12,18,28,0.84)',
-            border: `1px solid ${GOLD}66`,
-            borderRadius: 24,
-            padding: '24px 24px 20px',
-            backdropFilter: 'blur(8px)',
-            boxShadow: '0 18px 50px rgba(0,0,0,0.24)',
-          }}
-        >
-          <div className="flex items-end justify-between gap-4">
-            <div>
-              <p style={{ color: '#fff', fontSize: 38, fontWeight: 800, lineHeight: 1.1, marginBottom: 8 }}>
-                {data.propertyName || data.type || 'Imóvel'}
-              </p>
-              <p style={{ color: 'rgba(255,255,255,0.72)', fontSize: 20, marginBottom: 16 }}>
-                {location || 'Localização privilegiada'}
-              </p>
-              <div className="flex items-center gap-3 flex-wrap">
-                {data.bedrooms && data.bedrooms !== '0' ? (
-                  <span style={{ color: '#fff', fontSize: 18, fontWeight: 600 }}>🛏 {data.bedrooms} quartos</span>
-                ) : null}
-                {data.garageSpaces && data.garageSpaces !== '0' ? (
-                  <span style={{ color: '#fff', fontSize: 18, fontWeight: 600 }}>🚗 {data.garageSpaces} vagas</span>
-                ) : null}
-                {(data.area || data.areaPrivativa || data.areaTotal) ? (
-                  <span style={{ color: '#fff', fontSize: 18, fontWeight: 600 }}>
-                    📐 {data.area || data.areaPrivativa || data.areaTotal}m²
-                  </span>
-                ) : null}
-              </div>
-            </div>
+      <div
+        className="flex-1 relative overflow-hidden"
+        style={{
+          borderRadius: '16px',
+          border: `2px solid ${GOLD}`,
+          boxShadow: `0 0 20px rgba(212,175,55,0.2)`,
+        }}
+      >
+        {p1 ? (
+          <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${p1})` }} />
+        ) : (
+          <div className="absolute inset-0" style={{ background: '#1e2c42' }} />
+        )}
+      </div>
+    </div>
+  );
 
-            <div style={{ textAlign: 'right', flexShrink: 0 }}>
-              <p style={{ color: GOLD, fontSize: 14, fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 6 }}>
-                Valor mínimo
-              </p>
-              <p style={{ color: '#fff', fontSize: 30, fontWeight: 900, lineHeight: 1 }}>{price}</p>
-            </div>
-          </div>
+  const location = [data.neighborhood, data.city, data.state].filter(Boolean).join(' · ');
+  const bedroomsNum = Number(data.bedrooms || 0);
+  const areaValue = (data.area || data.areaPrivativa || data.areaTotal || '').trim();
+  const garageNum = Number(data.garageSpaces || 0);
 
-          <div style={{ marginTop: 16, height: 1, background: 'rgba(255,255,255,0.12)' }} />
+  const infoColumn = (
+    <div
+      className="w-[50%] h-full flex flex-col justify-center"
+      style={{ padding: isReversed ? '80px 50px 80px 60px' : '80px 60px 80px 50px', background: '#161b27' }}
+    >
+      <div style={{ width: '60px', height: '3px', background: GOLD, marginBottom: '40px', borderRadius: '2px' }} />
 
-          <div className="flex items-center justify-between" style={{ marginTop: 14 }}>
-            <span style={{ color: 'rgba(255,255,255,0.72)', fontSize: 16, fontWeight: 600 }}>
-              Venda Direta Hoje
-            </span>
-            <span style={{ color: GOLD, fontSize: 16, fontWeight: 800 }}>
-              Slide {Math.min(slideIndex + 4, totalSlides)} de {totalSlides}
-            </span>
-          </div>
+      <p style={{ fontSize: '42px', color: '#ffffff', fontWeight: 800, lineHeight: 1.2, marginBottom: '12px' }}>
+        {data.propertyName || data.type || 'Imóvel'}
+      </p>
+      <p style={{ fontSize: '24px', color: 'rgba(255,255,255,0.6)', marginBottom: '40px' }}>
+        {location || 'Localização privilegiada'}
+      </p>
+
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '28px' }}>
+        {bedroomsNum > 0 && (
+          <span style={{ color: '#fff', fontSize: '32px', fontWeight: 600 }}>🛏 {bedroomsNum} quarto{bedroomsNum > 1 ? 's' : ''}</span>
+        )}
+        {garageNum > 0 && (
+          <span style={{ color: '#fff', fontSize: '32px', fontWeight: 600 }}>🚗 {garageNum} vaga{garageNum > 1 ? 's' : ''}</span>
+        )}
+        {areaValue && areaValue !== '0' && (
+          <span style={{ color: '#fff', fontSize: '32px', fontWeight: 600 }}>📐 {areaValue}m²</span>
+        )}
+      </div>
+
+      <div style={{ marginTop: 'auto', paddingTop: '60px' }}>
+        <div style={{ border: `1.5px solid ${GOLD}55`, borderRadius: '10px', padding: '6px 16px', display: 'inline-block' }}>
+          <img src={logoVDH} alt="VDH" style={{ height: '52px', objectFit: 'contain', borderRadius: '6px', display: 'block' }} />
         </div>
+      </div>
+    </div>
+  );
+
+  return (
+    <div className="post-template relative overflow-hidden" style={{ background: '#0d1117' }}>
+      <div className="absolute inset-0 flex">
+        {isReversed ? (
+          <>
+            {infoColumn}
+            {photosColumn}
+          </>
+        ) : (
+          <>
+            {photosColumn}
+            {infoColumn}
+          </>
+        )}
       </div>
     </div>
   );
