@@ -1,608 +1,557 @@
 import jsPDF from 'jspdf';
 import { AFPropertyData } from '@/types/apartamentosFortaleza';
 
-const PRIMARY = '#0C7B8E';
-const ACCENT = '#E8562A';
-const DARK = '#061018';
-const LIGHT_BG = '#F0F8FA';
+// ── AM Color Palette ──────────────────────────────────────────────────────────
+const AM_BLUE   = '#1B5EA6';
+const AM_ORANGE = '#F47920';
+const AM_DARK   = '#080e1c';
 
-// Convert hex to RGB
+// ── Helpers ───────────────────────────────────────────────────────────────────
+
 function hexToRgb(hex: string): [number, number, number] {
-  const r = parseInt(hex.slice(1, 3), 16);
-  const g = parseInt(hex.slice(3, 5), 16);
-  const b = parseInt(hex.slice(5, 7), 16);
-  return [r, g, b];
+  return [
+    parseInt(hex.slice(1, 3), 16),
+    parseInt(hex.slice(3, 5), 16),
+    parseInt(hex.slice(5, 7), 16),
+  ];
 }
 
-// Load image as base64
-async function loadImageAsBase64(src: string): Promise<string> {
+// Strip characters outside Latin-1/Windows-1252 (removes emoji that cause garbled output)
+function safeText(text: string): string {
+  return (text || '').replace(/[^\x00-\xFF]/g, '');
+}
+
+// Load a photo as JPEG base64 (dark fill for transparency)
+async function loadPhoto(src: string): Promise<string> {
   return new Promise((resolve) => {
-    const img = new Image();
+    const img = document.createElement('img') as HTMLImageElement;
     img.crossOrigin = 'anonymous';
     img.onload = () => {
-      const canvas = document.createElement('canvas');
-      canvas.width = img.naturalWidth;
-      canvas.height = img.naturalHeight;
-      const ctx = canvas.getContext('2d');
+      const c = document.createElement('canvas');
+      c.width = img.naturalWidth || 800;
+      c.height = img.naturalHeight || 600;
+      const ctx = c.getContext('2d');
       if (ctx) {
+        ctx.fillStyle = '#080e1c';
+        ctx.fillRect(0, 0, c.width, c.height);
         ctx.drawImage(img, 0, 0);
-        resolve(canvas.toDataURL('image/jpeg', 0.92));
-      } else {
-        resolve('');
-      }
+        resolve(c.toDataURL('image/jpeg', 0.82));
+      } else resolve('');
     };
     img.onerror = () => resolve('');
     img.src = src;
   });
 }
 
-// Draw a filled rounded rectangle
-function roundedRect(
-  doc: jsPDF, x: number, y: number, w: number, h: number, r: number,
-  fillColor?: [number, number, number], strokeColor?: [number, number, number]
-) {
-  if (fillColor) {
-    doc.setFillColor(...fillColor);
-  }
-  if (strokeColor) {
-    doc.setDrawColor(...strokeColor);
-  }
-  if (fillColor && !strokeColor) {
-    doc.roundedRect(x, y, w, h, r, r, 'F');
-  } else if (!fillColor && strokeColor) {
-    doc.roundedRect(x, y, w, h, r, r, 'S');
-  } else if (fillColor && strokeColor) {
-    doc.roundedRect(x, y, w, h, r, r, 'FD');
-  }
+// Load logo as PNG — transparent background preserved
+async function loadLogo(src: string): Promise<string> {
+  return new Promise((resolve) => {
+    const img = document.createElement('img') as HTMLImageElement;
+    img.crossOrigin = 'anonymous';
+    img.onload = () => {
+      const c = document.createElement('canvas');
+      c.width = img.naturalWidth || 400;
+      c.height = img.naturalHeight || 160;
+      const ctx = c.getContext('2d');
+      if (ctx) {
+        ctx.clearRect(0, 0, c.width, c.height); // keep transparency
+        ctx.drawImage(img, 0, 0);
+        resolve(c.toDataURL('image/png'));
+      } else resolve('');
+    };
+    img.onerror = () => resolve('');
+    img.src = src;
+  });
 }
 
-// Word-wrap text helper
-function wrapText(doc: jsPDF, text: string, maxWidth: number): string[] {
-  const words = text.split(' ');
+function wrapText(doc: jsPDF, text: string, maxW: number): string[] {
+  const words = safeText(text).split(' ');
   const lines: string[] = [];
-  let current = '';
-  for (const word of words) {
-    const test = current ? `${current} ${word}` : word;
-    if (doc.getTextWidth(test) <= maxWidth) {
-      current = test;
-    } else {
-      if (current) lines.push(current);
-      current = word;
-    }
+  let cur = '';
+  for (const w of words) {
+    const test = cur ? `${cur} ${w}` : w;
+    if (doc.getTextWidth(test) <= maxW) { cur = test; }
+    else { if (cur) lines.push(cur); cur = w; }
   }
-  if (current) lines.push(current);
+  if (cur) lines.push(cur);
   return lines;
 }
 
-function formatCurrency(value: number): string {
+function brl(value: number): string {
   return `R$ ${value.toLocaleString('pt-BR', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`;
 }
+
+function filledRect(
+  doc: jsPDF,
+  x: number, y: number, w: number, h: number, r: number,
+  fill: [number, number, number],
+) {
+  doc.setFillColor(...fill);
+  if (r > 0) doc.roundedRect(x, y, w, h, r, r, 'F');
+  else doc.rect(x, y, w, h, 'F');
+}
+
+function pageFooter(doc: jsPDF, data: AFPropertyData, page: number, PW: number, PH: number, M: number, blue: [number,number,number]) {
+  const y = PH - 12;
+  doc.setDrawColor(...blue);
+  doc.setLineWidth(0.4);
+  doc.line(M, y, PW - M, y);
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(7.5);
+  doc.setTextColor(...blue);
+  if (data.brokerName) doc.text(safeText(data.brokerName), M, y + 5);
+  if (data.brokerPhone) {
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(7);
+    doc.setTextColor(120, 160, 200);
+    doc.text(safeText(data.brokerPhone), M, y + 9);
+  }
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(7);
+  doc.setTextColor(100, 140, 185);
+  doc.text(`Apartamentos Fortaleza  |  Pagina ${page}`, PW - M, y + 5, { align: 'right' });
+  if (data.creci) doc.text(`CRECI ${safeText(data.creci)}`, PW - M, y + 9, { align: 'right' });
+}
+
+// ── Main export ───────────────────────────────────────────────────────────────
 
 export async function generateAFPropertyPDF(
   data: AFPropertyData,
   photos: string[],
-  logoSrc: string
+  logoSrc: string,
 ): Promise<void> {
   const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
-  const PW = 210; // page width
-  const PH = 297; // page height
-  const M = 14;   // margin
-  const CW = PW - M * 2; // content width
+  const PW = 210, PH = 297, M = 14, CW = PW - M * 2;
 
-  const logo64 = await loadImageAsBase64(logoSrc);
-  const photo64s = await Promise.all(photos.slice(0, 8).map(p => loadImageAsBase64(p)));
+  const blueRgb   = hexToRgb(AM_BLUE);    // [27, 94, 166]
+  const orangeRgb = hexToRgb(AM_ORANGE);  // [244, 121, 32]
+  const darkRgb   = hexToRgb(AM_DARK);    // [8, 14, 28]
+  const dark2: [number,number,number] = [14, 25, 48];
+  const dark3: [number,number,number] = [20, 35, 65];
 
-  const primaryRgb = hexToRgb(PRIMARY);
-  const accentRgb = hexToRgb(ACCENT);
-  const darkRgb = hexToRgb(DARK);
+  const logo64    = await loadLogo(logoSrc);
+  const photo64s  = await Promise.all(photos.slice(0, 9).map(loadPhoto));
+  const price     = data.isRental ? data.rentalPrice : data.salePrice;
 
-  // ─────────────────────────────────────────────────────
-  // PAGE 1 — CAPA EMOCIONAL (Hero)
-  // ─────────────────────────────────────────────────────
+  // ════════════════════════════════════════════════════════════
+  // PAGE 1 — CAPA
+  // ════════════════════════════════════════════════════════════
   {
-    // Full dark background
-    doc.setFillColor(...darkRgb);
-    doc.rect(0, 0, PW, PH, 'F');
+    // Background
+    filledRect(doc, 0, 0, PW, PH, 0, darkRgb);
 
-    // Hero photo (full bleed top half)
+    // Hero photo (top 150mm)
     if (photo64s[0]) {
-      doc.addImage(photo64s[0], 'JPEG', 0, 0, PW, 155, '', 'FAST');
-      // Dark overlay gradient simulation
-      doc.setFillColor(6, 16, 24);
-      doc.setGState(doc.GState({ opacity: 0.45 }));
-      doc.rect(0, 0, PW, 155, 'F');
+      doc.addImage(photo64s[0], 'JPEG', 0, 0, PW, 150, '', 'FAST');
+      // Gradient overlay — simulate dark fade at bottom
+      for (let i = 0; i < 55; i++) {
+        const alpha = (i / 55) * 0.92;
+        doc.setFillColor(8, 14, 28);
+        doc.setGState(doc.GState({ opacity: alpha }));
+        doc.rect(0, 95 + i, PW, 1, 'F');
+      }
       doc.setGState(doc.GState({ opacity: 1 }));
     } else {
-      doc.setFillColor(...primaryRgb);
-      doc.rect(0, 0, PW, 155, 'F');
+      filledRect(doc, 0, 0, PW, 150, 0, blueRgb);
     }
 
-    // Gradient fade bottom of hero
-    for (let i = 0; i < 40; i++) {
-      const alpha = i / 40;
-      doc.setFillColor(6, 16, 24);
-      doc.setGState(doc.GState({ opacity: alpha * 0.95 }));
-      doc.rect(0, 115 + i, PW, 1, 'F');
-    }
-    doc.setGState(doc.GState({ opacity: 1 }));
+    // Orange top stripe
+    filledRect(doc, 0, 0, PW, 3, 0, orangeRgb);
 
-    // Logo top left
+    // Logo — top left
     if (logo64) {
-      doc.addImage(logo64, 'PNG', M, 12, 52, 20, '', 'FAST');
+      doc.addImage(logo64, 'PNG', M, 7, 56, 22, '', 'FAST');
     }
 
-    // CRECI badge top right
+    // CRECI badge — top right
     if (data.creci) {
-      doc.setFillColor(255, 255, 255, 0.15);
-      doc.setFillColor(0, 0, 0);
-      doc.setGState(doc.GState({ opacity: 0.35 }));
-      roundedRect(doc, PW - M - 52, 13, 52, 9, 2, [255, 255, 255]);
-      doc.setGState(doc.GState({ opacity: 1 }));
-      doc.setFont('helvetica', 'normal');
-      doc.setFontSize(7);
-      doc.setTextColor(6, 16, 24);
-      doc.text(`CRECI ${data.creci}`, PW - M - 26, 18.5, { align: 'center' });
+      filledRect(doc, PW - M - 46, 8, 46, 8, 2, blueRgb);
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(6.5);
+      doc.setTextColor(255, 255, 255);
+      doc.text(`CRECI ${safeText(data.creci)}`, PW - M - 23, 13.2, { align: 'center' });
     }
 
-    // Main headline area
-    const headlineY = 88;
+    // Property title
+    const headY = 92;
     doc.setFont('helvetica', 'bold');
-    doc.setFontSize(28);
+    doc.setFontSize(25);
     doc.setTextColor(255, 255, 255);
-    const title = data.title || 'Seu Novo Lar em Fortaleza';
-    const titleLines = wrapText(doc, title, PW - 28);
-    titleLines.forEach((line, i) => {
-      doc.text(line, M, headlineY + i * 11);
-    });
+    const titleLines = wrapText(doc, data.title || 'Seu Apartamento em Fortaleza', CW);
+    titleLines.forEach((l, i) => doc.text(l, M, headY + i * 10));
 
-    // Location pill
-    const loc = [data.neighborhood, data.city || 'Fortaleza', data.state || 'CE'].filter(Boolean).join(' • ');
+    // Location chip
+    const loc = [data.neighborhood, data.city || 'Fortaleza', data.state || 'CE'].filter(Boolean).join(' - ');
     if (loc) {
-      const locW = doc.getTextWidth(loc) + 10;
-      roundedRect(doc, M, headlineY + titleLines.length * 11 + 4, locW, 8, 3, [12, 123, 142]);
+      const chipY = headY + titleLines.length * 10 + 4;
+      const chipW = Math.min(doc.getTextWidth(safeText(loc)) + 12, CW);
+      filledRect(doc, M, chipY, chipW, 8, 2, blueRgb);
       doc.setFont('helvetica', 'bold');
-      doc.setFontSize(8);
+      doc.setFontSize(7.5);
       doc.setTextColor(255, 255, 255);
-      doc.text(loc, M + 5, headlineY + titleLines.length * 11 + 9.2);
+      doc.text(safeText(loc), M + 6, chipY + 5.5);
     }
 
-    // ── EMOTIONAL HOOK SECTION ──
-    const hookY = 162;
-    doc.setFillColor(12, 123, 142);
-    doc.rect(0, hookY - 2, 4, 38, 'F');
+    // ── Orange divider ──
+    filledRect(doc, 0, 153, PW, 2, 0, orangeRgb);
 
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(16);
-    doc.setTextColor(255, 255, 255);
-    doc.text('Imagine acordar assim todos os dias.', M + 6, hookY + 8);
+    // ── SPECS STRIP (154 – 178) ──
+    const specY = 158;
+    const specs: { lbl: string; val: string }[] = [];
+    if (data.bedrooms  > 0) specs.push({ lbl: 'QUARTOS',   val: String(data.bedrooms) });
+    if (data.bathrooms > 0) specs.push({ lbl: 'BANHEIROS', val: String(data.bathrooms) });
+    if (data.area      > 0) specs.push({ lbl: 'AREA (m2)', val: String(data.area) });
+    if (data.garageSpaces > 0) specs.push({ lbl: 'VAGAS',  val: String(data.garageSpaces) });
+    if (data.suites    > 0) specs.push({ lbl: 'SUITES',    val: String(data.suites) });
 
-    doc.setFont('helvetica', 'normal');
-    doc.setFontSize(9.5);
-    doc.setTextColor(180, 200, 210);
-    const hook = 'Este não é apenas um apartamento — é o espaço onde sua família vai criar memórias que durarão para sempre. Um lugar onde seus filhos vão crescer, onde você vai receber amigos, onde o seu futuro começa.';
-    const hookLines = wrapText(doc, hook, CW - 6);
-    hookLines.forEach((line, i) => {
-      doc.text(line, M + 6, hookY + 18 + i * 5.5);
-    });
+    if (specs.length > 0) {
+      const colW = CW / specs.length;
+      specs.forEach((s, i) => {
+        const sx = M + i * colW + colW / 2;
+        if (i > 0) {
+          doc.setDrawColor(30, 50, 80);
+          doc.setLineWidth(0.4);
+          doc.line(M + i * colW, specY + 2, M + i * colW, specY + 18);
+        }
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(20);
+        doc.setTextColor(...orangeRgb);
+        doc.text(s.val, sx, specY + 12, { align: 'center' });
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(6.5);
+        doc.setTextColor(130, 165, 210);
+        doc.text(s.lbl, sx, specY + 20, { align: 'center' });
+      });
+    }
 
-    // ── SPECS STRIP ──
-    const specY = 215;
-    roundedRect(doc, M, specY, CW, 28, 5, [17, 30, 38]);
+    // Blue divider below specs
+    filledRect(doc, 0, 182, PW, 1.5, 0, blueRgb);
 
-    const specs = [
-      { icon: '🛏', label: data.bedrooms > 0 ? `${data.bedrooms} Quarto${data.bedrooms > 1 ? 's' : ''}` : '—' },
-      { icon: '🚿', label: data.bathrooms > 0 ? `${data.bathrooms} Banheiro${data.bathrooms > 1 ? 's' : ''}` : '—' },
-      { icon: '📐', label: data.area > 0 ? `${data.area}m²` : '—' },
-      { icon: '🚗', label: data.garageSpaces > 0 ? `${data.garageSpaces} Vaga${data.garageSpaces > 1 ? 's' : ''}` : '—' },
-      { icon: '🏠', label: data.suites > 0 ? `${data.suites} Suíte${data.suites > 1 ? 's' : ''}` : data.furnished ? 'Mobiliado' : '—' },
-    ].filter(s => s.label !== '—');
-
-    const specColW = CW / Math.min(specs.length, 5);
-    specs.slice(0, 5).forEach((spec, i) => {
-      const sx = M + i * specColW + specColW / 2;
-      doc.setFont('helvetica', 'bold');
-      doc.setFontSize(14);
-      doc.setTextColor(255, 255, 255);
-      doc.text(spec.icon, sx, specY + 11, { align: 'center' });
-      doc.setFont('helvetica', 'bold');
-      doc.setFontSize(8);
-      doc.setTextColor(180, 210, 220);
-      doc.text(spec.label, sx, specY + 21, { align: 'center' });
-    });
-
-    // ── PRICE SECTION ──
-    const priceY = 252;
-    const price = data.isRental ? data.rentalPrice : data.salePrice;
-
-    roundedRect(doc, M, priceY, CW, 28, 5, [232, 86, 42]);
+    // ── PRICE CARD (184 – 215) ──
+    const priceY = 186;
+    filledRect(doc, M, priceY, CW, 30, 5, orangeRgb);
 
     doc.setFont('helvetica', 'normal');
-    doc.setFontSize(8);
-    doc.setTextColor(255, 220, 200);
-    doc.text(data.isRental ? 'VALOR DO ALUGUEL' : 'VALOR DE VENDA', M + 12, priceY + 8);
+    doc.setFontSize(7.5);
+    doc.setTextColor(255, 220, 185);
+    doc.text(data.isRental ? 'VALOR DO ALUGUEL' : 'VALOR DE VENDA', M + 10, priceY + 9);
 
     doc.setFont('helvetica', 'bold');
-    doc.setFontSize(22);
+    doc.setFontSize(23);
     doc.setTextColor(255, 255, 255);
-    doc.text(price > 0 ? formatCurrency(price) : 'Consulte o valor', M + 12, priceY + 20);
+    doc.text(price > 0 ? brl(price) : 'Consulte o valor', M + 10, priceY + 22);
 
     if (!data.isRental) {
-      const badges = [];
-      if (data.acceptsFinancing) badges.push('✓ Aceita Financiamento');
-      if (data.acceptsFGTS) badges.push('✓ Aceita FGTS');
-      if (data.subsidy > 0) badges.push(`✓ Subsídio de até ${formatCurrency(data.subsidy)}`);
+      const badges: string[] = [];
+      if (data.acceptsFinancing) badges.push('+ Aceita Financiamento');
+      if (data.acceptsFGTS)      badges.push('+ Aceita FGTS');
+      if (data.subsidy > 0)      badges.push(`+ Subsidio ate ${brl(data.subsidy)}`);
       if (badges.length > 0) {
         doc.setFont('helvetica', 'normal');
-        doc.setFontSize(7.5);
-        doc.setTextColor(255, 230, 215);
-        doc.text(badges.join('   '), PW - M, priceY + 20, { align: 'right' });
+        doc.setFontSize(6.8);
+        doc.setTextColor(255, 235, 210);
+        doc.text(badges.join('   '), PW - M - 4, priceY + 27, { align: 'right' });
       }
     }
 
-    // ── BROKER FOOTER ──
-    const footY = 286;
-    doc.setDrawColor(30, 55, 65);
-    doc.line(M, footY - 2, PW - M, footY - 2);
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(8);
-    doc.setTextColor(100, 160, 175);
-    if (data.brokerName) doc.text(data.brokerName, M, footY + 4);
-    if (data.brokerPhone) {
+    // Condominium info
+    if (data.condominiumFee > 0) {
+      filledRect(doc, M, priceY + 33, CW, 11, 3, dark2);
       doc.setFont('helvetica', 'normal');
-      doc.setTextColor(80, 130, 145);
-      doc.text(data.brokerPhone, M, footY + 9);
+      doc.setFontSize(7.5);
+      doc.setTextColor(150, 185, 220);
+      doc.text(`Condominio: ${brl(data.condominiumFee)}/mes`, M + 8, priceY + 40);
+      if (data.iptu > 0) {
+        doc.text(`IPTU: ${brl(data.iptu)}/ano`, M + CW / 2, priceY + 40);
+      }
     }
+
+    // ── EMOTIONAL HOOK (222 – 262) ──
+    const hookY = data.condominiumFee > 0 ? 231 : 222;
+    filledRect(doc, M, hookY, 3, 32, 0, orangeRgb);
+
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(12.5);
+    doc.setTextColor(255, 255, 255);
+    doc.text('O lar onde sua familia escreve os melhores', M + 8, hookY + 9);
+    doc.text('capitulos da vida.', M + 8, hookY + 18);
+
     doc.setFont('helvetica', 'normal');
-    doc.setFontSize(7);
-    doc.setTextColor(60, 100, 115);
-    doc.text('Apartamentos Fortaleza', PW - M, footY + 4, { align: 'right' });
-    doc.text('www.apartamentosfortaleza.com.br', PW - M, footY + 9, { align: 'right' });
+    doc.setFontSize(8);
+    doc.setTextColor(160, 195, 225);
+    const hookLines = wrapText(doc,
+      'Fortaleza oferece qualidade de vida, seguranca e valorizacao real do seu patrimonio. ' +
+      'Este apartamento foi pensado para ser mais do que um imovel — e o espaco onde historias sao criadas.',
+      CW - 14);
+    hookLines.forEach((l, i) => doc.text(l, M + 8, hookY + 26 + i * 5));
+
+    pageFooter(doc, data, 1, PW, PH, M, blueRgb);
   }
 
-  // ─────────────────────────────────────────────────────
-  // PAGE 2 — GALERIA DE FOTOS + LIFESTYLE
-  // ─────────────────────────────────────────────────────
+  // ════════════════════════════════════════════════════════════
+  // PAGE 2 — GALERIA + DETALHES
+  // ════════════════════════════════════════════════════════════
   doc.addPage();
   {
-    doc.setFillColor(...darkRgb);
-    doc.rect(0, 0, PW, PH, 'F');
+    filledRect(doc, 0, 0, PW, PH, 0, darkRgb);
 
     // Header bar
-    roundedRect(doc, 0, 0, PW, 22, 0, primaryRgb);
-    if (logo64) doc.addImage(logo64, 'PNG', M, 3, 40, 16, '', 'FAST');
+    filledRect(doc, 0, 0, PW, 22, 0, blueRgb);
+    filledRect(doc, 0, 0, PW, 3, 0, orangeRgb);
+    if (logo64) doc.addImage(logo64, 'PNG', M, 4, 42, 16, '', 'FAST');
     doc.setFont('helvetica', 'bold');
-    doc.setFontSize(10);
+    doc.setFontSize(9);
     doc.setTextColor(255, 255, 255);
-    doc.text('GALERIA DO IMÓVEL', PW - M, 14, { align: 'right' });
+    doc.text('GALERIA DO IMOVEL', PW - M, 14, { align: 'right' });
 
     // Section title
     doc.setFont('helvetica', 'bold');
-    doc.setFontSize(18);
+    doc.setFontSize(15);
     doc.setTextColor(255, 255, 255);
-    doc.text('Cada detalhe pensado', M, 38);
-    doc.setFont('helvetica', 'normal');
-    doc.setFontSize(9);
-    doc.setTextColor(100, 170, 185);
-    doc.text('para o conforto da sua família.', M, 45);
-
-    // Accent line
-    doc.setFillColor(...accentRgb);
-    doc.rect(M, 48, 30, 1.5, 'F');
-
-    // Photo grid — 2 columns, up to 4 rows
-    const photoArr = photo64s.filter(Boolean);
-    const cols = 2;
-    const gridW = (CW - 4) / cols;
-    const gridH = 46;
-    const startY = 54;
-
-    photoArr.slice(0, 6).forEach((p64, idx) => {
-      const col = idx % cols;
-      const row = Math.floor(idx / cols);
-      const px = M + col * (gridW + 4);
-      const py = startY + row * (gridH + 4);
-      roundedRect(doc, px, py, gridW, gridH, 3, [20, 40, 50]);
-      if (p64) {
-        doc.addImage(p64, 'JPEG', px, py, gridW, gridH, '', 'FAST');
-        // subtle dark border
-        doc.setDrawColor(0, 0, 0);
-        doc.setLineWidth(0.3);
-        doc.roundedRect(px, py, gridW, gridH, 3, 3, 'S');
-      }
-    });
-
-    // Lifestyle emotional band
-    const bandY = startY + Math.min(Math.ceil(photoArr.length / 2), 3) * (gridH + 4) + 6;
-    roundedRect(doc, M, bandY, CW, 52, 5, [8, 24, 32]);
-
-    doc.setFillColor(...primaryRgb);
-    doc.rect(M, bandY, 3, 52, 'F');
-
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(13);
-    doc.setTextColor(255, 255, 255);
-    doc.text('"O lugar certo para criar', M + 10, bandY + 14);
-    doc.text('os melhores momentos da vida."', M + 10, bandY + 24);
-
+    doc.text('Cada detalhe pensado', M, 34);
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(8.5);
-    doc.setTextColor(150, 190, 205);
-    const lifestyleText = 'Famílias que escolhem Fortaleza escolhem qualidade de vida, segurança para os filhos, e um futuro sólido. Este imóvel foi pensado para ser o lar onde as histórias mais bonitas são escritas.';
-    const lifeLines = wrapText(doc, lifestyleText, CW - 16);
-    lifeLines.forEach((line, i) => {
-      doc.text(line, M + 10, bandY + 34 + i * 5);
+    doc.setTextColor(130, 170, 210);
+    doc.text('para o conforto da sua familia.', M, 41);
+    filledRect(doc, M, 43.5, 26, 1.5, 0, orangeRgb);
+
+    // ── Photo grid 2×3 ──
+    const validPhotos = photo64s.filter(Boolean);
+    const cols = 2;
+    const gW = (CW - 4) / cols;
+    const gH = 43;
+    const gStartY = 49;
+
+    validPhotos.slice(0, 6).forEach((p64, idx) => {
+      const col = idx % cols;
+      const row = Math.floor(idx / cols);
+      const px = M + col * (gW + 4);
+      const py = gStartY + row * (gH + 3);
+      filledRect(doc, px, py, gW, gH, 3, dark3);
+      if (p64) {
+        doc.addImage(p64, 'JPEG', px, py, gW, gH, '', 'FAST');
+        doc.setDrawColor(0, 0, 0);
+        doc.setLineWidth(0.25);
+        doc.roundedRect(px, py, gW, gH, 3, 3, 'S');
+      }
     });
 
-    // Bottom features checklist
-    const checkY = bandY + 60;
-    if (checkY < PH - 20) {
-      const leisure = data.leisureItems ? data.leisureItems.split('\n').filter(Boolean) : [];
-      const features = [
-        ...(data.rooms ? data.rooms.split('\n').filter(Boolean) : []),
-        ...leisure,
-        data.furnished ? 'Apartamento Mobiliado' : '',
-        data.condominiumFee > 0 ? `Condomínio: ${formatCurrency(data.condominiumFee)}/mês` : '',
-      ].filter(Boolean).slice(0, 8);
+    const rows = Math.min(Math.ceil(validPhotos.length / 2), 3);
+    const afterGrid = gStartY + rows * (gH + 3) + 5;
 
-      if (features.length > 0) {
-        doc.setFont('helvetica', 'bold');
-        doc.setFontSize(10);
-        doc.setTextColor(12, 200, 180);
-        doc.text('AMBIENTES & LAZER', M, checkY);
+    // ── Lifestyle band ──
+    filledRect(doc, M, afterGrid, CW, 46, 4, dark2);
+    filledRect(doc, M, afterGrid, 3, 46, 0, blueRgb);
 
-        const halfLen = Math.ceil(features.length / 2);
-        const col1 = features.slice(0, halfLen);
-        const col2 = features.slice(halfLen);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(11.5);
+    doc.setTextColor(255, 255, 255);
+    doc.text('"O lugar certo para criar os melhores', M + 9, afterGrid + 12);
+    doc.text('momentos da vida."', M + 9, afterGrid + 21);
 
-        col1.forEach((f, i) => {
-          roundedRect(doc, M, checkY + 6 + i * 9, 3, 3, 1, accentRgb);
-          doc.setFont('helvetica', 'normal');
-          doc.setFontSize(8);
-          doc.setTextColor(200, 220, 228);
-          doc.text(f, M + 6, checkY + 9.5 + i * 9);
-        });
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(8);
+    doc.setTextColor(150, 185, 220);
+    const lifeLines = wrapText(doc,
+      'Familias que escolhem Fortaleza escolhem qualidade de vida, seguranca e um futuro solido. ' +
+      'Este imovel foi pensado para onde as historias mais bonitas sao escritas.',
+      CW - 16);
+    lifeLines.forEach((l, i) => doc.text(l, M + 9, afterGrid + 30 + i * 4.8));
 
-        col2.forEach((f, i) => {
-          roundedRect(doc, M + CW / 2, checkY + 6 + i * 9, 3, 3, 1, accentRgb);
-          doc.setFont('helvetica', 'normal');
-          doc.setFontSize(8);
-          doc.setTextColor(200, 220, 228);
-          doc.text(f, M + CW / 2 + 6, checkY + 9.5 + i * 9);
-        });
-      }
+    // ── Amenities ──
+    const ameY = afterGrid + 54;
+    const ameItems = [
+      ...(data.rooms        ? data.rooms.split('\n').filter(Boolean)        : []),
+      ...(data.leisureItems ? data.leisureItems.split('\n').filter(Boolean) : []),
+      data.furnished         ? 'Apartamento Mobiliado'                       : '',
+      data.condominiumFee > 0 ? `Condominio: ${brl(data.condominiumFee)}/mes` : '',
+    ].filter(Boolean).slice(0, 8).map(safeText);
+
+    if (ameItems.length > 0 && ameY + 10 < PH - 25) {
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(9);
+      doc.setTextColor(...orangeRgb);
+      doc.text('AMBIENTES E LAZER', M, ameY);
+
+      const half = Math.ceil(ameItems.length / 2);
+      ameItems.forEach((item, i) => {
+        const isRight = i >= half;
+        const baseX = isRight ? M + CW / 2 : M;
+        const row   = isRight ? i - half : i;
+        filledRect(doc, baseX, ameY + 5 + row * 9, 2.5, 2.5, 0.5, orangeRgb);
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(8);
+        doc.setTextColor(200, 220, 240);
+        doc.text(item, baseX + 6, ameY + 8.8 + row * 9);
+      });
     }
 
-    // Page footer
-    doc.setFont('helvetica', 'normal');
-    doc.setFontSize(7);
-    doc.setTextColor(50, 90, 105);
-    doc.text(`${data.title || 'Apartamentos Fortaleza'} — Página 2`, PW / 2, PH - 6, { align: 'center' });
+    // Property specs summary at bottom
+    if (data.floor || data.totalFloors) {
+      const sY = PH - 38;
+      filledRect(doc, M, sY, CW, 14, 3, dark2);
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(8);
+      doc.setTextColor(160, 195, 225);
+      const extras: string[] = [];
+      if (data.floor) extras.push(`${safeText(data.floor)}° andar`);
+      if (data.totalFloors) extras.push(`${safeText(data.totalFloors)} andares no total`);
+      if (data.furnished) extras.push('Mobiliado');
+      doc.text(extras.join('  |  '), PW / 2, sY + 9, { align: 'center' });
+    }
+
+    pageFooter(doc, data, 2, PW, PH, M, blueRgb);
   }
 
-  // ─────────────────────────────────────────────────────
-  // PAGE 3 — LOCALIZAÇÃO + FINANCEIRO + CTA
-  // ─────────────────────────────────────────────────────
+  // ════════════════════════════════════════════════════════════
+  // PAGE 3 — LOCALIZACAO + INVESTIMENTO + CTA
+  // ════════════════════════════════════════════════════════════
   doc.addPage();
   {
-    doc.setFillColor(...darkRgb);
-    doc.rect(0, 0, PW, PH, 'F');
+    filledRect(doc, 0, 0, PW, PH, 0, darkRgb);
 
     // Header bar
-    roundedRect(doc, 0, 0, PW, 22, 0, primaryRgb);
-    if (logo64) doc.addImage(logo64, 'PNG', M, 3, 40, 16, '', 'FAST');
+    filledRect(doc, 0, 0, PW, 22, 0, blueRgb);
+    filledRect(doc, 0, 0, PW, 3, 0, orangeRgb);
+    if (logo64) doc.addImage(logo64, 'PNG', M, 4, 42, 16, '', 'FAST');
     doc.setFont('helvetica', 'bold');
-    doc.setFontSize(10);
+    doc.setFontSize(9);
     doc.setTextColor(255, 255, 255);
-    doc.text('LOCALIZAÇÃO & INVESTIMENTO', PW - M, 14, { align: 'right' });
+    doc.text('LOCALIZACAO E INVESTIMENTO', PW - M, 14, { align: 'right' });
 
-    let curY = 32;
+    let curY = 30;
 
     // ── Location block ──
     doc.setFont('helvetica', 'bold');
-    doc.setFontSize(15);
+    doc.setFontSize(13);
     doc.setTextColor(255, 255, 255);
-    doc.text('📍 Localização Privilegiada', M, curY + 8);
-    doc.setFillColor(...accentRgb);
-    doc.rect(M, curY + 11, 28, 1.5, 'F');
-    curY += 18;
+    doc.text('Localizacao Privilegiada', M, curY + 6);
+    filledRect(doc, M, curY + 9, 22, 1.5, 0, orangeRgb);
+    curY += 17;
 
-    roundedRect(doc, M, curY, CW, 38, 5, [10, 28, 36]);
+    filledRect(doc, M, curY, CW, 34, 4, dark2);
+    filledRect(doc, M, curY, 3, 34, 0, blueRgb);
 
     doc.setFont('helvetica', 'bold');
-    doc.setFontSize(14);
-    doc.setTextColor(12, 200, 180);
-    doc.text(data.neighborhood || 'Fortaleza', M + 10, curY + 12);
+    doc.setFontSize(13);
+    doc.setTextColor(100, 160, 230);
+    doc.text(safeText(data.neighborhood || 'Fortaleza - CE'), M + 9, curY + 11);
 
     doc.setFont('helvetica', 'normal');
-    doc.setFontSize(9);
-    doc.setTextColor(180, 210, 220);
-    if (data.address) doc.text(data.address, M + 10, curY + 21);
+    doc.setFontSize(8.5);
+    doc.setTextColor(180, 210, 230);
+    if (data.address) doc.text(safeText(data.address), M + 9, curY + 19);
     if (data.referencePoint) {
       doc.setFontSize(8);
-      doc.setTextColor(120, 165, 180);
-      doc.text(`Próximo a: ${data.referencePoint}`, M + 10, curY + 29);
+      doc.setTextColor(120, 160, 195);
+      doc.text(`Proximo a: ${safeText(data.referencePoint)}`, M + 9, curY + 27);
     }
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(8);
-    doc.setTextColor(12, 123, 142);
-    doc.text(`${data.city || 'Fortaleza'} – ${data.state || 'CE'}`, PW - M - 4, curY + 12, { align: 'right' });
+    doc.setTextColor(...blueRgb);
+    doc.text(`${safeText(data.city || 'Fortaleza')} - ${safeText(data.state || 'CE')}`,
+      PW - M - 4, curY + 11, { align: 'right' });
 
-    curY += 46;
+    curY += 42;
 
-    // ── Why Fortaleza section ──
+    // ── Why Fortaleza ──
     doc.setFont('helvetica', 'bold');
-    doc.setFontSize(13);
+    doc.setFontSize(12);
     doc.setTextColor(255, 255, 255);
-    doc.text('Por que investir em Fortaleza?', M, curY + 6);
+    doc.text('Por que investir em Fortaleza?', M, curY + 5);
     curY += 12;
 
     const reasons = [
-      { title: '☀️ Qualidade de Vida', desc: 'Praias, gastronomia e clima tropical o ano todo para sua família.' },
-      { title: '📈 Valorização Real', desc: 'Mercado imobiliário em crescimento constante, com forte demanda.' },
-      { title: '🏫 Infraestrutura Completa', desc: 'Escolas, hospitais, shoppings e lazer ao alcance.' },
-      { title: '✈️ Polo de Negócios', desc: 'Hub de turismo e negócios do Nordeste em expansão.' },
+      { t: 'Qualidade de Vida',       d: 'Praias, gastronomia e clima tropical o ano todo para sua familia.' },
+      { t: 'Valorizacao Real',         d: 'Mercado imobiliario em crescimento constante, com forte demanda.' },
+      { t: 'Infraestrutura Completa',  d: 'Escolas, hospitais, shoppings e lazer ao alcance de tudo.' },
+      { t: 'Polo de Negocios',         d: 'Hub de turismo e negocios do Nordeste em constante expansao.' },
     ];
 
     reasons.forEach((r, i) => {
       const col = i % 2;
       const row = Math.floor(i / 2);
       const rx = M + col * (CW / 2 + 2);
-      const ry = curY + row * 28;
-      roundedRect(doc, rx, ry, CW / 2 - 2, 25, 4, [12, 32, 42]);
+      const ry = curY + row * 27;
+      const rW = CW / 2 - 2;
+      filledRect(doc, rx, ry, rW, 24, 3, dark2);
+      filledRect(doc, rx, ry, 2.5, 24, 0, orangeRgb);
       doc.setFont('helvetica', 'bold');
       doc.setFontSize(8.5);
       doc.setTextColor(255, 255, 255);
-      doc.text(r.title, rx + 6, ry + 9);
+      doc.text(r.t, rx + 7, ry + 9);
       doc.setFont('helvetica', 'normal');
       doc.setFontSize(7.5);
-      doc.setTextColor(130, 175, 190);
-      const descLines = wrapText(doc, r.desc, CW / 2 - 14);
-      descLines.forEach((line, li) => {
-        doc.text(line, rx + 6, ry + 16 + li * 4.5);
-      });
+      doc.setTextColor(130, 170, 205);
+      const dLines = wrapText(doc, r.d, rW - 14);
+      dLines.forEach((l, li) => doc.text(l, rx + 7, ry + 15 + li * 4.3));
     });
 
-    curY += 60;
+    curY += 58;
 
     // ── Financial breakdown ──
     doc.setFont('helvetica', 'bold');
-    doc.setFontSize(13);
+    doc.setFontSize(12);
     doc.setTextColor(255, 255, 255);
-    doc.text('💰 Investimento Detalhado', M, curY + 6);
-    doc.setFillColor(...accentRgb);
-    doc.rect(M, curY + 9, 24, 1.5, 'F');
-    curY += 14;
+    doc.text('Investimento Detalhado', M, curY + 5);
+    filledRect(doc, M, curY + 8, 20, 1.5, 0, orangeRgb);
+    curY += 15;
 
-    roundedRect(doc, M, curY, CW, 44, 5, [10, 28, 36]);
+    filledRect(doc, M, curY, CW, 40, 4, dark2);
 
-    const price = data.isRental ? data.rentalPrice : data.salePrice;
-    const financialItems = [
-      { label: data.isRental ? 'Aluguel Mensal' : 'Valor de Venda', value: price > 0 ? formatCurrency(price) : 'Consultar', highlight: true },
-      ...(data.condominiumFee > 0 ? [{ label: 'Condomínio', value: formatCurrency(data.condominiumFee) + '/mês', highlight: false }] : []),
-      ...(data.iptu > 0 ? [{ label: 'IPTU', value: formatCurrency(data.iptu) + '/ano', highlight: false }] : []),
-      ...(data.subsidy > 0 ? [{ label: 'Subsídio Disponível', value: `até ${formatCurrency(data.subsidy)}`, highlight: false }] : []),
+    const finItems: { lbl: string; val: string }[] = [
+      { lbl: data.isRental ? 'Valor do Aluguel' : 'Valor de Venda', val: price > 0 ? brl(price) : 'A consultar' },
     ];
+    if (data.condominiumFee > 0) finItems.push({ lbl: 'Condominio/mes',   val: brl(data.condominiumFee) });
+    if (data.iptu > 0)           finItems.push({ lbl: 'IPTU/ano',         val: brl(data.iptu) });
 
-    const colFinW = CW / Math.min(financialItems.length, 4);
-    financialItems.slice(0, 4).forEach((item, i) => {
-      const fx = M + i * colFinW + colFinW / 2;
+    const fColW = CW / Math.min(finItems.length, 3);
+    finItems.slice(0, 3).forEach((f, i) => {
+      const fx = M + i * fColW + fColW / 2;
+      if (i > 0) {
+        doc.setDrawColor(30, 50, 80);
+        doc.setLineWidth(0.4);
+        doc.line(M + i * fColW, curY + 6, M + i * fColW, curY + 34);
+      }
       doc.setFont('helvetica', 'normal');
       doc.setFontSize(7);
-      doc.setTextColor(100, 160, 175);
-      doc.text(item.label, fx, curY + 12, { align: 'center' });
+      doc.setTextColor(130, 165, 205);
+      doc.text(safeText(f.lbl).toUpperCase(), fx, curY + 13, { align: 'center' });
       doc.setFont('helvetica', 'bold');
-      doc.setFontSize(item.highlight ? 11 : 9);
-      doc.setTextColor(item.highlight ? 232 : 200, item.highlight ? 86 : 220, item.highlight ? 42 : 228);
-      doc.text(item.value, fx, curY + 24, { align: 'center' });
-      if (i < financialItems.length - 1) {
-        doc.setDrawColor(30, 55, 65);
-        doc.line(M + (i + 1) * colFinW, curY + 6, M + (i + 1) * colFinW, curY + 38);
-      }
+      doc.setFontSize(12);
+      doc.setTextColor(...orangeRgb);
+      doc.text(safeText(f.val), fx, curY + 26, { align: 'center' });
     });
 
-    // Financing badges
-    const badgeY = curY + 46;
-    const badges = [];
-    if (data.acceptsFinancing) badges.push('✓ Aceita Financiamento');
-    if (data.acceptsFGTS) badges.push('✓ Aceita FGTS');
-    if (data.cashOnly) badges.push('💰 Melhor preço à vista');
+    curY += 48;
 
-    badges.forEach((badge, i) => {
-      const bw = doc.getTextWidth(badge) + 12;
-      roundedRect(doc, M + i * (bw + 4), badgeY, bw, 9, 2, primaryRgb);
+    // ── CTA Block ──
+    if (curY + 50 < PH - 25) {
+      filledRect(doc, M, curY, CW, 50, 5, blueRgb);
+
       doc.setFont('helvetica', 'bold');
-      doc.setFontSize(7.5);
+      doc.setFontSize(16);
       doc.setTextColor(255, 255, 255);
-      doc.text(badge, M + i * (bw + 4) + bw / 2, badgeY + 6.2, { align: 'center' });
-    });
+      doc.text('Agende uma visita agora!', PW / 2, curY + 14, { align: 'center' });
 
-    curY = badgeY + 16;
-
-    // ── EMOTIONAL CTA ──
-    roundedRect(doc, M, curY, CW, 54, 6, [16, 36, 48]);
-
-    // Vertical accent bar
-    doc.setFillColor(...accentRgb);
-    doc.rect(M, curY, 4, 54, 'F');
-
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(15);
-    doc.setTextColor(255, 255, 255);
-    doc.text('Não deixe essa oportunidade passar.', M + 12, curY + 14);
-
-    doc.setFont('helvetica', 'normal');
-    doc.setFontSize(9);
-    doc.setTextColor(160, 200, 215);
-    const ctaText = 'Os melhores imóveis não ficam disponíveis por muito tempo. Entre em contato agora e agende uma visita presencial — veja com os seus próprios olhos o lugar onde sua família merece viver.';
-    const ctaLines = wrapText(doc, ctaText, CW - 18);
-    ctaLines.forEach((line, i) => {
-      doc.text(line, M + 12, curY + 23 + i * 5.2);
-    });
-
-    // WhatsApp CTA button
-    const ctaBtnY = curY + 38;
-    const ctaBtnW = 90;
-    roundedRect(doc, M + 12, ctaBtnY, ctaBtnW, 11, 3, accentRgb);
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(9);
-    doc.setTextColor(255, 255, 255);
-    doc.text('📲 Falar com Corretor', M + 12 + ctaBtnW / 2, ctaBtnY + 7.5, { align: 'center' });
-
-    if (data.brokerPhone) {
       doc.setFont('helvetica', 'normal');
-      doc.setFontSize(9);
-      doc.setTextColor(100, 180, 195);
-      doc.text(data.brokerPhone, M + 12 + ctaBtnW + 8, ctaBtnY + 7.5);
+      doc.setFontSize(8.5);
+      doc.setTextColor(200, 220, 245);
+      doc.text('Fale diretamente com nosso especialista e garanta', PW / 2, curY + 23, { align: 'center' });
+      doc.text('as melhores condicoes para realizar seu sonho.', PW / 2, curY + 30, { align: 'center' });
+
+      if (data.brokerPhone || data.brokerName) {
+        filledRect(doc, PW / 2 - 48, curY + 34, 96, 12, 4, [255, 255, 255]);
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(10);
+        doc.setTextColor(...blueRgb);
+        const ctaTxt = safeText(data.brokerPhone || data.brokerName);
+        doc.text(ctaTxt, PW / 2, curY + 41.5, { align: 'center' });
+      }
     }
 
-    // Final footer
-    doc.setDrawColor(20, 45, 58);
-    doc.line(M, PH - 14, PW - M, PH - 14);
-    doc.setFont('helvetica', 'normal');
-    doc.setFontSize(7);
-    doc.setTextColor(50, 90, 105);
-    doc.text('Apartamentos Fortaleza — Material de apresentação exclusivo.', M, PH - 8);
-    doc.text('Página 3', PW - M, PH - 8, { align: 'right' });
+    pageFooter(doc, data, 3, PW, PH, M, blueRgb);
   }
 
-  // ─────────────────────────────────────────────────────
-  // PAGE 4 — GALERIA EXTRA (if more photos)
-  // ─────────────────────────────────────────────────────
-  if (photo64s.length > 6) {
-    doc.addPage();
-    doc.setFillColor(...darkRgb);
-    doc.rect(0, 0, PW, PH, 'F');
-
-    roundedRect(doc, 0, 0, PW, 22, 0, primaryRgb);
-    if (logo64) doc.addImage(logo64, 'PNG', M, 3, 40, 16, '', 'FAST');
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(10);
-    doc.setTextColor(255, 255, 255);
-    doc.text('MAIS FOTOS DO IMÓVEL', PW - M, 14, { align: 'right' });
-
-    const extraPhotos = photo64s.slice(6);
-    const eGridW = (CW - 4) / 2;
-    const eGridH = 52;
-    extraPhotos.slice(0, 4).forEach((p64, idx) => {
-      const col = idx % 2;
-      const row = Math.floor(idx / 2);
-      const px = M + col * (eGridW + 4);
-      const py = 28 + row * (eGridH + 4);
-      if (p64) {
-        doc.addImage(p64, 'JPEG', px, py, eGridW, eGridH, '', 'FAST');
-        doc.setDrawColor(20, 50, 65);
-        doc.setLineWidth(0.3);
-        doc.roundedRect(px, py, eGridW, eGridH, 2, 2, 'S');
-      }
-    });
-
-    doc.setFont('helvetica', 'normal');
-    doc.setFontSize(7);
-    doc.setTextColor(50, 90, 105);
-    doc.text(`${data.title || 'Apartamentos Fortaleza'} — Página 4`, PW / 2, PH - 6, { align: 'center' });
-  }
-
-  // ─── Save ───────────────────────────────────────────
-  const filename = `AF-${(data.title || 'imovel').replace(/\s+/g, '-').toLowerCase()}.pdf`;
-  doc.save(filename);
+  doc.save(`AF-${safeText(data.title || 'imovel').replace(/\s+/g, '-')}.pdf`);
 }
