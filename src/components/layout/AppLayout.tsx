@@ -30,8 +30,10 @@ interface AppLayoutProps {
   children: React.ReactNode;
 }
 
+const MASTER_EMAIL = 'neto@vendadiretahoje.com.br';
+
 const navigation = [
-  { name: 'CRM', href: '/crm', icon: ClipboardList },
+  { name: 'CRM', href: '/crm', icon: ClipboardList, masterOnly: true },
   { name: 'Criar Post', href: '/', icon: Building2 },
   { name: 'Posts Educativos', href: '/educativo', icon: BookOpen },
   { name: 'Biblioteca', href: '/library', icon: Calendar },
