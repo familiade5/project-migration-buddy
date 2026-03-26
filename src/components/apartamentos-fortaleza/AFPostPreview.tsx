@@ -116,7 +116,6 @@ export function AFPostPreview({ data, photos }: AFPostPreviewProps) {
     } finally { setIsExporting(false); }
   };
 
-  const [isExportingPdf, setIsExportingPdf] = useState(false);
   const handleExportPDF = async () => {
     setIsExportingPdf(true);
     toast.info('Gerando PDF profissional...');
