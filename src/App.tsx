@@ -90,6 +90,7 @@ const App = () => (
             <Route path="/apartamentos-fortaleza" element={
               <ProtectedRoute><ApartamentosFortalezaPage /></ProtectedRoute>
             } />
+            <Route path="/logo-preview" element={<LogoPreview />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthProvider>
