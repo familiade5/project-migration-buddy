@@ -62,7 +62,7 @@ export const PhotoUpload = ({ photos, onChange, onClear }: PhotoUploadProps) => 
           <label className="aspect-square rounded-lg border-2 border-dashed border-gray-200 flex flex-col items-center justify-center gap-2 cursor-pointer hover:border-gray-300 hover:bg-gray-50 transition-all group">
             <input
               type="file"
-              accept="image/*"
+              accept="image/png,image/jpeg,image/jpg,image/webp,image/heic,image/*"
               multiple
               onChange={handleFileChange}
               className="hidden"
