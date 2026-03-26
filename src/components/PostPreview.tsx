@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useRef, useState, useMemo } from 'react';
 import { flushSync } from 'react-dom';
 import { toPng } from 'html-to-image';
 import { safePixelRatio, isIOS } from '@/lib/exportUtils';
@@ -17,6 +17,7 @@ import { VDHStory1 } from './posts/story/VDHStory1';
 import { VDHStory2 } from './posts/story/VDHStory2';
 import { VDHStory3 } from './posts/story/VDHStory3';
 import { VDHStory4 } from './posts/story/VDHStory4';
+import { VDHPhotoSlide } from './posts/story/VDHPhotoSlide';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
@@ -121,12 +122,31 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
     { name: 'Contato',      component: PostContactStory,  photoIndex: 3 },
   ];
 
-  const vdhPosts = [
-    { name: 'Atração',   component: VDHStory1, photoIndex: 0 },
-    { name: 'Interesse', component: VDHStory2, photoIndex: 1 },
-    { name: 'Decisão',   component: VDHStory3, photoIndex: 2 },
-    { name: 'Ação',      component: VDHStory4, photoIndex: 3 },
-  ];
+  const vdhPosts = useMemo(() => {
+    type SlideEntry = { name: string; component: any; photoIndex: number };
+    const base: SlideEntry[] = [
+      { name: 'Atração',   component: VDHStory1, photoIndex: 0 },
+      { name: 'Interesse', component: VDHStory2, photoIndex: 1 },
+      { name: 'Decisão',   component: VDHStory3, photoIndex: 2 },
+      { name: 'Ação',      component: VDHStory4, photoIndex: 3 },
+    ];
+    // Add dynamic photo slides for extra photos (up to 10 total slides)
+    const extraPhotos = Math.max(0, Math.min(photos.length - 4, 6));
+    for (let i = 0; i < extraPhotos; i++) {
+      const slideIdx = 4 + i;
+      const slideNames = ['Destaque', 'Ambiente', 'Detalhes', 'Lifestyle', 'Premium', 'Exclusivo'];
+      const SlideWrapper = (props: { data: PropertyData; photo: string | null; photos?: string[] }) => (
+        <VDHPhotoSlide {...props} slideIndex={slideIdx} totalSlides={4 + extraPhotos} />
+      );
+      SlideWrapper.displayName = `VDHSlide${slideIdx}`;
+      base.push({
+        name: slideNames[i],
+        component: SlideWrapper,
+        photoIndex: slideIdx,
+      });
+    }
+    return base;
+  }, [photos.length]);
 
   const posts = format === 'feed' ? feedPosts : format === 'story' ? storyPosts : vdhPosts;
 
@@ -428,7 +448,7 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
           style={{ backgroundColor: '#1a3a6b' }}
         >
           {isExporting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
-          Exportar {format === 'feed' ? 'Feed (4)' : format === 'story' ? 'Stories (4)' : 'VDH (4)'}
+            Exportar {format === 'feed' ? 'Feed' : format === 'story' ? 'Stories' : 'VDH'} ({posts.length})
         </button>
         <button
           onClick={handleExportBothFormats}
@@ -467,7 +487,7 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
       <div className="relative">
         <div className="flex items-center justify-center gap-2 sm:gap-4">
           <button
-            onClick={() => setCurrentPost((prev) => (prev === 0 ? 3 : prev - 1))}
+            onClick={() => setCurrentPost((prev) => (prev === 0 ? posts.length - 1 : prev - 1))}
             className="p-2 rounded-full bg-white border border-gray-200 hover:bg-gray-50 transition-colors flex-shrink-0 shadow-sm"
           >
             <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5 text-gray-600" />
@@ -494,7 +514,7 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
           </div>
 
           <button
-            onClick={() => setCurrentPost((prev) => (prev === 3 ? 0 : prev + 1))}
+            onClick={() => setCurrentPost((prev) => (prev === posts.length - 1 ? 0 : prev + 1))}
             className="p-2 rounded-full bg-white border border-gray-200 hover:bg-gray-50 transition-colors flex-shrink-0 shadow-sm"
           >
             <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5 text-gray-600" />
