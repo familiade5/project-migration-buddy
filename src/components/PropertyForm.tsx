@@ -408,40 +408,6 @@ export const PropertyForm = ({ data, onChange }: PropertyFormProps) => {
           <span className="text-lg">✏️</span> Textos dos Slides (Editáveis)
         </h3>
         <p className="text-xs text-gray-400">Deixe em branco para usar os textos automáticos</p>
-        
-        <div className="space-y-3 p-4 bg-gray-50 border border-gray-200 rounded-lg">
-          <Label className="text-gray-700 text-sm font-medium">Slide 2 - Benefícios/Condições</Label>
-          {[0, 1, 2].map((index) => (
-            <Input
-              key={`slide2-${index}`}
-              placeholder={`Texto ${index + 1} (ex: Documentação regularizada)`}
-              value={data.customSlide2Texts?.[index] || ''}
-              onChange={(e) => {
-                const newTexts = [...(data.customSlide2Texts || ['', '', ''])];
-                newTexts[index] = e.target.value;
-                updateField('customSlide2Texts', newTexts);
-              }}
-              className="bg-white border-gray-200 text-gray-900"
-            />
-          ))}
-        </div>
-
-        <div className="space-y-3 p-4 bg-gray-50 border border-gray-200 rounded-lg">
-          <Label className="text-gray-700 text-sm font-medium">Slide 3 - Características</Label>
-          {[0, 1, 2].map((index) => (
-            <Input
-              key={`slide3-${index}`}
-              placeholder={`Texto ${index + 1} (ex: 2 quartos amplos)`}
-              value={data.customSlide3Texts?.[index] || ''}
-              onChange={(e) => {
-                const newTexts = [...(data.customSlide3Texts || ['', '', ''])];
-                newTexts[index] = e.target.value;
-                updateField('customSlide3Texts', newTexts);
-              }}
-              className="bg-white border-gray-200 text-gray-900"
-            />
-          ))}
-        </div>
 
         <div className="space-y-3 p-4 bg-gray-50 border border-gray-200 rounded-lg">
           <Label className="text-gray-700 text-sm font-medium">Slides de Foto - Características do Imóvel</Label>
