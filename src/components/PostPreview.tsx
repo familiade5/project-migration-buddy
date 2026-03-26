@@ -1,4 +1,4 @@
-import { useRef, useState, useMemo } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { flushSync } from 'react-dom';
 import { toPng } from 'html-to-image';
 import { safePixelRatio, isIOS } from '@/lib/exportUtils';
