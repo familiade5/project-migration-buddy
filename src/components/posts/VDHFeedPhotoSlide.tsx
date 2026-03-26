@@ -16,6 +16,7 @@ const GRAY_BG = '#2a2a2a';
 export const VDHFeedPhotoSlide = ({ photo }: VDHFeedPhotoSlideProps) => {
   const uid = useId();
   const clipId = `vdh-photo-${uid}`;
+  const logoBase64 = useLogoBase64(logoVDH);
 
   // Notch matches card: top=10, left=10, w=308, h=132
   // Card bottom=142, card right=318, with 36px radius transitions
