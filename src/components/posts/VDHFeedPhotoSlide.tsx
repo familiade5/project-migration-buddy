@@ -16,7 +16,9 @@ export const VDHFeedPhotoSlide = ({ photo }: VDHFeedPhotoSlideProps) => {
   const uid = useId();
   const clipId = `vdh-photo-${uid}`;
 
-  // Same notch shape as AM but scaled 3x (360→1080)
+  // Notch top-left scaled to 1080px — larger notch for bigger logo
+  // Card: top=12, left=12, w=420, h=192
+  // Notch inner corner at x=432, transitions at y=204
   const shapePath = [
     'M 1020 24',
     'A 36 36 0 0 1 1056 60',
@@ -24,12 +26,12 @@ export const VDHFeedPhotoSlide = ({ photo }: VDHFeedPhotoSlideProps) => {
     'A 36 36 0 0 1 1020 1056',
     'H 60',
     'A 36 36 0 0 1 24 1020',
-    'V 192',
-    'Q 24 156 60 156',
-    'H 300',
-    'Q 360 156 360 120',
+    'V 240',
+    'Q 24 204 60 204',
+    'H 372',
+    'Q 432 204 432 144',
     'V 60',
-    'A 36 36 0 0 1 396 24',
+    'A 36 36 0 0 1 468 24',
     'H 1020',
     'Z',
   ].join(' ');
@@ -70,20 +72,19 @@ export const VDHFeedPhotoSlide = ({ photo }: VDHFeedPhotoSlideProps) => {
           position: 'absolute',
           top: 12,
           left: 12,
-          width: 348,
-          height: 156,
-          borderRadius: 42,
+          width: 420,
+          height: 192,
+          borderRadius: 36,
           backgroundColor: GRAY_BG,
           zIndex: 5,
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          paddingLeft: 18,
-          paddingRight: 18,
+          padding: '12px 24px',
           boxSizing: 'border-box',
         }}
       >
-        <img src={logoVDH} alt="VDH" style={{ height: 120, borderRadius: 18, objectFit: 'contain' }} />
+        <img src={logoVDH} alt="VDH" style={{ height: 160, objectFit: 'contain' }} />
       </div>
     </div>
   );
