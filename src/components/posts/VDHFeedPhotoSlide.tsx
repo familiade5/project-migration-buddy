@@ -16,9 +16,8 @@ export const VDHFeedPhotoSlide = ({ photo }: VDHFeedPhotoSlideProps) => {
   const uid = useId();
   const clipId = `vdh-photo-${uid}`;
 
-  // Notch top-left scaled to 1080px — larger notch for bigger logo
-  // Card: top=12, left=12, w=420, h=192
-  // Notch inner corner at x=432, transitions at y=204
+  // Notch matches card: top=10, left=10, w=308, h=132
+  // Card bottom=142, card right=318, with 36px radius transitions
   const shapePath = [
     'M 1020 24',
     'A 36 36 0 0 1 1056 60',
@@ -26,12 +25,12 @@ export const VDHFeedPhotoSlide = ({ photo }: VDHFeedPhotoSlideProps) => {
     'A 36 36 0 0 1 1020 1056',
     'H 60',
     'A 36 36 0 0 1 24 1020',
-    'V 220',
-    'Q 24 184 60 184',
-    'H 360',
-    'Q 420 184 420 148',
+    'V 178',
+    'Q 24 142 60 142',
+    'H 282',
+    'Q 318 142 318 106',
     'V 60',
-    'A 36 36 0 0 1 456 24',
+    'A 36 36 0 0 1 354 24',
     'H 1020',
     'Z',
   ].join(' ');
