@@ -124,6 +124,7 @@ export const defaultPropertyData: PropertyData = {
   cep: '',
   fullAddress: '',
   
+  customPhotoSpecs: [],
   condominiumRules: 'Responsabilidade do comprador (até 10% do valor de avaliação). A CAIXA arcará com o excedente.',
   taxRules: 'Responsabilidade do comprador.',
   selectedBroker: 'iury',
