@@ -400,36 +400,7 @@ export const PropertyForm = ({ data, onChange }: PropertyFormProps) => {
         </div>
       </div>
 
-      {/* Slide 3 - Diferenciais */}
-      <div className="space-y-4">
-        <h3 className="font-semibold text-base text-gray-800 flex items-center gap-2">
-          <span className="text-lg">✨</span> Slide 3 - Diferenciais
-        </h3>
-        
-        <div className="flex items-center justify-between p-3 bg-gray-50 border border-gray-200 rounded-lg">
-          <div className="min-w-0 flex-1">
-            <Label htmlFor="hasEasyEntry" className="text-gray-700 text-sm">Entrada facilitada?</Label>
-            <p className="text-xs text-gray-400">Se não, mostra "Condições especiais"</p>
-          </div>
-          <Switch
-            id="hasEasyEntry"
-            checked={data.hasEasyEntry}
-            onCheckedChange={(checked) => updateField('hasEasyEntry', checked)}
-          />
-        </div>
-
-        <div className="flex items-center justify-between p-3 bg-gray-50 border border-gray-200 rounded-lg">
-          <div className="min-w-0 flex-1">
-            <Label htmlFor="canUseFGTS" className="text-gray-700 text-sm">Pode usar FGTS?</Label>
-            <p className="text-xs text-gray-400">Se não, mostra "Melhores taxas"</p>
-          </div>
-          <Switch
-            id="canUseFGTS"
-            checked={data.canUseFGTS}
-            onCheckedChange={(checked) => updateField('canUseFGTS', checked)}
-          />
-        </div>
-      </div>
+      {/* Removed: Slide 3 - Diferenciais section */}
 
       {/* Textos Personalizados dos Slides */}
       <div className="space-y-4">
