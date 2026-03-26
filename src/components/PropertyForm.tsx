@@ -428,27 +428,7 @@ export const PropertyForm = ({ data, onChange }: PropertyFormProps) => {
         </div>
       </div>
 
-      {/* Extras do Imóvel */}
-      <div className="space-y-4">
-        <h3 className="font-semibold text-base text-gray-800 flex items-center gap-2">
-          <span className="text-lg">🏠</span> Extras do Imóvel
-        </h3>
-        <div className="grid grid-cols-2 gap-2">
-          {featureOptions.map(feature => (
-            <label
-              key={feature}
-              className="flex items-center gap-2 p-2 rounded-lg bg-gray-50 border border-gray-200 hover:bg-gray-100 transition-colors cursor-pointer"
-            >
-              <Checkbox
-                checked={data.features.includes(feature)}
-                onCheckedChange={() => toggleFeature(feature)}
-                className="flex-shrink-0"
-              />
-              <span className="text-xs sm:text-sm text-gray-700 truncate">{feature}</span>
-            </label>
-          ))}
-        </div>
-      </div>
+      {/* Removed: Extras do Imóvel section */}
 
       {/* Regras de Despesas */}
       <div className="space-y-4">

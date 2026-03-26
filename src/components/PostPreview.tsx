@@ -122,10 +122,14 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
   ];
 
   const storyPosts: SlideEntry[] = [
-    { name: 'Capa',         component: PostCoverStory,    photoIndex: 0 },
-    { name: 'Detalhes',     component: PostFeaturesStory, photoIndex: 1 },
-    { name: 'Diferenciais', component: PostDetailsStory,  photoIndex: 2 },
-    { name: 'Contato',      component: PostContactStory,  photoIndex: 3 },
+    { name: 'Capa',    component: PostCoverStory, photoIndex: 0 },
+    ...Array.from({ length: Math.max(0, photos.length - 2) }, (_, i) => ({
+      name: `Foto ${i + 1}`,
+      component: VDHFeedPhotoSlideStory,
+      photoIndex: 1 + i,
+      slideIndex: i,
+    })),
+    { name: 'Contato', component: PostContactStory, photoIndex: Math.max(0, photos.length - 1) },
   ];
 
   const extraSlideNames = ['Destaque', 'Ambiente', 'Detalhes', 'Lifestyle', 'Premium', 'Exclusivo'];
