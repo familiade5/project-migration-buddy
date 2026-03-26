@@ -118,7 +118,7 @@ const Index = () => {
                     ].filter(Boolean).join(', ')}
                     propertyType={propertyData.type}
                     onPhotosSelected={(selectedPhotos) => {
-                      setPhotos(prev => [...prev, ...selectedPhotos].slice(0, 4));
+                      setPhotos(prev => [...prev, ...selectedPhotos].slice(0, 10));
                     }}
                     onCondominiumFound={(name) => {
                       setPropertyData(prev => ({ ...prev, propertyName: name }));
