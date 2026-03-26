@@ -126,7 +126,7 @@ export function AppLayout({ children }: AppLayoutProps) {
 
           {/* Navigation */}
           <nav className="flex-1 px-4 py-6 space-y-1 overflow-y-auto">
-            {navigation.map((item) => (
+            {navigation.filter(item => !item.masterOnly || isMaster).map((item) => (
               <Link
                 key={item.name}
                 to={item.href}
