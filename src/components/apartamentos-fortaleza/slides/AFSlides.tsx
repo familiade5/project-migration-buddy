@@ -392,8 +392,8 @@ export const AFInfoSlide = ({ data, photo }: { data: AFPropertyData; photo?: str
         position: 'absolute', bottom: 13, right: 11, zIndex: 1,
         backgroundColor: '#ffffff', borderRadius: 16,
         width: 128, height: 72,
-        display: 'flex', alignItems: 'flex-end', justifyContent: 'center',
-        boxSizing: 'border-box', padding: '0 8px 10px',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        boxSizing: 'border-box', padding: '0 8px',
       }}>
         <AFLogo width={114} variant="color" />
       </div>
