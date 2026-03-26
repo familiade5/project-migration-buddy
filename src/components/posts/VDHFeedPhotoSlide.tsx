@@ -13,10 +13,19 @@ interface VDHFeedPhotoSlideProps {
 
 const GRAY_BG = '#2a2a2a';
 
-export const VDHFeedPhotoSlide = ({ photo }: VDHFeedPhotoSlideProps) => {
+export const VDHFeedPhotoSlide = ({ data, photo, slideIndex = 0 }: VDHFeedPhotoSlideProps) => {
   const uid = useId();
   const clipId = `vdh-photo-${uid}`;
   const logoBase64 = useLogoBase64(logoVDH);
+
+  // Build specs from property data (only show on first photo slide, slideIndex 0)
+  const specs: string[] = slideIndex === 0 ? [
+    data.bedrooms && data.bedrooms !== '0' ? `${data.bedrooms} quarto${Number(data.bedrooms) > 1 ? 's' : ''}` : '',
+    data.bathrooms && data.bathrooms !== '0' ? `${data.bathrooms} banheiro${Number(data.bathrooms) > 1 ? 's' : ''}` : '',
+    data.garageSpaces && data.garageSpaces !== '0' ? `${data.garageSpaces} vaga${Number(data.garageSpaces) > 1 ? 's' : ''}` : '',
+    data.area ? `${data.area}m²` : '',
+    ...(data.features || []),
+  ].filter(Boolean).slice(0, 6) : [];
 
   // Notch matches card: top=10, left=10, w=308, h=132
   // Card bottom=142, card right=318, with 36px radius transitions
