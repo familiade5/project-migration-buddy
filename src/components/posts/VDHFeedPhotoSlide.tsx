@@ -1,6 +1,6 @@
 import { useId } from 'react';
 import { PropertyData } from '@/types/property';
-import logoVDH from '@/assets/logo-vdh.jpg';
+import logoVDH from '@/assets/logo-vdh-transparent.png';
 
 interface VDHFeedPhotoSlideProps {
   data: PropertyData;
