@@ -1,8 +1,7 @@
-import { PropertyData, propertyTypes, propertySources, paymentMethods, featureOptions } from '@/types/property';
+import { PropertyData, propertyTypes, propertySources, paymentMethods } from '@/types/property';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Checkbox } from '@/components/ui/checkbox';
 import { Switch } from '@/components/ui/switch';
 import { Textarea } from '@/components/ui/textarea';
 import { useCrecis } from '@/hooks/useCrecis';
@@ -65,12 +64,6 @@ export const PropertyForm = ({ data, onChange }: PropertyFormProps) => {
     onChange({ ...data, [field]: value });
   };
 
-  const toggleFeature = (feature: string) => {
-    const newFeatures = data.features.includes(feature)
-      ? data.features.filter(f => f !== feature)
-      : [...data.features, feature];
-    updateField('features', newFeatures);
-  };
 
   return (
     <div className="space-y-6 max-w-full overflow-hidden">
@@ -400,36 +393,7 @@ export const PropertyForm = ({ data, onChange }: PropertyFormProps) => {
         </div>
       </div>
 
-      {/* Slide 3 - Diferenciais */}
-      <div className="space-y-4">
-        <h3 className="font-semibold text-base text-gray-800 flex items-center gap-2">
-          <span className="text-lg">✨</span> Slide 3 - Diferenciais
-        </h3>
-        
-        <div className="flex items-center justify-between p-3 bg-gray-50 border border-gray-200 rounded-lg">
-          <div className="min-w-0 flex-1">
-            <Label htmlFor="hasEasyEntry" className="text-gray-700 text-sm">Entrada facilitada?</Label>
-            <p className="text-xs text-gray-400">Se não, mostra "Condições especiais"</p>
-          </div>
-          <Switch
-            id="hasEasyEntry"
-            checked={data.hasEasyEntry}
-            onCheckedChange={(checked) => updateField('hasEasyEntry', checked)}
-          />
-        </div>
-
-        <div className="flex items-center justify-between p-3 bg-gray-50 border border-gray-200 rounded-lg">
-          <div className="min-w-0 flex-1">
-            <Label htmlFor="canUseFGTS" className="text-gray-700 text-sm">Pode usar FGTS?</Label>
-            <p className="text-xs text-gray-400">Se não, mostra "Melhores taxas"</p>
-          </div>
-          <Switch
-            id="canUseFGTS"
-            checked={data.canUseFGTS}
-            onCheckedChange={(checked) => updateField('canUseFGTS', checked)}
-          />
-        </div>
-      </div>
+      {/* Removed: Slide 3 - Diferenciais section */}
 
       {/* Textos Personalizados dos Slides */}
       <div className="space-y-4">
@@ -437,40 +401,6 @@ export const PropertyForm = ({ data, onChange }: PropertyFormProps) => {
           <span className="text-lg">✏️</span> Textos dos Slides (Editáveis)
         </h3>
         <p className="text-xs text-gray-400">Deixe em branco para usar os textos automáticos</p>
-        
-        <div className="space-y-3 p-4 bg-gray-50 border border-gray-200 rounded-lg">
-          <Label className="text-gray-700 text-sm font-medium">Slide 2 - Benefícios/Condições</Label>
-          {[0, 1, 2].map((index) => (
-            <Input
-              key={`slide2-${index}`}
-              placeholder={`Texto ${index + 1} (ex: Documentação regularizada)`}
-              value={data.customSlide2Texts?.[index] || ''}
-              onChange={(e) => {
-                const newTexts = [...(data.customSlide2Texts || ['', '', ''])];
-                newTexts[index] = e.target.value;
-                updateField('customSlide2Texts', newTexts);
-              }}
-              className="bg-white border-gray-200 text-gray-900"
-            />
-          ))}
-        </div>
-
-        <div className="space-y-3 p-4 bg-gray-50 border border-gray-200 rounded-lg">
-          <Label className="text-gray-700 text-sm font-medium">Slide 3 - Características</Label>
-          {[0, 1, 2].map((index) => (
-            <Input
-              key={`slide3-${index}`}
-              placeholder={`Texto ${index + 1} (ex: 2 quartos amplos)`}
-              value={data.customSlide3Texts?.[index] || ''}
-              onChange={(e) => {
-                const newTexts = [...(data.customSlide3Texts || ['', '', ''])];
-                newTexts[index] = e.target.value;
-                updateField('customSlide3Texts', newTexts);
-              }}
-              className="bg-white border-gray-200 text-gray-900"
-            />
-          ))}
-        </div>
 
         <div className="space-y-3 p-4 bg-gray-50 border border-gray-200 rounded-lg">
           <Label className="text-gray-700 text-sm font-medium">Slides de Foto - Características do Imóvel</Label>
@@ -491,27 +421,7 @@ export const PropertyForm = ({ data, onChange }: PropertyFormProps) => {
         </div>
       </div>
 
-      {/* Extras do Imóvel */}
-      <div className="space-y-4">
-        <h3 className="font-semibold text-base text-gray-800 flex items-center gap-2">
-          <span className="text-lg">🏠</span> Extras do Imóvel
-        </h3>
-        <div className="grid grid-cols-2 gap-2">
-          {featureOptions.map(feature => (
-            <label
-              key={feature}
-              className="flex items-center gap-2 p-2 rounded-lg bg-gray-50 border border-gray-200 hover:bg-gray-100 transition-colors cursor-pointer"
-            >
-              <Checkbox
-                checked={data.features.includes(feature)}
-                onCheckedChange={() => toggleFeature(feature)}
-                className="flex-shrink-0"
-              />
-              <span className="text-xs sm:text-sm text-gray-700 truncate">{feature}</span>
-            </label>
-          ))}
-        </div>
-      </div>
+      {/* Removed: Extras do Imóvel section */}
 
       {/* Regras de Despesas */}
       <div className="space-y-4">
