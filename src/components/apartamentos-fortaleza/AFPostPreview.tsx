@@ -27,6 +27,7 @@ export function AFPostPreview({ data, photos }: AFPostPreviewProps) {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [format, setFormat] = useState<FormatType>('feed');
   const [isExporting, setIsExporting] = useState(false);
+  const [isExportingPdf, setIsExportingPdf] = useState(false);
   const [containerW, setContainerW] = useState(320);
   const containerRef = useRef<HTMLDivElement>(null);
 
