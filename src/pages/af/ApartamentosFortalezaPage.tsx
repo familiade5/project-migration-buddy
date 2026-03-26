@@ -154,6 +154,11 @@ const ApartamentosFortalezaPage = () => {
                       style={previewTab === 'feed' ? { backgroundColor: PRIMARY, color: 'white' } : { color: '#6B7280' }}>
                       <LayoutGrid className="w-3.5 h-3.5" />Feed
                     </button>
+                    <button onClick={() => setPreviewTab('paid')}
+                      className="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 rounded-md text-xs font-medium transition-all"
+                      style={previewTab === 'paid' ? { backgroundColor: ACCENT, color: 'white' } : { color: '#6B7280' }}>
+                      <Zap className="w-3.5 h-3.5" />Ads
+                    </button>
                     <button onClick={() => setPreviewTab('stories')}
                       className="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 rounded-md text-xs font-medium transition-all"
                       style={previewTab === 'stories' ? { backgroundColor: ACCENT, color: 'white' } : { color: '#6B7280' }}>
@@ -165,6 +170,8 @@ const ApartamentosFortalezaPage = () => {
               <div className="p-4 sm:p-6">
                 {previewTab === 'feed' ? (
                   <AFPostPreview data={propertyData} photos={photos} />
+                ) : previewTab === 'paid' ? (
+                  <AFPaidFeedPreview data={propertyData} photos={photos} />
                 ) : (
                   <AFStoriesPreview data={propertyData} photos={photos} />
                 )}
