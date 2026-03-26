@@ -11,58 +11,48 @@ interface PostContactProps {
 
 export const PostContact = ({ data, photo }: PostContactProps) => {
   const logoBase64 = useLogoBase64(logoVDH);
+  const GRAY_BG = '#2a2a2a';
+
   return (
-    <div className="post-template bg-[#1a1f2e] relative overflow-hidden">
-      {/* Layout dividido - Foto à esquerda, CTA à direita */}
-      <div className="absolute inset-0 flex">
-        {/* Foto à esquerda */}
-        <div className="w-[45%] h-full relative">
-          {photo ? (
-            <div
-              className="absolute inset-0 bg-cover bg-center brightness-110"
-              style={{ backgroundImage: `url(${photo})` }}
-            />
-          ) : (
-            <div className="absolute inset-0 bg-gradient-to-br from-[#2a3142] to-[#1a1f2e]" />
-          )}
-          {/* Marca d'água VDH sutil */}
-          <div className="absolute inset-0 flex items-center justify-center">
-            <p className="text-white/15 font-bold tracking-wider" style={{ fontSize: '120px' }}>VDH</p>
-          </div>
+    <div className="post-template relative overflow-hidden" style={{ backgroundColor: GRAY_BG }}>
+      {/* Background photo with heavy dark overlay */}
+      {photo && (
+        <div
+          className="absolute inset-0 bg-cover bg-center"
+          style={{ backgroundImage: `url(${photo})`, filter: 'brightness(0.25) blur(6px)', transform: 'scale(1.1)' }}
+        />
+      )}
+
+      {/* Content */}
+      <div className="absolute inset-0 flex flex-col items-center justify-center" style={{ padding: '80px 70px 220px' }}>
+        {/* Logo grande */}
+        <div style={{ marginBottom: '60px' }}>
+          <img src={logoBase64} alt="VDH" style={{ height: 200, objectFit: 'contain', filter: 'brightness(0) invert(1)' }} />
         </div>
 
-        {/* CTA à direita */}
-        <div className="w-[55%] h-full flex flex-col justify-center items-center bg-[#2a3142]" style={{ padding: '60px' }}>
-          {/* Texto principal */}
-          <div className="text-center" style={{ marginBottom: '60px' }}>
-            <p className="text-white font-semibold" style={{ fontSize: '72px' }}>Seu novo lar</p>
-            <p className="text-[#d4a44c] italic" style={{ fontSize: '56px' }}>está mais perto</p>
-            <p className="text-[#d4a44c] italic" style={{ fontSize: '56px' }}>do que você imagina</p>
-          </div>
+        {/* Linha decorativa */}
+        <div style={{ width: 120, height: 3, backgroundColor: '#d4a44c', marginBottom: 50 }} />
 
-          {/* Botão CTA */}
-          <div className="bg-[#d4a44c] rounded-lg" style={{ padding: '32px 60px', marginBottom: '80px' }}>
-            <span className="text-[#1a1f2e] font-semibold" style={{ fontSize: '40px' }}>Fale agora </span>
-            <span className="text-[#1a1f2e]/80" style={{ fontSize: '40px' }}>com nossa equipe</span>
-          </div>
-        </div>
+        {/* Frase principal */}
+        <p className="text-white text-center font-light" style={{ fontSize: 52, lineHeight: '68px', maxWidth: 850, letterSpacing: '0.5px' }}>
+          Essa pode ser a{' '}
+          <span className="font-bold" style={{ color: '#d4a44c' }}>oportunidade</span>{' '}
+          que você estava esperando para{' '}
+          <span className="font-bold" style={{ color: '#d4a44c' }}>lucrar</span>{' '}
+          no mercado imobiliário.
+        </p>
+
+        {/* Linha decorativa inferior */}
+        <div style={{ width: 120, height: 3, backgroundColor: '#d4a44c', marginTop: 50 }} />
       </div>
 
-      {/* Footer com logo e WhatsApp */}
-      <div className="absolute bottom-0 left-0 right-0 bg-[#1e3a2f] z-10">
-        <div className="flex items-center justify-between" style={{ padding: '20px 60px' }}>
-          {/* Logo VDH */}
-          <div className="flex items-center" style={{ gap: '20px' }}>
-            <img src={logoBase64} alt="VDH" style={{ height: '150px', objectFit: 'contain', filter: 'brightness(0) invert(1)' }} />
-          </div>
-
-          {/* Separador */}
-          <div className="bg-white/30" style={{ height: '80px', width: '2px' }} />
-
+      {/* Footer */}
+      <div className="absolute bottom-0 left-0 right-0" style={{ backgroundColor: '#1e3a2f' }}>
+        <div className="flex items-center justify-center" style={{ padding: '28px 60px', gap: 40 }}>
           {/* WhatsApp */}
-          <div className="flex items-center" style={{ gap: '20px' }}>
-            <MessageCircle className="text-[#25D366]" style={{ width: '60px', height: '60px' }} />
-            <span className="text-white font-medium" style={{ fontSize: '48px' }}>
+          <div className="flex items-center" style={{ gap: 16 }}>
+            <MessageCircle style={{ width: 48, height: 48, color: '#25D366' }} />
+            <span className="text-white font-semibold" style={{ fontSize: 42 }}>
               {data.contactPhone || '(67) 91234-5678'}
             </span>
           </div>
