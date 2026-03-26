@@ -151,7 +151,7 @@ export const PostCover = ({ data, photo }: PostCoverProps) => {
           src={logoBase64}
           alt="VDH"
           className="object-contain drop-shadow-2xl"
-          style={{ height: '72px' }}
+          style={{ height: '80px', filter: 'brightness(0) invert(1)' }}
         />
       </div>
 
