@@ -97,6 +97,29 @@ export const VDHFeedPhotoSlide = ({ data, photo, slideIndex = 0 }: VDHFeedPhotoS
       >
         <img src={logoBase64} alt="VDH" style={{ height: 250, objectFit: 'contain', filter: 'brightness(0) invert(1)' }} />
       </div>
+
+      {/* Specs card — dark blurred overlay */}
+      {specs.length > 0 && (
+        <div style={{
+          position: 'absolute',
+          bottom: 54,
+          right: 54,
+          zIndex: 20,
+          backgroundColor: 'rgba(10,10,14,0.65)',
+          borderRadius: 18,
+          padding: '20px 28px',
+          maxWidth: 420,
+          border: '1px solid rgba(255,255,255,0.12)',
+          boxShadow: '0 4px 30px rgba(0,0,0,0.50)',
+        }}>
+          {specs.map((spec, i) => (
+            <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: i < specs.length - 1 ? 6 : 0 }}>
+              <span style={{ color: 'rgba(255,255,255,0.5)', fontSize: 26, lineHeight: 1 }}>•</span>
+              <span style={{ color: 'rgba(255,255,255,0.95)', fontSize: 26, fontWeight: 500, lineHeight: '32px' }}>{spec}</span>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 };
