@@ -1,6 +1,6 @@
 import { PropertyData } from '@/types/property';
 import { MessageCircle } from 'lucide-react';
-import logoVDH from '@/assets/logo-vdh.jpg';
+import logoVDH from '@/assets/logo-vdh-transparent.png';
 
 interface PostContactProps {
   data: PropertyData;
@@ -51,7 +51,7 @@ export const PostContact = ({ data, photo }: PostContactProps) => {
         <div className="flex items-center justify-between" style={{ padding: '40px 60px' }}>
           {/* Logo VDH */}
           <div className="flex items-center" style={{ gap: '20px' }}>
-            <img src={logoVDH} alt="VDH" className="rounded" style={{ height: '100px' }} />
+            <img src={logoVDH} alt="VDH" style={{ height: '100px', objectFit: 'contain', filter: 'brightness(0) invert(1)' }} />
           </div>
 
           {/* Separador */}
