@@ -18,6 +18,7 @@ import { VDHStory1 } from './posts/story/VDHStory1';
 import { VDHStory2 } from './posts/story/VDHStory2';
 import { VDHStory3 } from './posts/story/VDHStory3';
 import { VDHStory4 } from './posts/story/VDHStory4';
+import { VDHPhotoSlide } from './posts/story/VDHPhotoSlide';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
