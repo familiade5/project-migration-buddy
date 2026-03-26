@@ -30,8 +30,10 @@ interface AppLayoutProps {
   children: React.ReactNode;
 }
 
+const MASTER_EMAIL = 'neto@vendadiretahoje.com.br';
+
 const navigation = [
-  { name: 'CRM', href: '/crm', icon: ClipboardList },
+  { name: 'CRM', href: '/crm', icon: ClipboardList, masterOnly: true },
   { name: 'Criar Post', href: '/', icon: Building2 },
   { name: 'Posts Educativos', href: '/educativo', icon: BookOpen },
   { name: 'Biblioteca', href: '/library', icon: Calendar },
@@ -50,6 +52,7 @@ const BRAND_GOLD = '#c9a84c';
 export function AppLayout({ children }: AppLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const { profile, isAdmin, signOut } = useAuth();
+  const isMaster = profile?.email === MASTER_EMAIL;
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -108,20 +111,22 @@ export function AppLayout({ children }: AppLayoutProps) {
               <img src={logoAM} alt="Apartamentos Manaus" className="h-9 w-auto object-contain" />
               <span className="text-xs font-semibold truncate" style={{ color: '#1B5EA6' }}>Apartamentos Manaus</span>
             </Link>
-            <Link
-              to="/apartamentos-fortaleza"
-              onClick={() => setSidebarOpen(false)}
-              className="flex items-center gap-3 w-full px-4 py-2.5 rounded-xl border transition-all hover:opacity-90"
-              style={{ backgroundColor: '#EDF7F9', borderColor: '#B8DEE4' }}
-            >
-              <img src={logoAF} alt="Apartamentos Fortaleza" className="h-9 w-auto object-contain" />
-              <span className="text-xs font-semibold truncate" style={{ color: '#0C7B8E' }}>Apartamentos Fortaleza</span>
-            </Link>
+            {isMaster && (
+              <Link
+                to="/apartamentos-fortaleza"
+                onClick={() => setSidebarOpen(false)}
+                className="flex items-center gap-3 w-full px-4 py-2.5 rounded-xl border transition-all hover:opacity-90"
+                style={{ backgroundColor: '#EDF7F9', borderColor: '#B8DEE4' }}
+              >
+                <img src={logoAF} alt="Apartamentos Fortaleza" className="h-9 w-auto object-contain" />
+                <span className="text-xs font-semibold truncate" style={{ color: '#0C7B8E' }}>Apartamentos Fortaleza</span>
+              </Link>
+            )}
           </div>
 
           {/* Navigation */}
           <nav className="flex-1 px-4 py-6 space-y-1 overflow-y-auto">
-            {navigation.map((item) => (
+            {navigation.filter(item => !item.masterOnly || isMaster).map((item) => (
               <Link
                 key={item.name}
                 to={item.href}
