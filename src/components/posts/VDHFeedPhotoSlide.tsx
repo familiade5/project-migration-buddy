@@ -86,7 +86,7 @@ export const VDHFeedPhotoSlide = ({ photo }: VDHFeedPhotoSlideProps) => {
           overflow: 'visible',
         }}
       >
-        <img src={logoBase64} alt="VDH" style={{ height: 220, objectFit: 'contain', filter: 'brightness(0) invert(1)' }} />
+        <img src={logoBase64} alt="VDH" style={{ height: 250, objectFit: 'contain', filter: 'brightness(0) invert(1)' }} />
       </div>
     </div>
   );
