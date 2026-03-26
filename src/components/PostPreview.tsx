@@ -123,7 +123,8 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
   ];
 
   const vdhPosts = useMemo(() => {
-    const base = [
+    type SlideEntry = { name: string; component: any; photoIndex: number };
+    const base: SlideEntry[] = [
       { name: 'Atração',   component: VDHStory1, photoIndex: 0 },
       { name: 'Interesse', component: VDHStory2, photoIndex: 1 },
       { name: 'Decisão',   component: VDHStory3, photoIndex: 2 },
@@ -134,11 +135,13 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
     for (let i = 0; i < extraPhotos; i++) {
       const slideIdx = 4 + i;
       const slideNames = ['Destaque', 'Ambiente', 'Detalhes', 'Lifestyle', 'Premium', 'Exclusivo'];
+      const SlideWrapper = (props: { data: PropertyData; photo: string | null; photos?: string[] }) => (
+        <VDHPhotoSlide {...props} slideIndex={slideIdx} totalSlides={4 + extraPhotos} />
+      );
+      SlideWrapper.displayName = `VDHSlide${slideIdx}`;
       base.push({
-        name: slideNames[i] || `Foto ${i + 1}`,
-        component: ((props: { data: PropertyData; photo: string | null; photos?: string[] }) => (
-          <VDHPhotoSlide {...props} slideIndex={slideIdx} totalSlides={base.length + extraPhotos} />
-        )) as React.ComponentType<{ data: PropertyData; photo: string | null; photos?: string[] }>,
+        name: slideNames[i],
+        component: SlideWrapper,
         photoIndex: slideIdx,
       });
     }
