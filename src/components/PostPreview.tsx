@@ -448,7 +448,7 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
           style={{ backgroundColor: '#1a3a6b' }}
         >
           {isExporting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
-          Exportar {format === 'feed' ? 'Feed (4)' : format === 'story' ? 'Stories (4)' : 'VDH (4)'}
+            Exportar {format === 'feed' ? 'Feed' : format === 'story' ? 'Stories' : 'VDH'} ({posts.length})
         </button>
         <button
           onClick={handleExportBothFormats}
