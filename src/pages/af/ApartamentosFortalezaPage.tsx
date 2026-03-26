@@ -20,6 +20,31 @@ const loadFromStorage = <T,>(key: string, fallback: T): T => {
   } catch { return fallback; }
 };
 
+// Compresses a base64 image to a smaller size before localStorage storage.
+// This prevents exceeding the ~5MB localStorage quota with large photos.
+const compressForStorage = (src: string, maxW = 1200, quality = 0.78): Promise<string> => {
+  return new Promise((resolve) => {
+    // Already small enough (< 150KB base64) — skip compression
+    if (src.length < 150_000) { resolve(src); return; }
+    const img = new Image();
+    img.onload = () => {
+      const ratio = Math.min(1, maxW / (img.naturalWidth || maxW));
+      const canvas = document.createElement('canvas');
+      canvas.width = Math.round((img.naturalWidth || maxW) * ratio);
+      canvas.height = Math.round((img.naturalHeight || maxW) * ratio);
+      const ctx = canvas.getContext('2d');
+      if (ctx) {
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        resolve(canvas.toDataURL('image/jpeg', quality));
+      } else {
+        resolve(src);
+      }
+    };
+    img.onerror = () => resolve(src);
+    img.src = src;
+  });
+};
+
 const ApartamentosFortalezaPage = () => {
   const [propertyData, setPropertyData] = useState<AFPropertyData>(() => loadFromStorage(STORAGE_KEY_DATA, defaultAFPropertyData));
   const [photos, setPhotos] = useState<string[]>(() => loadFromStorage(STORAGE_KEY_PHOTOS, []));
@@ -29,8 +54,22 @@ const ApartamentosFortalezaPage = () => {
     try { localStorage.setItem(STORAGE_KEY_DATA, JSON.stringify(propertyData)); } catch {}
   }, [propertyData]);
 
+  // Compress photos before saving to prevent localStorage quota errors
   useEffect(() => {
-    try { localStorage.setItem(STORAGE_KEY_PHOTOS, JSON.stringify(photos)); } catch {}
+    if (photos.length === 0) {
+      try { localStorage.removeItem(STORAGE_KEY_PHOTOS); } catch {}
+      return;
+    }
+    Promise.all(photos.map(p => compressForStorage(p))).then(compressed => {
+      try {
+        localStorage.setItem(STORAGE_KEY_PHOTOS, JSON.stringify(compressed));
+      } catch {
+        // If still too large, save only the first 6
+        try {
+          localStorage.setItem(STORAGE_KEY_PHOTOS, JSON.stringify(compressed.slice(0, 6)));
+        } catch {}
+      }
+    });
   }, [photos]);
 
   return (
