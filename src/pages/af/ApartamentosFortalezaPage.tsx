@@ -6,7 +6,8 @@ import { AFPropertyForm } from '@/components/apartamentos-fortaleza/AFPropertyFo
 import { AFCaptionGenerator } from '@/components/apartamentos-fortaleza/AFCaptionGenerator';
 import { AFPhotoManager } from '@/components/apartamentos-fortaleza/AFPhotoManager';
 import { AFLayout } from '@/components/layout/AFLayout';
-import { Image, Edit3, Sparkles, FileText, LayoutGrid, Smartphone } from 'lucide-react';
+import { Image, Edit3, Sparkles, FileText, LayoutGrid, Smartphone, Zap } from 'lucide-react';
+import { AFPaidFeedPreview } from '@/components/apartamentos-fortaleza/AFPaidFeedPreview';
 
 const PRIMARY = '#0C7B8E';
 const ACCENT = '#E8562A';
@@ -48,7 +49,7 @@ const compressForStorage = (src: string, maxW = 1200, quality = 0.78): Promise<s
 const ApartamentosFortalezaPage = () => {
   const [propertyData, setPropertyData] = useState<AFPropertyData>(() => loadFromStorage(STORAGE_KEY_DATA, defaultAFPropertyData));
   const [photos, setPhotos] = useState<string[]>(() => loadFromStorage(STORAGE_KEY_PHOTOS, []));
-  const [previewTab, setPreviewTab] = useState<'feed' | 'stories'>('feed');
+  const [previewTab, setPreviewTab] = useState<'feed' | 'stories' | 'paid'>('feed');
 
   useEffect(() => {
     try { localStorage.setItem(STORAGE_KEY_DATA, JSON.stringify(propertyData)); } catch {}
@@ -153,6 +154,11 @@ const ApartamentosFortalezaPage = () => {
                       style={previewTab === 'feed' ? { backgroundColor: PRIMARY, color: 'white' } : { color: '#6B7280' }}>
                       <LayoutGrid className="w-3.5 h-3.5" />Feed
                     </button>
+                    <button onClick={() => setPreviewTab('paid')}
+                      className="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 rounded-md text-xs font-medium transition-all"
+                      style={previewTab === 'paid' ? { backgroundColor: ACCENT, color: 'white' } : { color: '#6B7280' }}>
+                      <Zap className="w-3.5 h-3.5" />Ads
+                    </button>
                     <button onClick={() => setPreviewTab('stories')}
                       className="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 rounded-md text-xs font-medium transition-all"
                       style={previewTab === 'stories' ? { backgroundColor: ACCENT, color: 'white' } : { color: '#6B7280' }}>
@@ -164,6 +170,8 @@ const ApartamentosFortalezaPage = () => {
               <div className="p-4 sm:p-6">
                 {previewTab === 'feed' ? (
                   <AFPostPreview data={propertyData} photos={photos} />
+                ) : previewTab === 'paid' ? (
+                  <AFPaidFeedPreview data={propertyData} photos={photos} />
                 ) : (
                   <AFStoriesPreview data={propertyData} photos={photos} />
                 )}
