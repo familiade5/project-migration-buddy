@@ -26,12 +26,12 @@ export const VDHFeedPhotoSlide = ({ photo }: VDHFeedPhotoSlideProps) => {
     'A 36 36 0 0 1 1020 1056',
     'H 60',
     'A 36 36 0 0 1 24 1020',
-    'V 240',
-    'Q 24 204 60 204',
-    'H 372',
-    'Q 432 204 432 144',
+    'V 168',
+    'Q 24 132 60 132',
+    'H 264',
+    'Q 324 132 324 96',
     'V 60',
-    'A 36 36 0 0 1 468 24',
+    'A 36 36 0 0 1 360 24',
     'H 1020',
     'Z',
   ].join(' ');
@@ -70,21 +70,21 @@ export const VDHFeedPhotoSlide = ({ photo }: VDHFeedPhotoSlideProps) => {
       <div
         style={{
           position: 'absolute',
-          top: 12,
-          left: 12,
-          width: 420,
-          height: 192,
-          borderRadius: 36,
+          top: 10,
+          left: 10,
+          width: 312,
+          height: 120,
+          borderRadius: 28,
           backgroundColor: GRAY_BG,
           zIndex: 5,
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          padding: '12px 24px',
+          padding: '8px 16px',
           boxSizing: 'border-box',
         }}
       >
-        <img src={logoVDH} alt="VDH" style={{ height: 140, objectFit: 'contain', filter: 'brightness(0) invert(1)' }} />
+        <img src={logoVDH} alt="VDH" style={{ height: 200, objectFit: 'contain', filter: 'brightness(0) invert(1)' }} />
       </div>
     </div>
   );
