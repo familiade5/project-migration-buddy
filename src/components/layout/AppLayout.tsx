@@ -52,6 +52,7 @@ const BRAND_GOLD = '#c9a84c';
 export function AppLayout({ children }: AppLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const { profile, isAdmin, signOut } = useAuth();
+  const isMaster = profile?.email === MASTER_EMAIL;
   const location = useLocation();
   const navigate = useNavigate();
 
