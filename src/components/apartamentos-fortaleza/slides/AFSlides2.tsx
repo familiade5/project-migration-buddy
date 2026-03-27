@@ -38,7 +38,7 @@ const AccentLine = ({ top }: { top: string | number }) => (
         <stop offset="100%" stopColor="#D4912A" />
       </linearGradient>
       <filter id="accent-line-shadow">
-        <feDropShadow dx="0" dy="3" stdDeviation="2" floodColor="#D4912A" floodOpacity="0.35" />
+        <feDropShadow dx="0" dy="4" stdDeviation="3" floodColor="#000000" floodOpacity="0.45" />
       </filter>
     </defs>
     <rect width="100%" height="5" fill="url(#accent-line-grad)" filter="url(#accent-line-shadow)" />
