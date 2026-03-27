@@ -124,7 +124,7 @@ export const AF2CoverSlide = ({ data, photos }: { data: AFPropertyData; photos: 
   const formattedPrice = price > 0
     ? price.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
     : 'Consulte';
-  const photoH = 182;
+  const photoH = 206;
 
   const title = (data.title || 'SEU IMÓVEL').toUpperCase();
   const neighborhood = (data.neighborhood || 'BAIRRO').toUpperCase();
@@ -136,7 +136,7 @@ export const AF2CoverSlide = ({ data, photos }: { data: AFPropertyData; photos: 
 
   const specLabelStyle: React.CSSProperties = {
     color: '#F7F7F4',
-    fontSize: 9,
+    fontSize: 8.5,
     lineHeight: 1.15,
     textTransform: 'uppercase',
     letterSpacing: '0.02em',
@@ -146,6 +146,7 @@ export const AF2CoverSlide = ({ data, photos }: { data: AFPropertyData; photos: 
   };
 
   const GOLD_CSS = 'linear-gradient(135deg, #E8A020, #F2B84B, #D4912A, #C07B18)';
+  const titleFont = "'Playfair Display', 'Georgia', serif";
 
   return (
     <div style={{ position: 'relative', width: 360, height: 360, backgroundColor: '#ffffff', fontFamily: golos, overflow: 'hidden' }}>
@@ -157,42 +158,42 @@ export const AF2CoverSlide = ({ data, photos }: { data: AFPropertyData; photos: 
 
       <AccentLine top={photoH - 1} />
 
-      <svg style={{ position: 'absolute', left: 0, top: photoH, width: 360, height: 178, zIndex: 1 }} viewBox="0 0 360 178" preserveAspectRatio="none">
-        <rect width="360" height="178" fill="#f8f7f3" />
-        <polygon points="108,0 206,0 136,56 40,56" fill="rgba(255,255,255,0.85)" />
-        <polygon points="150,0 304,0 206,92 54,92" fill="rgba(255,255,255,0.52)" />
-        <polygon points="204,0 360,0 256,110 102,110" fill="rgba(255,255,255,0.30)" />
-        <polygon points="232,58 360,58 360,178 314,178" fill="rgba(255,255,255,0.16)" />
+      <svg style={{ position: 'absolute', left: 0, top: photoH, width: 360, height: 154, zIndex: 1 }} viewBox="0 0 360 154" preserveAspectRatio="none">
+        <rect width="360" height="154" fill="#f8f7f3" />
+        <polygon points="108,0 206,0 136,46 40,46" fill="rgba(255,255,255,0.85)" />
+        <polygon points="150,0 304,0 206,78 54,78" fill="rgba(255,255,255,0.52)" />
+        <polygon points="204,0 360,0 256,94 102,94" fill="rgba(255,255,255,0.30)" />
+        <polygon points="232,48 360,48 360,154 314,154" fill="rgba(255,255,255,0.16)" />
       </svg>
 
-      {/* Price badge - smaller, proportional */}
-      <div style={{ position: 'absolute', left: -4, top: 152, width: 190, height: 58, zIndex: 30 }}>
-        <svg viewBox="0 0 190 58" width="190" height="58" style={{ display: 'block', overflow: 'visible' }}>
-          <path d="M14 2 H158 L176 16 L160 48 H14 C7 48 2 43 2 36 V14 C2 7 7 2 14 2 Z" fill={DARK_CARD} stroke="#ffffff" strokeWidth="3" />
+      {/* Price badge - compact */}
+      <div style={{ position: 'absolute', left: -4, top: 174, width: 170, height: 48, zIndex: 30 }}>
+        <svg viewBox="0 0 170 48" width="170" height="48" style={{ display: 'block', overflow: 'visible' }}>
+          <path d="M12 2 H142 L158 14 L144 40 H12 C6 40 2 36 2 30 V12 C2 6 6 2 12 2 Z" fill={DARK_CARD} stroke="#ffffff" strokeWidth="2.5" />
         </svg>
-        <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', padding: '4px 14px 6px 14px', gap: 4 }}>
-          <span style={{ background: GOLD_CSS, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', fontSize: 14, fontWeight: 800, lineHeight: 1, letterSpacing: '-0.02em' }}>R$</span>
-          <span style={{ background: GOLD_CSS, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', fontSize: 28, fontWeight: 900, lineHeight: 0.95, letterSpacing: '-0.04em' }}>{formattedPrice}</span>
+        <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', padding: '2px 12px 4px 12px', gap: 3 }}>
+          <span style={{ background: GOLD_CSS, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', fontSize: 11, fontWeight: 800, lineHeight: 1 }}>R$</span>
+          <span style={{ background: GOLD_CSS, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', fontSize: 22, fontWeight: 900, lineHeight: 0.95, letterSpacing: '-0.03em' }}>{formattedPrice}</span>
         </div>
       </div>
 
       {/* Title & neighborhood */}
-      <div style={{ position: 'absolute', left: 18, top: 222, zIndex: 12, width: 150 }}>
-        <p style={{ background: GOLD_CSS, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', fontSize: 16, fontWeight: 900, lineHeight: 1.05, margin: 0, textTransform: 'uppercase', letterSpacing: '-0.03em' }}>
+      <div style={{ position: 'absolute', left: 16, top: 236, zIndex: 12, width: 148 }}>
+        <p style={{ fontFamily: titleFont, background: GOLD_CSS, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', fontSize: 17, fontWeight: 700, lineHeight: 1.05, margin: 0, textTransform: 'uppercase', letterSpacing: '0.01em' }}>
           {title}
         </p>
-        <p style={{ color: '#2f3138', fontSize: 9, fontWeight: 500, lineHeight: 1.1, margin: '5px 0 0', textTransform: 'uppercase', letterSpacing: '0.02em' }}>
+        <p style={{ color: '#2f3138', fontSize: 8.5, fontWeight: 500, lineHeight: 1.1, margin: '4px 0 0', textTransform: 'uppercase', letterSpacing: '0.02em' }}>
           {neighborhood}
         </p>
       </div>
 
-      {/* Spec panel - flush right, higher */}
+      {/* Spec panel - flush right */}
       <div style={{
-        position: 'absolute', right: 0, bottom: 12, zIndex: 15,
-        width: 170, height: 120, backgroundColor: '#30323A',
-        borderTopLeftRadius: 16, borderBottomLeftRadius: 16,
+        position: 'absolute', right: 0, bottom: 16, zIndex: 15,
+        width: 164, height: 112, backgroundColor: '#30323A',
+        borderTopLeftRadius: 14, borderBottomLeftRadius: 14,
         display: 'grid', gridTemplateColumns: '1fr 1fr', gridTemplateRows: '1fr 1fr',
-        padding: '12px 10px 8px', boxSizing: 'border-box',
+        padding: '10px 8px 8px', boxSizing: 'border-box',
       }}>
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 3 }}>
           <BedIcon />
@@ -208,7 +209,7 @@ export const AF2CoverSlide = ({ data, photos }: { data: AFPropertyData; photos: 
         </div>
       </div>
 
-      <div style={{ position: 'absolute', left: 18, bottom: 14, zIndex: 12 }}>
+      <div style={{ position: 'absolute', left: 16, bottom: 12, zIndex: 12 }}>
         <AFLogo2 width={108} />
       </div>
     </div>
