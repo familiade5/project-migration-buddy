@@ -312,7 +312,6 @@ export const AF2PhotoSlide = ({ photos, slideIndex, data }: { photos: [string, s
   const GOLD_CSS = 'linear-gradient(135deg, #E8A020, #F2B84B, #D4912A, #C07B18)';
   const content = getSlideContent(data, slideIndex);
 
-  const GOLD_CSS = 'linear-gradient(135deg, #E8A020, #F2B84B, #D4912A, #C07B18)';
 
   return (
     <div style={{ position: 'relative', width: 360, height: 360, backgroundColor: '#e5e5e5', fontFamily: poppins, overflow: 'hidden' }}>
