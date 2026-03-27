@@ -152,6 +152,18 @@ export function AFPostPreview({ data, photos }: AFPostPreviewProps) {
     <div ref={containerRef} className="space-y-3 w-full overflow-hidden">
       <div className="flex items-center justify-between gap-2">
         <h3 className="font-semibold text-sm text-gray-800">Preview do Carrossel</h3>
+        <div className="flex items-center gap-1 bg-gray-100 rounded-lg p-0.5">
+          <button
+            onClick={() => { setDesignVersion(1); setCurrentSlide(0); }}
+            className="px-2 py-1 rounded-md text-xs font-medium transition-all"
+            style={designVersion === 1 ? { backgroundColor: PRIMARY, color: 'white' } : { color: '#6B7280' }}
+          >Design 1</button>
+          <button
+            onClick={() => { setDesignVersion(2); setCurrentSlide(0); }}
+            className="px-2 py-1 rounded-md text-xs font-medium transition-all"
+            style={designVersion === 2 ? { backgroundColor: ACCENT, color: 'white' } : { color: '#6B7280' }}
+          >Design 2</button>
+        </div>
       </div>
 
       <div className="flex gap-2">
