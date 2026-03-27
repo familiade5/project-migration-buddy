@@ -246,20 +246,121 @@ export const AF2CoverSlide = ({ data, photos }: { data: AFPropertyData; photos: 
   );
 };
 
+// ─── Helper: build emotional trigger messages per slide ──────────────────────
+const getSlideContent = (data: AFPropertyData, slideIndex: number): { headline: string; details: string[] } => {
+  const price = data.isRental ? data.rentalPrice : data.salePrice;
+  const priceFormatted = price > 0 ? formatPrice(price) : '';
+  const neighborhood = data.neighborhood || 'sua região';
+  const bedroomsText = data.suites > 0
+    ? `${data.suites} Suíte${data.suites > 1 ? 's' : ''}`
+    : data.bedrooms > 0 ? `${data.bedrooms} Quarto${data.bedrooms > 1 ? 's' : ''}` : '';
+  const garageText = data.garageSpaces > 0 ? `${data.garageSpaces} Vaga${data.garageSpaces > 1 ? 's' : ''} de Garagem` : '';
+  const areaText = data.area > 0 ? `${data.area}m²` : '';
+  const leisureFirst = ((data.leisureItems || '').split(/[,\n]/).map(i => i.trim()).filter(Boolean)[0] || '').toUpperCase();
+
+  const templates = [
+    {
+      headline: 'JÁ PENSOU EM MORAR NO QUE É SEU?',
+      details: [
+        data.acceptsFinancing && data.acceptsFGTS ? 'COM FINANCIAMENTO + FGTS, PODE SAIR MAIS BARATO QUE O ALUGUEL.' : 'CONDIÇÕES FACILITADAS PARA VOCÊ REALIZAR SEU SONHO.',
+      ],
+    },
+    {
+      headline: 'SEU NOVO LAR ESTÁ AQUI!',
+      details: [
+        bedroomsText,
+        leisureFirst ? `${leisureFirst}` : '',
+        areaText ? `TERRENO ${areaText}` : '',
+        garageText,
+      ].filter(Boolean),
+    },
+    {
+      headline: `LOCALIZAÇÃO: ${neighborhood.toUpperCase()}`,
+      details: [
+        priceFormatted ? `VALOR: ${priceFormatted}` : '',
+        data.acceptsFinancing ? 'ACEITA FINANCIAMENTO' + (data.acceptsFGTS ? ' E FGTS' : '') : '',
+        'CLIQUE E FALE AGORA COM UM ESPECIALISTA.',
+      ].filter(Boolean),
+    },
+    {
+      headline: 'OPORTUNIDADE ÚNICA!',
+      details: [
+        `IMÓVEL EM ${neighborhood.toUpperCase()}`,
+        bedroomsText ? `${bedroomsText.toUpperCase()} | ${areaText || 'ÁREA GENEROSA'}` : '',
+        garageText ? garageText.toUpperCase() : '',
+      ].filter(Boolean),
+    },
+    {
+      headline: 'PARE DE PAGAR ALUGUEL!',
+      details: [
+        priceFormatted ? `A PARTIR DE ${priceFormatted}` : 'CONSULTE CONDIÇÕES ESPECIAIS',
+        data.acceptsFinancing ? 'USE SEU FGTS COMO ENTRADA' : '',
+        'PARCELAS QUE CABEM NO SEU BOLSO.',
+      ].filter(Boolean),
+    },
+  ];
+
+  return templates[slideIndex % templates.length];
+};
+
 // ═══════════════════════════════════════════════════════════════════════════════
-// SLIDE DE FOTOS — 2 fotos empilhadas (cima/baixo) com linha dourada central
+// SLIDE DE FOTOS — 2 fotos + caixa cinza central com gatilhos emocionais
 // ═══════════════════════════════════════════════════════════════════════════════
-export const AF2PhotoSlide = ({ photos, slideIndex }: { photos: [string, string?]; slideIndex: number }) => {
+export const AF2PhotoSlide = ({ photos, slideIndex, data }: { photos: [string, string?]; slideIndex: number; data: AFPropertyData }) => {
   const p1 = photos[0];
   const p2 = photos[1];
-  const gap = 4;
-  const half = (360 - gap) / 2;
+  const GOLD_CSS = 'linear-gradient(135deg, #E8A020, #F2B84B, #D4912A, #C07B18)';
+  const content = getSlideContent(data, slideIndex);
+
+  // Layout: photo top ~42%, info box ~16%, photo bottom ~42%
+  const photoH = 152;
+  const boxH = 56;
+  const boxTop = photoH;
 
   return (
-    <div style={{ position: 'relative', width: 360, height: 360, backgroundColor: '#e5e5e5', fontFamily: golos, overflow: 'hidden' }}>
-      {p1 && <img src={p1} alt="" style={{ position: 'absolute', left: 0, top: 0, width: 360, height: p2 ? half : 360, objectFit: 'cover' }} />}
-      {p2 && <img src={p2} alt="" style={{ position: 'absolute', left: 0, top: half + gap, width: 360, height: half, objectFit: 'cover' }} />}
-      {p2 && <AccentLine top={half} />}
+    <div style={{ position: 'relative', width: 360, height: 360, backgroundColor: '#e5e5e5', fontFamily: poppins, overflow: 'hidden' }}>
+      {/* Top photo */}
+      {p1 && <img src={p1} alt="" style={{ position: 'absolute', left: 0, top: 0, width: 360, height: photoH, objectFit: 'cover' }} />}
+
+      {/* Bottom photo */}
+      {p2 && <img src={p2} alt="" style={{ position: 'absolute', left: 0, top: photoH + boxH, width: 360, height: photoH, objectFit: 'cover' }} />}
+      {!p2 && p1 && <img src={p1} alt="" style={{ position: 'absolute', left: 0, top: photoH + boxH, width: 360, height: photoH, objectFit: 'cover', transform: 'scaleX(-1)' }} />}
+
+      {/* Gold accent line top of box */}
+      <AccentLine top={boxTop - 1} />
+
+      {/* Dark gray info box */}
+      <div style={{
+        position: 'absolute', left: 0, right: 0, top: boxTop + 4, height: boxH - 4,
+        backgroundColor: 'rgba(55, 58, 66, 0.92)',
+        display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+        padding: '6px 20px', zIndex: 15, textAlign: 'center',
+      }}>
+        <p style={{
+          color: 'white', fontSize: 12, fontWeight: 800, margin: '0 0 3px',
+          textTransform: 'uppercase', letterSpacing: '0.03em', lineHeight: 1.25,
+        }}>
+          {content.headline}
+        </p>
+        {content.details.map((line, i) => {
+          const isCTA = line.includes('CLIQUE') || line.includes('FALE AGORA');
+          return (
+            <p key={i} style={{
+              color: isCTA ? undefined : 'rgba(255,255,255,0.85)',
+              background: isCTA ? GOLD_CSS : undefined,
+              WebkitBackgroundClip: isCTA ? 'text' : undefined,
+              WebkitTextFillColor: isCTA ? 'transparent' : undefined,
+              fontSize: 9, fontWeight: isCTA ? 800 : 600, margin: 0,
+              textTransform: 'uppercase', letterSpacing: '0.02em', lineHeight: 1.4,
+            }}>
+              {line}
+            </p>
+          );
+        })}
+      </div>
+
+      {/* Gold accent line bottom of box */}
+      <AccentLine top={boxTop + boxH} />
     </div>
   );
 };
