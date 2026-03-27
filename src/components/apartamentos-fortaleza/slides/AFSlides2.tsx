@@ -292,7 +292,7 @@ const getSlideContent = (data: AFPropertyData, slideIndex: number): { headline: 
       ].filter(Boolean),
     },
     {
-      headline: `${neighborhood} — LOCALIZAÇÃO PRIVILEGIADA`,
+      headline: `LOCALIZAÇÃO: ${neighborhood}`,
       details: [
         priceFormatted ? `VALOR: ${priceFormatted}` : '',
         hasFinancing ? 'ACEITA FINANCIAMENTO' + (hasFGTS ? ' E FGTS' : '') : '',
@@ -307,21 +307,20 @@ const getSlideContent = (data: AFPropertyData, slideIndex: number): { headline: 
       ].filter(Boolean),
     },
     {
-      headline: 'PARE DE PAGAR ALUGUEL!',
+      headline: 'SAIA DO ALUGUEL!',
       details: [
-        priceFormatted ? `A PARTIR DE ${priceFormatted}` : 'CONSULTE CONDIÇÕES ESPECIAIS',
-        hasFGTS ? 'USE SEU FGTS COMO ENTRADA' : '',
+        'INVISTA NO QUE É SEU.',
+        hasFGTS ? 'UTILIZE SEU FGTS COMO ENTRADA.' : '',
         'PARCELAS QUE CABEM NO SEU BOLSO.',
       ].filter(Boolean),
     },
     {
-      headline: infoMsg || 'SEU PRÓXIMO ENDEREÇO.',
+      headline: infoMsg || 'CONFORTO EM CADA AMBIENTE.',
       details: infoMsg
-        ? [`IMÓVEL EM ${neighborhood}`, 'AGENDE SUA VISITA HOJE MESMO.']
+        ? [`IMÓVEL EM ${neighborhood}`, 'AGENDE SUA VISITA.']
         : [
-            `IMÓVEL EM ${neighborhood}`,
             bathText && bedroomsText ? `${bedroomsText} | ${bathText}` : bedroomsText || bathText || '',
-            'AGENDE SUA VISITA HOJE MESMO.',
+            'AGENDE SUA VISITA.',
           ].filter(Boolean),
     },
     {
@@ -329,47 +328,42 @@ const getSlideContent = (data: AFPropertyData, slideIndex: number): { headline: 
       details: [
         ...(leisureChunks[1] || leisureChunks[0] || ['ÁREA DE LAZER EQUIPADA']),
         ...(leisureChunks[2] || []),
-        'TUDO DENTRO DO CONDOMÍNIO.',
       ].filter(Boolean),
     },
     {
-      headline: 'INVESTIMENTO INTELIGENTE!',
+      headline: 'PRONTO PARA MORAR.',
       details: [
-        `IMÓVEL PRONTO EM ${neighborhood}`,
-        priceFormatted ? `POR APENAS ${priceFormatted}` : 'CONDIÇÃO IMPERDÍVEL',
-        hasFinancing ? 'ENTRADA FACILITADA + FINANCIAMENTO.' : 'CONSULTE FORMAS DE PAGAMENTO.',
+        `IMÓVEL EM ${neighborhood}`,
+        hasFinancing ? 'ENTRADA FACILITADA.' : 'CONSULTE FORMAS DE PAGAMENTO.',
       ].filter(Boolean),
     },
     {
       headline: 'AMBIENTES PENSADOS PARA VOCÊ.',
       details: [
         ...(roomChunks[1] ? [roomChunks[1].join(' | ')] : roomChunks[0] ? [roomChunks[0].join(' | ')] : []),
-        areaText ? `ÁREA TOTAL: ${areaText}` : '',
+        areaText ? `ÁREA: ${areaText}` : '',
         garageText || '',
       ].filter(Boolean),
     },
     {
-      headline: 'ÚLTIMA CHANCE NESTA CONDIÇÃO!',
+      headline: 'MORADIA COM QUALIDADE DE VIDA.',
       details: [
-        priceFormatted ? `${priceFormatted} — VALOR PROMOCIONAL` : 'OPORTUNIDADE POR TEMPO LIMITADO',
-        hasFGTS ? 'ACEITA FGTS + FINANCIAMENTO' : '',
-        'NÃO DEIXE PARA DEPOIS.',
-      ].filter(Boolean),
-    },
-    {
-      headline: 'CONFORTO EM CADA CANTO.',
-      details: [
-        ...(leisureChunks[3] || leisureChunks[0] || []).slice(0, 2),
+        ...(leisureChunks[3] || leisureChunks[2] || leisureChunks[0] || []).slice(0, 2),
         ...(roomChunks[2] ? [roomChunks[2].join(' | ')] : []),
-        `LOCALIZAÇÃO: ${neighborhood}`,
       ].filter(Boolean),
     },
     {
-      headline: 'REALIZE SEU SONHO AGORA!',
+      headline: 'SEU NOVO LAR ESTÁ AQUI.',
       details: [
         infoMsg || `IMÓVEL EM ${neighborhood}`,
-        priceFormatted ? `VALOR: ${priceFormatted}` : '',
         'FALE COM UM ESPECIALISTA.',
+      ].filter(Boolean),
+    },
+    {
+      headline: 'VIVER BEM COMEÇA AQUI.',
+      details: [
+        ...(leisureChunks[4] || leisureChunks[1] || []).slice(0, 2),
+        garageText || bedroomsText || '',
       ].filter(Boolean),
     },
   ];
