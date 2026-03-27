@@ -258,11 +258,23 @@ const getSlideContent = (data: AFPropertyData, slideIndex: number): { headline: 
   const areaText = data.area > 0 ? `${data.area}M²` : '';
   const bathText = data.bathrooms > 0 ? `${data.bathrooms} BANHEIRO${data.bathrooms > 1 ? 'S' : ''}` : '';
   const leisureItems = (data.leisureItems || '').split(/[,\n]/).map(i => i.trim()).filter(Boolean);
-  const leisureFirst = (leisureItems[0] || '').toUpperCase();
-  const leisureSecond = (leisureItems[1] || '').toUpperCase();
+  const rooms = (data.rooms || '').split(/[,\n]/).map(i => i.trim()).filter(Boolean);
+  const infoMsg = (data.infoMessage || '').trim().toUpperCase();
   const hasFinancing = data.acceptsFinancing;
   const hasFGTS = data.acceptsFGTS;
   const specsLine = [bedroomsText, areaText, garageText].filter(Boolean).join(' | ');
+
+  // Distribute leisure items across different slides (2 per slide max)
+  const leisureChunks: string[][] = [];
+  for (let i = 0; i < leisureItems.length; i += 2) {
+    leisureChunks.push(leisureItems.slice(i, i + 2).map(l => l.toUpperCase()));
+  }
+
+  // Distribute rooms across different slides
+  const roomChunks: string[][] = [];
+  for (let i = 0; i < rooms.length; i += 3) {
+    roomChunks.push(rooms.slice(i, i + 3).map(r => r.toUpperCase()));
+  }
 
   const templates: { headline: string; details: string[] }[] = [
     {
@@ -275,8 +287,7 @@ const getSlideContent = (data: AFPropertyData, slideIndex: number): { headline: 
       headline: 'CONHEÇA CADA DETALHE!',
       details: [
         bedroomsText,
-        leisureFirst || '',
-        areaText ? `TERRENO ${areaText} | CONSTRUÇÃO ${areaText}` : '',
+        ...(leisureChunks[0] || []),
         garageText,
       ].filter(Boolean),
     },
@@ -289,10 +300,10 @@ const getSlideContent = (data: AFPropertyData, slideIndex: number): { headline: 
       ].filter(Boolean),
     },
     {
-      headline: 'ESPAÇO, CONFORTO E SEGURANÇA.',
+      headline: 'ESPAÇO QUE SUA FAMÍLIA MERECE.',
       details: [
-        specsLine || 'IMÓVEL COMPLETO PARA SUA FAMÍLIA',
-        leisureFirst ? `+ ${leisureFirst}` : '',
+        ...(roomChunks[0] ? [roomChunks[0].join(' | ')] : []),
+        specsLine || 'IMÓVEL COMPLETO',
       ].filter(Boolean),
     },
     {
@@ -304,11 +315,21 @@ const getSlideContent = (data: AFPropertyData, slideIndex: number): { headline: 
       ].filter(Boolean),
     },
     {
-      headline: 'SEU PRÓXIMO ENDEREÇO.',
+      headline: infoMsg || 'SEU PRÓXIMO ENDEREÇO.',
+      details: infoMsg
+        ? [`IMÓVEL EM ${neighborhood}`, 'AGENDE SUA VISITA HOJE MESMO.']
+        : [
+            `IMÓVEL EM ${neighborhood}`,
+            bathText && bedroomsText ? `${bedroomsText} | ${bathText}` : bedroomsText || bathText || '',
+            'AGENDE SUA VISITA HOJE MESMO.',
+          ].filter(Boolean),
+    },
+    {
+      headline: 'LAZER COMPLETO!',
       details: [
-        `IMÓVEL EM ${neighborhood}`,
-        bathText && bedroomsText ? `${bedroomsText} | ${bathText}` : bedroomsText || bathText || '',
-        'AGENDE SUA VISITA HOJE MESMO.',
+        ...(leisureChunks[1] || leisureChunks[0] || ['ÁREA DE LAZER EQUIPADA']),
+        ...(leisureChunks[2] || []),
+        'TUDO DENTRO DO CONDOMÍNIO.',
       ].filter(Boolean),
     },
     {
@@ -320,12 +341,11 @@ const getSlideContent = (data: AFPropertyData, slideIndex: number): { headline: 
       ].filter(Boolean),
     },
     {
-      headline: 'VIVER BEM COMEÇA AQUI.',
+      headline: 'AMBIENTES PENSADOS PARA VOCÊ.',
       details: [
-        leisureFirst ? leisureFirst : 'LAZER COMPLETO',
-        leisureSecond ? `+ ${leisureSecond}` : '',
+        ...(roomChunks[1] ? [roomChunks[1].join(' | ')] : roomChunks[0] ? [roomChunks[0].join(' | ')] : []),
+        areaText ? `ÁREA TOTAL: ${areaText}` : '',
         garageText || '',
-        'TUDO PENSADO PARA SUA FAMÍLIA.',
       ].filter(Boolean),
     },
     {
@@ -337,11 +357,19 @@ const getSlideContent = (data: AFPropertyData, slideIndex: number): { headline: 
       ].filter(Boolean),
     },
     {
-      headline: 'QUALIDADE DE VIDA GARANTIDA.',
+      headline: 'CONFORTO EM CADA CANTO.',
       details: [
-        areaText ? `${areaText} DE ÁREA` : '',
-        bedroomsText ? `${bedroomsText} AMPLO${data.bedrooms > 1 ? 'S' : ''}` : '',
+        ...(leisureChunks[3] || leisureChunks[0] || []).slice(0, 2),
+        ...(roomChunks[2] ? [roomChunks[2].join(' | ')] : []),
         `LOCALIZAÇÃO: ${neighborhood}`,
+      ].filter(Boolean),
+    },
+    {
+      headline: 'REALIZE SEU SONHO AGORA!',
+      details: [
+        infoMsg || `IMÓVEL EM ${neighborhood}`,
+        priceFormatted ? `VALOR: ${priceFormatted}` : '',
+        'FALE COM UM ESPECIALISTA.',
       ].filter(Boolean),
     },
   ];
