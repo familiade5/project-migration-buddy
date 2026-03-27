@@ -312,33 +312,29 @@ export const AF2PhotoSlide = ({ photos, slideIndex, data }: { photos: [string, s
   const GOLD_CSS = 'linear-gradient(135deg, #E8A020, #F2B84B, #D4912A, #C07B18)';
   const content = getSlideContent(data, slideIndex);
 
-  // Layout: photo top ~42%, info box ~16%, photo bottom ~42%
-  const photoH = 152;
-  const boxH = 56;
-  const boxTop = photoH;
 
   return (
     <div style={{ position: 'relative', width: 360, height: 360, backgroundColor: '#e5e5e5', fontFamily: poppins, overflow: 'hidden' }}>
-      {/* Top photo */}
-      {p1 && <img src={p1} alt="" style={{ position: 'absolute', left: 0, top: 0, width: 360, height: photoH, objectFit: 'cover' }} />}
+      {/* Top photo — full top half */}
+      {p1 && <img src={p1} alt="" style={{ position: 'absolute', left: 0, top: 0, width: 360, height: 180, objectFit: 'cover' }} />}
 
-      {/* Bottom photo */}
-      {p2 && <img src={p2} alt="" style={{ position: 'absolute', left: 0, top: photoH + boxH, width: 360, height: photoH, objectFit: 'cover' }} />}
-      {!p2 && p1 && <img src={p1} alt="" style={{ position: 'absolute', left: 0, top: photoH + boxH, width: 360, height: photoH, objectFit: 'cover', transform: 'scaleX(-1)' }} />}
+      {/* Bottom photo — full bottom half */}
+      {p2 && <img src={p2} alt="" style={{ position: 'absolute', left: 0, top: 180, width: 360, height: 180, objectFit: 'cover' }} />}
+      {!p2 && p1 && <img src={p1} alt="" style={{ position: 'absolute', left: 0, top: 180, width: 360, height: 180, objectFit: 'cover', transform: 'scaleX(-1)' }} />}
 
-      {/* Gold accent line top of box */}
-      <AccentLine top={boxTop - 1} />
+      {/* Gold accent line at center */}
+      <AccentLine top={175} />
 
-      {/* Dark gray info box */}
+      {/* Floating balloon info box */}
       <div style={{
-        position: 'absolute', left: 0, right: 0, top: boxTop + 4, height: boxH - 4,
+        position: 'absolute', left: '50%', top: '50%', transform: 'translate(-50%, -50%)',
         backgroundColor: 'rgba(55, 58, 66, 0.92)',
-        display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-        padding: '6px 20px', zIndex: 15, textAlign: 'center',
+        borderRadius: 14, padding: '12px 22px', zIndex: 20, textAlign: 'center',
+        maxWidth: 310, boxShadow: '0 6px 20px rgba(0,0,0,0.35)',
       }}>
         <p style={{
-          color: 'white', fontSize: 12, fontWeight: 800, margin: '0 0 3px',
-          textTransform: 'uppercase', letterSpacing: '0.03em', lineHeight: 1.25,
+          color: 'white', fontSize: 13, fontWeight: 800, margin: '0 0 4px',
+          textTransform: 'uppercase', letterSpacing: '0.03em', lineHeight: 1.3,
         }}>
           {content.headline}
         </p>
@@ -350,17 +346,14 @@ export const AF2PhotoSlide = ({ photos, slideIndex, data }: { photos: [string, s
               background: isCTA ? GOLD_CSS : undefined,
               WebkitBackgroundClip: isCTA ? 'text' : undefined,
               WebkitTextFillColor: isCTA ? 'transparent' : undefined,
-              fontSize: 9, fontWeight: isCTA ? 800 : 600, margin: 0,
-              textTransform: 'uppercase', letterSpacing: '0.02em', lineHeight: 1.4,
+              fontSize: 10, fontWeight: isCTA ? 800 : 600, margin: 0,
+              textTransform: 'uppercase', letterSpacing: '0.02em', lineHeight: 1.5,
             }}>
               {line}
             </p>
           );
         })}
       </div>
-
-      {/* Gold accent line bottom of box */}
-      <AccentLine top={boxTop + boxH} />
     </div>
   );
 };
