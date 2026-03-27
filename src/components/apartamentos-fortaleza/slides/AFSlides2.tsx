@@ -158,27 +158,47 @@ export const AF2CoverSlide = ({ data, photos }: { data: AFPropertyData; photos: 
 
       <AccentLine top={photoH - 1} />
 
-      <svg style={{ position: 'absolute', left: 0, top: photoH, width: 360, height: 154, zIndex: 1 }} viewBox="0 0 360 154" preserveAspectRatio="none">
-        <rect width="360" height="154" fill="#f8f7f3" />
-        <polygon points="108,0 206,0 136,46 40,46" fill="rgba(255,255,255,0.85)" />
-        <polygon points="150,0 304,0 206,78 54,78" fill="rgba(255,255,255,0.52)" />
-        <polygon points="204,0 360,0 256,94 102,94" fill="rgba(255,255,255,0.30)" />
-        <polygon points="232,48 360,48 360,154 314,154" fill="rgba(255,255,255,0.16)" />
-      </svg>
-
-      {/* Price badge - compact */}
-      <div style={{ position: 'absolute', left: -4, top: 174, width: 170, height: 48, zIndex: 30 }}>
-        <svg viewBox="0 0 170 48" width="170" height="48" style={{ display: 'block', overflow: 'visible' }}>
-          <path d="M12 2 H142 L158 14 L144 40 H12 C6 40 2 36 2 30 V12 C2 6 6 2 12 2 Z" fill={DARK_CARD} stroke="#ffffff" strokeWidth="2.5" />
+      {/* White panel with top shadow for 3D effect */}
+      <div style={{
+        position: 'absolute', left: 0, top: photoH + 4, width: 360, height: 154, zIndex: 1,
+        boxShadow: '0 -8px 20px -4px rgba(0,0,0,0.25)',
+        borderTop: 'none',
+      }}>
+        <svg style={{ width: 360, height: 154, display: 'block' }} viewBox="0 0 360 154" preserveAspectRatio="none">
+          <rect width="360" height="154" fill="#f8f7f3" />
+          <polygon points="108,0 206,0 136,46 40,46" fill="rgba(255,255,255,0.85)" />
+          <polygon points="150,0 304,0 206,78 54,78" fill="rgba(255,255,255,0.52)" />
+          <polygon points="204,0 360,0 256,94 102,94" fill="rgba(255,255,255,0.30)" />
+          <polygon points="232,48 360,48 360,154 314,154" fill="rgba(255,255,255,0.16)" />
         </svg>
-        <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', padding: '2px 12px 4px 12px', gap: 3 }}>
-          <span style={{ background: GOLD_CSS, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', fontSize: 11, fontWeight: 800, lineHeight: 1 }}>R$</span>
-          <span style={{ background: GOLD_CSS, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', fontSize: 22, fontWeight: 900, lineHeight: 0.95, letterSpacing: '-0.03em' }}>{formattedPrice}</span>
+      </div>
+
+      {/* AF watermark */}
+      <div style={{
+        position: 'absolute', left: '50%', top: photoH + 30, transform: 'translateX(-50%)',
+        zIndex: 2, fontSize: 100, fontWeight: 900, color: 'rgba(210,180,120,0.07)',
+        letterSpacing: '0.05em', lineHeight: 1, userSelect: 'none', pointerEvents: 'none',
+        fontFamily: titleFont,
+      }}>
+        AF
+      </div>
+
+      {/* Price badge - smaller, lower, with card shadow */}
+      <div style={{
+        position: 'absolute', left: -4, top: 180, width: 160, height: 44, zIndex: 30,
+        filter: 'drop-shadow(0 4px 10px rgba(0,0,0,0.3))',
+      }}>
+        <svg viewBox="0 0 160 44" width="160" height="44" style={{ display: 'block', overflow: 'visible' }}>
+          <path d="M10 2 H134 L150 12 L136 36 H10 C5 36 2 33 2 28 V10 C2 5 5 2 10 2 Z" fill={DARK_CARD} stroke="#ffffff" strokeWidth="2" />
+        </svg>
+        <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', padding: '1px 10px 3px 10px', gap: 3 }}>
+          <span style={{ background: GOLD_CSS, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', fontSize: 10, fontWeight: 800, lineHeight: 1 }}>R$</span>
+          <span style={{ background: GOLD_CSS, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', fontSize: 18, fontWeight: 900, lineHeight: 0.95, letterSpacing: '-0.03em' }}>{formattedPrice}</span>
         </div>
       </div>
 
       {/* Title & neighborhood */}
-      <div style={{ position: 'absolute', left: 16, top: 236, zIndex: 12, width: 148 }}>
+      <div style={{ position: 'absolute', left: 16, top: 240, zIndex: 12, width: 148 }}>
         <p style={{ fontFamily: titleFont, background: GOLD_CSS, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', fontSize: 17, fontWeight: 700, lineHeight: 1.05, margin: 0, textTransform: 'uppercase', letterSpacing: '0.01em' }}>
           {title}
         </p>
