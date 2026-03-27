@@ -1,5 +1,5 @@
 import { useRef } from 'react';
-import { GripVertical, X, Upload, ChevronLeft, ChevronRight, Star } from 'lucide-react';
+import { GripVertical, X, Upload, ChevronLeft, ChevronRight, Star, Trash2 } from 'lucide-react';
 
 // AF brand colors
 const PRIMARY = '#0C7B8E';
@@ -157,9 +157,18 @@ export function AFPhotoManager({ photos, onChange }: AFPhotoManagerProps) {
         </div>
       )}
       {photos.length > 0 && (
-        <p className="text-xs text-gray-400 text-center">
-          💡 Passe o mouse sobre a foto para mover, definir capa ou remover
-        </p>
+        <div className="flex items-center justify-between">
+          <p className="text-xs text-gray-400">
+            💡 Passe o mouse sobre a foto para mover, definir capa ou remover
+          </p>
+          <button
+            onClick={() => onChange([])}
+            className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-medium text-red-600 bg-red-50 hover:bg-red-100 transition-colors"
+          >
+            <Trash2 className="w-3.5 h-3.5" />
+            Limpar tudo
+          </button>
+        </div>
       )}
     </div>
   );
