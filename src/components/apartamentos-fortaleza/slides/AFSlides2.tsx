@@ -183,16 +183,16 @@ export const AF2CoverSlide = ({ data, photos }: { data: AFPropertyData; photos: 
         overflow: 'hidden',
       }}>
         {/* Move image RIGHT so the AF symbol (left side of logo) stays centered, text goes off-screen right */}
-        <img src={logoBase64} alt="" style={{ width: 600, marginRight: -360, display: 'block', filter: 'grayscale(100%) brightness(1.9) contrast(0.25)', opacity: 0.4 }} />
+        <img src={logoBase64} alt="" style={{ width: 700, marginRight: -420, display: 'block', filter: 'grayscale(100%) brightness(1.9) contrast(0.25)', opacity: 0.4 }} />
       </div>
 
-      {/* Price badge - top longer, bottom shorter, 45° diagonal, rounded corners on right */}
+      {/* Price badge - shorter top line, same bottom, steeper angle */}
       <div style={{
         position: 'absolute', left: -6, top: 172, width: 220, height: 52, zIndex: 30,
         filter: 'drop-shadow(0 4px 12px rgba(0,0,0,0.35))',
       }}>
         <svg viewBox="0 0 220 52" width="220" height="52" style={{ display: 'block', overflow: 'visible' }}>
-          <path d="M14 3 H190 Q196 3 196 9 L156 43 Q152 49 146 49 H14 C7 49 3 44 3 38 V14 C3 8 7 3 14 3 Z" fill={DARK_CARD} stroke="#ffffff" strokeWidth="2.5" strokeLinejoin="round" />
+          <path d="M14 3 H174 Q180 3 180 9 L156 43 Q152 49 146 49 H14 C7 49 3 44 3 38 V14 C3 8 7 3 14 3 Z" fill={DARK_CARD} stroke="#ffffff" strokeWidth="2.5" strokeLinejoin="round" />
         </svg>
         <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', padding: '0 16px 0 14px', gap: 3 }}>
           <span style={{ background: GOLD_CSS, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', fontSize: 10, fontWeight: 800, lineHeight: 1 }}>R$</span>
