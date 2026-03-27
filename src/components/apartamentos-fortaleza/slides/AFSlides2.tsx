@@ -337,5 +337,3 @@ export const AF2CTASlide = ({ data, photos }: { data: AFPropertyData; photos: st
     </div>
   );
 };
-  );
-};
