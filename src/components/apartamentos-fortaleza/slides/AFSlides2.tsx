@@ -240,12 +240,12 @@ export const AF2CoverSlide = ({ data, photos }: { data: AFPropertyData; photos: 
         </div>
       </div>
 
-      <div style={{ position: 'absolute', left: 16, bottom: 12, zIndex: 12, display: 'flex', alignItems: 'center', gap: 8 }}>
+      <div style={{ position: 'absolute', left: 16, bottom: 12, zIndex: 12 }}>
         <AFLogo2 width={108} />
-        {data.isMCMV && (
-          <img src={seloMCMV} alt="Minha Casa Minha Vida" style={{ width: 52, height: 52, objectFit: 'contain' }} />
-        )}
       </div>
+      {data.isMCMV && (
+        <img src={seloMCMV} alt="Minha Casa Minha Vida" style={{ position: 'absolute', left: 130, bottom: 6, width: 90, height: 90, objectFit: 'contain', zIndex: 12 }} />
+      )}
     </div>
   );
 };
