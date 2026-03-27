@@ -67,14 +67,22 @@ export const AF2CoverSlide = ({ data, photos }: { data: AFPropertyData; photos: 
 
   return (
     <div style={{ position: 'relative', width: 360, height: 360, backgroundColor: '#ffffff', fontFamily: golos, overflow: 'hidden' }}>
+      {/* Photo top section */}
       {photo ? (
         <img src={photo} alt="" style={{ position: 'absolute', top: 0, left: 0, width: 360, height: photoH, objectFit: 'cover' }} />
       ) : (
         <div style={{ position: 'absolute', top: 0, left: 0, width: 360, height: photoH, backgroundColor: '#d1d5db' }} />
       )}
 
+      {/* Logo on the photo (top-right) */}
+      <div style={{ position: 'absolute', top: 10, right: 10, zIndex: 15, backgroundColor: 'rgba(255,255,255,0.92)', borderRadius: 6, padding: '4px 8px' }}>
+        <AFLogo2 width={100} />
+      </div>
+
+      {/* Orange accent line */}
       <AccentLine top={photoH - 1} />
 
+      {/* Decorative diagonal graphics on white section */}
       <svg style={{ position: 'absolute', left: 0, top: photoH, width: 360, height: 136, zIndex: 1 }} viewBox="0 0 360 136" preserveAspectRatio="none">
         <rect width="360" height="136" fill="#ffffff" />
         <polygon points="156,0 360,0 360,54 262,54" fill="rgba(0,0,0,0.035)" />
@@ -82,29 +90,27 @@ export const AF2CoverSlide = ({ data, photos }: { data: AFPropertyData; photos: 
         <polygon points="248,84 360,84 360,136 290,136" fill="rgba(0,0,0,0.028)" />
       </svg>
 
-      <div style={{ position: 'absolute', left: -12, top: 166, width: 300, height: 86, zIndex: 30 }}>
-        <svg viewBox="0 0 300 86" width="300" height="86" style={{ display: 'block', overflow: 'visible' }}>
-          <path d="M 18 4 H 252 Q 280 4 292 22 L 272 70 Q 264 82 240 82 H 20 Q 4 82 4 64 V 20 Q 4 4 18 4 Z" fill={DARK_CARD} stroke="#ffffff" strokeWidth="4" />
+      {/* Dark angled price badge */}
+      <div style={{ position: 'absolute', left: -12, top: 170, width: 300, height: 76, zIndex: 30 }}>
+        <svg viewBox="0 0 300 76" width="300" height="76" style={{ display: 'block', overflow: 'visible' }}>
+          <path d="M 16 4 H 240 Q 265 4 278 18 L 262 62 Q 254 74 232 74 H 18 Q 4 74 4 58 V 18 Q 4 4 16 4 Z" fill={DARK_CARD} stroke="#ffffff" strokeWidth="4" />
         </svg>
-        <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', paddingLeft: 28, paddingRight: 12, gap: 8 }}>
-          <span style={{ color: PRIMARY, fontSize: 34, fontWeight: 800, lineHeight: 1, textTransform: 'uppercase', letterSpacing: '-0.05em' }}>R$</span>
-          <span style={{ color: PRIMARY, fontSize: 56, fontWeight: 900, lineHeight: 0.88, letterSpacing: '-0.065em' }}>{formattedPrice}</span>
+        <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', paddingLeft: 26, paddingRight: 12, gap: 6 }}>
+          <span style={{ color: PRIMARY, fontSize: 28, fontWeight: 800, lineHeight: 1, letterSpacing: '-0.04em' }}>R$</span>
+          <span style={{ color: PRIMARY, fontSize: 42, fontWeight: 900, lineHeight: 0.9, letterSpacing: '-0.06em' }}>{formattedPrice}</span>
         </div>
       </div>
 
-      <div style={{ position: 'absolute', left: 22, top: 255, zIndex: 10, width: 298 }}>
-        <p style={{ color: PRIMARY, fontSize: 27, fontWeight: 900, lineHeight: 1.04, margin: 0, textTransform: 'uppercase', letterSpacing: '-0.04em' }}>
+      {/* Title & neighborhood */}
+      <div style={{ position: 'absolute', left: 18, bottom: 14, zIndex: 10, width: 320 }}>
+        <p style={{ color: PRIMARY, fontSize: 22, fontWeight: 900, lineHeight: 1.08, margin: 0, textTransform: 'uppercase', letterSpacing: '-0.03em', fontStyle: 'italic' }}>
           {data.title || 'SEU IMÓVEL'}
         </p>
         {data.neighborhood && (
-          <p style={{ color: '#252730', fontSize: 22, fontWeight: 500, lineHeight: 1.05, margin: '6px 0 0', textTransform: 'uppercase', letterSpacing: '-0.035em' }}>
+          <p style={{ color: '#252730', fontSize: 16, fontWeight: 700, lineHeight: 1.1, margin: '4px 0 0', textTransform: 'uppercase', letterSpacing: '-0.02em' }}>
             {data.neighborhood}
           </p>
         )}
-      </div>
-
-      <div style={{ position: 'absolute', left: 20, bottom: 12, zIndex: 10 }}>
-        <AFLogo2 width={150} />
       </div>
     </div>
   );
