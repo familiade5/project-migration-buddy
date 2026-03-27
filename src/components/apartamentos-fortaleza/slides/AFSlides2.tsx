@@ -150,7 +150,7 @@ export const AF2CoverSlide = ({ data, photos }: { data: AFPropertyData; photos: 
   const titleFont = poppins;
 
   return (
-    <div style={{ position: 'relative', width: 360, height: 360, backgroundColor: '#ffffff', fontFamily: golos, overflow: 'hidden' }}>
+    <div style={{ position: 'relative', width: 360, height: 360, backgroundColor: '#ffffff', fontFamily: poppins, overflow: 'hidden' }}>
       {photo ? (
         <img src={photo} alt="" style={{ position: 'absolute', top: 0, left: 0, width: 360, height: photoH, objectFit: 'cover' }} />
       ) : (
@@ -159,51 +159,49 @@ export const AF2CoverSlide = ({ data, photos }: { data: AFPropertyData; photos: 
 
       <AccentLine top={photoH - 1} />
 
-      {/* White panel with top shadow for 3D effect */}
+      {/* White panel with top shadow for 3D/depth effect on golden line and price badge */}
       <div style={{
-        position: 'absolute', left: 0, top: photoH + 4, width: 360, height: 154, zIndex: 1,
-        boxShadow: '0 -8px 20px -4px rgba(0,0,0,0.25)',
-        borderTop: 'none',
+        position: 'absolute', left: 0, top: photoH + 4, width: 360, height: 156, zIndex: 5,
+        boxShadow: '0 -10px 24px -4px rgba(0,0,0,0.28)',
+        background: '#f8f7f3',
       }}>
-        <svg style={{ width: 360, height: 154, display: 'block' }} viewBox="0 0 360 154" preserveAspectRatio="none">
-          <rect width="360" height="154" fill="#f8f7f3" />
+        {/* Subtle diagonal geometric shapes */}
+        <svg style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }} viewBox="0 0 360 156" preserveAspectRatio="none">
           <polygon points="108,0 206,0 136,46 40,46" fill="rgba(255,255,255,0.85)" />
           <polygon points="150,0 304,0 206,78 54,78" fill="rgba(255,255,255,0.52)" />
           <polygon points="204,0 360,0 256,94 102,94" fill="rgba(255,255,255,0.30)" />
-          <polygon points="232,48 360,48 360,154 314,154" fill="rgba(255,255,255,0.16)" />
+          <polygon points="232,48 360,48 360,156 314,156" fill="rgba(255,255,255,0.16)" />
         </svg>
       </div>
 
-      {/* AF watermark */}
+      {/* AF logo as watermark */}
       <div style={{
-        position: 'absolute', left: '50%', top: photoH + 30, transform: 'translateX(-50%)',
-        zIndex: 2, fontSize: 100, fontWeight: 900, color: 'rgba(210,180,120,0.07)',
-        letterSpacing: '0.05em', lineHeight: 1, userSelect: 'none', pointerEvents: 'none',
-        fontFamily: titleFont,
+        position: 'absolute', left: '50%', top: photoH + 14, transform: 'translateX(-50%)',
+        zIndex: 6, pointerEvents: 'none', userSelect: 'none', opacity: 0.55,
       }}>
-        AF
+        <img src={logoBase64} alt="" style={{ width: 220, display: 'block', filter: 'grayscale(100%) brightness(1.85) contrast(0.3)', opacity: 0.35 }} />
       </div>
 
-      {/* Price badge - smaller, lower, with card shadow */}
+      {/* Price badge - rounded pill with shadow */}
       <div style={{
-        position: 'absolute', left: -4, top: 180, width: 160, height: 44, zIndex: 30,
-        filter: 'drop-shadow(0 4px 10px rgba(0,0,0,0.3))',
+        position: 'absolute', left: 12, top: 186, zIndex: 30,
+        backgroundColor: DARK_CARD,
+        borderRadius: 22,
+        padding: '6px 18px',
+        display: 'flex', alignItems: 'center', gap: 4,
+        boxShadow: '0 4px 16px -2px rgba(0,0,0,0.35), 0 2px 6px rgba(0,0,0,0.2)',
+        border: '2px solid rgba(255,255,255,0.5)',
       }}>
-        <svg viewBox="0 0 160 44" width="160" height="44" style={{ display: 'block', overflow: 'visible' }}>
-          <path d="M10 2 H134 L150 12 L136 36 H10 C5 36 2 33 2 28 V10 C2 5 5 2 10 2 Z" fill={DARK_CARD} stroke="#ffffff" strokeWidth="2" />
-        </svg>
-        <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', padding: '1px 10px 3px 10px', gap: 3, fontFamily: poppins }}>
-          <span style={{ background: GOLD_CSS, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', fontSize: 10, fontWeight: 800, lineHeight: 1 }}>R$</span>
-          <span style={{ background: GOLD_CSS, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', fontSize: 18, fontWeight: 800, lineHeight: 0.95, letterSpacing: '-0.03em' }}>{formattedPrice}</span>
-        </div>
+        <span style={{ background: GOLD_CSS, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', fontSize: 10, fontWeight: 800, lineHeight: 1 }}>R$</span>
+        <span style={{ background: GOLD_CSS, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', fontSize: 16, fontWeight: 800, lineHeight: 1, letterSpacing: '-0.02em' }}>{formattedPrice}</span>
       </div>
 
-      {/* Title & neighborhood */}
-      <div style={{ position: 'absolute', left: 16, top: 240, zIndex: 12, width: 148 }}>
-        <p style={{ fontFamily: titleFont, background: GOLD_CSS, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', fontSize: 17, fontWeight: 700, lineHeight: 1.05, margin: 0, textTransform: 'uppercase', letterSpacing: '0.01em' }}>
+      {/* Title & neighborhood - same font size */}
+      <div style={{ position: 'absolute', left: 16, top: 234, zIndex: 12, width: 148 }}>
+        <p style={{ background: GOLD_CSS, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', fontSize: 15, fontWeight: 800, lineHeight: 1.1, margin: 0, textTransform: 'uppercase', letterSpacing: '0.01em' }}>
           {title}
         </p>
-        <p style={{ color: '#2f3138', fontSize: 8.5, fontWeight: 500, lineHeight: 1.1, margin: '4px 0 0', textTransform: 'uppercase', letterSpacing: '0.02em' }}>
+        <p style={{ background: GOLD_CSS, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', fontSize: 14, fontWeight: 800, lineHeight: 1.1, margin: '3px 0 0', textTransform: 'uppercase', letterSpacing: '0.01em' }}>
           {neighborhood}
         </p>
       </div>
