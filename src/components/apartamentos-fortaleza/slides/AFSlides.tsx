@@ -1,7 +1,9 @@
-import { useId } from 'react';
+import { useMemo } from 'react';
 import { AFPropertyData } from '@/types/apartamentosFortaleza';
 import logoAF from '@/assets/logo-apartamentos-fortaleza.png';
-import { useLogoBase64 } from '@/hooks/useLogoBase64';
+
+let afIdCounter = 0;
+const useStableId = (prefix: string) => useMemo(() => `${prefix}-${++afIdCounter}`, []);
 
 // ─── AF Brand Colors ──────────────────────────────────────────────────────────
 const PRIMARY = '#0C7B8E';   // Teal ocean blue
@@ -15,13 +17,17 @@ export const AFLogo = ({
   width?: number;
   variant?: 'color' | 'white';
 }) => {
-  const base64 = useLogoBase64(logoAF);
   return (
     <img
-      src={base64}
+      src={logoAF}
       alt="Apartamentos Fortaleza"
-      width={width}
-      style={{ display: 'block', ...(variant === 'white' ? { filter: 'brightness(0) invert(1)' } : {}) }}
+      style={{
+        display: 'block',
+        width,
+        height: 'auto',
+        objectFit: 'contain',
+        ...(variant === 'white' ? { filter: 'brightness(0) invert(1)' } : {}),
+      }}
     />
   );
 };
@@ -30,8 +36,7 @@ const golos = "'Golos Text', Arial, sans-serif";
 
 // ─── Slide 1: CAPA ───────────────────────────────────────────────────────────
 export const AFCoverSlide = ({ data, photo }: { data: AFPropertyData; photo?: string }) => {
-  const uid = useId();
-  const clipId = `af-cover-${uid}`;
+  const clipId = useStableId("af-cover");
 
   const price = data.isRental ? data.rentalPrice : data.salePrice;
 
@@ -141,8 +146,7 @@ export const AFCoverSlide = ({ data, photo }: { data: AFPropertyData; photo?: st
 
 // ─── Slide 2: ESPECIFICAÇÕES ─────────────────────────────────────────────────
 export const AFSpecsSlide = ({ data, photo }: { data: AFPropertyData; photo?: string }) => {
-  const uid = useId();
-  const clipId = `af-specs-${uid}`;
+  const clipId = useStableId("af-specs");
   const specs: string[] = [
     data.bedrooms > 0 ? `${data.bedrooms} quarto${data.bedrooms > 1 ? 's' : ''}` : '',
     ...(data.rooms ? data.rooms.split('\n').filter(Boolean) : []),
@@ -205,8 +209,7 @@ export const AFSpecsSlide = ({ data, photo }: { data: AFPropertyData; photo?: st
 
 // ─── Slide 3: LOCALIZAÇÃO ────────────────────────────────────────────────────
 export const AFLocationSlide = ({ data, photo }: { data: AFPropertyData; photo?: string }) => {
-  const uid = useId();
-  const clipId = `af-location-${uid}`;
+  const clipId = useStableId("af-location");
 
   const shapePath = [
     'M 156 8', 'H 340', 'A 12 12 0 0 1 352 20', 'V 294',
@@ -283,8 +286,7 @@ export const AFPhotoSlide = ({
   photo,
   photoIndex,
 }: { data: AFPropertyData; photo?: string; photoIndex: number }) => {
-  const uid = useId();
-  const clipId = `af-photo-${uid}`;
+  const clipId = useStableId("af-photo");
 
   // Notch top-left: bordas externas 8→352, raio 12 em todas as curvas
   const shapePath = [
@@ -340,8 +342,7 @@ export const AFPhotoSlide = ({
 // ─── Último Slide: INFORMAÇÃO ────────────────────────────────────────────────
 // Mesmo padrão do AMInfoSlide: sandwich de camadas com borda branca SVG.
 export const AFInfoSlide = ({ data, photo }: { data: AFPropertyData; photo?: string }) => {
-  const uid = useId();
-  const clipId = `af-info-${uid}`;
+  const clipId = useStableId("af-info");
 
   const headline =
     data.infoMessage ||
@@ -393,9 +394,9 @@ export const AFInfoSlide = ({ data, photo }: { data: AFPropertyData; photo?: str
         backgroundColor: '#ffffff', borderRadius: 16,
         width: 128, height: 72,
         display: 'flex', alignItems: 'center', justifyContent: 'center',
-        boxSizing: 'border-box', padding: '12px 8px 0',
+        boxSizing: 'border-box', padding: '8px',
       }}>
-        <AFLogo width={114} variant="color" />
+        <AFLogo width={110} variant="color" />
       </div>
 
       {/* LAYER 2: Frame recortado com borda branca */}
