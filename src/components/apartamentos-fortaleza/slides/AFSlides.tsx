@@ -106,14 +106,9 @@ export const AFCoverSlide = ({ data, photo }: { data: AFPropertyData; photo?: st
         <div style={{ position: 'absolute', top: 0, left: 0, width: 360, height: 360, backgroundColor: '#cfe8eb', clipPath: `url(#${clipId})`, zIndex: 10 }} />
       )}
 
-      {/* LOGO CARD */}
-      <div style={{
-        position: 'absolute', bottom: 10, left: 10, zIndex: 20,
-        backgroundColor: '#ffffff', borderRadius: 10, padding: '6px 8px',
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
-        boxSizing: 'border-box',
-      }}>
-        <AFLogo width={100} variant="color" />
+      {/* WHITE LOGO */}
+      <div style={{ position: 'absolute', bottom: 18, left: 18, zIndex: 20 }}>
+        <AFLogo width={106} variant="white" />
       </div>
 
       {/* CORAL PRICE CARD */}
