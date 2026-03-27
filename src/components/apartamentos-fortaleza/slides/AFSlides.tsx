@@ -1,7 +1,6 @@
 import { useId } from 'react';
 import { AFPropertyData } from '@/types/apartamentosFortaleza';
 import logoAF from '@/assets/logo-apartamentos-fortaleza.png';
-import { useLogoBase64 } from '@/hooks/useLogoBase64';
 
 // ─── AF Brand Colors ──────────────────────────────────────────────────────────
 const PRIMARY = '#0C7B8E';   // Teal ocean blue
@@ -15,13 +14,17 @@ export const AFLogo = ({
   width?: number;
   variant?: 'color' | 'white';
 }) => {
-  const base64 = useLogoBase64(logoAF);
   return (
     <img
-      src={base64}
+      src={logoAF}
       alt="Apartamentos Fortaleza"
-      width={width}
-      style={{ display: 'block', ...(variant === 'white' ? { filter: 'brightness(0) invert(1)' } : {}) }}
+      style={{
+        display: 'block',
+        width,
+        height: 'auto',
+        objectFit: 'contain',
+        ...(variant === 'white' ? { filter: 'brightness(0) invert(1)' } : {}),
+      }}
     />
   );
 };
