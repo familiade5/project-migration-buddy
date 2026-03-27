@@ -1,3 +1,4 @@
+import { useId } from 'react';
 import { AFPropertyData } from '@/types/apartamentosFortaleza';
 import logoAF from '@/assets/logo-apartamentos-fortaleza.png';
 import { useLogoBase64 } from '@/hooks/useLogoBase64';
@@ -8,8 +9,11 @@ const DARK_CARD = 'rgba(40,44,52,0.88)';
 const golos = "'Golos Text', Arial, sans-serif";
 
 // ─── Helper: Logo ────────────────────────────────────────────────────────────
-const AFLogo2 = ({ width = 100 }: { width?: number }) => {
+const AFLogo2 = ({ width = 100, variant = 'color' }: { width?: number; variant?: 'color' | 'white' }) => {
   const base64 = useLogoBase64(logoAF);
+  if (variant === 'white') {
+    return <img src={base64} alt="AF" width={width} style={{ display: 'block', filter: 'brightness(0) invert(1)' }} />;
+  }
   return <img src={base64} alt="AF" width={width} style={{ display: 'block' }} />;
 };
 
@@ -54,131 +58,147 @@ const formatPriceFull = (v: number) =>
   `R$ ${v.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 
 // ═══════════════════════════════════════════════════════════════════════════════
-// SLIDE 1: CAPA — foto no topo, seção branca embaixo, badge preço, specs icons
-// Referência: AM cover — foto 65%, white bottom com chevrons, dark price tag,
-// title em laranja itálico bold, dark specs card com ícones à direita
+// SLIDE 1: CAPA — Réplica fiel do AMCoverSlide com cores AF
+// Foto com clipPath (notches arredondados), badge laranja topo-esq,
+// card de preço teal inferior-dir, logo branca inferior-esq
 // ═══════════════════════════════════════════════════════════════════════════════
 export const AF2CoverSlide = ({ data, photos }: { data: AFPropertyData; photos: string[] }) => {
+  const uid = useId();
+  const clipId = `af2-cover-${uid}`;
   const photo = photos[0];
+
   const price = data.isRental ? data.rentalPrice : data.salePrice;
+  const priceLabel = data.isRental ? 'LOCAÇÃO' : 'VENDA';
+  const paymentParts = data.isRental
+    ? ['Locação']
+    : [
+        'À vista',
+        data.acceptsFinancing && 'Aceita financiamento',
+      ].filter(Boolean) as string[];
+  const paymentLine = paymentParts.join(' | ');
 
-  const specs: { icon: React.ReactNode; label: string }[] = [];
-  if (data.suites > 0) specs.push({ icon: <BedIcon />, label: `${data.suites} SUÍTE${data.suites > 1 ? 'S' : ''}` });
-  else if (data.bedrooms > 0) specs.push({ icon: <BedIcon />, label: `${data.bedrooms} QUARTO${data.bedrooms > 1 ? 'S' : ''}` });
-  if (data.garageSpaces > 0) specs.push({ icon: <CarIcon />, label: `${data.garageSpaces} VAGA${data.garageSpaces > 1 ? 'S' : ''} DE GARAGEM` });
-  const extraHighlights = (data.highlights || []).filter(h => h.trim());
-  if (extraHighlights.length > 0) specs.push({ icon: <GrillIcon />, label: extraHighlights[0].toUpperCase() });
-
-  // At 360px scale (1080/3): photo ~232px, bottom ~128px
-  const photoH = 232;
+  // ClipPath identical to AM: orange badge notch top-left, blue card notch bottom-right
+  const shapePath = [
+    'M 210 6',
+    'H 344',
+    'A 10 10 0 0 1 354 16',
+    'V 284',
+    'Q 354 294 344 294',
+    'H 208',
+    'Q 198 294 198 304',
+    'V 344',
+    'A 10 10 0 0 1 188 354',
+    'H 16',
+    'A 10 10 0 0 1 6 344',
+    'V 68',
+    'Q 6 58 16 58',
+    'H 190',
+    'Q 200 58 200 48',
+    'V 16',
+    'A 10 10 0 0 1 210 6',
+    'Z',
+  ].join(' ');
 
   return (
     <div style={{ position: 'relative', width: 360, height: 360, backgroundColor: '#ffffff', fontFamily: golos, overflow: 'hidden' }}>
-      {/* Photo — top portion */}
-      {photo ? (
-        <img src={photo} alt="" style={{ position: 'absolute', top: 0, left: 0, width: 360, height: photoH, objectFit: 'cover' }} />
-      ) : (
-        <div style={{ position: 'absolute', top: 0, left: 0, width: 360, height: photoH, backgroundColor: '#d1d5db' }} />
-      )}
-
-      {/* Decorative chevron/arrow shapes in white bottom — subtle gray > shapes */}
-      <svg style={{ position: 'absolute', left: 0, top: photoH, width: 360, height: 360 - photoH, zIndex: 1 }} viewBox="0 0 360 128" preserveAspectRatio="none">
-        {/* Large chevron 1 */}
-        <path d="M 30 128 L 90 128 L 160 30 L 130 30 L 70 100 L 50 128 Z" fill="rgba(0,0,0,0.04)" />
-        {/* Large chevron 2 */}
-        <path d="M 70 128 L 130 128 L 200 30 L 170 30 L 110 100 L 90 128 Z" fill="rgba(0,0,0,0.03)" />
-        {/* Smaller chevron 3 */}
-        <path d="M 110 128 L 150 128 L 220 50 L 190 50 L 140 105 Z" fill="rgba(0,0,0,0.025)" />
+      {/* clipPath definition */}
+      <svg aria-hidden="true" style={{ position: 'absolute', width: 0, height: 0, overflow: 'hidden' }}>
+        <defs>
+          <clipPath id={clipId} clipPathUnits="userSpaceOnUse">
+            <path d={shapePath} />
+          </clipPath>
+        </defs>
       </svg>
 
-      {/* Accent line — full width at photo/white junction */}
-      <AccentLine top={photoH} />
-
-      {/* Price badge — dark angled tag, left-aligned, crossing the accent line */}
+      {/* ORANGE BADGE: top:6, left:6, 190×48px */}
       <div style={{
-        position: 'absolute', left: 0, top: photoH - 15, zIndex: 25,
+        position: 'absolute', top: 6, left: 6, width: 190, height: 48, zIndex: 5,
+        background: `linear-gradient(180deg, ${ACCENT} 52.88%, #C44520 100%)`,
+        borderRadius: 10, padding: '5px 10px', boxSizing: 'border-box', overflow: 'hidden',
+        display: 'flex', flexDirection: 'column', justifyContent: 'center',
       }}>
-        <svg viewBox="0 0 180 36" width="180" height="36" style={{ display: 'block' }}>
-          <path d="M 0 3 L 165 0 Q 180 1 178 6 L 172 30 Q 170 36 160 36 L 0 33 Z" fill="#3a3e47" />
-        </svg>
-        <div style={{
-          position: 'absolute', top: 0, left: 0, right: 0, bottom: 0,
-          display: 'flex', alignItems: 'center', paddingLeft: 12, gap: 3,
-        }}>
-          <span style={{ color: ACCENT, fontSize: 8.5, fontWeight: 700 }}>R$</span>
-          <span style={{ color: 'white', fontSize: 17, fontWeight: 800, letterSpacing: '-0.3px' }}>
-            {price > 0
-              ? price.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
-              : 'Consulte'}
-          </span>
-        </div>
-      </div>
-
-      {/* Bottom-left: Title (orange italic bold) + Neighborhood (black bold) + Logo */}
-      <div style={{
-        position: 'absolute', left: 12, bottom: 10, zIndex: 15,
-        maxWidth: 165,
-      }}>
-        <p style={{
-          fontSize: 12, fontWeight: 800, color: ACCENT, lineHeight: 1.15,
-          margin: '0 0 0px', textTransform: 'uppercase', fontStyle: 'italic',
-        }}>
-          {data.title || 'SEU IMÓVEL'}
+        <p style={{ color: 'white', fontWeight: 700, fontSize: 11, lineHeight: 1.2, margin: 0, fontFamily: golos, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+          {data.title || 'Nome do Imóvel'}
         </p>
-        {data.neighborhood && (
-          <p style={{
-            fontSize: 11, fontWeight: 700, color: '#1a1a1a', margin: '0 0 6px',
-            textTransform: 'uppercase', lineHeight: 1.2,
-          }}>
-            {data.neighborhood}
-          </p>
-        )}
-        <AFLogo2 width={95} />
-      </div>
-
-      {/* Bottom-right: Dark rounded specs card with icons */}
-      {specs.length > 0 && (
-        <div style={{
-          position: 'absolute', right: 8, bottom: 8, zIndex: 20,
-          backgroundColor: DARK_CARD, borderRadius: 10, padding: '8px 8px 6px',
-          width: 155,
-        }}>
-          {/* Top row: 2 items side by side */}
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: specs.length >= 2 ? '1fr 1fr' : '1fr',
-            gap: 4,
-          }}>
-            {specs.slice(0, 2).map((s, i) => (
-              <div key={i} style={{
-                display: 'flex', flexDirection: 'column', alignItems: 'center',
-                gap: 2, padding: '3px 2px',
-              }}>
-                {s.icon}
-                <span style={{
-                  color: 'white', fontSize: 5.5, fontWeight: 700, textAlign: 'center',
-                  lineHeight: 1.2, textTransform: 'uppercase',
-                }}>{s.label}</span>
-              </div>
-            ))}
-          </div>
-          {/* Bottom row: centered single item */}
-          {specs.length > 2 && (
-            <div style={{ display: 'flex', justifyContent: 'center', marginTop: 3 }}>
-              <div style={{
-                display: 'flex', flexDirection: 'column', alignItems: 'center',
-                gap: 2, padding: '3px 2px',
-              }}>
-                {specs[2].icon}
-                <span style={{
-                  color: 'white', fontSize: 5.5, fontWeight: 700, textAlign: 'center',
-                  lineHeight: 1.2, textTransform: 'uppercase',
-                }}>{specs[2].label}</span>
-              </div>
-            </div>
+        <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '2px 6px', marginTop: 2 }}>
+          {data.neighborhood && (
+            <span style={{ color: 'white', fontSize: 9, opacity: 0.95, display: 'flex', alignItems: 'center', gap: 2, fontFamily: golos }}>
+              <svg width="7" height="9" viewBox="0 0 10 13" fill="white">
+                <path d="M5 0C2.24 0 0 2.24 0 5c0 3.75 5 8 5 8s5-4.25 5-8C10 2.24 7.76 0 5 0zm0 7c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/>
+              </svg>
+              {data.neighborhood}
+            </span>
+          )}
+          {data.bedrooms > 0 && (
+            <span style={{ color: 'white', fontSize: 9, opacity: 0.95, display: 'flex', alignItems: 'center', gap: 2, fontFamily: golos }}>
+              <svg width="11" height="8" viewBox="0 0 18 12" fill="white">
+                <path d="M1 8V4a1 1 0 011-1h4a1 1 0 011 1v1h4V4a1 1 0 011-1h4a1 1 0 011 1v4H1zm0 1h16v3H1V9z"/>
+              </svg>
+              {data.bedrooms} {data.bedrooms === 1 ? 'Qto' : 'Qtos'}
+            </span>
+          )}
+          {data.area > 0 && (
+            <span style={{ color: 'white', fontSize: 9, opacity: 0.95, display: 'flex', alignItems: 'center', gap: 2, fontFamily: golos }}>
+              <svg width="9" height="9" viewBox="0 0 12 12" fill="white">
+                <path d="M0 0v5l2-2 3 3 2-2-3-3 2-2H0zm12 12V7l-2 2-3-3-2 2 3 3-2 2h6z"/>
+              </svg>
+              {data.area}m²
+            </span>
           )}
         </div>
+      </div>
+
+      {/* PHOTO with clipPath */}
+      {photo ? (
+        <img src={photo} alt="" style={{
+          position: 'absolute', top: 0, left: 0, width: 360, height: 360,
+          objectFit: 'cover', display: 'block', clipPath: `url(#${clipId})`, zIndex: 10,
+        }} />
+      ) : (
+        <div style={{
+          position: 'absolute', top: 0, left: 0, width: 360, height: 360,
+          backgroundColor: '#d1d5db', clipPath: `url(#${clipId})`, zIndex: 10,
+        }} />
       )}
+
+      {/* WHITE LOGO: bottom-left, on the photo */}
+      <div style={{ position: 'absolute', bottom: 18, left: 18, zIndex: 20 }}>
+        <AFLogo2 width={106} variant="white" />
+      </div>
+
+      {/* TEAL PRICE CARD: bottom:10, right:10, 148×52px (AF uses teal instead of AM blue) */}
+      <div style={{
+        position: 'absolute', bottom: 10, right: 10, zIndex: 20,
+        background: `linear-gradient(180deg, ${PRIMARY} 36.06%, #065A6B 100%)`,
+        borderRadius: 10, padding: '5px 14px 5px', width: 148, height: 52,
+        boxSizing: 'border-box', boxShadow: '0 0 0 4px #ffffff',
+        display: 'flex', flexDirection: 'column', justifyContent: 'center',
+      }}>
+        {!data.isRental && (
+          <div style={{
+            display: 'inline-block', color: 'white', fontWeight: 700, fontSize: 7,
+            letterSpacing: '0.08em', backgroundColor: 'rgba(255,255,255,0.2)',
+            border: '1px solid rgba(255,255,255,0.4)', borderRadius: 20,
+            padding: '1px 6px', marginBottom: 2, alignSelf: 'flex-start', fontFamily: golos,
+          }}>
+            VENDA
+          </div>
+        )}
+        <div style={{ display: 'flex', alignItems: 'baseline', gap: 2, color: 'white' }}>
+          <span style={{ fontSize: 9, opacity: 0.75, marginRight: 1, fontFamily: golos }}>R$</span>
+          <span style={{ fontSize: 12, fontWeight: 700, lineHeight: 1, fontFamily: golos }}>
+            {price > 0
+              ? price.toLocaleString('pt-BR', { minimumFractionDigits: 0, maximumFractionDigits: 0 })
+              : 'Consulte'}
+          </span>
+          {price > 0 && <span style={{ fontSize: 10, opacity: 0.75, fontFamily: golos }}>,00</span>}
+        </div>
+        <div style={{ borderTop: '1px solid rgba(255,255,255,0.2)', marginTop: 3, paddingTop: 2 }}>
+          <p style={{ color: 'white', fontSize: 8, opacity: 0.9, margin: 0, lineHeight: 1.3, fontFamily: golos }}>
+            {paymentLine}
+          </p>
+        </div>
+      </div>
     </div>
   );
 };
