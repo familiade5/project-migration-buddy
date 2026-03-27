@@ -175,26 +175,28 @@ export const AF2CoverSlide = ({ data, photos }: { data: AFPropertyData; photos: 
         </svg>
       </div>
 
-      {/* AF logo as watermark - large, fills the white panel */}
+      {/* AF logo icon as watermark - only the icon part, very large, centered */}
       <div style={{
         position: 'absolute', left: '50%', top: photoH + 2, transform: 'translateX(-50%)',
         zIndex: 6, pointerEvents: 'none', userSelect: 'none',
         width: 360, height: 156, display: 'flex', alignItems: 'center', justifyContent: 'center',
         overflow: 'hidden',
       }}>
-        <img src={logoBase64} alt="" style={{ width: 360, display: 'block', filter: 'grayscale(100%) brightness(1.9) contrast(0.25)', opacity: 0.4 }} />
+        {/* Shift image left so only the icon/drawing part shows, not the text */}
+        <img src={logoBase64} alt="" style={{ width: 600, marginLeft: -300, display: 'block', filter: 'grayscale(100%) brightness(1.9) contrast(0.25)', opacity: 0.4 }} />
       </div>
 
-      {/* Price badge - trapezoid with rounded left, diagonal right, white border */}
+      {/* Price badge - top line longer, bottom shorter, 45° diagonal from top-right down to bottom-right */}
       <div style={{
-        position: 'absolute', left: -6, top: 172, width: 210, height: 52, zIndex: 30,
+        position: 'absolute', left: -6, top: 172, width: 220, height: 52, zIndex: 30,
         filter: 'drop-shadow(0 4px 12px rgba(0,0,0,0.35))',
       }}>
-        <svg viewBox="0 0 210 52" width="210" height="52" style={{ display: 'block', overflow: 'visible' }}>
-          <path d="M14 3 H172 L196 26 L172 49 H14 C7 49 3 44 3 38 V14 C3 8 7 3 14 3 Z" fill={DARK_CARD} stroke="#ffffff" strokeWidth="2.5" strokeLinejoin="round" />
+        <svg viewBox="0 0 220 52" width="220" height="52" style={{ display: 'block', overflow: 'visible' }}>
+          {/* Top line goes to 200, bottom line goes to 152, diagonal connects them at 45° */}
+          <path d="M14 3 H200 L152 49 H14 C7 49 3 44 3 38 V14 C3 8 7 3 14 3 Z" fill={DARK_CARD} stroke="#ffffff" strokeWidth="2.5" strokeLinejoin="round" />
         </svg>
-        <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', padding: '0 20px 0 14px', gap: 3 }}>
-          <span style={{ background: GOLD_CSS, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', fontSize: 11, fontWeight: 800, lineHeight: 1, alignSelf: 'center' }}>R$</span>
+        <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', padding: '0 16px 0 14px', gap: 3 }}>
+          <span style={{ background: GOLD_CSS, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', fontSize: 11, fontWeight: 800, lineHeight: 1 }}>R$</span>
           <span style={{ background: GOLD_CSS, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', fontSize: 26, fontWeight: 800, lineHeight: 1, letterSpacing: '-0.02em' }}>{formattedPrice}</span>
         </div>
       </div>
