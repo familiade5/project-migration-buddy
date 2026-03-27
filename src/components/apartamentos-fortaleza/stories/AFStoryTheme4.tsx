@@ -1,0 +1,638 @@
+/**
+ * TEMA 4 — "PADRÃO" (Fortaleza)
+ * 5 slides INDEPENDENTES — idêntico ao AM, com cores e logo AF.
+ */
+
+import { AFPropertyData } from '@/types/apartamentosFortaleza';
+import logoAF from '@/assets/logo-apartamentos-fortaleza.png';
+import logoCaixa from '@/assets/logo-caixa.png';
+
+const STORY_W = 360;
+const STORY_H = 640;
+const PRIMARY = '#0C7B8E';
+const ACCENT = '#E8562A';
+
+const Logo = ({ size = 90, white = false }: { size?: number; white?: boolean }) => (
+  <img
+    src={logoAF}
+    alt="Apartamentos Fortaleza"
+    width={size}
+    style={white ? { filter: 'brightness(0) invert(1)' } : undefined}
+  />
+);
+
+const formatPrice = (v: number) =>
+  v > 0
+    ? `R$ ${v.toLocaleString('pt-BR', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`
+    : 'Consulte';
+
+const formatPriceParts = (v: number): { prefix: string; main: string; cents: string } => {
+  if (!v || v === 0) return { prefix: '', main: 'Consulte', cents: '' };
+  const formatted = v.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const parts = formatted.split(',');
+  return { prefix: 'R$', main: parts[0], cents: `,${parts[1]}` };
+};
+
+/* ─────────────────────────────────────────────────────────────────
+   SLIDE 1 — Grade de fotos
+   ───────────────────────────────────────────────────────────────── */
+export const AFStory4_T4_Slide1 = ({
+  data,
+  photos,
+}: {
+  data: AFPropertyData;
+  photos?: string[];
+}) => {
+  const price = data.isRental ? data.rentalPrice : data.salePrice;
+  const priceParts = formatPriceParts(price);
+  const imgs = photos && photos.length > 0 ? photos : [];
+  const img = (i: number) => imgs[i] ?? imgs[0] ?? undefined;
+
+  const floorLabel = data.floor ? (data.floor === '0' || data.floor.toLowerCase() === 'térreo' ? 'Térreo' : `${data.floor}° Andar`) : null;
+
+  return (
+    <div style={{
+      position: 'relative', width: STORY_W, height: STORY_H,
+      backgroundColor: '#ffffff', fontFamily: 'Arial, sans-serif', overflow: 'hidden',
+    }}>
+      {data.address && (
+        <div style={{ padding: '16px 18px 0', display: 'flex', alignItems: 'center', gap: 6 }}>
+          <span style={{ color: ACCENT, fontSize: 13 }}>📍</span>
+          <p style={{ color: '#555', fontSize: 11, margin: 0, fontWeight: 500 }}>{data.address}</p>
+        </div>
+      )}
+
+      <div style={{ padding: '10px 18px 0', display: 'flex', alignItems: 'stretch', gap: 10 }}>
+        <div style={{ flex: 1, backgroundColor: ACCENT, borderRadius: 10, padding: '10px 14px' }}>
+          <p style={{ color: 'white', fontSize: 16, fontWeight: 900, margin: '0 0 5px', lineHeight: 1.2 }}>
+            {data.title || 'Apartamento'}
+          </p>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'nowrap' }}>
+            {data.area > 0 && (
+              <span style={{ color: 'rgba(255,255,255,0.9)', fontSize: 10, display: 'flex', alignItems: 'center', gap: 3, whiteSpace: 'nowrap' }}>
+                <span style={{ fontSize: 11 }}>📐</span> {data.area} m²
+              </span>
+            )}
+            {floorLabel && (
+              <span style={{ color: 'rgba(255,255,255,0.9)', fontSize: 10, display: 'flex', alignItems: 'center', gap: 3, whiteSpace: 'nowrap' }}>
+                <span style={{ fontSize: 11 }}>🏢</span> {floorLabel}
+              </span>
+            )}
+            {data.bedrooms > 0 && (
+              <span style={{ color: 'rgba(255,255,255,0.9)', fontSize: 10, display: 'flex', alignItems: 'center', gap: 3, whiteSpace: 'nowrap' }}>
+                <span style={{ fontSize: 11 }}>🛏</span> {data.bedrooms} Quarto{data.bedrooms > 1 ? 's' : ''}
+              </span>
+            )}
+          </div>
+        </div>
+
+        {data.acceptsFinancing && (
+          <div style={{
+            width: 108, alignSelf: 'stretch', borderRadius: 10, overflow: 'hidden',
+            flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center',
+          }}>
+            <img src={logoCaixa} alt="CAIXA" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+          </div>
+        )}
+      </div>
+
+      <div style={{ padding: '10px 18px 0' }}>
+        <div style={{ height: 170, borderRadius: 10, overflow: 'hidden', marginBottom: 6 }}>
+          {img(0) ? <img src={img(0)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <div style={{ width: '100%', height: '100%', backgroundColor: '#e2e8f0' }} />}
+        </div>
+        <div style={{ display: 'flex', gap: 6, marginBottom: 6 }}>
+          <div style={{ flex: 1, height: 108, borderRadius: 10, overflow: 'hidden' }}>
+            {img(1) ? <img src={img(1)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <div style={{ width: '100%', height: '100%', backgroundColor: '#e2e8f0' }} />}
+          </div>
+          <div style={{ flex: 1, height: 108, borderRadius: 10, overflow: 'hidden' }}>
+            {img(2) ? <img src={img(2)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <div style={{ width: '100%', height: '100%', backgroundColor: '#e2e8f0' }} />}
+          </div>
+        </div>
+        <div style={{ display: 'flex', gap: 6 }}>
+          <div style={{ flex: 1, height: 100, borderRadius: 10, overflow: 'hidden' }}>
+            {img(3) ? <img src={img(3)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <div style={{ width: '100%', height: '100%', backgroundColor: '#e2e8f0' }} />}
+          </div>
+          <div style={{
+            flex: 1, height: 100, backgroundColor: PRIMARY, borderRadius: 10,
+            display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '8px 12px',
+          }}>
+            <div style={{
+              display: 'inline-block', alignSelf: 'flex-start',
+              color: 'white', fontWeight: 700, fontSize: 8, letterSpacing: '0.08em',
+              backgroundColor: 'rgba(255,255,255,0.2)', border: '1px solid rgba(255,255,255,0.4)',
+              borderRadius: 20, padding: '1px 8px', marginBottom: 4,
+            }}>
+              {data.isRental ? 'LOCAÇÃO' : 'VENDA'}
+            </div>
+            <div style={{ display: 'flex', alignItems: 'baseline', gap: 1, color: 'white' }}>
+              <span style={{ fontSize: 10, opacity: 0.75, marginRight: 1 }}>R$</span>
+              <span style={{ fontSize: 19, fontWeight: 700, lineHeight: 1 }}>{priceParts.main || 'Consulte'}</span>
+              {priceParts.cents && <span style={{ fontSize: 10, opacity: 0.75 }}>{priceParts.cents}</span>}
+            </div>
+            <div style={{ borderTop: '1px solid rgba(255,255,255,0.2)', marginTop: 4, paddingTop: 3 }}>
+              <p style={{ color: 'white', fontSize: 8, opacity: 0.9, margin: 0, lineHeight: 1.3 }}>
+                {data.isRental ? 'Locação' : ['À vista', data.acceptsFinancing && 'Aceita financiamento'].filter(Boolean).join(' | ')}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: 10 }}>
+        <Logo size={85} />
+      </div>
+    </div>
+  );
+};
+
+/* ─────────────────────────────────────────────────────────────────
+   SLIDE 2 — Composição triangular de 5 fotos + preço
+   ───────────────────────────────────────────────────────────────── */
+export const AFStory4_T4_Slide2 = ({
+  data,
+  photo,
+  photos,
+}: {
+  data: AFPropertyData;
+  photo?: string;
+  photos?: string[];
+}) => {
+  const price = data.isRental ? data.rentalPrice : data.salePrice;
+  const imgs = photos && photos.length > 0 ? photos : photo ? [photo] : [];
+  const img = (i: number) => imgs[i] ?? imgs[0] ?? undefined;
+  const INFO_TOP = 368;
+
+  return (
+    <div style={{
+      position: 'relative', width: STORY_W, height: STORY_H,
+      fontFamily: 'Arial, sans-serif', overflow: 'hidden',
+    }}>
+      <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: INFO_TOP, backgroundColor: '#ffffff' }} />
+      <div style={{ position: 'absolute', top: INFO_TOP, left: 0, right: 0, bottom: 0, backgroundColor: '#0a0f1e' }} />
+
+      <div style={{ position: 'absolute', top: 14, left: 0, right: 0, display: 'flex', justifyContent: 'center', zIndex: 20 }}>
+        <Logo size={72} />
+      </div>
+
+      <div style={{
+        position: 'absolute', top: 56, left: 0, right: 0, height: 180,
+        clipPath: 'polygon(0 0, 100% 0, 100% 82%, 50% 100%, 0 82%)', overflow: 'hidden',
+      }}>
+        {img(0) ? <img src={img(0)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <div style={{ width: '100%', height: '100%', backgroundColor: '#e2e8f0' }} />}
+      </div>
+
+      <div style={{
+        position: 'absolute', top: 248, left: 14, right: 14,
+        display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 6, zIndex: 10,
+      }}>
+        {[1, 2, 3, 4].map((idx) => (
+          <div key={idx} style={{ height: 96, borderRadius: 10, overflow: 'hidden' }}>
+            {img(idx) ? <img src={img(idx)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <div style={{ width: '100%', height: '100%', backgroundColor: '#e2e8f0' }} />}
+          </div>
+        ))}
+      </div>
+
+      {data.neighborhood && (
+        <div style={{ position: 'absolute', top: 70, left: 0, right: 0, display: 'flex', justifyContent: 'center', zIndex: 30 }}>
+          <div style={{ backgroundColor: ACCENT, borderRadius: 30, padding: '4px 16px', display: 'flex', alignItems: 'center', gap: 5 }}>
+            <span style={{ fontSize: 10 }}>📍</span>
+            <span style={{ color: 'white', fontSize: 10, fontWeight: 700 }}>{data.neighborhood}</span>
+          </div>
+        </div>
+      )}
+
+      <div style={{ position: 'absolute', bottom: 22, left: 0, right: 0, zIndex: 10, padding: '0 18px' }}>
+        <p style={{ color: 'white', fontSize: 18, fontWeight: 900, textAlign: 'center', margin: '0 0 8px', lineHeight: 1.2 }}>
+          {data.title || 'Apartamento Disponível'}
+        </p>
+        <div style={{ display: 'flex', justifyContent: 'center', gap: 5, flexWrap: 'wrap', marginBottom: 10 }}>
+          {data.bedrooms > 0 && (
+            <div style={{ backgroundColor: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: 20, padding: '3px 9px' }}>
+              <span style={{ color: 'white', fontSize: 9, fontWeight: 600 }}>🛏 {data.bedrooms} Qto{data.bedrooms > 1 ? 's' : ''}</span>
+            </div>
+          )}
+          {data.area > 0 && (
+            <div style={{ backgroundColor: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: 20, padding: '3px 9px' }}>
+              <span style={{ color: 'white', fontSize: 9, fontWeight: 600 }}>📐 {data.area}m²</span>
+            </div>
+          )}
+          {data.garageSpaces > 0 && (
+            <div style={{ backgroundColor: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: 20, padding: '3px 9px' }}>
+              <span style={{ color: 'white', fontSize: 9, fontWeight: 600 }}>🚗 {data.garageSpaces} Vaga{data.garageSpaces > 1 ? 's' : ''}</span>
+            </div>
+          )}
+        </div>
+        <div style={{
+          backgroundColor: 'white', borderRadius: 14, padding: '12px 16px',
+          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        }}>
+          <div>
+            <p style={{ color: '#64748b', fontSize: 9, margin: '0 0 2px', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+              {data.isRental ? 'Aluguel' : 'Valor de Venda'}
+            </p>
+            <p style={{ color: PRIMARY, fontSize: 22, fontWeight: 900, margin: 0, lineHeight: 1 }}>
+              {formatPrice(price)}
+            </p>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 3, alignItems: 'flex-end' }}>
+            {data.acceptsFinancing && (
+              <span style={{ backgroundColor: '#dcfce7', color: '#16a34a', fontSize: 9, fontWeight: 700, padding: '2px 8px', borderRadius: 20 }}>✓ Financiamento</span>
+            )}
+            {data.acceptsFGTS && (
+              <span style={{ backgroundColor: '#dcfce7', color: '#16a34a', fontSize: 9, fontWeight: 700, padding: '2px 8px', borderRadius: 20 }}>✓ FGTS</span>
+            )}
+            {data.subsidy > 0 && (
+              <span style={{ backgroundColor: '#fef9c3', color: '#854d0e', fontSize: 9, fontWeight: 700, padding: '2px 8px', borderRadius: 20 }}>Subsídio até {formatPrice(data.subsidy)}</span>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+/* ─────────────────────────────────────────────────────────────────
+   SLIDE 3 — Ficha técnica clean + 3 fotos
+   ───────────────────────────────────────────────────────────────── */
+export const AFStory4_T4_Slide3 = ({
+  data,
+  photo,
+  photos,
+}: {
+  data: AFPropertyData;
+  photo?: string;
+  photos?: string[];
+}) => {
+  const allPhotos = photos && photos.length > 0 ? photos : photo ? [photo] : [];
+  const img = (i: number) => allPhotos[i] ?? allPhotos[0] ?? undefined;
+  const price = data.isRental ? data.rentalPrice : data.salePrice;
+
+  const specCards = [
+    data.bedrooms > 0 && { icon: '🛏', label: 'Quartos', value: String(data.bedrooms) },
+    data.bathrooms > 0 && { icon: '🚿', label: 'Banheiros', value: String(data.bathrooms) },
+    data.area > 0 && { icon: '📐', label: 'Área', value: `${data.area}m²` },
+    data.garageSpaces > 0 && { icon: '🚗', label: 'Vagas', value: String(data.garageSpaces) },
+    data.suites > 0 && { icon: '🛁', label: 'Suítes', value: String(data.suites) },
+    data.floor && { icon: '🏢', label: 'Andar', value: data.floor === '0' ? 'Térreo' : `${data.floor}°` },
+    data.furnished && { icon: '🪑', label: 'Mobília', value: 'Mobiliado' },
+    data.condominiumFee > 0 && { icon: '🏛', label: 'Condomínio', value: `R$ ${data.condominiumFee.toLocaleString('pt-BR')}` },
+  ].filter(Boolean) as { icon: string; label: string; value: string }[];
+
+  return (
+    <div style={{
+      position: 'relative', width: STORY_W, height: STORY_H,
+      backgroundColor: '#f8fafc', fontFamily: 'Arial, sans-serif', overflow: 'hidden',
+    }}>
+      <div style={{ position: 'relative', height: 128, backgroundColor: ACCENT, overflow: 'hidden' }}>
+        {img(0) && (
+          <img src={img(0)} alt="" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', filter: 'brightness(0.35) saturate(0.5)' }} />
+        )}
+        <div style={{ position: 'absolute', inset: 0, background: `linear-gradient(135deg, ${ACCENT}e0 0%, ${ACCENT}eb 100%)` }} />
+        <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', zIndex: 5, gap: 6 }}>
+          <Logo size={72} white />
+          <p style={{ color: 'white', fontSize: 14, fontWeight: 900, margin: 0, textAlign: 'center', lineHeight: 1.2 }}>
+            {data.title || 'Ficha do Imóvel'}
+          </p>
+          {data.neighborhood && (
+            <div style={{ backgroundColor: 'rgba(255,255,255,0.2)', borderRadius: 20, padding: '2px 10px' }}>
+              <span style={{ color: 'white', fontSize: 9, fontWeight: 600 }}>📍 {data.neighborhood}</span>
+            </div>
+          )}
+        </div>
+      </div>
+
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 5, padding: '8px 14px 0' }}>
+        {[0, 1].map((row) => (
+          <div key={row} style={{ display: 'flex', gap: 5 }}>
+            {[0, 1, 2].map((col) => {
+              const idx = row * 3 + col;
+              return (
+                <div key={col} style={{
+                  flex: 1, height: 82, borderRadius: 10, overflow: 'hidden',
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.12)',
+                }}>
+                  {img(idx) ? <img src={img(idx)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <div style={{ width: '100%', height: '100%', backgroundColor: '#e2e8f0' }} />}
+                </div>
+              );
+            })}
+          </div>
+        ))}
+      </div>
+
+      <div style={{ padding: '10px 14px 0' }}>
+        <p style={{ color: '#94a3b8', fontSize: 10, fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', margin: '0 0 8px' }}>
+          Características
+        </p>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 7 }}>
+          {specCards.slice(0, 6).map((s, i) => (
+            <div key={i} style={{
+              backgroundColor: 'white', borderRadius: 12, padding: '9px 7px',
+              border: '1px solid #e2e8f0', textAlign: 'center',
+              boxShadow: '0 1px 4px rgba(0,0,0,0.05)',
+            }}>
+              <div style={{ fontSize: 16, marginBottom: 2 }}>{s.icon}</div>
+              <p style={{ color: PRIMARY, fontSize: 12, fontWeight: 900, margin: '0 0 2px' }}>{s.value}</p>
+              <p style={{ color: '#94a3b8', fontSize: 7.5, margin: 0, textTransform: 'uppercase', letterSpacing: '0.06em' }}>{s.label}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div style={{ padding: '8px 14px 0' }}>
+        <div style={{
+          backgroundColor: PRIMARY, borderRadius: 14, padding: '12px 16px',
+          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+          boxShadow: `0 6px 20px ${PRIMARY}4d`,
+        }}>
+          <div>
+            <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: 10, margin: '0 0 2px', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+              {data.isRental ? 'Aluguel/mês' : 'Valor de Venda'}
+            </p>
+            <p style={{ color: 'white', fontSize: 23, fontWeight: 900, margin: 0, lineHeight: 1 }}>
+              {formatPrice(price)}
+            </p>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 4, alignItems: 'flex-end' }}>
+            {data.acceptsFinancing && (
+              <span style={{ backgroundColor: 'rgba(134,239,172,0.15)', border: '1px solid rgba(134,239,172,0.4)', color: '#86efac', fontSize: 9, fontWeight: 700, padding: '3px 8px', borderRadius: 20 }}>✓ Financiável</span>
+            )}
+            {data.acceptsFGTS && (
+              <span style={{ backgroundColor: 'rgba(134,239,172,0.15)', border: '1px solid rgba(134,239,172,0.4)', color: '#86efac', fontSize: 9, fontWeight: 700, padding: '3px 8px', borderRadius: 20 }}>✓ FGTS</span>
+            )}
+            {data.subsidy > 0 && (
+              <span style={{ backgroundColor: 'rgba(253,230,138,0.2)', color: '#fde68a', fontSize: 9, fontWeight: 700, padding: '3px 8px', borderRadius: 20 }}>Subsídio {formatPrice(data.subsidy)}</span>
+            )}
+          </div>
+        </div>
+      </div>
+
+      <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, backgroundColor: ACCENT, padding: '10px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <p style={{ color: 'rgba(255,255,255,0.9)', fontSize: 10, margin: 0, fontWeight: 600 }}>
+          {data.brokerPhone || '(85) 99999-9999'}
+        </p>
+        <p style={{ color: 'rgba(255,255,255,0.75)', fontSize: 9, margin: 0 }}>
+          apartamentosfortaleza.com
+        </p>
+      </div>
+    </div>
+  );
+};
+
+/* ─────────────────────────────────────────────────────────────────
+   SLIDE 4 — Bento Gallery (6 fotos) com preço rodapé
+   ───────────────────────────────────────────────────────────────── */
+export const AFStory4_T4_Slide4 = ({
+  data,
+  photos,
+}: {
+  data: AFPropertyData;
+  photos?: string[];
+}) => {
+  const price = data.isRental ? data.rentalPrice : data.salePrice;
+  const imgs = photos && photos.length > 0 ? photos : [];
+  const img = (i: number) => imgs[i] ?? imgs[0] ?? undefined;
+
+  const FOOTER_H = 110;
+  const TOP_H = 68;
+  const PHOTO_ZONE = STORY_H - TOP_H - FOOTER_H;
+  const GAP = 4;
+  const R1 = Math.round(PHOTO_ZONE * 0.40);
+  const R2 = Math.round(PHOTO_ZONE * 0.32);
+  const R3 = PHOTO_ZONE - R1 - R2 - GAP * 2;
+
+  return (
+    <div style={{
+      position: 'relative', width: STORY_W, height: STORY_H,
+      backgroundColor: '#0a0f1e', fontFamily: 'Arial, sans-serif', overflow: 'hidden',
+    }}>
+      <div style={{
+        position: 'absolute', top: 0, left: 0, right: 0, height: TOP_H, zIndex: 20,
+        backgroundColor: 'white',
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        padding: '0 16px', boxShadow: '0 2px 12px rgba(0,0,0,0.2)',
+      }}>
+        <Logo size={75} />
+        {data.neighborhood && (
+          <div style={{ backgroundColor: ACCENT, borderRadius: 8, padding: '5px 12px' }}>
+            <p style={{ color: 'white', fontSize: 10, fontWeight: 700, margin: 0 }}>📍 {data.neighborhood}</p>
+          </div>
+        )}
+      </div>
+
+      <div style={{
+        position: 'absolute', top: TOP_H, left: 0, right: 0, height: PHOTO_ZONE,
+        display: 'flex', flexDirection: 'column', gap: GAP, padding: `${GAP}px`, boxSizing: 'border-box',
+      }}>
+        <div style={{ height: R1, borderRadius: 12, overflow: 'hidden', flexShrink: 0, position: 'relative' }}>
+          {img(0) ? <img src={img(0)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <div style={{ width: '100%', height: '100%', backgroundColor: '#1e293b' }} />}
+          <div style={{ position: 'absolute', bottom: 8, left: 10, backgroundColor: 'rgba(10,10,15,0.75)', borderRadius: 20, padding: '3px 10px' }}>
+            <span style={{ color: 'white', fontSize: 9, fontWeight: 700 }}>{data.title || 'Apartamento'}</span>
+          </div>
+        </div>
+        <div style={{ height: R2, display: 'flex', gap: GAP, flexShrink: 0 }}>
+          <div style={{ flex: 11, borderRadius: 12, overflow: 'hidden' }}>
+            {img(1) ? <img src={img(1)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <div style={{ width: '100%', height: '100%', backgroundColor: '#1e293b' }} />}
+          </div>
+          <div style={{ flex: 9, borderRadius: 12, overflow: 'hidden' }}>
+            {img(2) ? <img src={img(2)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <div style={{ width: '100%', height: '100%', backgroundColor: '#1e293b' }} />}
+          </div>
+        </div>
+        <div style={{ height: R3, display: 'flex', gap: GAP, flexShrink: 0 }}>
+          {[3, 4, 5].map((idx) => (
+            <div key={idx} style={{ flex: 1, borderRadius: 10, overflow: 'hidden' }}>
+              {img(idx) ? <img src={img(idx)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <div style={{ width: '100%', height: '100%', backgroundColor: '#1e293b' }} />}
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div style={{
+        position: 'absolute', bottom: 0, left: 0, right: 0, height: FOOTER_H,
+        backgroundColor: '#0a0f1e', padding: '10px 16px',
+        display: 'flex', flexDirection: 'column', justifyContent: 'space-between',
+        borderTop: '1px solid rgba(255,255,255,0.07)',
+      }}>
+        <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
+          <div>
+            <p style={{ color: 'white', fontSize: 13, fontWeight: 800, margin: '0 0 4px', lineHeight: 1.2 }}>
+              {data.title || 'Apartamento Disponível'}
+            </p>
+            <div style={{ display: 'flex', gap: 5, flexWrap: 'wrap' }}>
+              {data.bedrooms > 0 && <span style={{ color: '#67e8f9', fontSize: 10 }}>🛏 {data.bedrooms} Qtos</span>}
+              {data.area > 0 && <span style={{ color: '#67e8f9', fontSize: 10 }}>• 📐 {data.area}m²</span>}
+              {data.garageSpaces > 0 && <span style={{ color: '#67e8f9', fontSize: 10 }}>• 🚗 {data.garageSpaces} Vaga{data.garageSpaces > 1 ? 's' : ''}</span>}
+            </div>
+          </div>
+          <div style={{ textAlign: 'right' }}>
+            <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: 9, margin: '0 0 2px', textTransform: 'uppercase' }}>{data.isRental ? 'Aluguel' : 'Venda'}</p>
+            <p style={{ color: ACCENT, fontSize: 18, fontWeight: 900, margin: 0, lineHeight: 1 }}>{formatPrice(price)}</p>
+          </div>
+        </div>
+        <div style={{ display: 'flex', gap: 5 }}>
+          {data.acceptsFinancing && (
+            <span style={{ backgroundColor: `${PRIMARY}59`, border: `1px solid ${PRIMARY}80`, color: '#67e8f9', fontSize: 9, fontWeight: 600, padding: '2px 8px', borderRadius: 20 }}>✓ Financiamento</span>
+          )}
+          {data.acceptsFGTS && (
+            <span style={{ backgroundColor: `${PRIMARY}59`, border: `1px solid ${PRIMARY}80`, color: '#67e8f9', fontSize: 9, fontWeight: 600, padding: '2px 8px', borderRadius: 20 }}>✓ FGTS</span>
+          )}
+          {data.subsidy > 0 && (
+            <span style={{ backgroundColor: 'rgba(253,230,138,0.15)', color: '#fde68a', fontSize: 9, fontWeight: 600, padding: '2px 8px', borderRadius: 20 }}>Subsídio {formatPrice(data.subsidy)}</span>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+/* ─────────────────────────────────────────────────────────────────
+   SLIDE 5 — Dark Gallery CTA
+   ───────────────────────────────────────────────────────────────── */
+export const AFStory4_T4_Slide5 = ({
+  data,
+  photo,
+  photos,
+}: {
+  data: AFPropertyData;
+  photo?: string;
+  photos?: string[];
+}) => {
+  const price = data.isRental ? data.rentalPrice : data.salePrice;
+  const imgs = photos && photos.length > 0 ? photos : photo ? [photo] : [];
+  const img = (i: number) => imgs[i] ?? imgs[0] ?? undefined;
+
+  const GAP = 3;
+  const HERO_H = 158;
+  const ROW_H = 82;
+  const PHOTO_ZONE = HERO_H + GAP + ROW_H + GAP + ROW_H;
+
+  return (
+    <div style={{
+      position: 'relative', width: STORY_W, height: STORY_H,
+      backgroundColor: '#0a0f1e', fontFamily: 'Arial, sans-serif', overflow: 'hidden',
+    }}>
+      <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: PHOTO_ZONE }}>
+        <div style={{ height: HERO_H, overflow: 'hidden' }}>
+          {img(0) ? <img src={img(0)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <div style={{ width: '100%', height: '100%', backgroundColor: '#1e293b' }} />}
+        </div>
+        <div style={{ display: 'flex', gap: GAP, marginTop: GAP, height: ROW_H }}>
+          <div style={{ flex: 11, overflow: 'hidden' }}>
+            {img(1) ? <img src={img(1)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <div style={{ width: '100%', height: '100%', backgroundColor: '#1e293b' }} />}
+          </div>
+          <div style={{ flex: 9, overflow: 'hidden' }}>
+            {img(2) ? <img src={img(2)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <div style={{ width: '100%', height: '100%', backgroundColor: '#1e293b' }} />}
+          </div>
+        </div>
+        <div style={{ display: 'flex', gap: GAP, marginTop: GAP, height: ROW_H }}>
+          <div style={{ flex: 9, overflow: 'hidden' }}>
+            {img(3) ? <img src={img(3)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <div style={{ width: '100%', height: '100%', backgroundColor: '#1e293b' }} />}
+          </div>
+          <div style={{ flex: 11, overflow: 'hidden' }}>
+            {img(4) ? <img src={img(4)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <div style={{ width: '100%', height: '100%', backgroundColor: '#1e293b' }} />}
+          </div>
+        </div>
+      </div>
+
+      <div style={{
+        position: 'absolute', top: 0, left: 0, right: 0, zIndex: 20,
+        padding: '14px 16px 20px',
+        display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 7,
+      }}>
+        <Logo size={82} white />
+        {data.neighborhood && (
+          <div style={{
+            position: 'absolute', top: 14, right: 16,
+            backgroundColor: `${ACCENT}f2`, borderRadius: 30, padding: '3px 14px',
+            display: 'flex', alignItems: 'center', gap: 4,
+          }}>
+            <span style={{ fontSize: 9 }}>📍</span>
+            <span style={{ color: 'white', fontSize: 9, fontWeight: 700 }}>{data.neighborhood}</span>
+          </div>
+        )}
+      </div>
+
+      <div style={{
+        position: 'absolute', top: PHOTO_ZONE, left: 0, right: 0, bottom: 0,
+        zIndex: 5, display: 'flex', flexDirection: 'column', padding: '10px 16px 18px',
+      }}>
+        <p style={{
+          color: 'white', fontSize: 17, fontWeight: 900, textAlign: 'center',
+          margin: '0 0 8px', lineHeight: 1.25,
+        }}>
+          {data.title || 'Apartamento Disponível'}
+        </p>
+
+        <div style={{ display: 'flex', gap: 5, flexWrap: 'wrap', justifyContent: 'center', marginBottom: 10 }}>
+          {data.bedrooms > 0 && (
+            <div style={{ backgroundColor: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.18)', borderRadius: 20, padding: '4px 10px' }}>
+              <span style={{ color: 'white', fontSize: 9, fontWeight: 700 }}>🛏 {data.bedrooms} Qto{data.bedrooms > 1 ? 's' : ''}</span>
+            </div>
+          )}
+          {data.area > 0 && (
+            <div style={{ backgroundColor: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.18)', borderRadius: 20, padding: '4px 10px' }}>
+              <span style={{ color: 'white', fontSize: 9, fontWeight: 700 }}>📐 {data.area}m²</span>
+            </div>
+          )}
+          {data.garageSpaces > 0 && (
+            <div style={{ backgroundColor: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.18)', borderRadius: 20, padding: '4px 10px' }}>
+              <span style={{ color: 'white', fontSize: 9, fontWeight: 700 }}>🚗 {data.garageSpaces} Vaga{data.garageSpaces > 1 ? 's' : ''}</span>
+            </div>
+          )}
+          {data.suites > 0 && (
+            <div style={{ backgroundColor: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.18)', borderRadius: 20, padding: '4px 10px' }}>
+              <span style={{ color: 'white', fontSize: 9, fontWeight: 700 }}>🛁 {data.suites} Suíte{data.suites > 1 ? 's' : ''}</span>
+            </div>
+          )}
+        </div>
+
+        <div style={{
+          backgroundColor: ACCENT, borderRadius: 14,
+          padding: '10px 20px', textAlign: 'center', marginBottom: 10,
+          boxShadow: `0 6px 22px ${ACCENT}73`,
+        }}>
+          <p style={{ color: 'rgba(255,255,255,0.75)', fontSize: 9, margin: '0 0 2px', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
+            {data.isRental ? 'Aluguel mensal' : 'Valor de Venda'}
+          </p>
+          <p style={{ color: 'white', fontSize: 22, fontWeight: 900, margin: 0, lineHeight: 1 }}>
+            {formatPrice(price)}
+          </p>
+          {(data.acceptsFinancing || data.acceptsFGTS) && (
+            <p style={{ color: 'rgba(255,255,255,0.85)', fontSize: 9, margin: '3px 0 0', fontWeight: 600 }}>
+              {[data.acceptsFinancing && '✓ Financiamento', data.acceptsFGTS && '✓ FGTS'].filter(Boolean).join(' • ')}
+            </p>
+          )}
+        </div>
+
+        <div style={{
+          backgroundColor: 'rgba(255,255,255,0.07)',
+          border: '1px solid rgba(255,255,255,0.13)',
+          borderRadius: 18, padding: '12px 16px',
+        }}>
+          <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: 8, margin: '0 0 4px', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
+            Fale com o corretor
+          </p>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
+            <div>
+              <p style={{ color: 'white', fontSize: 13, fontWeight: 800, margin: 0 }}>
+                {data.brokerName || 'Corretor'}
+              </p>
+              <p style={{ color: 'rgba(255,255,255,0.45)', fontSize: 8, margin: 0 }}>{data.creci || ''}</p>
+            </div>
+            <div style={{
+              backgroundColor: '#25D366', borderRadius: 10,
+              padding: '5px 12px', display: 'flex', alignItems: 'center', gap: 5,
+              boxShadow: '0 4px 12px rgba(37,211,102,0.4)',
+            }}>
+              <span style={{ fontSize: 12 }}>💬</span>
+              <span style={{ color: 'white', fontSize: 11, fontWeight: 800 }}>
+                {data.brokerPhone || '(85) 99999-9999'}
+              </span>
+            </div>
+          </div>
+          <div style={{ borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: 8, display: 'flex', justifyContent: 'center' }}>
+            <span style={{ color: 'rgba(255,255,255,0.4)', fontSize: 8 }}>🌐 www.apartamentosfortaleza.com</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
