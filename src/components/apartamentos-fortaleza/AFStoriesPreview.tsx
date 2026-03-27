@@ -10,6 +10,13 @@ import { toast } from 'sonner';
 import { AFStory1_T1_Curiosity, AFStory1_T1_Reveal, AFStory1_T1_CTA } from './stories/AFStoryTheme1';
 import { AFStory2_T2_Curiosity, AFStory2_T2_Reveal, AFStory2_T2_CTA } from './stories/AFStoryTheme2';
 import { AFStory3_T3_Curiosity, AFStory3_T3_Reveal, AFStory3_T3_CTA } from './stories/AFStoryTheme3';
+import {
+  AFStory4_T4_Slide1,
+  AFStory4_T4_Slide2,
+  AFStory4_T4_Slide3,
+  AFStory4_T4_Slide4,
+  AFStory4_T4_Slide5,
+} from './stories/AFStoryTheme4';
 
 const STORY_W = 360;
 const STORY_H = 640;
@@ -21,12 +28,13 @@ interface AFStoriesPreviewProps {
   photos: string[];
 }
 
-type ThemeId = 1 | 2 | 3;
+type ThemeId = 1 | 2 | 3 | 4;
 
 const THEMES = [
   { id: 1 as ThemeId, name: 'Brisa do Mar', description: 'Dark & Oceânico', emoji: '🌊', accent: PRIMARY, gradient: `linear-gradient(135deg, #071a1e, ${PRIMARY})`, slideCount: 3 },
   { id: 2 as ThemeId, name: 'Praia Branca', description: 'Branco & Sofisticado', emoji: '✨', accent: ACCENT, gradient: `linear-gradient(135deg, #ffffff, #edf7f9)`, slideCount: 3 },
   { id: 3 as ThemeId, name: 'Pôr do Sol', description: 'Dramático & Impactante', emoji: '🔥', accent: ACCENT, gradient: `linear-gradient(135deg, #0c0c0c, ${ACCENT}88)`, slideCount: 3 },
+  { id: 4 as ThemeId, name: 'Padrão', description: '5 Cards Únicos', emoji: '🏠', accent: PRIMARY, gradient: `linear-gradient(135deg, #f8fafc, #d1ecf1)`, slideCount: 5 },
 ] as const;
 
 export function AFStoriesPreview({ data, photos }: AFStoriesPreviewProps) {
@@ -37,19 +45,33 @@ export function AFStoriesPreview({ data, photos }: AFStoriesPreviewProps) {
   const t1r0=useRef<HTMLDivElement>(null), t1r1=useRef<HTMLDivElement>(null), t1r2=useRef<HTMLDivElement>(null);
   const t2r0=useRef<HTMLDivElement>(null), t2r1=useRef<HTMLDivElement>(null), t2r2=useRef<HTMLDivElement>(null);
   const t3r0=useRef<HTMLDivElement>(null), t3r1=useRef<HTMLDivElement>(null), t3r2=useRef<HTMLDivElement>(null);
+  const t4r0=useRef<HTMLDivElement>(null), t4r1=useRef<HTMLDivElement>(null), t4r2=useRef<HTMLDivElement>(null), t4r3=useRef<HTMLDivElement>(null), t4r4=useRef<HTMLDivElement>(null);
 
   const refsByTheme: Record<ThemeId, React.RefObject<HTMLDivElement>[]> = {
-    1: [t1r0, t1r1, t1r2], 2: [t2r0, t2r1, t2r2], 3: [t3r0, t3r1, t3r2],
+    1: [t1r0, t1r1, t1r2],
+    2: [t2r0, t2r1, t2r2],
+    3: [t3r0, t3r1, t3r2],
+    4: [t4r0, t4r1, t4r2, t4r3, t4r4],
   };
 
   const p0 = photos[0];
   const pLast = photos[photos.length - 1] ?? photos[0];
-  const labels = ['Curiosidade', 'Imóvel', 'CTA'];
+
+  const STORY_LABELS_T1_T2_T3 = ['Curiosidade', 'Imóvel', 'CTA'];
+  const STORY_LABELS_T4 = ['Card 1', 'Card 2', 'Card 3', 'Card 4', 'Card 5'];
+  const storyLabels = activeTheme === 4 ? STORY_LABELS_T4 : STORY_LABELS_T1_T2_T3;
 
   const slidesByTheme: Record<ThemeId, React.ReactElement[]> = {
     1: [<AFStory1_T1_Curiosity data={data} photo={p0} />, <AFStory1_T1_Reveal data={data} photos={photos} />, <AFStory1_T1_CTA data={data} photo={pLast} />],
     2: [<AFStory2_T2_Curiosity data={data} photo={p0} />, <AFStory2_T2_Reveal data={data} photos={photos} />, <AFStory2_T2_CTA data={data} photo={pLast} />],
     3: [<AFStory3_T3_Curiosity data={data} photo={p0} />, <AFStory3_T3_Reveal data={data} photos={photos} />, <AFStory3_T3_CTA data={data} photo={pLast} />],
+    4: [
+      <AFStory4_T4_Slide1 data={data} photos={photos} />,
+      <AFStory4_T4_Slide2 data={data} photo={p0} photos={photos} />,
+      <AFStory4_T4_Slide3 data={data} photo={p0} photos={photos} />,
+      <AFStory4_T4_Slide4 data={data} photos={photos} />,
+      <AFStory4_T4_Slide5 data={data} photo={pLast} photos={photos} />,
+    ],
   };
 
   const currentSlides = slidesByTheme[activeTheme];
@@ -75,10 +97,11 @@ export function AFStoriesPreview({ data, photos }: AFStoriesPreviewProps) {
       const zip = new JSZip();
       const theme = THEMES.find(t => t.id === activeTheme)!;
       const folder = zip.folder(`stories-${theme.name}`) as JSZip;
+      const labels = activeTheme === 4 ? STORY_LABELS_T4 : STORY_LABELS_T1_T2_T3;
       for (let i = 0; i < currentRefs.length; i++) {
         const url = await captureRef(currentRefs[i]);
         if (!url) continue;
-        folder.file(`${String(i+1).padStart(2,'0')}-${labels[i].toLowerCase()}.png`, url.split(',')[1], { base64: true });
+        folder.file(`${String(i+1).padStart(2,'0')}-${labels[i].toLowerCase().replace(' ', '-')}.png`, url.split(',')[1], { base64: true });
       }
       const blob = await zip.generateAsync({ type: 'blob' });
       const a = document.createElement('a');
@@ -97,10 +120,11 @@ export function AFStoriesPreview({ data, photos }: AFStoriesPreviewProps) {
       for (const theme of THEMES) {
         const refs = refsByTheme[theme.id];
         const folder = zip.folder(`tema-${theme.id}-${theme.name}`) as JSZip;
+        const labels = theme.id === 4 ? STORY_LABELS_T4 : STORY_LABELS_T1_T2_T3;
         for (let i = 0; i < refs.length; i++) {
           const url = await captureRef(refs[i]);
           if (!url) continue;
-          folder.file(`${String(i+1).padStart(2,'0')}-${labels[i].toLowerCase()}.png`, url.split(',')[1], { base64: true });
+          folder.file(`${String(i+1).padStart(2,'0')}-${labels[i].toLowerCase().replace(' ', '-')}.png`, url.split(',')[1], { base64: true });
         }
       }
       const blob = await zip.generateAsync({ type: 'blob' });
@@ -108,7 +132,7 @@ export function AFStoriesPreview({ data, photos }: AFStoriesPreviewProps) {
       a.href = URL.createObjectURL(blob);
       a.download = `af-todos-stories-${data.title || 'imovel'}.zip`; a.click();
       URL.revokeObjectURL(a.href);
-      toast.success('9 stories (3 temas) exportados!');
+      toast.success('14 stories (4 temas) exportados!');
     } catch { toast.error('Erro ao exportar'); }
     finally { setIsExporting(false); }
   };
@@ -120,7 +144,7 @@ export function AFStoriesPreview({ data, photos }: AFStoriesPreviewProps) {
         <h3 className="font-semibold text-sm text-gray-800">Stories — Escolha um tema</h3>
       </div>
 
-      <div className="grid grid-cols-3 gap-2">
+      <div className="grid grid-cols-2 gap-2">
         {THEMES.map(theme => (
           <button key={theme.id}
             onClick={() => { setActiveTheme(theme.id); setCurrentStory(0); }}
@@ -139,14 +163,14 @@ export function AFStoriesPreview({ data, photos }: AFStoriesPreviewProps) {
               </div>
             )}
             <p style={{ fontSize: 16, margin: '0 0 3px', textAlign: 'center' }}>{theme.emoji}</p>
-            <p style={{ color: theme.id === 2 ? '#0f172a' : 'white', fontSize: 11, fontWeight: 700, margin: '0 0 1px', textAlign: 'center' }}>{theme.name}</p>
-            <p style={{ color: theme.id === 2 ? '#64748b' : 'rgba(255,255,255,0.65)', fontSize: 9, margin: 0, textAlign: 'center' }}>{theme.description}</p>
+            <p style={{ color: theme.id === 2 || theme.id === 4 ? '#0f172a' : 'white', fontSize: 11, fontWeight: 700, margin: '0 0 1px', textAlign: 'center' }}>{theme.name}</p>
+            <p style={{ color: theme.id === 2 || theme.id === 4 ? '#64748b' : 'rgba(255,255,255,0.65)', fontSize: 9, margin: 0, textAlign: 'center' }}>{theme.description}</p>
           </button>
         ))}
       </div>
 
       <div className="flex gap-1.5 overflow-x-auto pb-0.5">
-        {labels.map((label, i) => (
+        {storyLabels.map((label, i) => (
           <button key={i} onClick={() => setCurrentStory(i)}
             className="flex-shrink-0 py-1.5 px-3 rounded-lg text-xs font-medium transition-all"
             style={{ backgroundColor: safeStory === i ? PRIMARY : '#F3F4F6', color: safeStory === i ? 'white' : '#6B7280' }}>
@@ -170,7 +194,7 @@ export function AFStoriesPreview({ data, photos }: AFStoriesPreviewProps) {
       </div>
 
       <div className="flex gap-1.5 justify-center overflow-x-auto pb-0.5">
-        {labels.map((_, i) => (
+        {storyLabels.map((_, i) => (
           <button key={i} onClick={() => setCurrentStory(i)}
             className="relative rounded-lg overflow-hidden flex-shrink-0 transition-all"
             style={{ width: thumbW, height: thumbH, outline: safeStory === i ? `2px solid ${PRIMARY}` : '2px solid transparent', outlineOffset: '2px', opacity: safeStory === i ? 1 : 0.55 }}>
@@ -185,10 +209,11 @@ export function AFStoriesPreview({ data, photos }: AFStoriesPreviewProps) {
         <Button variant="outline" size="sm" disabled={isExporting} onClick={async () => {
           setIsExporting(true);
           try {
+            const label = storyLabels[safeStory];
             const url = await captureRef(currentRefs[safeStory]);
             if (!url) return;
             const a = document.createElement('a');
-            a.href = url; a.download = `af-story-${safeStory+1}-${labels[safeStory].toLowerCase()}.png`; a.click();
+            a.href = url; a.download = `af-story-${safeStory+1}-${label.toLowerCase().replace(' ', '-')}.png`; a.click();
             toast.success('Slide exportado!');
           } catch { toast.error('Erro'); } finally { setIsExporting(false); }
         }} className="flex-1 gap-1.5 text-xs">
@@ -204,15 +229,24 @@ export function AFStoriesPreview({ data, photos }: AFStoriesPreviewProps) {
 
       {/* Hidden full-res DOM */}
       <div className="fixed -left-[9999px] top-0 pointer-events-none" aria-hidden="true">
+        {/* Theme 1 */}
         <div ref={t1r0} style={{ width: STORY_W, height: STORY_H, overflow: 'hidden' }}><AFStory1_T1_Curiosity data={data} photo={photos[0]} /></div>
         <div ref={t1r1} style={{ width: STORY_W, height: STORY_H, overflow: 'hidden' }}><AFStory1_T1_Reveal data={data} photos={photos} /></div>
         <div ref={t1r2} style={{ width: STORY_W, height: STORY_H, overflow: 'hidden' }}><AFStory1_T1_CTA data={data} photo={pLast} /></div>
+        {/* Theme 2 */}
         <div ref={t2r0} style={{ width: STORY_W, height: STORY_H, overflow: 'hidden' }}><AFStory2_T2_Curiosity data={data} photo={photos[0]} /></div>
         <div ref={t2r1} style={{ width: STORY_W, height: STORY_H, overflow: 'hidden' }}><AFStory2_T2_Reveal data={data} photos={photos} /></div>
         <div ref={t2r2} style={{ width: STORY_W, height: STORY_H, overflow: 'hidden' }}><AFStory2_T2_CTA data={data} photo={pLast} /></div>
+        {/* Theme 3 */}
         <div ref={t3r0} style={{ width: STORY_W, height: STORY_H, overflow: 'hidden' }}><AFStory3_T3_Curiosity data={data} photo={photos[0]} /></div>
         <div ref={t3r1} style={{ width: STORY_W, height: STORY_H, overflow: 'hidden' }}><AFStory3_T3_Reveal data={data} photos={photos} /></div>
         <div ref={t3r2} style={{ width: STORY_W, height: STORY_H, overflow: 'hidden' }}><AFStory3_T3_CTA data={data} photo={pLast} /></div>
+        {/* Theme 4 — Padrão (5 slides) */}
+        <div ref={t4r0} style={{ width: STORY_W, height: STORY_H, overflow: 'hidden' }}><AFStory4_T4_Slide1 data={data} photos={photos} /></div>
+        <div ref={t4r1} style={{ width: STORY_W, height: STORY_H, overflow: 'hidden' }}><AFStory4_T4_Slide2 data={data} photo={photos[0]} photos={photos} /></div>
+        <div ref={t4r2} style={{ width: STORY_W, height: STORY_H, overflow: 'hidden' }}><AFStory4_T4_Slide3 data={data} photo={photos[0]} photos={photos} /></div>
+        <div ref={t4r3} style={{ width: STORY_W, height: STORY_H, overflow: 'hidden' }}><AFStory4_T4_Slide4 data={data} photos={photos} /></div>
+        <div ref={t4r4} style={{ width: STORY_W, height: STORY_H, overflow: 'hidden' }}><AFStory4_T4_Slide5 data={data} photo={pLast} photos={photos} /></div>
       </div>
     </div>
   );
