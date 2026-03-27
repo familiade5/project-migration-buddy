@@ -5,6 +5,7 @@ import { useLogoBase64 } from '@/hooks/useLogoBase64';
 const GOLD_GRADIENT_ID = 'af2-gold-grad';
 const DARK_CARD = '#30323A';
 const golos = "'Golos Text', Arial, sans-serif";
+const poppins = "'Poppins', Arial, sans-serif";
 
 // ─── Shared SVG gradient definition ──────────────────────────────────────────
 const GoldGradientDef = () => (
