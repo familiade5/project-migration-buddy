@@ -1,3 +1,4 @@
+import { useId } from 'react';
 import { AFPropertyData } from '@/types/apartamentosFortaleza';
 import logoAF from '@/assets/logo-apartamentos-fortaleza.png';
 import { useLogoBase64 } from '@/hooks/useLogoBase64';
