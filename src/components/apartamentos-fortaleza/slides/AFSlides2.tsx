@@ -241,19 +241,30 @@ export const AF2CTASlide = ({ data, photos }: { data: AFPropertyData; photos: st
       {/* Accent line */}
       <AccentLine top="50%" />
 
+      {/* Logo top-right on white card */}
+      <div style={{ position: 'absolute', top: 8, right: 8, zIndex: 25, backgroundColor: 'rgba(255,255,255,0.92)', borderRadius: 6, padding: '4px 8px' }}>
+        <AFLogo2 width={90} />
+      </div>
+
       {/* Central dark pill */}
       <div style={{
         position: 'absolute', left: '50%', top: '50%', transform: 'translate(-50%, -50%)',
         zIndex: 20, backgroundColor: DARK_CARD, borderRadius: 12,
-        padding: '10px 16px', maxWidth: 310, textAlign: 'center',
+        padding: '12px 18px', maxWidth: 310, textAlign: 'center',
       }}>
-        <p style={{ color: 'white', fontSize: 8, fontWeight: 700, margin: '0 0 2px', lineHeight: 1.4, textTransform: 'uppercase' }}>
+        <p style={{ color: 'white', fontSize: 9, fontWeight: 700, margin: '0 0 3px', lineHeight: 1.4, textTransform: 'uppercase' }}>
           LOCALIZAÇÃO: {locationText.toUpperCase()}
         </p>
-        <p style={{ color: 'white', fontSize: 8, fontWeight: 700, margin: '0 0 2px', lineHeight: 1.4, textTransform: 'uppercase' }}>
+        <p style={{ color: 'white', fontSize: 9, fontWeight: 700, margin: '0 0 4px', lineHeight: 1.4, textTransform: 'uppercase' }}>
           VALOR: {priceText}{condLine}
         </p>
-        <p style={{ color: ACCENT, fontSize: 8.5, fontWeight: 800, margin: 0, lineHeight: 1.4, textTransform: 'uppercase' }}>
+        <p style={{ color: ACCENT, fontSize: 10, fontWeight: 800, margin: 0, lineHeight: 1.4, textTransform: 'uppercase' }}>
+          CLIQUE E FALE AGORA COM UM ESPECIALISTA.
+        </p>
+      </div>
+    </div>
+  );
+};
           CLIQUE E FALE AGORA COM UM ESPECIALISTA.
         </p>
       </div>
