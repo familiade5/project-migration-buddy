@@ -120,6 +120,7 @@ const formatPriceFull = (v: number) =>
 // SLIDE 1: CAPA — reconstruído para ficar muito mais fiel ao modelo anexado
 // ═══════════════════════════════════════════════════════════════════════════════
 export const AF2CoverSlide = ({ data, photos }: { data: AFPropertyData; photos: string[] }) => {
+  const logoBase64 = useLogoBase64(logoAF);
   const photo = photos[0];
   const price = data.isRental ? data.rentalPrice : data.salePrice;
   const formattedPrice = price > 0
