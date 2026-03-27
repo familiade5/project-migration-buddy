@@ -494,9 +494,19 @@ export const AF2CTASlide = ({ data, photos }: { data: AFPropertyData; photos: st
           </p>
         </div>
 
-        <p style={{ color: 'rgba(255,255,255,0.45)', fontSize: 7, fontWeight: 400, margin: '10px 0 0', textTransform: 'uppercase' }}>
-          CLIQUE NO LINK DA BIO OU ENVIE UMA MENSAGEM
-        </p>
+        {/* Broker info */}
+        <div style={{ marginTop: 8 }}>
+          {data.brokerName && (
+            <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: 8, fontWeight: 600, margin: '0 0 1px', textTransform: 'uppercase', letterSpacing: '0.03em' }}>
+              {data.brokerName.toUpperCase()}
+            </p>
+          )}
+          {data.creci && (
+            <p style={{ color: 'rgba(255,255,255,0.45)', fontSize: 7, fontWeight: 400, margin: 0, textTransform: 'uppercase' }}>
+              CRECI {data.creci}
+            </p>
+          )}
+        </div>
       </div>
 
       {/* Accent line bottom */}
