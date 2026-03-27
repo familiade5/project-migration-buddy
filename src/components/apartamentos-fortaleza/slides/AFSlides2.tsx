@@ -47,52 +47,60 @@ const AccentLine = ({ top }: { top: string | number }) => (
 
 // ─── Spec Icons (more refined, with gradient) ────────────────────────────────
 const BedIcon = () => (
-  <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
+  <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
     <GoldGradientDef />
-    <path d="M3 21V13a1 1 0 011-1h16a1 1 0 011 1v8" stroke={GOLD_URL} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-    <path d="M3 14V7a2 2 0 012-2h14a2 2 0 012 2v7" stroke={GOLD_URL} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-    <path d="M8 12V9.5A1.5 1.5 0 019.5 8h0A1.5 1.5 0 0111 9.5V12M13 12V9.5A1.5 1.5 0 0114.5 8h0A1.5 1.5 0 0116 9.5V12" stroke={GOLD_URL} strokeWidth="1.3" strokeLinecap="round" />
-    <line x1="3" y1="17" x2="21" y2="17" stroke={GOLD_URL} strokeWidth="1" opacity="0.3" />
+    <path d="M2 18v-4a1 1 0 011-1h18a1 1 0 011 1v4" stroke={GOLD_URL} strokeWidth="0.9" strokeLinecap="round" strokeLinejoin="round" />
+    <path d="M2 13V8a2 2 0 012-2h16a2 2 0 012 2v5" stroke={GOLD_URL} strokeWidth="0.9" strokeLinecap="round" strokeLinejoin="round" />
+    <rect x="5" y="8" width="5" height="3" rx="1" stroke={GOLD_URL} strokeWidth="0.8" />
+    <rect x="14" y="8" width="5" height="3" rx="1" stroke={GOLD_URL} strokeWidth="0.8" />
+    <line x1="2" y1="18" x2="2" y2="20" stroke={GOLD_URL} strokeWidth="0.9" strokeLinecap="round" />
+    <line x1="22" y1="18" x2="22" y2="20" stroke={GOLD_URL} strokeWidth="0.9" strokeLinecap="round" />
   </svg>
 );
 
 const CarIcon = () => (
-  <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
+  <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
     <GoldGradientDef />
-    <path d="M5 17h14a2 2 0 002-2v-2a2 2 0 00-1.1-1.79L17 9.5l-1.5-4A1 1 0 0014.56 5H9.44a1 1 0 00-.94.55L7 9.5 4.1 11.21A2 2 0 003 13v2a2 2 0 002 2z" stroke={GOLD_URL} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-    <circle cx="7.5" cy="17" r="1.5" stroke={GOLD_URL} strokeWidth="1.3" fill="none" />
-    <circle cx="16.5" cy="17" r="1.5" stroke={GOLD_URL} strokeWidth="1.3" fill="none" />
-    <line x1="7" y1="9.5" x2="17" y2="9.5" stroke={GOLD_URL} strokeWidth="1" opacity="0.35" />
+    <path d="M7 17h10" stroke={GOLD_URL} strokeWidth="0.7" opacity="0.3" />
+    <path d="M5 14h14a2 2 0 012 2v1a1 1 0 01-1 1H4a1 1 0 01-1-1v-1a2 2 0 012-2z" stroke={GOLD_URL} strokeWidth="0.9" strokeLinejoin="round" />
+    <path d="M5 14l1.5-5A1 1 0 017.46 8h9.08a1 1 0 01.96.72L19 14" stroke={GOLD_URL} strokeWidth="0.9" strokeLinecap="round" strokeLinejoin="round" />
+    <circle cx="7.5" cy="17.5" r="1" stroke={GOLD_URL} strokeWidth="0.8" />
+    <circle cx="16.5" cy="17.5" r="1" stroke={GOLD_URL} strokeWidth="0.8" />
+    <line x1="7" y1="11" x2="17" y2="11" stroke={GOLD_URL} strokeWidth="0.6" opacity="0.25" />
   </svg>
 );
 
 const GrillIcon = () => (
-  <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
+  <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
     <GoldGradientDef />
-    <path d="M12 12a6 6 0 006-6H6a6 6 0 006 6z" stroke={GOLD_URL} strokeWidth="1.5" strokeLinejoin="round" />
-    <path d="M12 12v4M8 20h8M10 16h4" stroke={GOLD_URL} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-    <path d="M9 3v1.5M12 2v2.5M15 3v1.5" stroke={GOLD_URL} strokeWidth="1.3" strokeLinecap="round" />
+    <path d="M9 4c0 1.2-.8 1.8-.8 2.8M12 3c0 1.5-.8 2.2-.8 3.2M15 4c0 1.2-.8 1.8-.8 2.8" stroke={GOLD_URL} strokeWidth="0.8" strokeLinecap="round" />
+    <path d="M6 9h12c0 4-2.5 7-6 7s-6-3-6-7z" stroke={GOLD_URL} strokeWidth="0.9" strokeLinejoin="round" />
+    <line x1="12" y1="16" x2="12" y2="19" stroke={GOLD_URL} strokeWidth="0.9" strokeLinecap="round" />
+    <line x1="8" y1="19" x2="16" y2="19" stroke={GOLD_URL} strokeWidth="0.9" strokeLinecap="round" />
+    <line x1="9" y1="21" x2="15" y2="21" stroke={GOLD_URL} strokeWidth="0.7" strokeLinecap="round" />
   </svg>
 );
 
 const BathIcon = () => (
-  <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
+  <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
     <GoldGradientDef />
-    <path d="M4 12h16" stroke={GOLD_URL} strokeWidth="1.5" strokeLinecap="round" />
-    <path d="M4 12v4a4 4 0 004 4h8a4 4 0 004-4v-4" stroke={GOLD_URL} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-    <path d="M6 12V5a2 2 0 012-2h1" stroke={GOLD_URL} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-    <circle cx="10" cy="7" r="0.7" fill={GOLD_URL} />
+    <path d="M4 12h16" stroke={GOLD_URL} strokeWidth="0.9" strokeLinecap="round" />
+    <path d="M4 12v5a4 4 0 004 4h8a4 4 0 004-4v-5" stroke={GOLD_URL} strokeWidth="0.9" strokeLinecap="round" strokeLinejoin="round" />
+    <path d="M6 12V6a2 2 0 012-2h1.5" stroke={GOLD_URL} strokeWidth="0.9" strokeLinecap="round" strokeLinejoin="round" />
+    <circle cx="11" cy="7" r="1" stroke={GOLD_URL} strokeWidth="0.7" />
+    <line x1="6" y1="21" x2="6" y2="22" stroke={GOLD_URL} strokeWidth="0.8" strokeLinecap="round" />
+    <line x1="18" y1="21" x2="18" y2="22" stroke={GOLD_URL} strokeWidth="0.8" strokeLinecap="round" />
   </svg>
 );
 
 const PoolIcon = () => (
-  <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
+  <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
     <GoldGradientDef />
-    <path d="M2 15c1.5-1.5 3-1.5 4.5 0s3 1.5 4.5 0 3-1.5 4.5 0 3 1.5 4.5 0" stroke={GOLD_URL} strokeWidth="1.5" strokeLinecap="round" />
-    <path d="M2 19c1.5-1.5 3-1.5 4.5 0s3 1.5 4.5 0 3-1.5 4.5 0 3 1.5 4.5 0" stroke={GOLD_URL} strokeWidth="1.5" strokeLinecap="round" />
-    <rect x="8" y="4" width="2.5" height="11" rx="1.25" stroke={GOLD_URL} strokeWidth="1.2" />
-    <rect x="13.5" y="4" width="2.5" height="11" rx="1.25" stroke={GOLD_URL} strokeWidth="1.2" />
-    <line x1="10.5" y1="7" x2="13.5" y2="7" stroke={GOLD_URL} strokeWidth="1.2" strokeLinecap="round" />
+    <path d="M2 16c2-2 4-2 6 0s4 2 6 0 4-2 6 0" stroke={GOLD_URL} strokeWidth="0.9" strokeLinecap="round" />
+    <path d="M2 20c2-2 4-2 6 0s4 2 6 0 4-2 6 0" stroke={GOLD_URL} strokeWidth="0.9" strokeLinecap="round" />
+    <rect x="7" y="4" width="2" height="12" rx="1" stroke={GOLD_URL} strokeWidth="0.8" />
+    <rect x="15" y="4" width="2" height="12" rx="1" stroke={GOLD_URL} strokeWidth="0.8" />
+    <line x1="9" y1="8" x2="15" y2="8" stroke={GOLD_URL} strokeWidth="0.8" strokeLinecap="round" />
   </svg>
 );
 
