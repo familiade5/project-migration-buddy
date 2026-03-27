@@ -194,9 +194,9 @@ export const AF2CoverSlide = ({ data, photos }: { data: AFPropertyData; photos: 
         <svg viewBox="0 0 220 62" width="220" height="62" style={{ display: 'block', overflow: 'visible' }}>
           <path d="M0 2 H174 Q180 2 180 8 L154 54 Q150 60 144 60 H0 V2 Z" fill={DARK_CARD} stroke="#ffffff" strokeWidth="2.5" strokeLinejoin="round" />
         </svg>
-        <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', padding: '0 16px 0 10px', gap: 3 }}>
-          <span style={{ background: GOLD_CSS, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', fontSize: 12, fontWeight: 800, lineHeight: 1 }}>R$</span>
-          <span style={{ background: GOLD_CSS, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', fontSize: 26, fontWeight: 800, lineHeight: 1, letterSpacing: '-0.02em' }}>{formattedPrice}</span>
+        <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', padding: '0 16px 0 10px', gap: 2 }}>
+          <span style={{ background: GOLD_CSS, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', fontSize: 13, fontWeight: 800, lineHeight: 1 }}>R$</span>
+          <span style={{ background: GOLD_CSS, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', fontSize: 28, fontWeight: 800, lineHeight: 1, letterSpacing: '-0.04em' }}>{formattedPrice}</span>
         </div>
       </div>
 
