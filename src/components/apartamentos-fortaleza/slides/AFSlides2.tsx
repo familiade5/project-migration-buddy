@@ -175,38 +175,37 @@ export const AF2CoverSlide = ({ data, photos }: { data: AFPropertyData; photos: 
         </svg>
       </div>
 
-      {/* AF logo icon as watermark - only the icon part, very large, centered */}
+      {/* AF logo icon as watermark - show only the AF symbol (left part of logo), hide text */}
       <div style={{
         position: 'absolute', left: '50%', top: photoH + 2, transform: 'translateX(-50%)',
         zIndex: 6, pointerEvents: 'none', userSelect: 'none',
         width: 360, height: 156, display: 'flex', alignItems: 'center', justifyContent: 'center',
         overflow: 'hidden',
       }}>
-        {/* Shift image left so only the icon/drawing part shows, not the text */}
-        <img src={logoBase64} alt="" style={{ width: 600, marginLeft: -300, display: 'block', filter: 'grayscale(100%) brightness(1.9) contrast(0.25)', opacity: 0.4 }} />
+        {/* Move image RIGHT so the AF symbol (left side of logo) stays centered, text goes off-screen right */}
+        <img src={logoBase64} alt="" style={{ width: 600, marginRight: -360, display: 'block', filter: 'grayscale(100%) brightness(1.9) contrast(0.25)', opacity: 0.4 }} />
       </div>
 
-      {/* Price badge - top line longer, bottom shorter, 45° diagonal from top-right down to bottom-right */}
+      {/* Price badge - top longer, bottom shorter, 45° diagonal, rounded corners on right */}
       <div style={{
         position: 'absolute', left: -6, top: 172, width: 220, height: 52, zIndex: 30,
         filter: 'drop-shadow(0 4px 12px rgba(0,0,0,0.35))',
       }}>
         <svg viewBox="0 0 220 52" width="220" height="52" style={{ display: 'block', overflow: 'visible' }}>
-          {/* Top line goes to 200, bottom line goes to 152, diagonal connects them at 45° */}
-          <path d="M14 3 H200 L152 49 H14 C7 49 3 44 3 38 V14 C3 8 7 3 14 3 Z" fill={DARK_CARD} stroke="#ffffff" strokeWidth="2.5" strokeLinejoin="round" />
+          <path d="M14 3 H190 Q196 3 196 9 L156 43 Q152 49 146 49 H14 C7 49 3 44 3 38 V14 C3 8 7 3 14 3 Z" fill={DARK_CARD} stroke="#ffffff" strokeWidth="2.5" strokeLinejoin="round" />
         </svg>
         <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', padding: '0 16px 0 14px', gap: 3 }}>
-          <span style={{ background: GOLD_CSS, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', fontSize: 11, fontWeight: 800, lineHeight: 1 }}>R$</span>
-          <span style={{ background: GOLD_CSS, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', fontSize: 26, fontWeight: 800, lineHeight: 1, letterSpacing: '-0.02em' }}>{formattedPrice}</span>
+          <span style={{ background: GOLD_CSS, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', fontSize: 10, fontWeight: 800, lineHeight: 1 }}>R$</span>
+          <span style={{ background: GOLD_CSS, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', fontSize: 20, fontWeight: 800, lineHeight: 1, letterSpacing: '-0.02em' }}>{formattedPrice}</span>
         </div>
       </div>
 
-      {/* Title & neighborhood - same font size */}
-      <div style={{ position: 'absolute', left: 16, top: 234, zIndex: 12, width: 148 }}>
+      {/* Title & neighborhood */}
+      <div style={{ position: 'absolute', left: 16, top: 238, zIndex: 12, width: 148 }}>
         <p style={{ background: GOLD_CSS, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', fontSize: 15, fontWeight: 800, lineHeight: 1.1, margin: 0, textTransform: 'uppercase', letterSpacing: '0.01em' }}>
           {title}
         </p>
-        <p style={{ background: GOLD_CSS, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', fontSize: 14, fontWeight: 800, lineHeight: 1.1, margin: '3px 0 0', textTransform: 'uppercase', letterSpacing: '0.01em' }}>
+        <p style={{ color: '#1a1a1a', fontSize: 14, fontWeight: 800, lineHeight: 1.1, margin: '3px 0 0', textTransform: 'uppercase', letterSpacing: '0.01em' }}>
           {neighborhood}
         </p>
       </div>
