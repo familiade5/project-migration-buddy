@@ -352,7 +352,7 @@ export const AF2CTASlide = ({ data, photos }: { data: AFPropertyData; photos: st
         <p style={{ color: 'white', fontSize: 8, fontWeight: 700, margin: '0 0 2px', lineHeight: 1.4, textTransform: 'uppercase' }}>
           VALOR: {priceText}{condLine}
         </p>
-        <p style={{ color: ACCENT, fontSize: 8.5, fontWeight: 800, margin: 0, lineHeight: 1.4, textTransform: 'uppercase' }}>
+        <p style={{ color: '#F2A126', fontSize: 8.5, fontWeight: 800, margin: 0, lineHeight: 1.4, textTransform: 'uppercase' }}>
           CLIQUE E FALE AGORA COM UM ESPECIALISTA.
         </p>
       </div>
