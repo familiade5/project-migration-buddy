@@ -68,6 +68,7 @@ export const defaultAFPropertyData: AFPropertyData = {
   salePrice: 0,
   acceptsFinancing: true,
   acceptsFGTS: true,
+  isMCMV: false,
   subsidy: 0,
   cashOnly: false,
   isRental: false,
