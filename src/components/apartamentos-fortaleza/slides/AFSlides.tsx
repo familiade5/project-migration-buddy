@@ -108,7 +108,7 @@ export const AFCoverSlide = ({ data, photo }: { data: AFPropertyData; photo?: st
 
       {/* WHITE LOGO */}
       <div style={{ position: 'absolute', bottom: 18, left: 18, zIndex: 20 }}>
-        <AFLogo width={106} variant="white" />
+        <AFLogo width={140} variant="white" />
       </div>
 
       {/* CORAL PRICE CARD */}
