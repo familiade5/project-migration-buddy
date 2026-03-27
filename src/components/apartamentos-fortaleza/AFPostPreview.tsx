@@ -5,6 +5,7 @@ import JSZip from 'jszip';
 import { Download, ChevronLeft, ChevronRight, Loader2, FileText } from 'lucide-react';
 import { AFPropertyData } from '@/types/apartamentosFortaleza';
 import { AFCoverSlide, AFSpecsSlide, AFLocationSlide, AFPhotoSlide, AFInfoSlide } from './slides/AFSlides';
+import { AF2CoverSlide, AF2GallerySlide, AF2SpecsSlide, AF2CTASlide } from './slides/AFSlides2';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import { generateAFPropertyPDF } from '@/lib/af/generatePropertyPDF';
