@@ -329,8 +329,10 @@ export const AF2PhotoSlide = ({ photos, slideIndex, data }: { photos: [string, s
       <div style={{
         position: 'absolute', left: '50%', top: '50%', transform: 'translate(-50%, -50%)',
         backgroundColor: 'rgba(55, 58, 66, 0.92)',
-        borderRadius: 10, padding: '6px 18px', zIndex: 20, textAlign: 'center',
-        maxWidth: 310, width: '82%', boxShadow: '0 6px 20px rgba(0,0,0,0.35)',
+        borderRadius: 10, padding: '0 18px', zIndex: 20, textAlign: 'center',
+        width: '82%', maxWidth: 310, height: 58,
+        display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+        boxShadow: '0 6px 20px rgba(0,0,0,0.35)',
       }}>
         <p style={{
           background: GOLD_CSS, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
@@ -347,8 +349,8 @@ export const AF2PhotoSlide = ({ photos, slideIndex, data }: { photos: [string, s
               background: isCTA ? GOLD_CSS : undefined,
               WebkitBackgroundClip: isCTA ? 'text' : undefined,
               WebkitTextFillColor: isCTA ? 'transparent' : undefined,
-              fontSize: 8, fontWeight: isCTA ? 800 : 600, margin: 0,
-              textTransform: 'uppercase', letterSpacing: '0.02em', lineHeight: 1.35,
+              fontSize: 7.5, fontWeight: isCTA ? 800 : 600, margin: 0,
+              textTransform: 'uppercase', letterSpacing: '0.02em', lineHeight: 1.3,
             }}>
               {line}
             </p>
