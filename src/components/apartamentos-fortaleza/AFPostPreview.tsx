@@ -77,7 +77,7 @@ export function AFPostPreview({ data, photos }: AFPostPreviewProps) {
       slides.push({
         id: `d2-photo-${slideNum}`,
         name: `Fotos ${slideNum - 1}`,
-        el: <AF2PhotoSlide photos={pair} slideIndex={slideNum} />,
+        el: <AF2PhotoSlide photos={pair} slideIndex={Math.floor(i / 2)} data={data} />,
       });
     }
 
