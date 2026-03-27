@@ -28,6 +28,7 @@ export interface AFPropertyData {
   salePrice: number;
   acceptsFinancing: boolean;
   acceptsFGTS: boolean;
+  isMCMV: boolean;
   subsidy: number;
   cashOnly: boolean;
   isRental: boolean;
@@ -67,6 +68,7 @@ export const defaultAFPropertyData: AFPropertyData = {
   salePrice: 0,
   acceptsFinancing: true,
   acceptsFGTS: true,
+  isMCMV: false,
   subsidy: 0,
   cashOnly: false,
   isRental: false,

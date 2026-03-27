@@ -138,6 +138,17 @@ export function AFPropertyForm({ data, onChange }: AFPropertyFormProps) {
                 <Switch className={switchClass} checked={data.acceptsFGTS} onCheckedChange={(v) => set('acceptsFGTS', v)} />
                 <Label className="text-sm text-gray-600">Aceita FGTS</Label>
               </div>
+              <div className="flex items-center gap-2">
+                <Switch className={switchClass} checked={data.isMCMV} onCheckedChange={(v) => set('isMCMV', v)} />
+                <Label className="text-sm text-gray-600">Minha Casa Minha Vida</Label>
+              </div>
+              {data.isMCMV && (
+                <div className="space-y-1">
+                  <Label className={labelClass}>Subsídio do Governo (R$)</Label>
+                  <Input className={inputClass} type="number" placeholder="0"
+                    value={data.subsidy || ''} onChange={(e) => set('subsidy', Number(e.target.value))} />
+                </div>
+              )}
             </>
           ) : (
             <div className="space-y-1">
