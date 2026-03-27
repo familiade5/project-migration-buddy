@@ -1,5 +1,5 @@
 import { useRef } from 'react';
-import { GripVertical, X, Upload, ChevronLeft, ChevronRight, Star } from 'lucide-react';
+import { GripVertical, X, Upload, ChevronLeft, ChevronRight, Star, Trash2 } from 'lucide-react';
 
 // AF brand colors
 const PRIMARY = '#0C7B8E';
