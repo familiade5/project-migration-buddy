@@ -145,6 +145,8 @@ export const AF2CoverSlide = ({ data, photos }: { data: AFPropertyData; photos: 
     margin: 0,
   };
 
+  const GOLD_CSS = 'linear-gradient(135deg, #E8A020, #F2B84B, #D4912A, #C07B18)';
+
   return (
     <div style={{ position: 'relative', width: 360, height: 360, backgroundColor: '#ffffff', fontFamily: golos, overflow: 'hidden' }}>
       {photo ? (
@@ -163,42 +165,45 @@ export const AF2CoverSlide = ({ data, photos }: { data: AFPropertyData; photos: 
         <polygon points="232,58 360,58 360,178 314,178" fill="rgba(255,255,255,0.16)" />
       </svg>
 
-      <div style={{ position: 'absolute', left: -6, top: 146, width: 228, height: 78, zIndex: 30 }}>
-        <svg viewBox="0 0 228 78" width="228" height="78" style={{ display: 'block', overflow: 'visible' }}>
-          <path d="M18 3 H189 L210 21 L191 63 H18 C8 63 3 57 3 47 V18 C3 8 8 3 18 3 Z" fill={DARK_CARD} stroke="#ffffff" strokeWidth="3.5" />
+      {/* Price badge - smaller, proportional */}
+      <div style={{ position: 'absolute', left: -4, top: 152, width: 190, height: 58, zIndex: 30 }}>
+        <svg viewBox="0 0 190 58" width="190" height="58" style={{ display: 'block', overflow: 'visible' }}>
+          <path d="M14 2 H158 L176 16 L160 48 H14 C7 48 2 43 2 36 V14 C2 7 7 2 14 2 Z" fill={DARK_CARD} stroke="#ffffff" strokeWidth="3" />
         </svg>
-        <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', padding: '6px 16px 10px 18px', gap: 6 }}>
-          <span style={{ color: PRIMARY, fontSize: 20, fontWeight: 800, lineHeight: 1, letterSpacing: '-0.04em' }}>R$</span>
-          <span style={{ color: PRIMARY, fontSize: 42, fontWeight: 900, lineHeight: 0.9, letterSpacing: '-0.06em' }}>{formattedPrice}</span>
+        <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', padding: '4px 14px 6px 14px', gap: 4 }}>
+          <span style={{ background: GOLD_CSS, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', fontSize: 14, fontWeight: 800, lineHeight: 1, letterSpacing: '-0.02em' }}>R$</span>
+          <span style={{ background: GOLD_CSS, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', fontSize: 28, fontWeight: 900, lineHeight: 0.95, letterSpacing: '-0.04em' }}>{formattedPrice}</span>
         </div>
       </div>
 
-      <div style={{ position: 'absolute', left: 20, top: 234, zIndex: 12, width: 154 }}>
-        <p style={{ color: PRIMARY, fontSize: 18, fontWeight: 900, lineHeight: 1.02, margin: 0, textTransform: 'uppercase', letterSpacing: '-0.04em', textWrap: 'balance' as any }}>
+      {/* Title & neighborhood */}
+      <div style={{ position: 'absolute', left: 18, top: 222, zIndex: 12, width: 150 }}>
+        <p style={{ background: GOLD_CSS, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', fontSize: 16, fontWeight: 900, lineHeight: 1.05, margin: 0, textTransform: 'uppercase', letterSpacing: '-0.03em' }}>
           {title}
         </p>
-        <p style={{ color: '#2f3138', fontSize: 10, fontWeight: 500, lineHeight: 1.05, margin: '6px 0 0', textTransform: 'uppercase', letterSpacing: '0.02em' }}>
+        <p style={{ color: '#2f3138', fontSize: 9, fontWeight: 500, lineHeight: 1.1, margin: '5px 0 0', textTransform: 'uppercase', letterSpacing: '0.02em' }}>
           {neighborhood}
         </p>
       </div>
 
+      {/* Spec panel - flush right, higher */}
       <div style={{
-        position: 'absolute', right: 10, bottom: 0, zIndex: 15,
-        width: 184, height: 108, backgroundColor: '#30323A',
-        borderTopLeftRadius: 16, borderTopRightRadius: 16, borderBottomLeftRadius: 16,
+        position: 'absolute', right: 0, bottom: 12, zIndex: 15,
+        width: 170, height: 120, backgroundColor: '#30323A',
+        borderTopLeftRadius: 16, borderBottomLeftRadius: 16,
         display: 'grid', gridTemplateColumns: '1fr 1fr', gridTemplateRows: '1fr 1fr',
-        padding: '14px 12px 10px', boxSizing: 'border-box',
+        padding: '12px 10px 8px', boxSizing: 'border-box',
       }}>
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 4 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 3 }}>
           <BedIcon />
           <p style={specLabelStyle}>{bedroomsLabel}</p>
         </div>
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 4 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 3 }}>
           <CarIcon />
           <p style={specLabelStyle}>{garageLabel}</p>
         </div>
-        <div style={{ gridColumn: '1 / span 2', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 4 }}>
-          <GrillIcon />
+        <div style={{ gridColumn: '1 / span 2', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 3 }}>
+          {getLeisureIcon(leisureLabel)}
           <p style={specLabelStyle}>{leisureLabel}</p>
         </div>
       </div>
