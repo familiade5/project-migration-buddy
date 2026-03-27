@@ -196,7 +196,7 @@ export const AF2CoverSlide = ({ data, photos }: { data: AFPropertyData; photos: 
         </svg>
         <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', padding: '0 16px 0 10px', gap: 2 }}>
           <span style={{ background: GOLD_CSS, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', fontSize: 11, fontWeight: 800, lineHeight: 1 }}>R$</span>
-          <span style={{ background: GOLD_CSS, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', fontSize: 20, fontWeight: 800, lineHeight: 1.4, letterSpacing: '-0.04em' }}>{formattedPrice}</span>
+          <span style={{ background: GOLD_CSS, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', fontSize: 20, fontWeight: 800, lineHeight: 1.8, letterSpacing: '-0.04em' }}>{formattedPrice}</span>
         </div>
       </div>
 
