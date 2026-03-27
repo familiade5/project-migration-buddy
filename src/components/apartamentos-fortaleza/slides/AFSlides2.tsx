@@ -265,9 +265,3 @@ export const AF2CTASlide = ({ data, photos }: { data: AFPropertyData; photos: st
     </div>
   );
 };
-          CLIQUE E FALE AGORA COM UM ESPECIALISTA.
-        </p>
-      </div>
-    </div>
-  );
-};
