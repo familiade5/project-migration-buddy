@@ -28,6 +28,7 @@ export interface AFPropertyData {
   salePrice: number;
   acceptsFinancing: boolean;
   acceptsFGTS: boolean;
+  isMCMV: boolean;
   subsidy: number;
   cashOnly: boolean;
   isRental: boolean;
