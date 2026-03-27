@@ -64,17 +64,26 @@ export function AFPostPreview({ data, photos }: AFPostPreviewProps) {
 
   const buildFeedSlides2 = () => {
     const p = photos;
-    const slides = [];
+    const slides: { id: string; name: string; el: React.ReactNode }[] = [];
+
+    // Slide 1: Capa (uses photo[0])
     slides.push({ id: 'd2-cover', name: 'Capa', el: <AF2CoverSlide data={data} photos={p} /> });
-    if (p.length >= 4) {
-      slides.push({ id: 'd2-gallery', name: 'Galeria', el: <AF2GallerySlide data={data} photos={p.slice(0, 4)} /> });
-    } else if (p.length >= 2) {
-      slides.push({ id: 'd2-gallery', name: 'Galeria', el: <AF2GallerySlide data={data} photos={p} /> });
+
+    // Photo slides: 2 photos each, starting from photo[1] (photo[0] is used by cover)
+    const remaining = p.slice(1);
+    for (let i = 0; i < remaining.length; i += 2) {
+      const pair: [string, string?] = [remaining[i], remaining[i + 1]];
+      const slideNum = Math.floor(i / 2) + 2;
+      slides.push({
+        id: `d2-photo-${slideNum}`,
+        name: `Fotos ${slideNum - 1}`,
+        el: <AF2PhotoSlide photos={pair} slideIndex={slideNum} />,
+      });
     }
-    const specsPhotos = p.length >= 5 ? [p[4], p[5] || p[0]] : p.length >= 2 ? [p[1], p[0]] : [p[0], p[0]];
-    slides.push({ id: 'd2-specs', name: 'Ficha', el: <AF2SpecsSlide data={data} photos={specsPhotos} /> });
-    const ctaPhotos = p.length >= 8 ? p.slice(4, 8) : p.length >= 4 ? p.slice(-4) : p;
-    slides.push({ id: 'd2-cta', name: 'CTA', el: <AF2CTASlide data={data} photos={ctaPhotos} /> });
+
+    // Slide final: CTA
+    slides.push({ id: 'd2-cta', name: 'CTA', el: <AF2CTASlide data={data} photos={p} /> });
+
     return slides;
   };
 
