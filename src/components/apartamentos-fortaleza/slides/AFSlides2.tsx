@@ -72,6 +72,31 @@ export const AF2CoverSlide = ({ data, photos }: { data: AFPropertyData; photos: 
     : 'Consulte';
   const photoH = 224;
 
+  const bedroomsLabel = data.suites > 0
+    ? `${data.suites} Suíte${data.suites > 1 ? 's' : ''}`
+    : `${data.bedrooms || 0} Quarto${(data.bedrooms || 0) !== 1 ? 's' : ''}`;
+  const areaLabel = data.area > 0 ? `${data.area}m²` : '0m²';
+  const garageLabel = `${data.garageSpaces || 0} Vaga${(data.garageSpaces || 0) !== 1 ? 's' : ''}`;
+  const bathLabel = `${data.bathrooms || 0} Banheiro${(data.bathrooms || 0) !== 1 ? 's' : ''}`;
+
+  const specCardStyle: React.CSSProperties = {
+    backgroundColor: DARK_CARD,
+    borderRadius: 6,
+    padding: '4px 8px',
+    display: 'flex',
+    alignItems: 'center',
+    gap: 5,
+    minWidth: 80,
+  };
+  const specTextStyle: React.CSSProperties = {
+    color: '#ffffff',
+    fontSize: 9,
+    fontWeight: 700,
+    textTransform: 'uppercase',
+    lineHeight: 1.2,
+    letterSpacing: '0.01em',
+  };
+
   return (
     <div style={{ position: 'relative', width: 360, height: 360, backgroundColor: '#ffffff', fontFamily: golos, overflow: 'hidden' }}>
       {photo ? (
@@ -89,6 +114,7 @@ export const AF2CoverSlide = ({ data, photos }: { data: AFPropertyData; photos: 
         <polygon points="248,84 360,84 360,136 290,136" fill="rgba(0,0,0,0.028)" />
       </svg>
 
+      {/* Price badge */}
       <div style={{ position: 'absolute', left: -12, top: 166, width: 300, height: 86, zIndex: 30 }}>
         <svg viewBox="0 0 300 86" width="300" height="86" style={{ display: 'block', overflow: 'visible' }}>
           <path d="M 18 4 H 252 Q 280 4 292 22 L 272 70 Q 264 82 240 82 H 20 Q 4 82 4 64 V 20 Q 4 4 18 4 Z" fill={DARK_CARD} stroke="#ffffff" strokeWidth="4" />
@@ -99,19 +125,42 @@ export const AF2CoverSlide = ({ data, photos }: { data: AFPropertyData; photos: 
         </div>
       </div>
 
-      <div style={{ position: 'absolute', left: 22, top: 255, zIndex: 10, width: 298 }}>
-        <p style={{ color: PRIMARY, fontSize: 27, fontWeight: 900, lineHeight: 1.04, margin: 0, textTransform: 'uppercase', letterSpacing: '-0.04em' }}>
+      {/* Title & neighborhood */}
+      <div style={{ position: 'absolute', left: 22, top: 255, zIndex: 10, width: 180 }}>
+        <p style={{ color: PRIMARY, fontSize: 22, fontWeight: 900, lineHeight: 1.04, margin: 0, textTransform: 'uppercase', letterSpacing: '-0.04em' }}>
           {data.title || 'SEU IMÓVEL'}
         </p>
-        {data.neighborhood && (
-          <p style={{ color: '#252730', fontSize: 22, fontWeight: 500, lineHeight: 1.05, margin: '6px 0 0', textTransform: 'uppercase', letterSpacing: '-0.035em' }}>
-            {data.neighborhood}
-          </p>
-        )}
+        <p style={{ color: '#252730', fontSize: 16, fontWeight: 500, lineHeight: 1.05, margin: '4px 0 0', textTransform: 'uppercase', letterSpacing: '-0.035em' }}>
+          {data.neighborhood || 'BAIRRO'}
+        </p>
       </div>
 
+      {/* Spec cards - always visible, bottom right */}
+      <div style={{
+        position: 'absolute', right: 12, bottom: 42, zIndex: 20,
+        display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 4,
+      }}>
+        <div style={specCardStyle}>
+          <BedIcon />
+          <span style={specTextStyle}>{bedroomsLabel}</span>
+        </div>
+        <div style={specCardStyle}>
+          <AreaIcon />
+          <span style={specTextStyle}>{areaLabel}</span>
+        </div>
+        <div style={specCardStyle}>
+          <CarIcon />
+          <span style={specTextStyle}>{garageLabel}</span>
+        </div>
+        <div style={specCardStyle}>
+          <BathIcon />
+          <span style={specTextStyle}>{bathLabel}</span>
+        </div>
+      </div>
+
+      {/* Logo */}
       <div style={{ position: 'absolute', left: 20, bottom: 12, zIndex: 10 }}>
-        <AFLogo2 width={150} />
+        <AFLogo2 width={120} />
       </div>
     </div>
   );
