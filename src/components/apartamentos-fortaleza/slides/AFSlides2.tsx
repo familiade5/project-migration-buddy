@@ -35,11 +35,18 @@ const CarIcon = () => (
   </svg>
 );
 
-// ─── Helper: Grill icon ──────────────────────────────────────────────────────
-const GrillIcon = () => (
+// ─── Helper: Area icon ───────────────────────────────────────────────────────
+const AreaIcon = () => (
   <svg width="32" height="24" viewBox="0 0 24 20" fill={ACCENT}>
-    <path d="M4 10h16v2a6 6 0 01-6 6h-4a6 6 0 01-6-6v-2zm2-2c.5-1.5 1-3 1.5-4M12 4c0 1.5.5 3 .5 4m3.5-4c-.5 1.5-1 3-1.5 4" strokeWidth="1.5" stroke={ACCENT} fill="none" />
-    <rect x="11" y="16" width="2" height="4" fill={ACCENT} />
+    <rect x="2" y="2" width="20" height="16" rx="2" fill="none" stroke={ACCENT} strokeWidth="2" />
+    <path d="M6 14l4-4 3 3 5-5" stroke={ACCENT} strokeWidth="2" fill="none" />
+  </svg>
+);
+
+// ─── Helper: Bath icon ───────────────────────────────────────────────────────
+const BathIcon = () => (
+  <svg width="32" height="24" viewBox="0 0 24 20" fill={ACCENT}>
+    <path d="M4 10h16v4a4 4 0 01-4 4H8a4 4 0 01-4-4v-4zm2-8v8m0-8h2a2 2 0 012 2v2" stroke={ACCENT} strokeWidth="2" fill="none" />
   </svg>
 );
 
