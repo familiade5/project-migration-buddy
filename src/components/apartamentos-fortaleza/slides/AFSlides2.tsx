@@ -38,7 +38,7 @@ const AccentLine = ({ top }: { top: string | number }) => (
         <stop offset="100%" stopColor="#D4912A" />
       </linearGradient>
       <filter id="accent-line-shadow">
-        <feDropShadow dx="0" dy="3" stdDeviation="2" floodColor="#D4912A" floodOpacity="0.35" />
+        <feDropShadow dx="0" dy="4" stdDeviation="3" floodColor="#000000" floodOpacity="0.45" />
       </filter>
     </defs>
     <rect width="100%" height="5" fill="url(#accent-line-grad)" filter="url(#accent-line-shadow)" />
@@ -191,11 +191,11 @@ export const AF2CoverSlide = ({ data, photos }: { data: AFPropertyData; photos: 
 
       {/* Price badge - taller, flush left, no rounding on left side */}
       <div style={{
-        position: 'absolute', left: -3, top: 168, width: 200, height: 66, zIndex: 30,
+        position: 'absolute', left: -3, top: 168, width: 200, height: 54, zIndex: 30,
         filter: 'drop-shadow(0 4px 12px rgba(0,0,0,0.35))',
       }}>
-        <svg viewBox="0 0 200 66" width="200" height="66" style={{ display: 'block', overflow: 'visible' }}>
-          <path d="M0 2 H160 Q166 2 166 8 L140 58 Q136 64 130 64 H0 V2 Z" fill={DARK_CARD} stroke="#ffffff" strokeWidth="2.5" strokeLinejoin="round" />
+        <svg viewBox="0 0 200 54" width="200" height="54" style={{ display: 'block', overflow: 'visible' }}>
+          <path d="M0 2 H160 Q166 2 166 8 L144 46 Q140 52 134 52 H0 V2 Z" fill={DARK_CARD} stroke="#ffffff" strokeWidth="2.5" strokeLinejoin="round" />
         </svg>
         <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', padding: '0 16px 0 10px', gap: 2 }}>
           <span style={{ background: GOLD_CSS, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', fontSize: 11, fontWeight: 800, lineHeight: 1 }}>R$</span>
