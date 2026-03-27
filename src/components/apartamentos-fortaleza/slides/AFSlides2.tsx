@@ -5,6 +5,7 @@ import { useLogoBase64 } from '@/hooks/useLogoBase64';
 const GOLD_GRADIENT_ID = 'af2-gold-grad';
 const DARK_CARD = '#30323A';
 const golos = "'Golos Text', Arial, sans-serif";
+const poppins = "'Poppins', Arial, sans-serif";
 
 // ─── Shared SVG gradient definition ──────────────────────────────────────────
 const GoldGradientDef = () => (
@@ -146,7 +147,7 @@ export const AF2CoverSlide = ({ data, photos }: { data: AFPropertyData; photos: 
   };
 
   const GOLD_CSS = 'linear-gradient(135deg, #E8A020, #F2B84B, #D4912A, #C07B18)';
-  const titleFont = "'Playfair Display', 'Georgia', serif";
+  const titleFont = poppins;
 
   return (
     <div style={{ position: 'relative', width: 360, height: 360, backgroundColor: '#ffffff', fontFamily: golos, overflow: 'hidden' }}>
@@ -191,9 +192,9 @@ export const AF2CoverSlide = ({ data, photos }: { data: AFPropertyData; photos: 
         <svg viewBox="0 0 160 44" width="160" height="44" style={{ display: 'block', overflow: 'visible' }}>
           <path d="M10 2 H134 L150 12 L136 36 H10 C5 36 2 33 2 28 V10 C2 5 5 2 10 2 Z" fill={DARK_CARD} stroke="#ffffff" strokeWidth="2" />
         </svg>
-        <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', padding: '1px 10px 3px 10px', gap: 3 }}>
+        <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', padding: '1px 10px 3px 10px', gap: 3, fontFamily: poppins }}>
           <span style={{ background: GOLD_CSS, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', fontSize: 10, fontWeight: 800, lineHeight: 1 }}>R$</span>
-          <span style={{ background: GOLD_CSS, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', fontSize: 18, fontWeight: 900, lineHeight: 0.95, letterSpacing: '-0.03em' }}>{formattedPrice}</span>
+          <span style={{ background: GOLD_CSS, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', fontSize: 18, fontWeight: 800, lineHeight: 0.95, letterSpacing: '-0.03em' }}>{formattedPrice}</span>
         </div>
       </div>
 
