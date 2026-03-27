@@ -247,146 +247,93 @@ export const AF2CoverSlide = ({ data, photos }: { data: AFPropertyData; photos: 
 };
 
 // ═══════════════════════════════════════════════════════════════════════════════
-// SLIDE 2: GALERIA 2x2 — "Já pensou em morar no que é seu?"
+// SLIDE DE FOTOS — 2 fotos empilhadas (cima/baixo) com linha dourada central
 // ═══════════════════════════════════════════════════════════════════════════════
-export const AF2GallerySlide = ({ data, photos }: { data: AFPropertyData; photos: string[] }) => {
-  const p = [photos[0], photos[1], photos[2], photos[3]].map(x => x || photos[0]);
-  const gap = 3;
+export const AF2PhotoSlide = ({ photos, slideIndex }: { photos: [string, string?]; slideIndex: number }) => {
+  const p1 = photos[0];
+  const p2 = photos[1];
+  const gap = 4;
   const half = (360 - gap) / 2;
-
-  const financingText = data.acceptsFinancing
-    ? `COM FINANCIAMENTO${data.acceptsFGTS ? ' + FGTS' : ''}, PODE SAIR MAIS BARATO QUE O ALUGUEL.`
-    : 'CONSULTE CONDIÇÕES ESPECIAIS DE PAGAMENTO.';
 
   return (
     <div style={{ position: 'relative', width: 360, height: 360, backgroundColor: '#e5e5e5', fontFamily: golos, overflow: 'hidden' }}>
-      {/* 2x2 grid */}
-      {[0, 1, 2, 3].map(i => (
-        <img key={i} src={p[i]} alt="" style={{
-          position: 'absolute',
-          left: i % 2 === 0 ? 0 : half + gap,
-          top: i < 2 ? 0 : half + gap,
-          width: half, height: half,
-          objectFit: 'cover',
-        }} />
-      ))}
-
-      {/* Accent line */}
-      <AccentLine top="50%" />
-
-      {/* Central dark pill */}
-      <div style={{
-        position: 'absolute', left: '50%', top: '50%', transform: 'translate(-50%, -50%)',
-        zIndex: 20, backgroundColor: DARK_CARD, borderRadius: 12,
-        padding: '10px 16px', maxWidth: 300, textAlign: 'center',
-      }}>
-        <p style={{ color: 'white', fontSize: 10, fontWeight: 800, margin: '0 0 3px', lineHeight: 1.3, textTransform: 'uppercase' }}>
-          JÁ PENSOU EM MORAR NO QUE É SEU?
-        </p>
-        <p style={{ color: 'rgba(255,255,255,0.85)', fontSize: 8, fontWeight: 500, margin: 0, lineHeight: 1.4, textTransform: 'uppercase' }}>
-          {financingText}
-        </p>
-      </div>
-    </div>
-  );
-};
-
-// ═══════════════════════════════════════════════════════════════════════════════
-// SLIDE 3: FICHA TÉCNICA — 2 fotos top/bottom com specs centrais
-// ═══════════════════════════════════════════════════════════════════════════════
-export const AF2SpecsSlide = ({ data, photos }: { data: AFPropertyData; photos: string[] }) => {
-  const p1 = photos[0] || '';
-  const p2 = photos[1] || photos[0] || '';
-  const gap = 3;
-  const half = (360 - gap) / 2;
-
-  const specs: string[] = [];
-  if (data.suites > 0) specs.push(`${data.suites} SUÍTE${data.suites > 1 ? 'S' : ''}`);
-  else if (data.bedrooms > 0) specs.push(`${data.bedrooms} QUARTO${data.bedrooms > 1 ? 'S' : ''}`);
-  const roomLines = data.rooms ? data.rooms.split('\n').filter(Boolean) : [];
-  roomLines.forEach(r => specs.push(r.toUpperCase()));
-  if (data.area > 0) specs.push(`${data.area}M²`);
-  if (data.garageSpaces > 0) specs.push(`${data.garageSpaces} VAGA${data.garageSpaces > 1 ? 'S' : ''} DE GARAGEM`);
-  const highlights = (data.highlights || []).filter(h => h.trim());
-  highlights.forEach(h => specs.push(h.toUpperCase()));
-
-  return (
-    <div style={{ position: 'relative', width: 360, height: 360, backgroundColor: '#e5e5e5', fontFamily: golos, overflow: 'hidden' }}>
-      {/* Top photo */}
-      {p1 && <img src={p1} alt="" style={{ position: 'absolute', left: 0, top: 0, width: 360, height: half, objectFit: 'cover' }} />}
-      {/* Bottom photo */}
+      {p1 && <img src={p1} alt="" style={{ position: 'absolute', left: 0, top: 0, width: 360, height: p2 ? half : 360, objectFit: 'cover' }} />}
       {p2 && <img src={p2} alt="" style={{ position: 'absolute', left: 0, top: half + gap, width: 360, height: half, objectFit: 'cover' }} />}
-
-      {/* Accent line */}
-      <AccentLine top="50%" />
-
-      {/* Central dark pill with specs */}
-      <div style={{
-        position: 'absolute', left: '50%', top: '50%', transform: 'translate(-50%, -50%)',
-        zIndex: 20, backgroundColor: DARK_CARD, borderRadius: 12,
-        padding: '10px 20px', maxWidth: 310, textAlign: 'center',
-      }}>
-        {specs.slice(0, 5).map((s, i) => (
-          <p key={i} style={{
-            color: 'white', fontSize: 8.5, fontWeight: 700, margin: i < specs.length - 1 ? '0 0 2px' : 0,
-            lineHeight: 1.4, textTransform: 'uppercase', letterSpacing: '0.02em',
-          }}>
-            {s}
-          </p>
-        ))}
-      </div>
+      {p2 && <AccentLine top={half} />}
     </div>
   );
 };
 
 // ═══════════════════════════════════════════════════════════════════════════════
-// SLIDE 4: CTA — 2x2 galeria com localização, preço e CTA
+// SLIDE FINAL: CTA — Fale com um especialista
 // ═══════════════════════════════════════════════════════════════════════════════
 export const AF2CTASlide = ({ data, photos }: { data: AFPropertyData; photos: string[] }) => {
-  const p = [photos[0], photos[1], photos[2], photos[3]].map(x => x || photos[0]);
-  const gap = 3;
-  const half = (360 - gap) / 2;
+  const logoBase64 = useLogoBase64(logoAF);
   const price = data.isRental ? data.rentalPrice : data.salePrice;
-
-  const locationText = [data.neighborhood, data.city || 'Fortaleza'].filter(Boolean).join(' – ');
+  const locationText = [data.neighborhood, data.city || 'Fortaleza'].filter(Boolean).join(' – ').toUpperCase();
   const priceText = price > 0 ? formatPrice(price) : 'CONSULTE';
+  const GOLD_CSS = 'linear-gradient(135deg, #E8A020, #F2B84B, #D4912A, #C07B18)';
+
   const conditionsArr: string[] = [];
-  if (data.acceptsFinancing) conditionsArr.push('ACEITA FINANCIAMENTO');
+  if (data.acceptsFinancing) conditionsArr.push('FINANCIAMENTO');
   if (data.acceptsFGTS) conditionsArr.push('FGTS');
-  const condLine = conditionsArr.length > 0 ? ` | ${conditionsArr.join(' E ')}` : '';
+  const condLine = conditionsArr.length > 0 ? `ACEITA ${conditionsArr.join(' + ')}` : '';
 
   return (
-    <div style={{ position: 'relative', width: 360, height: 360, backgroundColor: '#e5e5e5', fontFamily: golos, overflow: 'hidden' }}>
-      {/* 2x2 grid */}
-      {[0, 1, 2, 3].map(i => (
-        <img key={i} src={p[i]} alt="" style={{
-          position: 'absolute',
-          left: i % 2 === 0 ? 0 : half + gap,
-          top: i < 2 ? 0 : half + gap,
-          width: half, height: half,
-          objectFit: 'cover',
-        }} />
-      ))}
+    <div style={{ position: 'relative', width: 360, height: 360, backgroundColor: DARK_CARD, fontFamily: poppins, overflow: 'hidden' }}>
+      {/* Subtle photo background */}
+      {photos[0] && (
+        <img src={photos[0]} alt="" style={{ position: 'absolute', inset: 0, width: 360, height: 360, objectFit: 'cover', opacity: 0.15, filter: 'blur(2px)' }} />
+      )}
 
-      {/* Accent line */}
-      <AccentLine top="50%" />
+      {/* Accent line top */}
+      <AccentLine top={0} />
 
-      {/* Central dark pill */}
-      <div style={{
-        position: 'absolute', left: '50%', top: '50%', transform: 'translate(-50%, -50%)',
-        zIndex: 20, backgroundColor: DARK_CARD, borderRadius: 12,
-        padding: '10px 16px', maxWidth: 310, textAlign: 'center',
-      }}>
-        <p style={{ color: 'white', fontSize: 8, fontWeight: 700, margin: '0 0 2px', lineHeight: 1.4, textTransform: 'uppercase' }}>
-          LOCALIZAÇÃO: {locationText.toUpperCase()}
+      {/* Content */}
+      <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: 30, zIndex: 10, textAlign: 'center' }}>
+        {/* Logo */}
+        <img src={logoBase64} alt="AF" style={{ width: 120, marginBottom: 20, filter: 'brightness(0) invert(1)', opacity: 0.9 }} />
+
+        {/* Title */}
+        <p style={{ color: 'white', fontSize: 11, fontWeight: 700, margin: '0 0 6px', lineHeight: 1.3, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+          {(data.title || 'SEU IMÓVEL').toUpperCase()}
         </p>
-        <p style={{ color: 'white', fontSize: 8, fontWeight: 700, margin: '0 0 2px', lineHeight: 1.4, textTransform: 'uppercase' }}>
-          VALOR: {priceText}{condLine}
+
+        {/* Location */}
+        <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: 9, fontWeight: 500, margin: '0 0 16px', textTransform: 'uppercase', letterSpacing: '0.03em' }}>
+          {locationText}
         </p>
-        <p style={{ color: '#F2A126', fontSize: 8.5, fontWeight: 800, margin: 0, lineHeight: 1.4, textTransform: 'uppercase' }}>
-          CLIQUE E FALE AGORA COM UM ESPECIALISTA.
+
+        {/* Price */}
+        <p style={{
+          background: GOLD_CSS, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
+          fontSize: 22, fontWeight: 800, margin: '0 0 4px', lineHeight: 1.2, letterSpacing: '-0.02em',
+        }}>
+          {priceText}
+        </p>
+
+        {condLine && (
+          <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: 8, fontWeight: 500, margin: '0 0 20px', textTransform: 'uppercase' }}>
+            {condLine}
+          </p>
+        )}
+
+        {/* CTA */}
+        <div style={{
+          background: GOLD_CSS, borderRadius: 8, padding: '10px 24px', marginTop: condLine ? 0 : 16,
+        }}>
+          <p style={{ color: DARK_CARD, fontSize: 10, fontWeight: 800, margin: 0, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+            FALE AGORA COM UM ESPECIALISTA
+          </p>
+        </div>
+
+        <p style={{ color: 'rgba(255,255,255,0.45)', fontSize: 7, fontWeight: 400, margin: '10px 0 0', textTransform: 'uppercase' }}>
+          CLIQUE NO LINK DA BIO OU ENVIE UMA MENSAGEM
         </p>
       </div>
+
+      {/* Accent line bottom */}
+      <AccentLine top={355} />
     </div>
   );
 };
