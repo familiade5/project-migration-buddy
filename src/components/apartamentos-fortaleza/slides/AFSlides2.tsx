@@ -1,11 +1,10 @@
 import { AFPropertyData } from '@/types/apartamentosFortaleza';
-import { AFPropertyData } from '@/types/apartamentosFortaleza';
 import logoAF from '@/assets/logo-apartamentos-fortaleza.png';
 import { useLogoBase64 } from '@/hooks/useLogoBase64';
 
-const PRIMARY = '#0C7B8E';
-const ACCENT = '#E8562A';
-const DARK_CARD = 'rgba(40,44,52,0.88)';
+const PRIMARY = '#F2A126';
+const ACCENT = '#F2A126';
+const DARK_CARD = '#30323A';
 const golos = "'Golos Text', Arial, sans-serif";
 
 // ─── Helper: Logo ────────────────────────────────────────────────────────────
@@ -18,7 +17,7 @@ const AFLogo2 = ({ width = 100 }: { width?: number }) => {
 const AccentLine = ({ top }: { top: string | number }) => (
   <div style={{
     position: 'absolute', left: 0, right: 0, top,
-    height: 3, backgroundColor: ACCENT, zIndex: 30,
+    height: 4, backgroundColor: ACCENT, zIndex: 20,
   }} />
 );
 
@@ -55,132 +54,57 @@ const formatPriceFull = (v: number) =>
   `R$ ${v.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 
 // ═══════════════════════════════════════════════════════════════════════════════
-// SLIDE 1: CAPA — Estilo AM: foto com clip-path arredondado, badge teal top-left,
-// card coral bottom-right com preço, logo branca sobre a foto
+// SLIDE 1: CAPA — modelo fiel ao anexo: foto superior, faixa laranja divisória,
+// badge escuro inclinado com contorno branco e bloco tipográfico no rodapé
 // ═══════════════════════════════════════════════════════════════════════════════
 export const AF2CoverSlide = ({ data, photos }: { data: AFPropertyData; photos: string[] }) => {
-  const uid = useId();
-  const clipId = `af2-cover-${uid}`;
   const photo = photos[0];
   const price = data.isRental ? data.rentalPrice : data.salePrice;
-  const priceLabel = data.isRental ? 'LOCAÇÃO' : 'VENDA';
-  const paymentParts = data.isRental
-    ? ['Locação']
-    : [
-        'À vista',
-        data.acceptsFinancing && 'Aceita financiamento',
-      ].filter(Boolean) as string[];
-  const paymentLine = paymentParts.join(' | ');
-
-  // Clip path with notches for badge (top-left) and price card (bottom-right)
-  const shapePath = [
-    'M 210 6', 'H 344', 'A 10 10 0 0 1 354 16', 'V 284',
-    'Q 354 294 344 294', 'H 208', 'Q 198 294 198 304',
-    'V 344', 'A 10 10 0 0 1 188 354', 'H 16',
-    'A 10 10 0 0 1 6 344', 'V 68', 'Q 6 58 16 58',
-    'H 190', 'Q 200 58 200 48', 'V 16',
-    'A 10 10 0 0 1 210 6', 'Z',
-  ].join(' ');
+  const formattedPrice = price > 0
+    ? price.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+    : 'Consulte';
+  const photoH = 224;
 
   return (
     <div style={{ position: 'relative', width: 360, height: 360, backgroundColor: '#ffffff', fontFamily: golos, overflow: 'hidden' }}>
-      {/* clipPath definition */}
-      <svg aria-hidden="true" style={{ position: 'absolute', width: 0, height: 0, overflow: 'hidden' }}>
-        <defs>
-          <clipPath id={clipId} clipPathUnits="userSpaceOnUse">
-            <path d={shapePath} />
-          </clipPath>
-        </defs>
-      </svg>
-
-      {/* TEAL BADGE: top:6, left:6, 190×48 */}
-      <div style={{
-        position: 'absolute', top: 6, left: 6, width: 190, height: 48, zIndex: 5,
-        background: `linear-gradient(180deg, ${PRIMARY} 52%, #065A6A 100%)`,
-        borderRadius: 10, padding: '5px 10px', boxSizing: 'border-box',
-        overflow: 'hidden', display: 'flex', flexDirection: 'column', justifyContent: 'center',
-      }}>
-        <p style={{ color: 'white', fontWeight: 700, fontSize: 11, lineHeight: 1.2, margin: 0, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-          {data.title || 'Nome do Imóvel'}
-        </p>
-        <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '2px 6px', marginTop: 2 }}>
-          {data.neighborhood && (
-            <span style={{ color: 'white', fontSize: 9, opacity: 0.95, display: 'flex', alignItems: 'center', gap: 2 }}>
-              <svg width="7" height="9" viewBox="0 0 10 13" fill="white">
-                <path d="M5 0C2.24 0 0 2.24 0 5c0 3.75 5 8 5 8s5-4.25 5-8C10 2.24 7.76 0 5 0zm0 7c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/>
-              </svg>
-              {data.neighborhood}
-            </span>
-          )}
-          {data.bedrooms > 0 && (
-            <span style={{ color: 'white', fontSize: 9, opacity: 0.95, display: 'flex', alignItems: 'center', gap: 2 }}>
-              <svg width="11" height="8" viewBox="0 0 18 12" fill="white">
-                <path d="M1 8V4a1 1 0 011-1h4a1 1 0 011 1v1h4V4a1 1 0 011-1h4a1 1 0 011 1v4H1zm0 1h16v3H1V9z"/>
-              </svg>
-              {data.bedrooms} {data.bedrooms === 1 ? 'Qto' : 'Qtos'}
-            </span>
-          )}
-          {data.area > 0 && (
-            <span style={{ color: 'white', fontSize: 9, opacity: 0.95, display: 'flex', alignItems: 'center', gap: 2 }}>
-              <svg width="9" height="9" viewBox="0 0 12 12" fill="white">
-                <path d="M0 0v5l2-2 3 3 2-2-3-3 2-2H0zm12 12V7l-2 2-3-3-2 2 3 3-2 2h6z"/>
-              </svg>
-              {data.area}m²
-            </span>
-          )}
-        </div>
-      </div>
-
-      {/* PHOTO with clip-path */}
       {photo ? (
-        <img src={photo} alt="" style={{
-          position: 'absolute', top: 0, left: 0, width: 360, height: 360,
-          objectFit: 'cover', display: 'block', clipPath: `url(#${clipId})`, zIndex: 10,
-        }} />
+        <img src={photo} alt="" style={{ position: 'absolute', top: 0, left: 0, width: 360, height: photoH, objectFit: 'cover' }} />
       ) : (
-        <div style={{
-          position: 'absolute', top: 0, left: 0, width: 360, height: 360,
-          backgroundColor: '#d1d5db', clipPath: `url(#${clipId})`, zIndex: 10,
-        }} />
+        <div style={{ position: 'absolute', top: 0, left: 0, width: 360, height: photoH, backgroundColor: '#d1d5db' }} />
       )}
 
-      {/* WHITE LOGO on photo, bottom-left */}
-      <div style={{ position: 'absolute', bottom: 18, left: 18, zIndex: 20 }}>
-        <AFLogo2 width={106} />
+      <AccentLine top={photoH - 1} />
+
+      <svg style={{ position: 'absolute', left: 0, top: photoH, width: 360, height: 136, zIndex: 1 }} viewBox="0 0 360 136" preserveAspectRatio="none">
+        <rect width="360" height="136" fill="#ffffff" />
+        <polygon points="156,0 360,0 360,54 262,54" fill="rgba(0,0,0,0.035)" />
+        <polygon points="202,34 360,34 360,102 256,102" fill="rgba(0,0,0,0.03)" />
+        <polygon points="248,84 360,84 360,136 290,136" fill="rgba(0,0,0,0.028)" />
+      </svg>
+
+      <div style={{ position: 'absolute', left: -12, top: 166, width: 300, height: 86, zIndex: 30 }}>
+        <svg viewBox="0 0 300 86" width="300" height="86" style={{ display: 'block', overflow: 'visible' }}>
+          <path d="M 18 4 H 252 Q 280 4 292 22 L 272 70 Q 264 82 240 82 H 20 Q 4 82 4 64 V 20 Q 4 4 18 4 Z" fill={DARK_CARD} stroke="#ffffff" strokeWidth="4" />
+        </svg>
+        <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', paddingLeft: 28, paddingRight: 12, gap: 8 }}>
+          <span style={{ color: PRIMARY, fontSize: 34, fontWeight: 800, lineHeight: 1, textTransform: 'uppercase', letterSpacing: '-0.05em' }}>R$</span>
+          <span style={{ color: PRIMARY, fontSize: 56, fontWeight: 900, lineHeight: 0.88, letterSpacing: '-0.065em' }}>{formattedPrice}</span>
+        </div>
       </div>
 
-      {/* CORAL PRICE CARD: bottom:10, right:10, 148×52 */}
-      <div style={{
-        position: 'absolute', bottom: 10, right: 10, zIndex: 20,
-        background: `linear-gradient(180deg, ${ACCENT} 36%, #C4441E 100%)`,
-        borderRadius: 10, padding: '5px 14px 5px', width: 148, height: 52,
-        boxSizing: 'border-box', boxShadow: '0 0 0 4px #ffffff',
-        display: 'flex', flexDirection: 'column', justifyContent: 'center',
-      }}>
-        {!data.isRental && (
-          <div style={{
-            display: 'inline-block', color: 'white', fontWeight: 700, fontSize: 7,
-            letterSpacing: '0.08em', backgroundColor: 'rgba(255,255,255,0.2)',
-            border: '1px solid rgba(255,255,255,0.4)', borderRadius: 20,
-            padding: '1px 6px', marginBottom: 2, alignSelf: 'flex-start',
-          }}>
-            VENDA
-          </div>
-        )}
-        <div style={{ display: 'flex', alignItems: 'baseline', gap: 2, color: 'white' }}>
-          <span style={{ fontSize: 9, opacity: 0.75, marginRight: 1 }}>R$</span>
-          <span style={{ fontSize: 12, fontWeight: 700, lineHeight: 1 }}>
-            {price > 0
-              ? price.toLocaleString('pt-BR', { minimumFractionDigits: 0, maximumFractionDigits: 0 })
-              : 'Consulte'}
-          </span>
-          {price > 0 && <span style={{ fontSize: 10, opacity: 0.75 }}>,00</span>}
-        </div>
-        <div style={{ borderTop: '1px solid rgba(255,255,255,0.2)', marginTop: 3, paddingTop: 2 }}>
-          <p style={{ color: 'white', fontSize: 8, opacity: 0.9, margin: 0, lineHeight: 1.3 }}>
-            {paymentLine}
+      <div style={{ position: 'absolute', left: 22, top: 255, zIndex: 10, width: 298 }}>
+        <p style={{ color: PRIMARY, fontSize: 27, fontWeight: 900, lineHeight: 1.04, margin: 0, textTransform: 'uppercase', letterSpacing: '-0.04em' }}>
+          {data.title || 'SEU IMÓVEL'}
+        </p>
+        {data.neighborhood && (
+          <p style={{ color: '#252730', fontSize: 22, fontWeight: 500, lineHeight: 1.05, margin: '6px 0 0', textTransform: 'uppercase', letterSpacing: '-0.035em' }}>
+            {data.neighborhood}
           </p>
-        </div>
+        )}
+      </div>
+
+      <div style={{ position: 'absolute', left: 20, bottom: 12, zIndex: 10 }}>
+        <AFLogo2 width={150} />
       </div>
     </div>
   );
