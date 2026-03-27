@@ -11,7 +11,7 @@ interface VDHFeedPhotoSlideStoryProps {
   totalSlides?: number;
 }
 
-const GRAY_BG = '#73c883';
+const GRAY_BG = '#006633';
 
 export const VDHFeedPhotoSlideStory = ({ data, photo, slideIndex = 0 }: VDHFeedPhotoSlideStoryProps) => {
   const uid = useId();
