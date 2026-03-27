@@ -329,12 +329,12 @@ export const AF2PhotoSlide = ({ photos, slideIndex, data }: { photos: [string, s
       <div style={{
         position: 'absolute', left: '50%', top: '50%', transform: 'translate(-50%, -50%)',
         backgroundColor: 'rgba(55, 58, 66, 0.92)',
-        borderRadius: 14, padding: '12px 22px', zIndex: 20, textAlign: 'center',
-        maxWidth: 310, boxShadow: '0 6px 20px rgba(0,0,0,0.35)',
+        borderRadius: 12, padding: '8px 24px', zIndex: 20, textAlign: 'center',
+        maxWidth: 340, width: '88%', boxShadow: '0 6px 20px rgba(0,0,0,0.35)',
       }}>
         <p style={{
-          color: 'white', fontSize: 13, fontWeight: 800, margin: '0 0 4px',
-          textTransform: 'uppercase', letterSpacing: '0.03em', lineHeight: 1.3,
+          color: 'white', fontSize: 11, fontWeight: 800, margin: '0 0 2px',
+          textTransform: 'uppercase', letterSpacing: '0.03em', lineHeight: 1.25,
         }}>
           {content.headline}
         </p>
@@ -346,8 +346,8 @@ export const AF2PhotoSlide = ({ photos, slideIndex, data }: { photos: [string, s
               background: isCTA ? GOLD_CSS : undefined,
               WebkitBackgroundClip: isCTA ? 'text' : undefined,
               WebkitTextFillColor: isCTA ? 'transparent' : undefined,
-              fontSize: 10, fontWeight: isCTA ? 800 : 600, margin: 0,
-              textTransform: 'uppercase', letterSpacing: '0.02em', lineHeight: 1.5,
+              fontSize: 8.5, fontWeight: isCTA ? 800 : 600, margin: 0,
+              textTransform: 'uppercase', letterSpacing: '0.02em', lineHeight: 1.4,
             }}>
               {line}
             </p>
