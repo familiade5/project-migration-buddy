@@ -47,56 +47,52 @@ const AccentLine = ({ top }: { top: string | number }) => (
 
 // ─── Spec Icons (more refined, with gradient) ────────────────────────────────
 const BedIcon = () => (
-  <svg width="28" height="22" viewBox="0 0 28 22" fill="none">
+  <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
     <GoldGradientDef />
-    <rect x="3" y="4" width="22" height="3" rx="1.5" fill={GOLD_URL} opacity="0.3" />
-    <path d="M4 9V6.5C4 5.12 5.12 4 6.5 4H12C13.1 4 14 4.9 14 6V7.5H16V6C16 4.9 16.9 4 18 4H21.5C22.88 4 24 5.12 24 6.5V9" stroke={GOLD_URL} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-    <rect x="3" y="9" width="22" height="6" rx="2" stroke={GOLD_URL} strokeWidth="1.6" />
-    <line x1="3" y1="15" x2="3" y2="18" stroke={GOLD_URL} strokeWidth="1.6" strokeLinecap="round" />
-    <line x1="25" y1="15" x2="25" y2="18" stroke={GOLD_URL} strokeWidth="1.6" strokeLinecap="round" />
+    <path d="M3 21V13a1 1 0 011-1h16a1 1 0 011 1v8" stroke={GOLD_URL} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+    <path d="M3 14V7a2 2 0 012-2h14a2 2 0 012 2v7" stroke={GOLD_URL} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+    <path d="M8 12V9.5A1.5 1.5 0 019.5 8h0A1.5 1.5 0 0111 9.5V12M13 12V9.5A1.5 1.5 0 0114.5 8h0A1.5 1.5 0 0116 9.5V12" stroke={GOLD_URL} strokeWidth="1.3" strokeLinecap="round" />
+    <line x1="3" y1="17" x2="21" y2="17" stroke={GOLD_URL} strokeWidth="1" opacity="0.3" />
   </svg>
 );
 
 const CarIcon = () => (
-  <svg width="28" height="22" viewBox="0 0 28 22" fill="none">
+  <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
     <GoldGradientDef />
-    <path d="M7 13H21" stroke={GOLD_URL} strokeWidth="1.4" />
-    <path d="M8.5 13L10 8H18L19.5 13" stroke={GOLD_URL} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-    <rect x="6" y="13" width="16" height="5" rx="2" stroke={GOLD_URL} strokeWidth="1.6" />
-    <circle cx="9.5" cy="15.5" r="1.2" fill={GOLD_URL} />
-    <circle cx="18.5" cy="15.5" r="1.2" fill={GOLD_URL} />
-    <line x1="12" y1="8" x2="11" y2="13" stroke={GOLD_URL} strokeWidth="0.8" opacity="0.4" />
-    <line x1="16" y1="8" x2="17" y2="13" stroke={GOLD_URL} strokeWidth="0.8" opacity="0.4" />
+    <path d="M5 17h14a2 2 0 002-2v-2a2 2 0 00-1.1-1.79L17 9.5l-1.5-4A1 1 0 0014.56 5H9.44a1 1 0 00-.94.55L7 9.5 4.1 11.21A2 2 0 003 13v2a2 2 0 002 2z" stroke={GOLD_URL} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+    <circle cx="7.5" cy="17" r="1.5" stroke={GOLD_URL} strokeWidth="1.3" fill="none" />
+    <circle cx="16.5" cy="17" r="1.5" stroke={GOLD_URL} strokeWidth="1.3" fill="none" />
+    <line x1="7" y1="9.5" x2="17" y2="9.5" stroke={GOLD_URL} strokeWidth="1" opacity="0.35" />
   </svg>
 );
 
 const GrillIcon = () => (
-  <svg width="28" height="22" viewBox="0 0 28 22" fill="none">
+  <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
     <GoldGradientDef />
-    <path d="M10 3C10 4.5 9 5 9 6.2M14 2C14 3.8 13 4.5 13 5.8M18 3C18 4.5 17 5 17 6.2" stroke={GOLD_URL} strokeWidth="1.4" strokeLinecap="round" />
-    <path d="M7 9H21C21 12.5 18.5 15 15.5 15H12.5C9.5 15 7 12.5 7 9Z" stroke={GOLD_URL} strokeWidth="1.6" strokeLinejoin="round" />
-    <line x1="14" y1="15" x2="14" y2="19" stroke={GOLD_URL} strokeWidth="1.6" strokeLinecap="round" />
-    <line x1="10" y1="19" x2="18" y2="19" stroke={GOLD_URL} strokeWidth="1.4" strokeLinecap="round" />
+    <path d="M12 12a6 6 0 006-6H6a6 6 0 006 6z" stroke={GOLD_URL} strokeWidth="1.5" strokeLinejoin="round" />
+    <path d="M12 12v4M8 20h8M10 16h4" stroke={GOLD_URL} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+    <path d="M9 3v1.5M12 2v2.5M15 3v1.5" stroke={GOLD_URL} strokeWidth="1.3" strokeLinecap="round" />
   </svg>
 );
 
 const BathIcon = () => (
-  <svg width="28" height="22" viewBox="0 0 28 22" fill="none">
+  <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
     <GoldGradientDef />
-    <path d="M6 10V5C6 3.34 7.34 2 9 2H10" stroke={GOLD_URL} strokeWidth="1.6" strokeLinecap="round" />
-    <rect x="4" y="10" width="20" height="2" rx="1" fill={GOLD_URL} />
-    <path d="M5 12V16C5 17.66 6.34 19 8 19H20C21.66 19 23 17.66 23 16V12" stroke={GOLD_URL} strokeWidth="1.6" strokeLinecap="round" />
-    <circle cx="9" cy="7" r="0.8" fill={GOLD_URL} />
+    <path d="M4 12h16" stroke={GOLD_URL} strokeWidth="1.5" strokeLinecap="round" />
+    <path d="M4 12v4a4 4 0 004 4h8a4 4 0 004-4v-4" stroke={GOLD_URL} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+    <path d="M6 12V5a2 2 0 012-2h1" stroke={GOLD_URL} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+    <circle cx="10" cy="7" r="0.7" fill={GOLD_URL} />
   </svg>
 );
 
 const PoolIcon = () => (
-  <svg width="28" height="22" viewBox="0 0 28 22" fill="none">
+  <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
     <GoldGradientDef />
-    <path d="M4 14C6 12 8 14 10 12C12 10 14 14 16 12C18 10 20 14 22 12C24 10 26 14 26 14" stroke={GOLD_URL} strokeWidth="1.4" strokeLinecap="round" />
-    <path d="M4 18C6 16 8 18 10 16C12 14 14 18 16 16C18 14 20 18 22 16C24 14 26 18 26 18" stroke={GOLD_URL} strokeWidth="1.4" strokeLinecap="round" />
-    <rect x="8" y="4" width="3" height="10" rx="1.5" stroke={GOLD_URL} strokeWidth="1.2" />
-    <rect x="17" y="4" width="3" height="10" rx="1.5" stroke={GOLD_URL} strokeWidth="1.2" />
+    <path d="M2 15c1.5-1.5 3-1.5 4.5 0s3 1.5 4.5 0 3-1.5 4.5 0 3 1.5 4.5 0" stroke={GOLD_URL} strokeWidth="1.5" strokeLinecap="round" />
+    <path d="M2 19c1.5-1.5 3-1.5 4.5 0s3 1.5 4.5 0 3-1.5 4.5 0 3 1.5 4.5 0" stroke={GOLD_URL} strokeWidth="1.5" strokeLinecap="round" />
+    <rect x="8" y="4" width="2.5" height="11" rx="1.25" stroke={GOLD_URL} strokeWidth="1.2" />
+    <rect x="13.5" y="4" width="2.5" height="11" rx="1.25" stroke={GOLD_URL} strokeWidth="1.2" />
+    <line x1="10.5" y1="7" x2="13.5" y2="7" stroke={GOLD_URL} strokeWidth="1.2" strokeLinecap="round" />
   </svg>
 );
 
@@ -166,7 +162,7 @@ export const AF2CoverSlide = ({ data, photos }: { data: AFPropertyData; photos: 
       {/* White panel with top shadow for 3D/depth effect on golden line and price badge */}
       <div style={{
         position: 'absolute', left: 0, top: photoH + 4, width: 360, height: 156, zIndex: 5,
-        boxShadow: '0 -10px 24px -4px rgba(0,0,0,0.28)',
+        boxShadow: 'inset 0 6px 8px -4px rgba(0,0,0,0.18)',
         background: '#f8f7f3',
       }}>
         {/* Subtle diagonal geometric shapes */}
