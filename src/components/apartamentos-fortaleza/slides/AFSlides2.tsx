@@ -23,30 +23,25 @@ const AccentLine = ({ top }: { top: string | number }) => (
 
 // ─── Helper: Bed icon ────────────────────────────────────────────────────────
 const BedIcon = () => (
-  <svg width="32" height="24" viewBox="0 0 24 18" fill={ACCENT}>
-    <path d="M2 12V6a2 2 0 012-2h5a2 2 0 012 2v1h2V6a2 2 0 012-2h5a2 2 0 012 2v6H2zm0 1h20v4H2v-4z" />
+  <svg width="24" height="20" viewBox="0 0 24 20" fill="none">
+    <path d="M3 11.5V7.5C3 6.4 3.9 5.5 5 5.5H10C11.1 5.5 12 6.4 12 7.5V8.5H14V7.5C14 6.4 14.9 5.5 16 5.5H19C20.1 5.5 21 6.4 21 7.5V11.5" stroke={ACCENT} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+    <path d="M2.5 11.5H21.5V15.5H2.5V11.5Z" stroke={ACCENT} strokeWidth="1.8" strokeLinejoin="round" />
   </svg>
 );
 
 // ─── Helper: Car icon ────────────────────────────────────────────────────────
 const CarIcon = () => (
-  <svg width="32" height="24" viewBox="0 0 24 18" fill={ACCENT}>
-    <path d="M3 6l2-4h14l2 4v8H3V6zm3 6a1.5 1.5 0 100-3 1.5 1.5 0 000 3zm12 0a1.5 1.5 0 100-3 1.5 1.5 0 000 3z" />
+  <svg width="24" height="20" viewBox="0 0 24 20" fill="none">
+    <path d="M5 12.5H19M6.5 12.5L8 8.5H16L17.5 12.5M7.5 15.5C8.32843 15.5 9 14.8284 9 14C9 13.1716 8.32843 12.5 7.5 12.5C6.67157 12.5 6 13.1716 6 14C6 14.8284 6.67157 15.5 7.5 15.5ZM16.5 15.5C17.3284 15.5 18 14.8284 18 14C18 13.1716 17.3284 12.5 16.5 12.5C15.6716 12.5 15 13.1716 15 14C15 14.8284 15.6716 15.5 16.5 15.5Z" stroke={ACCENT} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
   </svg>
 );
 
-// ─── Helper: Area icon ───────────────────────────────────────────────────────
-const AreaIcon = () => (
-  <svg width="32" height="24" viewBox="0 0 24 20" fill={ACCENT}>
-    <rect x="2" y="2" width="20" height="16" rx="2" fill="none" stroke={ACCENT} strokeWidth="2" />
-    <path d="M6 14l4-4 3 3 5-5" stroke={ACCENT} strokeWidth="2" fill="none" />
-  </svg>
-);
-
-// ─── Helper: Bath icon ───────────────────────────────────────────────────────
-const BathIcon = () => (
-  <svg width="32" height="24" viewBox="0 0 24 20" fill={ACCENT}>
-    <path d="M4 10h16v4a4 4 0 01-4 4H8a4 4 0 01-4-4v-4zm2-8v8m0-8h2a2 2 0 012 2v2" stroke={ACCENT} strokeWidth="2" fill="none" />
+// ─── Helper: Grill icon ──────────────────────────────────────────────────────
+const GrillIcon = () => (
+  <svg width="24" height="20" viewBox="0 0 24 20" fill="none">
+    <path d="M8 4.5C8 5.7 7.1 6.1 7.1 7.2M12 3.5C12 4.9 11.1 5.5 11.1 6.7M16 4.5C16 5.7 15.1 6.1 15.1 7.2" stroke={ACCENT} strokeWidth="1.5" strokeLinecap="round" />
+    <path d="M6 10.5H18C18 13.3 15.8 15.5 13 15.5H11C8.2 15.5 6 13.3 6 10.5Z" stroke={ACCENT} strokeWidth="1.8" strokeLinejoin="round" />
+    <path d="M12 15.5V18.5" stroke={ACCENT} strokeWidth="1.8" strokeLinecap="round" />
   </svg>
 );
 
@@ -61,8 +56,7 @@ const formatPriceFull = (v: number) =>
   `R$ ${v.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 
 // ═══════════════════════════════════════════════════════════════════════════════
-// SLIDE 1: CAPA — modelo fiel ao anexo: foto superior, faixa laranja divisória,
-// badge escuro inclinado com contorno branco e bloco tipográfico no rodapé
+// SLIDE 1: CAPA — reconstruído para ficar muito mais fiel ao modelo anexado
 // ═══════════════════════════════════════════════════════════════════════════════
 export const AF2CoverSlide = ({ data, photos }: { data: AFPropertyData; photos: string[] }) => {
   const photo = photos[0];
@@ -70,31 +64,25 @@ export const AF2CoverSlide = ({ data, photos }: { data: AFPropertyData; photos: 
   const formattedPrice = price > 0
     ? price.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
     : 'Consulte';
-  const photoH = 224;
+  const photoH = 182;
 
+  const title = (data.title || 'SEU IMÓVEL').toUpperCase();
+  const neighborhood = (data.neighborhood || 'BAIRRO').toUpperCase();
   const bedroomsLabel = data.suites > 0
-    ? `${data.suites} Suíte${data.suites > 1 ? 's' : ''}`
-    : `${data.bedrooms || 0} Quarto${(data.bedrooms || 0) !== 1 ? 's' : ''}`;
-  const areaLabel = data.area > 0 ? `${data.area}m²` : '0m²';
-  const garageLabel = `${data.garageSpaces || 0} Vaga${(data.garageSpaces || 0) !== 1 ? 's' : ''}`;
-  const bathLabel = `${data.bathrooms || 0} Banheiro${(data.bathrooms || 0) !== 1 ? 's' : ''}`;
+    ? `${data.suites} SUÍTE${data.suites > 1 ? 'S' : ''}`
+    : `${data.bedrooms || 0} QUARTO${(data.bedrooms || 0) !== 1 ? 'S' : ''}`;
+  const garageLabel = `${data.garageSpaces || 0} VAGA${(data.garageSpaces || 0) !== 1 ? 'S' : ''} DE GARAGEM`;
+  const leisureLabel = ((data.leisureItems || '').split(/[,\n]/).map(item => item.trim()).filter(Boolean)[0] || 'CHURRASQUEIRA').toUpperCase();
 
-  const specCardStyle: React.CSSProperties = {
-    backgroundColor: DARK_CARD,
-    borderRadius: 6,
-    padding: '4px 8px',
-    display: 'flex',
-    alignItems: 'center',
-    gap: 5,
-    minWidth: 80,
-  };
-  const specTextStyle: React.CSSProperties = {
-    color: '#ffffff',
+  const specLabelStyle: React.CSSProperties = {
+    color: '#F7F7F4',
     fontSize: 9,
-    fontWeight: 700,
+    lineHeight: 1.15,
     textTransform: 'uppercase',
-    lineHeight: 1.2,
-    letterSpacing: '0.01em',
+    letterSpacing: '0.02em',
+    fontWeight: 500,
+    textAlign: 'center',
+    margin: 0,
   };
 
   return (
@@ -102,65 +90,61 @@ export const AF2CoverSlide = ({ data, photos }: { data: AFPropertyData; photos: 
       {photo ? (
         <img src={photo} alt="" style={{ position: 'absolute', top: 0, left: 0, width: 360, height: photoH, objectFit: 'cover' }} />
       ) : (
-        <div style={{ position: 'absolute', top: 0, left: 0, width: 360, height: photoH, backgroundColor: '#d1d5db' }} />
+        <div style={{ position: 'absolute', top: 0, left: 0, width: 360, height: photoH, background: 'linear-gradient(180deg, #d8dadf 0%, #cfd2d8 100%)' }} />
       )}
 
       <AccentLine top={photoH - 1} />
 
-      <svg style={{ position: 'absolute', left: 0, top: photoH, width: 360, height: 136, zIndex: 1 }} viewBox="0 0 360 136" preserveAspectRatio="none">
-        <rect width="360" height="136" fill="#ffffff" />
-        <polygon points="156,0 360,0 360,54 262,54" fill="rgba(0,0,0,0.035)" />
-        <polygon points="202,34 360,34 360,102 256,102" fill="rgba(0,0,0,0.03)" />
-        <polygon points="248,84 360,84 360,136 290,136" fill="rgba(0,0,0,0.028)" />
+      <svg style={{ position: 'absolute', left: 0, top: photoH, width: 360, height: 178, zIndex: 1 }} viewBox="0 0 360 178" preserveAspectRatio="none">
+        <rect width="360" height="178" fill="#f8f7f3" />
+        <polygon points="108,0 206,0 136,56 40,56" fill="rgba(255,255,255,0.85)" />
+        <polygon points="150,0 304,0 206,92 54,92" fill="rgba(255,255,255,0.52)" />
+        <polygon points="204,0 360,0 256,110 102,110" fill="rgba(255,255,255,0.30)" />
+        <polygon points="232,58 360,58 360,178 314,178" fill="rgba(255,255,255,0.16)" />
       </svg>
 
-      {/* Price badge */}
-      <div style={{ position: 'absolute', left: -12, top: 166, width: 300, height: 86, zIndex: 30 }}>
-        <svg viewBox="0 0 300 86" width="300" height="86" style={{ display: 'block', overflow: 'visible' }}>
-          <path d="M 18 4 H 252 Q 280 4 292 22 L 272 70 Q 264 82 240 82 H 20 Q 4 82 4 64 V 20 Q 4 4 18 4 Z" fill={DARK_CARD} stroke="#ffffff" strokeWidth="4" />
+      <div style={{ position: 'absolute', left: -6, top: 146, width: 228, height: 78, zIndex: 30 }}>
+        <svg viewBox="0 0 228 78" width="228" height="78" style={{ display: 'block', overflow: 'visible' }}>
+          <path d="M18 3 H189 L210 21 L191 63 H18 C8 63 3 57 3 47 V18 C3 8 8 3 18 3 Z" fill={DARK_CARD} stroke="#ffffff" strokeWidth="3.5" />
         </svg>
-        <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', paddingLeft: 28, paddingRight: 12, gap: 8 }}>
-          <span style={{ color: PRIMARY, fontSize: 34, fontWeight: 800, lineHeight: 1, textTransform: 'uppercase', letterSpacing: '-0.05em' }}>R$</span>
-          <span style={{ color: PRIMARY, fontSize: 56, fontWeight: 900, lineHeight: 0.88, letterSpacing: '-0.065em' }}>{formattedPrice}</span>
+        <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', padding: '6px 16px 10px 18px', gap: 6 }}>
+          <span style={{ color: PRIMARY, fontSize: 20, fontWeight: 800, lineHeight: 1, letterSpacing: '-0.04em' }}>R$</span>
+          <span style={{ color: PRIMARY, fontSize: 42, fontWeight: 900, lineHeight: 0.9, letterSpacing: '-0.06em' }}>{formattedPrice}</span>
         </div>
       </div>
 
-      {/* Title & neighborhood */}
-      <div style={{ position: 'absolute', left: 22, top: 255, zIndex: 10, width: 180 }}>
-        <p style={{ color: PRIMARY, fontSize: 22, fontWeight: 900, lineHeight: 1.04, margin: 0, textTransform: 'uppercase', letterSpacing: '-0.04em' }}>
-          {data.title || 'SEU IMÓVEL'}
+      <div style={{ position: 'absolute', left: 20, top: 234, zIndex: 12, width: 154 }}>
+        <p style={{ color: PRIMARY, fontSize: 18, fontWeight: 900, lineHeight: 1.02, margin: 0, textTransform: 'uppercase', letterSpacing: '-0.04em', textWrap: 'balance' as any }}>
+          {title}
         </p>
-        <p style={{ color: '#252730', fontSize: 16, fontWeight: 500, lineHeight: 1.05, margin: '4px 0 0', textTransform: 'uppercase', letterSpacing: '-0.035em' }}>
-          {data.neighborhood || 'BAIRRO'}
+        <p style={{ color: '#2f3138', fontSize: 10, fontWeight: 500, lineHeight: 1.05, margin: '6px 0 0', textTransform: 'uppercase', letterSpacing: '0.02em' }}>
+          {neighborhood}
         </p>
       </div>
 
-      {/* Spec cards - always visible, bottom right */}
       <div style={{
-        position: 'absolute', right: 12, bottom: 42, zIndex: 20,
-        display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 4,
+        position: 'absolute', right: 10, bottom: 0, zIndex: 15,
+        width: 184, height: 108, backgroundColor: '#30323A',
+        borderTopLeftRadius: 16, borderTopRightRadius: 16, borderBottomLeftRadius: 16,
+        display: 'grid', gridTemplateColumns: '1fr 1fr', gridTemplateRows: '1fr 1fr',
+        padding: '14px 12px 10px', boxSizing: 'border-box',
       }}>
-        <div style={specCardStyle}>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 4 }}>
           <BedIcon />
-          <span style={specTextStyle}>{bedroomsLabel}</span>
+          <p style={specLabelStyle}>{bedroomsLabel}</p>
         </div>
-        <div style={specCardStyle}>
-          <AreaIcon />
-          <span style={specTextStyle}>{areaLabel}</span>
-        </div>
-        <div style={specCardStyle}>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 4 }}>
           <CarIcon />
-          <span style={specTextStyle}>{garageLabel}</span>
+          <p style={specLabelStyle}>{garageLabel}</p>
         </div>
-        <div style={specCardStyle}>
-          <BathIcon />
-          <span style={specTextStyle}>{bathLabel}</span>
+        <div style={{ gridColumn: '1 / span 2', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 4 }}>
+          <GrillIcon />
+          <p style={specLabelStyle}>{leisureLabel}</p>
         </div>
       </div>
 
-      {/* Logo */}
-      <div style={{ position: 'absolute', left: 20, bottom: 12, zIndex: 10 }}>
-        <AFLogo2 width={120} />
+      <div style={{ position: 'absolute', left: 18, bottom: 14, zIndex: 12 }}>
+        <AFLogo2 width={108} />
       </div>
     </div>
   );
