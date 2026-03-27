@@ -5,6 +5,7 @@ import JSZip from 'jszip';
 import { Download, ChevronLeft, ChevronRight, Loader2, FileText } from 'lucide-react';
 import { AFPropertyData } from '@/types/apartamentosFortaleza';
 import { AFCoverSlide, AFSpecsSlide, AFLocationSlide, AFPhotoSlide, AFInfoSlide } from './slides/AFSlides';
+import { AF2CoverSlide, AF2GallerySlide, AF2SpecsSlide, AF2CTASlide } from './slides/AFSlides2';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import { generateAFPropertyPDF } from '@/lib/af/generatePropertyPDF';
@@ -26,6 +27,7 @@ const MAX_SLIDES = 20;
 export function AFPostPreview({ data, photos }: AFPostPreviewProps) {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [format, setFormat] = useState<FormatType>('feed');
+  const [designVersion, setDesignVersion] = useState<1 | 2>(1);
   const [isExporting, setIsExporting] = useState(false);
   const [isExportingPdf, setIsExportingPdf] = useState(false);
   const [containerW, setContainerW] = useState(320);
@@ -60,7 +62,23 @@ export function AFPostPreview({ data, photos }: AFPostPreviewProps) {
     return slides;
   };
 
-  const feedSlides = buildFeedSlides();
+  const buildFeedSlides2 = () => {
+    const p = photos;
+    const slides = [];
+    slides.push({ id: 'd2-cover', name: 'Capa', el: <AF2CoverSlide data={data} photos={p} /> });
+    if (p.length >= 4) {
+      slides.push({ id: 'd2-gallery', name: 'Galeria', el: <AF2GallerySlide data={data} photos={p.slice(0, 4)} /> });
+    } else if (p.length >= 2) {
+      slides.push({ id: 'd2-gallery', name: 'Galeria', el: <AF2GallerySlide data={data} photos={p} /> });
+    }
+    const specsPhotos = p.length >= 5 ? [p[4], p[5] || p[0]] : p.length >= 2 ? [p[1], p[0]] : [p[0], p[0]];
+    slides.push({ id: 'd2-specs', name: 'Ficha', el: <AF2SpecsSlide data={data} photos={specsPhotos} /> });
+    const ctaPhotos = p.length >= 8 ? p.slice(4, 8) : p.length >= 4 ? p.slice(-4) : p;
+    slides.push({ id: 'd2-cta', name: 'CTA', el: <AF2CTASlide data={data} photos={ctaPhotos} /> });
+    return slides;
+  };
+
+  const feedSlides = designVersion === 1 ? buildFeedSlides() : buildFeedSlides2();
   const slides = feedSlides;
   const totalSlides = slides.length;
   const safeIndex = Math.min(currentSlide, totalSlides - 1);
@@ -134,6 +152,18 @@ export function AFPostPreview({ data, photos }: AFPostPreviewProps) {
     <div ref={containerRef} className="space-y-3 w-full overflow-hidden">
       <div className="flex items-center justify-between gap-2">
         <h3 className="font-semibold text-sm text-gray-800">Preview do Carrossel</h3>
+        <div className="flex items-center gap-1 bg-gray-100 rounded-lg p-0.5">
+          <button
+            onClick={() => { setDesignVersion(1); setCurrentSlide(0); }}
+            className="px-2 py-1 rounded-md text-xs font-medium transition-all"
+            style={designVersion === 1 ? { backgroundColor: PRIMARY, color: 'white' } : { color: '#6B7280' }}
+          >Design 1</button>
+          <button
+            onClick={() => { setDesignVersion(2); setCurrentSlide(0); }}
+            className="px-2 py-1 rounded-md text-xs font-medium transition-all"
+            style={designVersion === 2 ? { backgroundColor: ACCENT, color: 'white' } : { color: '#6B7280' }}
+          >Design 2</button>
+        </div>
       </div>
 
       <div className="flex gap-2">
