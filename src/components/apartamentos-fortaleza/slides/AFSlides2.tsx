@@ -246,56 +246,102 @@ export const AF2CoverSlide = ({ data, photos }: { data: AFPropertyData; photos: 
   );
 };
 
-// ─── Helper: build emotional trigger messages per slide ──────────────────────
+// ─── Helper: build unique emotional trigger messages per slide ───────────────
 const getSlideContent = (data: AFPropertyData, slideIndex: number): { headline: string; details: string[] } => {
   const price = data.isRental ? data.rentalPrice : data.salePrice;
   const priceFormatted = price > 0 ? formatPrice(price) : '';
-  const neighborhood = data.neighborhood || 'sua região';
+  const neighborhood = (data.neighborhood || 'sua região').toUpperCase();
   const bedroomsText = data.suites > 0
-    ? `${data.suites} Suíte${data.suites > 1 ? 's' : ''}`
-    : data.bedrooms > 0 ? `${data.bedrooms} Quarto${data.bedrooms > 1 ? 's' : ''}` : '';
-  const garageText = data.garageSpaces > 0 ? `${data.garageSpaces} Vaga${data.garageSpaces > 1 ? 's' : ''} de Garagem` : '';
-  const areaText = data.area > 0 ? `${data.area}m²` : '';
-  const leisureFirst = ((data.leisureItems || '').split(/[,\n]/).map(i => i.trim()).filter(Boolean)[0] || '').toUpperCase();
+    ? `${data.suites} SUÍTE${data.suites > 1 ? 'S' : ''}`
+    : data.bedrooms > 0 ? `${data.bedrooms} QUARTO${data.bedrooms > 1 ? 'S' : ''}` : '';
+  const garageText = data.garageSpaces > 0 ? `${data.garageSpaces} VAGA${data.garageSpaces > 1 ? 'S' : ''} DE GARAGEM` : '';
+  const areaText = data.area > 0 ? `${data.area}M²` : '';
+  const bathText = data.bathrooms > 0 ? `${data.bathrooms} BANHEIRO${data.bathrooms > 1 ? 'S' : ''}` : '';
+  const leisureItems = (data.leisureItems || '').split(/[,\n]/).map(i => i.trim()).filter(Boolean);
+  const leisureFirst = (leisureItems[0] || '').toUpperCase();
+  const leisureSecond = (leisureItems[1] || '').toUpperCase();
+  const hasFinancing = data.acceptsFinancing;
+  const hasFGTS = data.acceptsFGTS;
+  const specsLine = [bedroomsText, areaText, garageText].filter(Boolean).join(' | ');
 
-  const templates = [
+  const templates: { headline: string; details: string[] }[] = [
     {
       headline: 'JÁ PENSOU EM MORAR NO QUE É SEU?',
       details: [
-        data.acceptsFinancing && data.acceptsFGTS ? 'COM FINANCIAMENTO + FGTS, PODE SAIR MAIS BARATO QUE O ALUGUEL.' : 'CONDIÇÕES FACILITADAS PARA VOCÊ REALIZAR SEU SONHO.',
+        hasFinancing && hasFGTS ? 'COM FINANCIAMENTO + FGTS, PODE SAIR MAIS BARATO QUE O ALUGUEL.' : 'CONDIÇÕES FACILITADAS PARA REALIZAR SEU SONHO.',
       ],
     },
     {
-      headline: 'SEU NOVO LAR ESTÁ AQUI!',
+      headline: 'CONHEÇA CADA DETALHE!',
       details: [
         bedroomsText,
-        leisureFirst ? `${leisureFirst}` : '',
-        areaText ? `TERRENO ${areaText}` : '',
+        leisureFirst || '',
+        areaText ? `TERRENO ${areaText} | CONSTRUÇÃO ${areaText}` : '',
         garageText,
       ].filter(Boolean),
     },
     {
-      headline: `LOCALIZAÇÃO: ${neighborhood.toUpperCase()}`,
+      headline: `${neighborhood} — LOCALIZAÇÃO PRIVILEGIADA`,
       details: [
         priceFormatted ? `VALOR: ${priceFormatted}` : '',
-        data.acceptsFinancing ? 'ACEITA FINANCIAMENTO' + (data.acceptsFGTS ? ' E FGTS' : '') : '',
+        hasFinancing ? 'ACEITA FINANCIAMENTO' + (hasFGTS ? ' E FGTS' : '') : '',
         'CLIQUE E FALE AGORA COM UM ESPECIALISTA.',
       ].filter(Boolean),
     },
     {
-      headline: 'OPORTUNIDADE ÚNICA!',
+      headline: 'ESPAÇO, CONFORTO E SEGURANÇA.',
       details: [
-        `IMÓVEL EM ${neighborhood.toUpperCase()}`,
-        bedroomsText ? `${bedroomsText.toUpperCase()} | ${areaText || 'ÁREA GENEROSA'}` : '',
-        garageText ? garageText.toUpperCase() : '',
+        specsLine || 'IMÓVEL COMPLETO PARA SUA FAMÍLIA',
+        leisureFirst ? `+ ${leisureFirst}` : '',
       ].filter(Boolean),
     },
     {
       headline: 'PARE DE PAGAR ALUGUEL!',
       details: [
         priceFormatted ? `A PARTIR DE ${priceFormatted}` : 'CONSULTE CONDIÇÕES ESPECIAIS',
-        data.acceptsFinancing ? 'USE SEU FGTS COMO ENTRADA' : '',
+        hasFGTS ? 'USE SEU FGTS COMO ENTRADA' : '',
         'PARCELAS QUE CABEM NO SEU BOLSO.',
+      ].filter(Boolean),
+    },
+    {
+      headline: 'SEU PRÓXIMO ENDEREÇO.',
+      details: [
+        `IMÓVEL EM ${neighborhood}`,
+        bathText && bedroomsText ? `${bedroomsText} | ${bathText}` : bedroomsText || bathText || '',
+        'AGENDE SUA VISITA HOJE MESMO.',
+      ].filter(Boolean),
+    },
+    {
+      headline: 'INVESTIMENTO INTELIGENTE!',
+      details: [
+        `IMÓVEL PRONTO EM ${neighborhood}`,
+        priceFormatted ? `POR APENAS ${priceFormatted}` : 'CONDIÇÃO IMPERDÍVEL',
+        hasFinancing ? 'ENTRADA FACILITADA + FINANCIAMENTO.' : 'CONSULTE FORMAS DE PAGAMENTO.',
+      ].filter(Boolean),
+    },
+    {
+      headline: 'VIVER BEM COMEÇA AQUI.',
+      details: [
+        leisureFirst ? leisureFirst : 'LAZER COMPLETO',
+        leisureSecond ? `+ ${leisureSecond}` : '',
+        garageText || '',
+        'TUDO PENSADO PARA SUA FAMÍLIA.',
+      ].filter(Boolean),
+    },
+    {
+      headline: 'ÚLTIMA CHANCE NESTA CONDIÇÃO!',
+      details: [
+        priceFormatted ? `${priceFormatted} — VALOR PROMOCIONAL` : 'OPORTUNIDADE POR TEMPO LIMITADO',
+        hasFGTS ? 'ACEITA FGTS + FINANCIAMENTO' : '',
+        'NÃO DEIXE PARA DEPOIS.',
+      ].filter(Boolean),
+    },
+    {
+      headline: 'QUALIDADE DE VIDA GARANTIDA.',
+      details: [
+        areaText ? `${areaText} DE ÁREA` : '',
+        bedroomsText ? `${bedroomsText} AMPLO${data.bedrooms > 1 ? 'S' : ''}` : '',
+        `LOCALIZAÇÃO: ${neighborhood}`,
       ].filter(Boolean),
     },
   ];
