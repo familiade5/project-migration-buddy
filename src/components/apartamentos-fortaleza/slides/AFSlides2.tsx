@@ -397,28 +397,30 @@ export const AF2PhotoSlide = ({ photos, slideIndex, data }: { photos: [string, s
       <div style={{
         position: 'absolute', left: '50%', top: '50%', transform: 'translate(-50%, -50%)',
         backgroundColor: 'rgba(55, 58, 66, 0.92)',
-        borderRadius: 10, padding: '0 18px', zIndex: 20, textAlign: 'center',
+        borderRadius: 10, padding: '0 14px', zIndex: 20, textAlign: 'center',
         width: '82%', maxWidth: 310, height: 58,
         display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-        boxShadow: '0 6px 20px rgba(0,0,0,0.35)',
+        boxShadow: '0 6px 20px rgba(0,0,0,0.35)', overflow: 'hidden',
       }}>
         <p style={{
           background: GOLD_CSS, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
-          fontSize: 10, fontWeight: 800, margin: '0 0 1px',
-          textTransform: 'uppercase', letterSpacing: '0.03em', lineHeight: 1.25,
+          fontSize: 9, fontWeight: 800, margin: '0 0 1px',
+          textTransform: 'uppercase', letterSpacing: '0.03em', lineHeight: 1.2,
+          whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '100%',
         }}>
           {content.headline}
         </p>
-        {content.details.map((line, i) => {
-          const isCTA = line.includes('CLIQUE') || line.includes('FALE AGORA');
+        {content.details.slice(0, 3).map((line, i) => {
+          const isCTA = line.includes('CLIQUE') || line.includes('FALE AGORA') || line.includes('FALE COM');
           return (
             <p key={i} style={{
               color: isCTA ? undefined : 'rgba(255,255,255,0.85)',
               background: isCTA ? GOLD_CSS : undefined,
               WebkitBackgroundClip: isCTA ? 'text' : undefined,
               WebkitTextFillColor: isCTA ? 'transparent' : undefined,
-              fontSize: 7.5, fontWeight: isCTA ? 800 : 600, margin: 0,
+              fontSize: 7, fontWeight: isCTA ? 800 : 600, margin: 0,
               textTransform: 'uppercase', letterSpacing: '0.02em', lineHeight: 1.3,
+              whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '100%',
             }}>
               {line}
             </p>
