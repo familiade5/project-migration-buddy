@@ -1,5 +1,6 @@
 import { AFPropertyData } from '@/types/apartamentosFortaleza';
 import logoAF from '@/assets/logo-apartamentos-fortaleza.png';
+import seloMCMV from '@/assets/selo-mcmv.png';
 import { useLogoBase64 } from '@/hooks/useLogoBase64';
 
 const GOLD_GRADIENT_ID = 'af2-gold-grad';
