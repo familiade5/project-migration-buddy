@@ -36,7 +36,6 @@ const golos = "'Golos Text', Arial, sans-serif";
 
 // ─── Slide 1: CAPA ───────────────────────────────────────────────────────────
 export const AFCoverSlide = ({ data, photo }: { data: AFPropertyData; photo?: string }) => {
-  const uid = "x";
   const clipId = useStableId("af-cover");
 
   const price = data.isRental ? data.rentalPrice : data.salePrice;
@@ -147,7 +146,6 @@ export const AFCoverSlide = ({ data, photo }: { data: AFPropertyData; photo?: st
 
 // ─── Slide 2: ESPECIFICAÇÕES ─────────────────────────────────────────────────
 export const AFSpecsSlide = ({ data, photo }: { data: AFPropertyData; photo?: string }) => {
-  const uid = "x";
   const clipId = useStableId("af-specs");
   const specs: string[] = [
     data.bedrooms > 0 ? `${data.bedrooms} quarto${data.bedrooms > 1 ? 's' : ''}` : '',
@@ -211,7 +209,6 @@ export const AFSpecsSlide = ({ data, photo }: { data: AFPropertyData; photo?: st
 
 // ─── Slide 3: LOCALIZAÇÃO ────────────────────────────────────────────────────
 export const AFLocationSlide = ({ data, photo }: { data: AFPropertyData; photo?: string }) => {
-  const uid = "x";
   const clipId = useStableId("af-location");
 
   const shapePath = [
@@ -289,7 +286,6 @@ export const AFPhotoSlide = ({
   photo,
   photoIndex,
 }: { data: AFPropertyData; photo?: string; photoIndex: number }) => {
-  const uid = "x";
   const clipId = useStableId("af-photo");
 
   // Notch top-left: bordas externas 8→352, raio 12 em todas as curvas
@@ -346,7 +342,6 @@ export const AFPhotoSlide = ({
 // ─── Último Slide: INFORMAÇÃO ────────────────────────────────────────────────
 // Mesmo padrão do AMInfoSlide: sandwich de camadas com borda branca SVG.
 export const AFInfoSlide = ({ data, photo }: { data: AFPropertyData; photo?: string }) => {
-  const uid = "x";
   const clipId = useStableId("af-info");
 
   const headline =
