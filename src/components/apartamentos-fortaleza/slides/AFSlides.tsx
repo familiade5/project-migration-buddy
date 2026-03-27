@@ -1,6 +1,9 @@
-import { useId } from 'react';
+import { useMemo } from 'react';
 import { AFPropertyData } from '@/types/apartamentosFortaleza';
 import logoAF from '@/assets/logo-apartamentos-fortaleza.png';
+
+let afIdCounter = 0;
+const useStableId = (prefix: string) => useMemo(() => `${prefix}-${++afIdCounter}`, []);
 
 // ─── AF Brand Colors ──────────────────────────────────────────────────────────
 const PRIMARY = '#0C7B8E';   // Teal ocean blue
