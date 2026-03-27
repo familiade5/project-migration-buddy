@@ -147,7 +147,7 @@ export const AF2CoverSlide = ({ data, photos }: { data: AFPropertyData; photos: 
   };
 
   const GOLD_CSS = 'linear-gradient(135deg, #E8A020, #F2B84B, #D4912A, #C07B18)';
-  const titleFont = "'Playfair Display', 'Georgia', serif";
+  const titleFont = poppins;
 
   return (
     <div style={{ position: 'relative', width: 360, height: 360, backgroundColor: '#ffffff', fontFamily: golos, overflow: 'hidden' }}>
