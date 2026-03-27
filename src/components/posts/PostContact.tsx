@@ -11,7 +11,7 @@ interface PostContactProps {
 
 export const PostContact = ({ data, photo }: PostContactProps) => {
   const logoBase64 = useLogoBase64(logoVDH);
-  const GRAY_BG = '#1e3a2f';
+  const GRAY_BG = '#73c883';
 
   return (
     <div className="post-template relative overflow-hidden" style={{ backgroundColor: GRAY_BG }}>
