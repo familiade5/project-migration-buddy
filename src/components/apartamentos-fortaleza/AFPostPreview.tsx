@@ -62,7 +62,23 @@ export function AFPostPreview({ data, photos }: AFPostPreviewProps) {
     return slides;
   };
 
-  const feedSlides = buildFeedSlides();
+  const buildFeedSlides2 = () => {
+    const p = photos;
+    const slides = [];
+    slides.push({ id: 'd2-cover', name: 'Capa', el: <AF2CoverSlide data={data} photos={p} /> });
+    if (p.length >= 4) {
+      slides.push({ id: 'd2-gallery', name: 'Galeria', el: <AF2GallerySlide data={data} photos={p.slice(0, 4)} /> });
+    } else if (p.length >= 2) {
+      slides.push({ id: 'd2-gallery', name: 'Galeria', el: <AF2GallerySlide data={data} photos={p} /> });
+    }
+    const specsPhotos = p.length >= 5 ? [p[4], p[5] || p[0]] : p.length >= 2 ? [p[1], p[0]] : [p[0], p[0]];
+    slides.push({ id: 'd2-specs', name: 'Ficha', el: <AF2SpecsSlide data={data} photos={specsPhotos} /> });
+    const ctaPhotos = p.length >= 8 ? p.slice(4, 8) : p.length >= 4 ? p.slice(-4) : p;
+    slides.push({ id: 'd2-cta', name: 'CTA', el: <AF2CTASlide data={data} photos={ctaPhotos} /> });
+    return slides;
+  };
+
+  const feedSlides = designVersion === 1 ? buildFeedSlides() : buildFeedSlides2();
   const slides = feedSlides;
   const totalSlides = slides.length;
   const safeIndex = Math.min(currentSlide, totalSlides - 1);
