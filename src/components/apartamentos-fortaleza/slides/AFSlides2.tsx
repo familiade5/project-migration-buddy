@@ -2,10 +2,23 @@ import { AFPropertyData } from '@/types/apartamentosFortaleza';
 import logoAF from '@/assets/logo-apartamentos-fortaleza.png';
 import { useLogoBase64 } from '@/hooks/useLogoBase64';
 
-const PRIMARY = '#F2A126';
-const ACCENT = '#F2A126';
+const GOLD_GRADIENT_ID = 'af2-gold-grad';
 const DARK_CARD = '#30323A';
 const golos = "'Golos Text', Arial, sans-serif";
+
+// ─── Shared SVG gradient definition ──────────────────────────────────────────
+const GoldGradientDef = () => (
+  <defs>
+    <linearGradient id={GOLD_GRADIENT_ID} x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stopColor="#E8A020" />
+      <stop offset="40%" stopColor="#F2B84B" />
+      <stop offset="70%" stopColor="#D4912A" />
+      <stop offset="100%" stopColor="#C07B18" />
+    </linearGradient>
+  </defs>
+);
+
+const GOLD_URL = `url(#${GOLD_GRADIENT_ID})`;
 
 // ─── Helper: Logo ────────────────────────────────────────────────────────────
 const AFLogo2 = ({ width = 100 }: { width?: number }) => {
@@ -13,37 +26,84 @@ const AFLogo2 = ({ width = 100 }: { width?: number }) => {
   return <img src={base64} alt="AF" width={width} style={{ display: 'block' }} />;
 };
 
-// ─── Helper: Orange accent line ──────────────────────────────────────────────
+// ─── Helper: Golden accent line ──────────────────────────────────────────────
 const AccentLine = ({ top }: { top: string | number }) => (
-  <div style={{
-    position: 'absolute', left: 0, right: 0, top,
-    height: 4, backgroundColor: ACCENT, zIndex: 20,
-  }} />
+  <svg style={{ position: 'absolute', left: 0, right: 0, top, width: '100%', height: 5, zIndex: 20 }}>
+    <defs>
+      <linearGradient id="accent-line-grad" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0%" stopColor="#C07B18" />
+        <stop offset="30%" stopColor="#F2B84B" />
+        <stop offset="60%" stopColor="#E8A020" />
+        <stop offset="100%" stopColor="#D4912A" />
+      </linearGradient>
+    </defs>
+    <rect width="100%" height="5" fill="url(#accent-line-grad)" />
+  </svg>
 );
 
-// ─── Helper: Bed icon ────────────────────────────────────────────────────────
+// ─── Spec Icons (more refined, with gradient) ────────────────────────────────
 const BedIcon = () => (
-  <svg width="24" height="20" viewBox="0 0 24 20" fill="none">
-    <path d="M3 11.5V7.5C3 6.4 3.9 5.5 5 5.5H10C11.1 5.5 12 6.4 12 7.5V8.5H14V7.5C14 6.4 14.9 5.5 16 5.5H19C20.1 5.5 21 6.4 21 7.5V11.5" stroke={ACCENT} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-    <path d="M2.5 11.5H21.5V15.5H2.5V11.5Z" stroke={ACCENT} strokeWidth="1.8" strokeLinejoin="round" />
+  <svg width="28" height="22" viewBox="0 0 28 22" fill="none">
+    <GoldGradientDef />
+    <rect x="3" y="4" width="22" height="3" rx="1.5" fill={GOLD_URL} opacity="0.3" />
+    <path d="M4 9V6.5C4 5.12 5.12 4 6.5 4H12C13.1 4 14 4.9 14 6V7.5H16V6C16 4.9 16.9 4 18 4H21.5C22.88 4 24 5.12 24 6.5V9" stroke={GOLD_URL} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+    <rect x="3" y="9" width="22" height="6" rx="2" stroke={GOLD_URL} strokeWidth="1.6" />
+    <line x1="3" y1="15" x2="3" y2="18" stroke={GOLD_URL} strokeWidth="1.6" strokeLinecap="round" />
+    <line x1="25" y1="15" x2="25" y2="18" stroke={GOLD_URL} strokeWidth="1.6" strokeLinecap="round" />
   </svg>
 );
 
-// ─── Helper: Car icon ────────────────────────────────────────────────────────
 const CarIcon = () => (
-  <svg width="24" height="20" viewBox="0 0 24 20" fill="none">
-    <path d="M5 12.5H19M6.5 12.5L8 8.5H16L17.5 12.5M7.5 15.5C8.32843 15.5 9 14.8284 9 14C9 13.1716 8.32843 12.5 7.5 12.5C6.67157 12.5 6 13.1716 6 14C6 14.8284 6.67157 15.5 7.5 15.5ZM16.5 15.5C17.3284 15.5 18 14.8284 18 14C18 13.1716 17.3284 12.5 16.5 12.5C15.6716 12.5 15 13.1716 15 14C15 14.8284 15.6716 15.5 16.5 15.5Z" stroke={ACCENT} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+  <svg width="28" height="22" viewBox="0 0 28 22" fill="none">
+    <GoldGradientDef />
+    <path d="M7 13H21" stroke={GOLD_URL} strokeWidth="1.4" />
+    <path d="M8.5 13L10 8H18L19.5 13" stroke={GOLD_URL} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+    <rect x="6" y="13" width="16" height="5" rx="2" stroke={GOLD_URL} strokeWidth="1.6" />
+    <circle cx="9.5" cy="15.5" r="1.2" fill={GOLD_URL} />
+    <circle cx="18.5" cy="15.5" r="1.2" fill={GOLD_URL} />
+    <line x1="12" y1="8" x2="11" y2="13" stroke={GOLD_URL} strokeWidth="0.8" opacity="0.4" />
+    <line x1="16" y1="8" x2="17" y2="13" stroke={GOLD_URL} strokeWidth="0.8" opacity="0.4" />
   </svg>
 );
 
-// ─── Helper: Grill icon ──────────────────────────────────────────────────────
 const GrillIcon = () => (
-  <svg width="24" height="20" viewBox="0 0 24 20" fill="none">
-    <path d="M8 4.5C8 5.7 7.1 6.1 7.1 7.2M12 3.5C12 4.9 11.1 5.5 11.1 6.7M16 4.5C16 5.7 15.1 6.1 15.1 7.2" stroke={ACCENT} strokeWidth="1.5" strokeLinecap="round" />
-    <path d="M6 10.5H18C18 13.3 15.8 15.5 13 15.5H11C8.2 15.5 6 13.3 6 10.5Z" stroke={ACCENT} strokeWidth="1.8" strokeLinejoin="round" />
-    <path d="M12 15.5V18.5" stroke={ACCENT} strokeWidth="1.8" strokeLinecap="round" />
+  <svg width="28" height="22" viewBox="0 0 28 22" fill="none">
+    <GoldGradientDef />
+    <path d="M10 3C10 4.5 9 5 9 6.2M14 2C14 3.8 13 4.5 13 5.8M18 3C18 4.5 17 5 17 6.2" stroke={GOLD_URL} strokeWidth="1.4" strokeLinecap="round" />
+    <path d="M7 9H21C21 12.5 18.5 15 15.5 15H12.5C9.5 15 7 12.5 7 9Z" stroke={GOLD_URL} strokeWidth="1.6" strokeLinejoin="round" />
+    <line x1="14" y1="15" x2="14" y2="19" stroke={GOLD_URL} strokeWidth="1.6" strokeLinecap="round" />
+    <line x1="10" y1="19" x2="18" y2="19" stroke={GOLD_URL} strokeWidth="1.4" strokeLinecap="round" />
   </svg>
 );
+
+const BathIcon = () => (
+  <svg width="28" height="22" viewBox="0 0 28 22" fill="none">
+    <GoldGradientDef />
+    <path d="M6 10V5C6 3.34 7.34 2 9 2H10" stroke={GOLD_URL} strokeWidth="1.6" strokeLinecap="round" />
+    <rect x="4" y="10" width="20" height="2" rx="1" fill={GOLD_URL} />
+    <path d="M5 12V16C5 17.66 6.34 19 8 19H20C21.66 19 23 17.66 23 16V12" stroke={GOLD_URL} strokeWidth="1.6" strokeLinecap="round" />
+    <circle cx="9" cy="7" r="0.8" fill={GOLD_URL} />
+  </svg>
+);
+
+const PoolIcon = () => (
+  <svg width="28" height="22" viewBox="0 0 28 22" fill="none">
+    <GoldGradientDef />
+    <path d="M4 14C6 12 8 14 10 12C12 10 14 14 16 12C18 10 20 14 22 12C24 10 26 14 26 14" stroke={GOLD_URL} strokeWidth="1.4" strokeLinecap="round" />
+    <path d="M4 18C6 16 8 18 10 16C12 14 14 18 16 16C18 14 20 18 22 16C24 14 26 18 26 18" stroke={GOLD_URL} strokeWidth="1.4" strokeLinecap="round" />
+    <rect x="8" y="4" width="3" height="10" rx="1.5" stroke={GOLD_URL} strokeWidth="1.2" />
+    <rect x="17" y="4" width="3" height="10" rx="1.5" stroke={GOLD_URL} strokeWidth="1.2" />
+  </svg>
+);
+
+// ─── Icon selector based on leisure keyword ──────────────────────────────────
+const getLeisureIcon = (label: string) => {
+  const l = label.toLowerCase();
+  if (l.includes('churrasq') || l.includes('grill') || l.includes('bbq')) return <GrillIcon />;
+  if (l.includes('banheir') || l.includes('banheira') || l.includes('wc')) return <BathIcon />;
+  if (l.includes('piscina') || l.includes('pool')) return <PoolIcon />;
+  return <GrillIcon />;
+};
 
 // ─── Formatação de preço ─────────────────────────────────────────────────────
 const formatPrice = (v: number) => {
