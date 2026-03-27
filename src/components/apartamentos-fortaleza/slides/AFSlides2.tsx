@@ -166,7 +166,7 @@ export const AF2CoverSlide = ({ data, photos }: { data: AFPropertyData; photos: 
       {/* White panel with top shadow for 3D/depth effect on golden line and price badge */}
       <div style={{
         position: 'absolute', left: 0, top: photoH + 4, width: 360, height: 156, zIndex: 5,
-        boxShadow: '0 -10px 24px -4px rgba(0,0,0,0.28)',
+        boxShadow: 'inset 0 6px 8px -4px rgba(0,0,0,0.18)',
         background: '#f8f7f3',
       }}>
         {/* Subtle diagonal geometric shapes */}
