@@ -29,7 +29,7 @@ const AFLogo2 = ({ width = 100 }: { width?: number }) => {
 
 // ─── Helper: Golden accent line ──────────────────────────────────────────────
 const AccentLine = ({ top }: { top: string | number }) => (
-  <svg style={{ position: 'absolute', left: 0, right: 0, top, width: '100%', height: 5, zIndex: 20 }}>
+  <svg style={{ position: 'absolute', left: 0, right: 0, top, width: '100%', height: 12, zIndex: 20 }}>
     <defs>
       <linearGradient id="accent-line-grad" x1="0" y1="0" x2="1" y2="0">
         <stop offset="0%" stopColor="#C07B18" />
@@ -37,8 +37,11 @@ const AccentLine = ({ top }: { top: string | number }) => (
         <stop offset="60%" stopColor="#E8A020" />
         <stop offset="100%" stopColor="#D4912A" />
       </linearGradient>
+      <filter id="accent-line-shadow">
+        <feDropShadow dx="0" dy="3" stdDeviation="2" floodColor="#D4912A" floodOpacity="0.35" />
+      </filter>
     </defs>
-    <rect width="100%" height="5" fill="url(#accent-line-grad)" />
+    <rect width="100%" height="5" fill="url(#accent-line-grad)" filter="url(#accent-line-shadow)" />
   </svg>
 );
 
