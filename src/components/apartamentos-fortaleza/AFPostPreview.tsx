@@ -27,6 +27,7 @@ const MAX_SLIDES = 20;
 export function AFPostPreview({ data, photos }: AFPostPreviewProps) {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [format, setFormat] = useState<FormatType>('feed');
+  const [designVersion, setDesignVersion] = useState<1 | 2>(1);
   const [isExporting, setIsExporting] = useState(false);
   const [isExportingPdf, setIsExportingPdf] = useState(false);
   const [containerW, setContainerW] = useState(320);
