@@ -54,87 +54,112 @@ const formatPriceFull = (v: number) =>
   `R$ ${v.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 
 // ═══════════════════════════════════════════════════════════════════════════════
-// SLIDE 1: CAPA — foto full com overlay, preço, specs com ícones, logo
+// SLIDE 1: CAPA — foto no topo, seção branca embaixo, badge preço, specs icons
 // ═══════════════════════════════════════════════════════════════════════════════
 export const AF2CoverSlide = ({ data, photos }: { data: AFPropertyData; photos: string[] }) => {
   const photo = photos[0];
   const price = data.isRental ? data.rentalPrice : data.salePrice;
 
-  // Build highlights for icon cards
   const specs: { icon: React.ReactNode; label: string }[] = [];
   if (data.suites > 0) specs.push({ icon: <BedIcon />, label: `${data.suites} SUÍTE${data.suites > 1 ? 'S' : ''}` });
   else if (data.bedrooms > 0) specs.push({ icon: <BedIcon />, label: `${data.bedrooms} QUARTO${data.bedrooms > 1 ? 'S' : ''}` });
   if (data.garageSpaces > 0) specs.push({ icon: <CarIcon />, label: `${data.garageSpaces} VAGA${data.garageSpaces > 1 ? 'S' : ''} DE GARAGEM` });
-  // Use first highlight or a default
   const extraHighlights = (data.highlights || []).filter(h => h.trim());
   if (extraHighlights.length > 0) specs.push({ icon: <GrillIcon />, label: extraHighlights[0].toUpperCase() });
 
-  return (
-    <div style={{ position: 'relative', width: 360, height: 360, backgroundColor: '#1a1a1a', fontFamily: golos, overflow: 'hidden' }}>
-      {/* Photo background */}
-      {photo && <img src={photo} alt="" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />}
+  // Proportions at 360px: photo ~220px top, accent line at 220, white bottom ~140px
+  const photoH = 220;
+  const bottomH = 360 - photoH;
 
-      {/* Decorative white diagonal lines behind content */}
-      <svg style={{ position: 'absolute', inset: 0, width: 360, height: 360, zIndex: 5 }} viewBox="0 0 360 360">
-        <line x1="60" y1="360" x2="200" y2="180" stroke="rgba(255,255,255,0.15)" strokeWidth="60" />
-        <line x1="120" y1="360" x2="260" y2="180" stroke="rgba(255,255,255,0.08)" strokeWidth="40" />
+  return (
+    <div style={{ position: 'relative', width: 360, height: 360, backgroundColor: '#ffffff', fontFamily: golos, overflow: 'hidden' }}>
+      {/* Photo — top portion */}
+      {photo ? (
+        <img src={photo} alt="" style={{ position: 'absolute', top: 0, left: 0, width: 360, height: photoH, objectFit: 'cover' }} />
+      ) : (
+        <div style={{ position: 'absolute', top: 0, left: 0, width: 360, height: photoH, backgroundColor: '#cfe8eb' }} />
+      )}
+
+      {/* Decorative diagonal lines in white bottom section */}
+      <svg style={{ position: 'absolute', left: 0, top: photoH, width: 360, height: bottomH, zIndex: 1 }} viewBox="0 0 360 140">
+        <polygon points="40,140 100,140 170,40 110,40" fill="rgba(220,220,220,0.35)" />
+        <polygon points="80,140 140,140 210,40 150,40" fill="rgba(230,230,230,0.25)" />
+        <polygon points="120,140 160,140 230,60 190,60" fill="rgba(235,235,235,0.2)" />
       </svg>
 
-      {/* Accent line */}
-      <AccentLine top={218} />
+      {/* Accent line — full width at junction */}
+      <AccentLine top={photoH} />
 
-      {/* Price badge — dark angled */}
+      {/* Price badge — dark angled trapezoid crossing the accent line */}
       <div style={{
-        position: 'absolute', left: 0, top: 190, zIndex: 20,
-        background: 'linear-gradient(135deg, #2a2e36 0%, #3a3f4a 100%)',
-        borderRadius: '0 8px 8px 0', padding: '6px 14px 6px 10px',
-        clipPath: 'polygon(0 0, 100% 8%, 100% 92%, 0 100%)',
+        position: 'absolute', left: 0, top: photoH - 14, zIndex: 25,
+        width: 168, height: 34,
       }}>
-        <div style={{ display: 'flex', alignItems: 'baseline', gap: 2, color: 'white' }}>
-          <span style={{ fontSize: 9, fontWeight: 600, opacity: 0.7 }}>R$</span>
-          <span style={{ fontSize: 18, fontWeight: 800, letterSpacing: '-0.5px' }}>
-            {price > 0 ? price.toLocaleString('pt-BR', { minimumFractionDigits: 2 }) : 'Consulte'}
+        <svg viewBox="0 0 168 34" width="168" height="34" style={{ display: 'block' }}>
+          <polygon points="0,2 158,0 168,5 168,29 158,34 0,32" fill="#2d3038" />
+        </svg>
+        <div style={{
+          position: 'absolute', inset: 0, display: 'flex', alignItems: 'center',
+          paddingLeft: 10, paddingRight: 14, gap: 2,
+        }}>
+          <span style={{ color: 'white', fontSize: 8, fontWeight: 600, opacity: 0.8 }}>R$</span>
+          <span style={{ color: 'white', fontSize: 16, fontWeight: 800, letterSpacing: '-0.3px' }}>
+            {price > 0 ? price.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : 'Consulte'}
           </span>
         </div>
       </div>
 
-      {/* Bottom section — title + neighborhood */}
+      {/* Bottom-left: Title + Neighborhood + Logo */}
       <div style={{
-        position: 'absolute', left: 0, right: 0, bottom: 0, zIndex: 15,
-        padding: '40px 14px 14px',
-        background: 'linear-gradient(to top, rgba(255,255,255,0.95) 70%, transparent)',
+        position: 'absolute', left: 10, bottom: 10, zIndex: 15,
+        maxWidth: 170,
       }}>
-        <p style={{ fontSize: 11, fontWeight: 800, color: PRIMARY, lineHeight: 1.2, margin: '0 0 1px', textTransform: 'uppercase' }}>
+        <p style={{
+          fontSize: 11, fontWeight: 800, color: ACCENT, lineHeight: 1.15,
+          margin: '0 0 1px', textTransform: 'uppercase',
+          fontStyle: 'italic',
+        }}>
           {data.title || 'SEU IMÓVEL'}
         </p>
         {data.neighborhood && (
-          <p style={{ fontSize: 10, fontWeight: 700, color: '#222', margin: 0, textTransform: 'uppercase' }}>
+          <p style={{ fontSize: 10, fontWeight: 700, color: '#1a1a1a', margin: '0 0 6px', textTransform: 'uppercase' }}>
             {data.neighborhood}
           </p>
         )}
-
-        {/* Logo bottom-left */}
-        <div style={{ marginTop: 6 }}>
-          <AFLogo2 width={90} />
-        </div>
+        <AFLogo2 width={90} />
       </div>
 
-      {/* Specs icon card — dark, right side */}
+      {/* Bottom-right: Specs icon card — dark rounded */}
       {specs.length > 0 && (
         <div style={{
-          position: 'absolute', right: 10, bottom: 10, zIndex: 20,
-          backgroundColor: DARK_CARD, borderRadius: 10, padding: '8px 10px',
-          display: 'grid', gridTemplateColumns: specs.length > 2 ? '1fr 1fr' : '1fr',
-          gap: 6, minWidth: specs.length > 2 ? 140 : 90,
+          position: 'absolute', right: 8, bottom: 8, zIndex: 20,
+          backgroundColor: DARK_CARD, borderRadius: 10, padding: '8px 6px 6px',
+          width: 150,
         }}>
-          {specs.map((s, i) => (
-            <div key={i} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2, padding: '2px 4px' }}>
-              {s.icon}
-              <span style={{ color: 'white', fontSize: 6, fontWeight: 700, textAlign: 'center', lineHeight: 1.2, textTransform: 'uppercase' }}>
-                {s.label}
-              </span>
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: specs.length >= 2 ? '1fr 1fr' : '1fr',
+            gap: 4,
+          }}>
+            {specs.slice(0, 2).map((s, i) => (
+              <div key={i} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2, padding: '2px 2px' }}>
+                {s.icon}
+                <span style={{ color: 'white', fontSize: 5.5, fontWeight: 700, textAlign: 'center', lineHeight: 1.2, textTransform: 'uppercase' }}>
+                  {s.label}
+                </span>
+              </div>
+            ))}
+          </div>
+          {specs.length > 2 && (
+            <div style={{ display: 'flex', justifyContent: 'center', marginTop: 4 }}>
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2, padding: '2px 2px' }}>
+                {specs[2].icon}
+                <span style={{ color: 'white', fontSize: 5.5, fontWeight: 700, textAlign: 'center', lineHeight: 1.2, textTransform: 'uppercase' }}>
+                  {specs[2].label}
+                </span>
+              </div>
             </div>
-          ))}
+          )}
         </div>
       )}
     </div>
