@@ -55,7 +55,9 @@ export const ScreenshotExtractor = ({ onExtract }: ScreenshotExtractorProps) => 
       }
 
       const extractedData = data.data;
-      console.log('Extracted data:', extractedData);
+      if (import.meta.env.DEV) {
+        console.log('Extracted data:', extractedData);
+      }
 
       const propertyUpdate: Partial<PropertyData> = {};
       const fieldsFound: string[] = [];
