@@ -7,17 +7,9 @@ interface ProtectedRouteProps {
   requireAdmin?: boolean;
 }
 
-// TEMPORARY BYPASS: Remove this flag when backend is stable again
-const TEMPORARY_AUTH_BYPASS = true;
-
 export function ProtectedRoute({ children, requireAdmin = false }: ProtectedRouteProps) {
   const { user, isAdmin, isLoading } = useAuth();
   const location = useLocation();
-
-  // Temporary bypass - allow access without login
-  if (TEMPORARY_AUTH_BYPASS) {
-    return <>{children}</>;
-  }
 
   if (isLoading) {
     return (
