@@ -43,7 +43,6 @@ export function AMPostPreview({ data, photos }: AMPostPreviewProps) {
   const [designVersion, setDesignVersion] = useState<1 | 2>(1);
   const [isExporting, setIsExporting] = useState(false);
   const [containerW, setContainerW] = useState(320);
-  const [containerW, setContainerW] = useState(320);
   const containerRef = useRef<HTMLDivElement>(null);
 
   // Measure container width to compute responsive scale
