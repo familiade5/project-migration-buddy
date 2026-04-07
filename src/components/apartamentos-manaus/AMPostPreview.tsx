@@ -11,6 +11,7 @@ import {
   AMPhotoSlide,
   AMInfoSlide,
 } from './slides/AMSlides';
+import { AM2CoverSlide, AM2PhotoSlide, AM2CTASlide } from './slides/AMSlides2';
 import {
   AMStory4_T4_Slide1,
   AMStory4_T4_Slide2,
@@ -39,6 +40,7 @@ const MAX_SLIDES = 20;
 export function AMPostPreview({ data, photos }: AMPostPreviewProps) {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [format, setFormat] = useState<FormatType>('feed');
+  const [designVersion, setDesignVersion] = useState<1 | 2>(1);
   const [isExporting, setIsExporting] = useState(false);
   const [containerW, setContainerW] = useState(320);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -88,6 +90,29 @@ export function AMPostPreview({ data, photos }: AMPostPreviewProps) {
     return slides;
   };
 
+  // ── Build FEED slide list — Design 2 ──────────────────────────────────────
+  const buildFeedSlides2 = () => {
+    const p = photos;
+    const slides: { id: string; name: string; el: React.ReactNode }[] = [];
+
+    slides.push({ id: 'd2-cover', name: 'Capa', el: <AM2CoverSlide data={data} photos={p} /> });
+
+    const remaining = p.slice(1);
+    for (let i = 0; i < remaining.length; i += 2) {
+      const pair: [string, string?] = [remaining[i], remaining[i + 1]];
+      const slideNum = Math.floor(i / 2) + 2;
+      slides.push({
+        id: `d2-photo-${slideNum}`,
+        name: `Fotos ${slideNum - 1}`,
+        el: <AM2PhotoSlide photos={pair} slideIndex={Math.floor(i / 2)} data={data} />,
+      });
+    }
+
+    slides.push({ id: 'd2-cta', name: 'CTA', el: <AM2CTASlide data={data} photos={p} /> });
+
+    return slides;
+  };
+
   // ── Build STORY slide list — Padrão T4 (5 slides fixos) ──────────────────
   const buildStorySlides = () => {
     const p = photos;
@@ -102,7 +127,7 @@ export function AMPostPreview({ data, photos }: AMPostPreviewProps) {
     ];
   };
 
-  const feedSlides  = buildFeedSlides();
+  const feedSlides  = format === 'feed' && designVersion === 2 ? buildFeedSlides2() : buildFeedSlides();
   const storySlides = buildStorySlides();
 
   const slides      = format === 'feed' ? feedSlides : storySlides;
@@ -212,21 +237,37 @@ export function AMPostPreview({ data, photos }: AMPostPreviewProps) {
       {/* ── Header + Format selector ── */}
       <div className="flex items-center justify-between gap-2">
         <h3 className="font-semibold text-sm text-gray-800">Preview do Carrossel</h3>
-        <div className="flex items-center gap-1 bg-gray-100 rounded-lg p-1 flex-shrink-0">
-          <button
-            onClick={() => { setFormat('feed'); setCurrentSlide(0); }}
-            className={`flex items-center gap-1 px-2.5 py-1.5 rounded-md text-xs transition-all ${format === 'feed' ? 'text-white' : 'text-gray-500 hover:text-gray-700'}`}
-            style={format === 'feed' ? { backgroundColor: '#1B5EA6' } : {}}
-          >
-            <Square className="w-3 h-3" /><span>Feed</span>
-          </button>
-          <button
-            onClick={() => { setFormat('story'); setCurrentSlide(0); }}
-            className={`flex items-center gap-1 px-2.5 py-1.5 rounded-md text-xs transition-all ${format === 'story' ? 'text-white' : 'text-gray-500 hover:text-gray-700'}`}
-            style={format === 'story' ? { backgroundColor: '#1B5EA6' } : {}}
-          >
-            <Smartphone className="w-3 h-3" /><span>Story</span>
-          </button>
+        <div className="flex items-center gap-2 flex-shrink-0">
+          {format === 'feed' && (
+            <div className="flex items-center gap-1 bg-gray-100 rounded-lg p-0.5">
+              <button
+                onClick={() => { setDesignVersion(1); setCurrentSlide(0); }}
+                className="px-2 py-1 rounded-md text-xs font-medium transition-all"
+                style={designVersion === 1 ? { backgroundColor: '#1B5EA6', color: 'white' } : { color: '#6B7280' }}
+              >Design 1</button>
+              <button
+                onClick={() => { setDesignVersion(2); setCurrentSlide(0); }}
+                className="px-2 py-1 rounded-md text-xs font-medium transition-all"
+                style={designVersion === 2 ? { backgroundColor: '#F47920', color: 'white' } : { color: '#6B7280' }}
+              >Design 2</button>
+            </div>
+          )}
+          <div className="flex items-center gap-1 bg-gray-100 rounded-lg p-1">
+            <button
+              onClick={() => { setFormat('feed'); setCurrentSlide(0); }}
+              className={`flex items-center gap-1 px-2.5 py-1.5 rounded-md text-xs transition-all ${format === 'feed' ? 'text-white' : 'text-gray-500 hover:text-gray-700'}`}
+              style={format === 'feed' ? { backgroundColor: '#1B5EA6' } : {}}
+            >
+              <Square className="w-3 h-3" /><span>Feed</span>
+            </button>
+            <button
+              onClick={() => { setFormat('story'); setCurrentSlide(0); }}
+              className={`flex items-center gap-1 px-2.5 py-1.5 rounded-md text-xs transition-all ${format === 'story' ? 'text-white' : 'text-gray-500 hover:text-gray-700'}`}
+              style={format === 'story' ? { backgroundColor: '#1B5EA6' } : {}}
+            >
+              <Smartphone className="w-3 h-3" /><span>Story</span>
+            </button>
+          </div>
         </div>
       </div>
 
