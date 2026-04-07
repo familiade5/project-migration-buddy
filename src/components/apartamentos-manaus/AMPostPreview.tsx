@@ -90,6 +90,29 @@ export function AMPostPreview({ data, photos }: AMPostPreviewProps) {
     return slides;
   };
 
+  // ── Build FEED slide list — Design 2 ──────────────────────────────────────
+  const buildFeedSlides2 = () => {
+    const p = photos;
+    const slides: { id: string; name: string; el: React.ReactNode }[] = [];
+
+    slides.push({ id: 'd2-cover', name: 'Capa', el: <AM2CoverSlide data={data} photos={p} /> });
+
+    const remaining = p.slice(1);
+    for (let i = 0; i < remaining.length; i += 2) {
+      const pair: [string, string?] = [remaining[i], remaining[i + 1]];
+      const slideNum = Math.floor(i / 2) + 2;
+      slides.push({
+        id: `d2-photo-${slideNum}`,
+        name: `Fotos ${slideNum - 1}`,
+        el: <AM2PhotoSlide photos={pair} slideIndex={Math.floor(i / 2)} data={data} />,
+      });
+    }
+
+    slides.push({ id: 'd2-cta', name: 'CTA', el: <AM2CTASlide data={data} photos={p} /> });
+
+    return slides;
+  };
+
   // ── Build STORY slide list — Padrão T4 (5 slides fixos) ──────────────────
   const buildStorySlides = () => {
     const p = photos;
@@ -104,7 +127,7 @@ export function AMPostPreview({ data, photos }: AMPostPreviewProps) {
     ];
   };
 
-  const feedSlides  = buildFeedSlides();
+  const feedSlides  = format === 'feed' && designVersion === 2 ? buildFeedSlides2() : buildFeedSlides();
   const storySlides = buildStorySlides();
 
   const slides      = format === 'feed' ? feedSlides : storySlides;
