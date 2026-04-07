@@ -11,6 +11,7 @@ import {
   AMPhotoSlide,
   AMInfoSlide,
 } from './slides/AMSlides';
+import { AM2CoverSlide, AM2PhotoSlide, AM2CTASlide } from './slides/AMSlides2';
 import {
   AMStory4_T4_Slide1,
   AMStory4_T4_Slide2,
