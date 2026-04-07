@@ -40,7 +40,9 @@ const MAX_SLIDES = 20;
 export function AMPostPreview({ data, photos }: AMPostPreviewProps) {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [format, setFormat] = useState<FormatType>('feed');
+  const [designVersion, setDesignVersion] = useState<1 | 2>(1);
   const [isExporting, setIsExporting] = useState(false);
+  const [containerW, setContainerW] = useState(320);
   const [containerW, setContainerW] = useState(320);
   const containerRef = useRef<HTMLDivElement>(null);
 
