@@ -91,6 +91,10 @@ const App = () => (
             <Route path="/apartamentos-fortaleza" element={
               <ProtectedRoute><ApartamentosFortalezaPage /></ProtectedRoute>
             } />
+            {/* Tráfego Pago - Master admin only */}
+            <Route path="/trafego-pago" element={
+              <ProtectedRoute><TrafegoPago /></ProtectedRoute>
+            } />
             
             <Route path="*" element={<NotFound />} />
           </Routes>
