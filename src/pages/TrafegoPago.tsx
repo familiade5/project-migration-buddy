@@ -11,8 +11,14 @@ import { Image, Edit3, Sparkles, Zap } from 'lucide-react';
 const MASTER_EMAIL = 'neto@vendadiretahoje.com.br';
 
 const TrafegoPagoPage = () => {
+  const { profile } = useAuth();
   const [propertyData, setPropertyData] = useState<TrafegoPropertyData>(defaultTrafegoData);
   const [photos, setPhotos] = useState<string[]>([]);
+
+  // Only master admin can access
+  if (profile?.email !== MASTER_EMAIL) {
+    return <Navigate to="/" replace />;
+  }
 
   return (
     <AMLayout>
