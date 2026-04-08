@@ -1,10 +1,14 @@
 import { useState } from 'react';
+import { Navigate } from 'react-router-dom';
+import { useAuth } from '@/contexts/AuthContext';
 import { TrafegoPropertyData, defaultTrafegoData } from '@/types/trafegoPago';
 import { TrafegoForm } from '@/components/trafego-pago/TrafegoForm';
 import { TrafegoPreview } from '@/components/trafego-pago/TrafegoPreview';
 import { AMPhotoManager } from '@/components/apartamentos-manaus/AMPhotoManager';
 import { AMLayout } from '@/components/layout/AMLayout';
 import { Image, Edit3, Sparkles, Zap } from 'lucide-react';
+
+const MASTER_EMAIL = 'neto@vendadiretahoje.com.br';
 
 const TrafegoPagoPage = () => {
   const [propertyData, setPropertyData] = useState<TrafegoPropertyData>(defaultTrafegoData);
