@@ -207,7 +207,7 @@ export const MCMV3 = ({ data, photo }: { data: TrafegoPropertyData; photo?: stri
     <div style={{ position: 'absolute', top: 60, left: 18, zIndex: 10, display: 'flex', alignItems: 'flex-start', gap: 4, maxWidth: 140 }}>
       <LocationPin color={PURPLE} size={18} />
       <span style={{ fontSize: 8, fontWeight: 700, color: '#fff', textShadow: '0 1px 4px rgba(0,0,0,0.8)', lineHeight: 1.2 }}>
-        {data.address || `${data.neighborhood}, ${data.city || 'Manaus'}/AM`}
+        {`${data.neighborhood}, ${data.city || 'Manaus'}/${data.state || 'AM'}`}
       </span>
     </div>
 
