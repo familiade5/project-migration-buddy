@@ -41,16 +41,18 @@ export function TrafegoPreview({ data, photos }: Props) {
 
   const buildMCMVSlides = () => {
     const slides: { id: string; name: string; el: React.ReactNode }[] = [];
-    slides.push({ id: 'mcmv1', name: 'Impacto', el: <MCMV1 data={data} photo={p[0]} /> });
-    slides.push({ id: 'mcmv2', name: 'Parcelas', el: <MCMV2 data={data} photo={p[1] ?? p[0]} /> });
-    slides.push({ id: 'mcmv3', name: 'Subsídio', el: <MCMV3 data={data} photo={p[2] ?? p[0]} /> });
-    slides.push({ id: 'mcmv4', name: 'Comparativo', el: <MCMV4 data={data} photo={p[3] ?? p[0]} /> });
-    slides.push({ id: 'mcmv5', name: 'Galeria', el: <MCMV5 data={data} photos={p.length >= 4 ? p.slice(0, 4) : [p[0] || '', p[0] || '', p[0] || '', p[0] || '']} /> });
-    slides.push({ id: 'mcmv6', name: 'Urgência', el: <MCMV6 data={data} photo={p[4] ?? p[1] ?? p[0]} /> });
-    slides.push({ id: 'mcmv7', name: 'Social Proof', el: <MCMV7 data={data} photo={p[5] ?? p[2] ?? p[0]} /> });
-    slides.push({ id: 'mcmv8', name: 'Checklist', el: <MCMV8 data={data} photo={p[0]} /> });
-    slides.push({ id: 'mcmv9', name: 'Condições', el: <MCMV9 data={data} photo={p[6] ?? p[3] ?? p[0]} /> });
-    slides.push({ id: 'mcmv10', name: 'CTA', el: <MCMV10 data={data} photo={p[7] ?? p[0]} /> });
+    const fill3 = p.length >= 3 ? p.slice(0, 3) : [p[0] || '', p[0] || '', p[0] || ''];
+    const fill4 = p.length >= 4 ? p.slice(0, 4) : [p[0] || '', p[0] || '', p[0] || '', p[0] || ''];
+    slides.push({ id: 'mcmv1', name: 'Saia do Aluguel', el: <MCMV1 data={data} photo={p[0]} /> });
+    slides.push({ id: 'mcmv2', name: 'Sonho', el: <MCMV2 data={data} photo={p[1] ?? p[0]} /> });
+    slides.push({ id: 'mcmv3', name: 'Purple', el: <MCMV3 data={data} photo={p[2] ?? p[0]} /> });
+    slides.push({ id: 'mcmv4', name: 'Clean', el: <MCMV4 data={data} photos={fill3} /> });
+    slides.push({ id: 'mcmv5', name: 'Elegante', el: <MCMV5 data={data} photos={p.length >= 2 ? p.slice(0, 2) : [p[0] || '', p[0] || '']} /> });
+    slides.push({ id: 'mcmv6', name: 'Collage', el: <MCMV6 data={data} photo={p[0]} photos={fill3} /> });
+    slides.push({ id: 'mcmv7', name: 'Comparativo', el: <MCMV7 data={data} photo={p[3] ?? p[1] ?? p[0]} /> });
+    slides.push({ id: 'mcmv8', name: 'Urgência', el: <MCMV8 data={data} photo={p[4] ?? p[2] ?? p[0]} /> });
+    slides.push({ id: 'mcmv9', name: 'Condições', el: <MCMV9 data={data} photo={p[5] ?? p[3] ?? p[0]} /> });
+    slides.push({ id: 'mcmv10', name: 'CTA', el: <MCMV10 data={data} photo={p[6] ?? p[0]} /> });
     return slides;
   };
 
