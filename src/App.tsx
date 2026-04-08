@@ -21,6 +21,7 @@ import AMLibrary from "./pages/am/AMLibrary";
 import AMAdmin from "./pages/am/AMAdmin";
 import AFAuth from "./pages/af/AFAuth";
 import ApartamentosFortalezaPage from "./pages/af/ApartamentosFortalezaPage";
+import TrafegoPago from "./pages/TrafegoPago";
 
 
 const queryClient = new QueryClient();
@@ -89,6 +90,10 @@ const App = () => (
             <Route path="/af/auth" element={<AFAuth />} />
             <Route path="/apartamentos-fortaleza" element={
               <ProtectedRoute><ApartamentosFortalezaPage /></ProtectedRoute>
+            } />
+            {/* Tráfego Pago - Master admin only */}
+            <Route path="/trafego-pago" element={
+              <ProtectedRoute><TrafegoPago /></ProtectedRoute>
             } />
             
             <Route path="*" element={<NotFound />} />
