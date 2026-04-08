@@ -80,7 +80,7 @@ export function AMLayout({ children }: AMLayoutProps) {
           </div>
 
           {/* Cross-brand navigation */}
-          <div className="px-4 py-3 border-b" style={{ borderColor: '#E5E7EB' }}>
+          <div className="px-4 py-3 border-b space-y-2" style={{ borderColor: '#E5E7EB' }}>
             <Link
               to="/"
               onClick={() => setSidebarOpen(false)}
@@ -90,6 +90,19 @@ export function AMLayout({ children }: AMLayoutProps) {
               <img src={logoVDH} alt="Venda Direta Hoje" className="h-6 w-auto object-contain rounded" />
               <span className="text-xs font-semibold truncate" style={{ color: '#1a3a6b' }}>Venda Direta Hoje</span>
             </Link>
+            {profile?.email === 'neto@vendadiretahoje.com.br' && (
+              <Link
+                to="/trafego-pago"
+                onClick={() => setSidebarOpen(false)}
+                className="flex items-center gap-3 w-full px-4 py-2.5 rounded-xl border transition-all hover:opacity-90"
+                style={{ backgroundColor: '#FFF5ED', borderColor: '#FCDCBC' }}
+              >
+                <div className="h-6 w-6 rounded-md flex items-center justify-center flex-shrink-0" style={{ background: 'linear-gradient(135deg, #F47920, #e85d10)' }}>
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="#fff"><path d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+                </div>
+                <span className="text-xs font-semibold truncate" style={{ color: '#F47920' }}>Tráfego Pago</span>
+              </Link>
+            )}
           </div>
 
           {/* Navigation */}
