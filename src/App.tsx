@@ -21,6 +21,7 @@ import AMLibrary from "./pages/am/AMLibrary";
 import AMAdmin from "./pages/am/AMAdmin";
 import AFAuth from "./pages/af/AFAuth";
 import ApartamentosFortalezaPage from "./pages/af/ApartamentosFortalezaPage";
+import TrafegoPago from "./pages/TrafegoPago";
 
 
 const queryClient = new QueryClient();
