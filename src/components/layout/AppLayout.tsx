@@ -112,15 +112,28 @@ export function AppLayout({ children }: AppLayoutProps) {
               <span className="text-xs font-semibold truncate" style={{ color: '#1B5EA6' }}>Apartamentos Manaus</span>
             </Link>
             {isMaster && (
-              <Link
-                to="/apartamentos-fortaleza"
-                onClick={() => setSidebarOpen(false)}
-                className="flex items-center gap-3 w-full px-4 py-2.5 rounded-xl border transition-all hover:opacity-90"
-                style={{ backgroundColor: '#EDF7F9', borderColor: '#B8DEE4' }}
-              >
-                <img src={logoAF} alt="Apartamentos Fortaleza" className="h-9 w-auto object-contain" />
-                <span className="text-xs font-semibold truncate" style={{ color: '#0C7B8E' }}>Apartamentos Fortaleza</span>
-              </Link>
+              <>
+                <Link
+                  to="/apartamentos-fortaleza"
+                  onClick={() => setSidebarOpen(false)}
+                  className="flex items-center gap-3 w-full px-4 py-2.5 rounded-xl border transition-all hover:opacity-90"
+                  style={{ backgroundColor: '#EDF7F9', borderColor: '#B8DEE4' }}
+                >
+                  <img src={logoAF} alt="Apartamentos Fortaleza" className="h-9 w-auto object-contain" />
+                  <span className="text-xs font-semibold truncate" style={{ color: '#0C7B8E' }}>Apartamentos Fortaleza</span>
+                </Link>
+                <Link
+                  to="/trafego-pago"
+                  onClick={() => setSidebarOpen(false)}
+                  className="flex items-center gap-3 w-full px-4 py-2.5 rounded-xl border transition-all hover:opacity-90"
+                  style={{ backgroundColor: '#FFF5ED', borderColor: '#FCDCBC' }}
+                >
+                  <div className="h-9 w-9 rounded-lg flex items-center justify-center flex-shrink-0" style={{ background: 'linear-gradient(135deg, #F47920, #e85d10)' }}>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="#fff"><path d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+                  </div>
+                  <span className="text-xs font-semibold truncate" style={{ color: '#F47920' }}>Tráfego Pago</span>
+                </Link>
+              </>
             )}
           </div>
 
