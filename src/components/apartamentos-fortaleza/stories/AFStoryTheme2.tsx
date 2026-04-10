@@ -1,6 +1,8 @@
 /**
- * TEMA 2 — "PRAIA BRANCA" (Clean Luxury)
- * Light, premium coastal aesthetic
+ * TEMA 2 — "CLEAN LUXURY"
+ * Story 1: Curiosidade — foto grande (50%) + texto organizado abaixo
+ * Story 2: Revelação   — fotos maiores (68%) + info no rodapé
+ * Story 3: CTA         — cabeçalho laranja grande com foto de fundo + contato
  */
 
 import { AFPropertyData } from '@/types/apartamentosFortaleza';
@@ -8,116 +10,262 @@ import logoAF from '@/assets/logo-apartamentos-fortaleza.png';
 
 const STORY_W = 360;
 const STORY_H = 640;
-const PRIMARY = '#0C7B8E';
-const ACCENT = '#E8562A';
 
 const Logo = ({ variant = 'color' }: { variant?: 'white' | 'color' }) => (
-  <img src={logoAF} alt="Apartamentos Fortaleza" width={110}
-    style={variant === 'white' ? { filter: 'brightness(0) invert(1)' } : undefined} />
+  <img
+    src={logoAF}
+    alt="Apartamentos Fortaleza"
+    width={100}
+    style={variant === 'white' ? { filter: 'brightness(0) invert(1)' } : undefined}
+  />
 );
 
 const formatPrice = (v: number) =>
-  v > 0 ? `R$ ${v.toLocaleString('pt-BR', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}` : 'Consulte';
+  v > 0
+    ? `R$ ${v.toLocaleString('pt-BR', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`
+    : 'Consulte';
 
-export const AFStory2_T2_Curiosity = ({ data, photo }: { data: AFPropertyData; photo?: string }) => (
-  <div style={{ position: 'relative', width: STORY_W, height: STORY_H, backgroundColor: '#f8f9fa', fontFamily: 'Arial, sans-serif', overflow: 'hidden' }}>
-    <div style={{ position: 'absolute', top: -120, right: -120, width: 380, height: 380, borderRadius: '50%', background: `radial-gradient(circle, ${PRIMARY}18 0%, transparent 70%)` }} />
-    <div style={{ position: 'absolute', bottom: -80, left: -80, width: 260, height: 260, borderRadius: '50%', background: `radial-gradient(circle, ${ACCENT}18 0%, transparent 70%)` }} />
+/* ── Story 1: Curiosidade ────────────────────────────────────────────────────*/
+export const AFStory2_T2_Curiosity = ({
+  data,
+  photo,
+}: {
+  data: AFPropertyData;
+  photo?: string;
+}) => (
+  <div style={{ position: 'relative', width: STORY_W, height: STORY_H, backgroundColor: '#ffffff', fontFamily: 'Arial, sans-serif', overflow: 'hidden' }}>
+    <div style={{ position: 'absolute', left: 0, top: 0, width: 6, height: '100%', backgroundColor: '#1B5EA6', zIndex: 5 }} />
 
-    <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '52%', overflow: 'hidden' }}>
+    <div style={{ position: 'absolute', top: 0, left: 6, right: 0, height: '50%', overflow: 'hidden' }}>
       {photo ? (
         <img src={photo} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
       ) : (
-        <div style={{ width: '100%', height: '100%', backgroundColor: '#b2d8df' }} />
+        <div style={{ width: '100%', height: '100%', backgroundColor: '#e2e8f0' }} />
       )}
-      <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0) 50%, #f8f9fa 100%)' }} />
-      <div style={{ position: 'absolute', top: 20, left: 20, zIndex: 10 }}>
-        <div style={{ backgroundColor: 'white', borderRadius: 12, padding: '6px 12px', boxShadow: '0 4px 20px rgba(0,0,0,0.15)' }}>
-          <Logo variant="color" />
+      <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, transparent 60%, rgba(255,255,255,0.95) 100%)' }} />
+      <div style={{
+        position: 'absolute', bottom: 16, left: 16,
+        backgroundColor: '#F47920', borderRadius: 8, padding: '5px 12px',
+      }}>
+        <p style={{ color: 'white', fontSize: 10, fontWeight: 700, margin: 0, textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+          📍 {data.neighborhood || 'Fortaleza'}
+        </p>
+      </div>
+      <div style={{ position: 'absolute', top: 14, right: 14, backgroundColor: 'rgba(255,255,255,0.92)', borderRadius: 8, padding: '4px 8px' }}>
+        <Logo variant="color" />
+      </div>
+    </div>
+
+    <div style={{
+      position: 'absolute', top: '50%', left: 6, right: 0, bottom: 0,
+      display: 'flex', flexDirection: 'column', justifyContent: 'space-between',
+      padding: '20px 22px 0',
+    }}>
+      <div>
+        <p style={{
+          color: '#1B5EA6', fontSize: 11, fontWeight: 700, letterSpacing: '0.15em',
+          textTransform: 'uppercase', margin: '0 0 8px',
+        }}>
+          Você sabia que...
+        </p>
+
+        <p style={{ color: '#0f172a', fontSize: 28, fontWeight: 900, lineHeight: 1.2, margin: '0 0 12px' }}>
+          É possível{' '}
+          <span style={{ color: '#F47920' }}>sair do aluguel</span>{' '}
+          em {data.neighborhood || 'Fortaleza'}?
+        </p>
+
+        <div style={{ width: 40, height: 3, backgroundColor: '#1B5EA6', borderRadius: 2, marginBottom: 12 }} />
+
+        <p style={{ color: '#64748b', fontSize: 13, lineHeight: 1.55, margin: '0 0 14px' }}>
+          Temos um apartamento de{' '}
+          <strong style={{ color: '#0f172a' }}>{data.bedrooms > 0 ? `${data.bedrooms} quartos` : 'alta qualidade'}</strong>
+          {data.area > 0 ? ` com ${data.area}m²` : ''} que cabe no seu bolso.
+        </p>
+
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+          {data.bedrooms > 0 && (
+            <div style={{ backgroundColor: '#f0f6ff', borderRadius: 8, padding: '5px 10px', border: '1px solid #bfdbfe' }}>
+              <span style={{ color: '#1B5EA6', fontSize: 11, fontWeight: 600 }}>🛏 {data.bedrooms} Qto{data.bedrooms > 1 ? 's' : ''}</span>
+            </div>
+          )}
+          {data.area > 0 && (
+            <div style={{ backgroundColor: '#f0f6ff', borderRadius: 8, padding: '5px 10px', border: '1px solid #bfdbfe' }}>
+              <span style={{ color: '#1B5EA6', fontSize: 11, fontWeight: 600 }}>📐 {data.area}m²</span>
+            </div>
+          )}
+          {data.garageSpaces > 0 && (
+            <div style={{ backgroundColor: '#f0f6ff', borderRadius: 8, padding: '5px 10px', border: '1px solid #bfdbfe' }}>
+              <span style={{ color: '#1B5EA6', fontSize: 11, fontWeight: 600 }}>🚗 {data.garageSpaces} Vaga{data.garageSpaces > 1 ? 's' : ''}</span>
+            </div>
+          )}
         </div>
       </div>
-    </div>
 
-    <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, top: '48%', display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '20px 28px 40px', zIndex: 10 }}>
-      <div style={{ backgroundColor: PRIMARY, borderRadius: 30, padding: '5px 18px', marginBottom: 16, alignSelf: 'flex-start' }}>
-        <p style={{ color: 'white', fontSize: 10, fontWeight: 700, margin: 0, letterSpacing: '0.12em', textTransform: 'uppercase' }}>Oportunidade única</p>
+      <div style={{
+        backgroundColor: '#1B5EA6',
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        padding: '12px 18px', marginLeft: -22, marginRight: 0,
+      }}>
+        <p style={{ color: 'rgba(255,255,255,0.85)', fontSize: 12, margin: 0, fontWeight: 600 }}>
+          Veja nas próximas ➜
+        </p>
+        <div style={{ backgroundColor: 'rgba(255,255,255,0.2)', borderRadius: 20, padding: '4px 14px' }}>
+          <p style={{ color: 'white', fontSize: 11, margin: 0, fontWeight: 700 }}>1 / 3</p>
+        </div>
       </div>
-      <p style={{ color: '#0a1a1e', fontSize: 26, fontWeight: 900, lineHeight: 1.25, margin: '0 0 8px' }}>
-        {data.bedrooms > 0 ? `${data.bedrooms} quartos` : 'Apartamento'}{' '}
-        <span style={{ color: ACCENT }}>em {data.neighborhood || 'Fortaleza'}</span>
-      </p>
-      {data.area > 0 && (
-        <p style={{ color: '#4b5563', fontSize: 14, margin: '0 0 16px', lineHeight: 1.5 }}>{data.area}m² de espaço e conforto</p>
-      )}
-      <div style={{ width: 40, height: 3, backgroundColor: ACCENT, borderRadius: 2, marginBottom: 16 }} />
-      <p style={{ color: '#6b7280', fontSize: 12, lineHeight: 1.5, margin: 0 }}>Arraste para descobrir todos os detalhes 👇</p>
-    </div>
-
-    <div style={{ position: 'absolute', bottom: 18, right: 20, zIndex: 20, backgroundColor: PRIMARY, borderRadius: 20, padding: '4px 12px' }}>
-      <p style={{ color: 'white', fontSize: 10, margin: 0, fontWeight: 600 }}>1 / 3</p>
     </div>
   </div>
 );
 
-export const AFStory2_T2_Reveal = ({ data, photos }: { data: AFPropertyData; photos?: string[] }) => {
+/* ── Story 2: Revelação ──────────────────────────────────────────────────────*/
+export const AFStory2_T2_Reveal = ({
+  data,
+  photos,
+}: {
+  data: AFPropertyData;
+  photos?: string[];
+}) => {
   const price = data.isRental ? data.rentalPrice : data.salePrice;
   const specs = [
-    data.bedrooms > 0 && `${data.bedrooms} Quarto${data.bedrooms > 1 ? 's' : ''}`,
-    data.area > 0 && `${data.area}m²`,
-    data.garageSpaces > 0 && `${data.garageSpaces} Vaga${data.garageSpaces > 1 ? 's' : ''}`,
-    data.suites > 0 && `${data.suites} Suíte${data.suites > 1 ? 's' : ''}`,
-    data.floor && `${data.floor}° Andar`,
-  ].filter(Boolean) as string[];
+    data.bedrooms > 0 && { label: `${data.bedrooms} Qto${data.bedrooms > 1 ? 's' : ''}`, icon: '🛏' },
+    data.bathrooms > 0 && { label: `${data.bathrooms} Banh.`, icon: '🚿' },
+    data.area > 0 && { label: `${data.area} m²`, icon: '📐' },
+    data.garageSpaces > 0 && { label: `${data.garageSpaces} Vaga${data.garageSpaces > 1 ? 's' : ''}`, icon: '🚗' },
+    data.floor && { label: `${data.floor}° And.`, icon: '🏢' },
+  ].filter(Boolean) as { label: string; icon: string }[];
+
   const imgs = photos && photos.length > 0 ? photos : [];
   const img = (i: number) => imgs[i] ?? imgs[0] ?? undefined;
 
+  const PHOTO_H = 435;
+  const CARD_TOP = PHOTO_H - 20;
+
   return (
-    <div style={{ position: 'relative', width: STORY_W, height: STORY_H, backgroundColor: '#ffffff', fontFamily: 'Arial, sans-serif', overflow: 'hidden' }}>
-      {/* Top logo bar */}
-      <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 60, backgroundColor: 'white', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 20px', zIndex: 20, boxShadow: '0 1px 8px rgba(0,0,0,0.06)' }}>
-        <Logo variant="color" />
-        {data.neighborhood && <div style={{ backgroundColor: `${PRIMARY}18`, borderRadius: 20, padding: '4px 12px' }}>
-          <p style={{ color: PRIMARY, fontSize: 10, fontWeight: 700, margin: 0 }}>📍 {data.neighborhood}</p>
-        </div>}
+    <div style={{ position: 'relative', width: STORY_W, height: STORY_H, backgroundColor: '#f8fafc', fontFamily: 'Arial, sans-serif', overflow: 'hidden' }}>
+      <div style={{ position: 'absolute', left: 0, top: 0, width: 6, height: '100%', backgroundColor: '#1B5EA6', zIndex: 5 }} />
+
+      <div style={{
+        position: 'absolute', top: 0, left: 6, right: 0, height: PHOTO_H,
+        display: 'grid', gridTemplateColumns: '1fr 1fr', gridTemplateRows: '1fr 1fr', gap: 3,
+      }}>
+        <div style={{ gridRow: '1 / 3', overflow: 'hidden', position: 'relative' }}>
+          {img(0) ? (
+            <img src={img(0)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+          ) : (
+            <div style={{ width: '100%', height: '100%', backgroundColor: '#cbd5e1' }} />
+          )}
+          <div style={{ position: 'absolute', top: 14, left: 12, zIndex: 10, backgroundColor: 'rgba(255,255,255,0.88)', borderRadius: 8, padding: '4px 8px' }}>
+            <Logo variant="color" />
+          </div>
+        </div>
+
+        <div style={{ overflow: 'hidden', position: 'relative' }}>
+          {img(1) ? (
+            <img src={img(1)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+          ) : (
+            <div style={{ width: '100%', height: '100%', backgroundColor: '#e2e8f0' }} />
+          )}
+        </div>
+
+        <div style={{ overflow: 'hidden', position: 'relative' }}>
+          {img(2) ? (
+            <img src={img(2)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+          ) : (
+            <div style={{ width: '100%', height: '100%', backgroundColor: '#e2e8f0' }} />
+          )}
+          {imgs.length > 3 && img(3) && (
+            <div style={{ position: 'absolute', inset: 0 }}>
+              <img src={img(3)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+            </div>
+          )}
+          {imgs.length > 4 && (
+            <div style={{
+              position: 'absolute', inset: 0, backgroundColor: 'rgba(27,94,166,0.75)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+            }}>
+              <p style={{ color: 'white', fontSize: 20, fontWeight: 900, margin: 0 }}>+{imgs.length - 3}</p>
+            </div>
+          )}
+        </div>
+
+        <div style={{
+          position: 'absolute', bottom: 0, left: 0, right: 0, height: 50,
+          background: 'linear-gradient(to bottom, transparent, #f8fafc)',
+          zIndex: 3,
+        }} />
+
+        {data.neighborhood && (
+          <div style={{
+            position: 'absolute', top: 16, right: 8, zIndex: 10,
+            backgroundColor: '#F47920', borderRadius: 20, padding: '4px 12px',
+            boxShadow: '0 4px 12px rgba(244,121,32,0.4)',
+          }}>
+            <p style={{ color: 'white', fontSize: 10, fontWeight: 700, margin: 0 }}>📍 {data.neighborhood}</p>
+          </div>
+        )}
       </div>
 
-      {/* Photo grid */}
-      <div style={{ position: 'absolute', top: 60, left: 0, right: 0, height: 300 }}>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gridTemplateRows: '1fr 1fr', gap: 3, width: '100%', height: '100%' }}>
-          {[0,1,2,3].map((idx) => (
-            <div key={idx} style={{ overflow: 'hidden', position: 'relative' }}>
-              {img(idx) ? <img src={img(idx)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <div style={{ width: '100%', height: '100%', backgroundColor: '#b2d8df' }} />}
-              {idx === 3 && imgs.length > 4 && (
-                <div style={{ position: 'absolute', inset: 0, backgroundColor: 'rgba(0,0,0,0.55)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <p style={{ color: 'white', fontSize: 22, fontWeight: 900, margin: 0 }}>+{imgs.length - 4}</p>
-                </div>
+      <div style={{
+        position: 'absolute', top: CARD_TOP, left: 6, right: 0, bottom: 0,
+        backgroundColor: '#f8fafc', padding: '16px 18px 0',
+        display: 'flex', flexDirection: 'column', justifyContent: 'space-between',
+      }}>
+        <p style={{ color: '#0f172a', fontSize: 13, fontWeight: 800, margin: '0 0 8px', lineHeight: 1.3 }}>
+          {data.title || 'Apartamento Disponível'}
+        </p>
+
+        {specs.length > 0 && (
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 5, marginBottom: 10 }}>
+            {specs.slice(0, 5).map((s, i) => (
+              <div key={i} style={{
+                backgroundColor: 'white', borderRadius: 8, padding: '4px 9px',
+                border: '1px solid #e2e8f0', display: 'flex', alignItems: 'center', gap: 4,
+                boxShadow: '0 1px 4px rgba(0,0,0,0.05)',
+              }}>
+                <span style={{ fontSize: 11 }}>{s.icon}</span>
+                <span style={{ color: '#334155', fontSize: 10, fontWeight: 600 }}>{s.label}</span>
+              </div>
+            ))}
+          </div>
+        )}
+
+        <div style={{
+          backgroundColor: '#1B5EA6', borderRadius: 14, padding: '11px 16px',
+          boxShadow: '0 8px 24px rgba(27,94,166,0.25)',
+        }}>
+          <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between' }}>
+            <div>
+              <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: 10, margin: '0 0 2px', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
+                {data.isRental ? 'Aluguel mensal' : 'Valor de venda'}
+              </p>
+              <p style={{ color: 'white', fontSize: 24, fontWeight: 900, margin: 0, lineHeight: 1 }}>
+                {formatPrice(price)}
+              </p>
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 3 }}>
+              {data.acceptsFinancing && (
+                <span style={{ backgroundColor: 'rgba(134,239,172,0.2)', border: '1px solid rgba(134,239,172,0.4)', borderRadius: 20, padding: '2px 8px', color: '#86efac', fontSize: 9, fontWeight: 600 }}>
+                  ✓ Financiamento
+                </span>
+              )}
+              {data.acceptsFGTS && (
+                <span style={{ backgroundColor: 'rgba(134,239,172,0.2)', border: '1px solid rgba(134,239,172,0.4)', borderRadius: 20, padding: '2px 8px', color: '#86efac', fontSize: 9, fontWeight: 600 }}>
+                  ✓ FGTS
+                </span>
               )}
             </div>
-          ))}
+          </div>
         </div>
-      </div>
 
-      {/* Info bottom */}
-      <div style={{ position: 'absolute', top: 360, left: 0, right: 0, bottom: 0, padding: '20px 20px 16px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-        <p style={{ color: '#0a1a1e', fontSize: 15, fontWeight: 700, margin: '0 0 10px', lineHeight: 1.3 }}>{data.title || 'Apartamento Disponível'}</p>
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 5, marginBottom: 12 }}>
-          {specs.map((s, i) => (
-            <span key={i} style={{ backgroundColor: `${PRIMARY}15`, border: `1px solid ${PRIMARY}33`, borderRadius: 20, padding: '4px 12px', color: PRIMARY, fontSize: 10, fontWeight: 700 }}>{s}</span>
-          ))}
-        </div>
-        <div style={{ backgroundColor: PRIMARY, borderRadius: 14, padding: '12px 18px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <div>
-            <p style={{ color: 'rgba(255,255,255,0.75)', fontSize: 9, margin: '0 0 2px', textTransform: 'uppercase', letterSpacing: '0.08em' }}>{data.isRental ? 'Aluguel' : 'Valor de Venda'}</p>
-            <p style={{ color: 'white', fontSize: 20, fontWeight: 900, margin: 0, lineHeight: 1 }}>{formatPrice(price)}</p>
-          </div>
-          <div style={{ textAlign: 'right' }}>
-            {data.acceptsFinancing && <p style={{ color: '#a7f3d0', fontSize: 10, margin: '0 0 3px', fontWeight: 600 }}>✓ Financiamento</p>}
-            {data.acceptsFGTS && <p style={{ color: '#a7f3d0', fontSize: 10, margin: 0, fontWeight: 600 }}>✓ FGTS</p>}
-          </div>
-        </div>
-        <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 8 }}>
-          <div style={{ backgroundColor: `${PRIMARY}18`, borderRadius: 20, padding: '3px 12px' }}>
-            <p style={{ color: PRIMARY, fontSize: 10, margin: 0, fontWeight: 600 }}>2 / 3</p>
+        <div style={{
+          backgroundColor: '#1B5EA6',
+          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+          padding: '10px 18px', marginLeft: -18, marginRight: 0, marginTop: 10,
+        }}>
+          <p style={{ color: 'rgba(255,255,255,0.8)', fontSize: 10, margin: 0 }}>apartamentosfortaleza.com</p>
+          <div style={{ backgroundColor: 'rgba(255,255,255,0.2)', borderRadius: 20, padding: '4px 14px' }}>
+            <p style={{ color: 'white', fontSize: 11, margin: 0, fontWeight: 700 }}>2 / 3</p>
           </div>
         </div>
       </div>
@@ -125,42 +273,88 @@ export const AFStory2_T2_Reveal = ({ data, photos }: { data: AFPropertyData; pho
   );
 };
 
-export const AFStory2_T2_CTA = ({ data, photo }: { data: AFPropertyData; photo?: string }) => (
-  <div style={{ position: 'relative', width: STORY_W, height: STORY_H, backgroundColor: '#f0f9fa', fontFamily: 'Arial, sans-serif', overflow: 'hidden' }}>
-    <div style={{ position: 'absolute', top: -60, right: -60, width: 220, height: 220, borderRadius: '50%', backgroundColor: `${PRIMARY}15` }} />
-    <div style={{ position: 'absolute', bottom: 80, left: -60, width: 200, height: 200, borderRadius: '50%', backgroundColor: `${ACCENT}12` }} />
+/* ── Story 3: CTA ────────────────────────────────────────────────────────────*/
+export const AFStory2_T2_CTA = ({
+  data,
+  photo,
+}: {
+  data: AFPropertyData;
+  photo?: string;
+}) => (
+  <div style={{ position: 'relative', width: STORY_W, height: STORY_H, backgroundColor: '#ffffff', fontFamily: 'Arial, sans-serif', overflow: 'hidden' }}>
+    <div style={{ position: 'absolute', left: 0, top: 0, width: 6, height: '100%', backgroundColor: '#1B5EA6', zIndex: 5 }} />
 
-    <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '42%', overflow: 'hidden' }}>
-      {photo ? <img src={photo} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <div style={{ width: '100%', height: '100%', backgroundColor: '#b2d8df' }} />}
-      <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, rgba(0,0,0,0.1), #f0f9fa)' }} />
-    </div>
-
-    <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, top: '38%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '16px 28px 36px', zIndex: 10 }}>
-      <div style={{ backgroundColor: 'white', borderRadius: 14, padding: '8px 16px', marginBottom: 20, boxShadow: '0 4px 20px rgba(0,0,0,0.08)' }}>
-        <Logo variant="color" />
-      </div>
-      <p style={{ color: '#0a1a1e', fontSize: 22, fontWeight: 900, textAlign: 'center', lineHeight: 1.3, margin: '0 0 6px' }}>
-        {data.neighborhood ? `Seu apartamento em ${data.neighborhood}` : 'Realize seu sonho'}{' '}
-        <span style={{ color: ACCENT }}>está ao seu alcance!</span>
-      </p>
-      {data.salePrice > 0 && (
-        <div style={{ backgroundColor: PRIMARY, borderRadius: 12, padding: '8px 20px', marginBottom: 20 }}>
-          <p style={{ color: 'white', fontSize: 16, fontWeight: 900, margin: 0, textAlign: 'center' }}>{formatPrice(data.salePrice)}</p>
-        </div>
+    <div style={{
+      position: 'absolute', top: 0, left: 6, right: 0, height: '55%',
+      backgroundColor: '#F47920', overflow: 'hidden',
+    }}>
+      {photo && (
+        <img src={photo} alt="" style={{
+          position: 'absolute', inset: 0, width: '100%', height: '100%',
+          objectFit: 'cover', filter: 'brightness(0.45) saturate(0.6)',
+        }} />
       )}
-      <div style={{ width: '100%', backgroundColor: ACCENT, borderRadius: 16, padding: '14px 20px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, marginBottom: 12, boxShadow: `0 8px 24px ${ACCENT}40` }}>
-        <span style={{ fontSize: 22 }}>📱</span>
-        <div>
-          <p style={{ color: 'rgba(255,255,255,0.85)', fontSize: 10, margin: '0 0 1px', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Fale agora via WhatsApp</p>
-          <p style={{ color: 'white', fontSize: 18, fontWeight: 900, margin: 0 }}>{data.brokerPhone || '(85) 9XXXX-XXXX'}</p>
+      <div style={{
+        position: 'absolute', inset: 0,
+        background: 'linear-gradient(145deg, rgba(244,121,32,0.75) 0%, rgba(200,80,0,0.85) 100%)',
+      }} />
+      <div style={{
+        position: 'absolute', inset: 0,
+        display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+        padding: '18px 28px 20px', zIndex: 10, gap: 14,
+      }}>
+        <div style={{ backgroundColor: 'rgba(255,255,255,0.15)', borderRadius: 10, padding: '6px 14px' }}>
+          <Logo variant="white" />
+        </div>
+        <div style={{ textAlign: 'center' }}>
+          <p style={{ color: 'rgba(255,255,255,0.9)', fontSize: 12, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', margin: '0 0 8px' }}>
+            Pronto para mudar?
+          </p>
+          <p style={{ color: 'white', fontSize: 30, fontWeight: 900, textAlign: 'center', lineHeight: 1.15, margin: 0, textShadow: '0 2px 12px rgba(0,0,0,0.3)' }}>
+            Realize o seu<br />sonho agora!
+          </p>
         </div>
       </div>
-      {data.brokerName && <p style={{ color: '#6b7280', fontSize: 11, textAlign: 'center', margin: '0 0 4px' }}>{data.brokerName} • Corretor de Imóveis</p>}
-      {data.creci && <p style={{ color: '#9ca3af', fontSize: 10, textAlign: 'center', margin: 0 }}>{data.creci}</p>}
     </div>
 
-    <div style={{ position: 'absolute', bottom: 18, right: 20, zIndex: 20, backgroundColor: PRIMARY, borderRadius: 20, padding: '4px 12px' }}>
-      <p style={{ color: 'white', fontSize: 10, margin: 0, fontWeight: 600 }}>3 / 3</p>
+    <div style={{ position: 'absolute', top: '55%', left: 6, right: 0, bottom: 0, padding: '14px 22px 0' }}>
+      <div style={{
+        backgroundColor: '#f8fafc', borderRadius: 14, padding: '12px 16px',
+        border: '1px solid #e2e8f0', marginBottom: 14,
+        boxShadow: '0 2px 12px rgba(0,0,0,0.06)',
+      }}>
+        <p style={{ color: '#64748b', fontSize: 10, margin: '0 0 2px', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Fale com o corretor</p>
+        <p style={{ color: '#0f172a', fontSize: 15, fontWeight: 800, margin: '0 0 2px' }}>{data.brokerName || 'Corretor de Imóveis'}</p>
+        {data.creci && <p style={{ color: '#64748b', fontSize: 11, margin: 0 }}>{data.creci}</p>}
+      </div>
+
+      <div style={{
+        backgroundColor: '#25D366', borderRadius: 14, padding: '13px 20px',
+        display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, marginBottom: 12,
+        boxShadow: '0 6px 20px rgba(37,211,102,0.35)',
+      }}>
+        <span style={{ fontSize: 20 }}>💬</span>
+        <div>
+          <p style={{ color: 'rgba(255,255,255,0.85)', fontSize: 10, margin: '0 0 1px', letterSpacing: '0.06em' }}>WhatsApp</p>
+          <p style={{ color: 'white', fontSize: 17, fontWeight: 900, margin: 0 }}>{data.brokerPhone || '(85) 9XXXX-XXXX'}</p>
+        </div>
+      </div>
+
+      <div style={{ textAlign: 'center' }}>
+        <p style={{ color: '#94a3b8', fontSize: 11, margin: '0 0 2px' }}>🌐 www.apartamentosfortaleza.com</p>
+      </div>
+    </div>
+
+    <div style={{
+      position: 'absolute', bottom: 0, left: 0, right: 0,
+      backgroundColor: '#1B5EA6',
+      display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+      padding: '10px 20px 10px 26px',
+    }}>
+      <p style={{ color: 'rgba(255,255,255,0.8)', fontSize: 11, margin: 0 }}>apartamentosfortaleza.com</p>
+      <div style={{ backgroundColor: 'rgba(255,255,255,0.2)', borderRadius: 20, padding: '4px 14px' }}>
+        <p style={{ color: 'white', fontSize: 11, margin: 0, fontWeight: 700 }}>3 / 3</p>
+      </div>
     </div>
   </div>
 );

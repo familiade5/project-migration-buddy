@@ -1,6 +1,6 @@
 /**
- * TEMA 4 — "PADRÃO" (Fortaleza)
- * 5 slides INDEPENDENTES — idêntico ao AM, com cores e logo AF.
+ * TEMA 4 — "PADRÃO"
+ * 5 slides INDEPENDENTES — idêntico ao AM, com logo AF.
  */
 
 import { AFPropertyData } from '@/types/apartamentosFortaleza';
@@ -9,8 +9,6 @@ import logoCaixa from '@/assets/logo-caixa.png';
 
 const STORY_W = 360;
 const STORY_H = 640;
-const PRIMARY = '#0C7B8E';
-const ACCENT = '#E8562A';
 
 const Logo = ({ size = 90, white = false }: { size?: number; white?: boolean }) => (
   <img
@@ -33,9 +31,7 @@ const formatPriceParts = (v: number): { prefix: string; main: string; cents: str
   return { prefix: 'R$', main: parts[0], cents: `,${parts[1]}` };
 };
 
-/* ─────────────────────────────────────────────────────────────────
-   SLIDE 1 — Grade de fotos
-   ───────────────────────────────────────────────────────────────── */
+/* ── SLIDE 1 — Grade de fotos ── */
 export const AFStory4_T4_Slide1 = ({
   data,
   photos,
@@ -57,13 +53,13 @@ export const AFStory4_T4_Slide1 = ({
     }}>
       {data.address && (
         <div style={{ padding: '16px 18px 0', display: 'flex', alignItems: 'center', gap: 6 }}>
-          <span style={{ color: ACCENT, fontSize: 13 }}>📍</span>
+          <span style={{ color: '#F47920', fontSize: 13 }}>📍</span>
           <p style={{ color: '#555', fontSize: 11, margin: 0, fontWeight: 500 }}>{data.address}</p>
         </div>
       )}
 
       <div style={{ padding: '10px 18px 0', display: 'flex', alignItems: 'stretch', gap: 10 }}>
-        <div style={{ flex: 1, backgroundColor: ACCENT, borderRadius: 10, padding: '10px 14px' }}>
+        <div style={{ flex: 1, backgroundColor: '#F47920', borderRadius: 10, padding: '10px 14px' }}>
           <p style={{ color: 'white', fontSize: 16, fontWeight: 900, margin: '0 0 5px', lineHeight: 1.2 }}>
             {data.title || 'Apartamento'}
           </p>
@@ -113,7 +109,7 @@ export const AFStory4_T4_Slide1 = ({
             {img(3) ? <img src={img(3)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <div style={{ width: '100%', height: '100%', backgroundColor: '#e2e8f0' }} />}
           </div>
           <div style={{
-            flex: 1, height: 100, backgroundColor: PRIMARY, borderRadius: 10,
+            flex: 1, height: 100, backgroundColor: '#1B5EA6', borderRadius: 10,
             display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '8px 12px',
           }}>
             <div style={{
@@ -145,9 +141,7 @@ export const AFStory4_T4_Slide1 = ({
   );
 };
 
-/* ─────────────────────────────────────────────────────────────────
-   SLIDE 2 — Composição triangular de 5 fotos + preço
-   ───────────────────────────────────────────────────────────────── */
+/* ── SLIDE 2 — Composição triangular ── */
 export const AFStory4_T4_Slide2 = ({
   data,
   photo,
@@ -194,7 +188,7 @@ export const AFStory4_T4_Slide2 = ({
 
       {data.neighborhood && (
         <div style={{ position: 'absolute', top: 70, left: 0, right: 0, display: 'flex', justifyContent: 'center', zIndex: 30 }}>
-          <div style={{ backgroundColor: ACCENT, borderRadius: 30, padding: '4px 16px', display: 'flex', alignItems: 'center', gap: 5 }}>
+          <div style={{ backgroundColor: '#F47920', borderRadius: 30, padding: '4px 16px', display: 'flex', alignItems: 'center', gap: 5 }}>
             <span style={{ fontSize: 10 }}>📍</span>
             <span style={{ color: 'white', fontSize: 10, fontWeight: 700 }}>{data.neighborhood}</span>
           </div>
@@ -230,7 +224,7 @@ export const AFStory4_T4_Slide2 = ({
             <p style={{ color: '#64748b', fontSize: 9, margin: '0 0 2px', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
               {data.isRental ? 'Aluguel' : 'Valor de Venda'}
             </p>
-            <p style={{ color: PRIMARY, fontSize: 22, fontWeight: 900, margin: 0, lineHeight: 1 }}>
+            <p style={{ color: '#1B5EA6', fontSize: 22, fontWeight: 900, margin: 0, lineHeight: 1 }}>
               {formatPrice(price)}
             </p>
           </div>
@@ -251,9 +245,7 @@ export const AFStory4_T4_Slide2 = ({
   );
 };
 
-/* ─────────────────────────────────────────────────────────────────
-   SLIDE 3 — Ficha técnica clean + 3 fotos
-   ───────────────────────────────────────────────────────────────── */
+/* ── SLIDE 3 — Ficha técnica ── */
 export const AFStory4_T4_Slide3 = ({
   data,
   photo,
@@ -283,11 +275,11 @@ export const AFStory4_T4_Slide3 = ({
       position: 'relative', width: STORY_W, height: STORY_H,
       backgroundColor: '#f8fafc', fontFamily: 'Arial, sans-serif', overflow: 'hidden',
     }}>
-      <div style={{ position: 'relative', height: 128, backgroundColor: ACCENT, overflow: 'hidden' }}>
+      <div style={{ position: 'relative', height: 128, backgroundColor: '#F47920', overflow: 'hidden' }}>
         {img(0) && (
           <img src={img(0)} alt="" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', filter: 'brightness(0.35) saturate(0.5)' }} />
         )}
-        <div style={{ position: 'absolute', inset: 0, background: `linear-gradient(135deg, ${ACCENT}e0 0%, ${ACCENT}eb 100%)` }} />
+        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(135deg, rgba(244,121,32,0.88) 0%, rgba(200,70,0,0.92) 100%)' }} />
         <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', zIndex: 5, gap: 6 }}>
           <Logo size={72} white />
           <p style={{ color: 'white', fontSize: 14, fontWeight: 900, margin: 0, textAlign: 'center', lineHeight: 1.2 }}>
@@ -331,7 +323,7 @@ export const AFStory4_T4_Slide3 = ({
               boxShadow: '0 1px 4px rgba(0,0,0,0.05)',
             }}>
               <div style={{ fontSize: 16, marginBottom: 2 }}>{s.icon}</div>
-              <p style={{ color: PRIMARY, fontSize: 12, fontWeight: 900, margin: '0 0 2px' }}>{s.value}</p>
+              <p style={{ color: '#1B5EA6', fontSize: 12, fontWeight: 900, margin: '0 0 2px' }}>{s.value}</p>
               <p style={{ color: '#94a3b8', fontSize: 7.5, margin: 0, textTransform: 'uppercase', letterSpacing: '0.06em' }}>{s.label}</p>
             </div>
           ))}
@@ -340,9 +332,9 @@ export const AFStory4_T4_Slide3 = ({
 
       <div style={{ padding: '8px 14px 0' }}>
         <div style={{
-          backgroundColor: PRIMARY, borderRadius: 14, padding: '12px 16px',
+          backgroundColor: '#1B5EA6', borderRadius: 14, padding: '12px 16px',
           display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-          boxShadow: `0 6px 20px ${PRIMARY}4d`,
+          boxShadow: '0 6px 20px rgba(27,94,166,0.3)',
         }}>
           <div>
             <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: 10, margin: '0 0 2px', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
@@ -366,9 +358,9 @@ export const AFStory4_T4_Slide3 = ({
         </div>
       </div>
 
-      <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, backgroundColor: ACCENT, padding: '10px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+      <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, backgroundColor: '#F47920', padding: '10px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <p style={{ color: 'rgba(255,255,255,0.9)', fontSize: 10, margin: 0, fontWeight: 600 }}>
-          {data.brokerPhone || '(85) 99999-9999'}
+          {data.brokerPhone || '(85) 9XXXX-XXXX'}
         </p>
         <p style={{ color: 'rgba(255,255,255,0.75)', fontSize: 9, margin: 0 }}>
           apartamentosfortaleza.com
@@ -378,9 +370,7 @@ export const AFStory4_T4_Slide3 = ({
   );
 };
 
-/* ─────────────────────────────────────────────────────────────────
-   SLIDE 4 — Bento Gallery (6 fotos) com preço rodapé
-   ───────────────────────────────────────────────────────────────── */
+/* ── SLIDE 4 — Bento Gallery ── */
 export const AFStory4_T4_Slide4 = ({
   data,
   photos,
@@ -396,6 +386,7 @@ export const AFStory4_T4_Slide4 = ({
   const TOP_H = 68;
   const PHOTO_ZONE = STORY_H - TOP_H - FOOTER_H;
   const GAP = 4;
+
   const R1 = Math.round(PHOTO_ZONE * 0.40);
   const R2 = Math.round(PHOTO_ZONE * 0.32);
   const R3 = PHOTO_ZONE - R1 - R2 - GAP * 2;
@@ -409,11 +400,12 @@ export const AFStory4_T4_Slide4 = ({
         position: 'absolute', top: 0, left: 0, right: 0, height: TOP_H, zIndex: 20,
         backgroundColor: 'white',
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-        padding: '0 16px', boxShadow: '0 2px 12px rgba(0,0,0,0.2)',
+        padding: '0 16px',
+        boxShadow: '0 2px 12px rgba(0,0,0,0.2)',
       }}>
         <Logo size={75} />
         {data.neighborhood && (
-          <div style={{ backgroundColor: ACCENT, borderRadius: 8, padding: '5px 12px' }}>
+          <div style={{ backgroundColor: '#F47920', borderRadius: 8, padding: '5px 12px' }}>
             <p style={{ color: 'white', fontSize: 10, fontWeight: 700, margin: 0 }}>📍 {data.neighborhood}</p>
           </div>
         )}
@@ -421,7 +413,8 @@ export const AFStory4_T4_Slide4 = ({
 
       <div style={{
         position: 'absolute', top: TOP_H, left: 0, right: 0, height: PHOTO_ZONE,
-        display: 'flex', flexDirection: 'column', gap: GAP, padding: `${GAP}px`, boxSizing: 'border-box',
+        display: 'flex', flexDirection: 'column', gap: GAP, padding: `${GAP}px`,
+        boxSizing: 'border-box',
       }}>
         <div style={{ height: R1, borderRadius: 12, overflow: 'hidden', flexShrink: 0, position: 'relative' }}>
           {img(0) ? <img src={img(0)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <div style={{ width: '100%', height: '100%', backgroundColor: '#1e293b' }} />}
@@ -429,6 +422,7 @@ export const AFStory4_T4_Slide4 = ({
             <span style={{ color: 'white', fontSize: 9, fontWeight: 700 }}>{data.title || 'Apartamento'}</span>
           </div>
         </div>
+
         <div style={{ height: R2, display: 'flex', gap: GAP, flexShrink: 0 }}>
           <div style={{ flex: 11, borderRadius: 12, overflow: 'hidden' }}>
             {img(1) ? <img src={img(1)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <div style={{ width: '100%', height: '100%', backgroundColor: '#1e293b' }} />}
@@ -437,6 +431,7 @@ export const AFStory4_T4_Slide4 = ({
             {img(2) ? <img src={img(2)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <div style={{ width: '100%', height: '100%', backgroundColor: '#1e293b' }} />}
           </div>
         </div>
+
         <div style={{ height: R3, display: 'flex', gap: GAP, flexShrink: 0 }}>
           {[3, 4, 5].map((idx) => (
             <div key={idx} style={{ flex: 1, borderRadius: 10, overflow: 'hidden' }}>
@@ -458,22 +453,23 @@ export const AFStory4_T4_Slide4 = ({
               {data.title || 'Apartamento Disponível'}
             </p>
             <div style={{ display: 'flex', gap: 5, flexWrap: 'wrap' }}>
-              {data.bedrooms > 0 && <span style={{ color: '#67e8f9', fontSize: 10 }}>🛏 {data.bedrooms} Qtos</span>}
-              {data.area > 0 && <span style={{ color: '#67e8f9', fontSize: 10 }}>• 📐 {data.area}m²</span>}
-              {data.garageSpaces > 0 && <span style={{ color: '#67e8f9', fontSize: 10 }}>• 🚗 {data.garageSpaces} Vaga{data.garageSpaces > 1 ? 's' : ''}</span>}
+              {data.bedrooms > 0 && <span style={{ color: '#93c5fd', fontSize: 10 }}>🛏 {data.bedrooms} Qtos</span>}
+              {data.area > 0 && <span style={{ color: '#93c5fd', fontSize: 10 }}>• 📐 {data.area}m²</span>}
+              {data.garageSpaces > 0 && <span style={{ color: '#93c5fd', fontSize: 10 }}>• 🚗 {data.garageSpaces} Vaga{data.garageSpaces > 1 ? 's' : ''}</span>}
             </div>
           </div>
           <div style={{ textAlign: 'right' }}>
             <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: 9, margin: '0 0 2px', textTransform: 'uppercase' }}>{data.isRental ? 'Aluguel' : 'Venda'}</p>
-            <p style={{ color: ACCENT, fontSize: 18, fontWeight: 900, margin: 0, lineHeight: 1 }}>{formatPrice(price)}</p>
+            <p style={{ color: '#F47920', fontSize: 18, fontWeight: 900, margin: 0, lineHeight: 1 }}>{formatPrice(price)}</p>
           </div>
         </div>
+
         <div style={{ display: 'flex', gap: 5 }}>
           {data.acceptsFinancing && (
-            <span style={{ backgroundColor: `${PRIMARY}59`, border: `1px solid ${PRIMARY}80`, color: '#67e8f9', fontSize: 9, fontWeight: 600, padding: '2px 8px', borderRadius: 20 }}>✓ Financiamento</span>
+            <span style={{ backgroundColor: 'rgba(27,94,166,0.35)', border: '1px solid rgba(27,94,166,0.5)', color: '#93c5fd', fontSize: 9, fontWeight: 600, padding: '2px 8px', borderRadius: 20 }}>✓ Financiamento</span>
           )}
           {data.acceptsFGTS && (
-            <span style={{ backgroundColor: `${PRIMARY}59`, border: `1px solid ${PRIMARY}80`, color: '#67e8f9', fontSize: 9, fontWeight: 600, padding: '2px 8px', borderRadius: 20 }}>✓ FGTS</span>
+            <span style={{ backgroundColor: 'rgba(27,94,166,0.35)', border: '1px solid rgba(27,94,166,0.5)', color: '#93c5fd', fontSize: 9, fontWeight: 600, padding: '2px 8px', borderRadius: 20 }}>✓ FGTS</span>
           )}
           {data.subsidy > 0 && (
             <span style={{ backgroundColor: 'rgba(253,230,138,0.15)', color: '#fde68a', fontSize: 9, fontWeight: 600, padding: '2px 8px', borderRadius: 20 }}>Subsídio {formatPrice(data.subsidy)}</span>
@@ -484,9 +480,7 @@ export const AFStory4_T4_Slide4 = ({
   );
 };
 
-/* ─────────────────────────────────────────────────────────────────
-   SLIDE 5 — Dark Gallery CTA
-   ───────────────────────────────────────────────────────────────── */
+/* ── SLIDE 5 — Dark Gallery CTA ── */
 export const AFStory4_T4_Slide5 = ({
   data,
   photo,
@@ -510,6 +504,7 @@ export const AFStory4_T4_Slide5 = ({
       position: 'relative', width: STORY_W, height: STORY_H,
       backgroundColor: '#0a0f1e', fontFamily: 'Arial, sans-serif', overflow: 'hidden',
     }}>
+
       <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: PHOTO_ZONE }}>
         <div style={{ height: HERO_H, overflow: 'hidden' }}>
           {img(0) ? <img src={img(0)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <div style={{ width: '100%', height: '100%', backgroundColor: '#1e293b' }} />}
@@ -541,7 +536,7 @@ export const AFStory4_T4_Slide5 = ({
         {data.neighborhood && (
           <div style={{
             position: 'absolute', top: 14, right: 16,
-            backgroundColor: `${ACCENT}f2`, borderRadius: 30, padding: '3px 14px',
+            backgroundColor: 'rgba(244,121,32,0.95)', borderRadius: 30, padding: '3px 14px',
             display: 'flex', alignItems: 'center', gap: 4,
           }}>
             <span style={{ fontSize: 9 }}>📍</span>
@@ -585,9 +580,9 @@ export const AFStory4_T4_Slide5 = ({
         </div>
 
         <div style={{
-          backgroundColor: ACCENT, borderRadius: 14,
+          backgroundColor: '#F47920', borderRadius: 14,
           padding: '10px 20px', textAlign: 'center', marginBottom: 10,
-          boxShadow: `0 6px 22px ${ACCENT}73`,
+          boxShadow: '0 6px 22px rgba(244,121,32,0.45)',
         }}>
           <p style={{ color: 'rgba(255,255,255,0.75)', fontSize: 9, margin: '0 0 2px', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
             {data.isRental ? 'Aluguel mensal' : 'Valor de Venda'}
@@ -613,9 +608,9 @@ export const AFStory4_T4_Slide5 = ({
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
             <div>
               <p style={{ color: 'white', fontSize: 13, fontWeight: 800, margin: 0 }}>
-                {data.brokerName || 'Corretor'}
+                {data.brokerName || 'Corretor de Imóveis'}
               </p>
-              <p style={{ color: 'rgba(255,255,255,0.45)', fontSize: 8, margin: 0 }}>{data.creci || ''}</p>
+              {data.creci && <p style={{ color: 'rgba(255,255,255,0.45)', fontSize: 8, margin: 0 }}>{data.creci}</p>}
             </div>
             <div style={{
               backgroundColor: '#25D366', borderRadius: 10,
@@ -624,7 +619,7 @@ export const AFStory4_T4_Slide5 = ({
             }}>
               <span style={{ fontSize: 12 }}>💬</span>
               <span style={{ color: 'white', fontSize: 11, fontWeight: 800 }}>
-                {data.brokerPhone || '(85) 99999-9999'}
+                {data.brokerPhone || '(85) 9XXXX-XXXX'}
               </span>
             </div>
           </div>
