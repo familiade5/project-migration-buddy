@@ -122,11 +122,12 @@ export const AMInstagramPublishDialog = ({
     setIsPublishing(true);
 
     try {
-      // Publish carousel to AM Instagram
+      // Publish carousel to AM Instagram + Facebook
       const { data: publishResponse, error } = await supabase.functions.invoke('publish-social-media', {
         body: {
           ...validation.data,
           instagram_account_id: AM_INSTAGRAM_ACCOUNT_ID,
+          facebook_page_id: 'AM_FACEBOOK_PAGE_ID',
         },
       });
 
