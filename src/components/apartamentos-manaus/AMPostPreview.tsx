@@ -21,6 +21,106 @@ import {
 } from './stories/AMStoryTheme4';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/contexts/AuthContext';
+import { AMInstagramPublishDialog } from './AMInstagramPublishDialog';
+import { formatCurrency } from '@/lib/formatCurrency';
+
+// Helper to convert data URL to Blob
+const dataURLtoBlob = (dataURL: string): Blob => {
+  const arr = dataURL.split(',');
+  const mime = arr[0].match(/:(.*?);/)?.[1] || 'image/png';
+  const bstr = atob(arr[1]);
+  let n = bstr.length;
+  const u8arr = new Uint8Array(n);
+  while (n--) { u8arr[n] = bstr.charCodeAt(n); }
+  return new Blob([u8arr], { type: mime });
+};
+
+// Convert PNG to JPEG for Story compatibility
+const convertToJpeg = (pngDataUrl: string, quality = 0.92): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      canvas.width = img.width;
+      canvas.height = img.height;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) { reject(new Error('Canvas context unavailable')); return; }
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(img, 0, 0);
+      resolve(canvas.toDataURL('image/jpeg', quality));
+    };
+    img.onerror = () => reject(new Error('Failed to load image'));
+    img.src = pngDataUrl;
+  });
+};
+
+// Upload image to Supabase storage
+const uploadExportedImage = async (
+  dataUrl: string, userId: string, creativeId: string, index: number, format: string, asJpeg = false,
+): Promise<string> => {
+  let finalDataUrl = dataUrl;
+  let contentType = 'image/png';
+  let ext = 'png';
+  if (asJpeg) {
+    finalDataUrl = await convertToJpeg(dataUrl);
+    contentType = 'image/jpeg';
+    ext = 'jpg';
+  }
+  const blob = dataURLtoBlob(finalDataUrl);
+  const fileName = `${userId}/${creativeId}/${format}-${index + 1}.${ext}`;
+  const { error } = await supabase.storage.from('exported-creatives').upload(fileName, blob, { contentType, upsert: true });
+  if (error) throw error;
+  const { data: { publicUrl } } = supabase.storage.from('exported-creatives').getPublicUrl(fileName);
+  return publicUrl;
+};
+
+// Build AM caption
+function buildAMCaption(data: AMPropertyData): string {
+  const lines: string[] = [];
+  const titleParts = [data.title].filter(Boolean);
+  if (data.bedrooms > 0) titleParts.push(`${data.bedrooms} ${data.bedrooms === 1 ? 'Quarto' : 'Quartos'}`);
+  if (data.neighborhood) titleParts.push(data.neighborhood);
+  lines.push(`🏢 ${titleParts.join(' - ')}`);
+  lines.push('');
+  if (data.isRental) {
+    if (data.rentalPrice > 0) lines.push(`💰 Valor de Locação ${formatCurrency(data.rentalPrice)}/mês`);
+  } else {
+    if (data.salePrice > 0) {
+      const financing = data.acceptsFinancing ? `Aceita financiamento${data.acceptsFGTS ? ' e FGTS' : ''}` : 'À vista';
+      lines.push(`💰 Valor de Venda de ${formatCurrency(data.salePrice)} ${financing}`);
+    }
+    if (data.subsidy > 0) lines.push(`💰 Subsídio de até ${formatCurrency(data.subsidy)} - dependendo da renda`);
+  }
+  lines.push('');
+  if (data.bedrooms > 0) lines.push(`✅ ${data.bedrooms} ${data.bedrooms === 1 ? 'quarto' : 'quartos'}`);
+  if (data.suites > 0) lines.push(`✅ ${data.suites} ${data.suites === 1 ? 'suíte' : 'suítes'}`);
+  if (data.floor) lines.push(`✅ ${data.floor}° Andar`);
+  if (data.rooms) data.rooms.split('\n').map(r => r.trim()).filter(Boolean).forEach(r => lines.push(`✅ ${r}`));
+  if (data.garageSpaces > 0) lines.push(`✅ ${data.garageSpaces} ${data.garageSpaces === 1 ? 'vaga de garagem' : 'vagas de garagem'}`);
+  if (data.area > 0) lines.push(`✅ ${data.area}m²`);
+  lines.push('');
+  if (data.condominiumFee > 0 && data.condoIncludes) {
+    lines.push(`✅ Baixo custo de condomínio, incluso ${data.condoIncludes}`);
+    lines.push('');
+  } else if (data.condominiumFee > 0) {
+    lines.push(`✅ Condomínio ${formatCurrency(data.condominiumFee)}/mês`);
+    lines.push('');
+  }
+  if (data.leisureItems) { lines.push(`✅ Área de lazer completa`); lines.push(''); }
+  const locationParts: string[] = [];
+  if (data.address) locationParts.push(data.address);
+  if (data.referencePoint) locationParts.push(data.referencePoint);
+  if (locationParts.length > 0) lines.push(`📍 Localização: ${locationParts.join(' – ')}`);
+  lines.push('');
+  if (data.brokerName) { lines.push(`👨‍💼 ${data.brokerName} | Corretor de Imóveis`); lines.push(`Creci 3968 PF`); }
+  if (data.brokerPhone) lines.push(`📞 ${data.brokerPhone} (WhatsApp)`);
+  lines.push(`🌐 https://www.facebook.com/ApartamentosManaus`);
+  lines.push(`🌐 www.apartamentosmanaus.com`);
+  return lines.join('\n');
+}
 
 interface AMPostPreviewProps {
   data: AMPropertyData;
