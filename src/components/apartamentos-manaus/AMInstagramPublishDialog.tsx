@@ -32,11 +32,11 @@ interface AMInstagramPublishDialogProps {
 const AM_INSTAGRAM_ACCOUNT_ID = '17841402886222668';
 
 const preparedImagesSchema = z.object({
-  image_urls: z.array(z.string().url()).min(1).max(10),
+  image_urls: z.array(z.string().url()).min(1).max(15),
 });
 
 const publishSchema = z.object({
-  image_urls: z.array(z.string().url()).min(1).max(10),
+  image_urls: z.array(z.string().url()).min(1).max(15),
   caption: z.string().trim().min(1).max(2200),
 });
 
