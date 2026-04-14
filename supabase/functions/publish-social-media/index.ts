@@ -80,53 +80,11 @@ Deno.serve(async (req) => {
     }
 
     // ========== 2. FACEBOOK ==========
-    const fbPageId = Deno.env.get("FACEBOOK_PAGE_ID");
-    if (!fbPageId) {
-      results.facebook = {
-        success: false,
-        error: "FACEBOOK_PAGE_ID não configurado.",
-      };
-    } else {
-      // Get dedicated Page Access Token via /me/accounts
-      let fbPageToken = META_ACCESS_TOKEN;
-      try {
-        const accountsRes = await fetch(
-          `${GRAPH_API}/me/accounts?fields=id,access_token&access_token=${META_ACCESS_TOKEN}`
-        );
-        const accountsData = await accountsRes.json();
-        console.log("Facebook /me/accounts response:", JSON.stringify(accountsData));
-        if (accountsData.data && accountsData.data.length > 0) {
-          const page = accountsData.data.find((p: { id: string }) => p.id === fbPageId) || accountsData.data[0];
-          fbPageToken = page.access_token || META_ACCESS_TOKEN;
-          console.log("Using Page Token for page:", page.id);
-        } else {
-          console.log("No pages found in /me/accounts, using User Token directly");
-        }
-      } catch (e) {
-        console.error("Error fetching page token:", e);
-      }
-
-      const fbRes = await fetch(
-        `${GRAPH_API}/${fbPageId}/photos`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            url: image_url,
-            message: caption,
-            access_token: fbPageToken,
-          }),
-        }
-      );
-      const fbData = await fbRes.json();
-      console.log("Facebook publish response:", JSON.stringify(fbData));
-
-      if (fbData.error) {
-        results.facebook = { success: false, error: fbData.error };
-      } else {
-        results.facebook = { success: true, id: fbData.id };
-      }
-    }
+    results.facebook = {
+      success: false,
+      skipped: true,
+      reason: "Publicação no Facebook desativada; envio somente para Instagram.",
+    };
 
     return new Response(JSON.stringify(results), {
       status: 200,
