@@ -138,6 +138,7 @@ const STORY_H = 640;
 const MAX_SLIDES = 20;
 
 export function AMPostPreview({ data, photos }: AMPostPreviewProps) {
+  const { user } = useAuth();
   const [currentSlide, setCurrentSlide] = useState(0);
   const [format, setFormat] = useState<FormatType>('feed');
   const [designVersion, setDesignVersion] = useState<1 | 2>(1);
