@@ -135,11 +135,22 @@ export const AMInstagramPublishDialog = ({
 
       const instagramResult =
         publishResponse && typeof publishResponse === 'object'
-          ? (publishResponse as { instagram?: { success?: boolean } }).instagram
+          ? (publishResponse as { instagram?: { success?: boolean }; facebook?: { success?: boolean; skipped?: boolean } }).instagram
+          : null;
+      const facebookResult =
+        publishResponse && typeof publishResponse === 'object'
+          ? (publishResponse as { facebook?: { success?: boolean; skipped?: boolean } }).facebook
           : null;
 
       if (!instagramResult?.success) {
         throw new Error(getInstagramErrorMessage(instagramResult));
+      }
+
+      // Facebook feedback
+      if (facebookResult?.success) {
+        toast.success('Também publicado na página do Facebook!');
+      } else if (facebookResult && !facebookResult.skipped) {
+        toast.warning('Instagram OK, mas o Facebook falhou.');
       }
 
       // Publish Story if available
