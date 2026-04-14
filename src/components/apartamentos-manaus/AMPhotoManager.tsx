@@ -190,7 +190,6 @@ export function AMPhotoManager({ photos, onChange }: AMPhotoManagerProps) {
               >
                 {slideLabel(index)}
               </div>
-              </div>
 
               {/* Cover star badge */}
               {index === 0 && (
