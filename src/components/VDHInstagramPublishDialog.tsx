@@ -145,13 +145,12 @@ export const VDHInstagramPublishDialog = ({
     setIsPublishing(true);
 
     try {
+      // Publish carousel
       const { data: publishResponse, error } = await supabase.functions.invoke('publish-social-media', {
         body: validation.data,
       });
 
-      if (error) {
-        throw error;
-      }
+      if (error) throw error;
 
       const instagramResult =
         publishResponse && typeof publishResponse === 'object'
@@ -160,6 +159,30 @@ export const VDHInstagramPublishDialog = ({
 
       if (!instagramResult?.success) {
         throw new Error(getInstagramErrorMessage(instagramResult));
+      }
+
+      // Publish VDH Story 1 if available
+      if (storyImageUrl) {
+        try {
+          const { data: storyResponse, error: storyError } = await supabase.functions.invoke('publish-social-media', {
+            body: { story_image_url: storyImageUrl },
+          });
+
+          if (storyError) {
+            console.error('Story publish error:', storyError);
+            toast.warning('Carrossel publicado, mas o Story não foi postado.');
+          } else {
+            const storyResult = storyResponse?.instagram_story;
+            if (storyResult?.success) {
+              toast.success('Story do VDH também publicado!');
+            } else {
+              toast.warning('Carrossel publicado, mas o Story falhou.');
+            }
+          }
+        } catch (storyErr) {
+          console.error('Story publish error:', storyErr);
+          toast.warning('Carrossel publicado, mas o Story não foi postado.');
+        }
       }
 
       toast.success('Carrossel do VDH publicado no Instagram com sucesso!');
