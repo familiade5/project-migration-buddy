@@ -419,20 +419,36 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
       const previewDataUrls: string[] = [];
       const imageUrls: string[] = [];
 
-      for (let i = 0; i < posts.length; i++) {
-        const post = posts[i];
+      // Capture feed slides
+      for (let i = 0; i < feedPosts.length; i++) {
+        const post = feedPosts[i];
         const photo = exportPhotos[post.photoIndex] || exportPhotos[0] || null;
         const dataUrl = await captureSlide(post.component, photo, exportPhotos, {
           slideIndex: post.slideIndex,
-          totalSlides: posts.length,
+          totalSlides: feedPosts.length,
         });
 
         previewDataUrls.push(dataUrl);
-        const publicUrl = await uploadExportedImage(dataUrl, user.id, publicationId, i, format);
+        const publicUrl = await uploadExportedImage(dataUrl, user.id, publicationId, i, 'feed');
         imageUrls.push(publicUrl);
       }
 
-      return { previewDataUrls, imageUrls };
+      // Capture VDH Story 1 (first VDH slide)
+      let storyImageUrl: string | undefined;
+      let storyPreviewDataUrl: string | undefined;
+
+      if (vdhPosts.length > 0) {
+        const storyPost = vdhPosts[0];
+        const storyPhoto = exportPhotos[storyPost.photoIndex] || exportPhotos[0] || null;
+        const storyDataUrl = await captureSlide(storyPost.component, storyPhoto, exportPhotos, {
+          slideIndex: storyPost.slideIndex,
+          totalSlides: vdhPosts.length,
+        });
+        storyPreviewDataUrl = storyDataUrl;
+        storyImageUrl = await uploadExportedImage(storyDataUrl, user.id, publicationId, 0, 'vdh');
+      }
+
+      return { previewDataUrls, imageUrls, storyImageUrl, storyPreviewDataUrl };
     } catch (error) {
       console.error('Error preparing Instagram publication:', error);
       throw error instanceof Error ? error : new Error('Não foi possível preparar a publicação.');

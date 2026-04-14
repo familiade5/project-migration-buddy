@@ -7,7 +7,6 @@ const GRAPH_API = "https://graph.facebook.com/v25.0";
 
 /**
  * Polls the container status until it's FINISHED (ready to publish).
- * Instagram needs time to process uploaded media before it can be published.
  */
 const waitForContainerReady = async (
   containerId: string,
@@ -28,7 +27,6 @@ const waitForContainerReady = async (
       );
     }
 
-    // IN_PROGRESS — wait and retry
     await new Promise((r) => setTimeout(r, intervalMs));
   }
 
@@ -53,7 +51,66 @@ Deno.serve(async (req) => {
 
     const body = await req.json();
 
-    // Support both single image (image_url) and carousel (image_urls)
+    // Check if this is a story-only request
+    const storyImageUrl: string | undefined = body.story_image_url;
+
+    if (storyImageUrl) {
+      // ========== INSTAGRAM STORY ==========
+      console.log("Publishing story to Instagram...");
+
+      const containerRes = await fetch(
+        `${GRAPH_API}/${INSTAGRAM_BUSINESS_ACCOUNT_ID}/media`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            image_url: storyImageUrl,
+            media_type: "STORIES",
+            access_token: META_ACCESS_TOKEN,
+          }),
+        },
+      );
+      const containerData = await containerRes.json();
+
+      if (containerData.error) {
+        console.error("Story container error:", JSON.stringify(containerData.error));
+        return new Response(
+          JSON.stringify({ instagram_story: { success: false, error: containerData.error } }),
+          { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+        );
+      }
+
+      await waitForContainerReady(containerData.id, META_ACCESS_TOKEN);
+
+      const publishRes = await fetch(
+        `${GRAPH_API}/${INSTAGRAM_BUSINESS_ACCOUNT_ID}/media_publish`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            creation_id: containerData.id,
+            access_token: META_ACCESS_TOKEN,
+          }),
+        },
+      );
+      const publishData = await publishRes.json();
+
+      if (publishData.error) {
+        console.error("Story publish error:", JSON.stringify(publishData.error));
+        return new Response(
+          JSON.stringify({ instagram_story: { success: false, error: publishData.error } }),
+          { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+        );
+      }
+
+      console.log("Story published successfully:", publishData.id);
+      return new Response(
+        JSON.stringify({ instagram_story: { success: true, id: publishData.id } }),
+        { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+      );
+    }
+
+    // ========== CAROUSEL / SINGLE IMAGE ==========
     const imageUrls: string[] = Array.isArray(body.image_urls)
       ? body.image_urls
       : body.image_url
@@ -77,10 +134,8 @@ Deno.serve(async (req) => {
 
     const results: Record<string, unknown> = {};
 
-    // ========== INSTAGRAM ==========
     try {
       if (imageUrls.length === 1) {
-        // ── Single image post ──
         console.log("Publishing single image to Instagram...");
 
         const containerRes = await fetch(
@@ -122,10 +177,8 @@ Deno.serve(async (req) => {
           }
         }
       } else {
-        // ── Carousel post ──
         console.log(`Publishing carousel with ${imageUrls.length} images to Instagram...`);
 
-        // Step 1: Create individual item containers (no caption on children)
         const childrenIds: string[] = [];
 
         for (let i = 0; i < imageUrls.length; i++) {
@@ -154,14 +207,12 @@ Deno.serve(async (req) => {
             );
           }
 
-          // Wait for each child to finish processing
           await waitForContainerReady(childData.id, META_ACCESS_TOKEN);
           childrenIds.push(childData.id);
         }
 
         console.log("All children ready. Creating carousel container...");
 
-        // Step 2: Create carousel container
         const carouselRes = await fetch(
           `${GRAPH_API}/${INSTAGRAM_BUSINESS_ACCOUNT_ID}/media`,
           {
@@ -185,7 +236,6 @@ Deno.serve(async (req) => {
 
           console.log("Publishing carousel...");
 
-          // Step 3: Publish carousel
           const publishRes = await fetch(
             `${GRAPH_API}/${INSTAGRAM_BUSINESS_ACCOUNT_ID}/media_publish`,
             {
@@ -219,7 +269,6 @@ Deno.serve(async (req) => {
       results.instagram = { success: false, error: igMessage };
     }
 
-    // ========== FACEBOOK (desativado) ==========
     results.facebook = {
       success: false,
       skipped: true,
