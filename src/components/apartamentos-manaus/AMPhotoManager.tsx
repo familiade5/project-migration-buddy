@@ -130,11 +130,20 @@ export function AMPhotoManager({ photos, onChange }: AMPhotoManagerProps) {
             >
               <img src={photo} alt={`Foto ${index + 1}`} className="w-full h-full object-cover" />
 
+              {/* Remove button - always visible on hover, above everything */}
+              <button
+                onClick={(e) => { e.stopPropagation(); removePhoto(index); }}
+                className="absolute top-1 right-1 w-6 h-6 rounded-full bg-red-500 flex items-center justify-center hover:bg-red-600 transition-all opacity-0 group-hover:opacity-100"
+                style={{ zIndex: 30 }}
+                title="Remover foto"
+              >
+                <X className="w-3 h-3 text-white" />
+              </button>
+
               {/* Overlay on hover with controls */}
-              <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-between p-1">
+              <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-between p-1" style={{ zIndex: 10 }}>
                 {/* Top row: move left/right + grip */}
                 <div className="flex items-center justify-between w-full">
-                  {/* Move left */}
                   <button
                     onClick={(e) => { e.stopPropagation(); movePhoto(index, index - 1); }}
                     disabled={index === 0}
@@ -143,11 +152,7 @@ export function AMPhotoManager({ photos, onChange }: AMPhotoManagerProps) {
                   >
                     <ChevronLeft className="w-3.5 h-3.5 text-gray-700" />
                   </button>
-
-                  {/* Grip center */}
                   <GripVertical className="w-5 h-5 text-white/80" />
-
-                  {/* Move right */}
                   <button
                     onClick={(e) => { e.stopPropagation(); movePhoto(index, index + 1); }}
                     disabled={index === photos.length - 1}
@@ -171,16 +176,7 @@ export function AMPhotoManager({ photos, onChange }: AMPhotoManagerProps) {
                   </button>
                 )}
 
-                {/* Bottom: remove */}
-                <div className="flex justify-end w-full">
-                  <button
-                    onClick={(e) => { e.stopPropagation(); removePhoto(index); }}
-                    className="w-6 h-6 rounded-full bg-red-500 flex items-center justify-center hover:bg-red-600 transition-colors"
-                    title="Remover foto"
-                  >
-                    <X className="w-3 h-3 text-white" />
-                  </button>
-                </div>
+                <div /> {/* spacer */}
               </div>
 
               {/* Slide label badge */}
@@ -189,6 +185,7 @@ export function AMPhotoManager({ photos, onChange }: AMPhotoManagerProps) {
                 style={{
                   backgroundColor: index === 0 ? 'rgba(244,121,32,0.9)' : 'rgba(27,94,166,0.85)',
                   fontSize: 9,
+                  zIndex: 5,
                 }}
               >
                 {slideLabel(index)}
