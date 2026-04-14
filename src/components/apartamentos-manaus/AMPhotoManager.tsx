@@ -175,7 +175,7 @@ export function AMPhotoManager({ photos, onChange }: AMPhotoManagerProps) {
                 <div className="flex justify-end w-full">
                   <button
                     onClick={(e) => { e.stopPropagation(); removePhoto(index); }}
-                    className="w-6 h-6 rounded-full bg-red-500 flex items-center justify-center hover:bg-red-600 transition-colors"
+                    className="w-6 h-6 rounded-full bg-red-500 flex items-center justify-center hover:bg-red-600 transition-colors z-20"
                     title="Remover foto"
                   >
                     <X className="w-3 h-3 text-white" />
