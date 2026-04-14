@@ -80,16 +80,31 @@ Deno.serve(async (req) => {
     }
 
     // ========== 2. FACEBOOK ==========
-    // Get the Facebook Page ID and Page Access Token
-    const accountsRes = await fetch(
-      `${GRAPH_API}/me/accounts?fields=id,name,access_token&access_token=${META_ACCESS_TOKEN}`
+    // Try to detect if token is a Page Token by calling /me
+    const meRes = await fetch(
+      `${GRAPH_API}/me?fields=id,name&access_token=${META_ACCESS_TOKEN}`
     );
-    const accountsData = await accountsRes.json();
+    const meData = await meRes.json();
 
-    if (accountsData.data && accountsData.data.length > 0) {
-      const page = accountsData.data[0];
-      const pageAccessToken = page.access_token;
-      const pageId = page.id;
+    if (meData.error) {
+      results.facebook = { success: false, error: meData.error };
+    } else {
+      // Determine page ID and token to use
+      let pageId = meData.id;
+      let pageAccessToken = META_ACCESS_TOKEN;
+
+      // Check if this is a User Token by trying /me/accounts
+      const accountsRes = await fetch(
+        `${GRAPH_API}/me/accounts?fields=id,name,access_token&access_token=${META_ACCESS_TOKEN}`
+      );
+      const accountsData = await accountsRes.json();
+
+      if (accountsData.data && accountsData.data.length > 0) {
+        // User token - use the first page's token
+        const page = accountsData.data[0];
+        pageId = page.id;
+        pageAccessToken = page.access_token;
+      }
 
       // Post photo to Facebook Page
       const fbRes = await fetch(
@@ -109,13 +124,8 @@ Deno.serve(async (req) => {
       if (fbData.error) {
         results.facebook = { success: false, error: fbData.error };
       } else {
-        results.facebook = { success: true, id: fbData.id, page_name: page.name };
+        results.facebook = { success: true, id: fbData.id, page_name: meData.name };
       }
-    } else {
-      results.facebook = {
-        success: false,
-        error: "Nenhuma página do Facebook encontrada. Verifique as permissões do token.",
-      };
     }
 
     return new Response(JSON.stringify(results), {
