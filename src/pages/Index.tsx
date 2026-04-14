@@ -149,7 +149,7 @@ const Index = () => {
           </div>
 
           {/* Right Column - Preview */}
-          <div className="lg:sticky lg:top-6 self-start space-y-4 min-w-0 lg:max-h-[calc(100vh-3rem)] lg:overflow-y-auto lg:pr-1">
+          <div className="self-start space-y-4 min-w-0">
             <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
               <div className="px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-100" style={{ backgroundColor: '#EEF2FF' }}>
                 <div className="flex items-center justify-between gap-2">

@@ -481,30 +481,32 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
       </div>
 
       {/* Botões de exportação */}
-      <div className="flex flex-col sm:flex-row gap-2">
+      <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
         <button
           onClick={handleExportAll}
           disabled={isExporting}
-          className="flex items-center justify-center gap-2 flex-1 px-4 py-2.5 rounded-xl text-sm font-medium text-white transition-all hover:opacity-90 disabled:opacity-50"
+          className="flex w-full items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-medium text-white transition-all hover:opacity-90 disabled:opacity-50"
           style={{ backgroundColor: '#1a3a6b' }}
         >
           {isExporting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
-            Exportar {format === 'feed' ? 'Feed' : format === 'story' ? 'Stories' : 'VDH'} ({posts.length})
+          Exportar {format === 'feed' ? 'Feed' : format === 'story' ? 'Stories' : 'VDH'} ({posts.length})
         </button>
         <button
           onClick={handleExportBothFormats}
           disabled={isExporting}
-          className="flex items-center justify-center gap-2 flex-1 px-4 py-2.5 rounded-xl text-sm font-medium text-white transition-all hover:opacity-90 disabled:opacity-50"
+          className="flex w-full items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-medium text-white transition-all hover:opacity-90 disabled:opacity-50"
           style={{ backgroundColor: '#c9a84c' }}
         >
           {isExporting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
           Exportar Tudo (8)
         </button>
-        <VDHInstagramPublishDialog
-          data={data}
-          disabled={isExporting || posts.length === 0 || photos.length === 0}
-          onPrepare={prepareInstagramPublication}
-        />
+        <div className="sm:col-span-2 [&>button]:w-full">
+          <VDHInstagramPublishDialog
+            data={data}
+            disabled={isExporting || posts.length === 0 || photos.length === 0}
+            onPrepare={prepareInstagramPublication}
+          />
+        </div>
       </div>
 
       <p className="text-xs text-gray-400 text-center">
