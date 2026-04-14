@@ -80,27 +80,49 @@ Deno.serve(async (req) => {
     }
 
     // ========== 2. FACEBOOK ==========
-    // Get the Facebook Page ID and Page Access Token
-    const accountsRes = await fetch(
-      `${GRAPH_API}/me/accounts?fields=id,name,access_token&access_token=${META_ACCESS_TOKEN}`
-    );
-    const accountsData = await accountsRes.json();
+    // Use the FACEBOOK_PAGE_ID env var if available, otherwise try to discover it
+    let fbPageId = Deno.env.get("FACEBOOK_PAGE_ID");
+    let fbPageToken = META_ACCESS_TOKEN;
 
-    if (accountsData.data && accountsData.data.length > 0) {
-      const page = accountsData.data[0];
-      const pageAccessToken = page.access_token;
-      const pageId = page.id;
+    if (!fbPageId) {
+      // Try /me/accounts to get page info (works with User Tokens)
+      const accountsRes = await fetch(
+        `${GRAPH_API}/me/accounts?fields=id,name,access_token&access_token=${META_ACCESS_TOKEN}`
+      );
+      const accountsData = await accountsRes.json();
 
-      // Post photo to Facebook Page
+      if (accountsData.data && accountsData.data.length > 0) {
+        const page = accountsData.data[0];
+        fbPageId = page.id;
+        fbPageToken = page.access_token;
+      } else {
+        // Token might be a Page Token - try /me to get page ID
+        const meRes = await fetch(
+          `${GRAPH_API}/me?fields=id,name&access_token=${META_ACCESS_TOKEN}`
+        );
+        const meData = await meRes.json();
+        if (meData.id) {
+          fbPageId = meData.id;
+        }
+      }
+    }
+
+    if (!fbPageId) {
+      results.facebook = {
+        success: false,
+        error: "Não foi possível identificar a página do Facebook. Configure FACEBOOK_PAGE_ID.",
+      };
+    } else {
+      // Post photo to Facebook Page using /{page-id}/photos
       const fbRes = await fetch(
-        `${GRAPH_API}/${pageId}/photos`,
+        `${GRAPH_API}/${fbPageId}/photos`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             url: image_url,
             message: caption,
-            access_token: pageAccessToken,
+            access_token: fbPageToken,
           }),
         }
       );
@@ -109,13 +131,8 @@ Deno.serve(async (req) => {
       if (fbData.error) {
         results.facebook = { success: false, error: fbData.error };
       } else {
-        results.facebook = { success: true, id: fbData.id, page_name: page.name };
+        results.facebook = { success: true, id: fbData.id };
       }
-    } else {
-      results.facebook = {
-        success: false,
-        error: "Nenhuma página do Facebook encontrada. Verifique as permissões do token.",
-      };
     }
 
     return new Response(JSON.stringify(results), {
