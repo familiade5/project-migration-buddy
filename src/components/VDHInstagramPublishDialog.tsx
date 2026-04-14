@@ -20,6 +20,8 @@ import { buildVdhCaption } from '@/lib/vdhCaption';
 interface PreparedPublishPayload {
   imageUrls: string[];
   previewDataUrls: string[];
+  storyImageUrl?: string;
+  storyPreviewDataUrl?: string;
 }
 
 interface VDHInstagramPublishDialogProps {
@@ -67,6 +69,8 @@ export const VDHInstagramPublishDialog = ({
   const [captionError, setCaptionError] = useState<string | null>(null);
   const [imageUrls, setImageUrls] = useState<string[]>([]);
   const [previewDataUrls, setPreviewDataUrls] = useState<string[]>([]);
+  const [storyImageUrl, setStoryImageUrl] = useState<string | undefined>();
+  const [storyPreviewDataUrl, setStoryPreviewDataUrl] = useState<string | undefined>();
   const [isPreparing, setIsPreparing] = useState(false);
   const [isPublishing, setIsPublishing] = useState(false);
 
@@ -81,6 +85,8 @@ export const VDHInstagramPublishDialog = ({
     setCaption(defaultCaption);
     setImageUrls([]);
     setPreviewDataUrls([]);
+    setStoryImageUrl(undefined);
+    setStoryPreviewDataUrl(undefined);
   };
 
   const handleOpenChange = (nextOpen: boolean) => {
@@ -107,6 +113,8 @@ export const VDHInstagramPublishDialog = ({
 
       setPreviewDataUrls(prepared.previewDataUrls);
       setImageUrls(prepared.imageUrls);
+      setStoryImageUrl(prepared.storyImageUrl);
+      setStoryPreviewDataUrl(prepared.storyPreviewDataUrl);
       setCaption(defaultCaption);
       setCaptionError(null);
       setStep('images');
