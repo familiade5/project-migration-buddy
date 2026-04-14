@@ -80,40 +80,32 @@ Deno.serve(async (req) => {
     }
 
     // ========== 2. FACEBOOK ==========
-    // Use the FACEBOOK_PAGE_ID env var if available, otherwise try to discover it
-    let fbPageId = Deno.env.get("FACEBOOK_PAGE_ID");
-    let fbPageToken = META_ACCESS_TOKEN;
-
-    if (!fbPageId) {
-      // Try /me/accounts to get page info (works with User Tokens)
-      const accountsRes = await fetch(
-        `${GRAPH_API}/me/accounts?fields=id,name,access_token&access_token=${META_ACCESS_TOKEN}`
-      );
-      const accountsData = await accountsRes.json();
-
-      if (accountsData.data && accountsData.data.length > 0) {
-        const page = accountsData.data[0];
-        fbPageId = page.id;
-        fbPageToken = page.access_token;
-      } else {
-        // Token might be a Page Token - try /me to get page ID
-        const meRes = await fetch(
-          `${GRAPH_API}/me?fields=id,name&access_token=${META_ACCESS_TOKEN}`
-        );
-        const meData = await meRes.json();
-        if (meData.id) {
-          fbPageId = meData.id;
-        }
-      }
-    }
-
+    const fbPageId = Deno.env.get("FACEBOOK_PAGE_ID");
     if (!fbPageId) {
       results.facebook = {
         success: false,
-        error: "Não foi possível identificar a página do Facebook. Configure FACEBOOK_PAGE_ID.",
+        error: "FACEBOOK_PAGE_ID não configurado.",
       };
     } else {
-      // Post photo to Facebook Page using /{page-id}/photos
+      // Get dedicated Page Access Token via /me/accounts
+      let fbPageToken = META_ACCESS_TOKEN;
+      try {
+        const accountsRes = await fetch(
+          `${GRAPH_API}/me/accounts?fields=id,access_token&access_token=${META_ACCESS_TOKEN}`
+        );
+        const accountsData = await accountsRes.json();
+        console.log("Facebook /me/accounts response:", JSON.stringify(accountsData));
+        if (accountsData.data && accountsData.data.length > 0) {
+          const page = accountsData.data.find((p: { id: string }) => p.id === fbPageId) || accountsData.data[0];
+          fbPageToken = page.access_token || META_ACCESS_TOKEN;
+          console.log("Using Page Token for page:", page.id);
+        } else {
+          console.log("No pages found in /me/accounts, using User Token directly");
+        }
+      } catch (e) {
+        console.error("Error fetching page token:", e);
+      }
+
       const fbRes = await fetch(
         `${GRAPH_API}/${fbPageId}/photos`,
         {
@@ -127,6 +119,7 @@ Deno.serve(async (req) => {
         }
       );
       const fbData = await fbRes.json();
+      console.log("Facebook publish response:", JSON.stringify(fbData));
 
       if (fbData.error) {
         results.facebook = { success: false, error: fbData.error };
