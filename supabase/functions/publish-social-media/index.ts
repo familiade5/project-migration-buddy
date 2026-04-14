@@ -80,42 +80,49 @@ Deno.serve(async (req) => {
     }
 
     // ========== 2. FACEBOOK ==========
-    // Try to detect if token is a Page Token by calling /me
-    const meRes = await fetch(
-      `${GRAPH_API}/me?fields=id,name&access_token=${META_ACCESS_TOKEN}`
-    );
-    const meData = await meRes.json();
+    // Use the FACEBOOK_PAGE_ID env var if available, otherwise try to discover it
+    let fbPageId = Deno.env.get("FACEBOOK_PAGE_ID");
+    let fbPageToken = META_ACCESS_TOKEN;
 
-    if (meData.error) {
-      results.facebook = { success: false, error: meData.error };
-    } else {
-      // Determine page ID and token to use
-      let pageId = meData.id;
-      let pageAccessToken = META_ACCESS_TOKEN;
-
-      // Check if this is a User Token by trying /me/accounts
+    if (!fbPageId) {
+      // Try /me/accounts to get page info (works with User Tokens)
       const accountsRes = await fetch(
         `${GRAPH_API}/me/accounts?fields=id,name,access_token&access_token=${META_ACCESS_TOKEN}`
       );
       const accountsData = await accountsRes.json();
 
       if (accountsData.data && accountsData.data.length > 0) {
-        // User token - use the first page's token
         const page = accountsData.data[0];
-        pageId = page.id;
-        pageAccessToken = page.access_token;
+        fbPageId = page.id;
+        fbPageToken = page.access_token;
+      } else {
+        // Token might be a Page Token - try /me to get page ID
+        const meRes = await fetch(
+          `${GRAPH_API}/me?fields=id,name&access_token=${META_ACCESS_TOKEN}`
+        );
+        const meData = await meRes.json();
+        if (meData.id) {
+          fbPageId = meData.id;
+        }
       }
+    }
 
-      // Post photo to Facebook Page
+    if (!fbPageId) {
+      results.facebook = {
+        success: false,
+        error: "Não foi possível identificar a página do Facebook. Configure FACEBOOK_PAGE_ID.",
+      };
+    } else {
+      // Post photo to Facebook Page using /{page-id}/photos
       const fbRes = await fetch(
-        `${GRAPH_API}/${pageId}/photos`,
+        `${GRAPH_API}/${fbPageId}/photos`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             url: image_url,
             message: caption,
-            access_token: pageAccessToken,
+            access_token: fbPageToken,
           }),
         }
       );
@@ -124,7 +131,7 @@ Deno.serve(async (req) => {
       if (fbData.error) {
         results.facebook = { success: false, error: fbData.error };
       } else {
-        results.facebook = { success: true, id: fbData.id, page_name: meData.name };
+        results.facebook = { success: true, id: fbData.id };
       }
     }
 
