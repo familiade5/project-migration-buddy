@@ -333,6 +333,48 @@ export function AMPostPreview({ data, photos }: AMPostPreviewProps) {
     finally { setIsExporting(false); }
   };
 
+  // ── Instagram publish preparation ─────────────────────────────────────────
+  const prepareInstagramPublication = async () => {
+    if (!user) throw new Error('Você precisa estar logado para publicar.');
+    if (photos.length === 0) throw new Error('Adicione pelo menos uma foto.');
+
+    setIsExporting(true);
+    try {
+      const publicationId = `am-instagram-${crypto.randomUUID()}`;
+      const previewDataUrls: string[] = [];
+      const imageUrls: string[] = [];
+
+      // Capture all feed slides
+      for (let i = 0; i < feedSlides.length; i++) {
+        const ref = feedRefs[i];
+        const dataUrl = await captureRef(ref);
+        if (!dataUrl) continue;
+        previewDataUrls.push(dataUrl);
+        const publicUrl = await uploadExportedImage(dataUrl, user.id, publicationId, i, 'feed');
+        imageUrls.push(publicUrl);
+      }
+
+      // Capture first story slide for Story
+      let storyImageUrl: string | undefined;
+      let storyPreviewDataUrl: string | undefined;
+      if (storyRefs[0]?.current) {
+        const storyDataUrl = await captureRef(storyRefs[0]);
+        if (storyDataUrl) {
+          storyPreviewDataUrl = storyDataUrl;
+          storyImageUrl = await uploadExportedImage(storyDataUrl, user.id, publicationId, 0, 'story', true);
+        }
+      }
+
+      const caption = buildAMCaption(data);
+      return { previewDataUrls, imageUrls, storyImageUrl, storyPreviewDataUrl, caption };
+    } catch (error) {
+      console.error('Error preparing AM Instagram publication:', error);
+      throw error instanceof Error ? error : new Error('Não foi possível preparar a publicação.');
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
   return (
     <div ref={containerRef} className="space-y-3 w-full overflow-hidden">
       {/* ── Header + Format selector ── */}
