@@ -301,7 +301,7 @@ export function AppLayout({ children }: AppLayoutProps) {
         </header>
 
         {/* Page content */}
-        <main className="flex-1 overflow-x-hidden">
+        <main className="flex-1 overflow-hidden">
           {children}
         </main>
       </div>
