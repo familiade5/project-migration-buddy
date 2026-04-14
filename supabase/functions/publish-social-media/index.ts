@@ -64,12 +64,14 @@ Deno.serve(async (req) => {
       throw new Error("META_ACCESS_TOKEN não configurado");
     }
 
-    const INSTAGRAM_BUSINESS_ACCOUNT_ID = Deno.env.get("INSTAGRAM_BUSINESS_ACCOUNT_ID");
+    const body = await req.json();
+
+    // Support per-request account override; fallback to default VDH account
+    const INSTAGRAM_BUSINESS_ACCOUNT_ID = body.instagram_account_id
+      || Deno.env.get("INSTAGRAM_BUSINESS_ACCOUNT_ID");
     if (!INSTAGRAM_BUSINESS_ACCOUNT_ID) {
       throw new Error("INSTAGRAM_BUSINESS_ACCOUNT_ID não configurado");
     }
-
-    const body = await req.json();
 
     // Check if this is a story-only request
     const storyImageUrl: string | undefined = body.story_image_url;
