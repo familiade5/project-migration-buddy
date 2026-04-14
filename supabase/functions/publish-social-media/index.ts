@@ -309,11 +309,94 @@ Deno.serve(async (req) => {
       results.instagram = { success: false, error: igMessage };
     }
 
-    results.facebook = {
-      success: false,
-      skipped: true,
-      reason: "Publicação no Facebook desativada; envio somente para Instagram.",
-    };
+    // ========== FACEBOOK ==========
+    if (FACEBOOK_PAGE_ID) {
+      try {
+        console.log("Publishing to Facebook page:", FACEBOOK_PAGE_ID);
+
+        if (imageUrls.length === 1) {
+          // Single photo post
+          const fbRes = await fetch(
+            `${GRAPH_API}/${FACEBOOK_PAGE_ID}/photos`,
+            {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                url: imageUrls[0],
+                caption,
+                access_token: META_ACCESS_TOKEN,
+              }),
+            },
+          );
+          const fbData = await fbRes.json();
+          if (fbData.error) {
+            console.error("Facebook photo error:", JSON.stringify(fbData.error));
+            results.facebook = { success: false, error: fbData.error };
+          } else {
+            console.log("Facebook photo published:", fbData.id || fbData.post_id);
+            results.facebook = { success: true, id: fbData.id || fbData.post_id };
+          }
+        } else {
+          // Multi-photo: upload each as unpublished, then create post
+          const photoIds: string[] = [];
+          for (let i = 0; i < imageUrls.length; i++) {
+            const photoRes = await fetch(
+              `${GRAPH_API}/${FACEBOOK_PAGE_ID}/photos`,
+              {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  url: imageUrls[i],
+                  published: false,
+                  access_token: META_ACCESS_TOKEN,
+                }),
+              },
+            );
+            const photoData = await photoRes.json();
+            if (photoData.error) {
+              throw new Error(photoData.error.message || `Erro ao enviar foto ${i + 1} ao Facebook`);
+            }
+            photoIds.push(photoData.id);
+          }
+
+          // Create multi-photo post
+          const attachedMedia: Record<string, string> = {};
+          photoIds.forEach((id, i) => {
+            attachedMedia[`attached_media[${i}]`] = JSON.stringify({ media_fbid: id });
+          });
+
+          const params = new URLSearchParams({
+            message: caption,
+            access_token: META_ACCESS_TOKEN,
+            ...attachedMedia,
+          });
+
+          const postRes = await fetch(
+            `${GRAPH_API}/${FACEBOOK_PAGE_ID}/feed`,
+            { method: "POST", body: params },
+          );
+          const postData = await postRes.json();
+
+          if (postData.error) {
+            console.error("Facebook multi-photo error:", JSON.stringify(postData.error));
+            results.facebook = { success: false, error: postData.error };
+          } else {
+            console.log("Facebook multi-photo published:", postData.id);
+            results.facebook = { success: true, id: postData.id, type: "multi_photo", photos: imageUrls.length };
+          }
+        }
+      } catch (fbError) {
+        const fbMessage = fbError instanceof Error ? fbError.message : "Erro no Facebook";
+        console.error("Facebook error:", fbMessage);
+        results.facebook = { success: false, error: fbMessage };
+      }
+    } else {
+      results.facebook = {
+        success: false,
+        skipped: true,
+        reason: "Nenhum FACEBOOK_PAGE_ID configurado para esta conta.",
+      };
+    }
 
     return new Response(JSON.stringify(results), {
       status: 200,
