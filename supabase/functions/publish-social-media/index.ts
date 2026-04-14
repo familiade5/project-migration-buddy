@@ -73,6 +73,17 @@ Deno.serve(async (req) => {
       throw new Error("INSTAGRAM_BUSINESS_ACCOUNT_ID não configurado");
     }
 
+    // Facebook page ID: per-request secret name lookup or env fallback
+    let FACEBOOK_PAGE_ID: string | undefined;
+    if (body.facebook_page_id) {
+      // If the value looks like a secret name (no digits only), resolve from env
+      const val = body.facebook_page_id;
+      FACEBOOK_PAGE_ID = /^\d+$/.test(val) ? val : Deno.env.get(val) || undefined;
+    }
+    if (!FACEBOOK_PAGE_ID) {
+      FACEBOOK_PAGE_ID = Deno.env.get("FACEBOOK_PAGE_ID");
+    }
+
     // Check if this is a story-only request
     const storyImageUrl: string | undefined = body.story_image_url;
 
