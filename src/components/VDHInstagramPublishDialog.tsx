@@ -170,7 +170,7 @@ export const VDHInstagramPublishDialog = ({
         type="button"
         onClick={handleStartPublish}
         disabled={disabled || isPreparing || isPublishing}
-        className="flex-1 gap-2 text-white"
+        className="flex w-full gap-2 text-white"
         style={{ backgroundColor: '#C94F3D' }}
       >
         {isPreparing ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
