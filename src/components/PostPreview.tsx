@@ -62,21 +62,53 @@ const dataURLtoBlob = (dataURL: string): Blob => {
   return new Blob([u8arr], { type: mime });
 };
 
+// Convert a PNG data URL to JPEG data URL using canvas
+const convertToJpeg = (pngDataUrl: string, quality = 0.92): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      canvas.width = img.width;
+      canvas.height = img.height;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) { reject(new Error('Canvas context unavailable')); return; }
+      // White background (JPEG has no transparency)
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(img, 0, 0);
+      resolve(canvas.toDataURL('image/jpeg', quality));
+    };
+    img.onerror = () => reject(new Error('Failed to load image for JPEG conversion'));
+    img.src = pngDataUrl;
+  });
+};
+
 // Upload image to Supabase storage
 const uploadExportedImage = async (
   dataUrl: string,
   userId: string,
   creativeId: string,
   index: number,
-  format: 'feed' | 'story' | 'vdh'
+  format: 'feed' | 'story' | 'vdh',
+  asJpeg = false,
 ): Promise<string> => {
-  const blob = dataURLtoBlob(dataUrl);
-  const fileName = `${userId}/${creativeId}/${format}-${index + 1}.png`;
+  let finalDataUrl = dataUrl;
+  let contentType = 'image/png';
+  let ext = 'png';
+
+  if (asJpeg) {
+    finalDataUrl = await convertToJpeg(dataUrl);
+    contentType = 'image/jpeg';
+    ext = 'jpg';
+  }
+
+  const blob = dataURLtoBlob(finalDataUrl);
+  const fileName = `${userId}/${creativeId}/${format}-${index + 1}.${ext}`;
 
   const { error } = await supabase.storage
     .from('exported-creatives')
     .upload(fileName, blob, {
-      contentType: 'image/png',
+      contentType,
       upsert: true,
     });
 
@@ -445,7 +477,7 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
           totalSlides: vdhPosts.length,
         });
         storyPreviewDataUrl = storyDataUrl;
-        storyImageUrl = await uploadExportedImage(storyDataUrl, user.id, publicationId, 0, 'vdh');
+        storyImageUrl = await uploadExportedImage(storyDataUrl, user.id, publicationId, 0, 'vdh', true);
       }
 
       return { previewDataUrls, imageUrls, storyImageUrl, storyPreviewDataUrl };

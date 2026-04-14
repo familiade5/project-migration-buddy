@@ -33,6 +33,26 @@ const waitForContainerReady = async (
   throw new Error(`Container ${containerId} não ficou pronto a tempo.`);
 };
 
+/**
+ * Verify an image URL is accessible before sending to Instagram.
+ */
+const verifyImageAccessible = async (
+  imageUrl: string,
+  maxAttempts = 5,
+  intervalMs = 2000,
+): Promise<void> => {
+  for (let i = 0; i < maxAttempts; i++) {
+    try {
+      const res = await fetch(imageUrl, { method: "HEAD" });
+      if (res.ok) return;
+    } catch {
+      // ignore fetch errors, retry
+    }
+    await new Promise((r) => setTimeout(r, intervalMs));
+  }
+  throw new Error(`Imagem não acessível após ${maxAttempts} tentativas: ${imageUrl}`);
+};
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response("ok", { headers: corsHeaders });
@@ -57,6 +77,13 @@ Deno.serve(async (req) => {
     if (storyImageUrl) {
       // ========== INSTAGRAM STORY ==========
       console.log("Publishing story to Instagram...");
+
+      // Wait for image to be accessible
+      await verifyImageAccessible(storyImageUrl);
+      console.log("Story image verified accessible.");
+
+      // Small delay to ensure CDN propagation
+      await new Promise((r) => setTimeout(r, 3000));
 
       const containerRes = await fetch(
         `${GRAPH_API}/${INSTAGRAM_BUSINESS_ACCOUNT_ID}/media`,
