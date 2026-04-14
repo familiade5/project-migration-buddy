@@ -5,6 +5,17 @@ const corsHeaders = {
 
 const GRAPH_API = "https://graph.facebook.com/v25.0";
 
+const postGraphForm = async (path: string, params: Record<string, string>) => {
+  const body = new URLSearchParams(params);
+  const response = await fetch(`${GRAPH_API}/${path}`, {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body,
+  });
+
+  return response.json();
+};
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response("ok", { headers: corsHeaders });

@@ -24,6 +24,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { useActivityLog } from '@/hooks/useActivityLog';
 import { createCrmPropertyFromCreative, copyImageToCrmStorage } from '@/services/crmIntegration';
+import { VDHInstagramPublishDialog } from './VDHInstagramPublishDialog';
 import type { Json } from '@/integrations/supabase/types';
 
 // ── iOS CORS fix: convert external URLs to base64 data URLs ──────────────────
@@ -401,6 +402,46 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
     }
   };
 
+  const prepareInstagramPublication = async () => {
+    if (!user) {
+      throw new Error('Você precisa estar logado para publicar no Instagram.');
+    }
+
+    if (photos.length === 0) {
+      throw new Error('Adicione pelo menos uma foto antes de publicar.');
+    }
+
+    setIsExporting(true);
+
+    try {
+      const exportPhotos = await getPhotosForExport(photos);
+      const publicationId = `instagram-${crypto.randomUUID()}`;
+      const previewDataUrls: string[] = [];
+      const imageUrls: string[] = [];
+
+      for (let i = 0; i < posts.length; i++) {
+        const post = posts[i];
+        const photo = exportPhotos[post.photoIndex] || exportPhotos[0] || null;
+        const dataUrl = await captureSlide(post.component, photo, exportPhotos, {
+          slideIndex: post.slideIndex,
+          totalSlides: posts.length,
+        });
+
+        previewDataUrls.push(dataUrl);
+        const publicUrl = await uploadExportedImage(dataUrl, user.id, publicationId, i, format);
+        imageUrls.push(publicUrl);
+      }
+
+      return { previewDataUrls, imageUrls };
+    } catch (error) {
+      console.error('Error preparing Instagram publication:', error);
+      throw error instanceof Error ? error : new Error('Não foi possível preparar a publicação.');
+    } finally {
+      setIsExporting(false);
+      setExportSlideEl(null);
+    }
+  };
+
   const CurrentPostComponent = posts[currentPost].component;
   const currentPhoto = photos[posts[currentPost].photoIndex] || photos[0] || null;
 
@@ -459,6 +500,11 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
           {isExporting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
           Exportar Tudo (8)
         </button>
+        <VDHInstagramPublishDialog
+          data={data}
+          disabled={isExporting || posts.length === 0 || photos.length === 0}
+          onPrepare={prepareInstagramPublication}
+        />
       </div>
 
       <p className="text-xs text-gray-400 text-center">
