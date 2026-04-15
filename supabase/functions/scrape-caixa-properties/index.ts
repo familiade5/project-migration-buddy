@@ -187,7 +187,11 @@ Deno.serve(async (req) => {
     for (const item of allItems) {
       const stateUF = resolveState(item.estado || "");
 
-      // No state filter - import all states, let UI filter
+      // Filter: only states where we have CRECI
+      if (!TARGET_STATES.has(stateUF)) {
+        totalFiltered++;
+        continue;
+      }
 
       // Filter: only Venda Direta and Venda Online (no Leilão)
       const modality = item.modalidade || "";
