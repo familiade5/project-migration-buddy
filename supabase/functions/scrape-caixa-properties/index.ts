@@ -47,6 +47,11 @@ type SmartSearchResponse = {
   records: SmartProperty[];
 };
 
+type ScrapeRequestBody = {
+  state?: string;
+  states?: string[];
+};
+
 function formatCurrency(value: number): string {
   return value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 }
@@ -69,6 +74,32 @@ function resolveState(raw: string): string {
     if (name.toLowerCase() === lower) return uf;
   }
   return clean.slice(0, 2);
+}
+
+async function parseRequestedStates(req: Request): Promise<string[]> {
+  const contentType = req.headers.get("content-type") || "";
+  if (!contentType.includes("application/json")) return [];
+
+  let body: ScrapeRequestBody | null = null;
+
+  try {
+    body = await req.json();
+  } catch {
+    return [];
+  }
+
+  if (!body || typeof body !== "object") return [];
+
+  const requested = [
+    ...(typeof body.state === "string" ? [body.state] : []),
+    ...(Array.isArray(body.states) ? body.states.filter((value): value is string => typeof value === "string") : []),
+  ];
+
+  return [...new Set(
+    requested
+      .map((value) => resolveState(value))
+      .filter((value) => Boolean(value) && Boolean(STATE_FULL_NAMES[value]))
+  )];
 }
 
 function buildExternalId(item: SmartProperty): string {
@@ -228,9 +259,18 @@ Deno.serve(async (req) => {
     const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     const supabase = createClient(supabaseUrl, serviceRoleKey);
 
-    const targetStates = await fetchActiveCreciStates(supabase);
-    if (targetStates.length === 0) {
+    const activeStates = await fetchActiveCreciStates(supabase);
+    if (activeStates.length === 0) {
       throw new Error("Nenhum estado com CRECI ativo foi encontrado para importar imóveis");
+    }
+
+    const requestedStates = await parseRequestedStates(req);
+    const targetStates = requestedStates.length > 0
+      ? requestedStates.filter((state) => activeStates.includes(state))
+      : activeStates;
+
+    if (requestedStates.length > 0 && targetStates.length === 0) {
+      throw new Error("O estado solicitado não está ativo para importação");
     }
 
     const results = await Promise.allSettled(
