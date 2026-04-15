@@ -159,15 +159,15 @@ export const AMStory4_T4_Slide1 = ({
             <div style={{
               display: 'inline-block', alignSelf: 'flex-start',
               color: 'white', fontWeight: 700, fontSize: 5.5, letterSpacing: '0.08em',
-              backgroundColor: 'rgba(255,255,255,0.2)', border: '1px solid rgba(255,255,255,0.4)',
+              backgroundColor: 'transparent', border: '1px solid rgba(255,255,255,0.4)',
               borderRadius: 20, padding: '0.5px 5px', marginBottom: 2,
             }}>
               {data.isRental ? 'LOCAÇÃO' : 'VENDA'}
             </div>
             {/* Preço */}
             <div style={{ display: 'flex', alignItems: 'baseline', gap: 1, color: 'white' }}>
-              <span style={{ fontSize: 12, opacity: 0.75, marginRight: 1 }}>R$</span>
-              <span style={{ fontSize: 24, fontWeight: 700, lineHeight: 1 }}>
+              <span style={{ fontSize: 14, opacity: 0.75, marginRight: 1 }}>R$</span>
+              <span style={{ fontSize: 28, fontWeight: 700, lineHeight: 1 }}>
                 {priceParts.main || 'Consulte'}
               </span>
               {priceParts.cents && <span style={{ fontSize: 10, opacity: 0.75 }}>{priceParts.cents}</span>}
@@ -190,7 +190,7 @@ export const AMStory4_T4_Slide1 = ({
 
       {/* ── Logo rodapé ── */}
       <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: 10 }}>
-        <Logo size={120} />
+        <Logo size={150} />
       </div>
     </div>
   );
