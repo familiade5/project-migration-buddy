@@ -374,9 +374,9 @@ export const AM2PhotoSlide = ({ photos, slideIndex, data, objectPositions }: { p
 
   return (
     <div style={{ position: 'relative', width: 360, height: 360, backgroundColor: '#e5e5e5', fontFamily: poppins, overflow: 'hidden' }}>
-      {p1 && <img src={p1} alt="" style={{ position: 'absolute', left: 0, top: 0, width: 360, height: 180, objectFit: 'cover' }} />}
-      {p2 && <img src={p2} alt="" style={{ position: 'absolute', left: 0, top: 180, width: 360, height: 180, objectFit: 'cover' }} />}
-      {!p2 && p1 && <img src={p1} alt="" style={{ position: 'absolute', left: 0, top: 180, width: 360, height: 180, objectFit: 'cover', transform: 'scaleX(-1)' }} />}
+      {p1 && <img src={p1} alt="" style={{ position: 'absolute', left: 0, top: 0, width: 360, height: 180, objectFit: 'cover', objectPosition: objectPositions?.[0] || '50% 50%' }} />}
+      {p2 && <img src={p2} alt="" style={{ position: 'absolute', left: 0, top: 180, width: 360, height: 180, objectFit: 'cover', objectPosition: objectPositions?.[1] || '50% 50%' }} />}
+      {!p2 && p1 && <img src={p1} alt="" style={{ position: 'absolute', left: 0, top: 180, width: 360, height: 180, objectFit: 'cover', objectPosition: objectPositions?.[0] || '50% 50%', transform: 'scaleX(-1)' }} />}
 
       <AccentLine top={175} />
 

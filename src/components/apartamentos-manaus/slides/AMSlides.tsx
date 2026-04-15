@@ -305,9 +305,11 @@ export const AMCoverSlide = ({
 export const AMSpecsSlide = ({
   data,
   photo,
+  objectPosition,
 }: {
   data: AMPropertyData;
   photo?: string;
+  objectPosition?: string;
 }) => {
   const uid = useId();
   const clipId = `am-specs-${uid}`;
@@ -374,7 +376,7 @@ export const AMSpecsSlide = ({
           <img
             src={photo}
             alt=""
-            style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+            style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: objectPosition || '50% 50%', display: 'block' }}
           />
         ) : (
           <div style={{ width: '100%', height: '100%', backgroundColor: '#d1d5db' }} />
@@ -426,9 +428,11 @@ export const AMSpecsSlide = ({
 export const AMLocationSlide = ({
   data,
   photo,
+  objectPosition,
 }: {
   data: AMPropertyData;
   photo?: string;
+  objectPosition?: string;
 }) => {
   const uid = useId();
   const clipId = `am-location-${uid}`;
@@ -492,6 +496,7 @@ export const AMLocationSlide = ({
             width: 360,
             height: 360,
             objectFit: 'cover',
+            objectPosition: objectPosition || '50% 50%',
             display: 'block',
             clipPath: `url(#${clipId})`,
             zIndex: 10,
