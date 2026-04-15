@@ -174,7 +174,7 @@ export const AMStory4_T4_Slide1 = ({
             </div>
             {/* Separador + linha de pagamento */}
             <div style={{ borderTop: '1px solid rgba(255,255,255,0.2)', marginTop: 4, paddingTop: 3 }}>
-              <p style={{ color: 'white', fontSize: 8, opacity: 0.9, margin: 0, lineHeight: 1.3, textAlign: 'right' }}>
+              <p style={{ color: 'white', fontSize: 8, opacity: 0.9, margin: 0, lineHeight: 1.3, paddingLeft: 18 }}>
                 {data.isRental
                   ? '| Locação'
                   : [
