@@ -6,18 +6,21 @@
  * - The order here drives the slide order in AMPostPreview
  */
 import { useRef, useState } from 'react';
-import { GripVertical, X, Upload, ChevronLeft, ChevronRight, Star, Move, ArrowUp, ArrowDown, ArrowLeft, ArrowRight } from 'lucide-react';
+import { GripVertical, X, Upload, ChevronLeft, ChevronRight, Star, Move, ArrowUp, ArrowDown, ArrowLeft, ArrowRight, ZoomIn, ZoomOut } from 'lucide-react';
+import { Slider } from '@/components/ui/slider';
 
 interface AMPhotoManagerProps {
   photos: string[];
   onChange: (photos: string[]) => void;
   photoPositions?: Record<number, { x: number; y: number }>;
   onPositionsChange?: (positions: Record<number, { x: number; y: number }>) => void;
+  photoScales?: Record<number, number>;
+  onScalesChange?: (scales: Record<number, number>) => void;
 }
 
 const STEP = 10; // % per click
 
-export function AMPhotoManager({ photos, onChange, photoPositions = {}, onPositionsChange }: AMPhotoManagerProps) {
+export function AMPhotoManager({ photos, onChange, photoPositions = {}, onPositionsChange, photoScales = {}, onScalesChange }: AMPhotoManagerProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const dragItem = useRef<number | null>(null);
   const dragOver = useRef<number | null>(null);
@@ -58,6 +61,16 @@ export function AMPhotoManager({ photos, onChange, photoPositions = {}, onPositi
       });
       onPositionsChange(newPos);
     }
+    // Reindex scales
+    if (onScalesChange) {
+      const newScales: Record<number, number> = {};
+      Object.entries(photoScales).forEach(([k, v]) => {
+        const ki = parseInt(k);
+        if (ki < index) newScales[ki] = v;
+        else if (ki > index) newScales[ki - 1] = v;
+      });
+      onScalesChange(newScales);
+    }
     if (adjustingIndex === index) setAdjustingIndex(null);
     else if (adjustingIndex !== null && adjustingIndex > index) setAdjustingIndex(adjustingIndex - 1);
   };
@@ -76,6 +89,15 @@ export function AMPhotoManager({ photos, onChange, photoPositions = {}, onPositi
       if (fromPos) newPos[to] = fromPos; else delete newPos[to];
       if (toPos) newPos[from] = toPos; else delete newPos[from];
       onPositionsChange(newPos);
+    }
+    // Swap scales
+    if (onScalesChange) {
+      const newScales = { ...photoScales };
+      const fromScale = newScales[from];
+      const toScale = newScales[to];
+      if (fromScale) newScales[to] = fromScale; else delete newScales[to];
+      if (toScale) newScales[from] = toScale; else delete newScales[from];
+      onScalesChange(newScales);
     }
     if (adjustingIndex === from) setAdjustingIndex(to);
     else if (adjustingIndex === to) setAdjustingIndex(from);
@@ -97,6 +119,17 @@ export function AMPhotoManager({ photos, onChange, photoPositions = {}, onPositi
         else newPos[ki] = v;
       });
       onPositionsChange(newPos);
+    }
+    // Reindex scales
+    if (onScalesChange) {
+      const newScales: Record<number, number> = {};
+      Object.entries(photoScales).forEach(([k, v]) => {
+        const ki = parseInt(k);
+        if (ki === index) newScales[0] = v;
+        else if (ki < index) newScales[ki + 1] = v;
+        else newScales[ki] = v;
+      });
+      onScalesChange(newScales);
     }
     setAdjustingIndex(null);
   };
@@ -131,10 +164,16 @@ export function AMPhotoManager({ photos, onChange, photoPositions = {}, onPositi
   };
 
   const resetPosition = (index: number) => {
-    if (!onPositionsChange) return;
-    const newPos = { ...photoPositions };
-    delete newPos[index];
-    onPositionsChange(newPos);
+    if (onPositionsChange) {
+      const newPos = { ...photoPositions };
+      delete newPos[index];
+      onPositionsChange(newPos);
+    }
+    if (onScalesChange) {
+      const newScales = { ...photoScales };
+      delete newScales[index];
+      onScalesChange(newScales);
+    }
   };
 
   const slideLabel = (index: number) => {
@@ -199,6 +238,7 @@ export function AMPhotoManager({ photos, onChange, photoPositions = {}, onPositi
                   objectPosition: photoPositions[index]
                     ? `${photoPositions[index].x}% ${photoPositions[index].y}%`
                     : '50% 50%',
+                  transform: `scale(${photoScales[index] || 1})`,
                 }}
               />
 
@@ -306,8 +346,24 @@ export function AMPhotoManager({ photos, onChange, photoPositions = {}, onPositi
                   >
                     <ArrowDown className="w-4 h-4 text-gray-800" />
                   </button>
+                  {/* Zoom slider */}
+                  <div className="flex items-center gap-1 mt-1 px-2 w-full" onClick={(e) => e.stopPropagation()}>
+                    <ZoomOut className="w-3 h-3 text-white/70 flex-shrink-0" />
+                    <Slider
+                      min={100}
+                      max={200}
+                      step={5}
+                      value={[Math.round((photoScales[index] || 1) * 100)]}
+                      onValueChange={(val) => {
+                        if (!onScalesChange) return;
+                        onScalesChange({ ...photoScales, [index]: val[0] / 100 });
+                      }}
+                      className="flex-1"
+                    />
+                    <ZoomIn className="w-3 h-3 text-white/70 flex-shrink-0" />
+                  </div>
                   <p className="text-white text-[8px] mt-0.5 opacity-80">
-                    {photoPositions[index] ? `${photoPositions[index].x}% × ${photoPositions[index].y}%` : '50% × 50%'}
+                    {photoPositions[index] ? `${photoPositions[index].x}% × ${photoPositions[index].y}%` : '50% × 50%'} · {Math.round((photoScales[index] || 1) * 100)}%
                   </p>
                 </div>
               )}

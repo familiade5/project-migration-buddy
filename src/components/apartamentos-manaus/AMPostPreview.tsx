@@ -126,6 +126,7 @@ interface AMPostPreviewProps {
   data: AMPropertyData;
   photos: string[];
   photoPositions?: Record<number, { x: number; y: number }>;
+  photoScales?: Record<number, number>;
 }
 
 type FormatType = 'feed' | 'story';
@@ -138,7 +139,7 @@ const STORY_H = 640;
 // Max slides we'll ever support (drives fixed ref pool)
 const MAX_SLIDES = 20;
 
-export function AMPostPreview({ data, photos, photoPositions = {} }: AMPostPreviewProps) {
+export function AMPostPreview({ data, photos, photoPositions = {}, photoScales = {} }: AMPostPreviewProps) {
   const { user } = useAuth();
   const [currentSlide, setCurrentSlide] = useState(0);
   const [format, setFormat] = useState<FormatType>('feed');
@@ -177,23 +178,25 @@ export function AMPostPreview({ data, photos, photoPositions = {} }: AMPostPrevi
     return p ? `${p.x}% ${p.y}%` : undefined;
   };
 
+  const getScale = (index: number) => photoScales[index] || undefined;
+
   // ── Build FEED slide list ─────────────────────────────────────────────────
   const buildFeedSlides = () => {
     const p = photos;
     const slides = [];
 
-    slides.push({ id: 'cover',    name: 'Capa',     el: <AMCoverSlide data={data} photo={p[0]} objectPosition={getPos(0)} /> });
-    slides.push({ id: 'specs',    name: 'Especif.',  el: <AMSpecsSlide data={data} photo={p[1] ?? p[0]} objectPosition={getPos(p[1] ? 1 : 0)} /> });
-    slides.push({ id: 'location', name: 'Local',     el: <AMLocationSlide data={data} photo={p[2] ?? p[1] ?? p[0]} objectPosition={getPos(p[2] ? 2 : p[1] ? 1 : 0)} /> });
+    slides.push({ id: 'cover',    name: 'Capa',     el: <AMCoverSlide data={data} photo={p[0]} objectPosition={getPos(0)} scale={getScale(0)} /> });
+    slides.push({ id: 'specs',    name: 'Especif.',  el: <AMSpecsSlide data={data} photo={p[1] ?? p[0]} objectPosition={getPos(p[1] ? 1 : 0)} scale={getScale(p[1] ? 1 : 0)} /> });
+    slides.push({ id: 'location', name: 'Local',     el: <AMLocationSlide data={data} photo={p[2] ?? p[1] ?? p[0]} objectPosition={getPos(p[2] ? 2 : p[1] ? 1 : 0)} scale={getScale(p[2] ? 2 : p[1] ? 1 : 0)} /> });
 
     const photoSliceEnd = Math.max(3, p.length - 1);
     for (let i = 3; i < photoSliceEnd; i++) {
-      slides.push({ id: `photo-${i}`, name: `Foto ${i - 1}`, el: <AMPhotoSlide data={data} photo={p[i]} photoIndex={i} objectPosition={getPos(i)} /> });
+      slides.push({ id: `photo-${i}`, name: `Foto ${i - 1}`, el: <AMPhotoSlide data={data} photo={p[i]} photoIndex={i} objectPosition={getPos(i)} scale={getScale(i)} /> });
     }
 
     const lastIdx = p.length - 1;
     const lastPhoto = p[lastIdx] ?? p[0];
-    slides.push({ id: 'info', name: 'Info', el: <AMInfoSlide data={data} photo={lastPhoto} objectPosition={getPos(lastIdx >= 0 ? lastIdx : 0)} /> });
+    slides.push({ id: 'info', name: 'Info', el: <AMInfoSlide data={data} photo={lastPhoto} objectPosition={getPos(lastIdx >= 0 ? lastIdx : 0)} scale={getScale(lastIdx >= 0 ? lastIdx : 0)} /> });
 
     return slides;
   };
@@ -203,7 +206,7 @@ export function AMPostPreview({ data, photos, photoPositions = {} }: AMPostPrevi
     const p = photos;
     const slides: { id: string; name: string; el: React.ReactNode }[] = [];
 
-    slides.push({ id: 'd2-cover', name: 'Capa', el: <AM2CoverSlide data={data} photos={p} objectPosition={getPos(0)} /> });
+    slides.push({ id: 'd2-cover', name: 'Capa', el: <AM2CoverSlide data={data} photos={p} objectPosition={getPos(0)} scale={getScale(0)} /> });
 
     const remaining = p.slice(1);
     for (let i = 0; i < remaining.length; i += 2) {
@@ -214,7 +217,7 @@ export function AMPostPreview({ data, photos, photoPositions = {} }: AMPostPrevi
       slides.push({
         id: `d2-photo-${slideNum}`,
         name: `Fotos ${slideNum - 1}`,
-        el: <AM2PhotoSlide photos={pair} slideIndex={Math.floor(i / 2)} data={data} objectPositions={[getPos(idx1) || '50% 50%', getPos(idx2) || '50% 50%']} />,
+        el: <AM2PhotoSlide photos={pair} slideIndex={Math.floor(i / 2)} data={data} objectPositions={[getPos(idx1) || '50% 50%', getPos(idx2) || '50% 50%']} scales={[getScale(idx1), getScale(idx2)]} />,
       });
     }
 

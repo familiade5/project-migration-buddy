@@ -54,10 +54,12 @@ export const AMCoverSlide = ({
   data,
   photo,
   objectPosition,
+  scale,
 }: {
   data: AMPropertyData;
   photo?: string;
   objectPosition?: string;
+  scale?: number;
 }) => {
   const uid = useId();
   const clipId = `am-cover-${uid}`;
@@ -189,6 +191,7 @@ export const AMCoverSlide = ({
             display: 'block',
             clipPath: `url(#${clipId})`,
             zIndex: 10,
+            transform: scale ? `scale(${scale})` : undefined,
           }}
         />
       ) : (
@@ -306,10 +309,12 @@ export const AMSpecsSlide = ({
   data,
   photo,
   objectPosition,
+  scale,
 }: {
   data: AMPropertyData;
   photo?: string;
   objectPosition?: string;
+  scale?: number;
 }) => {
   const uid = useId();
   const clipId = `am-specs-${uid}`;
@@ -376,7 +381,7 @@ export const AMSpecsSlide = ({
           <img
             src={photo}
             alt=""
-            style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: objectPosition || '50% 50%', display: 'block' }}
+            style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: objectPosition || '50% 50%', display: 'block', transform: scale ? `scale(${scale})` : undefined }}
           />
         ) : (
           <div style={{ width: '100%', height: '100%', backgroundColor: '#d1d5db' }} />
@@ -429,10 +434,12 @@ export const AMLocationSlide = ({
   data,
   photo,
   objectPosition,
+  scale,
 }: {
   data: AMPropertyData;
   photo?: string;
   objectPosition?: string;
+  scale?: number;
 }) => {
   const uid = useId();
   const clipId = `am-location-${uid}`;
@@ -500,6 +507,7 @@ export const AMLocationSlide = ({
             display: 'block',
             clipPath: `url(#${clipId})`,
             zIndex: 10,
+            transform: scale ? `scale(${scale})` : undefined,
           }}
         />
       ) : (
@@ -630,11 +638,13 @@ export const AMPhotoSlide = ({
   photo,
   photoIndex,
   objectPosition,
+  scale,
 }: {
   data: AMPropertyData;
   photo: string;
   photoIndex: number;
   objectPosition?: string;
+  scale?: number;
 }) => {
   const uid = useId();
   const clipId = `am-photo-${uid}`;
@@ -681,7 +691,7 @@ export const AMPhotoSlide = ({
           zIndex: 10,
         }}
       >
-        <img src={photo} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: objectPosition || '50% 50%', display: 'block' }} />
+        <img src={photo} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: objectPosition || '50% 50%', display: 'block', transform: scale ? `scale(${scale})` : undefined }} />
       </div>
 
       {/* Card da logo — encaixado no notch superior-esquerdo (zIndex abaixo da foto) */}
@@ -714,10 +724,12 @@ export const AMInfoSlide = ({
   data,
   photo,
   objectPosition,
+  scale,
 }: {
   data: AMPropertyData;
   photo?: string;
   objectPosition?: string;
+  scale?: number;
 }) => {
   const uid = useId();
   const clipId = `am-info-${uid}`;
@@ -790,6 +802,7 @@ export const AMInfoSlide = ({
             display: 'block',
             filter: 'brightness(0.5) blur(2px)',
             zIndex: 0,
+            transform: scale ? `scale(${scale})` : undefined,
           }}
         />
       )}
@@ -838,6 +851,7 @@ export const AMInfoSlide = ({
               objectPosition: objectPosition || '50% 50%',
               display: 'block',
               clipPath: `url(#${clipId})`,
+              transform: scale ? `scale(${scale})` : undefined,
             }}
           />
         ) : (

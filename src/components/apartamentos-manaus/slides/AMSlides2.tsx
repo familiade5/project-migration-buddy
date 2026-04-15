@@ -123,7 +123,7 @@ const formatPrice = (v: number) => {
 // ═══════════════════════════════════════════════════════════════════════════════
 // SLIDE 1: CAPA
 // ═══════════════════════════════════════════════════════════════════════════════
-export const AM2CoverSlide = ({ data, photos, objectPosition }: { data: AMPropertyData; photos: string[]; objectPosition?: string }) => {
+export const AM2CoverSlide = ({ data, photos, objectPosition, scale }: { data: AMPropertyData; photos: string[]; objectPosition?: string; scale?: number }) => {
   const logoBase64 = useLogoBase64(logoAM);
   const photo = photos[0];
   const price = data.isRental ? data.rentalPrice : data.salePrice;
@@ -156,7 +156,7 @@ export const AM2CoverSlide = ({ data, photos, objectPosition }: { data: AMProper
   return (
     <div style={{ position: 'relative', width: 360, height: 360, backgroundColor: '#ffffff', fontFamily: poppins, overflow: 'hidden' }}>
       {photo ? (
-        <img src={photo} alt="" style={{ position: 'absolute', top: 0, left: 0, width: 360, height: photoH, objectFit: 'cover', objectPosition: objectPosition || '50% 50%' }} />
+        <img src={photo} alt="" style={{ position: 'absolute', top: 0, left: 0, width: 360, height: photoH, objectFit: 'cover', objectPosition: objectPosition || '50% 50%', transform: scale ? `scale(${scale})` : undefined }} />
       ) : (
         <div style={{ position: 'absolute', top: 0, left: 0, width: 360, height: photoH, background: 'linear-gradient(180deg, #d8dadf 0%, #cfd2d8 100%)' }} />
       )}
@@ -366,7 +366,7 @@ const getSlideContent = (data: AMPropertyData, slideIndex: number): { headline: 
 // ═══════════════════════════════════════════════════════════════════════════════
 // SLIDE DE FOTOS — 2 fotos + caixa cinza central com gatilhos emocionais
 // ═══════════════════════════════════════════════════════════════════════════════
-export const AM2PhotoSlide = ({ photos, slideIndex, data, objectPositions }: { photos: [string, string?]; slideIndex: number; data: AMPropertyData; objectPositions?: string[] }) => {
+export const AM2PhotoSlide = ({ photos, slideIndex, data, objectPositions, scales }: { photos: [string, string?]; slideIndex: number; data: AMPropertyData; objectPositions?: string[]; scales?: (number | undefined)[] }) => {
   const p1 = photos[0];
   const p2 = photos[1];
   const GOLD_CSS = 'linear-gradient(135deg, #E8A020, #F2B84B, #D4912A, #C07B18)';
@@ -374,9 +374,9 @@ export const AM2PhotoSlide = ({ photos, slideIndex, data, objectPositions }: { p
 
   return (
     <div style={{ position: 'relative', width: 360, height: 360, backgroundColor: '#e5e5e5', fontFamily: poppins, overflow: 'hidden' }}>
-      {p1 && <img src={p1} alt="" style={{ position: 'absolute', left: 0, top: 0, width: 360, height: 180, objectFit: 'cover', objectPosition: objectPositions?.[0] || '50% 50%' }} />}
-      {p2 && <img src={p2} alt="" style={{ position: 'absolute', left: 0, top: 180, width: 360, height: 180, objectFit: 'cover', objectPosition: objectPositions?.[1] || '50% 50%' }} />}
-      {!p2 && p1 && <img src={p1} alt="" style={{ position: 'absolute', left: 0, top: 180, width: 360, height: 180, objectFit: 'cover', objectPosition: objectPositions?.[0] || '50% 50%', transform: 'scaleX(-1)' }} />}
+      {p1 && <img src={p1} alt="" style={{ position: 'absolute', left: 0, top: 0, width: 360, height: 180, objectFit: 'cover', objectPosition: objectPositions?.[0] || '50% 50%', transform: scales?.[0] ? `scale(${scales[0]})` : undefined }} />}
+      {p2 && <img src={p2} alt="" style={{ position: 'absolute', left: 0, top: 180, width: 360, height: 180, objectFit: 'cover', objectPosition: objectPositions?.[1] || '50% 50%', transform: scales?.[1] ? `scale(${scales[1]})` : undefined }} />}
+      {!p2 && p1 && <img src={p1} alt="" style={{ position: 'absolute', left: 0, top: 180, width: 360, height: 180, objectFit: 'cover', objectPosition: objectPositions?.[0] || '50% 50%', transform: `scaleX(-1)${scales?.[0] ? ` scale(${scales[0]})` : ''}` }} />}
 
       <AccentLine top={175} />
 
