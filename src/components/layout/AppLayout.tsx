@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
-import { 
+import {
   Building2, 
   Calendar, 
   Settings, 
@@ -13,6 +13,7 @@ import {
   Calculator,
   BookOpen,
   ClipboardList,
+  Zap,
 } from 'lucide-react';
 import {
   DropdownMenu,
@@ -41,6 +42,7 @@ const navigation = [
 ];
 
 const adminNavigation = [
+  { name: 'Aprovação Posts', href: '/aprovacao-posts', icon: Zap },
   { name: 'Imobiliária', href: '/imobiliaria', icon: Building2 },
   { name: 'Admin', href: '/admin', icon: Shield },
 ];

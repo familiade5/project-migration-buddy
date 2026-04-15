@@ -95,6 +95,10 @@ const App = () => (
             <Route path="/trafego-pago" element={
               <ProtectedRoute><TrafegoPago /></ProtectedRoute>
             } />
+            {/* Auto Post Approval */}
+            <Route path="/aprovacao-posts" element={
+              <ProtectedRoute requireAdmin><AutoPostApproval /></ProtectedRoute>
+            } />
             
             <Route path="*" element={<NotFound />} />
           </Routes>
