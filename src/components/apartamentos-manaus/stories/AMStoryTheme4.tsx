@@ -155,14 +155,14 @@ export const AMStory4_T4_Slide1 = ({
             flex: 1, height: 100, background: data.isRental ? 'linear-gradient(180deg, #FF8D28 52.88%, #DF7110 100%)' : 'linear-gradient(180deg, #1476D4 36.06%, #044A8E 100%)', borderRadius: 10,
             display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '8px 12px',
           }}>
-            {/* Pill VENDA/LOCAÇÃO */}
+            {/* Pill VENDA/ALUGUEL */}
             <div style={{
               display: 'inline-block', alignSelf: 'flex-start',
-              color: 'white', fontWeight: 700, fontSize: 5.5, letterSpacing: '0.08em',
+              color: 'white', fontWeight: 700, fontSize: 5, letterSpacing: '0.08em',
               backgroundColor: 'transparent', border: '1px solid rgba(255,255,255,0.4)',
-              borderRadius: 20, padding: '0.5px 5px', marginBottom: 2,
+              borderRadius: 20, padding: '0px 4px', marginBottom: 2,
             }}>
-              {data.isRental ? 'LOCAÇÃO' : 'VENDA'}
+              {data.isRental ? 'ALUGUEL' : 'VENDA'}
             </div>
             {/* Preço */}
             <div style={{ display: 'flex', alignItems: 'baseline', gap: 1, color: 'white' }}>
@@ -172,11 +172,11 @@ export const AMStory4_T4_Slide1 = ({
               </span>
               {priceParts.cents && <span style={{ fontSize: 10, opacity: 0.75 }}>{priceParts.cents}</span>}
             </div>
-            {/* Separador + linha de pagamento — igual ao feed */}
+            {/* Separador + linha de pagamento */}
             <div style={{ borderTop: '1px solid rgba(255,255,255,0.2)', marginTop: 4, paddingTop: 3 }}>
-              <p style={{ color: 'white', fontSize: 8, opacity: 0.9, margin: 0, lineHeight: 1.3 }}>
+              <p style={{ color: 'white', fontSize: 8, opacity: 0.9, margin: 0, lineHeight: 1.3, textAlign: 'right' }}>
                 {data.isRental
-                  ? 'Locação'
+                  ? '| Locação'
                   : [
                       'À vista',
                       data.acceptsFinancing && 'Aceita financiamento',
