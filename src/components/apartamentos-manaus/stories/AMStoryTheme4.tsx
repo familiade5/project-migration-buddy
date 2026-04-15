@@ -150,9 +150,9 @@ export const AMStory4_T4_Slide1 = ({
               <div style={{ width: '100%', height: '100%', backgroundColor: '#e2e8f0' }} />
             )}
           </div>
-          {/* Price card azul — idêntico ao feed */}
+          {/* Price card — azul para venda, laranja para aluguel */}
           <div style={{
-            flex: 1, height: 100, background: 'linear-gradient(180deg, #1476D4 36.06%, #044A8E 100%)', borderRadius: 10,
+            flex: 1, height: 100, background: data.isRental ? 'linear-gradient(180deg, #FF8D28 52.88%, #DF7110 100%)' : 'linear-gradient(180deg, #1476D4 36.06%, #044A8E 100%)', borderRadius: 10,
             display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '8px 12px',
           }}>
             {/* Pill VENDA/LOCAÇÃO */}
