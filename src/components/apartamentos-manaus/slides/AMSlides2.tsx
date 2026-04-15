@@ -156,7 +156,9 @@ export const AM2CoverSlide = ({ data, photos, objectPosition, scale }: { data: A
   return (
     <div style={{ position: 'relative', width: 360, height: 360, backgroundColor: '#ffffff', fontFamily: poppins, overflow: 'hidden' }}>
       {photo ? (
-        <img src={photo} alt="" style={{ position: 'absolute', top: 0, left: 0, width: 360, height: photoH, objectFit: 'cover', objectPosition: objectPosition || '50% 50%', transform: scale ? `scale(${scale})` : undefined }} />
+        <div style={{ position: 'absolute', top: 0, left: 0, width: 360, height: photoH, overflow: 'hidden' }}>
+          <img src={photo} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: objectPosition || '50% 50%', transform: scale ? `scale(${scale})` : undefined }} />
+        </div>
       ) : (
         <div style={{ position: 'absolute', top: 0, left: 0, width: 360, height: photoH, background: 'linear-gradient(180deg, #d8dadf 0%, #cfd2d8 100%)' }} />
       )}
