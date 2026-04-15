@@ -187,11 +187,7 @@ Deno.serve(async (req) => {
     for (const item of allItems) {
       const stateUF = resolveState(item.estado || "");
 
-      // Filter: only target states
-      if (!TARGET_STATES.has(stateUF)) {
-        totalFiltered++;
-        continue;
-      }
+      // No state filter - import all states, let UI filter
 
       // Filter: only Venda Direta and Venda Online (no Leilão)
       const modality = item.modalidade || "";
