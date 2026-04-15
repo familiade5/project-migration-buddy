@@ -53,9 +53,11 @@ export const AMLogo = ({
 export const AMCoverSlide = ({
   data,
   photo,
+  objectPosition,
 }: {
   data: AMPropertyData;
   photo?: string;
+  objectPosition?: string;
 }) => {
   const uid = useId();
   const clipId = `am-cover-${uid}`;
