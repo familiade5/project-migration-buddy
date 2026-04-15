@@ -123,7 +123,7 @@ const formatPrice = (v: number) => {
 // ═══════════════════════════════════════════════════════════════════════════════
 // SLIDE 1: CAPA
 // ═══════════════════════════════════════════════════════════════════════════════
-export const AM2CoverSlide = ({ data, photos }: { data: AMPropertyData; photos: string[] }) => {
+export const AM2CoverSlide = ({ data, photos, objectPosition }: { data: AMPropertyData; photos: string[]; objectPosition?: string }) => {
   const logoBase64 = useLogoBase64(logoAM);
   const photo = photos[0];
   const price = data.isRental ? data.rentalPrice : data.salePrice;
@@ -366,7 +366,7 @@ const getSlideContent = (data: AMPropertyData, slideIndex: number): { headline: 
 // ═══════════════════════════════════════════════════════════════════════════════
 // SLIDE DE FOTOS — 2 fotos + caixa cinza central com gatilhos emocionais
 // ═══════════════════════════════════════════════════════════════════════════════
-export const AM2PhotoSlide = ({ photos, slideIndex, data }: { photos: [string, string?]; slideIndex: number; data: AMPropertyData }) => {
+export const AM2PhotoSlide = ({ photos, slideIndex, data, objectPositions }: { photos: [string, string?]; slideIndex: number; data: AMPropertyData; objectPositions?: string[] }) => {
   const p1 = photos[0];
   const p2 = photos[1];
   const GOLD_CSS = 'linear-gradient(135deg, #E8A020, #F2B84B, #D4912A, #C07B18)';
