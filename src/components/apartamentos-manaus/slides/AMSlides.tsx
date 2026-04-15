@@ -267,7 +267,7 @@ export const AMCoverSlide = ({
 
         {/* Payment line */}
         <div style={{ borderTop: '1px solid rgba(255,255,255,0.2)', marginTop: 3, paddingTop: 2 }}>
-          <p style={{ color: 'white', fontSize: 8, opacity: 0.9, margin: 0, lineHeight: 1.3, fontFamily: golos, paddingLeft: data.isRental ? 14 : 0 }}>
+          <p style={{ color: 'white', fontSize: 8, opacity: 0.9, margin: 0, lineHeight: 1.3, fontFamily: golos, paddingLeft: data.isRental ? 22 : 0 }}>
             {data.isRental ? '| Locação' : paymentLine}
           </p>
         </div>
