@@ -125,6 +125,7 @@ function buildAMCaption(data: AMPropertyData): string {
 interface AMPostPreviewProps {
   data: AMPropertyData;
   photos: string[];
+  photoPositions?: Record<number, { x: number; y: number }>;
 }
 
 type FormatType = 'feed' | 'story';
@@ -137,7 +138,7 @@ const STORY_H = 640;
 // Max slides we'll ever support (drives fixed ref pool)
 const MAX_SLIDES = 20;
 
-export function AMPostPreview({ data, photos }: AMPostPreviewProps) {
+export function AMPostPreview({ data, photos, photoPositions = {} }: AMPostPreviewProps) {
   const { user } = useAuth();
   const [currentSlide, setCurrentSlide] = useState(0);
   const [format, setFormat] = useState<FormatType>('feed');
@@ -171,22 +172,28 @@ export function AMPostPreview({ data, photos }: AMPostPreviewProps) {
   const feedRefs = [f0,f1,f2,f3,f4,f5,f6,f7,f8,f9,f10,f11,f12,f13,f14,f15,f16,f17,f18,f19];
   const storyRefs = [s0,s1,s2,s3,s4,s5,s6,s7,s8,s9,s10,s11,s12,s13,s14,s15,s16,s17,s18,s19];
 
+  const getPos = (index: number) => {
+    const p = photoPositions[index];
+    return p ? `${p.x}% ${p.y}%` : undefined;
+  };
+
   // ── Build FEED slide list ─────────────────────────────────────────────────
   const buildFeedSlides = () => {
     const p = photos;
     const slides = [];
 
-    slides.push({ id: 'cover',    name: 'Capa',     el: <AMCoverSlide data={data} photo={p[0]} /> });
-    slides.push({ id: 'specs',    name: 'Especif.',  el: <AMSpecsSlide data={data} photo={p[1] ?? p[0]} /> });
-    slides.push({ id: 'location', name: 'Local',     el: <AMLocationSlide data={data} photo={p[2] ?? p[1] ?? p[0]} /> });
+    slides.push({ id: 'cover',    name: 'Capa',     el: <AMCoverSlide data={data} photo={p[0]} objectPosition={getPos(0)} /> });
+    slides.push({ id: 'specs',    name: 'Especif.',  el: <AMSpecsSlide data={data} photo={p[1] ?? p[0]} objectPosition={getPos(p[1] ? 1 : 0)} /> });
+    slides.push({ id: 'location', name: 'Local',     el: <AMLocationSlide data={data} photo={p[2] ?? p[1] ?? p[0]} objectPosition={getPos(p[2] ? 2 : p[1] ? 1 : 0)} /> });
 
     const photoSliceEnd = Math.max(3, p.length - 1);
     for (let i = 3; i < photoSliceEnd; i++) {
-      slides.push({ id: `photo-${i}`, name: `Foto ${i - 1}`, el: <AMPhotoSlide data={data} photo={p[i]} photoIndex={i} /> });
+      slides.push({ id: `photo-${i}`, name: `Foto ${i - 1}`, el: <AMPhotoSlide data={data} photo={p[i]} photoIndex={i} objectPosition={getPos(i)} /> });
     }
 
-    const lastPhoto = p[p.length - 1] ?? p[0];
-    slides.push({ id: 'info', name: 'Info', el: <AMInfoSlide data={data} photo={lastPhoto} /> });
+    const lastIdx = p.length - 1;
+    const lastPhoto = p[lastIdx] ?? p[0];
+    slides.push({ id: 'info', name: 'Info', el: <AMInfoSlide data={data} photo={lastPhoto} objectPosition={getPos(lastIdx >= 0 ? lastIdx : 0)} /> });
 
     return slides;
   };
@@ -196,16 +203,18 @@ export function AMPostPreview({ data, photos }: AMPostPreviewProps) {
     const p = photos;
     const slides: { id: string; name: string; el: React.ReactNode }[] = [];
 
-    slides.push({ id: 'd2-cover', name: 'Capa', el: <AM2CoverSlide data={data} photos={p} /> });
+    slides.push({ id: 'd2-cover', name: 'Capa', el: <AM2CoverSlide data={data} photos={p} objectPosition={getPos(0)} /> });
 
     const remaining = p.slice(1);
     for (let i = 0; i < remaining.length; i += 2) {
       const pair: [string, string?] = [remaining[i], remaining[i + 1]];
       const slideNum = Math.floor(i / 2) + 2;
+      const idx1 = i + 1;
+      const idx2 = i + 2;
       slides.push({
         id: `d2-photo-${slideNum}`,
         name: `Fotos ${slideNum - 1}`,
-        el: <AM2PhotoSlide photos={pair} slideIndex={Math.floor(i / 2)} data={data} />,
+        el: <AM2PhotoSlide photos={pair} slideIndex={Math.floor(i / 2)} data={data} objectPositions={[getPos(idx1) || '50% 50%', getPos(idx2) || '50% 50%']} />,
       });
     }
 
