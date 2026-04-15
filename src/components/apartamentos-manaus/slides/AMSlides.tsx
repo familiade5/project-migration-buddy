@@ -140,7 +140,7 @@ export const AMCoverSlide = ({
           justifyContent: 'center',
         }}
       >
-        <p style={{ color: 'white', fontWeight: 700, fontSize: 11, lineHeight: 1.2, margin: 0, fontFamily: golos, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+        <p style={{ color: 'white', fontWeight: 700, fontSize: Math.min(16, Math.max(10, 16 - Math.max(0, (data.title || 'Nome do Imóvel').length - 12) * 0.4)), lineHeight: 1.2, margin: 0, fontFamily: golos, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
           {data.title || 'Nome do Imóvel'}
         </p>
         <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '2px 6px', marginTop: 2 }}>
@@ -258,8 +258,8 @@ export const AMCoverSlide = ({
 
         {/* Price */}
         <div style={{ display: 'flex', alignItems: 'baseline', gap: 2, color: 'white' }}>
-          <span style={{ fontSize: 9, opacity: 0.75, marginRight: 1, fontFamily: golos }}>R$</span>
-          <span style={{ fontSize: 12, fontWeight: 700, lineHeight: 1, fontFamily: golos }}>
+          <span style={{ fontSize: 11, opacity: 0.75, marginRight: 1, fontFamily: golos }}>R$</span>
+          <span style={{ fontSize: Math.min(17, Math.max(12, 17 - Math.max(0, (price > 0 ? price.toLocaleString('pt-BR', { minimumFractionDigits: 0, maximumFractionDigits: 0 }).length : 8) - 6) * 0.8)), fontWeight: 700, lineHeight: 1, fontFamily: golos }}>
             {price > 0
               ? price.toLocaleString('pt-BR', { minimumFractionDigits: 0, maximumFractionDigits: 0 })
               : 'Consulte'}

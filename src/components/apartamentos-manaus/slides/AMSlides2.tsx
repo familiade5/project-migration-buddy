@@ -196,17 +196,17 @@ export const AM2CoverSlide = ({ data, photos }: { data: AMPropertyData; photos: 
           <path d="M0 2 H160 Q166 2 166 8 L144 46 Q140 52 134 52 H0 V2 Z" fill={DARK_CARD} stroke="#ffffff" strokeWidth="2.5" strokeLinejoin="round" />
         </svg>
         <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', padding: '0 16px 0 10px', gap: 2 }}>
-          <span style={{ background: GOLD_CSS, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', fontSize: 11, fontWeight: 800, lineHeight: 1 }}>R$</span>
-          <span style={{ background: GOLD_CSS, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', fontSize: 20, fontWeight: 800, lineHeight: 1, letterSpacing: '-0.04em', transform: 'scaleY(1.4)', display: 'inline-block' }}>{formattedPrice}</span>
+          <span style={{ background: GOLD_CSS, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', fontSize: 13, fontWeight: 800, lineHeight: 1 }}>R$</span>
+          <span style={{ background: GOLD_CSS, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', fontSize: Math.min(24, Math.max(16, 24 - Math.max(0, formattedPrice.length - 8) * 1.2)), fontWeight: 800, lineHeight: 1, letterSpacing: '-0.04em', transform: 'scaleY(1.4)', display: 'inline-block' }}>{formattedPrice}</span>
         </div>
       </div>
 
       {/* Title & neighborhood */}
-      <div style={{ position: 'absolute', left: 16, top: 238, zIndex: 12, width: 148 }}>
-        <p style={{ background: GOLD_CSS, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', fontSize: 15, fontWeight: 800, lineHeight: 1.1, margin: 0, textTransform: 'uppercase', letterSpacing: '0.01em' }}>
+      <div style={{ position: 'absolute', left: 16, top: 236, zIndex: 12, width: 160 }}>
+        <p style={{ background: GOLD_CSS, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', fontSize: Math.min(20, Math.max(12, 20 - Math.max(0, title.length - 10) * 0.55)), fontWeight: 800, lineHeight: 1.1, margin: 0, textTransform: 'uppercase', letterSpacing: '0.01em', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
           {title}
         </p>
-        <p style={{ color: '#1a1a1a', fontSize: 14, fontWeight: 800, lineHeight: 1.1, margin: '3px 0 0', textTransform: 'uppercase', letterSpacing: '0.01em' }}>
+        <p style={{ color: '#1a1a1a', fontSize: Math.min(17, Math.max(11, 17 - Math.max(0, neighborhood.length - 10) * 0.5)), fontWeight: 800, lineHeight: 1.1, margin: '3px 0 0', textTransform: 'uppercase', letterSpacing: '0.01em', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
           {neighborhood}
         </p>
       </div>
