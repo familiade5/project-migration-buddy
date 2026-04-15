@@ -18,7 +18,7 @@ const STATE_FULL_NAMES: Record<string, string> = {
   AC: "Acre", AP: "Amapá", RR: "Roraima", ES: "Espírito Santo", DF: "Distrito Federal",
 };
 
-const ALLOWED_MODALITIES = new Set(["Venda Direta", "Venda Online", "Venda Direta Online"]);
+const ALLOWED_MODALITIES = new Set(["Venda Direta", "Venda Direta Online"]);
 const FIRECRAWL_V2 = "https://api.firecrawl.dev/v2";
 
 function formatCurrency(value: number): string {
@@ -187,7 +187,11 @@ Deno.serve(async (req) => {
     for (const item of allItems) {
       const stateUF = resolveState(item.estado || "");
 
-      // No state filter - import all states, let UI filter
+      // Filter: only states where we have CRECI
+      if (!TARGET_STATES.has(stateUF)) {
+        totalFiltered++;
+        continue;
+      }
 
       // Filter: only Venda Direta and Venda Online (no Leilão)
       const modality = item.modalidade || "";
