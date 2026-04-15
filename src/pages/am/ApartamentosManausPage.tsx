@@ -11,6 +11,7 @@ import { Image, Edit3, Sparkles, FileText, LayoutGrid, Smartphone } from 'lucide
 const ApartamentosManausPage = () => {
   const [propertyData, setPropertyData] = useState<AMPropertyData>(defaultAMPropertyData);
   const [photos, setPhotos] = useState<string[]>([]);
+  const [photoPositions, setPhotoPositions] = useState<Record<number, { x: number; y: number }>>({});
   const [previewTab, setPreviewTab] = useState<'feed' | 'stories'>('feed');
 
   return (
@@ -47,7 +48,7 @@ const ApartamentosManausPage = () => {
                 </div>
               </div>
               <div className="p-4 sm:p-6">
-                <AMPhotoManager photos={photos} onChange={setPhotos} />
+                <AMPhotoManager photos={photos} onChange={setPhotos} photoPositions={photoPositions} onPositionsChange={setPhotoPositions} />
               </div>
             </div>
 
@@ -125,7 +126,7 @@ const ApartamentosManausPage = () => {
               </div>
               <div className="p-4 sm:p-6">
                 {previewTab === 'feed' ? (
-                  <AMPostPreview data={propertyData} photos={photos} />
+                  <AMPostPreview data={propertyData} photos={photos} photoPositions={photoPositions} />
                 ) : (
                   <AMStoriesPreview data={propertyData} photos={photos} />
                 )}
