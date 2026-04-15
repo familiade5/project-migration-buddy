@@ -178,6 +178,8 @@ export function AMPostPreview({ data, photos, photoPositions = {}, photoScales =
     return p ? `${p.x}% ${p.y}%` : undefined;
   };
 
+  const getScale = (index: number) => photoScales[index] || undefined;
+
   // ── Build FEED slide list ─────────────────────────────────────────────────
   const buildFeedSlides = () => {
     const p = photos;
