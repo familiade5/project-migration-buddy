@@ -178,7 +178,7 @@ const AutoPostApproval = () => {
           <div className="flex items-center gap-2">
             <Filter className="w-4 h-4 text-gray-400" />
             <Select value={stateFilter} onValueChange={setStateFilter}>
-              <SelectTrigger className="w-[180px] h-8 text-xs" style={{ backgroundColor: '#fff', borderColor: '#e5e7eb' }}>
+              <SelectTrigger className="w-[180px] h-8 text-xs" style={{ backgroundColor: '#fff', borderColor: '#e5e7eb', color: '#374151' }}>
                 <SelectValue placeholder="Filtrar por estado" />
               </SelectTrigger>
               <SelectContent>
