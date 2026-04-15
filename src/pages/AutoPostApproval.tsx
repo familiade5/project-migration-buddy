@@ -139,7 +139,7 @@ const AutoPostApproval = () => {
                     ? { backgroundColor: 'rgba(255,255,255,0.3)', color: 'white' }
                     : { backgroundColor: '#e5e7eb', color: '#6b7280' }
                   }>
-                  {items.length}
+                  {stateScopedCount}
                 </span>
               )}
             </button>
@@ -158,7 +158,7 @@ const AutoPostApproval = () => {
                 : { color: '#6b7280' }
               }
             >
-              Todos ({items?.length || 0})
+              Todos ({stateScopedCount})
             </button>
             <button
               onClick={() => setFinancingFilter('financing')}
