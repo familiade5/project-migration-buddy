@@ -72,9 +72,22 @@ const AutoPostApproval = () => {
   const handleScrapeNow = async () => {
     setIsScraping(true);
     try {
-      const { data, error } = await supabase.functions.invoke('scrape-caixa-properties');
+      const selectedState = stateFilter !== 'all' ? stateFilter : undefined;
+      const { data, error } = await supabase.functions.invoke('scrape-caixa-properties', {
+        body: selectedState ? { state: selectedState } : {},
+      });
       if (error) throw error;
-      toast.success(`Scraping concluído: ${data?.new_properties || 0} novos imóveis encontrados`);
+
+      const statesUsed = Array.isArray(data?.states_used) ? data.states_used : [];
+      const stateLabel = selectedState
+        ? STATES.find((state) => state.value === selectedState)?.label || selectedState
+        : statesUsed.length === 1
+          ? STATES.find((state) => state.value === statesUsed[0])?.label || statesUsed[0]
+          : 'estados ativos';
+
+      toast.success(
+        `Busca concluída em ${stateLabel}: ${data?.new_properties || 0} novos, ${data?.skipped_existing || 0} já existentes`
+      );
       refetch();
     } catch (err) {
       toast.error('Erro ao executar scraping');
