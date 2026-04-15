@@ -18,7 +18,7 @@ const STATE_FULL_NAMES: Record<string, string> = {
   AC: "Acre", AP: "Amapá", RR: "Roraima", ES: "Espírito Santo", DF: "Distrito Federal",
 };
 
-const ALLOWED_MODALITIES = new Set(["Venda Direta", "Venda Online"]);
+const ALLOWED_MODALITIES = new Set(["Venda Direta", "Venda Online", "Venda Direta Online"]);
 const FIRECRAWL_V2 = "https://api.firecrawl.dev/v2";
 
 function formatCurrency(value: number): string {
@@ -88,8 +88,44 @@ function buildPropertyData(item: any): any {
   };
 }
 
-async function scrapeProperties(apiKey: string): Promise<any[]> {
-  console.log("Scraping home page for property listings...");
+const SCRAPE_SCHEMA = {
+  type: "object",
+  properties: {
+    imoveis: {
+      type: "array",
+      items: {
+        type: "object",
+        properties: {
+          tipo: { type: "string", description: "Tipo: Casa, Apartamento, Terreno" },
+          cidade: { type: "string", description: "Nome da cidade em maiúsculas" },
+          estado: { type: "string", description: "Sigla do estado (UF) com 2 letras" },
+          endereco: { type: "string", description: "Endereço completo do imóvel" },
+          bairro: { type: "string", description: "Bairro" },
+          cep: { type: "string", description: "CEP completo" },
+          valorAvaliacao: { type: "number", description: "Valor de avaliação em reais" },
+          valorVenda: { type: "number", description: "Valor mínimo de venda em reais" },
+          desconto: { type: "number", description: "Percentual de desconto" },
+          quartos: { type: "number", description: "Número de quartos" },
+          banheiros: { type: "number", description: "Número de banheiros" },
+          vagas: { type: "number", description: "Vagas de garagem" },
+          areaPrivativa: { type: "number", description: "Área privativa em m²" },
+          areaTerreno: { type: "number", description: "Área do terreno em m²" },
+          areaTotal: { type: "number", description: "Área total em m²" },
+          modalidade: { type: "string", description: "Venda Direta, Venda Online, Leilão, etc." },
+          aceitaFGTS: { type: "boolean", description: "Se aceita FGTS" },
+          aceitaFinanciamento: { type: "boolean", description: "Se aceita financiamento" },
+          imagemUrl: { type: "string", description: "URL da imagem principal" },
+          nomeCondominio: { type: "string", description: "Nome do condomínio se houver" },
+        },
+      },
+    },
+  },
+};
+
+const SCRAPE_PROMPT = "Extract ALL property listings (imóveis) visible on this page. Each property card shows: type (Casa/Apartamento/Terreno), city and state (UF), full address with CEP, areas in m², evaluation price (Avaliação), sale/minimum price, discount percentage, sale modality (Venda Direta/Venda Online/Leilão), FGTS acceptance, financing, and an image. Extract every single property card shown.";
+
+async function scrapePage(apiKey: string, url: string): Promise<any[]> {
+  console.log(`Scraping: ${url}`);
 
   const response = await fetch(`${FIRECRAWL_V2}/scrape`, {
     method: "POST",
@@ -98,53 +134,22 @@ async function scrapeProperties(apiKey: string): Promise<any[]> {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      url: "https://smartleiloescaixa.com.br/home",
+      url,
       formats: [
         {
           type: "json",
-          schema: {
-            type: "object",
-            properties: {
-              imoveis: {
-                type: "array",
-                items: {
-                  type: "object",
-                  properties: {
-                    tipo: { type: "string", description: "Tipo: Casa, Apartamento, Terreno" },
-                    cidade: { type: "string", description: "Nome da cidade em maiúsculas" },
-                    estado: { type: "string", description: "Sigla do estado (UF) com 2 letras" },
-                    endereco: { type: "string", description: "Endereço completo do imóvel" },
-                    bairro: { type: "string", description: "Bairro" },
-                    cep: { type: "string", description: "CEP completo" },
-                    valorAvaliacao: { type: "number", description: "Valor de avaliação em reais" },
-                    valorVenda: { type: "number", description: "Valor mínimo de venda em reais" },
-                    desconto: { type: "number", description: "Percentual de desconto" },
-                    quartos: { type: "number", description: "Número de quartos" },
-                    banheiros: { type: "number", description: "Número de banheiros" },
-                    vagas: { type: "number", description: "Vagas de garagem" },
-                    areaPrivativa: { type: "number", description: "Área privativa em m²" },
-                    areaTerreno: { type: "number", description: "Área do terreno em m²" },
-                    areaTotal: { type: "number", description: "Área total em m²" },
-                    modalidade: { type: "string", description: "Venda Direta, Venda Online, Leilão, etc." },
-                    aceitaFGTS: { type: "boolean", description: "Se aceita FGTS" },
-                    aceitaFinanciamento: { type: "boolean", description: "Se aceita financiamento" },
-                    imagemUrl: { type: "string", description: "URL da imagem principal" },
-                    nomeCondominio: { type: "string", description: "Nome do condomínio se houver" },
-                  },
-                },
-              },
-            },
-          },
-          prompt: "Extract ALL property listings (imóveis) visible on this page. Each property card shows: type (Casa/Apartamento/Terreno), city and state (UF), full address with CEP, areas in m², evaluation price (Avaliação), sale/minimum price, discount percentage, sale modality (Venda Direta/Venda Online/Leilão), FGTS acceptance, financing, and an image. Extract every single property card shown.",
+          schema: SCRAPE_SCHEMA,
+          prompt: SCRAPE_PROMPT,
         },
       ],
-      waitFor: 8000,
+      waitFor: 10000,
     }),
   });
 
   if (!response.ok) {
     const errText = await response.text();
-    throw new Error(`Firecrawl error: ${response.status} - ${errText}`);
+    console.error(`Firecrawl error for ${url}: ${response.status} - ${errText}`);
+    return [];
   }
 
   const data = await response.json();
@@ -165,8 +170,12 @@ Deno.serve(async (req) => {
     const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     const supabase = createClient(supabaseUrl, serviceRoleKey);
 
-    const allItems = await scrapeProperties(firecrawlKey);
-    console.log(`Scraped ${allItems.length} total items from site`);
+    // Scrape page 1 and page 2
+    const page1Items = await scrapePage(firecrawlKey, "https://smartleiloescaixa.com.br/home");
+    const page2Items = await scrapePage(firecrawlKey, "https://smartleiloescaixa.com.br/home?page=2");
+
+    const allItems = [...page1Items, ...page2Items];
+    console.log(`Scraped ${allItems.length} total items from 2 pages`);
 
     let totalNew = 0;
     let totalSkipped = 0;
@@ -181,7 +190,7 @@ Deno.serve(async (req) => {
         continue;
       }
 
-      // Filter: only Venda Direta and Venda Online
+      // Filter: only Venda Direta and Venda Online (no Leilão)
       const modality = item.modalidade || "";
       if (!ALLOWED_MODALITIES.has(modality)) {
         totalFiltered++;

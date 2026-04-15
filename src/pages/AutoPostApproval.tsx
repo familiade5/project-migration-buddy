@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { useAutoPostQueue, AutoPostQueueItem } from '@/hooks/useAutoPostQueue';
 import { AutoPostApprovalDialog } from '@/components/auto-post/AutoPostApprovalDialog';
-import { Loader2, Inbox, CheckCircle2, XCircle, Clock, RefreshCw } from 'lucide-react';
+import { Loader2, Inbox, CheckCircle2, XCircle, Clock, RefreshCw, Filter } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 
@@ -17,11 +18,45 @@ const statusTabs = [
   { key: 'rejected', label: 'Rejeitados', icon: XCircle, color: '#ef4444' },
 ];
 
+const STATES = [
+  { value: 'all', label: 'Todos os estados' },
+  { value: 'AM', label: 'Amazonas' },
+  { value: 'CE', label: 'Ceará' },
+  { value: 'MS', label: 'Mato Grosso do Sul' },
+  { value: 'PB', label: 'Paraíba' },
+  { value: 'RN', label: 'Rio Grande do Norte' },
+  { value: 'SC', label: 'Santa Catarina' },
+];
+
 const AutoPostApproval = () => {
   const [activeTab, setActiveTab] = useState('pending');
+  const [financingFilter, setFinancingFilter] = useState<'all' | 'financing' | 'cash'>('all');
+  const [stateFilter, setStateFilter] = useState('all');
   const [selectedItem, setSelectedItem] = useState<AutoPostQueueItem | null>(null);
   const [isScraping, setIsScraping] = useState(false);
   const { data: items, isLoading, refetch } = useAutoPostQueue(activeTab);
+
+  const filteredItems = useMemo(() => {
+    if (!items) return [];
+    return items.filter((item) => {
+      const pd = item.property_data as any;
+
+      // Financing filter
+      if (financingFilter === 'financing' && !pd?.acceptsFinancing) return false;
+      if (financingFilter === 'cash' && pd?.acceptsFinancing) return false;
+
+      // State filter
+      if (stateFilter !== 'all') {
+        const itemState = pd?.state || '';
+        const stateUF = itemState.length === 2 ? itemState.toUpperCase() : '';
+        const matchesUF = stateUF === stateFilter;
+        const matchesFullName = STATES.find(s => s.value === stateFilter)?.label?.toLowerCase() === itemState.toLowerCase();
+        if (!matchesUF && !matchesFullName) return false;
+      }
+
+      return true;
+    });
+  }, [items, financingFilter, stateFilter]);
 
   const handleScrapeNow = async () => {
     setIsScraping(true);
@@ -39,6 +74,17 @@ const AutoPostApproval = () => {
   };
 
   const formatCurrency = (val: string) => val || 'N/A';
+
+  // Count financing vs cash for badge
+  const financingCount = useMemo(() => {
+    if (!items) return { financing: 0, cash: 0 };
+    let financing = 0, cash = 0;
+    for (const item of items) {
+      const pd = item.property_data as any;
+      if (pd?.acceptsFinancing) financing++; else cash++;
+    }
+    return { financing, cash };
+  }, [items]);
 
   return (
     <AppLayout>
@@ -64,8 +110,8 @@ const AutoPostApproval = () => {
           </Button>
         </div>
 
-        {/* Tabs */}
-        <div className="flex items-center gap-1 bg-gray-100 rounded-xl p-1 mb-6 overflow-x-auto">
+        {/* Status Tabs */}
+        <div className="flex items-center gap-1 bg-gray-100 rounded-xl p-1 mb-4 overflow-x-auto">
           {statusTabs.map((tab) => (
             <button
               key={tab.key}
@@ -92,12 +138,64 @@ const AutoPostApproval = () => {
           ))}
         </div>
 
+        {/* Filters row */}
+        <div className="flex flex-wrap items-center gap-3 mb-6">
+          {/* Financing sub-tabs */}
+          <div className="flex items-center gap-1 bg-gray-50 rounded-lg p-1 border border-gray-200">
+            <button
+              onClick={() => setFinancingFilter('all')}
+              className="px-3 py-1.5 rounded-md text-xs font-medium transition-all"
+              style={financingFilter === 'all'
+                ? { backgroundColor: BRAND_BLUE, color: 'white' }
+                : { color: '#6b7280' }
+              }
+            >
+              Todos ({items?.length || 0})
+            </button>
+            <button
+              onClick={() => setFinancingFilter('financing')}
+              className="px-3 py-1.5 rounded-md text-xs font-medium transition-all"
+              style={financingFilter === 'financing'
+                ? { backgroundColor: '#22c55e', color: 'white' }
+                : { color: '#6b7280' }
+              }
+            >
+              💰 Financiamento ({financingCount.financing})
+            </button>
+            <button
+              onClick={() => setFinancingFilter('cash')}
+              className="px-3 py-1.5 rounded-md text-xs font-medium transition-all"
+              style={financingFilter === 'cash'
+                ? { backgroundColor: '#f97316', color: 'white' }
+                : { color: '#6b7280' }
+              }
+            >
+              💵 À Vista ({financingCount.cash})
+            </button>
+          </div>
+
+          {/* State filter */}
+          <div className="flex items-center gap-2">
+            <Filter className="w-4 h-4 text-gray-400" />
+            <Select value={stateFilter} onValueChange={setStateFilter}>
+              <SelectTrigger className="w-[180px] h-8 text-xs" style={{ backgroundColor: '#fff', borderColor: '#e5e7eb' }}>
+                <SelectValue placeholder="Filtrar por estado" />
+              </SelectTrigger>
+              <SelectContent>
+                {STATES.map(s => (
+                  <SelectItem key={s.value} value={s.value}>{s.label}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+
         {/* Content */}
         {isLoading ? (
           <div className="flex items-center justify-center py-20">
             <Loader2 className="w-8 h-8 animate-spin text-gray-400" />
           </div>
-        ) : !items || items.length === 0 ? (
+        ) : filteredItems.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 text-gray-400">
             <Inbox className="w-16 h-16 mb-4" />
             <p className="text-lg font-medium">Nenhum item {activeTab === 'pending' ? 'pendente' : ''}</p>
@@ -109,8 +207,8 @@ const AutoPostApproval = () => {
           </div>
         ) : (
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {items.map((item) => {
-              const pd = item.property_data;
+            {filteredItems.map((item) => {
+              const pd = item.property_data as any;
               return (
                 <div
                   key={item.id}
@@ -140,19 +238,29 @@ const AutoPostApproval = () => {
                           {pd?.city}, {pd?.state}
                         </p>
                       </div>
-                      <span className="text-[10px] font-bold px-2 py-1 rounded-full whitespace-nowrap"
-                        style={
-                          item.status === 'pending'
-                            ? { backgroundColor: '#fef3c7', color: '#92400e' }
-                            : item.status === 'approved'
-                            ? { backgroundColor: '#d1fae5', color: '#065f46' }
-                            : item.status === 'published'
-                            ? { backgroundColor: '#dbeafe', color: '#1e40af' }
-                            : { backgroundColor: '#fee2e2', color: '#991b1b' }
-                        }
-                      >
-                        {item.status === 'pending' ? 'Pendente' : item.status === 'approved' ? 'Aprovado' : item.status === 'published' ? 'Publicado' : 'Rejeitado'}
-                      </span>
+                      <div className="flex flex-col gap-1 items-end">
+                        <span className="text-[10px] font-bold px-2 py-1 rounded-full whitespace-nowrap"
+                          style={
+                            item.status === 'pending'
+                              ? { backgroundColor: '#fef3c7', color: '#92400e' }
+                              : item.status === 'approved'
+                              ? { backgroundColor: '#d1fae5', color: '#065f46' }
+                              : item.status === 'published'
+                              ? { backgroundColor: '#dbeafe', color: '#1e40af' }
+                              : { backgroundColor: '#fee2e2', color: '#991b1b' }
+                          }
+                        >
+                          {item.status === 'pending' ? 'Pendente' : item.status === 'approved' ? 'Aprovado' : item.status === 'published' ? 'Publicado' : 'Rejeitado'}
+                        </span>
+                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full whitespace-nowrap"
+                          style={pd?.acceptsFinancing
+                            ? { backgroundColor: '#dcfce7', color: '#166534' }
+                            : { backgroundColor: '#ffedd5', color: '#9a3412' }
+                          }
+                        >
+                          {pd?.acceptsFinancing ? '💰 Financiamento' : '💵 À Vista'}
+                        </span>
+                      </div>
                     </div>
 
                     {/* Prices */}
