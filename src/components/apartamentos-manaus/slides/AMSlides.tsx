@@ -629,10 +629,12 @@ export const AMPhotoSlide = ({
   data,
   photo,
   photoIndex,
+  objectPosition,
 }: {
   data: AMPropertyData;
   photo: string;
   photoIndex: number;
+  objectPosition?: string;
 }) => {
   const uid = useId();
   const clipId = `am-photo-${uid}`;
@@ -679,7 +681,7 @@ export const AMPhotoSlide = ({
           zIndex: 10,
         }}
       >
-        <img src={photo} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+        <img src={photo} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: objectPosition || '50% 50%', display: 'block' }} />
       </div>
 
       {/* Card da logo — encaixado no notch superior-esquerdo (zIndex abaixo da foto) */}
@@ -711,9 +713,11 @@ export const AMPhotoSlide = ({
 export const AMInfoSlide = ({
   data,
   photo,
+  objectPosition,
 }: {
   data: AMPropertyData;
   photo?: string;
+  objectPosition?: string;
 }) => {
   const uid = useId();
   const clipId = `am-info-${uid}`;
