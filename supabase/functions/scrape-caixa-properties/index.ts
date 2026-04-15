@@ -170,9 +170,11 @@ Deno.serve(async (req) => {
     const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     const supabase = createClient(supabaseUrl, serviceRoleKey);
 
-    // Scrape page 1 and page 2
-    const page1Items = await scrapePage(firecrawlKey, "https://smartleiloescaixa.com.br/home");
-    const page2Items = await scrapePage(firecrawlKey, "https://smartleiloescaixa.com.br/home?page=2");
+    // Scrape page 1 and page 2 in parallel
+    const [page1Items, page2Items] = await Promise.all([
+      scrapePage(firecrawlKey, "https://smartleiloescaixa.com.br/home"),
+      scrapePage(firecrawlKey, "https://smartleiloescaixa.com.br/home?page=2"),
+    ]);
 
     const allItems = [...page1Items, ...page2Items];
     console.log(`Scraped ${allItems.length} total items from 2 pages`);
