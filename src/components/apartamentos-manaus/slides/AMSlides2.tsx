@@ -156,7 +156,9 @@ export const AM2CoverSlide = ({ data, photos, objectPosition, scale }: { data: A
   return (
     <div style={{ position: 'relative', width: 360, height: 360, backgroundColor: '#ffffff', fontFamily: poppins, overflow: 'hidden' }}>
       {photo ? (
-        <img src={photo} alt="" style={{ position: 'absolute', top: 0, left: 0, width: 360, height: photoH, objectFit: 'cover', objectPosition: objectPosition || '50% 50%', transform: scale ? `scale(${scale})` : undefined }} />
+        <div style={{ position: 'absolute', top: 0, left: 0, width: 360, height: photoH, overflow: 'hidden' }}>
+          <img src={photo} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: objectPosition || '50% 50%', transform: scale ? `scale(${scale})` : undefined }} />
+        </div>
       ) : (
         <div style={{ position: 'absolute', top: 0, left: 0, width: 360, height: photoH, background: 'linear-gradient(180deg, #d8dadf 0%, #cfd2d8 100%)' }} />
       )}
@@ -374,9 +376,9 @@ export const AM2PhotoSlide = ({ photos, slideIndex, data, objectPositions, scale
 
   return (
     <div style={{ position: 'relative', width: 360, height: 360, backgroundColor: '#e5e5e5', fontFamily: poppins, overflow: 'hidden' }}>
-      {p1 && <img src={p1} alt="" style={{ position: 'absolute', left: 0, top: 0, width: 360, height: 180, objectFit: 'cover', objectPosition: objectPositions?.[0] || '50% 50%', transform: scales?.[0] ? `scale(${scales[0]})` : undefined }} />}
-      {p2 && <img src={p2} alt="" style={{ position: 'absolute', left: 0, top: 180, width: 360, height: 180, objectFit: 'cover', objectPosition: objectPositions?.[1] || '50% 50%', transform: scales?.[1] ? `scale(${scales[1]})` : undefined }} />}
-      {!p2 && p1 && <img src={p1} alt="" style={{ position: 'absolute', left: 0, top: 180, width: 360, height: 180, objectFit: 'cover', objectPosition: objectPositions?.[0] || '50% 50%', transform: `scaleX(-1)${scales?.[0] ? ` scale(${scales[0]})` : ''}` }} />}
+      {p1 && <div style={{ position: 'absolute', left: 0, top: 0, width: 360, height: 180, overflow: 'hidden' }}><img src={p1} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: objectPositions?.[0] || '50% 50%', transform: scales?.[0] ? `scale(${scales[0]})` : undefined }} /></div>}
+      {p2 && <div style={{ position: 'absolute', left: 0, top: 180, width: 360, height: 180, overflow: 'hidden' }}><img src={p2} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: objectPositions?.[1] || '50% 50%', transform: scales?.[1] ? `scale(${scales[1]})` : undefined }} /></div>}
+      {!p2 && p1 && <div style={{ position: 'absolute', left: 0, top: 180, width: 360, height: 180, overflow: 'hidden' }}><img src={p1} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: objectPositions?.[0] || '50% 50%', transform: `scaleX(-1)${scales?.[0] ? ` scale(${scales[0]})` : ''}` }} /></div>}
 
       <AccentLine top={175} />
 

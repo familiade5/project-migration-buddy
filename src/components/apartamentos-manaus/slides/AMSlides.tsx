@@ -177,23 +177,20 @@ export const AMCoverSlide = ({
 
       {/* ── PHOTO — clipPath applied directly to the visible element ── */}
       {photo ? (
-        <img
-          src={photo}
-          alt=""
-          style={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            width: 360,
-            height: 360,
-            objectFit: 'cover',
-            objectPosition: objectPosition || '50% 50%',
-            display: 'block',
-            clipPath: `url(#${clipId})`,
-            zIndex: 10,
-            transform: scale ? `scale(${scale})` : undefined,
-          }}
-        />
+        <div style={{ position: 'absolute', top: 0, left: 0, width: 360, height: 360, clipPath: `url(#${clipId})`, overflow: 'hidden', zIndex: 10 }}>
+          <img
+            src={photo}
+            alt=""
+            style={{
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
+              objectPosition: objectPosition || '50% 50%',
+              display: 'block',
+              transform: scale ? `scale(${scale})` : undefined,
+            }}
+          />
+        </div>
       ) : (
         <div
           style={{
@@ -374,6 +371,7 @@ export const AMSpecsSlide = ({
           width: 360,
           height: 360,
           clipPath: `url(#${clipId})`,
+          overflow: 'hidden',
           zIndex: 10,
         }}
       >
@@ -493,23 +491,20 @@ export const AMLocationSlide = ({
 
       {/* Photo — 360×360 recortada pelo clipPath */}
       {photo ? (
-        <img
-          src={photo}
-          alt=""
-          style={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            width: 360,
-            height: 360,
-            objectFit: 'cover',
-            objectPosition: objectPosition || '50% 50%',
-            display: 'block',
-            clipPath: `url(#${clipId})`,
-            zIndex: 10,
-            transform: scale ? `scale(${scale})` : undefined,
-          }}
-        />
+        <div style={{ position: 'absolute', top: 0, left: 0, width: 360, height: 360, clipPath: `url(#${clipId})`, overflow: 'hidden', zIndex: 10 }}>
+          <img
+            src={photo}
+            alt=""
+            style={{
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
+              objectPosition: objectPosition || '50% 50%',
+              display: 'block',
+              transform: scale ? `scale(${scale})` : undefined,
+            }}
+          />
+        </div>
       ) : (
         <div
           style={{
@@ -688,6 +683,7 @@ export const AMPhotoSlide = ({
           width: 360,
           height: 360,
           clipPath: `url(#${clipId})`,
+          overflow: 'hidden',
           zIndex: 10,
         }}
       >
@@ -839,21 +835,20 @@ export const AMInfoSlide = ({
       >
         {/* Foto principal recortada pelo clipPath */}
         {photo ? (
-          <img
-            src={photo}
-            alt=""
-            style={{
-              position: 'absolute',
-              inset: 0,
-              width: '100%',
-              height: '100%',
-              objectFit: 'cover',
-              objectPosition: objectPosition || '50% 50%',
-              display: 'block',
-              clipPath: `url(#${clipId})`,
-              transform: scale ? `scale(${scale})` : undefined,
-            }}
-          />
+          <div style={{ position: 'absolute', inset: 0, clipPath: `url(#${clipId})`, overflow: 'hidden' }}>
+            <img
+              src={photo}
+              alt=""
+              style={{
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover',
+                objectPosition: objectPosition || '50% 50%',
+                display: 'block',
+                transform: scale ? `scale(${scale})` : undefined,
+              }}
+            />
+          </div>
         ) : (
           <div style={{ position: 'absolute', inset: 0, backgroundColor: '#374151', clipPath: `url(#${clipId})` }} />
         )}
