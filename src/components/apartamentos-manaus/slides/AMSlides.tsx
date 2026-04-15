@@ -243,7 +243,7 @@ export const AMCoverSlide = ({
               fontWeight: 700,
               fontSize: 5.5,
               letterSpacing: '0.08em',
-              backgroundColor: 'rgba(255,255,255,0.2)',
+              backgroundColor: 'transparent',
               border: '1px solid rgba(255,255,255,0.4)',
               borderRadius: 20,
               padding: '0.5px 5px',
