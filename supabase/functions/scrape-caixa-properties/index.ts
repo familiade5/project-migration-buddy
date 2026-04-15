@@ -142,7 +142,8 @@ async function scrapePage(apiKey: string, url: string): Promise<any[]> {
           prompt: SCRAPE_PROMPT,
         },
       ],
-      waitFor: 10000,
+      waitFor: 5000,
+      timeout: 60000,
     }),
   });
 
