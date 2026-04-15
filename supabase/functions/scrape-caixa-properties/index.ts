@@ -5,8 +5,9 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-// States where we have CRECI PJ
-const TARGET_STATES = new Set(["AM", "CE", "MS", "PB", "RN", "SC"]);
+const SMART_API_BASE = "https://api-dot-site-smart-leiloes.rj.r.appspot.com/api";
+const PAGE_SIZE = 24;
+const PAGE_OFFSETS = [0, PAGE_SIZE];
 
 const STATE_FULL_NAMES: Record<string, string> = {
   AM: "Amazonas", CE: "Ceará", MS: "Mato Grosso do Sul",
@@ -19,10 +20,40 @@ const STATE_FULL_NAMES: Record<string, string> = {
 };
 
 const ALLOWED_MODALITIES = new Set(["Venda Direta", "Venda Direta Online"]);
-const FIRECRAWL_V2 = "https://api.firecrawl.dev/v2";
+
+type SmartProperty = {
+  _id?: string;
+  hdnImovel?: string;
+  endereco?: string;
+  bairro?: string;
+  estado?: string;
+  cidade?: string;
+  tipoImovel?: string;
+  precoAvaliacao?: number;
+  precoVenda?: number;
+  modoVenda?: string;
+  areaPrivativa?: number;
+  areaTotal?: number;
+  areaTerreno?: number;
+  aceitaFGTS?: boolean;
+  aceitaFinanciamentoHabitacional?: boolean;
+  desconto?: number;
+  imagens?: Array<{ fileReference?: string; fileUrl?: string }>;
+  siteLeiloeiro?: string;
+};
 
 function formatCurrency(value: number): string {
   return value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+}
+
+function toTitleCase(value: string): string {
+  return value
+    .trim()
+    .toLowerCase()
+    .split(/\s+/)
+    .filter(Boolean)
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(" ");
 }
 
 function resolveState(raw: string): string {
@@ -35,11 +66,27 @@ function resolveState(raw: string): string {
   return clean.slice(0, 2);
 }
 
-function buildPropertyData(item: any): any {
-  const evalValue = item.valorAvaliacao || item.valorVenda || 0;
-  const minValue = item.valorVenda || item.valorMinimo || 0;
+function buildExternalId(item: SmartProperty): string {
+  return `smart-caixa-${item.hdnImovel || item._id || `${item.estado}-${item.cidade}-${item.endereco}`}`.toLowerCase();
+}
+
+function buildPhotoUrls(item: SmartProperty): string[] {
+  const urls = (item.imagens || [])
+    .map((image) => {
+      if (image.fileUrl) return image.fileUrl;
+      if (image.fileReference) return `https://storage.googleapis.com/imagens-imoveis-smart-leiloes/${image.fileReference}`;
+      return null;
+    })
+    .filter((url): url is string => Boolean(url));
+
+  return [...new Set(urls)];
+}
+
+function buildPropertyData(item: SmartProperty): any {
+  const evalValue = item.precoAvaliacao || item.precoVenda || 0;
+  const minValue = item.precoVenda || 0;
   const discount = item.desconto || (evalValue > 0 ? Math.round(((evalValue - minValue) / evalValue) * 100) : 0);
-  const acceptsFinancing = !!item.aceitaFinanciamento;
+  const acceptsFinancing = !!item.aceitaFinanciamentoHabitacional;
   const acceptsFGTS = !!item.aceitaFGTS;
   const paymentMethod = acceptsFinancing ? "À vista ou financiado" : "Somente à vista";
   const stateUF = resolveState(item.estado || "");
@@ -47,9 +94,9 @@ function buildPropertyData(item: any): any {
   return {
     entryValue: "",
     propertySource: "Imóvel Caixa",
-    type: item.tipo || "Casa",
+    type: item.tipoImovel || "Casa",
     bedrooms: String(item.quartos || 0),
-    city: (item.cidade || "").replace(/^(.)(.*)/,(_:string,f:string,r:string) => f + r.toLowerCase()),
+    city: toTitleCase(item.cidade || ""),
     state: STATE_FULL_NAMES[stateUF] || item.estado || "",
     neighborhood: item.bairro || "",
     evaluationValue: formatCurrency(evalValue),
@@ -88,74 +135,40 @@ function buildPropertyData(item: any): any {
   };
 }
 
-const SCRAPE_SCHEMA = {
-  type: "object",
-  properties: {
-    imoveis: {
-      type: "array",
-      items: {
-        type: "object",
-        properties: {
-          tipo: { type: "string", description: "Tipo: Casa, Apartamento, Terreno" },
-          cidade: { type: "string", description: "Nome da cidade em maiúsculas" },
-          estado: { type: "string", description: "Sigla do estado (UF) com 2 letras" },
-          endereco: { type: "string", description: "Endereço completo do imóvel" },
-          bairro: { type: "string", description: "Bairro" },
-          cep: { type: "string", description: "CEP completo" },
-          valorAvaliacao: { type: "number", description: "Valor de avaliação em reais" },
-          valorVenda: { type: "number", description: "Valor mínimo de venda em reais" },
-          desconto: { type: "number", description: "Percentual de desconto" },
-          quartos: { type: "number", description: "Número de quartos" },
-          banheiros: { type: "number", description: "Número de banheiros" },
-          vagas: { type: "number", description: "Vagas de garagem" },
-          areaPrivativa: { type: "number", description: "Área privativa em m²" },
-          areaTerreno: { type: "number", description: "Área do terreno em m²" },
-          areaTotal: { type: "number", description: "Área total em m²" },
-          modalidade: { type: "string", description: "Venda Direta, Venda Online, Leilão, etc." },
-          aceitaFGTS: { type: "boolean", description: "Se aceita FGTS" },
-          aceitaFinanciamento: { type: "boolean", description: "Se aceita financiamento" },
-          imagemUrl: { type: "string", description: "URL da imagem principal" },
-          nomeCondominio: { type: "string", description: "Nome do condomínio se houver" },
-        },
-      },
-    },
-  },
-};
+async function fetchActiveCreciStates(supabase: ReturnType<typeof createClient>): Promise<string[]> {
+  const { data, error } = await supabase
+    .from("crecis")
+    .select("state")
+    .eq("is_active", true);
 
-const SCRAPE_PROMPT = "Extract ALL property listings (imóveis) visible on this page. Each property card shows: type (Casa/Apartamento/Terreno), city and state (UF), full address with CEP, areas in m², evaluation price (Avaliação), sale/minimum price, discount percentage, sale modality (Venda Direta/Venda Online/Leilão), FGTS acceptance, financing, and an image. Extract every single property card shown.";
+  if (error) throw error;
 
-async function scrapePage(apiKey: string, url: string): Promise<any[]> {
-  console.log(`Scraping: ${url}`);
+  return [...new Set((data || []).map((row) => resolveState(row.state || "")).filter(Boolean))];
+}
 
-  const response = await fetch(`${FIRECRAWL_V2}/scrape`, {
+async function fetchSmartPage(state: string, offset: number): Promise<SmartProperty[]> {
+  const response = await fetch(`${SMART_API_BASE}/imovel/busca`, {
     method: "POST",
     headers: {
-      Authorization: `Bearer ${apiKey}`,
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      url,
-      formats: [
-        {
-          type: "json",
-          schema: SCRAPE_SCHEMA,
-          prompt: SCRAPE_PROMPT,
-        },
-      ],
-      waitFor: 5000,
-      timeout: 60000,
+      queryDataMode: "leilao",
+      estados: [state],
+      modosVenda: [...ALLOWED_MODALITIES],
+      max: PAGE_SIZE,
+      offset,
+      countImoveis: true,
     }),
   });
 
   if (!response.ok) {
     const errText = await response.text();
-    console.error(`Firecrawl error for ${url}: ${response.status} - ${errText}`);
-    return [];
+    throw new Error(`Smart API error for ${state} offset ${offset}: ${response.status} - ${errText}`);
   }
 
   const data = await response.json();
-  const jsonData = data?.data?.json || data?.json || {};
-  return jsonData?.imoveis || [];
+  return Array.isArray(data?.records) ? data.records : [];
 }
 
 Deno.serve(async (req) => {
@@ -164,123 +177,143 @@ Deno.serve(async (req) => {
   }
 
   try {
-    const firecrawlKey = Deno.env.get("FIRECRAWL_API_KEY");
-    if (!firecrawlKey) throw new Error("FIRECRAWL_API_KEY is not configured");
-
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
     const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     const supabase = createClient(supabaseUrl, serviceRoleKey);
 
-    // Scrape page 1 and page 2 in parallel
-    const [page1Items, page2Items] = await Promise.all([
-      scrapePage(firecrawlKey, "https://smartleiloescaixa.com.br/home"),
-      scrapePage(firecrawlKey, "https://smartleiloescaixa.com.br/home?page=2"),
-    ]);
+    const targetStates = await fetchActiveCreciStates(supabase);
+    if (targetStates.length === 0) {
+      throw new Error("Nenhum estado com CRECI ativo foi encontrado para importar imóveis");
+    }
 
-    const allItems = [...page1Items, ...page2Items];
-    console.log(`Scraped ${allItems.length} total items from 2 pages`);
+    const results = await Promise.allSettled(
+      targetStates.flatMap((state) => PAGE_OFFSETS.map((offset) => fetchSmartPage(state, offset)))
+    );
+
+    const failedRequests = results.filter((result) => result.status === "rejected");
+    if (failedRequests.length === results.length) {
+      throw new Error(`Falha ao consultar a API de imóveis: ${failedRequests.map((result) => (result as PromiseRejectedResult).reason?.message || "erro desconhecido").join(" | ")}`);
+    }
+
+    failedRequests.forEach((result) => {
+      console.error("Request failed:", (result as PromiseRejectedResult).reason);
+    });
+
+    const fetchedItems = results
+      .filter((result): result is PromiseFulfilledResult<SmartProperty[]> => result.status === "fulfilled")
+      .flatMap((result) => result.value);
+
+    const uniqueItems = Array.from(
+      new Map(
+        fetchedItems
+          .filter((item) => TARGET_STATES_PLACEHOLDER(item, targetStates))
+          .filter((item) => ALLOWED_MODALITIES.has(item.modoVenda || ""))
+          .map((item) => [buildExternalId(item), item])
+      ).values()
+    );
+
+    console.log(`Fetched ${fetchedItems.length} items and kept ${uniqueItems.length} unique direct-sale properties`);
+
+    const externalIds = uniqueItems.map(buildExternalId);
+    const { data: existingRows, error: existingError } = await supabase
+      .from("scraped_properties")
+      .select("external_id")
+      .in("external_id", externalIds);
+
+    if (existingError) throw existingError;
+
+    const existingIds = new Set((existingRows || []).map((row) => row.external_id));
+    const newItems = uniqueItems.filter((item) => !existingIds.has(buildExternalId(item)));
 
     let totalNew = 0;
-    let totalSkipped = 0;
-    let totalFiltered = 0;
 
-    for (const item of allItems) {
-      const stateUF = resolveState(item.estado || "");
+    if (newItems.length > 0) {
+      const preparedItems = newItems.map((item) => {
+        const stateUF = resolveState(item.estado || "");
+        const photoUrls = buildPhotoUrls(item);
+        const propertyData = buildPropertyData(item);
 
-      // Filter: only states where we have CRECI
-      if (!TARGET_STATES.has(stateUF)) {
-        totalFiltered++;
-        continue;
-      }
+        return {
+          externalId: buildExternalId(item),
+          propertyData,
+          photoUrls,
+          insertRow: {
+            external_id: buildExternalId(item),
+            source_url: item.siteLeiloeiro || null,
+            sale_modality: item.modoVenda || null,
+            property_type: item.tipoImovel || "Casa",
+            address: item.endereco || null,
+            neighborhood: item.bairro || null,
+            city: item.cidade || "",
+            state: stateUF,
+            zip_code: null,
+            price_evaluation: item.precoAvaliacao || null,
+            price_minimum: item.precoVenda || null,
+            discount_percentage: item.desconto || null,
+            bedrooms: 0,
+            bathrooms: 0,
+            garage_spaces: 0,
+            area_total: item.areaTotal || null,
+            area_private: item.areaPrivativa || null,
+            area_terrain: item.areaTerreno || null,
+            photo_urls: photoUrls,
+            accepts_financing: !!item.aceitaFinanciamentoHabitacional,
+            accepts_fgts: !!item.aceitaFGTS,
+            payment_method: propertyData.paymentMethod,
+            raw_data: item,
+            status: "new",
+          },
+        };
+      });
 
-      // Filter: only Venda Direta and Venda Online (no Leilão)
-      const modality = item.modalidade || "";
-      if (!ALLOWED_MODALITIES.has(modality)) {
-        totalFiltered++;
-        continue;
-      }
+      const preparedMap = new Map(preparedItems.map((item) => [item.externalId, item]));
 
-      // Generate unique ID from address + price
-      const externalId = `${stateUF}-${(item.cidade || "").replace(/\s+/g, "-")}-${(item.endereco || "").replace(/\s+/g, "-").slice(0, 80)}-${item.valorVenda || 0}`.toLowerCase();
-
-      const { data: existing } = await supabase
+      const { data: insertedRows, error: insertError } = await supabase
         .from("scraped_properties")
-        .select("id")
-        .eq("external_id", externalId)
-        .maybeSingle();
+        .insert(preparedItems.map((item) => item.insertRow))
+        .select("id, external_id");
 
-      if (existing) {
-        totalSkipped++;
-        continue;
-      }
+      if (insertError) throw insertError;
 
-      const photoUrls: string[] = [];
-      if (item.imagemUrl) photoUrls.push(item.imagemUrl);
+      const queueRows = (insertedRows || []).map((row) => {
+        const prepared = preparedMap.get(row.external_id);
+        if (!prepared) {
+          throw new Error(`Dados preparados não encontrados para ${row.external_id}`);
+        }
 
-      const propertyData = buildPropertyData(item);
-
-      const { data: scraped, error: scrapeErr } = await supabase
-        .from("scraped_properties")
-        .insert({
-          external_id: externalId,
-          source_url: null,
-          sale_modality: modality,
-          property_type: item.tipo || "Casa",
-          address: item.endereco || null,
-          neighborhood: item.bairro || null,
-          city: item.cidade || "",
-          state: stateUF,
-          zip_code: item.cep || null,
-          price_evaluation: item.valorAvaliacao || null,
-          price_minimum: item.valorVenda || null,
-          discount_percentage: item.desconto || null,
-          bedrooms: item.quartos || 0,
-          bathrooms: item.banheiros || 0,
-          garage_spaces: item.vagas || 0,
-          area_total: item.areaTotal || null,
-          area_private: item.areaPrivativa || null,
-          area_terrain: item.areaTerreno || null,
-          photo_urls: photoUrls,
-          accepts_financing: !!item.aceitaFinanciamento,
-          accepts_fgts: !!item.aceitaFGTS,
-          payment_method: propertyData.paymentMethod,
-          raw_data: item,
-          status: "new",
-        })
-        .select("id")
-        .single();
-
-      if (scrapeErr) {
-        console.error(`Insert error:`, scrapeErr);
-        continue;
-      }
-
-      const { error: queueErr } = await supabase
-        .from("auto_post_queue")
-        .insert({
-          scraped_property_id: scraped.id,
-          property_data: propertyData,
-          photos: photoUrls,
+        return {
+          scraped_property_id: row.id,
+          property_data: prepared.propertyData,
+          photos: prepared.photoUrls,
           status: "pending",
-        });
+        };
+      });
 
-      if (queueErr) {
-        console.error(`Queue insert error:`, queueErr);
-        continue;
+      if (queueRows.length > 0) {
+        const { error: queueError } = await supabase
+          .from("auto_post_queue")
+          .insert(queueRows);
+
+        if (queueError) throw queueError;
       }
 
-      totalNew++;
+      totalNew = queueRows.length;
     }
+
+    const totalSkipped = uniqueItems.length - newItems.length;
+    const totalFiltered = fetchedItems.length - uniqueItems.length;
 
     console.log(`Results: ${totalNew} new, ${totalSkipped} skipped, ${totalFiltered} filtered out`);
 
     return new Response(
       JSON.stringify({
         success: true,
-        total_scraped: allItems.length,
+        total_scraped: fetchedItems.length,
+        unique_candidates: uniqueItems.length,
         new_properties: totalNew,
         skipped_existing: totalSkipped,
         filtered_out: totalFiltered,
+        states_used: targetStates,
         timestamp: new Date().toISOString(),
       }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } }
@@ -288,7 +321,7 @@ Deno.serve(async (req) => {
   } catch (error) {
     console.error("Scrape error:", error);
     return new Response(
-      JSON.stringify({ success: false, error: error.message }),
+      JSON.stringify({ success: false, error: error instanceof Error ? error.message : "Erro desconhecido" }),
       { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   }
