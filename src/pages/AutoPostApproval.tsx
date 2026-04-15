@@ -82,7 +82,8 @@ const AutoPostApproval = () => {
     let financing = 0, cash = 0;
     for (const item of items) {
       const pd = item.property_data as any;
-      if (pd?.acceptsFinancing) financing++; else cash++;
+      const isFinancing = pd?.acceptsFinancing === true || pd?.acceptsFinancing === 'true';
+      if (isFinancing) financing++; else cash++;
     }
     return { financing, cash };
   }, [items]);
