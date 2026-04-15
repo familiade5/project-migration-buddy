@@ -12,6 +12,7 @@ const ApartamentosManausPage = () => {
   const [propertyData, setPropertyData] = useState<AMPropertyData>(defaultAMPropertyData);
   const [photos, setPhotos] = useState<string[]>([]);
   const [photoPositions, setPhotoPositions] = useState<Record<number, { x: number; y: number }>>({});
+  const [photoScales, setPhotoScales] = useState<Record<number, number>>({});
   const [previewTab, setPreviewTab] = useState<'feed' | 'stories'>('feed');
 
   return (
@@ -48,7 +49,7 @@ const ApartamentosManausPage = () => {
                 </div>
               </div>
               <div className="p-4 sm:p-6">
-                <AMPhotoManager photos={photos} onChange={setPhotos} photoPositions={photoPositions} onPositionsChange={setPhotoPositions} />
+                <AMPhotoManager photos={photos} onChange={setPhotos} photoPositions={photoPositions} onPositionsChange={setPhotoPositions} photoScales={photoScales} onScalesChange={setPhotoScales} />
               </div>
             </div>
 
