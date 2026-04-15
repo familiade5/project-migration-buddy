@@ -7,7 +7,7 @@ const corsHeaders = {
 
 const SMART_API_BASE = "https://api-dot-site-smart-leiloes.rj.r.appspot.com/api";
 const PAGE_SIZE = 24;
-const PAGE_OFFSETS = [0, PAGE_SIZE];
+const PAGE_BATCH_SIZE = 5;
 
 const STATE_FULL_NAMES: Record<string, string> = {
   AM: "Amazonas", CE: "Ceará", MS: "Mato Grosso do Sul",
@@ -40,6 +40,11 @@ type SmartProperty = {
   desconto?: number;
   imagens?: Array<{ fileReference?: string; fileUrl?: string }>;
   siteLeiloeiro?: string;
+};
+
+type SmartSearchResponse = {
+  count: number;
+  records: SmartProperty[];
 };
 
 function formatCurrency(value: number): string {
@@ -146,7 +151,7 @@ async function fetchActiveCreciStates(supabase: ReturnType<typeof createClient>)
   return [...new Set((data || []).map((row) => resolveState(row.state || "")).filter(Boolean))];
 }
 
-async function fetchSmartPage(state: string, offset: number): Promise<SmartProperty[]> {
+async function fetchSmartPage(state: string, offset: number, includeCount = false): Promise<SmartSearchResponse> {
   const response = await fetch(`${SMART_API_BASE}/imovel/busca`, {
     method: "POST",
     headers: {
@@ -158,7 +163,7 @@ async function fetchSmartPage(state: string, offset: number): Promise<SmartPrope
       modosVenda: [...ALLOWED_MODALITIES],
       max: PAGE_SIZE,
       offset,
-      countImoveis: true,
+      countImoveis: includeCount,
     }),
   });
 
@@ -168,7 +173,49 @@ async function fetchSmartPage(state: string, offset: number): Promise<SmartPrope
   }
 
   const data = await response.json();
-  return Array.isArray(data?.records) ? data.records : [];
+  return {
+    count: typeof data?.count === "number" ? data.count : 0,
+    records: Array.isArray(data?.records) ? data.records : [],
+  };
+}
+
+async function fetchAllSmartPagesForState(state: string): Promise<SmartProperty[]> {
+  const firstPage = await fetchSmartPage(state, 0, true);
+  const totalCount = Math.max(firstPage.count, firstPage.records.length);
+
+  if (totalCount <= PAGE_SIZE) {
+    return firstPage.records;
+  }
+
+  const remainingOffsets: number[] = [];
+  for (let offset = PAGE_SIZE; offset < totalCount; offset += PAGE_SIZE) {
+    remainingOffsets.push(offset);
+  }
+
+  console.log(`State ${state}: fetching ${totalCount} properties across ${remainingOffsets.length + 1} pages`);
+
+  const remainingRecords: SmartProperty[] = [];
+
+  for (let index = 0; index < remainingOffsets.length; index += PAGE_BATCH_SIZE) {
+    const batchOffsets = remainingOffsets.slice(index, index + PAGE_BATCH_SIZE);
+    const batchResults = await Promise.allSettled(
+      batchOffsets.map((offset) => fetchSmartPage(state, offset))
+    );
+
+    batchResults.forEach((result, batchIndex) => {
+      if (result.status === "rejected") {
+        console.error(`Request failed for ${state} offset ${batchOffsets[batchIndex]}:`, result.reason);
+      }
+    });
+
+    remainingRecords.push(
+      ...batchResults
+        .filter((result): result is PromiseFulfilledResult<SmartSearchResponse> => result.status === "fulfilled")
+        .flatMap((result) => result.value.records)
+    );
+  }
+
+  return [...firstPage.records, ...remainingRecords];
 }
 
 Deno.serve(async (req) => {
@@ -187,7 +234,7 @@ Deno.serve(async (req) => {
     }
 
     const results = await Promise.allSettled(
-      targetStates.flatMap((state) => PAGE_OFFSETS.map((offset) => fetchSmartPage(state, offset)))
+      targetStates.map((state) => fetchAllSmartPagesForState(state))
     );
 
     const failedRequests = results.filter((result) => result.status === "rejected");
