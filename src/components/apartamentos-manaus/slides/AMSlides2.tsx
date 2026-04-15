@@ -156,7 +156,7 @@ export const AM2CoverSlide = ({ data, photos }: { data: AMPropertyData; photos: 
   return (
     <div style={{ position: 'relative', width: 360, height: 360, backgroundColor: '#ffffff', fontFamily: poppins, overflow: 'hidden' }}>
       {photo ? (
-        <img src={photo} alt="" style={{ position: 'absolute', top: 0, left: 0, width: 360, height: photoH, objectFit: 'cover' }} />
+        <img src={photo} alt="" style={{ position: 'absolute', top: 0, left: 0, width: 360, height: photoH, objectFit: 'cover', objectPosition: objectPosition || '50% 50%' }} />
       ) : (
         <div style={{ position: 'absolute', top: 0, left: 0, width: 360, height: photoH, background: 'linear-gradient(180deg, #d8dadf 0%, #cfd2d8 100%)' }} />
       )}

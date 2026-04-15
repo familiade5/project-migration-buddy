@@ -185,6 +185,7 @@ export const AMCoverSlide = ({
             width: 360,
             height: 360,
             objectFit: 'cover',
+            objectPosition: objectPosition || '50% 50%',
             display: 'block',
             clipPath: `url(#${clipId})`,
             zIndex: 10,
