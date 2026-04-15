@@ -61,6 +61,16 @@ export function AMPhotoManager({ photos, onChange, photoPositions = {}, onPositi
       });
       onPositionsChange(newPos);
     }
+    // Reindex scales
+    if (onScalesChange) {
+      const newScales: Record<number, number> = {};
+      Object.entries(photoScales).forEach(([k, v]) => {
+        const ki = parseInt(k);
+        if (ki < index) newScales[ki] = v;
+        else if (ki > index) newScales[ki - 1] = v;
+      });
+      onScalesChange(newScales);
+    }
     if (adjustingIndex === index) setAdjustingIndex(null);
     else if (adjustingIndex !== null && adjustingIndex > index) setAdjustingIndex(adjustingIndex - 1);
   };
@@ -79,6 +89,15 @@ export function AMPhotoManager({ photos, onChange, photoPositions = {}, onPositi
       if (fromPos) newPos[to] = fromPos; else delete newPos[to];
       if (toPos) newPos[from] = toPos; else delete newPos[from];
       onPositionsChange(newPos);
+    }
+    // Swap scales
+    if (onScalesChange) {
+      const newScales = { ...photoScales };
+      const fromScale = newScales[from];
+      const toScale = newScales[to];
+      if (fromScale) newScales[to] = fromScale; else delete newScales[to];
+      if (toScale) newScales[from] = toScale; else delete newScales[from];
+      onScalesChange(newScales);
     }
     if (adjustingIndex === from) setAdjustingIndex(to);
     else if (adjustingIndex === to) setAdjustingIndex(from);
