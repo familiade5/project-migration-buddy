@@ -426,6 +426,13 @@ export function AMPostPreview({ data, photos }: AMPostPreviewProps) {
         </Button>
       </div>
 
+      {/* ── Instagram Publish ── */}
+      <AMInstagramPublishDialog
+        data={data}
+        disabled={isExporting || photos.length === 0}
+        onPrepare={prepareInstagramPublication}
+      />
+
       {/* ── Slide name pills ── */}
       <div className="flex items-center gap-1 flex-wrap">
         {slides.map((slide, index) => (
@@ -493,12 +500,6 @@ export function AMPostPreview({ data, photos }: AMPostPreviewProps) {
         {totalSlides} slides • {photos.length} foto{photos.length !== 1 ? 's' : ''}
       </p>
 
-      {/* ── Instagram Publish ── */}
-      <AMInstagramPublishDialog
-        data={data}
-        disabled={isExporting || photos.length === 0}
-        onPrepare={prepareInstagramPublication}
-      />
 
       {/* ── Hidden full-res export DOM ── */}
       <div className="fixed -left-[9999px] top-0 pointer-events-none" aria-hidden="true">
