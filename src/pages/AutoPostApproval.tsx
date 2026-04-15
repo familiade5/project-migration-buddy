@@ -28,6 +28,22 @@ const STATES = [
   { value: 'SC', label: 'Santa Catarina' },
 ];
 
+const isFinancingProperty = (item: AutoPostQueueItem) => {
+  const pd = item.property_data as any;
+  return pd?.acceptsFinancing === true || pd?.acceptsFinancing === 'true';
+};
+
+const matchesStateFilter = (item: AutoPostQueueItem, stateFilter: string) => {
+  if (stateFilter === 'all') return true;
+
+  const pd = item.property_data as any;
+  const itemState = (pd?.state || '').trim();
+  const stateLabel = STATES.find((state) => state.value === stateFilter)?.label?.toLowerCase();
+  const stateUF = itemState.length === 2 ? itemState.toUpperCase() : '';
+
+  return stateUF === stateFilter || stateLabel === itemState.toLowerCase();
+};
+
 const AutoPostApproval = () => {
   const [activeTab, setActiveTab] = useState('pending');
   const [financingFilter, setFinancingFilter] = useState<'all' | 'financing' | 'cash'>('all');
@@ -36,28 +52,22 @@ const AutoPostApproval = () => {
   const [isScraping, setIsScraping] = useState(false);
   const { data: items, isLoading, refetch } = useAutoPostQueue(activeTab);
 
-  const filteredItems = useMemo(() => {
+  const stateFilteredItems = useMemo(() => {
     if (!items) return [];
-    return items.filter((item) => {
-      const pd = item.property_data as any;
+    return items.filter((item) => matchesStateFilter(item, stateFilter));
+  }, [items, stateFilter]);
 
-      // Financing filter - handle both boolean and string values
-      const isFinancing = pd?.acceptsFinancing === true || pd?.acceptsFinancing === 'true';
+  const filteredItems = useMemo(() => {
+    return stateFilteredItems.filter((item) => {
+      const isFinancing = isFinancingProperty(item);
       if (financingFilter === 'financing' && !isFinancing) return false;
       if (financingFilter === 'cash' && isFinancing) return false;
-
-      // State filter
-      if (stateFilter !== 'all') {
-        const itemState = pd?.state || '';
-        const stateUF = itemState.length === 2 ? itemState.toUpperCase() : '';
-        const matchesUF = stateUF === stateFilter;
-        const matchesFullName = STATES.find(s => s.value === stateFilter)?.label?.toLowerCase() === itemState.toLowerCase();
-        if (!matchesUF && !matchesFullName) return false;
-      }
-
       return true;
     });
-  }, [items, financingFilter, stateFilter]);
+  }, [stateFilteredItems, financingFilter]);
+
+  const visibleCount = filteredItems.length;
+  const stateScopedCount = stateFilteredItems.length;
 
   const handleScrapeNow = async () => {
     setIsScraping(true);
@@ -76,17 +86,13 @@ const AutoPostApproval = () => {
 
   const formatCurrency = (val: string) => val || 'N/A';
 
-  // Count financing vs cash for badge
   const financingCount = useMemo(() => {
-    if (!items) return { financing: 0, cash: 0 };
     let financing = 0, cash = 0;
-    for (const item of items) {
-      const pd = item.property_data as any;
-      const isFinancing = pd?.acceptsFinancing === true || pd?.acceptsFinancing === 'true';
-      if (isFinancing) financing++; else cash++;
+    for (const item of stateFilteredItems) {
+      if (isFinancingProperty(item)) financing++; else cash++;
     }
     return { financing, cash };
-  }, [items]);
+  }, [stateFilteredItems]);
 
   return (
     <AppLayout>
@@ -133,7 +139,7 @@ const AutoPostApproval = () => {
                     ? { backgroundColor: 'rgba(255,255,255,0.3)', color: 'white' }
                     : { backgroundColor: '#e5e7eb', color: '#6b7280' }
                   }>
-                  {items.length}
+                  {stateScopedCount}
                 </span>
               )}
             </button>
@@ -152,7 +158,7 @@ const AutoPostApproval = () => {
                 : { color: '#6b7280' }
               }
             >
-              Todos ({items?.length || 0})
+              Todos ({stateScopedCount})
             </button>
             <button
               onClick={() => setFinancingFilter('financing')}
