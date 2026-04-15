@@ -786,6 +786,7 @@ export const AMInfoSlide = ({
             width: '100%',
             height: '100%',
             objectFit: 'cover',
+            objectPosition: objectPosition || '50% 50%',
             display: 'block',
             filter: 'brightness(0.5) blur(2px)',
             zIndex: 0,
@@ -834,6 +835,7 @@ export const AMInfoSlide = ({
               width: '100%',
               height: '100%',
               objectFit: 'cover',
+              objectPosition: objectPosition || '50% 50%',
               display: 'block',
               clipPath: `url(#${clipId})`,
             }}
