@@ -140,7 +140,7 @@ export const AMCoverSlide = ({
           justifyContent: 'center',
         }}
       >
-        <p style={{ color: 'white', fontWeight: 700, fontSize: Math.min(20, Math.max(11, 170 / Math.max((data.title || 'Nome do Imóvel').length, 1) * 1.85)), lineHeight: 1.2, margin: 0, fontFamily: golos, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+        <p style={{ color: 'white', fontWeight: 700, fontSize: Math.min(20, Math.max(9, 170 / Math.max((data.title || 'Nome do Imóvel').length, 1) * 1.85)), lineHeight: 1.2, margin: 0, fontFamily: golos, whiteSpace: 'nowrap' }}>
           {data.title || 'Nome do Imóvel'}
         </p>
         <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '2px 6px', marginTop: 2 }}>
