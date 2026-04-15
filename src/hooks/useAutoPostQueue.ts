@@ -24,7 +24,8 @@ export function useAutoPostQueue(statusFilter: string = 'pending') {
       let q = supabase
         .from('auto_post_queue')
         .select('*')
-        .order('created_at', { ascending: false });
+        .order('created_at', { ascending: false })
+        .limit(5000);
 
       if (statusFilter !== 'all') {
         q = q.eq('status', statusFilter);

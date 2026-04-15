@@ -41,9 +41,10 @@ const AutoPostApproval = () => {
     return items.filter((item) => {
       const pd = item.property_data as any;
 
-      // Financing filter
-      if (financingFilter === 'financing' && !pd?.acceptsFinancing) return false;
-      if (financingFilter === 'cash' && pd?.acceptsFinancing) return false;
+      // Financing filter - handle both boolean and string values
+      const isFinancing = pd?.acceptsFinancing === true || pd?.acceptsFinancing === 'true';
+      if (financingFilter === 'financing' && !isFinancing) return false;
+      if (financingFilter === 'cash' && isFinancing) return false;
 
       // State filter
       if (stateFilter !== 'all') {
@@ -81,7 +82,8 @@ const AutoPostApproval = () => {
     let financing = 0, cash = 0;
     for (const item of items) {
       const pd = item.property_data as any;
-      if (pd?.acceptsFinancing) financing++; else cash++;
+      const isFinancing = pd?.acceptsFinancing === true || pd?.acceptsFinancing === 'true';
+      if (isFinancing) financing++; else cash++;
     }
     return { financing, cash };
   }, [items]);
