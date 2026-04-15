@@ -316,8 +316,24 @@ export function AMPhotoManager({ photos, onChange, photoPositions = {}, onPositi
                   >
                     <ArrowDown className="w-4 h-4 text-gray-800" />
                   </button>
+                  {/* Zoom slider */}
+                  <div className="flex items-center gap-1 mt-1 px-2 w-full" onClick={(e) => e.stopPropagation()}>
+                    <ZoomOut className="w-3 h-3 text-white/70 flex-shrink-0" />
+                    <Slider
+                      min={100}
+                      max={200}
+                      step={5}
+                      value={[Math.round((photoScales[index] || 1) * 100)]}
+                      onValueChange={(val) => {
+                        if (!onScalesChange) return;
+                        onScalesChange({ ...photoScales, [index]: val[0] / 100 });
+                      }}
+                      className="flex-1"
+                    />
+                    <ZoomIn className="w-3 h-3 text-white/70 flex-shrink-0" />
+                  </div>
                   <p className="text-white text-[8px] mt-0.5 opacity-80">
-                    {photoPositions[index] ? `${photoPositions[index].x}% × ${photoPositions[index].y}%` : '50% × 50%'}
+                    {photoPositions[index] ? `${photoPositions[index].x}% × ${photoPositions[index].y}%` : '50% × 50%'} · {Math.round((photoScales[index] || 1) * 100)}%
                   </p>
                 </div>
               )}

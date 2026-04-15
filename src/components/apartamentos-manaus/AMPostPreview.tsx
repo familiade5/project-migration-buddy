@@ -126,6 +126,7 @@ interface AMPostPreviewProps {
   data: AMPropertyData;
   photos: string[];
   photoPositions?: Record<number, { x: number; y: number }>;
+  photoScales?: Record<number, number>;
 }
 
 type FormatType = 'feed' | 'story';
@@ -138,7 +139,7 @@ const STORY_H = 640;
 // Max slides we'll ever support (drives fixed ref pool)
 const MAX_SLIDES = 20;
 
-export function AMPostPreview({ data, photos, photoPositions = {} }: AMPostPreviewProps) {
+export function AMPostPreview({ data, photos, photoPositions = {}, photoScales = {} }: AMPostPreviewProps) {
   const { user } = useAuth();
   const [currentSlide, setCurrentSlide] = useState(0);
   const [format, setFormat] = useState<FormatType>('feed');
