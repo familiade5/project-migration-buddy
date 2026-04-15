@@ -314,7 +314,7 @@ Deno.serve(async (req) => {
             accepts_financing: !!item.aceitaFinanciamentoHabitacional,
             accepts_fgts: !!item.aceitaFGTS,
             payment_method: propertyData.paymentMethod,
-            raw_data: item,
+            raw_data: { hdnImovel: item.hdnImovel, modoVenda: item.modoVenda, siteLeiloeiro: item.siteLeiloeiro },
             status: "new",
           },
         };
@@ -323,7 +323,7 @@ Deno.serve(async (req) => {
       const preparedMap = new Map(preparedItems.map((item) => [item.externalId, item]));
 
       // Insert in batches of 50
-      const BATCH_INSERT = 50;
+      const BATCH_INSERT = 20;
       for (let i = 0; i < preparedItems.length; i += BATCH_INSERT) {
         const batch = preparedItems.slice(i, i + BATCH_INSERT);
 
