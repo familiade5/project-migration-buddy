@@ -74,7 +74,7 @@ export const AMStory4_T4_Slide1 = ({
       <div style={{ padding: '10px 18px 0', display: 'flex', alignItems: 'stretch', gap: 10 }}>
         {/* Orange title card */}
         <div style={{
-          flex: 1, backgroundColor: '#F47920', borderRadius: 10, padding: '10px 14px',
+          flex: 1, background: 'linear-gradient(180deg, #FF8D28 52.88%, #DF7110 100%)', borderRadius: 10, padding: '10px 14px',
         }}>
           <p style={{ color: 'white', fontSize: 16, fontWeight: 900, margin: '0 0 5px', lineHeight: 1.2 }}>
             {data.title || 'Apartamento'}
@@ -152,7 +152,7 @@ export const AMStory4_T4_Slide1 = ({
           </div>
           {/* Price card azul — idêntico ao feed */}
           <div style={{
-            flex: 1, height: 100, backgroundColor: '#1B5EA6', borderRadius: 10,
+            flex: 1, height: 100, background: 'linear-gradient(180deg, #1476D4 36.06%, #044A8E 100%)', borderRadius: 10,
             display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '8px 12px',
           }}>
             {/* Pill VENDA/LOCAÇÃO */}
