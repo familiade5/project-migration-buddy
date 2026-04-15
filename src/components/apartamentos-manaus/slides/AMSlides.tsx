@@ -222,7 +222,7 @@ export const AMCoverSlide = ({
           bottom: 10,
           right: 10,
           zIndex: 20,
-          background: 'linear-gradient(180deg, #1476D4 36.06%, #044A8E 100%)',
+          background: data.isRental ? 'linear-gradient(180deg, #FF8D28 52.88%, #DF7110 100%)' : 'linear-gradient(180deg, #1476D4 36.06%, #044A8E 100%)',
           borderRadius: 10,
           padding: '5px 14px 5px',
           width: 148,
@@ -234,27 +234,25 @@ export const AMCoverSlide = ({
           justifyContent: 'center',
         }}
       >
-        {/* VENDA pill — only shown for Venda mode */}
-        {!data.isRental && (
-          <div
-            style={{
-              display: 'inline-block',
-              color: 'white',
-              fontWeight: 700,
-              fontSize: 5.5,
-              letterSpacing: '0.08em',
-              backgroundColor: 'transparent',
-              border: '1px solid rgba(255,255,255,0.4)',
-              borderRadius: 20,
-              padding: '0.5px 5px',
-              marginBottom: 1,
-              alignSelf: 'flex-start',
-              fontFamily: golos,
-            }}
-          >
-            VENDA
-          </div>
-        )}
+        {/* VENDA/ALUGUEL pill */}
+        <div
+          style={{
+            display: 'inline-block',
+            color: 'white',
+            fontWeight: 700,
+            fontSize: 5.5,
+            letterSpacing: '0.08em',
+            backgroundColor: 'transparent',
+            border: '1px solid rgba(255,255,255,0.4)',
+            borderRadius: 20,
+            padding: '0.5px 5px',
+            marginBottom: 1,
+            alignSelf: 'flex-start',
+            fontFamily: golos,
+          }}
+        >
+          {data.isRental ? 'ALUGUEL' : 'VENDA'}
+        </div>
 
         {/* Price */}
         <div style={{ display: 'flex', alignItems: 'baseline', gap: 2, color: 'white' }}>
