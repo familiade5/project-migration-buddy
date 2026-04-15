@@ -206,7 +206,7 @@ Deno.serve(async (req) => {
     const uniqueItems = Array.from(
       new Map(
         fetchedItems
-          .filter((item) => TARGET_STATES_PLACEHOLDER(item, targetStates))
+          .filter((item) => targetStates.includes(resolveState(item.estado || "")))
           .filter((item) => ALLOWED_MODALITIES.has(item.modoVenda || ""))
           .map((item) => [buildExternalId(item), item])
       ).values()
