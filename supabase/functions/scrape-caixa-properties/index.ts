@@ -261,15 +261,22 @@ Deno.serve(async (req) => {
 
     console.log(`Fetched ${fetchedItems.length} items and kept ${uniqueItems.length} unique direct-sale properties`);
 
+    // Lookup existing IDs in batches of 200
+    const BATCH_LOOKUP = 200;
     const externalIds = uniqueItems.map(buildExternalId);
-    const { data: existingRows, error: existingError } = await supabase
-      .from("scraped_properties")
-      .select("external_id")
-      .in("external_id", externalIds);
+    const existingIds = new Set<string>();
 
-    if (existingError) throw existingError;
+    for (let i = 0; i < externalIds.length; i += BATCH_LOOKUP) {
+      const batch = externalIds.slice(i, i + BATCH_LOOKUP);
+      const { data: existingRows, error: existingError } = await supabase
+        .from("scraped_properties")
+        .select("external_id")
+        .in("external_id", batch);
 
-    const existingIds = new Set((existingRows || []).map((row) => row.external_id));
+      if (existingError) throw existingError;
+      (existingRows || []).forEach((row) => existingIds.add(row.external_id));
+    }
+
     const newItems = uniqueItems.filter((item) => !existingIds.has(buildExternalId(item)));
 
     let totalNew = 0;
@@ -315,36 +322,42 @@ Deno.serve(async (req) => {
 
       const preparedMap = new Map(preparedItems.map((item) => [item.externalId, item]));
 
-      const { data: insertedRows, error: insertError } = await supabase
-        .from("scraped_properties")
-        .insert(preparedItems.map((item) => item.insertRow))
-        .select("id, external_id");
+      // Insert in batches of 50
+      const BATCH_INSERT = 50;
+      for (let i = 0; i < preparedItems.length; i += BATCH_INSERT) {
+        const batch = preparedItems.slice(i, i + BATCH_INSERT);
 
-      if (insertError) throw insertError;
+        const { data: insertedRows, error: insertError } = await supabase
+          .from("scraped_properties")
+          .insert(batch.map((item) => item.insertRow))
+          .select("id, external_id");
 
-      const queueRows = (insertedRows || []).map((row) => {
-        const prepared = preparedMap.get(row.external_id);
-        if (!prepared) {
-          throw new Error(`Dados preparados não encontrados para ${row.external_id}`);
+        if (insertError) throw insertError;
+
+        const queueRows = (insertedRows || []).map((row) => {
+          const prepared = preparedMap.get(row.external_id);
+          if (!prepared) {
+            throw new Error(`Dados preparados não encontrados para ${row.external_id}`);
+          }
+
+          return {
+            scraped_property_id: row.id,
+            property_data: prepared.propertyData,
+            photos: prepared.photoUrls,
+            status: "pending",
+          };
+        });
+
+        if (queueRows.length > 0) {
+          const { error: queueError } = await supabase
+            .from("auto_post_queue")
+            .insert(queueRows);
+
+          if (queueError) throw queueError;
         }
 
-        return {
-          scraped_property_id: row.id,
-          property_data: prepared.propertyData,
-          photos: prepared.photoUrls,
-          status: "pending",
-        };
-      });
-
-      if (queueRows.length > 0) {
-        const { error: queueError } = await supabase
-          .from("auto_post_queue")
-          .insert(queueRows);
-
-        if (queueError) throw queueError;
+        totalNew += queueRows.length;
       }
-
-      totalNew = queueRows.length;
     }
 
     const totalSkipped = uniqueItems.length - newItems.length;
