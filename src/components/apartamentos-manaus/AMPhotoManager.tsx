@@ -120,6 +120,17 @@ export function AMPhotoManager({ photos, onChange, photoPositions = {}, onPositi
       });
       onPositionsChange(newPos);
     }
+    // Reindex scales
+    if (onScalesChange) {
+      const newScales: Record<number, number> = {};
+      Object.entries(photoScales).forEach(([k, v]) => {
+        const ki = parseInt(k);
+        if (ki === index) newScales[0] = v;
+        else if (ki < index) newScales[ki + 1] = v;
+        else newScales[ki] = v;
+      });
+      onScalesChange(newScales);
+    }
     setAdjustingIndex(null);
   };
 
