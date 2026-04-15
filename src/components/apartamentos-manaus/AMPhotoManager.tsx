@@ -134,10 +134,16 @@ export function AMPhotoManager({ photos, onChange, photoPositions = {}, onPositi
   };
 
   const resetPosition = (index: number) => {
-    if (!onPositionsChange) return;
-    const newPos = { ...photoPositions };
-    delete newPos[index];
-    onPositionsChange(newPos);
+    if (onPositionsChange) {
+      const newPos = { ...photoPositions };
+      delete newPos[index];
+      onPositionsChange(newPos);
+    }
+    if (onScalesChange) {
+      const newScales = { ...photoScales };
+      delete newScales[index];
+      onScalesChange(newScales);
+    }
   };
 
   const slideLabel = (index: number) => {
@@ -202,6 +208,7 @@ export function AMPhotoManager({ photos, onChange, photoPositions = {}, onPositi
                   objectPosition: photoPositions[index]
                     ? `${photoPositions[index].x}% ${photoPositions[index].y}%`
                     : '50% 50%',
+                  transform: `scale(${photoScales[index] || 1})`,
                 }}
               />
 
