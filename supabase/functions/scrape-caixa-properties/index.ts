@@ -18,7 +18,7 @@ const STATE_FULL_NAMES: Record<string, string> = {
   AC: "Acre", AP: "Amapá", RR: "Roraima", ES: "Espírito Santo", DF: "Distrito Federal",
 };
 
-const ALLOWED_MODALITIES = new Set(["Venda Direta", "Venda Online", "Venda Direta Online"]);
+const ALLOWED_MODALITIES = new Set(["Venda Direta", "Venda Direta Online"]);
 const FIRECRAWL_V2 = "https://api.firecrawl.dev/v2";
 
 function formatCurrency(value: number): string {
