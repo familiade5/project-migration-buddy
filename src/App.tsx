@@ -22,6 +22,7 @@ import AMAdmin from "./pages/am/AMAdmin";
 import AFAuth from "./pages/af/AFAuth";
 import ApartamentosFortalezaPage from "./pages/af/ApartamentosFortalezaPage";
 import TrafegoPago from "./pages/TrafegoPago";
+import AutoPostApproval from "./pages/AutoPostApproval";
 
 
 const queryClient = new QueryClient();
@@ -94,6 +95,10 @@ const App = () => (
             {/* Tráfego Pago - Master admin only */}
             <Route path="/trafego-pago" element={
               <ProtectedRoute><TrafegoPago /></ProtectedRoute>
+            } />
+            {/* Auto Post Approval */}
+            <Route path="/aprovacao-posts" element={
+              <ProtectedRoute requireAdmin><AutoPostApproval /></ProtectedRoute>
             } />
             
             <Route path="*" element={<NotFound />} />
