@@ -6,18 +6,21 @@
  * - The order here drives the slide order in AMPostPreview
  */
 import { useRef, useState } from 'react';
-import { GripVertical, X, Upload, ChevronLeft, ChevronRight, Star, Move, ArrowUp, ArrowDown, ArrowLeft, ArrowRight } from 'lucide-react';
+import { GripVertical, X, Upload, ChevronLeft, ChevronRight, Star, Move, ArrowUp, ArrowDown, ArrowLeft, ArrowRight, ZoomIn, ZoomOut } from 'lucide-react';
+import { Slider } from '@/components/ui/slider';
 
 interface AMPhotoManagerProps {
   photos: string[];
   onChange: (photos: string[]) => void;
   photoPositions?: Record<number, { x: number; y: number }>;
   onPositionsChange?: (positions: Record<number, { x: number; y: number }>) => void;
+  photoScales?: Record<number, number>;
+  onScalesChange?: (scales: Record<number, number>) => void;
 }
 
 const STEP = 10; // % per click
 
-export function AMPhotoManager({ photos, onChange, photoPositions = {}, onPositionsChange }: AMPhotoManagerProps) {
+export function AMPhotoManager({ photos, onChange, photoPositions = {}, onPositionsChange, photoScales = {}, onScalesChange }: AMPhotoManagerProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const dragItem = useRef<number | null>(null);
   const dragOver = useRef<number | null>(null);
