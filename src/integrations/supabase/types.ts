@@ -97,6 +97,56 @@ export type Database = {
           },
         ]
       }
+      auto_post_queue: {
+        Row: {
+          approved_by_user_id: string | null
+          created_at: string
+          generated_caption: string | null
+          id: string
+          photos: string[] | null
+          property_data: Json
+          published_at: string | null
+          rejection_reason: string | null
+          scraped_property_id: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          approved_by_user_id?: string | null
+          created_at?: string
+          generated_caption?: string | null
+          id?: string
+          photos?: string[] | null
+          property_data: Json
+          published_at?: string | null
+          rejection_reason?: string | null
+          scraped_property_id: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          approved_by_user_id?: string | null
+          created_at?: string
+          generated_caption?: string | null
+          id?: string
+          photos?: string[] | null
+          property_data?: Json
+          published_at?: string | null
+          rejection_reason?: string | null
+          scraped_property_id?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "auto_post_queue_scraped_property_id_fkey"
+            columns: ["scraped_property_id"]
+            isOneToOne: false
+            referencedRelation: "scraped_properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       broker_documents: {
         Row: {
           broker_id: string
@@ -2029,6 +2079,96 @@ export type Database = {
           updated_at?: string
           whatsapp?: string | null
           workplace?: string | null
+          zip_code?: string | null
+        }
+        Relationships: []
+      }
+      scraped_properties: {
+        Row: {
+          accepts_fgts: boolean | null
+          accepts_financing: boolean | null
+          address: string | null
+          area_private: number | null
+          area_terrain: number | null
+          area_total: number | null
+          bathrooms: number | null
+          bedrooms: number | null
+          city: string
+          created_at: string
+          discount_percentage: number | null
+          external_id: string
+          garage_spaces: number | null
+          id: string
+          neighborhood: string | null
+          payment_method: string | null
+          photo_urls: string[] | null
+          price_evaluation: number | null
+          price_minimum: number | null
+          property_type: string | null
+          raw_data: Json | null
+          sale_modality: string
+          source_url: string | null
+          state: string
+          status: string
+          updated_at: string
+          zip_code: string | null
+        }
+        Insert: {
+          accepts_fgts?: boolean | null
+          accepts_financing?: boolean | null
+          address?: string | null
+          area_private?: number | null
+          area_terrain?: number | null
+          area_total?: number | null
+          bathrooms?: number | null
+          bedrooms?: number | null
+          city: string
+          created_at?: string
+          discount_percentage?: number | null
+          external_id: string
+          garage_spaces?: number | null
+          id?: string
+          neighborhood?: string | null
+          payment_method?: string | null
+          photo_urls?: string[] | null
+          price_evaluation?: number | null
+          price_minimum?: number | null
+          property_type?: string | null
+          raw_data?: Json | null
+          sale_modality: string
+          source_url?: string | null
+          state: string
+          status?: string
+          updated_at?: string
+          zip_code?: string | null
+        }
+        Update: {
+          accepts_fgts?: boolean | null
+          accepts_financing?: boolean | null
+          address?: string | null
+          area_private?: number | null
+          area_terrain?: number | null
+          area_total?: number | null
+          bathrooms?: number | null
+          bedrooms?: number | null
+          city?: string
+          created_at?: string
+          discount_percentage?: number | null
+          external_id?: string
+          garage_spaces?: number | null
+          id?: string
+          neighborhood?: string | null
+          payment_method?: string | null
+          photo_urls?: string[] | null
+          price_evaluation?: number | null
+          price_minimum?: number | null
+          property_type?: string | null
+          raw_data?: Json | null
+          sale_modality?: string
+          source_url?: string | null
+          state?: string
+          status?: string
+          updated_at?: string
           zip_code?: string | null
         }
         Relationships: []
