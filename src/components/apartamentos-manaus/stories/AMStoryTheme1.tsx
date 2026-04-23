@@ -49,11 +49,11 @@ export const AMStory1_T1_Curiosity = ({
       background: 'radial-gradient(ellipse 80% 40% at 50% 20%, rgba(27,94,166,0.55) 0%, transparent 70%)',
     }} />
 
-    {/* Top section — logo + texto (50% superior) — padding-top extra p/ safe zone do Instagram */}
+    {/* Top section — logo + texto (50% superior) */}
     <div style={{
       position: 'absolute', top: 0, left: 0, right: 0, height: '50%',
       display: 'flex', flexDirection: 'column', alignItems: 'center',
-      justifyContent: 'space-evenly', padding: '60px 32px 16px', zIndex: 10,
+      justifyContent: 'space-evenly', padding: '20px 32px 16px', zIndex: 10,
     }}>
       {/* Logo — topo fixo na coluna */}
       <Logo variant="white" />
@@ -193,13 +193,13 @@ export const AMStory1_T1_Reveal = ({
           )}
         </div>
 
-        {/* Logo + neighborhood overlay — descidos p/ safe zone do Instagram (~56px) */}
-        <div style={{ position: 'absolute', top: 56, left: 16, zIndex: 10 }}>
+        {/* Logo + neighborhood overlay */}
+        <div style={{ position: 'absolute', top: 16, left: 16, zIndex: 10 }}>
           <Logo variant="white" />
         </div>
         {data.neighborhood && (
           <div style={{
-            position: 'absolute', top: 56, right: 8, zIndex: 10,
+            position: 'absolute', top: 16, right: 8, zIndex: 10,
             backgroundColor: '#F47920', borderRadius: 20, padding: '4px 12px',
           }}>
             <p style={{ color: 'white', fontSize: 10, fontWeight: 700, margin: 0 }}>📍 {data.neighborhood}</p>
@@ -336,7 +336,7 @@ export const AMStory1_T1_CTA = ({
       {/* Content */}
       <div style={{
         position: 'absolute', inset: 0, zIndex: 10,
-        display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '90px 28px 40px',
+        display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '50px 28px 40px',
       }}>
         {/* Logo */}
         <Logo variant="white" />
