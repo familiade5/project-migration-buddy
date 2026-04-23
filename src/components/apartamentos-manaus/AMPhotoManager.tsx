@@ -26,16 +26,51 @@ export function AMPhotoManager({ photos, onChange, photoPositions = {}, onPositi
   const dragOver = useRef<number | null>(null);
   const [adjustingIndex, setAdjustingIndex] = useState<number | null>(null);
 
-  const handleFiles = (files: FileList) => {
-    const readers = Array.from(files).map(
-      (file) =>
-        new Promise<string>((resolve) => {
-          const reader = new FileReader();
-          reader.onload = (e) => resolve(e.target?.result as string);
-          reader.readAsDataURL(file);
-        }),
-    );
-    Promise.all(readers).then((results) => onChange([...photos, ...results]));
+  /**
+   * Comprime a imagem antes de armazenar no state para evitar travamento do
+   * navegador com fotos grandes (várias MB em base64). Mantém qualidade visual
+   * boa (1600px max) e converte para JPEG 0.82.
+   */
+  const compressImage = (file: File): Promise<string> =>
+    new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+          const MAX = 1600;
+          let { width, height } = img;
+          if (width > MAX || height > MAX) {
+            if (width >= height) {
+              height = Math.round((height * MAX) / width);
+              width = MAX;
+            } else {
+              width = Math.round((width * MAX) / height);
+              height = MAX;
+            }
+          }
+          const canvas = document.createElement('canvas');
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          if (!ctx) return resolve(e.target?.result as string);
+          ctx.drawImage(img, 0, 0, width, height);
+          resolve(canvas.toDataURL('image/jpeg', 0.82));
+        };
+        img.onerror = () => resolve(e.target?.result as string);
+        img.src = e.target?.result as string;
+      };
+      reader.onerror = () => resolve('');
+      reader.readAsDataURL(file);
+    });
+
+  const handleFiles = async (files: FileList) => {
+    // Processa em série p/ não saturar a memória/CPU com muitas fotos grandes
+    const results: string[] = [];
+    for (const file of Array.from(files)) {
+      const compressed = await compressImage(file);
+      if (compressed) results.push(compressed);
+    }
+    onChange([...photos, ...results]);
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
