@@ -71,10 +71,10 @@ export const AMStory4_T4_Slide1 = ({
       )}
 
       {/* ── Header row: título + banco ── */}
-      <div style={{ padding: '10px 18px 0', display: 'flex', alignItems: 'stretch', gap: 10 }}>
+      <div style={{ padding: '10px 18px 0', display: 'flex', alignItems: 'stretch', gap: 4 }}>
         {/* Orange title card */}
         <div style={{
-          flex: 1, background: 'linear-gradient(180deg, #FF8D28 52.88%, #DF7110 100%)', borderRadius: 10, padding: '12px 14px',
+          flex: '0 1 auto', background: 'linear-gradient(180deg, #FF8D28 52.88%, #DF7110 100%)', borderRadius: 10, padding: '12px 12px',
         }}>
           <p style={{ color: 'white', fontSize: Math.min(22, Math.max(11, 220 / Math.max((data.title || 'Apartamento').length, 1) * 1.85)), fontWeight: 900, margin: '0 0 5px', lineHeight: 1.2, whiteSpace: 'nowrap' }}>
             {data.title || 'Apartamento'}
@@ -101,8 +101,8 @@ export const AMStory4_T4_Slide1 = ({
         {/* CAIXA — mesmo height do card laranja, sem fundo extra */}
         {data.acceptsFinancing && (
           <div style={{
-            width: 108, alignSelf: 'stretch', borderRadius: 10, overflow: 'hidden',
-            flexShrink: 0,
+            width: 96, alignSelf: 'stretch', borderRadius: 10, overflow: 'hidden',
+            flexShrink: 0, marginLeft: 'auto',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
           }}>
             <img
