@@ -63,7 +63,9 @@ export const AMStory4_T4_Slide1 = ({
       {/* ── Localização topo: Bairro, Cidade - Estado ── */}
       {(data.neighborhood || data.city) && (
         <div style={{ padding: '60px 18px 0', display: 'flex', alignItems: 'center', gap: 6 }}>
-          <span style={{ color: '#1B5EA6', fontSize: 13 }}>📍</span>
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="#1B5EA6" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5z"/>
+          </svg>
           <p style={{ color: '#555', fontSize: 11, margin: 0, fontWeight: 500 }}>
             {[data.neighborhood, data.city ? `${data.city}${data.state ? ' - ' + data.state : ''}` : ''].filter(Boolean).join(', ')}
           </p>
