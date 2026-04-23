@@ -78,9 +78,16 @@ export const AMStory4_T4_Slide1 = ({
         }}>
           <p style={{
             color: 'white',
-            fontSize: Math.min(20, Math.max(10, 360 / Math.max((data.title || 'Apartamento').length, 1))),
-            fontWeight: 900, margin: '0 0 5px', lineHeight: 1.2,
-            whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
+            fontSize: (() => {
+              const len = (data.title || 'Apartamento').length;
+              if (len <= 14) return 20;
+              if (len <= 20) return 17;
+              if (len <= 28) return 14;
+              if (len <= 38) return 12;
+              return 10;
+            })(),
+            fontWeight: 900, margin: '0 0 5px', lineHeight: 1.15,
+            wordBreak: 'break-word', overflowWrap: 'anywhere',
           }}>
             {data.title || 'Apartamento'}
           </p>
