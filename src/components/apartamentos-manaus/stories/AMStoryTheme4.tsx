@@ -189,7 +189,7 @@ export const AMStory4_T4_Slide1 = ({
       </div>
 
       {/* ── Logo rodapé ── */}
-      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: 10 }}>
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: -8 }}>
         <Logo size={150} />
       </div>
     </div>
