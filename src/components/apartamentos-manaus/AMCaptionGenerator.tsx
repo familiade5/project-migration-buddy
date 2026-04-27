@@ -39,8 +39,17 @@ function buildCaption(data: AMPropertyData): string {
   lines.push('');
 
   // Specs
-  if (data.bedrooms > 0) lines.push(`✅ ${data.bedrooms} ${data.bedrooms === 1 ? 'quarto' : 'quartos'}`);
-  if (data.suites > 0) lines.push(`✅ ${data.suites} ${data.suites === 1 ? 'suíte' : 'suítes'}`);
+  if (data.bedrooms > 0) {
+    const quartoLabel = `${data.bedrooms} ${data.bedrooms === 1 ? 'quarto' : 'quartos'}`;
+    if (data.suites > 0) {
+      const suiteLabel = `${data.suites} ${data.suites === 1 ? 'suíte' : 'suítes'}`;
+      lines.push(`✅ ${quartoLabel} sendo ${suiteLabel}`);
+    } else {
+      lines.push(`✅ ${quartoLabel}`);
+    }
+  } else if (data.suites > 0) {
+    lines.push(`✅ ${data.suites} ${data.suites === 1 ? 'suíte' : 'suítes'}`);
+  }
   if (data.floor) lines.push(`✅ ${data.floor}° Andar`);
   if (data.rooms) {
     data.rooms.split('\n').map(r => r.trim()).filter(Boolean).forEach(r => lines.push(`✅ ${r}`));
@@ -50,11 +59,11 @@ function buildCaption(data: AMPropertyData): string {
   lines.push('');
 
   // Condo / features
-  if (data.condominiumFee > 0 && data.condoIncludes) {
-    lines.push(`✅ Baixo custo de condomínio, incluso ${data.condoIncludes}`);
-    lines.push('');
-  } else if (data.condominiumFee > 0) {
+  if (data.condominiumFee > 0) {
     lines.push(`✅ Condomínio ${formatCurrency(data.condominiumFee)}/mês`);
+    if (data.condoIncludes && data.condoIncludes.trim()) {
+      lines.push(`✅ Incluso no condomínio: ${data.condoIncludes.trim()}`);
+    }
     lines.push('');
   }
 
