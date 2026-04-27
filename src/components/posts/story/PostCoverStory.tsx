@@ -39,7 +39,7 @@ export const PostCoverStory = ({ data, photo }: PostCoverStoryProps) => {
   ];
 
   const getNoEntryContent = () => {
-    if (data.discount && parseFloat(data.discount) >= 30) {
+    if (data.discount && parseFloat(data.discount) > 0) {
       return noEntryTexts[1];
     }
     return noEntryTexts[0];
