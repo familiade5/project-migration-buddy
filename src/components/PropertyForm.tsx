@@ -67,6 +67,65 @@ export const PropertyForm = ({ data, onChange }: PropertyFormProps) => {
 
   return (
     <div className="space-y-6 max-w-full overflow-hidden">
+      {/* Destaque do topo da capa - movido para o topo */}
+      <div className="space-y-4">
+        <div className="rounded-lg border border-gray-200 bg-gray-50 p-3">
+          <Label className="text-gray-700 text-sm font-semibold">Destaque do topo da capa</Label>
+          <p className="text-xs text-gray-500 mt-0.5 mb-2">Escolha o que aparecerá no quadro verde superior esquerdo da capa.</p>
+          <div className="grid grid-cols-2 gap-2">
+            <button
+              type="button"
+              onClick={() => updateField('hasEasyEntry', false)}
+              className={`text-sm font-medium rounded-md px-3 py-2 border transition ${
+                !data.hasEasyEntry
+                  ? 'bg-emerald-600 text-white border-emerald-600'
+                  : 'bg-white text-gray-700 border-gray-200 hover:border-gray-300'
+              }`}
+            >
+              % de Desconto
+            </button>
+            <button
+              type="button"
+              onClick={() => updateField('hasEasyEntry', true)}
+              className={`text-sm font-medium rounded-md px-3 py-2 border transition ${
+                data.hasEasyEntry
+                  ? 'bg-emerald-600 text-white border-emerald-600'
+                  : 'bg-white text-gray-700 border-gray-200 hover:border-gray-300'
+              }`}
+            >
+              Valor de Entrada
+            </button>
+          </div>
+        </div>
+
+        <div>
+          <Label htmlFor="discountTop" className="text-gray-500 text-sm font-medium">Desconto (%)</Label>
+          <Input
+            id="discountTop"
+            placeholder="42,07"
+            value={data.discount}
+            onChange={(e) => updateField('discount', e.target.value)}
+            className="mt-1.5 bg-white border-gray-200 text-gray-900"
+          />
+        </div>
+
+        <div>
+          <Label htmlFor="entryValueTop" className="text-gray-500 text-sm font-medium">Entrada a partir de</Label>
+          <Input
+            id="entryValueTop"
+            placeholder="R$ 7.500"
+            value={data.entryValue}
+            onChange={(e) => updateField('entryValue', e.target.value)}
+            className="mt-1.5 bg-white border-gray-200 text-gray-900"
+          />
+          {data.hasEasyEntry && (
+            <p className="text-xs text-gray-500 mt-1">
+              Se o screenshot não trouxer, digite manualmente.
+            </p>
+          )}
+        </div>
+      </div>
+
       {/* Identificação */}
       <div className="space-y-4">
         <h3 className="font-semibold text-base text-gray-800 flex items-center gap-2">
@@ -121,17 +180,6 @@ export const PropertyForm = ({ data, onChange }: PropertyFormProps) => {
             </div>
           </div>
 
-          <div>
-            <Label htmlFor="entryValue" className="text-gray-500 text-sm font-medium">Entrada a partir de</Label>
-            <Input
-              id="entryValue"
-              placeholder="R$ 7.500"
-              value={data.entryValue}
-              onChange={(e) => updateField('entryValue', e.target.value)}
-              className="mt-1.5 bg-white border-gray-200 text-gray-900"
-            />
-          </div>
-
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div className="min-w-0">
               <Label htmlFor="evaluationValue" className="text-gray-500 text-sm font-medium">Valor de Avaliação</Label>
@@ -153,51 +201,6 @@ export const PropertyForm = ({ data, onChange }: PropertyFormProps) => {
                 className="mt-1.5 bg-white border-gray-200 text-gray-900"
               />
             </div>
-          </div>
-
-          <div>
-            <Label htmlFor="discount" className="text-gray-500 text-sm font-medium">Desconto (%)</Label>
-            <Input
-              id="discount"
-              placeholder="42,07"
-              value={data.discount}
-              onChange={(e) => updateField('discount', e.target.value)}
-              className="mt-1.5 bg-white border-gray-200 text-gray-900"
-            />
-          </div>
-
-          <div className="rounded-lg border border-gray-200 bg-gray-50 p-3">
-            <Label className="text-gray-700 text-sm font-semibold">Destaque do topo da capa</Label>
-            <p className="text-xs text-gray-500 mt-0.5 mb-2">Escolha o que aparecerá no quadro verde superior esquerdo da capa.</p>
-            <div className="grid grid-cols-2 gap-2">
-              <button
-                type="button"
-                onClick={() => updateField('hasEasyEntry', false)}
-                className={`text-sm font-medium rounded-md px-3 py-2 border transition ${
-                  !data.hasEasyEntry
-                    ? 'bg-emerald-600 text-white border-emerald-600'
-                    : 'bg-white text-gray-700 border-gray-200 hover:border-gray-300'
-                }`}
-              >
-                % de Desconto
-              </button>
-              <button
-                type="button"
-                onClick={() => updateField('hasEasyEntry', true)}
-                className={`text-sm font-medium rounded-md px-3 py-2 border transition ${
-                  data.hasEasyEntry
-                    ? 'bg-emerald-600 text-white border-emerald-600'
-                    : 'bg-white text-gray-700 border-gray-200 hover:border-gray-300'
-                }`}
-              >
-                Valor de Entrada
-              </button>
-            </div>
-            {data.hasEasyEntry && (
-              <p className="text-xs text-gray-500 mt-2">
-                Preencha o campo "Entrada a partir de" acima. Se o screenshot não trouxer, digite manualmente.
-              </p>
-            )}
           </div>
 
           <div>
