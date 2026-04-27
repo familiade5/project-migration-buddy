@@ -67,6 +67,12 @@ function buildCaption(data: AMPropertyData): string {
     lines.push('');
   }
 
+  // IPTU
+  if (data.iptu > 0) {
+    lines.push(`✅ IPTU ${formatCurrency(data.iptu)}`);
+    lines.push('');
+  }
+
   // Leisure
   if (data.leisureItems) {
     lines.push(`✅ Área de lazer completa`);
