@@ -166,6 +166,40 @@ export const PropertyForm = ({ data, onChange }: PropertyFormProps) => {
             />
           </div>
 
+          <div className="rounded-lg border border-gray-200 bg-gray-50 p-3">
+            <Label className="text-gray-700 text-sm font-semibold">Destaque do topo da capa</Label>
+            <p className="text-xs text-gray-500 mt-0.5 mb-2">Escolha o que aparecerá no quadro verde superior esquerdo da capa.</p>
+            <div className="grid grid-cols-2 gap-2">
+              <button
+                type="button"
+                onClick={() => updateField('hasEasyEntry', false)}
+                className={`text-sm font-medium rounded-md px-3 py-2 border transition ${
+                  !data.hasEasyEntry
+                    ? 'bg-emerald-600 text-white border-emerald-600'
+                    : 'bg-white text-gray-700 border-gray-200 hover:border-gray-300'
+                }`}
+              >
+                % de Desconto
+              </button>
+              <button
+                type="button"
+                onClick={() => updateField('hasEasyEntry', true)}
+                className={`text-sm font-medium rounded-md px-3 py-2 border transition ${
+                  data.hasEasyEntry
+                    ? 'bg-emerald-600 text-white border-emerald-600'
+                    : 'bg-white text-gray-700 border-gray-200 hover:border-gray-300'
+                }`}
+              >
+                Valor de Entrada
+              </button>
+            </div>
+            {data.hasEasyEntry && (
+              <p className="text-xs text-gray-500 mt-2">
+                Preencha o campo "Entrada a partir de" acima. Se o screenshot não trouxer, digite manualmente.
+              </p>
+            )}
+          </div>
+
           <div>
             <Label className="text-gray-500 text-sm font-medium">Forma de Pagamento</Label>
             <Select value={data.paymentMethod} onValueChange={(v) => updateField('paymentMethod', v)}>
