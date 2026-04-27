@@ -60,10 +60,10 @@ function buildCaption(data: AMPropertyData): string {
 
   // Condo / features
   if (data.condominiumFee > 0) {
-    lines.push(`✅ Condomínio ${formatCurrency(data.condominiumFee)}/mês`);
-    if (data.condoIncludes && data.condoIncludes.trim()) {
-      lines.push(`✅ Incluso no condomínio: ${data.condoIncludes.trim()}`);
-    }
+    const includesPart = data.condoIncludes && data.condoIncludes.trim()
+      ? ` - incluso ${data.condoIncludes.trim()}`
+      : '';
+    lines.push(`✅ Taxa de condomínio ${formatCurrency(data.condominiumFee)}${includesPart}`);
     lines.push('');
   }
 
