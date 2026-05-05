@@ -315,13 +315,20 @@ export const AMSpecsSlide = ({
 }) => {
   const uid = useId();
   const clipId = `am-specs-${uid}`;
+  const bedroomsLabel = (() => {
+    if (data.bedrooms > 0 && data.suites > 0) {
+      return `${data.bedrooms} quarto${data.bedrooms > 1 ? 's' : ''} sendo ${data.suites} ${data.suites === 1 ? 'suíte' : 'suítes'}`;
+    }
+    if (data.bedrooms > 0) return `${data.bedrooms} quarto${data.bedrooms > 1 ? 's' : ''}`;
+    if (data.suites > 0) return `${data.suites} ${data.suites === 1 ? 'suíte' : 'suítes'}`;
+    return '';
+  })();
   const specs: string[] = [
-    data.bedrooms > 0 ? `${data.bedrooms} quarto${data.bedrooms > 1 ? 's' : ''}` : '',
+    bedroomsLabel,
     ...(data.rooms ? data.rooms.split('\n').filter(Boolean) : []),
     data.garageSpaces > 0 ? `${data.garageSpaces} vaga${data.garageSpaces > 1 ? 's' : ''} de garagem` : '',
     data.floor ? `${data.floor}° andar` : '',
     data.area > 0 ? `${data.area}m²` : '',
-    data.suites > 0 ? `${data.suites} suíte${data.suites > 1 ? 's' : ''}` : '',
   ].filter(Boolean).slice(0, 6);
 
   // One continuous path — smooth Q bezier curves at the notch corners,
