@@ -2,6 +2,7 @@ import { PropertyData } from '@/types/property';
 import { Sparkles, TrendingDown, Zap } from 'lucide-react';
 import logoVDH from '@/assets/logo-vdh.jpg';
 import { useLogoBase64 } from '@/hooks/useLogoBase64';
+import { resolveUF } from '@/lib/stateUF';
 
 interface PostCoverStoryProps {
   data: PropertyData;
@@ -15,8 +16,8 @@ export const PostCoverStory = ({ data, photo }: PostCoverStoryProps) => {
   // Endereço completo automático
   const displayAddress = data.fullAddress ||
     (data.street
-      ? `${data.street}${data.number ? `, ${data.number}` : ''}${data.complement ? ` ${data.complement}` : ''} - ${data.neighborhood}, ${data.city}/${(data.state || '').trim().slice(0, 2).toUpperCase()}`
-      : [data.neighborhood, data.city, (data.state || '').trim().slice(0, 2).toUpperCase()].filter(Boolean).join(' - '));
+      ? `${data.street}${data.number ? `, ${data.number}` : ''}${data.complement ? ` ${data.complement}` : ''} - ${data.neighborhood}, ${data.city}/${resolveUF(data.state)}`
+      : [data.neighborhood, data.city, resolveUF(data.state)].filter(Boolean).join(' - '));
 
   // Resumo do imóvel
   const getPropertySummary = () => {
@@ -101,7 +102,7 @@ export const PostCoverStory = ({ data, photo }: PostCoverStoryProps) => {
           </span>
           <span style={{ color: 'rgba(255,255,255,0.5)', fontSize: '34px' }}>|</span>
           <span className="text-white font-semibold" style={{ fontSize: '38px' }}>
-            {[data.city, (data.state || '').trim().length > 2 ? (data.state || '').trim().slice(0, 2).toUpperCase() : data.state].filter(Boolean).join(' - ')}
+            {[data.city, resolveUF(data.state)].filter(Boolean).join(' - ')}
           </span>
         </div>
       </div>
