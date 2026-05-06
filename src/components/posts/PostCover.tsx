@@ -3,34 +3,13 @@ import { Sparkles, TrendingDown, Zap } from 'lucide-react';
 import logoVDH from '@/assets/logo-vdh-transparent.png';
 import { useLogoBase64 } from '@/hooks/useLogoBase64';
 import { useCrecis } from '@/hooks/useCrecis';
+import { resolveUF } from '@/lib/stateUF';
 
 interface PostCoverProps {
   data: PropertyData;
   photo: string | null;
   photos?: string[];
 }
-
-// Map of full state names to UF abbreviations
-const STATE_UF_MAP: Record<string, string> = {
-  'acre': 'AC', 'alagoas': 'AL', 'amapá': 'AP', 'amapa': 'AP',
-  'amazonas': 'AM', 'bahia': 'BA', 'ceará': 'CE', 'ceara': 'CE',
-  'distrito federal': 'DF', 'espírito santo': 'ES', 'espirito santo': 'ES',
-  'goiás': 'GO', 'goias': 'GO', 'maranhão': 'MA', 'maranhao': 'MA',
-  'mato grosso do sul': 'MS', 'mato grosso': 'MT',
-  'minas gerais': 'MG', 'pará': 'PA', 'para': 'PA',
-  'paraíba': 'PB', 'paraiba': 'PB', 'paraná': 'PR', 'parana': 'PR',
-  'pernambuco': 'PE', 'piauí': 'PI', 'piaui': 'PI',
-  'rio de janeiro': 'RJ', 'rio grande do norte': 'RN',
-  'rio grande do sul': 'RS', 'rondônia': 'RO', 'rondonia': 'RO',
-  'roraima': 'RR', 'santa catarina': 'SC', 'são paulo': 'SP', 'sao paulo': 'SP',
-  'sergipe': 'SE', 'tocantins': 'TO',
-};
-
-const resolveUF = (stateInput: string): string => {
-  const clean = stateInput.trim().toLowerCase();
-  if (clean.length === 2) return clean.toUpperCase();
-  return STATE_UF_MAP[clean] || stateInput.trim().slice(0, 2).toUpperCase();
-};
 
 export const PostCover = ({ data, photo }: PostCoverProps) => {
   const logoBase64 = useLogoBase64(logoVDH);
