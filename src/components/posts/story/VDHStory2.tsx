@@ -1,6 +1,7 @@
 import { PropertyData } from '@/types/property';
 import logoVDH from '@/assets/logo-vdh.jpg';
 import logoCaixa from '@/assets/logo-caixa.png';
+import { resolveUF } from '@/lib/stateUF';
 
 interface VDHStory2Props {
   data: PropertyData;
@@ -48,7 +49,7 @@ export const VDHStory2 = ({ data, photo, photos }: VDHStory2Props) => {
 
   const neighborhood = data.neighborhood || '';
   const city = data.city || '';
-  const stateShort = (data.state || '').trim().slice(0, 2).toUpperCase();
+  const stateShort = resolveUF(data.state);
   const locationLine = [neighborhood, city, stateShort].filter(Boolean).join(' · ');
 
   const isCaixa = (data.propertySource || '').toLowerCase().includes('caixa');
