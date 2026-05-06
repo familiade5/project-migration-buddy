@@ -33,8 +33,8 @@ export const PostCover = ({ data, photo }: PostCoverProps) => {
   // Endereço completo automático
   const displayAddress = data.fullAddress ||
     (data.street
-      ? `${data.street}${data.number ? `, ${data.number}` : ''}${data.complement ? ` ${data.complement}` : ''} - ${data.neighborhood}, ${data.city}/${(data.state || '').trim().slice(0, 2).toUpperCase()}`
-      : [data.neighborhood, data.city, (data.state || '').trim().slice(0, 2).toUpperCase()].filter(Boolean).join(' - '));
+      ? `${data.street}${data.number ? `, ${data.number}` : ''}${data.complement ? ` ${data.complement}` : ''} - ${data.neighborhood}, ${data.city}/${resolveUF(data.state)}`
+      : [data.neighborhood, data.city, resolveUF(data.state)].filter(Boolean).join(' - '));
 
   // Resumo do imóvel
   const getPropertySummary = () => {
@@ -119,7 +119,7 @@ export const PostCover = ({ data, photo }: PostCoverProps) => {
           </span>
           <span className="text-white/50">|</span>
           <span className="text-white font-semibold" style={{ fontSize: '32px' }}>
-            {[data.city, (data.state || '').trim().length > 2 ? (data.state || '').trim().slice(0, 2).toUpperCase() : data.state].filter(Boolean).join(' - ')}
+            {[data.city, resolveUF(data.state)].filter(Boolean).join(' - ')}
           </span>
         </div>
       </div>
