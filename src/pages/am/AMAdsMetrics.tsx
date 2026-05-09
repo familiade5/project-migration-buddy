@@ -16,6 +16,7 @@ import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, Tooltip, CartesianG
 import { format, parseISO } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { toast } from 'sonner';
+import Funnel3D from '@/components/am-metrics/Funnel3D';
 
 const MASTER_EMAIL = 'neto@vendadiretahoje.com.br';
 const AM_ORANGE = '#F47920';
@@ -192,6 +193,50 @@ export default function AMAdsMetrics() {
                 <HeroKpi icon={Zap} label="Custo por Lead" value={kpis.leads ? fmtBRL(kpis.cpl) : '—'} color="#8B5CF6" />
               </div>
 
+              {/* 3D Funnel — presentation-ready */}
+              <Card className="p-6 bg-white border border-gray-200 overflow-hidden">
+                <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
+                  <div>
+                    <h2 className="text-base font-semibold text-gray-900">Funil de Conversão</h2>
+                    <p className="text-xs text-gray-500 mt-0.5">
+                      Da audiência ao lead — gire e explore (interativo)
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-3 text-[11px] text-gray-500">
+                    <FunnelLegend color={AM_BLUE} label="Impressões" />
+                    <FunnelLegend color="#8B5CF6" label="Cliques" />
+                    <FunnelLegend color={GREEN} label="Mensagens" />
+                    <FunnelLegend color={AM_ORANGE} label="Leads" />
+                  </div>
+                </div>
+                <Funnel3D
+                  stages={[
+                    { label: 'Impressões', value: kpis.impressions, color: AM_BLUE },
+                    { label: 'Cliques',    value: kpis.clicks,      color: '#8B5CF6' },
+                    { label: 'Mensagens',  value: kpis.messages,    color: GREEN },
+                    { label: 'Leads',      value: kpis.leads,       color: AM_ORANGE },
+                  ]}
+                  height={480}
+                />
+                <div className="grid grid-cols-3 gap-3 mt-4">
+                  <ConversionStat
+                    label="Cliques / Impressões"
+                    value={kpis.impressions ? `${((kpis.clicks / kpis.impressions) * 100).toFixed(2)}%` : '—'}
+                    color="#8B5CF6"
+                  />
+                  <ConversionStat
+                    label="Mensagens / Cliques"
+                    value={kpis.clicks ? `${((kpis.messages / kpis.clicks) * 100).toFixed(1)}%` : '—'}
+                    color={GREEN}
+                  />
+                  <ConversionStat
+                    label="Leads / Mensagens"
+                    value={kpis.messages ? `${((kpis.leads / kpis.messages) * 100).toFixed(1)}%` : '—'}
+                    color={AM_ORANGE}
+                  />
+                </div>
+              </Card>
+
               {/* Chart */}
               <Card className="p-6 bg-white border border-gray-200">
                 <div className="flex items-center justify-between mb-5">
@@ -363,6 +408,24 @@ function HeroKpi({ icon: Icon, label, value, color, highlight }: { icon: any; la
         </div>
       </div>
     </Card>
+  );
+}
+
+function FunnelLegend({ color, label }: { color: string; label: string }) {
+  return (
+    <span className="inline-flex items-center gap-1.5">
+      <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: color, boxShadow: `0 0 8px ${color}` }} />
+      {label}
+    </span>
+  );
+}
+
+function ConversionStat({ label, value, color }: { label: string; value: string; color: string }) {
+  return (
+    <div className="rounded-xl p-3 border" style={{ borderColor: `${color}33`, background: `linear-gradient(135deg, ${color}0D 0%, transparent 100%)` }}>
+      <p className="text-[10px] uppercase tracking-wider font-semibold text-gray-500">{label}</p>
+      <p className="text-xl font-bold mt-1" style={{ color }}>{value}</p>
+    </div>
   );
 }
 
