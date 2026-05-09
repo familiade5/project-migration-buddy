@@ -101,13 +101,25 @@ Deno.serve(async (req) => {
     const dailyUrl = `https://graph.facebook.com/${META_API_VERSION}/${adAccountId}/insights?fields=${fields}&date_preset=${datePreset}&time_increment=1&level=account&access_token=${token}`;
     // Aggregated totals
     const totalUrl = `https://graph.facebook.com/${META_API_VERSION}/${adAccountId}/insights?fields=${fields}&date_preset=${datePreset}&level=account&access_token=${token}`;
+    // Per-campaign breakdown
+    const campaignFields = [
+      'campaign_id', 'campaign_name', 'spend', 'impressions', 'reach', 'clicks',
+      'cpm', 'cpc', 'ctr', 'actions', 'cost_per_action_type',
+    ].join(',');
+    const campaignUrl = `https://graph.facebook.com/${META_API_VERSION}/${adAccountId}/insights?fields=${campaignFields}&date_preset=${datePreset}&level=campaign&limit=200&access_token=${token}`;
+    // Campaign status
+    const statusUrl = `https://graph.facebook.com/${META_API_VERSION}/${adAccountId}/campaigns?fields=id,name,status,effective_status,objective,daily_budget,lifetime_budget&limit=200&access_token=${token}`;
 
-    const [dailyRes, totalRes] = await Promise.all([fetch(dailyUrl), fetch(totalUrl)]);
+    const [dailyRes, totalRes, campaignRes, statusRes] = await Promise.all([
+      fetch(dailyUrl), fetch(totalUrl), fetch(campaignUrl), fetch(statusUrl),
+    ]);
     const dailyJson = await dailyRes.json();
     const totalJson = await totalRes.json();
+    const campaignJson = await campaignRes.json();
+    const statusJson = await statusRes.json();
 
-    if (dailyJson.error || totalJson.error) {
-      return new Response(JSON.stringify({ error: dailyJson.error || totalJson.error }), {
+    if (dailyJson.error || totalJson.error || campaignJson.error) {
+      return new Response(JSON.stringify({ error: dailyJson.error || totalJson.error || campaignJson.error }), {
         status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
@@ -145,7 +157,37 @@ Deno.serve(async (req) => {
       dateStop: totals.date_stop,
     };
 
-    return new Response(JSON.stringify({ kpis, series, preset: datePreset }), {
+    // Build status map
+    const statusMap: Record<string, any> = {};
+    for (const c of (statusJson.data || [])) {
+      statusMap[c.id] = c;
+    }
+
+    const campaigns = ((campaignJson.data || []) as any[]).map((c) => {
+      const leads = sumAction(c.actions, LEAD_TYPES);
+      const messages = sumAction(c.actions, MSG_TYPES);
+      const spend = Number(c.spend || 0);
+      const meta = statusMap[c.campaign_id] || {};
+      return {
+        id: c.campaign_id,
+        name: c.campaign_name || meta.name || 'Sem nome',
+        status: meta.effective_status || meta.status || 'UNKNOWN',
+        objective: meta.objective || null,
+        spend,
+        impressions: Number(c.impressions || 0),
+        reach: Number(c.reach || 0),
+        clicks: Number(c.clicks || 0),
+        cpm: Number(c.cpm || 0),
+        cpc: Number(c.cpc || 0),
+        ctr: Number(c.ctr || 0),
+        leads,
+        messages,
+        cpl: leads > 0 ? spend / leads : 0,
+        cpMsg: messages > 0 ? spend / messages : 0,
+      };
+    }).sort((a, b) => b.spend - a.spend);
+
+    return new Response(JSON.stringify({ kpis, series, campaigns, preset: datePreset }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
   } catch (e) {
