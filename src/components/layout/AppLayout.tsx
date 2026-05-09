@@ -12,8 +12,8 @@ import {
   MoreVertical,
   Calculator,
   BookOpen,
-  ClipboardList,
   Zap,
+  Inbox as InboxIcon,
 } from 'lucide-react';
 import {
   DropdownMenu,
@@ -34,7 +34,7 @@ interface AppLayoutProps {
 const MASTER_EMAIL = 'neto@vendadiretahoje.com.br';
 
 const navigation = [
-  { name: 'CRM', href: '/crm', icon: ClipboardList, masterOnly: true },
+  { name: 'Caixa de Entrada', href: '/vdh-inbox', icon: InboxIcon, masterOnly: true },
   { name: 'Criar Post', href: '/', icon: Building2 },
   { name: 'Posts Educativos', href: '/educativo', icon: BookOpen },
   { name: 'Biblioteca', href: '/library', icon: Calendar },
