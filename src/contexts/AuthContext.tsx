@@ -129,13 +129,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, nextSession) => {
       if (!isMounted) return;
 
+      // Ignore noisy events that don't actually change the logged-in user.
+      // TOKEN_REFRESHED / USER_UPDATED / INITIAL_SESSION fire on tab focus and
+      // every hour, and re-running setUser/fetch causes UI flicker (login → app).
+      if (event === 'TOKEN_REFRESHED' || event === 'USER_UPDATED' || event === 'INITIAL_SESSION') {
+        // Only update the session reference (for fresh access_token) without touching user identity.
+        setSession((prev) => (prev?.user?.id === nextSession?.user?.id ? nextSession : prev));
+        return;
+      }
+
       setSession(nextSession);
       setUser(nextSession?.user ?? null);
 
-      // Ongoing changes: update derived data, but don't block UI with isLoading.
-      if (nextSession?.user) {
+      if (event === 'SIGNED_IN' && nextSession?.user) {
         fetchUserData(nextSession.user.id, { setLoading: false });
-      } else {
+      } else if (event === 'SIGNED_OUT') {
         setProfile(null);
         setIsAdmin(false);
       }
