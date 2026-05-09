@@ -71,7 +71,14 @@ Deno.serve(async (req) => {
         status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
-    if (!adAccountId.startsWith('act_')) adAccountId = `act_${adAccountId}`;
+    // Normalize: extract digits only and prepend act_
+    const digits = adAccountId.replace(/\D/g, '');
+    if (!digits) {
+      return new Response(JSON.stringify({ error: 'AM_AD_ACCOUNT_ID inválido (sem dígitos)' }), {
+        status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+    adAccountId = `act_${digits}`;
 
     const url = new URL(req.url);
     const preset = url.searchParams.get('preset') || 'last_7d';
