@@ -2191,6 +2191,149 @@ export type Database = {
         }
         Relationships: []
       }
+      vdh_conversations: {
+        Row: {
+          assigned_to_name: string | null
+          assigned_to_user_id: string | null
+          created_at: string
+          id: string
+          ig_full_name: string | null
+          ig_participant_id: string
+          ig_profile_pic: string | null
+          ig_username: string | null
+          last_message_at: string | null
+          last_message_direction: string | null
+          last_message_text: string | null
+          lead_status: string
+          notes: string | null
+          status: string
+          tags: string[] | null
+          unread_count: number
+          updated_at: string
+        }
+        Insert: {
+          assigned_to_name?: string | null
+          assigned_to_user_id?: string | null
+          created_at?: string
+          id?: string
+          ig_full_name?: string | null
+          ig_participant_id: string
+          ig_profile_pic?: string | null
+          ig_username?: string | null
+          last_message_at?: string | null
+          last_message_direction?: string | null
+          last_message_text?: string | null
+          lead_status?: string
+          notes?: string | null
+          status?: string
+          tags?: string[] | null
+          unread_count?: number
+          updated_at?: string
+        }
+        Update: {
+          assigned_to_name?: string | null
+          assigned_to_user_id?: string | null
+          created_at?: string
+          id?: string
+          ig_full_name?: string | null
+          ig_participant_id?: string
+          ig_profile_pic?: string | null
+          ig_username?: string | null
+          last_message_at?: string | null
+          last_message_direction?: string | null
+          last_message_text?: string | null
+          lead_status?: string
+          notes?: string | null
+          status?: string
+          tags?: string[] | null
+          unread_count?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      vdh_inbox_access: {
+        Row: {
+          created_at: string
+          granted_by_user_id: string | null
+          id: string
+          role: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          granted_by_user_id?: string | null
+          id?: string
+          role?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          granted_by_user_id?: string | null
+          id?: string
+          role?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      vdh_messages: {
+        Row: {
+          attachment_type: string | null
+          attachment_url: string | null
+          conversation_id: string
+          created_at: string
+          direction: string
+          id: string
+          ig_message_id: string | null
+          is_echo: boolean
+          raw_payload: Json | null
+          reply_to_ig_message_id: string | null
+          sent_by_name: string | null
+          sent_by_user_id: string | null
+          story_url: string | null
+          text: string | null
+        }
+        Insert: {
+          attachment_type?: string | null
+          attachment_url?: string | null
+          conversation_id: string
+          created_at?: string
+          direction: string
+          id?: string
+          ig_message_id?: string | null
+          is_echo?: boolean
+          raw_payload?: Json | null
+          reply_to_ig_message_id?: string | null
+          sent_by_name?: string | null
+          sent_by_user_id?: string | null
+          story_url?: string | null
+          text?: string | null
+        }
+        Update: {
+          attachment_type?: string | null
+          attachment_url?: string | null
+          conversation_id?: string
+          created_at?: string
+          direction?: string
+          id?: string
+          ig_message_id?: string | null
+          is_echo?: boolean
+          raw_payload?: Json | null
+          reply_to_ig_message_id?: string | null
+          sent_by_name?: string | null
+          sent_by_user_id?: string | null
+          story_url?: string | null
+          text?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vdh_messages_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "vdh_conversations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -2207,6 +2350,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      has_vdh_inbox_access: { Args: { _user_id: string }; Returns: boolean }
       log_user_activity: {
         Args: {
           p_action: string
