@@ -19,6 +19,7 @@ import AMAuth from "./pages/am/AMAuth";
 import ApartamentosManausPage from "./pages/am/ApartamentosManausPage";
 import AMLibrary from "./pages/am/AMLibrary";
 import AMAdmin from "./pages/am/AMAdmin";
+import AMAdsMetrics from "./pages/am/AMAdsMetrics";
 import AFAuth from "./pages/af/AFAuth";
 import ApartamentosFortalezaPage from "./pages/af/ApartamentosFortalezaPage";
 import TrafegoPago from "./pages/TrafegoPago";
@@ -86,6 +87,9 @@ const App = () => (
             } />
             <Route path="/apartamentos-manaus/admin" element={
               <ProtectedRoute requireAdmin><AMAdmin /></ProtectedRoute>
+            } />
+            <Route path="/apartamentos-manaus/metricas-ads" element={
+              <ProtectedRoute><AMAdsMetrics /></ProtectedRoute>
             } />
             {/* Apartamentos Fortaleza */}
             <Route path="/af/auth" element={<AFAuth />} />
