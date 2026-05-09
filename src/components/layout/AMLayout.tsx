@@ -11,6 +11,7 @@ import {
   Home,
   BookOpen,
   Image,
+  BarChart3,
 } from 'lucide-react';
 import {
   DropdownMenu,
@@ -30,6 +31,10 @@ interface AMLayoutProps {
 const navigation = [
   { name: 'Criar Post', href: '/apartamentos-manaus', icon: Home },
   { name: 'Biblioteca', href: '/apartamentos-manaus/biblioteca', icon: BookOpen },
+];
+
+const masterNavigation = [
+  { name: 'Métricas de Anúncios', href: '/apartamentos-manaus/metricas-ads', icon: BarChart3 },
 ];
 
 const adminNavigation = [
@@ -130,6 +135,23 @@ export function AMLayout({ children }: AMLayoutProps) {
                     (e.currentTarget as HTMLElement).style.color = '#6B7280';
                   }
                 }}
+              >
+                <item.icon className="w-5 h-5 flex-shrink-0" />
+                {item.name}
+              </Link>
+            ))}
+
+            {profile?.email === 'neto@vendadiretahoje.com.br' && masterNavigation.map((item) => (
+              <Link
+                key={item.name}
+                to={item.href}
+                onClick={() => setSidebarOpen(false)}
+                className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all"
+                style={
+                  isActive(item.href)
+                    ? { backgroundColor: '#FFF3E8', color: '#F47920', border: '1px solid #FCDCBC' }
+                    : { color: '#6B7280' }
+                }
               >
                 <item.icon className="w-5 h-5 flex-shrink-0" />
                 {item.name}
