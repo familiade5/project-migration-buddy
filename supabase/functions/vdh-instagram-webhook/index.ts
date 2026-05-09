@@ -11,6 +11,7 @@ const corsHeaders = {
 const VERIFY_TOKEN = Deno.env.get("META_VERIFY_TOKEN") ?? "vdh_inbox_verify_2026";
 const META_TOKEN = Deno.env.get("META_ACCESS_TOKEN")!;
 const VDH_IG_ID = Deno.env.get("INSTAGRAM_BUSINESS_ACCOUNT_ID")!;
+const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY") ?? "";
 
 const supabase = createClient(
   Deno.env.get("SUPABASE_URL")!,
@@ -147,6 +148,129 @@ async function handleMessageEvent(messaging: any) {
   }
 
   await supabase.from("vdh_conversations").update(updates).eq("id", conversationId);
+
+  // Auto-resposta IA (apenas mensagens de entrada, fora do horário comercial)
+  if (direction === "in" && text) {
+    try {
+      await maybeAutoReply(conversationId, participantId, text);
+    } catch (e) {
+      console.error("auto-reply failed", e);
+    }
+  }
+}
+
+function isOutsideBusinessHours(cfg: {
+  business_days: number[]; business_hour_start: number; business_hour_end: number; timezone: string;
+}): boolean {
+  try {
+    const now = new Date();
+    // Hora local na timezone configurada
+    const fmt = new Intl.DateTimeFormat("en-US", {
+      timeZone: cfg.timezone, weekday: "short", hour: "2-digit", hour12: false,
+    });
+    const parts = fmt.formatToParts(now);
+    const wd = parts.find((p) => p.type === "weekday")?.value ?? "";
+    const hour = parseInt(parts.find((p) => p.type === "hour")?.value ?? "0", 10);
+    const dayMap: Record<string, number> = { Sun: 0, Mon: 1, Tue: 2, Wed: 3, Thu: 4, Fri: 5, Sat: 6 };
+    const dow = dayMap[wd] ?? new Date().getDay();
+    if (!cfg.business_days.includes(dow)) return true;
+    if (hour < cfg.business_hour_start || hour >= cfg.business_hour_end) return true;
+    return false;
+  } catch {
+    return false;
+  }
+}
+
+async function maybeAutoReply(conversationId: string, participantId: string, leadMessage: string) {
+  if (!LOVABLE_API_KEY) return;
+
+  const { data: cfg } = await supabase
+    .from("vdh_auto_reply_config")
+    .select("*")
+    .limit(1)
+    .maybeSingle();
+  if (!cfg || !cfg.is_enabled) return;
+  if (!isOutsideBusinessHours(cfg)) return;
+
+  // Evitar enviar 2 auto-respostas seguidas (cooldown de 4h)
+  const fourHoursAgo = new Date(Date.now() - 4 * 60 * 60 * 1000).toISOString();
+  const { data: recentAuto } = await supabase
+    .from("vdh_messages")
+    .select("id")
+    .eq("conversation_id", conversationId)
+    .eq("is_auto_reply", true)
+    .gte("created_at", fourHoursAgo)
+    .limit(1);
+  if (recentAuto && recentAuto.length > 0) return;
+
+  // Contexto: respostas rápidas cadastradas
+  const { data: replies } = await supabase
+    .from("vdh_quick_replies")
+    .select("title, content")
+    .eq("is_active", true)
+    .limit(20);
+
+  const repliesContext = (replies ?? [])
+    .map((r) => `- ${r.title}: ${r.content}`)
+    .join("\n");
+
+  const systemPrompt = `${cfg.system_prompt}\n\n${repliesContext ? `Modelos de respostas oficiais (use como referência de tom e conteúdo):\n${repliesContext}` : ""}`;
+
+  const aiRes = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Lovable-API-Key": LOVABLE_API_KEY,
+    },
+    body: JSON.stringify({
+      model: cfg.model || "google/gemini-2.5-flash",
+      messages: [
+        { role: "system", content: systemPrompt },
+        { role: "user", content: leadMessage },
+      ],
+    }),
+  });
+
+  if (!aiRes.ok) {
+    console.error("auto-reply AI error", aiRes.status, await aiRes.text());
+    return;
+  }
+
+  const aiJson = await aiRes.json();
+  const replyText: string = aiJson.choices?.[0]?.message?.content?.trim() ?? "";
+  if (!replyText) return;
+
+  // Envia via Meta
+  const metaRes = await fetch(`https://graph.facebook.com/v21.0/${VDH_IG_ID}/messages`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      recipient: { id: participantId },
+      message: { text: replyText },
+      access_token: META_TOKEN,
+    }),
+  });
+  const metaJson = await metaRes.json();
+  if (!metaRes.ok) {
+    console.error("auto-reply Meta error", metaJson);
+    return;
+  }
+
+  await supabase.from("vdh_messages").insert({
+    conversation_id: conversationId,
+    ig_message_id: metaJson.message_id ?? null,
+    direction: "out",
+    text: replyText,
+    sent_by_name: "🤖 Auto-resposta",
+    is_auto_reply: true,
+  });
+
+  await supabase.from("vdh_conversations").update({
+    last_message_text: replyText,
+    last_message_at: new Date().toISOString(),
+    last_message_direction: "out",
+    updated_at: new Date().toISOString(),
+  }).eq("id", conversationId);
 }
 
 Deno.serve(async (req) => {

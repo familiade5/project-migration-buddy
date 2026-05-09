@@ -2191,6 +2191,45 @@ export type Database = {
         }
         Relationships: []
       }
+      vdh_auto_reply_config: {
+        Row: {
+          business_days: number[]
+          business_hour_end: number
+          business_hour_start: number
+          created_at: string
+          id: string
+          is_enabled: boolean
+          model: string
+          system_prompt: string
+          timezone: string
+          updated_at: string
+        }
+        Insert: {
+          business_days?: number[]
+          business_hour_end?: number
+          business_hour_start?: number
+          created_at?: string
+          id?: string
+          is_enabled?: boolean
+          model?: string
+          system_prompt?: string
+          timezone?: string
+          updated_at?: string
+        }
+        Update: {
+          business_days?: number[]
+          business_hour_end?: number
+          business_hour_start?: number
+          created_at?: string
+          id?: string
+          is_enabled?: boolean
+          model?: string
+          system_prompt?: string
+          timezone?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       vdh_conversations: {
         Row: {
           assigned_to_name: string | null
@@ -2201,6 +2240,7 @@ export type Database = {
           ig_participant_id: string
           ig_profile_pic: string | null
           ig_username: string | null
+          kanban_column_id: string | null
           last_message_at: string | null
           last_message_direction: string | null
           last_message_text: string | null
@@ -2220,6 +2260,7 @@ export type Database = {
           ig_participant_id: string
           ig_profile_pic?: string | null
           ig_username?: string | null
+          kanban_column_id?: string | null
           last_message_at?: string | null
           last_message_direction?: string | null
           last_message_text?: string | null
@@ -2239,6 +2280,7 @@ export type Database = {
           ig_participant_id?: string
           ig_profile_pic?: string | null
           ig_username?: string | null
+          kanban_column_id?: string | null
           last_message_at?: string | null
           last_message_direction?: string | null
           last_message_text?: string | null
@@ -2249,7 +2291,15 @@ export type Database = {
           unread_count?: number
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "vdh_conversations_kanban_column_id_fkey"
+            columns: ["kanban_column_id"]
+            isOneToOne: false
+            referencedRelation: "vdh_kanban_columns"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       vdh_inbox_access: {
         Row: {
@@ -2275,6 +2325,36 @@ export type Database = {
         }
         Relationships: []
       }
+      vdh_kanban_columns: {
+        Row: {
+          color: string
+          created_at: string
+          id: string
+          is_default_for_new: boolean
+          name: string
+          position: number
+          updated_at: string
+        }
+        Insert: {
+          color?: string
+          created_at?: string
+          id?: string
+          is_default_for_new?: boolean
+          name: string
+          position?: number
+          updated_at?: string
+        }
+        Update: {
+          color?: string
+          created_at?: string
+          id?: string
+          is_default_for_new?: boolean
+          name?: string
+          position?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       vdh_messages: {
         Row: {
           attachment_type: string | null
@@ -2284,6 +2364,7 @@ export type Database = {
           direction: string
           id: string
           ig_message_id: string | null
+          is_auto_reply: boolean
           is_echo: boolean
           raw_payload: Json | null
           reply_to_ig_message_id: string | null
@@ -2300,6 +2381,7 @@ export type Database = {
           direction: string
           id?: string
           ig_message_id?: string | null
+          is_auto_reply?: boolean
           is_echo?: boolean
           raw_payload?: Json | null
           reply_to_ig_message_id?: string | null
@@ -2316,6 +2398,7 @@ export type Database = {
           direction?: string
           id?: string
           ig_message_id?: string | null
+          is_auto_reply?: boolean
           is_echo?: boolean
           raw_payload?: Json | null
           reply_to_ig_message_id?: string | null
@@ -2333,6 +2416,39 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      vdh_quick_replies: {
+        Row: {
+          content: string
+          created_at: string
+          created_by_user_id: string | null
+          id: string
+          is_active: boolean
+          keywords: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          created_by_user_id?: string | null
+          id?: string
+          is_active?: boolean
+          keywords?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          created_by_user_id?: string | null
+          id?: string
+          is_active?: boolean
+          keywords?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
       }
     }
     Views: {

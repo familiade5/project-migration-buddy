@@ -1,111 +1,91 @@
-## Objetivo
 
-Substituir o CRM atual do VDH por um **CRM-Inbox** focado em conversas centralizadas do **Instagram Direct do VDH**, com suporte a múltiplos atendentes, atribuição de conversas, vínculo a leads e tempo real.
+# Caixa de Entrada VDH — Kanban + Respostas Rápidas com IA + Auto-resposta
 
-WhatsApp e outros canais ficam para uma fase futura — agora é só Insta VDH.
+Tudo será adicionado dentro da Caixa de Entrada existente, sem mexer em publicações do VDH/AM. Facebook Messenger fica para uma próxima etapa, conforme combinado.
 
 ---
 
-## Visão geral do que será entregue
+## 1. Kanban customizável com tags
 
-Uma tela tipo "WhatsApp Web" dentro do sistema:
+**Como vai funcionar na prática:**
+
+- Toda conversa nova entra automaticamente com a tag "Primeiro Contato" (configurável).
+- Você cria, renomeia, reordena e exclui colunas/tags livremente (ex: Primeiro Contato → Qualificando → Quente → Negociando → Fechado → Perdido). Cada uma com cor própria.
+- No chat, troca a tag pelo seletor que já existe (só que agora puxa SUAS colunas, não as fixas).
+- Nova aba "**Kanban**" no topo, ao lado da lista. Mostra as colunas com os cards dos leads, podendo arrastar e soltar entre colunas (muda a tag automaticamente).
+- Continua tudo em tempo real: alterou em um lugar, atualiza no outro.
 
 ```text
-┌─────────────────────────────────────────────────────────┐
-│ CRM VDH — Caixa de Entrada                              │
-├──────────────┬──────────────────────────────────────────┤
-│ Conversas    │  João Silva  •  @joaosilva               │
-│ ┌──────────┐ │  ─────────────────────────────────────── │
-│ │ João...  │ │  Olá, vi o anúncio do apto Vila Carvalho │
-│ │ 14:32 •2 │ │                                          │
-│ ├──────────┤ │  [Atribuir] [Criar Lead] [Marcar lida]  │
-│ │ Maria... │ │  ─────────────────────────────────────── │
-│ │ 12:10    │ │  ▢ Resposta...                  [Enviar]│
-│ └──────────┘ │                                          │
-└──────────────┴──────────────────────────────────────────┘
+[ Caixa de Entrada VDH ]
+ ├─ Aba: Conversas (lista atual)
+ └─ Aba: Kanban
+      ┌─────────────┬──────────────┬──────────┬──────────┐
+      │ 1º Contato  │ Qualificando │ Quente   │ Fechado  │
+      │ • Maria     │ • João       │ • Carlos │ • Ana    │
+      │ • Pedro     │              │ • Lucas  │          │
+      └─────────────┴──────────────┴──────────┴──────────┘
 ```
 
 ---
 
-## Etapas
+## 2. Respostas rápidas + sugestão automática por IA
 
-### Etapa 1 — Configuração do Webhook Meta (você faz na Meta, eu te entrego a URL)
+**Cadastro:**
+- Tela "Respostas Rápidas" (acessível por um botão dentro do chat e nas configurações).
+- Cada resposta tem: **título**, **palavras-chave/intenção** (ex: "preço, valor, quanto custa") e **texto da resposta**.
 
-1. Eu crio a Edge Function `vdh-instagram-webhook` que recebe DMs.
-2. Te entrego a URL pública e o `verify_token`.
-3. Você cola no painel do Meta Developers → seu app → Webhooks → Instagram → assina o evento `messages`.
-
-### Etapa 2 — Banco de dados
-
-Criar 3 tabelas novas:
-
-- **`vdh_conversations`** — uma linha por conversa (cliente Insta)
-  - participante (nome, username, avatar, IG ID), última mensagem, não lidas, atribuído_a (user_id), status (aberto/arquivado), lead_id vinculado
-- **`vdh_messages`** — todas as mensagens (entrada e saída)
-  - conversation_id, direção (in/out), texto, mídia, timestamp, sent_by_user_id (quem do CRM respondeu)
-- **`vdh_inbox_access`** — quem tem acesso à inbox VDH
-  - user_id + role (viewer/responder/admin)
-
-RLS: só usuários listados em `vdh_inbox_access` podem ler/escrever. Auditoria de quem respondeu o quê fica em `vdh_messages.sent_by_user_id`.
-
-### Etapa 3 — Edge Functions
-
-- **`vdh-instagram-webhook`** (público, sem JWT) — recebe DMs do Meta, grava no banco, dispara realtime
-- **`vdh-instagram-send`** (autenticado) — envia resposta via Graph API, grava na tabela
-- **`vdh-conversation-actions`** (autenticado) — atribuir, arquivar, marcar lida, criar lead
-
-### Etapa 4 — Interface (tela `/vdh-crm`)
-
-Componentes:
-- **`InboxLayout`** — split view (lista + thread)
-- **`ConversationList`** — busca, filtros (não lidas, atribuídas a mim, todas)
-- **`ConversationThread`** — bolhas de mensagem, input de resposta, indicador "Maria está digitando..."
-- **`ConversationHeader`** — botões: Atribuir corretor, Criar Lead, Arquivar
-- **Realtime**: Supabase Realtime na tabela `vdh_messages` → mensagens novas aparecem na hora
-- Badge de não lidas no menu lateral
-
-### Etapa 5 — Substituir CRM antigo no VDH
-
-- Remove `import CRM` e rota `/crm` do `App.tsx`
-- Remove item "CRM" do menu lateral do VDH
-- Adiciona item "Caixa de Entrada" apontando para `/vdh-crm`
-- **Não deleto** os arquivos antigos (`src/pages/CRM.tsx`, `src/components/crm/*`, `src/components/proposals/*`) — fico só por preservação. Se você confirmar, removo depois.
-
-### Etapa 6 — Vínculo com Lead (camada CRM leve)
-
-Como o CRM antigo de leads/propostas vai sair, crio uma tabela mínima `vdh_leads` (nome, telefone, etapa, anotações) ou apenas mantenho o lead embutido dentro da própria conversa (status: novo / qualificando / quente / fechado). Sugiro a opção embutida — mais simples e alinhada com o foco em conversas.
+**Uso no atendimento:**
+- Quando chega uma mensagem nova do lead, a IA lê e, se o conteúdo bater com alguma resposta cadastrada, mostra um **card discreto acima do campo de digitação**: "💡 Sugestão: **Tabela de Preços** — clique para usar".
+- Você clica → o texto entra na caixa de digitação → você revisa/edita → envia.
+- Também tem um botão "📋 Respostas" que abre a lista completa pra você escolher manualmente.
 
 ---
 
-## Permissões e auditoria
+## 3. Auto-resposta fora do horário comercial (com IA)
 
-- Por padrão, só **Master Admins** veem a Caixa VDH
-- Master Admin pode adicionar outros usuários como "responder" em `vdh_inbox_access`
-- Cada mensagem enviada grava o `sent_by_user_id` → histórico completo de quem respondeu o quê
-- Quando uma conversa é "atribuída", os outros usuários ainda veem mas o input mostra aviso "Atribuído a João — clique para assumir"
+**Configuração:**
+- Tela de "Configurações de Auto-resposta": ligar/desligar, dias da semana, horário comercial (ex: Seg–Sex 8h–18h, Sáb 8h–12h).
+- Você define a **personalidade/instruções** (ex: "Você é a assistente da VDH Imóveis. Seja simpática e breve. Diga que um corretor humano responderá pela manhã. Se o lead falar de financiamento, mencione MCMV.").
+- A IA tem acesso às respostas rápidas cadastradas como contexto, então mantém o tom certo.
 
----
-
-## Limitações do Meta (importante)
-
-- **Janela de 24h**: só pode iniciar mensagem com quem te mandou DM nas últimas 24h. Depois disso, espera o cliente mandar de novo.
-- Mensagens de **stories**, **reações** e **mídia** chegam normalmente.
-- Webhook do Meta tem latência de 1-3 segundos.
+**Funcionamento:**
+- Mensagem chega via webhook do Instagram → sistema confere o horário → se estiver fora do expediente E auto-resposta ativa → IA gera e envia a resposta.
+- A mensagem da IA aparece no chat marcada como "🤖 Auto-resposta" para você saber que foi automática.
+- A conversa entra na coluna "Primeiro Contato" normalmente, pra você dar continuidade quando voltar ao expediente.
 
 ---
 
-## O que NÃO vou mexer
+## 4. Detalhes técnicos (parte técnica, pode pular)
 
-- Criar Post, Posts Educativos, Biblioteca, Calculadora, Tráfego Pago, AM, AF — **nada disso é alterado**
-- Geradores de criativos do VDH continuam funcionando igual
-- Publicação no Insta/Facebook (que já existe) continua igual
+**Banco de dados (novas tabelas):**
+- `vdh_kanban_columns` — colunas customizáveis (nome, cor, posição, padrão_para_novos)
+- `vdh_quick_replies` — respostas prontas (título, gatilhos, conteúdo)
+- `vdh_auto_reply_config` — config única (ativo, horários, dias, prompt do sistema)
+- Migrar `vdh_conversations.lead_status` (enum fixo) para `kanban_column_id` (FK), mantendo compatibilidade com os dados atuais.
+
+**Edge Functions novas:**
+- `vdh-suggest-reply` — chama Lovable AI (Gemini 2.5 Flash) com a mensagem do lead + lista de respostas, retorna `{ matched_reply_id, confidence }`.
+- Modificar `vdh-instagram-webhook` para verificar horário e disparar auto-resposta via Lovable AI quando aplicável.
+
+**Frontend:**
+- Componentes: `KanbanBoard`, `QuickReplyManager`, `QuickReplySuggestion`, `AutoReplySettings`.
+- Drag-and-drop com `@dnd-kit/core` (já leve, sem dependências pesadas).
+- Tabs no topo da inbox: "Conversas" / "Kanban".
+
+**Custos:** uso da Lovable AI é por request. Sugestões e auto-respostas usam Gemini 2.5 Flash (econômico).
 
 ---
 
-## Confirmações antes de começar
+## Ordem de entrega
 
-1. Confirmar **acesso**: só Master Admins por padrão? (você + neto@)
-2. Confirmar **estratégia de leads**: vínculo embutido na conversa (mais simples) ou tabela `vdh_leads` separada?
-3. Confirmar **remoção do CRM antigo**: removo do menu agora, mantenho arquivos para backup; deleto definitivo só com seu OK depois.
+1. Migração do banco (colunas, respostas, config)
+2. Kanban customizável + drag-and-drop
+3. Respostas rápidas (cadastro + botão na conversa)
+4. Sugestão de resposta por IA
+5. Auto-resposta fora do horário
 
-Se você confirmar (ou só disser "pode seguir"), começo pela Etapa 2 (banco) + Etapa 3 (webhook), te entrego a URL para você configurar no Meta e em seguida monto a interface.
+Tudo entregue de uma vez.
+
+---
+
+**Confirma que posso seguir com esse plano?** Se quiser ajustar algo (nomes das colunas iniciais, tom da IA, horário padrão, etc.), me avise antes.

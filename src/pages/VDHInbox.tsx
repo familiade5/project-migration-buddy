@@ -9,10 +9,18 @@ import { Badge } from "@/components/ui/badge";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
-import { Send, Search, Inbox, Archive, UserPlus, Tag, Loader2, MessageCircle, AlertCircle } from "lucide-react";
+import {
+  Popover, PopoverContent, PopoverTrigger,
+} from "@/components/ui/popover";
+import { Send, Search, Inbox, Archive, UserPlus, Tag, Loader2, MessageCircle, AlertCircle, Bot, MessageSquareText, LayoutGrid, List, Settings2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { formatDistanceToNow } from "date-fns";
 import { ptBR } from "date-fns/locale";
+import { KanbanBoard } from "@/components/vdh-inbox/KanbanBoard";
+import { KanbanColumnsManager, type KanbanColumn } from "@/components/vdh-inbox/KanbanColumnsManager";
+import { QuickReplyManager, type QuickReply } from "@/components/vdh-inbox/QuickReplyManager";
+import { AutoReplySettings } from "@/components/vdh-inbox/AutoReplySettings";
+import { QuickReplySuggestion, type Suggestion } from "@/components/vdh-inbox/QuickReplySuggestion";
 
 const BRAND = "#006633";
 
@@ -30,6 +38,7 @@ type Conversation = {
   assigned_to_name: string | null;
   status: "open" | "archived";
   lead_status: "novo" | "qualificando" | "quente" | "fechado" | "perdido";
+  kanban_column_id: string | null;
   notes: string | null;
 };
 
@@ -44,17 +53,11 @@ type Message = {
   sent_by_user_id: string | null;
   sent_by_name: string | null;
   created_at: string;
-};
-
-const LEAD_STATUS_CONFIG: Record<Conversation["lead_status"], { label: string; color: string }> = {
-  novo: { label: "Novo", color: "#6b7280" },
-  qualificando: { label: "Qualificando", color: "#3b82f6" },
-  quente: { label: "Quente", color: "#f97316" },
-  fechado: { label: "Fechado", color: "#22c55e" },
-  perdido: { label: "Perdido", color: "#ef4444" },
+  is_auto_reply?: boolean | null;
 };
 
 type FilterTab = "todas" | "minhas" | "nao_lidas" | "arquivadas";
+type ViewMode = "list" | "kanban";
 
 export default function VDHInbox() {
   const { user, profile } = useAuth();
@@ -69,6 +72,13 @@ export default function VDHInbox() {
   const [draft, setDraft] = useState("");
   const [sending, setSending] = useState(false);
   const [loadingConvs, setLoadingConvs] = useState(true);
+  const [view, setView] = useState<ViewMode>("list");
+  const [columns, setColumns] = useState<KanbanColumn[]>([]);
+  const [quickReplies, setQuickReplies] = useState<QuickReply[]>([]);
+  const [suggestion, setSuggestion] = useState<Suggestion | null>(null);
+  const [showColumnsManager, setShowColumnsManager] = useState(false);
+  const [showRepliesManager, setShowRepliesManager] = useState(false);
+  const [showAutoReplySettings, setShowAutoReplySettings] = useState(false);
 
   const threadEndRef = useRef<HTMLDivElement>(null);
 
@@ -99,6 +109,26 @@ export default function VDHInbox() {
 
   useEffect(() => {
     if (hasAccess) loadConversations();
+  }, [hasAccess]);
+
+  // Carrega colunas e respostas rápidas
+  useEffect(() => {
+    if (!hasAccess) return;
+    const load = async () => {
+      const [{ data: cols }, { data: qrs }] = await Promise.all([
+        supabase.from("vdh_kanban_columns").select("*").order("position"),
+        supabase.from("vdh_quick_replies").select("*").eq("is_active", true).order("title"),
+      ]);
+      setColumns((cols ?? []) as KanbanColumn[]);
+      setQuickReplies((qrs ?? []) as QuickReply[]);
+    };
+    load();
+    const ch = supabase
+      .channel("vdh-kanban-rt")
+      .on("postgres_changes", { event: "*", schema: "public", table: "vdh_kanban_columns" }, load)
+      .on("postgres_changes", { event: "*", schema: "public", table: "vdh_quick_replies" }, load)
+      .subscribe();
+    return () => { supabase.removeChannel(ch); };
   }, [hasAccess]);
 
   // Realtime — conversations
@@ -165,11 +195,34 @@ export default function VDHInbox() {
             if (prev.some((x) => x.id === m.id)) return prev;
             return [...prev, m];
           });
+          // Pede sugestão IA se for mensagem entrante
+          const m = payload.new as Message;
+          if (m.direction === "in" && m.text) requestSuggestion(m.text);
         },
       )
       .subscribe();
     return () => { supabase.removeChannel(channel); };
   }, [selectedId]);
+
+  // Pede sugestão para a última mensagem entrante ao abrir conversa
+  useEffect(() => {
+    setSuggestion(null);
+    if (!selectedId || messages.length === 0) return;
+    const lastIn = [...messages].reverse().find((m) => m.direction === "in" && m.text);
+    if (lastIn?.text) requestSuggestion(lastIn.text);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedId, messages.length]);
+
+  const requestSuggestion = async (message: string) => {
+    try {
+      const { data } = await supabase.functions.invoke("vdh-suggest-reply", {
+        body: { message },
+      });
+      if (data?.suggestion) setSuggestion(data.suggestion as Suggestion);
+    } catch (e) {
+      console.error("suggestion error", e);
+    }
+  };
 
   // Auto-scroll thread
   useEffect(() => {
@@ -245,6 +298,21 @@ export default function VDHInbox() {
     await updateConv({ status: selected?.status === "archived" ? "open" : "archived" });
   };
 
+  const handleMoveCard = async (convId: string, columnId: string) => {
+    setConversations((prev) => prev.map((c) => c.id === convId ? { ...c, kanban_column_id: columnId } : c));
+    await supabase.from("vdh_conversations").update({ kanban_column_id: columnId }).eq("id", convId);
+  };
+
+  const handleChangeColumn = async (columnId: string) => {
+    if (!selected) return;
+    await updateConv({ kanban_column_id: columnId });
+  };
+
+  const useQuickReply = (content: string) => {
+    setDraft((prev) => prev ? prev + "\n" + content : content);
+    setSuggestion(null);
+  };
+
   // Access denied UI
   if (hasAccess === false) {
     return (
@@ -270,6 +338,8 @@ export default function VDHInbox() {
     );
   }
 
+  const currentColumn = selected ? columns.find((c) => c.id === selected.kanban_column_id) : null;
+
   return (
     <AppLayout>
       <div className="h-[calc(100vh-0px)] lg:h-screen flex flex-col bg-white">
@@ -287,9 +357,43 @@ export default function VDHInbox() {
               </p>
             </div>
           </div>
+          <div className="flex items-center gap-1.5">
+            <div className="hidden sm:flex bg-gray-100 rounded-lg p-0.5 mr-2">
+              <button
+                onClick={() => setView("list")}
+                className="px-2.5 py-1 rounded text-xs font-medium flex items-center gap-1 transition"
+                style={view === "list" ? { backgroundColor: "white", color: BRAND, boxShadow: "0 1px 2px rgba(0,0,0,0.05)" } : { color: "#6b7280" }}
+              >
+                <List className="w-3.5 h-3.5" /> Conversas
+              </button>
+              <button
+                onClick={() => setView("kanban")}
+                className="px-2.5 py-1 rounded text-xs font-medium flex items-center gap-1 transition"
+                style={view === "kanban" ? { backgroundColor: "white", color: BRAND, boxShadow: "0 1px 2px rgba(0,0,0,0.05)" } : { color: "#6b7280" }}
+              >
+                <LayoutGrid className="w-3.5 h-3.5" /> Kanban
+              </button>
+            </div>
+            <Button size="sm" variant="outline" className="h-8 text-xs" onClick={() => setShowRepliesManager(true)}>
+              <MessageSquareText className="w-3.5 h-3.5 mr-1" /> Respostas
+            </Button>
+            <Button size="sm" variant="outline" className="h-8 text-xs" onClick={() => setShowAutoReplySettings(true)}>
+              <Bot className="w-3.5 h-3.5 mr-1" /> Auto-resposta
+            </Button>
+          </div>
         </div>
 
-        {/* Split view */}
+        {/* View: Kanban */}
+        {view === "kanban" ? (
+          <KanbanBoard
+            columns={columns}
+            conversations={conversations.filter((c) => c.status === "open")}
+            onMove={handleMoveCard}
+            onCardClick={(id) => { setSelectedId(id); setView("list"); }}
+            onManageColumns={() => setShowColumnsManager(true)}
+          />
+        ) : (
+        /* View: List + Thread */
         <div className="flex-1 flex min-h-0">
           {/* Conversations list */}
           <div className={`${selected ? "hidden md:flex" : "flex"} w-full md:w-[340px] border-r flex-col flex-shrink-0`}>
@@ -411,19 +515,26 @@ export default function VDHInbox() {
 
                   <div className="flex items-center gap-2">
                     <Select
-                      value={selected.lead_status}
-                      onValueChange={(v) => updateConv({ lead_status: v as Conversation["lead_status"] })}
+                      value={selected.kanban_column_id ?? ""}
+                      onValueChange={(v) => handleChangeColumn(v)}
                     >
-                      <SelectTrigger className="h-8 w-32 text-xs">
+                      <SelectTrigger className="h-8 w-40 text-xs">
                         <Tag className="w-3 h-3 mr-1" />
-                        <SelectValue />
+                        <SelectValue placeholder="Sem coluna">
+                          {currentColumn && (
+                            <span className="flex items-center gap-1.5">
+                              <span className="w-2 h-2 rounded-full" style={{ backgroundColor: currentColumn.color }} />
+                              {currentColumn.name}
+                            </span>
+                          )}
+                        </SelectValue>
                       </SelectTrigger>
                       <SelectContent>
-                        {Object.entries(LEAD_STATUS_CONFIG).map(([k, v]) => (
-                          <SelectItem key={k} value={k}>
+                        {columns.map((col) => (
+                          <SelectItem key={col.id} value={col.id}>
                             <span className="flex items-center gap-2">
-                              <span className="w-2 h-2 rounded-full" style={{ backgroundColor: v.color }} />
-                              {v.label}
+                              <span className="w-2 h-2 rounded-full" style={{ backgroundColor: col.color }} />
+                              {col.name}
                             </span>
                           </SelectItem>
                         ))}
@@ -466,10 +577,17 @@ export default function VDHInbox() {
                         className="max-w-[75%] rounded-2xl px-3 py-2 text-sm shadow-sm"
                         style={
                           m.direction === "out"
-                            ? { backgroundColor: BRAND, color: "white" }
+                            ? m.is_auto_reply
+                              ? { backgroundColor: "#7c3aed", color: "white" }
+                              : { backgroundColor: BRAND, color: "white" }
                             : { backgroundColor: "white", color: "#111827", border: "1px solid #e5e7eb" }
                         }
                       >
+                        {m.is_auto_reply && (
+                          <div className="text-[10px] font-bold opacity-80 mb-0.5 flex items-center gap-1">
+                            <Bot className="w-3 h-3" /> Auto-resposta IA
+                          </div>
+                        )}
                         {m.attachment_type === "image" && m.attachment_url && (
                           <img src={m.attachment_url} alt="" className="rounded-lg mb-1 max-h-60" />
                         )}
@@ -490,9 +608,50 @@ export default function VDHInbox() {
                   <div ref={threadEndRef} />
                 </div>
 
+                {/* Sugestão IA */}
+                {suggestion && (
+                  <QuickReplySuggestion
+                    suggestion={suggestion}
+                    onUse={() => useQuickReply(suggestion.content)}
+                    onDismiss={() => setSuggestion(null)}
+                  />
+                )}
+
                 {/* Composer */}
                 <div className="border-t p-3 flex-shrink-0 bg-white">
                   <div className="flex gap-2">
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button variant="outline" size="icon" title="Respostas rápidas">
+                          <MessageSquareText className="w-4 h-4" />
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-80 p-0" align="start">
+                        <div className="p-2 border-b flex items-center justify-between">
+                          <p className="text-xs font-semibold">Respostas rápidas</p>
+                          <button
+                            onClick={() => setShowRepliesManager(true)}
+                            className="text-[11px] text-emerald-700 hover:underline"
+                          >
+                            Gerenciar
+                          </button>
+                        </div>
+                        <div className="max-h-64 overflow-y-auto">
+                          {quickReplies.length === 0 ? (
+                            <p className="text-center text-xs text-gray-400 py-6">Nenhuma resposta cadastrada</p>
+                          ) : quickReplies.map((qr) => (
+                            <button
+                              key={qr.id}
+                              onClick={() => useQuickReply(qr.content)}
+                              className="w-full text-left px-3 py-2 hover:bg-gray-50 border-b text-xs"
+                            >
+                              <p className="font-semibold text-gray-900">{qr.title}</p>
+                              <p className="text-gray-500 line-clamp-2 mt-0.5">{qr.content}</p>
+                            </button>
+                          ))}
+                        </div>
+                      </PopoverContent>
+                    </Popover>
                     <Input
                       placeholder="Digite uma mensagem..."
                       value={draft}
@@ -518,6 +677,12 @@ export default function VDHInbox() {
             )}
           </div>
         </div>
+        )}
+
+        {/* Modais */}
+        <KanbanColumnsManager open={showColumnsManager} onOpenChange={setShowColumnsManager} />
+        <QuickReplyManager open={showRepliesManager} onOpenChange={setShowRepliesManager} />
+        <AutoReplySettings open={showAutoReplySettings} onOpenChange={setShowAutoReplySettings} />
       </div>
     </AppLayout>
   );
