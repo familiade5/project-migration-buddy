@@ -2191,6 +2191,39 @@ export type Database = {
         }
         Relationships: []
       }
+      vdh_ai_knowledge: {
+        Row: {
+          business_context: string
+          common_questions: Json
+          created_at: string
+          id: string
+          last_trained_at: string | null
+          tone_guidelines: string | null
+          trained_messages_count: number
+          updated_at: string
+        }
+        Insert: {
+          business_context?: string
+          common_questions?: Json
+          created_at?: string
+          id?: string
+          last_trained_at?: string | null
+          tone_guidelines?: string | null
+          trained_messages_count?: number
+          updated_at?: string
+        }
+        Update: {
+          business_context?: string
+          common_questions?: Json
+          created_at?: string
+          id?: string
+          last_trained_at?: string | null
+          tone_guidelines?: string | null
+          trained_messages_count?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       vdh_auto_reply_config: {
         Row: {
           business_days: number[]
