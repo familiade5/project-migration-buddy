@@ -13,7 +13,6 @@ import {
   Calculator,
   BookOpen,
   Zap,
-  Inbox as InboxIcon,
 } from 'lucide-react';
 import {
   DropdownMenu,
@@ -34,7 +33,6 @@ interface AppLayoutProps {
 const MASTER_EMAIL = 'neto@vendadiretahoje.com.br';
 
 const navigation = [
-  { name: 'Caixa de Entrada', href: '/vdh-inbox', icon: InboxIcon, masterOnly: true },
   { name: 'Criar Post', href: '/', icon: Building2 },
   { name: 'Posts Educativos', href: '/educativo', icon: BookOpen },
   { name: 'Biblioteca', href: '/library', icon: Calendar },
@@ -141,7 +139,7 @@ export function AppLayout({ children }: AppLayoutProps) {
 
           {/* Navigation */}
           <nav className="flex-1 px-4 py-6 space-y-1 overflow-y-auto">
-            {navigation.filter(item => !item.masterOnly || isMaster).map((item) => (
+            {navigation.map((item) => (
               <Link
                 key={item.name}
                 to={item.href}
