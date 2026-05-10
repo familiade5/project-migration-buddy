@@ -22,8 +22,10 @@ const supabase = createClient(
 );
 
 async function gget(url: string) {
-  const sep = url.includes("?") ? "&" : "?";
-  const res = await fetch(`${url}${sep}access_token=${encodeURIComponent(META_TOKEN)}`);
+  const finalUrl = url.includes("access_token=")
+    ? url
+    : `${url}${url.includes("?") ? "&" : "?"}access_token=${encodeURIComponent(META_TOKEN)}`;
+  const res = await fetch(finalUrl);
   const json = await res.json();
   if (!res.ok) {
     throw new Error(`Meta API ${res.status}: ${JSON.stringify(json)}`);
@@ -80,10 +82,20 @@ Deno.serve(async (req) => {
     let url: string | null =
       `${GRAPH}/${VDH_IG_ID}/conversations?platform=instagram&fields=id,participants,updated_time&limit=${limitConvs}`;
 
+    let pageNum = 0;
+    let emptyPages = 0;
     while (url) {
+      pageNum++;
+      if (pageNum > 50) { log.push(`stop: 50 páginas`); break; }
       const page: any = await gget(url);
       const convs = page?.data ?? [];
-      log.push(`Página com ${convs.length} conversas`);
+      log.push(`Página ${pageNum}: ${convs.length} conversas`);
+      if (convs.length === 0) {
+        emptyPages++;
+        if (emptyPages >= 5) { log.push(`stop: 5 páginas vazias seguidas`); break; }
+      } else {
+        emptyPages = 0;
+      }
 
       for (const conv of convs) {
         try {
