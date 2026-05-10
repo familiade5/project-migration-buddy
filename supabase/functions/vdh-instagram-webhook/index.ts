@@ -214,7 +214,27 @@ async function maybeAutoReply(conversationId: string, participantId: string, lea
     .map((r) => `- ${r.title}: ${r.content}`)
     .join("\n");
 
-  const systemPrompt = `${cfg.system_prompt}\n\n${repliesContext ? `Modelos de respostas oficiais (use como referência de tom e conteúdo):\n${repliesContext}` : ""}`;
+  // Conhecimento aprendido (negócio + tom + perguntas frequentes)
+  const { data: knowledge } = await supabase
+    .from("vdh_ai_knowledge")
+    .select("business_context, tone_guidelines, common_questions")
+    .limit(1)
+    .maybeSingle();
+
+  const faqContext = Array.isArray(knowledge?.common_questions)
+    ? (knowledge!.common_questions as any[])
+        .slice(0, 15)
+        .map((q: any) => `- Quando o lead perguntar "${q.question ?? q.intent}", responda algo como: ${q.suggested_reply}`)
+        .join("\n")
+    : "";
+
+  const systemPrompt = [
+    knowledge?.business_context ?? "",
+    cfg.system_prompt ?? "",
+    knowledge?.tone_guidelines ? `\nTom de voz da VDH:\n${knowledge.tone_guidelines}` : "",
+    faqContext ? `\nPerguntas frequentes e respostas modelo:\n${faqContext}` : "",
+    repliesContext ? `\nModelos de respostas oficiais:\n${repliesContext}` : "",
+  ].filter(Boolean).join("\n\n");
 
   const aiRes = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
     method: "POST",
