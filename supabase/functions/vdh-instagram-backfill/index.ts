@@ -68,9 +68,12 @@ Deno.serve(async (req) => {
 
     // Teste: lista 1 página de conversas e retorna
     if (testMode) {
-      const sample: any = await gget(
-        `${GRAPH}/${VDH_IG_ID}/conversations?platform=instagram&fields=id,participants,updated_time&limit=5`,
-      );
+      const isIG = GRAPH.includes("graph.instagram.com");
+      const testUrl = isIG
+        ? `${GRAPH}/me/conversations?fields=id,participants,updated_time&limit=5`
+        : `${GRAPH}/${VDH_IG_ID}/conversations?platform=instagram&fields=id,participants,updated_time&limit=5`;
+      log.push(`testUrl=${testUrl}`);
+      const sample: any = await gget(testUrl);
       log.push(`conversations test: ${(sample?.data ?? []).length} encontradas`);
       return new Response(
         JSON.stringify({ success: true, testMode: true, log, sample }),
@@ -79,8 +82,11 @@ Deno.serve(async (req) => {
     }
 
     const limitConvs = 50;
+    const isIG = GRAPH.includes("graph.instagram.com");
     let url: string | null =
-      `${GRAPH}/${VDH_IG_ID}/conversations?platform=instagram&fields=id,participants,updated_time&limit=${limitConvs}`;
+      isIG
+        ? `${GRAPH}/me/conversations?fields=id,participants,updated_time&limit=${limitConvs}`
+        : `${GRAPH}/${VDH_IG_ID}/conversations?platform=instagram&fields=id,participants,updated_time&limit=${limitConvs}`;
 
     let pageNum = 0;
     let emptyPages = 0;
