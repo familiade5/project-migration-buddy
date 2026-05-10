@@ -6,7 +6,6 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import Index from "./pages/Index";
-import VDHInbox from "./pages/VDHInbox";
 import Auth from "./pages/Auth";
 import Library from "./pages/Library";
 import Admin from "./pages/Admin";
@@ -40,16 +39,6 @@ const App = () => (
             <Route path="/" element={
               <ProtectedRoute>
                 <Index />
-              </ProtectedRoute>
-            } />
-            <Route path="/crm" element={
-              <ProtectedRoute>
-                <VDHInbox />
-              </ProtectedRoute>
-            } />
-            <Route path="/vdh-inbox" element={
-              <ProtectedRoute>
-                <VDHInbox />
               </ProtectedRoute>
             } />
             <Route path="/library" element={
