@@ -10,6 +10,7 @@ const corsHeaders = {
 
 const META_TOKEN = Deno.env.get("META_ACCESS_TOKEN")!;
 const VDH_IG_ID = Deno.env.get("INSTAGRAM_BUSINESS_ACCOUNT_ID")!;
+const VDH_PAGE_ID = Deno.env.get("FACEBOOK_PAGE_ID")!;
 const GRAPH = "https://graph.facebook.com/v21.0";
 
 const supabase = createClient(
@@ -18,7 +19,9 @@ const supabase = createClient(
 );
 
 async function gget(url: string) {
-  const res = await fetch(url);
+  const res = await fetch(url, {
+    headers: { Authorization: `Bearer ${META_TOKEN}` },
+  });
   const json = await res.json();
   if (!res.ok) {
     throw new Error(`Meta API ${res.status}: ${JSON.stringify(json)}`);
@@ -28,7 +31,7 @@ async function gget(url: string) {
 
 async function fetchProfile(igUserId: string) {
   try {
-    return await gget(`${GRAPH}/${igUserId}?fields=name,username,profile_pic&access_token=${META_TOKEN}`);
+    return await gget(`${GRAPH}/${igUserId}?fields=name,username,profile_pic`);
   } catch {
     return null;
   }
@@ -43,7 +46,7 @@ Deno.serve(async (req) => {
   try {
     const limitConvs = 50;
     let url: string | null =
-      `${GRAPH}/${VDH_IG_ID}/conversations?platform=instagram&fields=id,participants,updated_time&limit=${limitConvs}&access_token=${META_TOKEN}`;
+      `${GRAPH}/${VDH_PAGE_ID}/conversations?platform=instagram&fields=id,participants,updated_time&limit=${limitConvs}`;
 
     while (url) {
       const page: any = await gget(url);
@@ -90,7 +93,7 @@ Deno.serve(async (req) => {
 
           // Buscar mensagens dessa conversa
           let msgUrl: string | null =
-            `${GRAPH}/${conv.id}?fields=messages.limit(50){id,created_time,from,to,message,attachments}&access_token=${META_TOKEN}`;
+            `${GRAPH}/${conv.id}?fields=messages.limit(50){id,created_time,from,to,message,attachments}`;
           const msgPage: any = await gget(msgUrl);
           const msgs = msgPage?.messages?.data ?? [];
 
