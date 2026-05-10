@@ -10,8 +10,11 @@ const corsHeaders = {
 
 const META_TOKEN = Deno.env.get("META_ACCESS_TOKEN")!;
 const VDH_IG_ID = Deno.env.get("INSTAGRAM_BUSINESS_ACCOUNT_ID")!;
-const VDH_PAGE_ID = Deno.env.get("FACEBOOK_PAGE_ID")!;
-const GRAPH = "https://graph.facebook.com/v21.0";
+// Tokens IGAA... usam graph.instagram.com (Instagram Login for Business),
+// não graph.facebook.com. Detecta automaticamente.
+const GRAPH = META_TOKEN.startsWith("IGAA")
+  ? "https://graph.instagram.com/v21.0"
+  : "https://graph.facebook.com/v21.0";
 
 const supabase = createClient(
   Deno.env.get("SUPABASE_URL")!,
@@ -19,9 +22,10 @@ const supabase = createClient(
 );
 
 async function gget(url: string) {
-  const res = await fetch(url, {
-    headers: { Authorization: `Bearer ${META_TOKEN}` },
-  });
+  const finalUrl = url.includes("access_token=")
+    ? url
+    : `${url}${url.includes("?") ? "&" : "?"}access_token=${encodeURIComponent(META_TOKEN)}`;
+  const res = await fetch(finalUrl);
   const json = await res.json();
   if (!res.ok) {
     throw new Error(`Meta API ${res.status}: ${JSON.stringify(json)}`);
@@ -42,16 +46,56 @@ Deno.serve(async (req) => {
 
   const log: string[] = [];
   const stats = { conversations: 0, messages: 0, skipped: 0, errors: 0 };
+  let body: any = {};
+  try { body = await req.json(); } catch { body = {}; }
+  const testMode = body?.test === true;
 
   try {
+    // DIAGNÓSTICO
+    const tokenLen = (META_TOKEN ?? "").length;
+    const tokenPreview = tokenLen > 12 ? `${META_TOKEN.slice(0, 6)}...${META_TOKEN.slice(-4)}` : "(empty/short)";
+    log.push(`META_ACCESS_TOKEN len=${tokenLen} preview=${tokenPreview}`);
+    log.push(`GRAPH=${GRAPH}`);
+    log.push(`INSTAGRAM_BUSINESS_ACCOUNT_ID=${VDH_IG_ID || "(missing)"}`);
+
+    // Testa o token: /me deve retornar id do ator
+    try {
+      const me = await gget(`${GRAPH}/me?fields=id,name`);
+      log.push(`/me OK: ${JSON.stringify(me)}`);
+    } catch (e) {
+      throw new Error(`Token inválido em /me — verifique META_ACCESS_TOKEN. Detalhe: ${e instanceof Error ? e.message : String(e)}`);
+    }
+
+    // Teste: lista 1 página de conversas e retorna
+    if (testMode) {
+      const sample: any = await gget(
+        `${GRAPH}/${VDH_IG_ID}/conversations?platform=instagram&fields=id,participants,updated_time&limit=5`,
+      );
+      log.push(`conversations test: ${(sample?.data ?? []).length} encontradas`);
+      return new Response(
+        JSON.stringify({ success: true, testMode: true, log, sample }),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" } },
+      );
+    }
+
     const limitConvs = 50;
     let url: string | null =
-      `${GRAPH}/${VDH_PAGE_ID}/conversations?platform=instagram&fields=id,participants,updated_time&limit=${limitConvs}`;
+      `${GRAPH}/${VDH_IG_ID}/conversations?platform=instagram&fields=id,participants,updated_time&limit=${limitConvs}`;
 
+    let pageNum = 0;
+    let emptyPages = 0;
     while (url) {
+      pageNum++;
+      if (pageNum > 50) { log.push(`stop: 50 páginas`); break; }
       const page: any = await gget(url);
       const convs = page?.data ?? [];
-      log.push(`Página com ${convs.length} conversas`);
+      log.push(`Página ${pageNum}: ${convs.length} conversas`);
+      if (convs.length === 0) {
+        emptyPages++;
+        if (emptyPages >= 5) { log.push(`stop: 5 páginas vazias seguidas`); break; }
+      } else {
+        emptyPages = 0;
+      }
 
       for (const conv of convs) {
         try {
