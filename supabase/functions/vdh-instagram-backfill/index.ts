@@ -10,8 +10,11 @@ const corsHeaders = {
 
 const META_TOKEN = Deno.env.get("META_ACCESS_TOKEN")!;
 const VDH_IG_ID = Deno.env.get("INSTAGRAM_BUSINESS_ACCOUNT_ID")!;
-const VDH_PAGE_ID = Deno.env.get("FACEBOOK_PAGE_ID")!;
-const GRAPH = "https://graph.facebook.com/v21.0";
+// Tokens IGAA... usam graph.instagram.com (Instagram Login for Business),
+// não graph.facebook.com. Detecta automaticamente.
+const GRAPH = META_TOKEN.startsWith("IGAA")
+  ? "https://graph.instagram.com/v21.0"
+  : "https://graph.facebook.com/v21.0";
 
 const supabase = createClient(
   Deno.env.get("SUPABASE_URL")!,
@@ -47,7 +50,7 @@ Deno.serve(async (req) => {
     const tokenLen = (META_TOKEN ?? "").length;
     const tokenPreview = tokenLen > 12 ? `${META_TOKEN.slice(0, 6)}...${META_TOKEN.slice(-4)}` : "(empty/short)";
     log.push(`META_ACCESS_TOKEN len=${tokenLen} preview=${tokenPreview}`);
-    log.push(`FACEBOOK_PAGE_ID=${VDH_PAGE_ID || "(missing)"}`);
+    log.push(`GRAPH=${GRAPH}`);
     log.push(`INSTAGRAM_BUSINESS_ACCOUNT_ID=${VDH_IG_ID || "(missing)"}`);
 
     // Testa o token: /me deve retornar id do ator
@@ -60,7 +63,7 @@ Deno.serve(async (req) => {
 
     const limitConvs = 50;
     let url: string | null =
-      `${GRAPH}/${VDH_PAGE_ID}/conversations?platform=instagram&fields=id,participants,updated_time&limit=${limitConvs}`;
+      `${GRAPH}/${VDH_IG_ID}/conversations?platform=instagram&fields=id,participants,updated_time&limit=${limitConvs}`;
 
     while (url) {
       const page: any = await gget(url);
