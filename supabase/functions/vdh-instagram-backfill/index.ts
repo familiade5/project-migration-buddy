@@ -19,9 +19,8 @@ const supabase = createClient(
 );
 
 async function gget(url: string) {
-  const res = await fetch(url, {
-    headers: { Authorization: `Bearer ${META_TOKEN}` },
-  });
+  const sep = url.includes("?") ? "&" : "?";
+  const res = await fetch(`${url}${sep}access_token=${encodeURIComponent(META_TOKEN)}`);
   const json = await res.json();
   if (!res.ok) {
     throw new Error(`Meta API ${res.status}: ${JSON.stringify(json)}`);
@@ -44,6 +43,21 @@ Deno.serve(async (req) => {
   const stats = { conversations: 0, messages: 0, skipped: 0, errors: 0 };
 
   try {
+    // DIAGNÓSTICO
+    const tokenLen = (META_TOKEN ?? "").length;
+    const tokenPreview = tokenLen > 12 ? `${META_TOKEN.slice(0, 6)}...${META_TOKEN.slice(-4)}` : "(empty/short)";
+    log.push(`META_ACCESS_TOKEN len=${tokenLen} preview=${tokenPreview}`);
+    log.push(`FACEBOOK_PAGE_ID=${VDH_PAGE_ID || "(missing)"}`);
+    log.push(`INSTAGRAM_BUSINESS_ACCOUNT_ID=${VDH_IG_ID || "(missing)"}`);
+
+    // Testa o token: /me deve retornar id do ator
+    try {
+      const me = await gget(`${GRAPH}/me?fields=id,name`);
+      log.push(`/me OK: ${JSON.stringify(me)}`);
+    } catch (e) {
+      throw new Error(`Token inválido em /me — verifique META_ACCESS_TOKEN. Detalhe: ${e instanceof Error ? e.message : String(e)}`);
+    }
+
     const limitConvs = 50;
     let url: string | null =
       `${GRAPH}/${VDH_PAGE_ID}/conversations?platform=instagram&fields=id,participants,updated_time&limit=${limitConvs}`;
