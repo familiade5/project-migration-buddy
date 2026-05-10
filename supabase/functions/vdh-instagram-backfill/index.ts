@@ -44,6 +44,9 @@ Deno.serve(async (req) => {
 
   const log: string[] = [];
   const stats = { conversations: 0, messages: 0, skipped: 0, errors: 0 };
+  let body: any = {};
+  try { body = await req.json(); } catch { body = {}; }
+  const testMode = body?.test === true;
 
   try {
     // DIAGNÓSTICO
@@ -59,6 +62,18 @@ Deno.serve(async (req) => {
       log.push(`/me OK: ${JSON.stringify(me)}`);
     } catch (e) {
       throw new Error(`Token inválido em /me — verifique META_ACCESS_TOKEN. Detalhe: ${e instanceof Error ? e.message : String(e)}`);
+    }
+
+    // Teste: lista 1 página de conversas e retorna
+    if (testMode) {
+      const sample: any = await gget(
+        `${GRAPH}/${VDH_IG_ID}/conversations?platform=instagram&fields=id,participants,updated_time&limit=5`,
+      );
+      log.push(`conversations test: ${(sample?.data ?? []).length} encontradas`);
+      return new Response(
+        JSON.stringify({ success: true, testMode: true, log, sample }),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" } },
+      );
     }
 
     const limitConvs = 50;
