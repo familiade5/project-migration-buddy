@@ -12,7 +12,7 @@ import {
 import {
   Popover, PopoverContent, PopoverTrigger,
 } from "@/components/ui/popover";
-import { Send, Search, Inbox, Archive, UserPlus, Tag, Loader2, MessageCircle, AlertCircle, Bot, MessageSquareText, LayoutGrid, List, Settings2 } from "lucide-react";
+import { Send, Search, Inbox, Archive, UserPlus, Tag, Loader2, MessageCircle, AlertCircle, Bot, MessageSquareText, LayoutGrid, List, Settings2, Download, Brain } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { formatDistanceToNow } from "date-fns";
 import { ptBR } from "date-fns/locale";
@@ -379,6 +379,40 @@ export default function VDHInbox() {
             </Button>
             <Button size="sm" variant="outline" className="h-8 text-xs" onClick={() => setShowAutoReplySettings(true)}>
               <Bot className="w-3.5 h-3.5 mr-1" /> Auto-resposta
+            </Button>
+            <Button
+              size="sm"
+              variant="outline"
+              className="h-8 text-xs"
+              onClick={async () => {
+                if (!confirm("Importar todas as conversas existentes do Instagram? Isso pode levar alguns minutos.")) return;
+                toast({ title: "Importando…", description: "Buscando histórico do Instagram." });
+                const { data, error } = await supabase.functions.invoke("vdh-instagram-backfill", { body: {} });
+                if (error || !data?.success) {
+                  toast({ title: "Erro ao importar", description: error?.message || data?.error || "Falhou", variant: "destructive" });
+                } else {
+                  toast({ title: "Importação concluída", description: `${data.stats.conversations} conversas, ${data.stats.messages} mensagens.` });
+                }
+              }}
+            >
+              <Download className="w-3.5 h-3.5 mr-1" /> Importar histórico
+            </Button>
+            <Button
+              size="sm"
+              variant="outline"
+              className="h-8 text-xs"
+              onClick={async () => {
+                if (!confirm("Treinar a IA com o histórico de conversas do Instagram?")) return;
+                toast({ title: "Treinando IA…", description: "Analisando mensagens com Gemini." });
+                const { data, error } = await supabase.functions.invoke("vdh-train-knowledge", { body: {} });
+                if (error || !data?.success) {
+                  toast({ title: "Erro ao treinar", description: error?.message || data?.error || "Falhou", variant: "destructive" });
+                } else {
+                  toast({ title: "IA treinada!", description: `Aprendeu com ${data.trained} mensagens.` });
+                }
+              }}
+            >
+              <Brain className="w-3.5 h-3.5 mr-1" /> Treinar IA
             </Button>
           </div>
         </div>
