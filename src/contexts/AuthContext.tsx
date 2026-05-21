@@ -54,6 +54,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [rolesLoaded, setRolesLoaded] = useState(false);
   const fetchingRef = useRef(false);
   const initRef = useRef(false);
 
@@ -114,6 +115,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         console.error('Error fetching user data:', error);
       } finally {
         fetchingRef.current = false;
+        if (isMountedRef.current) setRolesLoaded(true);
         if (setLoading && isMountedRef.current) setIsLoading(false);
       }
     },
@@ -147,6 +149,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       } else if (event === 'SIGNED_OUT') {
         setProfile(null);
         setIsAdmin(false);
+        setRolesLoaded(false);
       }
     });
 
@@ -299,6 +302,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         session,
         profile,
         isAdmin,
+        rolesLoaded,
         isLoading,
         signIn,
         signUp,
