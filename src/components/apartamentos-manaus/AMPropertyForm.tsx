@@ -444,39 +444,6 @@ export function AMPropertyForm({ data, onChange }: AMPropertyFormProps) {
         </div>
       </Section>
 
-      <Section title="Mídia e Código do Anúncio" color="#F47920">
-        <div className="space-y-3">
-          <div className="space-y-1">
-            <Label className={labelClass}>Código do anúncio</Label>
-            <div className="flex gap-2">
-              <Input className={inputClass} placeholder="Ex: VILFLW"
-                value={data.listingCode || ''} onChange={(e) => set('listingCode', e.target.value.toUpperCase())} />
-              <button
-                type="button"
-                onClick={() => {
-                  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-                  const code = Array.from({ length: 6 }, () => chars[Math.floor(Math.random() * chars.length)]).join('');
-                  set('listingCode', code);
-                }}
-                className="px-3 h-10 rounded-md text-xs font-semibold text-white whitespace-nowrap"
-                style={{ backgroundColor: '#1B5EA6' }}
-              >
-                Gerar
-              </button>
-            </div>
-          </div>
-          <div className="space-y-1">
-            <Label className={labelClass}>URL do vídeo YouTube</Label>
-            <Input className={inputClass} placeholder="https://www.youtube.com/watch?v=..."
-              value={data.youtubeUrl || ''} onChange={(e) => set('youtubeUrl', e.target.value)} />
-          </div>
-          <div className="space-y-1">
-            <Label className={labelClass}>URL do Tour Virtual</Label>
-            <Input className={inputClass} placeholder="Cole aqui o link do Tour Virtual"
-              value={data.virtualTourUrl || ''} onChange={(e) => set('virtualTourUrl', e.target.value)} />
-          </div>
-        </div>
-      </Section>
     </div>
   );
 }
