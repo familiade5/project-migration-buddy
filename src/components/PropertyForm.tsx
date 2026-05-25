@@ -6,6 +6,8 @@ import { Switch } from '@/components/ui/switch';
 import { Textarea } from '@/components/ui/textarea';
 import { useCrecis } from '@/hooks/useCrecis';
 import { useEffect } from 'react';
+import { CanalProExtraFields } from '@/components/canal-pro/CanalProExtraFields';
+import { defaultCanalProExtraData, CanalProExtraData } from '@/types/canalProExtra';
 
 interface PropertyFormProps {
   data: PropertyData;
@@ -607,6 +609,15 @@ export const PropertyForm = ({ data, onChange }: PropertyFormProps) => {
             )}
           </div>
         </div>
+      </div>
+
+      <div className="pt-4 mt-2 border-t-2 border-dashed border-gray-200">
+        <CanalProExtraFields
+          accentColor="#c9a84c"
+          defaultPrefix="VDH"
+          data={data.canalPro || defaultCanalProExtraData}
+          onChange={(cp: CanalProExtraData) => updateField('canalPro', cp)}
+        />
       </div>
     </div>
   );

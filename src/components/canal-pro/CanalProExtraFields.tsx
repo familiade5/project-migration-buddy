@@ -192,6 +192,11 @@ export function CanalProExtraFields({ data, onChange, accentColor = '#1B5EA6', d
 
       <Section title="Negociação Avançada">
         <div className="grid grid-cols-2 gap-3">
+          <div className="col-span-2 flex items-center gap-2">
+            <Switch className={switchClass} style={{ backgroundColor: data.saleAndRental ? accentColor : undefined }}
+              checked={data.saleAndRental} onCheckedChange={(v) => set('saleAndRental', v)} />
+            <Label className="text-sm text-gray-600">Disponível para Venda E Aluguel</Label>
+          </div>
           <div className="flex items-center gap-2">
             <Switch className={switchClass} style={{ backgroundColor: data.condoExempt ? accentColor : undefined }}
               checked={data.condoExempt} onCheckedChange={(v) => set('condoExempt', v)} />
@@ -201,6 +206,31 @@ export function CanalProExtraFields({ data, onChange, accentColor = '#1B5EA6', d
             <Switch className={switchClass} style={{ backgroundColor: data.iptuExempt ? accentColor : undefined }}
               checked={data.iptuExempt} onCheckedChange={(v) => set('iptuExempt', v)} />
             <Label className="text-sm text-gray-600">IPTU isento</Label>
+          </div>
+          <div className="col-span-2 space-y-1">
+            <Label className={labelClass}>Período do IPTU</Label>
+            <Select value={data.iptuPeriod} onValueChange={(v) => set('iptuPeriod', v as CanalProExtraData['iptuPeriod'])}>
+              <SelectTrigger className={inputClass}><SelectValue /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="Anual">Anual</SelectItem>
+                <SelectItem value="Mensal">Mensal</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+      </Section>
+
+      <Section title="Mídia (vídeo / tour virtual)">
+        <div className="space-y-3">
+          <div className="space-y-1">
+            <Label className={labelClass}>URL do vídeo YouTube</Label>
+            <Input className={inputClass} placeholder="https://www.youtube.com/watch?v=..."
+              value={data.youtubeUrl} onChange={(e) => set('youtubeUrl', e.target.value)} />
+          </div>
+          <div className="space-y-1">
+            <Label className={labelClass}>URL do Tour Virtual</Label>
+            <Input className={inputClass} placeholder="Cole aqui o link do Tour Virtual"
+              value={data.virtualTourUrl} onChange={(e) => set('virtualTourUrl', e.target.value)} />
           </div>
         </div>
       </Section>

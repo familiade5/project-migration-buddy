@@ -1,3 +1,5 @@
+import { CanalProExtraData, defaultCanalProExtraData } from './canalProExtra';
+
 export interface PropertyData {
   // Slide 1 - Capa
   entryValue: string; // Entrada a partir de
@@ -73,6 +75,9 @@ export interface PropertyData {
 
   // Corretor selecionado
   selectedBroker: 'iury' | 'almir';
+
+  // Campos extras p/ Canal Pro / OLX / ZAP / VivaReal (opcional)
+  canalPro?: CanalProExtraData;
 }
 
 export const defaultPropertyData: PropertyData = {
@@ -128,6 +133,7 @@ export const defaultPropertyData: PropertyData = {
   condominiumRules: 'Responsabilidade do comprador (até 10% do valor de avaliação). A CAIXA arcará com o excedente.',
   taxRules: 'Responsabilidade do comprador.',
   selectedBroker: 'iury',
+  canalPro: defaultCanalProExtraData,
 };
 
 export const propertyTypes = [
