@@ -17,7 +17,7 @@ const SERVICES = [
   'Assessoria 100% gratuita',
   'Auxílio na documentação do imóvel',
   'Acompanhamento do financiamento',
-  'Notificação para desocupação',
+  'Análise de crédito grátis',
 ];
 
 export const VDHCorretorInfoSlide = ({}: Props) => {
