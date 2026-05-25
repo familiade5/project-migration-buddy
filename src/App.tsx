@@ -18,6 +18,7 @@ import AMAuth from "./pages/am/AMAuth";
 import ApartamentosManausPage from "./pages/am/ApartamentosManausPage";
 import AMLibrary from "./pages/am/AMLibrary";
 import AMAdmin from "./pages/am/AMAdmin";
+import AMOlxCatalog from "./pages/am/AMOlxCatalog";
 import AMAdsMetrics from "./pages/am/AMAdsMetrics";
 import AFAuth from "./pages/af/AFAuth";
 import ApartamentosFortalezaPage from "./pages/af/ApartamentosFortalezaPage";
