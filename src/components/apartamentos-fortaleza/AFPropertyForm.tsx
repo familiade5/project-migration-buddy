@@ -4,6 +4,8 @@ import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
+import { CanalProExtraFields } from '@/components/canal-pro/CanalProExtraFields';
+import { defaultCanalProExtraData, CanalProExtraData } from '@/types/canalProExtra';
 
 interface AFPropertyFormProps {
   data: AFPropertyData;
@@ -202,6 +204,15 @@ export function AFPropertyForm({ data, onChange }: AFPropertyFormProps) {
           placeholder="Ex: Vista permanente para o mar! Não perca esta oportunidade."
           value={data.infoMessage} onChange={(e) => set('infoMessage', e.target.value)} />
       </Section>
+
+      <div className="pt-4 mt-2 border-t-2 border-dashed border-gray-200">
+        <CanalProExtraFields
+          accentColor="#0C7B8E"
+          defaultPrefix="AF"
+          data={data.canalPro || defaultCanalProExtraData}
+          onChange={(cp: CanalProExtraData) => set('canalPro', cp)}
+        />
+      </div>
     </div>
   );
 }
