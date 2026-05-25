@@ -1,3 +1,5 @@
+import { CanalProExtraData, defaultCanalProExtraData } from './canalProExtra';
+
 export interface AFPropertyData {
   // Basic info
   title: string;
@@ -45,6 +47,9 @@ export interface AFPropertyData {
   // Highlights
   highlights: string[];
   infoMessage: string;
+
+  // Campos extras p/ Canal Pro / OLX / ZAP / VivaReal
+  canalPro?: CanalProExtraData;
 }
 
 export const defaultAFPropertyData: AFPropertyData = {
@@ -81,4 +86,5 @@ export const defaultAFPropertyData: AFPropertyData = {
   creci: '',
   highlights: [],
   infoMessage: '',
+  canalPro: defaultCanalProExtraData,
 };
