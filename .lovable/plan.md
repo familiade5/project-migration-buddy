@@ -1,91 +1,77 @@
+## Objetivo
 
-# Caixa de Entrada VDH — Kanban + Respostas Rápidas com IA + Auto-resposta
+Permitir publicar imóveis do **VDH** e do **Apartamentos Fortaleza** no Canal Pro via feed XML, exatamente como já funciona no **Apartamentos Manaus** (AM). O AM tem: campos extras no formulário (CEP, categoria, lazer, condomínio, etc.), checkbox "Publicar também na OLX" no dialog de publicação, tabela `am_olx_listings`, edge function `olx-feed-am` que serve XML VRSYNC, e página `/am/olx-catalog` para gerenciar o feed.
 
-Tudo será adicionado dentro da Caixa de Entrada existente, sem mexer em publicações do VDH/AM. Facebook Messenger fica para uma próxima etapa, conforme combinado.
-
----
-
-## 1. Kanban customizável com tags
-
-**Como vai funcionar na prática:**
-
-- Toda conversa nova entra automaticamente com a tag "Primeiro Contato" (configurável).
-- Você cria, renomeia, reordena e exclui colunas/tags livremente (ex: Primeiro Contato → Qualificando → Quente → Negociando → Fechado → Perdido). Cada uma com cor própria.
-- No chat, troca a tag pelo seletor que já existe (só que agora puxa SUAS colunas, não as fixas).
-- Nova aba "**Kanban**" no topo, ao lado da lista. Mostra as colunas com os cards dos leads, podendo arrastar e soltar entre colunas (muda a tag automaticamente).
-- Continua tudo em tempo real: alterou em um lugar, atualiza no outro.
-
-```text
-[ Caixa de Entrada VDH ]
- ├─ Aba: Conversas (lista atual)
- └─ Aba: Kanban
-      ┌─────────────┬──────────────┬──────────┬──────────┐
-      │ 1º Contato  │ Qualificando │ Quente   │ Fechado  │
-      │ • Maria     │ • João       │ • Carlos │ • Ana    │
-      │ • Pedro     │              │ • Lucas  │          │
-      └─────────────┴──────────────┴──────────┴──────────┘
-```
+Vou replicar essa mesma estrutura para os outros dois módulos.
 
 ---
 
-## 2. Respostas rápidas + sugestão automática por IA
+## 1. Banco de dados (uma migração)
 
-**Cadastro:**
-- Tela "Respostas Rápidas" (acessível por um botão dentro do chat e nas configurações).
-- Cada resposta tem: **título**, **palavras-chave/intenção** (ex: "preço, valor, quanto custa") e **texto da resposta**.
+Criar duas novas tabelas espelhando `am_olx_listings`:
 
-**Uso no atendimento:**
-- Quando chega uma mensagem nova do lead, a IA lê e, se o conteúdo bater com alguma resposta cadastrada, mostra um **card discreto acima do campo de digitação**: "💡 Sugestão: **Tabela de Preços** — clique para usar".
-- Você clica → o texto entra na caixa de digitação → você revisa/edita → envia.
-- Também tem um botão "📋 Respostas" que abre a lista completa pra você escolher manualmente.
+- `vdh_olx_listings` — para imóveis do VDH (Venda de Imóveis)
+- `af_olx_listings` — para imóveis do Apartamentos Fortaleza
 
----
+Mesma estrutura/colunas do AM (title, description, price, address, fotos, amenities, etc.), com RLS para usuários autenticados verem/inserirem.
 
-## 3. Auto-resposta fora do horário comercial (com IA)
+## 2. Tipos (TypeScript)
 
-**Configuração:**
-- Tela de "Configurações de Auto-resposta": ligar/desligar, dias da semana, horário comercial (ex: Seg–Sex 8h–18h, Sáb 8h–12h).
-- Você define a **personalidade/instruções** (ex: "Você é a assistente da VDH Imóveis. Seja simpática e breve. Diga que um corretor humano responderá pela manhã. Se o lead falar de financiamento, mencione MCMV.").
-- A IA tem acesso às respostas rápidas cadastradas como contexto, então mantém o tom certo.
+- **VDH** (`src/types/property.ts` ou onde estiver o PropertyData usado pelo VDH): adicionar os ~30 campos opcionais do Canal Pro (CEP, category, totalArea, addressDisplay, isCommercial, amenityPool, amenityGym, condoFloors, etc.) — todos opcionais para não quebrar nada.
+- **AF** (`src/types/apartamentosFortaleza.ts`): mesmos campos opcionais + valores default seguros.
 
-**Funcionamento:**
-- Mensagem chega via webhook do Instagram → sistema confere o horário → se estiver fora do expediente E auto-resposta ativa → IA gera e envia a resposta.
-- A mensagem da IA aparece no chat marcada como "🤖 Auto-resposta" para você saber que foi automática.
-- A conversa entra na coluna "Primeiro Contato" normalmente, pra você dar continuidade quando voltar ao expediente.
+## 3. Formulários
 
----
+Replicar as seções extras "Canal Pro / OLX / ZAP" que existem em `AMPropertyForm.tsx` (linhas 290-444):
+- Classificação do Anúncio (categoria, área total, exibição de endereço, comercial)
+- Diferenciais do Imóvel
+- Sobre o Condomínio
+- Lazer e Esporte
+- Comodidades e Serviços
+- Segurança
+- Negociação Avançada
 
-## 4. Detalhes técnicos (parte técnica, pode pular)
+Adicionar em:
+- `src/components/posts/...` formulário VDH (vou localizar o arquivo correto)
+- `src/components/apartamentos-fortaleza/AFPropertyForm.tsx`
 
-**Banco de dados (novas tabelas):**
-- `vdh_kanban_columns` — colunas customizáveis (nome, cor, posição, padrão_para_novos)
-- `vdh_quick_replies` — respostas prontas (título, gatilhos, conteúdo)
-- `vdh_auto_reply_config` — config única (ativo, horários, dias, prompt do sistema)
-- Migrar `vdh_conversations.lead_status` (enum fixo) para `kanban_column_id` (FK), mantendo compatibilidade com os dados atuais.
+Também adicionar campo **CEP** (obrigatório p/ OLX) na seção de identificação dos dois.
 
-**Edge Functions novas:**
-- `vdh-suggest-reply` — chama Lovable AI (Gemini 2.5 Flash) com a mensagem do lead + lista de respostas, retorna `{ matched_reply_id, confidence }`.
-- Modificar `vdh-instagram-webhook` para verificar horário e disparar auto-resposta via Lovable AI quando aplicável.
+## 4. Dialogs de publicação
 
-**Frontend:**
-- Componentes: `KanbanBoard`, `QuickReplyManager`, `QuickReplySuggestion`, `AutoReplySettings`.
-- Drag-and-drop com `@dnd-kit/core` (já leve, sem dependências pesadas).
-- Tabs no topo da inbox: "Conversas" / "Kanban".
+- **VDH**: já existe `VDHInstagramPublishDialog.tsx`. Adicionar checkbox "Publicar também na OLX / ZAP / VivaReal" + validações (CEP + ao menos 1 foto) + insert em `vdh_olx_listings`, espelhando `AMInstagramPublishDialog.tsx`.
+- **AF**: não existe dialog ainda. Criar `AFInstagramPublishDialog.tsx` baseado no do AM (publica no Instagram via edge function `publish-social-media` + checkbox OLX que insere em `af_olx_listings`). Adicionar botão "Postar no Instagram AF" na página `ApartamentosFortalezaPage.tsx`.
 
-**Custos:** uso da Lovable AI é por request. Sugestões e auto-respostas usam Gemini 2.5 Flash (econômico).
+## 5. Edge functions de feed XML
 
----
+Criar duas novas edge functions (mesmo código do `olx-feed-am`, só muda a tabela lida):
+- `supabase/functions/vdh-olx-feed/index.ts` → lê `vdh_olx_listings`
+- `supabase/functions/af-olx-feed/index.ts` → lê `af_olx_listings`
 
-## Ordem de entrega
+URLs públicas que o cliente cola no Canal Pro → Integração de anúncios.
 
-1. Migração do banco (colunas, respostas, config)
-2. Kanban customizável + drag-and-drop
-3. Respostas rápidas (cadastro + botão na conversa)
-4. Sugestão de resposta por IA
-5. Auto-resposta fora do horário
+## 6. Páginas de catálogo
 
-Tudo entregue de uma vez.
+Criar páginas equivalentes a `AMOlxCatalog.tsx`:
+- Catálogo VDH em `/olx-catalog` (no layout principal)
+- Catálogo AF em `/af/olx-catalog` (no AFLayout)
+
+Cada uma mostra a URL do feed, lista os imóveis publicados e permite ativar/desativar/excluir.
+
+Adicionar entradas no menu lateral de cada layout.
 
 ---
 
-**Confirma que posso seguir com esse plano?** Se quiser ajustar algo (nomes das colunas iniciais, tom da IA, horário padrão, etc.), me avise antes.
+## Restrições já consideradas
+
+- Permissões VDH: respeitar hierarquia existente (Master Admin etc.) — usar mesmos guards já aplicados ao módulo.
+- AF: módulo restrito a Master Admins → catálogo respeita isso.
+- Sem mexer no fluxo atual: todos os campos são opcionais; quem não quiser publicar na OLX continua usando como está.
+
+---
+
+## Ordem de execução
+
+1. Migração SQL (você aprova) → 2. Tipos → 3. Formulários (VDH + AF) → 4. Dialog AF + atualizar dialog VDH → 5. Edge functions → 6. Páginas de catálogo + rotas + menu.
+
+Posso começar pela **migração** assim que você confirmar. Quer que eu siga exatamente esse plano ou prefere começar só por um módulo (VDH ou AF) primeiro para validar?
