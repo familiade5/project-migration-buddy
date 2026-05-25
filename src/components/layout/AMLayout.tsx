@@ -12,6 +12,7 @@ import {
   BookOpen,
   Image,
   BarChart3,
+  Tag,
 } from 'lucide-react';
 import {
   DropdownMenu,
