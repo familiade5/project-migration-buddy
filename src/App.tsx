@@ -83,6 +83,9 @@ const App = () => (
             <Route path="/apartamentos-manaus/admin" element={
               <ProtectedRoute requireAdmin><AMAdmin /></ProtectedRoute>
             } />
+            <Route path="/apartamentos-manaus/olx" element={
+              <ProtectedRoute><AMOlxCatalog /></ProtectedRoute>
+            } />
             <Route path="/apartamentos-manaus/metricas-ads" element={
               <ProtectedRoute><AMAdsMetrics /></ProtectedRoute>
             } />
