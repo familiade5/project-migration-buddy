@@ -9,7 +9,6 @@ import { AFLayout } from '@/components/layout/AFLayout';
 import { Image, Edit3, Sparkles, FileText, LayoutGrid, Smartphone, Zap, Tag } from 'lucide-react';
 import { AFPaidFeedPreview } from '@/components/apartamentos-fortaleza/AFPaidFeedPreview';
 import { PublishToOlxButton } from '@/components/canal-pro/PublishToOlxButton';
-import { buildAFCaption } from '@/lib/afCaption';
 
 const PRIMARY = '#0C7B8E';
 const ACCENT = '#E8562A';
@@ -158,7 +157,7 @@ const ApartamentosFortalezaPage = () => {
                   tableName="af_olx_listings"
                   accentColor={ACCENT}
                   codePrefix="AF"
-                  initialCaption={(() => { try { return buildAFCaption(propertyData); } catch { return ''; } })()}
+                  initialCaption={propertyData.infoMessage || propertyData.title || ''}
                   buildPayload={() => {
                     const isRental = propertyData.isRental;
                     return {
