@@ -57,6 +57,12 @@ export interface CanalProExtraData {
   // Negociação
   condoExempt: boolean;
   iptuExempt: boolean;
+  iptuPeriod: 'Anual' | 'Mensal';
+  saleAndRental: boolean;
+
+  // Mídia
+  youtubeUrl: string;
+  virtualTourUrl: string;
 }
 
 export const defaultCanalProExtraData: CanalProExtraData = {
@@ -101,4 +107,8 @@ export const defaultCanalProExtraData: CanalProExtraData = {
   amenity24hConcierge: false,
   condoExempt: false,
   iptuExempt: false,
+  iptuPeriod: 'Anual',
+  saleAndRental: false,
+  youtubeUrl: '',
+  virtualTourUrl: '',
 };
