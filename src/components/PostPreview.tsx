@@ -551,6 +551,7 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
         <div className="sm:col-span-2 [&>button]:w-full">
           <VDHInstagramPublishDialog
             data={data}
+            photos={photos}
             disabled={isExporting || posts.length === 0 || photos.length === 0}
             onPrepare={prepareInstagramPublication}
           />

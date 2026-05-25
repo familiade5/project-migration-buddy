@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
-import { Settings, LogOut, Menu, X, MoreVertical, Shield, Home, BookOpen } from 'lucide-react';
+import { Settings, LogOut, Menu, X, MoreVertical, Shield, Home, BookOpen, Tag } from 'lucide-react';
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
@@ -19,6 +19,7 @@ const navigation = [
 ];
 
 const adminNavigation = [
+  { name: 'Catálogo OLX', href: '/apartamentos-fortaleza/olx', icon: Tag },
   { name: 'Admin', href: '/apartamentos-fortaleza/admin', icon: Shield },
 ];
 

@@ -6,8 +6,9 @@ import { AFPropertyForm } from '@/components/apartamentos-fortaleza/AFPropertyFo
 import { AFCaptionGenerator } from '@/components/apartamentos-fortaleza/AFCaptionGenerator';
 import { AFPhotoManager } from '@/components/apartamentos-fortaleza/AFPhotoManager';
 import { AFLayout } from '@/components/layout/AFLayout';
-import { Image, Edit3, Sparkles, FileText, LayoutGrid, Smartphone, Zap } from 'lucide-react';
+import { Image, Edit3, Sparkles, FileText, LayoutGrid, Smartphone, Zap, Tag } from 'lucide-react';
 import { AFPaidFeedPreview } from '@/components/apartamentos-fortaleza/AFPaidFeedPreview';
+import { PublishToOlxButton } from '@/components/canal-pro/PublishToOlxButton';
 
 const PRIMARY = '#0C7B8E';
 const ACCENT = '#E8562A';
@@ -136,6 +137,60 @@ const ApartamentosFortalezaPage = () => {
                 </div>
               </div>
               <div className="p-4 sm:p-6"><AFCaptionGenerator data={propertyData} /></div>
+            </div>
+
+            {/* Publish to OLX / Canal Pro */}
+            <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+              <div className="px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-100" style={{ backgroundColor: '#FFF8F0' }}>
+                <div className="flex items-center gap-3">
+                  <div className="p-2 rounded-lg text-white flex-shrink-0" style={{ backgroundColor: ACCENT }}>
+                    <Tag className="w-4 h-4" />
+                  </div>
+                  <div className="min-w-0">
+                    <h2 className="font-semibold text-gray-900 text-sm sm:text-base">Publicar no Canal Pro</h2>
+                    <p className="text-xs text-gray-500">Envia para OLX / ZAP / VivaReal via feed XML</p>
+                  </div>
+                </div>
+              </div>
+              <div className="p-4 sm:p-6">
+                <PublishToOlxButton
+                  tableName="af_olx_listings"
+                  accentColor={ACCENT}
+                  codePrefix="AF"
+                  initialCaption={propertyData.infoMessage || propertyData.title || ''}
+                  buildPayload={() => {
+                    const isRental = propertyData.isRental;
+                    return {
+                      code: `AF-${Date.now().toString(36).toUpperCase()}`,
+                      transaction_type: isRental ? 'aluguel' : 'venda',
+                      property_type: propertyData.propertyType || 'Apartamento',
+                      title: propertyData.title || `${propertyData.propertyType} ${propertyData.bedrooms} quartos - ${propertyData.neighborhood}`,
+                      address: propertyData.address,
+                      zip_code: (propertyData as unknown as { zipCode?: string }).zipCode || '',
+                      neighborhood: propertyData.neighborhood,
+                      city: propertyData.city,
+                      state: propertyData.state || 'CE',
+                      area: propertyData.area || null,
+                      bedrooms: propertyData.bedrooms || 0,
+                      bathrooms: propertyData.bathrooms || 0,
+                      suites: propertyData.suites || 0,
+                      garage_spaces: propertyData.garageSpaces || 0,
+                      floor: propertyData.floor || null,
+                      furnished: propertyData.furnished,
+                      sale_price: isRental ? null : (propertyData.salePrice || null),
+                      rental_price: isRental ? (propertyData.rentalPrice || null) : null,
+                      condominium_fee: propertyData.condominiumFee || 0,
+                      iptu: propertyData.iptu || 0,
+                      accepts_financing: propertyData.acceptsFinancing,
+                      accepts_fgts: propertyData.acceptsFGTS,
+                      photos,
+                      broker_name: propertyData.brokerName,
+                      broker_phone: propertyData.brokerPhone,
+                      creci: propertyData.creci,
+                    };
+                  }}
+                />
+              </div>
             </div>
           </div>
 
