@@ -118,8 +118,8 @@ export function PublishToOlxButton({
         zip_code: draft.zip_code.replace(/\D/g, ''),
         is_active: true,
       };
-      // @ts-expect-error generic table name accepted at runtime
-      const { error } = await supabase.from(tableName).insert(payload);
+      const { error } = await (supabase as unknown as { from: (t: string) => { insert: (p: unknown) => Promise<{ error: { message: string } | null }> } })
+        .from(tableName).insert(payload);
       if (error) throw error;
       toast.success(`Imóvel adicionado ao catálogo OLX (${code})! Os portais sincronizam nas próximas horas.`);
       setOpen(false);
