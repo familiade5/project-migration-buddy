@@ -10,6 +10,7 @@ import { PostDetails } from './posts/PostDetails';
 import { PostFeatures } from './posts/PostFeatures';
 import { PostContact } from './posts/PostContact';
 import { VDHFeedPhotoSlide } from './posts/VDHFeedPhotoSlide';
+import { VDHCorretorInfoSlide } from './posts/VDHCorretorInfoSlide';
 import { PostCoverStory } from './posts/story/PostCoverStory';
 import { PostContactStory } from './posts/story/PostContactStory';
 import { VDHFeedPhotoSlideStory } from './posts/story/VDHFeedPhotoSlideStory';
@@ -145,6 +146,7 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
 
   const feedPosts: SlideEntry[] = [
     { name: 'Capa', component: PostCover, photoIndex: 0 },
+    { name: 'Sobre nós', component: VDHCorretorInfoSlide, photoIndex: 0 },
     ...Array.from({ length: Math.max(0, photos.length - 2) }, (_, i) => ({
       name: `Foto ${i + 1}`,
       component: VDHFeedPhotoSlide,
