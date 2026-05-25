@@ -45,6 +45,66 @@ export interface AMPropertyData {
   // Highlights (up to 6) – for info slide
   highlights: string[];
   infoMessage: string;
+
+  // ============ Canal Pro extras (todos opcionais — não quebram fluxo atual) ============
+  // Classificação
+  isCommercial?: boolean;            // Residencial (false) vs Comercial (true)
+  category?: string;                 // Padrão, Cobertura, Duplex, Kitnet, Loft...
+  totalArea?: number;                // Área total (m²) — distinta da área útil
+  addressDisplay?: 'completo' | 'rua' | 'bairro';
+
+  // Diferenciais do imóvel (flags individuais)
+  hasPets?: boolean;
+  hasAirConditioning?: boolean;
+  hasCloset?: boolean;
+  hasAmericanKitchen?: boolean;
+  hasFireplace?: boolean;
+  hasGourmetBalcony?: boolean;
+
+  // Sobre o condomínio
+  condoFloors?: number;              // Nº de andares
+  condoUnitsPerFloor?: number;       // Nº de unidades por andar
+  condoTowers?: number;              // Nº de torres
+  condoBuildYear?: string;           // Ano de construção
+
+  // Lazer e esporte (condomínio)
+  amenityGym?: boolean;
+  amenityBBQ?: boolean;
+  amenityCinema?: boolean;
+  amenityGourmetSpace?: boolean;
+  amenityGarden?: boolean;
+  amenityPool?: boolean;
+  amenityPlayground?: boolean;
+  amenitySquashCourt?: boolean;
+  amenityTennisCourt?: boolean;
+  amenityMultisportCourt?: boolean;
+  amenityPartyHall?: boolean;
+  amenityGameRoom?: boolean;
+
+  // Comodidades e serviços
+  amenityAccessibility?: boolean;
+  amenityBikeRack?: boolean;
+  amenityCoworking?: boolean;
+  amenityElevator?: boolean;
+  amenityLaundry?: boolean;
+  amenitySauna?: boolean;
+  amenitySpa?: boolean;
+
+  // Segurança
+  amenityGatedCommunity?: boolean;
+  amenityElectronicGate?: boolean;
+  amenity24hConcierge?: boolean;
+
+  // Negociação
+  saleAndRental?: boolean;           // Venda E Aluguel (terceira opção)
+  condoExempt?: boolean;             // Condomínio isento
+  iptuExempt?: boolean;              // IPTU isento
+  iptuPeriod?: 'Anual' | 'Mensal';   // Período do IPTU
+
+  // Mídia / Código
+  listingCode?: string;              // Código do anúncio (ex: VILFLW)
+  youtubeUrl?: string;               // URL do vídeo
+  virtualTourUrl?: string;           // URL do Tour Virtual
 }
 
 export const defaultAMPropertyData: AMPropertyData = {
@@ -81,4 +141,49 @@ export const defaultAMPropertyData: AMPropertyData = {
   creci: 'CRECI 14851 MS PJ',
   highlights: [],
   infoMessage: '',
+
+  // Canal Pro extras — defaults seguros
+  isCommercial: false,
+  category: 'Padrão',
+  totalArea: 0,
+  addressDisplay: 'completo',
+  hasPets: false,
+  hasAirConditioning: false,
+  hasCloset: false,
+  hasAmericanKitchen: false,
+  hasFireplace: false,
+  hasGourmetBalcony: false,
+  condoFloors: 0,
+  condoUnitsPerFloor: 0,
+  condoTowers: 0,
+  condoBuildYear: '',
+  amenityGym: false,
+  amenityBBQ: false,
+  amenityCinema: false,
+  amenityGourmetSpace: false,
+  amenityGarden: false,
+  amenityPool: false,
+  amenityPlayground: false,
+  amenitySquashCourt: false,
+  amenityTennisCourt: false,
+  amenityMultisportCourt: false,
+  amenityPartyHall: false,
+  amenityGameRoom: false,
+  amenityAccessibility: false,
+  amenityBikeRack: false,
+  amenityCoworking: false,
+  amenityElevator: false,
+  amenityLaundry: false,
+  amenitySauna: false,
+  amenitySpa: false,
+  amenityGatedCommunity: false,
+  amenityElectronicGate: false,
+  amenity24hConcierge: false,
+  saleAndRental: false,
+  condoExempt: false,
+  iptuExempt: false,
+  iptuPeriod: 'Anual',
+  listingCode: '',
+  youtubeUrl: '',
+  virtualTourUrl: '',
 };
