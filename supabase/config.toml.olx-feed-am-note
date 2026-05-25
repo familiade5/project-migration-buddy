@@ -1,1 +1,0 @@
-# Note: olx-feed-am needs verify_jwt=false because OLX servers fetch it publicly.
