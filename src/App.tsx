@@ -22,6 +22,8 @@ import AMOlxCatalog from "./pages/am/AMOlxCatalog";
 import AMAdsMetrics from "./pages/am/AMAdsMetrics";
 import AFAuth from "./pages/af/AFAuth";
 import ApartamentosFortalezaPage from "./pages/af/ApartamentosFortalezaPage";
+import AFOlxCatalog from "./pages/af/AFOlxCatalog";
+import VDHOlxCatalog from "./pages/VDHOlxCatalog";
 import TrafegoPago from "./pages/TrafegoPago";
 import AutoPostApproval from "./pages/AutoPostApproval";
 
@@ -72,6 +74,9 @@ const App = () => (
                 <EducationalPostGenerator />
               </ProtectedRoute>
             } />
+            <Route path="/olx-catalog" element={
+              <ProtectedRoute requireAdmin><VDHOlxCatalog /></ProtectedRoute>
+            } />
             {/* Apartamentos Manaus */}
             <Route path="/am/auth" element={<AMAuth />} />
             <Route path="/apartamentos-manaus" element={
@@ -93,6 +98,9 @@ const App = () => (
             <Route path="/af/auth" element={<AFAuth />} />
             <Route path="/apartamentos-fortaleza" element={
               <ProtectedRoute><ApartamentosFortalezaPage /></ProtectedRoute>
+            } />
+            <Route path="/apartamentos-fortaleza/olx" element={
+              <ProtectedRoute requireAdmin><AFOlxCatalog /></ProtectedRoute>
             } />
             {/* Tráfego Pago - Master admin only */}
             <Route path="/trafego-pago" element={
