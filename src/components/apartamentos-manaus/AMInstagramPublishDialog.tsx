@@ -352,6 +352,55 @@ export const AMInstagramPublishDialog = ({
                 </span>
                 <span className="font-medium" style={{ color: '#6b7280' }}>{caption.trim().length}/2200</span>
               </div>
+
+              {/* OLX publish option */}
+              <div className="rounded-xl p-4 space-y-3" style={{ backgroundColor: '#fef3c7', border: '1px solid #fcd34d' }}>
+                <div className="flex items-start gap-3">
+                  <Checkbox
+                    id="publish-olx"
+                    checked={publishOlx}
+                    onCheckedChange={(v) => setPublishOlx(v === true)}
+                    className="mt-0.5"
+                  />
+                  <div className="flex-1">
+                    <Label htmlFor="publish-olx" className="text-sm font-semibold cursor-pointer" style={{ color: '#78350f' }}>
+                      <Tag className="w-4 h-4 inline mr-1.5 -mt-0.5" />
+                      Publicar também na OLX / ZAP / VivaReal
+                    </Label>
+                    <p className="text-xs mt-1" style={{ color: '#92400e' }}>
+                      O imóvel será adicionado ao catálogo XML. A OLX sincroniza automaticamente nas próximas horas.
+                    </p>
+                  </div>
+                </div>
+
+                {publishOlx && (
+                  <div className="pl-7 space-y-2">
+                    <Label className="text-xs font-semibold uppercase tracking-wide" style={{ color: '#78350f' }}>
+                      Tipo de anúncio
+                    </Label>
+                    <div className="flex items-center gap-1 p-1 bg-white rounded-lg" style={{ border: '1px solid #fcd34d' }}>
+                      {(['venda', 'aluguel', 'lancamento'] as const).map((t) => (
+                        <button
+                          key={t}
+                          type="button"
+                          onClick={() => setOlxTxType(t)}
+                          className="flex-1 py-1.5 rounded-md text-xs font-semibold transition-all capitalize"
+                          style={olxTxType === t
+                            ? { backgroundColor: '#F47920', color: 'white' }
+                            : { color: '#92400e', backgroundColor: 'transparent' }}
+                        >
+                          {t === 'lancamento' ? 'Lançamento' : t}
+                        </button>
+                      ))}
+                    </div>
+                    {!data.zipCode && (
+                      <p className="text-xs font-medium" style={{ color: '#dc2626' }}>
+                        ⚠ CEP obrigatório — preencha no formulário antes de continuar.
+                      </p>
+                    )}
+                  </div>
+                )}
+              </div>
             </div>
           )}
 
