@@ -1,10 +1,12 @@
 import { useMemo, useState } from 'react';
 import { z } from 'zod';
-import { Loader2, Send, ImageIcon, PencilLine, CheckCircle2 } from 'lucide-react';
+import { Loader2, Send, ImageIcon, PencilLine, CheckCircle2, Tag } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { PropertyData } from '@/types/property';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Label } from '@/components/ui/label';
 import {
   Dialog,
   DialogContent,
@@ -26,6 +28,7 @@ interface PreparedPublishPayload {
 
 interface VDHInstagramPublishDialogProps {
   data: PropertyData;
+  photos?: string[];
   disabled?: boolean;
   onPrepare: () => Promise<PreparedPublishPayload>;
 }
@@ -58,6 +61,7 @@ const getInstagramErrorMessage = (instagramResult: unknown): string => {
 
 export const VDHInstagramPublishDialog = ({
   data,
+  photos = [],
   disabled = false,
   onPrepare,
 }: VDHInstagramPublishDialogProps) => {
@@ -73,6 +77,8 @@ export const VDHInstagramPublishDialog = ({
   const [storyPreviewDataUrl, setStoryPreviewDataUrl] = useState<string | undefined>();
   const [isPreparing, setIsPreparing] = useState(false);
   const [isPublishing, setIsPublishing] = useState(false);
+  const [publishOlx, setPublishOlx] = useState(false);
+  const [olxTxType, setOlxTxType] = useState<'venda' | 'aluguel' | 'lancamento'>('venda');
 
   const defaultCaption = useMemo(
     () => buildVdhCaption(data, crecis, formatCreci),
@@ -87,6 +93,8 @@ export const VDHInstagramPublishDialog = ({
     setPreviewDataUrls([]);
     setStoryImageUrl(undefined);
     setStoryPreviewDataUrl(undefined);
+    setPublishOlx(false);
+    setOlxTxType('venda');
   };
 
   const handleOpenChange = (nextOpen: boolean) => {
@@ -141,6 +149,27 @@ export const VDHInstagramPublishDialog = ({
       return;
     }
 
+    // Validação OLX se marcado
+    if (publishOlx) {
+      if (!data.cep?.trim()) {
+        toast.error('CEP é obrigatório para publicar na OLX. Preencha no formulário.');
+        return;
+      }
+      const addr = (data.fullAddress || `${data.street || ''} ${data.number || ''}`).trim();
+      if (!addr || !data.neighborhood?.trim() || !data.city?.trim()) {
+        toast.error('Endereço, bairro e cidade são obrigatórios para a OLX.');
+        return;
+      }
+      if (photos.length === 0) {
+        toast.error('Adicione pelo menos 1 foto do imóvel para publicar na OLX.');
+        return;
+      }
+      if (!data.contactName?.trim() || !data.contactPhone?.trim()) {
+        toast.error('Nome e telefone do corretor são obrigatórios para a OLX.');
+        return;
+      }
+    }
+
     setCaptionError(null);
     setIsPublishing(true);
 
@@ -186,6 +215,58 @@ export const VDHInstagramPublishDialog = ({
       }
 
       toast.success('Carrossel do VDH publicado no Instagram com sucesso!');
+
+      // Salvar no catálogo OLX se marcado
+      if (publishOlx) {
+        try {
+          const parseCurrency = (s: string): number | null => {
+            if (!s) return null;
+            const n = Number(String(s).replace(/[^\d,.-]/g, '').replace(/\./g, '').replace(',', '.'));
+            return Number.isFinite(n) && n > 0 ? n : null;
+          };
+          const code = `VDH-${Date.now().toString(36).toUpperCase()}`;
+          const title = `${data.type || 'Imóvel'}${data.bedrooms ? ` ${data.bedrooms} quartos` : ''} - ${data.neighborhood || data.city}`;
+          const address = (data.fullAddress || `${data.street || ''} ${data.number || ''}`).trim();
+          const payload = {
+            code,
+            transaction_type: olxTxType,
+            property_type: data.type || 'Casa',
+            title,
+            description: caption.slice(0, 4000),
+            address,
+            address_number: data.number || null,
+            zip_code: data.cep.replace(/\D/g, ''),
+            neighborhood: data.neighborhood,
+            city: data.city,
+            state: data.state || 'MS',
+            area: parseCurrency(data.area) || null,
+            bedrooms: parseInt(data.bedrooms) || 0,
+            bathrooms: parseInt(data.bathrooms) || 0,
+            suites: 0,
+            garage_spaces: parseInt(data.garageSpaces) || 0,
+            floor: null,
+            furnished: false,
+            sale_price: olxTxType === 'aluguel' ? null : parseCurrency(data.minimumValue),
+            rental_price: olxTxType === 'aluguel' ? parseCurrency(data.minimumValue) : null,
+            condominium_fee: 0,
+            iptu: 0,
+            accepts_financing: data.acceptsFinancing,
+            accepts_fgts: data.acceptsFGTS,
+            photos,
+            broker_name: data.contactName,
+            broker_phone: data.contactPhone,
+            creci: data.creci,
+            is_active: true,
+          };
+          const { error: olxError } = await supabase.from('vdh_olx_listings').insert(payload);
+          if (olxError) throw olxError;
+          toast.success(`Imóvel adicionado ao catálogo OLX (${code})! A OLX irá sincronizar nas próximas horas.`);
+        } catch (olxErr) {
+          const m = olxErr instanceof Error ? olxErr.message : 'Erro desconhecido';
+          toast.warning(`Instagram OK, mas falhou ao adicionar na OLX: ${m}`);
+        }
+      }
+
       handleOpenChange(false);
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Não foi possível publicar no Instagram.';
@@ -313,6 +394,55 @@ export const VDHInstagramPublishDialog = ({
                   {captionError || 'A legenda será usada na descrição da publicação.'}
                 </span>
                 <span className="font-medium" style={{ color: '#6b7280' }}>{caption.trim().length}/2200</span>
+              </div>
+
+              {/* OLX publish option */}
+              <div className="rounded-xl p-4 space-y-3" style={{ backgroundColor: '#fef3c7', border: '1px solid #fcd34d' }}>
+                <div className="flex items-start gap-3">
+                  <Checkbox
+                    id="publish-olx-vdh"
+                    checked={publishOlx}
+                    onCheckedChange={(v) => setPublishOlx(v === true)}
+                    className="mt-0.5"
+                  />
+                  <div className="flex-1">
+                    <Label htmlFor="publish-olx-vdh" className="text-sm font-semibold cursor-pointer" style={{ color: '#78350f' }}>
+                      <Tag className="w-4 h-4 inline mr-1.5 -mt-0.5" />
+                      Publicar também na OLX / ZAP / VivaReal
+                    </Label>
+                    <p className="text-xs mt-1" style={{ color: '#92400e' }}>
+                      O imóvel será adicionado ao catálogo XML. A OLX sincroniza automaticamente nas próximas horas.
+                    </p>
+                  </div>
+                </div>
+
+                {publishOlx && (
+                  <div className="pl-7 space-y-2">
+                    <Label className="text-xs font-semibold uppercase tracking-wide" style={{ color: '#78350f' }}>
+                      Tipo de anúncio
+                    </Label>
+                    <div className="flex items-center gap-1 p-1 bg-white rounded-lg" style={{ border: '1px solid #fcd34d' }}>
+                      {(['venda', 'aluguel', 'lancamento'] as const).map((t) => (
+                        <button
+                          key={t}
+                          type="button"
+                          onClick={() => setOlxTxType(t)}
+                          className="flex-1 py-1.5 rounded-md text-xs font-semibold transition-all capitalize"
+                          style={olxTxType === t
+                            ? { backgroundColor: '#c9a84c', color: 'white' }
+                            : { color: '#92400e', backgroundColor: 'transparent' }}
+                        >
+                          {t === 'lancamento' ? 'Lançamento' : t}
+                        </button>
+                      ))}
+                    </div>
+                    {!data.cep && (
+                      <p className="text-xs font-medium" style={{ color: '#dc2626' }}>
+                        ⚠ CEP obrigatório — preencha no formulário antes de continuar.
+                      </p>
+                    )}
+                  </div>
+                )}
               </div>
             </div>
           )}
