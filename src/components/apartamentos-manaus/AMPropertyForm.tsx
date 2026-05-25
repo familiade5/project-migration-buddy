@@ -70,6 +70,11 @@ export function AMPropertyForm({ data, onChange }: AMPropertyFormProps) {
               value={data.address} onChange={(e) => set('address', e.target.value)} />
           </div>
           <div className="col-span-2 space-y-1">
+            <Label className={labelClass}>CEP <span className="text-gray-400 normal-case font-normal">(obrigatório p/ OLX)</span></Label>
+            <Input className={inputClass} placeholder="Ex: 69050-000"
+              value={data.zipCode} onChange={(e) => set('zipCode', e.target.value)} />
+          </div>
+          <div className="col-span-2 space-y-1">
             <Label className={labelClass}>Ponto de Referência</Label>
             <Input className={inputClass} placeholder="Ex: Em frente a Volvo"
               value={data.referencePoint} onChange={(e) => set('referencePoint', e.target.value)} />

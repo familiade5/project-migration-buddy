@@ -1,10 +1,12 @@
 import { useMemo, useState } from 'react';
 import { z } from 'zod';
-import { Loader2, Send, ImageIcon, PencilLine, CheckCircle2 } from 'lucide-react';
+import { Loader2, Send, ImageIcon, PencilLine, CheckCircle2, Tag } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { AMPropertyData } from '@/types/apartamentosManaus';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Label } from '@/components/ui/label';
 import {
   Dialog,
   DialogContent,
@@ -25,6 +27,7 @@ interface PreparedPublishPayload {
 
 interface AMInstagramPublishDialogProps {
   data: AMPropertyData;
+  photos: string[];
   disabled?: boolean;
   onPrepare: () => Promise<PreparedPublishPayload>;
 }
@@ -56,6 +59,7 @@ const getInstagramErrorMessage = (instagramResult: unknown): string => {
 
 export const AMInstagramPublishDialog = ({
   data,
+  photos,
   disabled = false,
   onPrepare,
 }: AMInstagramPublishDialogProps) => {
@@ -69,6 +73,10 @@ export const AMInstagramPublishDialog = ({
   const [storyPreviewDataUrl, setStoryPreviewDataUrl] = useState<string | undefined>();
   const [isPreparing, setIsPreparing] = useState(false);
   const [isPublishing, setIsPublishing] = useState(false);
+  const [publishOlx, setPublishOlx] = useState(false);
+  const [olxTxType, setOlxTxType] = useState<'venda' | 'aluguel' | 'lancamento'>(
+    data.isRental ? 'aluguel' : 'venda'
+  );
 
   const resetState = () => {
     setStep('images');
@@ -78,6 +86,8 @@ export const AMInstagramPublishDialog = ({
     setPreviewDataUrls([]);
     setStoryImageUrl(undefined);
     setStoryPreviewDataUrl(undefined);
+    setPublishOlx(false);
+    setOlxTxType(data.isRental ? 'aluguel' : 'venda');
   };
 
   const handleOpenChange = (nextOpen: boolean) => {
@@ -116,6 +126,22 @@ export const AMInstagramPublishDialog = ({
       setCaptionError(captionMessage);
       toast.error(captionMessage || 'Revise a legenda e as imagens antes de publicar.');
       return;
+    }
+
+    // Validação OLX se marcado
+    if (publishOlx) {
+      if (!data.zipCode?.trim()) {
+        toast.error('CEP é obrigatório para publicar na OLX. Preencha no formulário.');
+        return;
+      }
+      if (!data.address?.trim() || !data.neighborhood?.trim() || !data.city?.trim()) {
+        toast.error('Endereço, bairro e cidade são obrigatórios para a OLX.');
+        return;
+      }
+      if (photos.length === 0) {
+        toast.error('Adicione pelo menos 1 foto do imóvel para publicar na OLX.');
+        return;
+      }
     }
 
     setCaptionError(null);
@@ -180,6 +206,50 @@ export const AMInstagramPublishDialog = ({
       }
 
       toast.success('Carrossel do AM publicado no Instagram com sucesso!');
+
+      // Salvar/atualizar no catálogo OLX se marcado
+      if (publishOlx) {
+        try {
+          const code = `AM-${Date.now().toString(36).toUpperCase()}`;
+          const payload = {
+            code,
+            transaction_type: olxTxType,
+            property_type: data.propertyType,
+            title: data.title,
+            description: caption.slice(0, 4000),
+            address: data.address,
+            zip_code: data.zipCode.replace(/\D/g, ''),
+            neighborhood: data.neighborhood,
+            city: data.city,
+            state: data.state || 'AM',
+            area: data.area || null,
+            bedrooms: data.bedrooms || 0,
+            bathrooms: data.bathrooms || 0,
+            suites: data.suites || 0,
+            garage_spaces: data.garageSpaces || 0,
+            floor: data.floor || null,
+            furnished: data.furnished,
+            sale_price: olxTxType === 'aluguel' ? null : (data.salePrice || null),
+            rental_price: olxTxType === 'aluguel' ? (data.rentalPrice || null) : null,
+            condominium_fee: data.condominiumFee || 0,
+            iptu: data.iptu || 0,
+            accepts_financing: data.acceptsFinancing,
+            accepts_fgts: data.acceptsFGTS,
+            photos,
+            broker_name: data.brokerName,
+            broker_phone: data.brokerPhone,
+            creci: data.creci,
+            is_active: true,
+          };
+          const { error: olxError } = await supabase.from('am_olx_listings').insert(payload);
+          if (olxError) throw olxError;
+          toast.success(`Imóvel adicionado ao catálogo OLX (${code})! A OLX irá sincronizar nas próximas horas.`);
+        } catch (olxErr) {
+          const m = olxErr instanceof Error ? olxErr.message : 'Erro desconhecido';
+          toast.warning(`Instagram OK, mas falhou ao adicionar na OLX: ${m}`);
+        }
+      }
+
       handleOpenChange(false);
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Não foi possível publicar no Instagram.';
@@ -281,6 +351,55 @@ export const AMInstagramPublishDialog = ({
                   {captionError || 'A legenda será usada na descrição da publicação.'}
                 </span>
                 <span className="font-medium" style={{ color: '#6b7280' }}>{caption.trim().length}/2200</span>
+              </div>
+
+              {/* OLX publish option */}
+              <div className="rounded-xl p-4 space-y-3" style={{ backgroundColor: '#fef3c7', border: '1px solid #fcd34d' }}>
+                <div className="flex items-start gap-3">
+                  <Checkbox
+                    id="publish-olx"
+                    checked={publishOlx}
+                    onCheckedChange={(v) => setPublishOlx(v === true)}
+                    className="mt-0.5"
+                  />
+                  <div className="flex-1">
+                    <Label htmlFor="publish-olx" className="text-sm font-semibold cursor-pointer" style={{ color: '#78350f' }}>
+                      <Tag className="w-4 h-4 inline mr-1.5 -mt-0.5" />
+                      Publicar também na OLX / ZAP / VivaReal
+                    </Label>
+                    <p className="text-xs mt-1" style={{ color: '#92400e' }}>
+                      O imóvel será adicionado ao catálogo XML. A OLX sincroniza automaticamente nas próximas horas.
+                    </p>
+                  </div>
+                </div>
+
+                {publishOlx && (
+                  <div className="pl-7 space-y-2">
+                    <Label className="text-xs font-semibold uppercase tracking-wide" style={{ color: '#78350f' }}>
+                      Tipo de anúncio
+                    </Label>
+                    <div className="flex items-center gap-1 p-1 bg-white rounded-lg" style={{ border: '1px solid #fcd34d' }}>
+                      {(['venda', 'aluguel', 'lancamento'] as const).map((t) => (
+                        <button
+                          key={t}
+                          type="button"
+                          onClick={() => setOlxTxType(t)}
+                          className="flex-1 py-1.5 rounded-md text-xs font-semibold transition-all capitalize"
+                          style={olxTxType === t
+                            ? { backgroundColor: '#F47920', color: 'white' }
+                            : { color: '#92400e', backgroundColor: 'transparent' }}
+                        >
+                          {t === 'lancamento' ? 'Lançamento' : t}
+                        </button>
+                      ))}
+                    </div>
+                    {!data.zipCode && (
+                      <p className="text-xs font-medium" style={{ color: '#dc2626' }}>
+                        ⚠ CEP obrigatório — preencha no formulário antes de continuar.
+                      </p>
+                    )}
+                  </div>
+                )}
               </div>
             </div>
           )}

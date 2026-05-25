@@ -441,6 +441,7 @@ export function AMPostPreview({ data, photos, photoPositions = {}, photoScales =
       {/* ── Instagram Publish ── */}
       <AMInstagramPublishDialog
         data={data}
+        photos={photos}
         disabled={isExporting || photos.length === 0}
         onPrepare={prepareInstagramPublication}
       />

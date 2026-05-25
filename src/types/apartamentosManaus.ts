@@ -7,6 +7,7 @@ export interface AMPropertyData {
   state: string;
   address: string;        // Rua / endereço
   referencePoint: string; // Ex: Em frente à Volvo
+  zipCode: string;        // CEP — obrigatório para OLX
 
   // Specs
   bedrooms: number;
@@ -54,6 +55,7 @@ export const defaultAMPropertyData: AMPropertyData = {
   state: 'AM',
   address: '',
   referencePoint: '',
+  zipCode: '',
   bedrooms: 0,
   bathrooms: 0,
   area: 0,
