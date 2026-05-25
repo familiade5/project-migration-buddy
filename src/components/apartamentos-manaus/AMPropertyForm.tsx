@@ -120,9 +120,8 @@ export function AMPropertyForm({ data, onChange }: AMPropertyFormProps) {
               <button
                 type="button"
                 onClick={() => {
-                  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-                  const code = Array.from({ length: 6 }, () => chars[Math.floor(Math.random() * chars.length)]).join('');
-                  set('listingCode', code);
+                  const id = Math.floor(1000 + Math.random() * 9000);
+                  set('listingCode', `APM${id}`);
                 }}
                 className="px-3 h-10 rounded-md text-xs font-semibold text-white whitespace-nowrap"
                 style={{ backgroundColor: '#1B5EA6' }}
