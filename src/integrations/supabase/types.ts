@@ -50,6 +50,117 @@ export type Database = {
         }
         Relationships: []
       }
+      am_olx_listings: {
+        Row: {
+          accepts_fgts: boolean | null
+          accepts_financing: boolean | null
+          address: string
+          address_number: string | null
+          area: number | null
+          bathrooms: number | null
+          bedrooms: number | null
+          broker_email: string | null
+          broker_name: string
+          broker_phone: string
+          city: string
+          code: string
+          condominium_fee: number | null
+          created_at: string
+          created_by_user_id: string | null
+          creci: string | null
+          description: string | null
+          floor: string | null
+          furnished: boolean | null
+          garage_spaces: number | null
+          id: string
+          iptu: number | null
+          is_active: boolean
+          neighborhood: string
+          photos: string[]
+          property_type: string
+          rental_price: number | null
+          sale_price: number | null
+          state: string
+          suites: number | null
+          title: string
+          transaction_type: Database["public"]["Enums"]["olx_transaction_type"]
+          updated_at: string
+          zip_code: string
+        }
+        Insert: {
+          accepts_fgts?: boolean | null
+          accepts_financing?: boolean | null
+          address: string
+          address_number?: string | null
+          area?: number | null
+          bathrooms?: number | null
+          bedrooms?: number | null
+          broker_email?: string | null
+          broker_name: string
+          broker_phone: string
+          city: string
+          code: string
+          condominium_fee?: number | null
+          created_at?: string
+          created_by_user_id?: string | null
+          creci?: string | null
+          description?: string | null
+          floor?: string | null
+          furnished?: boolean | null
+          garage_spaces?: number | null
+          id?: string
+          iptu?: number | null
+          is_active?: boolean
+          neighborhood: string
+          photos?: string[]
+          property_type?: string
+          rental_price?: number | null
+          sale_price?: number | null
+          state?: string
+          suites?: number | null
+          title: string
+          transaction_type?: Database["public"]["Enums"]["olx_transaction_type"]
+          updated_at?: string
+          zip_code: string
+        }
+        Update: {
+          accepts_fgts?: boolean | null
+          accepts_financing?: boolean | null
+          address?: string
+          address_number?: string | null
+          area?: number | null
+          bathrooms?: number | null
+          bedrooms?: number | null
+          broker_email?: string | null
+          broker_name?: string
+          broker_phone?: string
+          city?: string
+          code?: string
+          condominium_fee?: number | null
+          created_at?: string
+          created_by_user_id?: string | null
+          creci?: string | null
+          description?: string | null
+          floor?: string | null
+          furnished?: boolean | null
+          garage_spaces?: number | null
+          id?: string
+          iptu?: number | null
+          is_active?: boolean
+          neighborhood?: string
+          photos?: string[]
+          property_type?: string
+          rental_price?: number | null
+          sale_price?: number | null
+          state?: string
+          suites?: number | null
+          title?: string
+          transaction_type?: Database["public"]["Enums"]["olx_transaction_type"]
+          updated_at?: string
+          zip_code?: string
+        }
+        Relationships: []
+      }
       autentique_signature_links: {
         Row: {
           contract_id: string
@@ -2236,6 +2347,7 @@ export type Database = {
         | "qualificando"
         | "qualificado"
         | "nao_qualificado"
+      olx_transaction_type: "venda" | "aluguel" | "lancamento"
       property_stage:
         | "novo_imovel"
         | "em_anuncio"
@@ -2423,6 +2535,7 @@ export const Constants = {
         "qualificado",
         "nao_qualificado",
       ],
+      olx_transaction_type: ["venda", "aluguel", "lancamento"],
       property_stage: [
         "novo_imovel",
         "em_anuncio",
