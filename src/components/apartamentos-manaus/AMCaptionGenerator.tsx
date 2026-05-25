@@ -18,6 +18,9 @@ function buildCaption(data: AMPropertyData): string {
   if (data.bedrooms > 0) titleParts.push(`${data.bedrooms} ${data.bedrooms === 1 ? 'Quarto' : 'Quartos'}`);
   if (data.neighborhood) titleParts.push(data.neighborhood);
   lines.push(`🏢 ${titleParts.join(' - ')}`);
+  if (data.listingCode && data.listingCode.trim()) {
+    lines.push(`🔖 Cód. do anúncio: ${data.listingCode.trim()}`);
+  }
   lines.push('');
 
   // Pricing
@@ -65,16 +68,90 @@ function buildCaption(data: AMPropertyData): string {
       : '';
     lines.push(`✅ Taxa de condomínio ${formatCurrency(data.condominiumFee)}${includesPart}`);
     lines.push('');
+  } else if (data.condoExempt) {
+    lines.push(`✅ Condomínio isento`);
+    lines.push('');
   }
 
   // IPTU
   if (data.iptu > 0) {
-    lines.push(`✅ IPTU ${formatCurrency(data.iptu)}`);
+    const periodo = data.iptuPeriod ? ` (${data.iptuPeriod.toLowerCase()})` : '';
+    lines.push(`✅ IPTU ${formatCurrency(data.iptu)}${periodo}`);
+    lines.push('');
+  } else if (data.iptuExempt) {
+    lines.push(`✅ IPTU isento`);
+    lines.push('');
+  }
+
+  // Diferenciais do imóvel (Canal Pro)
+  const diferenciais: string[] = [];
+  if (data.hasAirConditioning) diferenciais.push('Ar-condicionado');
+  if (data.hasAmericanKitchen) diferenciais.push('Cozinha americana');
+  if (data.hasGourmetBalcony) diferenciais.push('Varanda gourmet');
+  if (data.hasCloset) diferenciais.push('Closet');
+  if (data.hasFireplace) diferenciais.push('Lareira');
+  if (data.hasPets) diferenciais.push('Aceita animais');
+  if (data.furnished) diferenciais.push('Mobiliado');
+  if (diferenciais.length > 0) {
+    lines.push(`✨ Diferenciais: ${diferenciais.join(' • ')}`);
+    lines.push('');
+  }
+
+  // Estrutura do condomínio
+  const condoEstrutura: string[] = [];
+  if (data.condoTowers && data.condoTowers > 0) condoEstrutura.push(`${data.condoTowers} ${data.condoTowers === 1 ? 'torre' : 'torres'}`);
+  if (data.condoFloors && data.condoFloors > 0) condoEstrutura.push(`${data.condoFloors} andares`);
+  if (data.condoUnitsPerFloor && data.condoUnitsPerFloor > 0) condoEstrutura.push(`${data.condoUnitsPerFloor} unidades/andar`);
+  if (data.condoBuildYear) condoEstrutura.push(`Construído em ${data.condoBuildYear}`);
+  if (condoEstrutura.length > 0) {
+    lines.push(`🏗️ Condomínio: ${condoEstrutura.join(' • ')}`);
+    lines.push('');
+  }
+
+  // Lazer e comodidades do condomínio (estruturado)
+  const lazer: string[] = [];
+  if (data.amenityPool) lazer.push('Piscina');
+  if (data.amenityBBQ) lazer.push('Churrasqueira');
+  if (data.amenityPartyHall) lazer.push('Salão de festas');
+  if (data.amenityGym) lazer.push('Academia');
+  if (data.amenityPlayground) lazer.push('Playground');
+  if (data.amenityGourmetSpace) lazer.push('Espaço gourmet');
+  if (data.amenityGameRoom) lazer.push('Salão de jogos');
+  if (data.amenityCinema) lazer.push('Cinema');
+  if (data.amenityGarden) lazer.push('Jardim');
+  if (data.amenityMultisportCourt) lazer.push('Quadra poliesportiva');
+  if (data.amenityTennisCourt) lazer.push('Quadra de tênis');
+  if (data.amenitySquashCourt) lazer.push('Quadra de squash');
+  if (data.amenitySauna) lazer.push('Sauna');
+  if (data.amenitySpa) lazer.push('Spa');
+
+  const servicos: string[] = [];
+  if (data.amenityElevator) servicos.push('Elevador');
+  if (data.amenityCoworking) servicos.push('Coworking');
+  if (data.amenityLaundry) servicos.push('Lavanderia');
+  if (data.amenityBikeRack) servicos.push('Bicicletário');
+  if (data.amenityAccessibility) servicos.push('Acesso para deficientes');
+
+  const seguranca: string[] = [];
+  if (data.amenity24hConcierge) seguranca.push('Portaria 24h');
+  if (data.amenityGatedCommunity) seguranca.push('Condomínio fechado');
+  if (data.amenityElectronicGate) seguranca.push('Portão eletrônico');
+
+  if (lazer.length > 0) {
+    lines.push(`🏊 Lazer: ${lazer.join(' • ')}`);
+  }
+  if (servicos.length > 0) {
+    lines.push(`🛎️ Serviços: ${servicos.join(' • ')}`);
+  }
+  if (seguranca.length > 0) {
+    lines.push(`🔐 Segurança: ${seguranca.join(' • ')}`);
+  }
+  if (lazer.length + servicos.length + seguranca.length > 0) {
     lines.push('');
   }
 
   // Leisure
-  if (data.leisureItems) {
+  if (data.leisureItems && lazer.length === 0) {
     lines.push(`✅ Área de lazer completa`);
     lines.push('');
   }
@@ -85,6 +162,17 @@ function buildCaption(data: AMPropertyData): string {
   if (data.referencePoint) locationParts.push(data.referencePoint);
   if (locationParts.length > 0) lines.push(`📍 Localização: ${locationParts.join(' – ')}`);
   lines.push('');
+
+  // Mídia adicional
+  if (data.youtubeUrl && data.youtubeUrl.trim()) {
+    lines.push(`▶️ Vídeo: ${data.youtubeUrl.trim()}`);
+  }
+  if (data.virtualTourUrl && data.virtualTourUrl.trim()) {
+    lines.push(`🕶️ Tour Virtual: ${data.virtualTourUrl.trim()}`);
+  }
+  if (data.youtubeUrl?.trim() || data.virtualTourUrl?.trim()) {
+    lines.push('');
+  }
 
   // Contact
   if (data.brokerName) {
