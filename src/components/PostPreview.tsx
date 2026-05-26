@@ -559,6 +559,10 @@ export const PostPreview = ({ data, photos, publishOlx = true, onPublishOlxChang
             photos={photos}
             disabled={isExporting || posts.length === 0 || photos.length === 0}
             onPrepare={prepareInstagramPublication}
+            publishOlx={publishOlx}
+            onPublishOlxChange={onPublishOlxChange}
+            olxTxType={olxTxType}
+            onOlxTxTypeChange={onOlxTxTypeChange}
           />
         </div>
         <div className="sm:col-span-2">
