@@ -425,7 +425,7 @@ export const VDHInstagramPublishDialog = ({
                   <Checkbox
                     id="publish-olx-vdh"
                     checked={publishOlx}
-                    onCheckedChange={(v) => setPublishOlx(v === true)}
+                    onCheckedChange={(v) => onPublishOlxChange?.(v === true)}
                     className="mt-0.5"
                   />
                   <div className="flex-1">
@@ -449,7 +449,7 @@ export const VDHInstagramPublishDialog = ({
                         <button
                           key={t}
                           type="button"
-                          onClick={() => setOlxTxType(t)}
+                          onClick={() => onOlxTxTypeChange?.(t)}
                           className="flex-1 py-1.5 rounded-md text-xs font-semibold transition-all capitalize"
                           style={olxTxType === t
                             ? { backgroundColor: '#c9a84c', color: 'white' }
