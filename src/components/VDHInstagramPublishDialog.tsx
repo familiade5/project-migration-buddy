@@ -252,7 +252,17 @@ export const VDHInstagramPublishDialog = ({
             iptu: 0,
             accepts_financing: data.acceptsFinancing,
             accepts_fgts: data.acceptsFGTS,
-            photos,
+            photos: (() => {
+              const sobreNosUrl = `${window.location.origin}/vdh-sobre-nos.png`;
+              // Inserir "Sobre nós" como slide 2 (índice 1) apenas no OLX
+              const out = [...photos];
+              if (out.length > 0) {
+                out.splice(1, 0, sobreNosUrl);
+              } else {
+                out.push(sobreNosUrl);
+              }
+              return out;
+            })(),
             broker_name: data.contactName,
             broker_phone: data.contactPhone,
             creci: data.creci,
