@@ -265,39 +265,15 @@ export const AMCoverSlide = ({
           >
             {data.isRental ? 'ALUGUEL' : 'VENDA'}
           </div>
-          {isReduced && (
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: 3,
-                backgroundColor: 'white',
-                color: '#044A8E',
-                borderRadius: 5,
-                padding: '2px 5px',
-                fontFamily: golos,
-                fontWeight: 800,
-                fontSize: 6.5,
-                lineHeight: 1,
-                letterSpacing: '0.02em',
-                whiteSpace: 'nowrap',
-              }}
-            >
-              <svg width="7" height="7" viewBox="0 0 12 12" fill="#044A8E" aria-hidden="true">
-                <path d="M6 1v7.2l2.6-2.6 1 1L6 11 2.4 6.6l1-1L6 8.2V1z"/>
-              </svg>
-              BAIXOU O PREÇO!
-            </div>
-          )}
         </div>
 
         {/* Preço antigo riscado (vermelho) */}
         {isReduced && (
-          <div style={{ display: 'flex', alignItems: 'baseline', marginTop: 3 }}>
+          <div style={{ display: 'flex', alignItems: 'baseline', marginTop: 4 }}>
             <span
               style={{
                 position: 'relative',
-                fontSize: 9,
+                fontSize: 11,
                 fontFamily: golos,
                 color: 'rgba(255,255,255,0.9)',
                 fontWeight: 600,
@@ -340,6 +316,65 @@ export const AMCoverSlide = ({
           </p>
         </div>
       </div>
+
+      {/* ── BADGE FLUTUANTE "↓ BAIXOU O PREÇO" — metade sobre o card azul, metade sobre a foto ── */}
+      {isReduced && (
+        <div
+          style={{
+            position: 'absolute',
+            right: 14,
+            // Centraliza verticalmente sobre o topo do card azul (cardTop ≈ 278 quando isReduced)
+            top: cardTop - 14,
+            zIndex: 30,
+            display: 'flex',
+            alignItems: 'center',
+            gap: 4,
+            background: 'linear-gradient(180deg, #ffffff 0%, #f1f5f9 100%)',
+            color: '#044A8E',
+            borderRadius: 6,
+            padding: '3px 6px 3px 5px',
+            fontFamily: golos,
+            fontWeight: 800,
+            letterSpacing: '0.02em',
+            boxShadow:
+              '0 2px 4px rgba(0,0,0,0.18), 0 1px 0 rgba(255,255,255,0.9) inset, 0 -1px 0 rgba(0,0,0,0.06) inset',
+            whiteSpace: 'nowrap',
+          }}
+        >
+          {/* Seta 3D — gradiente + sombra interna + brilho */}
+          <svg width="11" height="14" viewBox="0 0 16 20" aria-hidden="true" style={{ display: 'block', filter: 'drop-shadow(0 1px 1px rgba(0,0,0,0.25))' }}>
+            <defs>
+              <linearGradient id={`amArrow3d-${clipId}`} x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="#1476D4" />
+                <stop offset="55%" stopColor="#0a55a0" />
+                <stop offset="100%" stopColor="#03386f" />
+              </linearGradient>
+              <linearGradient id={`amArrowHL-${clipId}`} x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="rgba(255,255,255,0.55)" />
+                <stop offset="100%" stopColor="rgba(255,255,255,0)" />
+              </linearGradient>
+            </defs>
+            {/* Corpo da seta */}
+            <path
+              d="M6.5 1 h3 a1 1 0 0 1 1 1 v8 h2.5 a1 1 0 0 1 0.78 1.62 l-4.5 5.6 a1.2 1.2 0 0 1 -1.86 0 l-4.5 -5.6 A1 1 0 0 1 3 10 h2.5 V2 a1 1 0 0 1 1 -1 z"
+              fill={`url(#amArrow3d-${clipId})`}
+              stroke="#022a55"
+              strokeWidth="0.4"
+            />
+            {/* Brilho superior (efeito 3D) */}
+            <path
+              d="M6.8 2 h2.4 a0.6 0.6 0 0 1 0.6 0.6 v7 h-3.6 V2.6 a0.6 0.6 0 0 1 0.6 -0.6 z"
+              fill={`url(#amArrowHL-${clipId})`}
+            />
+          </svg>
+
+          {/* Texto em duas linhas */}
+          <span style={{ display: 'flex', flexDirection: 'column', lineHeight: 1, fontSize: 7 }}>
+            <span>BAIXOU</span>
+            <span>O PREÇO</span>
+          </span>
+        </div>
+      )}
     </div>
   );
 };
