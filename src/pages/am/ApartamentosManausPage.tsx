@@ -7,7 +7,6 @@ import { AMCaptionGenerator } from '@/components/apartamentos-manaus/AMCaptionGe
 import { AMPhotoManager } from '@/components/apartamentos-manaus/AMPhotoManager';
 import { AMLayout } from '@/components/layout/AMLayout';
 import { Image, Edit3, Sparkles, FileText, LayoutGrid, Smartphone, Tag } from 'lucide-react';
-import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
 
 const ApartamentosManausPage = () => {
