@@ -10,7 +10,7 @@ interface Props {
 }
 
 const BG = '#006633';
-const GOLD = '#c9a84c';
+const GOLD = '#d4af37';
 
 const ESTADOS = ['Amazonas', 'Ceará', 'Paraíba', 'Mato Grosso do Sul', 'Rio Grande do Norte', 'Santa Catarina'];
 
