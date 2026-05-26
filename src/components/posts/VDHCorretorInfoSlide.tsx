@@ -148,21 +148,24 @@ export const VDHCorretorInfoSlide = ({}: Props) => {
       </div>
 
       {/* Bottom commitment cards */}
-      <div style={{ position: 'absolute', bottom: 36, left: 50, right: 50, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 14, padding: '14px 18px', border: `1.5px solid rgba(201,168,76,0.5)`, borderRadius: 16 }}>
-          <svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke={GOLD} strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+      <div style={{ position: 'absolute', bottom: 32, left: 50, right: 50, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 18 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 20, padding: '22px 24px', border: `1.5px solid rgba(201,168,76,0.5)`, borderRadius: 18, background: 'rgba(0,0,0,0.12)' }}>
+          <svg width="68" height="68" viewBox="0 0 24 24" fill="none" stroke={GOLD} strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
             <path d="M3 11l9-8 9 8" /><path d="M5 10v10h14V10" /><path d="M10 20v-6h4v6" />
           </svg>
-          <div style={{ color: '#ffffff', fontSize: 17, fontWeight: 400, lineHeight: 1.3 }}>
-            Seu sonho,<br />nosso compromisso.
+          <div style={{ color: '#ffffff', fontSize: 22, fontWeight: 500, lineHeight: 1.3 }}>
+            Seu sonho,<br /><span style={{ color: GOLD, fontWeight: 700 }}>nosso compromisso.</span>
           </div>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 14, padding: '14px 18px', border: `1.5px solid rgba(201,168,76,0.5)`, borderRadius: 16 }}>
-          <div style={{ color: '#ffffff', fontSize: 16, fontWeight: 400, lineHeight: 1.3, flex: 1 }}>
-            Segurança, confiança<br />e agilidade para<br />realizar o seu sonho.
+        <div style={{ display: 'flex', alignItems: 'center', gap: 20, padding: '22px 24px', border: `1.5px solid rgba(201,168,76,0.5)`, borderRadius: 18, background: 'rgba(0,0,0,0.12)' }}>
+          <div style={{ color: '#ffffff', fontSize: 20, fontWeight: 500, lineHeight: 1.3, flex: 1 }}>
+            Segurança, confiança e <span style={{ color: GOLD, fontWeight: 700 }}>agilidade</span> para realizar o seu sonho.
           </div>
-          <svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke={GOLD} strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
-            <path d="M3 12l3-3 3 1 3-2 3 2 3-1 3 3-4 4-2-1-2 1-2-1-2 1z" />
+          <svg width="68" height="68" viewBox="0 0 24 24" fill="none" stroke={GOLD} strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+            <path d="M4 13c1.5-1.5 3-1.5 4.5 0L12 16l3.5-3c1.5-1.5 3-1.5 4.5 0" />
+            <path d="M5 17c1.5-1.5 3-1.5 4.5 0L12 19l2.5-2c1.5-1.5 3-1.5 4.5 0" />
+            <path d="M9 10c0-1.5 1.5-3 3-3s3 1.5 3 3" />
+            <circle cx="12" cy="5" r="1.2" fill={GOLD} stroke="none" />
           </svg>
         </div>
       </div>
