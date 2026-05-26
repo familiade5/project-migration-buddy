@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Copy, Check, RefreshCw } from 'lucide-react';
 import { toast } from 'sonner';
 import { formatCurrency } from '@/lib/formatCurrency';
+import { sanitizeCaptionForOlx } from '@/lib/olxCaption';
 
 interface AMCaptionGeneratorProps {
   data: AMPropertyData;
