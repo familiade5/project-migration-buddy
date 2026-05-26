@@ -9,7 +9,7 @@ interface Props {
   photos?: string[];
 }
 
-const BG = '#006633';
+const BG = '#093C1E';
 const GOLD = '#d4af37';
 
 const ESTADOS = ['Amazonas', 'Ceará', 'Paraíba', 'Mato Grosso do Sul', 'Rio Grande do Norte', 'Santa Catarina'];
@@ -29,7 +29,7 @@ export const VDHCorretorInfoSlide = ({}: Props) => {
     <div
       className="post-template"
       style={{
-        background: '#093C1E',
+        background: BG,
         backgroundColor: BG,
         width: 1080,
         height: 1080,
