@@ -130,17 +130,17 @@ export const VDHCorretorInfoSlide = ({}: Props) => {
       </div>
 
       {/* States */}
-      <div style={{ position: 'absolute', top: 800, left: 50, right: 50 }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 14 }}>
+      <div style={{ position: 'absolute', top: 776, left: 50, right: 50 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 12 }}>
           <span style={{ flex: 1, height: 1, backgroundColor: 'rgba(201,168,76,0.45)' }} />
           <span style={{ color: GOLD, fontSize: 17, letterSpacing: '0.34em', fontWeight: 700, textTransform: 'uppercase' }}>
             Atuamos nos estados
           </span>
           <span style={{ flex: 1, height: 1, backgroundColor: 'rgba(201,168,76,0.45)' }} />
         </div>
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, justifyContent: 'center' }}>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, justifyContent: 'center' }}>
           {ESTADOS.map((e) => (
-            <span key={e} style={{ padding: '9px 22px', border: '1.5px solid rgba(201,168,76,0.55)', borderRadius: 999, color: '#ffffff', fontSize: 18, fontWeight: 600, background: 'rgba(0,0,0,0.12)' }}>
+            <span key={e} style={{ padding: '8px 18px', border: '1.5px solid rgba(201,168,76,0.55)', borderRadius: 999, color: '#ffffff', fontSize: 17, fontWeight: 600, background: 'rgba(0,0,0,0.12)' }}>
               {e}
             </span>
           ))}
