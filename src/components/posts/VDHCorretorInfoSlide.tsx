@@ -47,10 +47,10 @@ export const VDHCorretorInfoSlide = ({}: Props) => {
       </svg>
 
       {/* Logos: VDH + CAIXA AQUI */}
-      <div style={{ position: 'absolute', top: 30, left: 0, right: 0, display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 40, zIndex: 10 }}>
-        <img src={logoBase64} alt="VDH" style={{ height: 320, objectFit: 'contain', filter: 'brightness(0) invert(1)' }} />
-        <div style={{ width: 2, height: 200, backgroundColor: 'rgba(201,168,76,0.65)' }} />
-        <img src={caixaBase64} alt="CAIXA AQUI" style={{ height: 320, objectFit: 'contain' }} />
+      <div style={{ position: 'absolute', top: 60, left: 0, right: 0, display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 36, zIndex: 10 }}>
+        <img src={logoBase64} alt="VDH" style={{ height: 130, width: 'auto', objectFit: 'contain', filter: 'brightness(0) invert(1)', display: 'block' }} />
+        <div style={{ width: 2, height: 140, backgroundColor: 'rgba(201,168,76,0.65)' }} />
+        <img src={caixaBase64} alt="CAIXA AQUI" style={{ height: 220, width: 'auto', objectFit: 'contain', display: 'block' }} />
       </div>
 
       {/* Eyebrow */}
