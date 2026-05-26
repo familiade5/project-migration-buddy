@@ -32,6 +32,10 @@ interface VDHInstagramPublishDialogProps {
   photos?: string[];
   disabled?: boolean;
   onPrepare: () => Promise<PreparedPublishPayload>;
+  publishOlx: boolean;
+  onPublishOlxChange?: (value: boolean) => void;
+  olxTxType: 'venda' | 'aluguel' | 'lancamento';
+  onOlxTxTypeChange?: (value: 'venda' | 'aluguel' | 'lancamento') => void;
 }
 
 const preparedImagesSchema = z.object({
