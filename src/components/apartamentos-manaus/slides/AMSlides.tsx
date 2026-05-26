@@ -74,11 +74,12 @@ export const AMCoverSlide = ({
       ].filter(Boolean) as string[];
   const paymentLine = paymentParts.join(' | ');
 
-  // ── Price reduction mode: card mantém o tamanho original (148×52);
-  //    apenas o conteúdo interno muda quando "Baixou o preço" está ativo.
+  // ── Price reduction mode: card mantém largura original mas cresce em altura
+  //    para acomodar o badge "BAIXOU O PREÇO" + preço antigo riscado.
+  //    O recorte (notch) da foto acompanha proporcionalmente.
   const isReduced = !!data.priceReduced && !data.isRental && (data.oldPrice ?? 0) > 0;
   const cardW = 148;
-  const cardH = 52;
+  const cardH = isReduced ? 72 : 52;
   // Posições derivadas (mantém bottom:10, right:10)
   const cardLeft = 360 - 10 - cardW;          // x do card
   const cardTop = 360 - 10 - cardH;           // y do card
