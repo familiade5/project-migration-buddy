@@ -151,6 +151,24 @@ const Index = () => {
                   <PropertyForm data={propertyData} onChange={setPropertyData} />
                 </div>
               </div>
+
+              {/* 4. Legenda */}
+              <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+                <div className="px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-100" style={{ backgroundColor: '#FBF6E6' }}>
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 rounded-lg text-white flex-shrink-0" style={{ backgroundColor: BRAND_GOLD }}>
+                      <FileText className="w-4 h-4" />
+                    </div>
+                    <div className="min-w-0">
+                      <h2 className="font-semibold text-gray-900 text-sm sm:text-base">Legenda do Post</h2>
+                      <p className="text-xs text-gray-500">Instagram + Canal Pro (OLX / ZAP / VivaReal)</p>
+                    </div>
+                  </div>
+                </div>
+                <div className="p-4 sm:p-6">
+                  <CaptionGenerator data={propertyData} />
+                </div>
+              </div>
             </div>
 
             {/* Right Column - Preview */}
