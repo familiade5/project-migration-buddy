@@ -33,6 +33,9 @@ export interface AMPropertyData {
   cashOnly: boolean;
   isRental: boolean;
   rentalPrice: number;
+  // Price reduction (capa "BAIXOU O PREÇO")
+  priceReduced?: boolean;
+  oldPrice?: number;
   condominiumFee: number;
   condoIncludes: string;  // Ex: "água, gás e segurança 24h"
   iptu: number;
