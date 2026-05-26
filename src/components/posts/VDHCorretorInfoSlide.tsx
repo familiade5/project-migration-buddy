@@ -29,7 +29,7 @@ export const VDHCorretorInfoSlide = ({}: Props) => {
     <div
       className="post-template"
       style={{
-        background: '#006400',
+        background: '#093C1E',
         backgroundColor: BG,
         width: 1080,
         height: 1080,
