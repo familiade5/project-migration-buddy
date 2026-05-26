@@ -247,7 +247,7 @@ export const AMCoverSlide = ({
         }}
       >
         {/* Linha superior: VENDA pill (+ badge BAIXOU O PREÇO em modo reduzido) */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 4 }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 3 }}>
           <div
             style={{
               display: 'inline-block',
@@ -269,48 +269,67 @@ export const AMCoverSlide = ({
               style={{
                 display: 'flex',
                 alignItems: 'center',
-                gap: 3,
+                gap: 2,
                 backgroundColor: 'white',
                 color: '#044A8E',
-                borderRadius: 6,
-                padding: '2px 6px',
+                borderRadius: 4,
+                padding: '1px 4px',
                 fontFamily: golos,
                 fontWeight: 800,
-                fontSize: 8,
-                lineHeight: 1.05,
+                fontSize: 5.5,
+                lineHeight: 1,
                 letterSpacing: '0.02em',
-                boxShadow: '0 1px 2px rgba(0,0,0,0.15)',
+                whiteSpace: 'nowrap',
               }}
             >
-              <svg width="9" height="9" viewBox="0 0 12 12" fill="#044A8E" aria-hidden="true">
+              <svg width="6" height="6" viewBox="0 0 12 12" fill="#044A8E" aria-hidden="true">
                 <path d="M6 1v7.2l2.6-2.6 1 1L6 11 2.4 6.6l1-1L6 8.2V1z"/>
               </svg>
-              <span style={{ display: 'flex', flexDirection: 'column', lineHeight: 1 }}>
-                <span>BAIXOU</span>
-                <span>O PREÇO!</span>
-              </span>
+              BAIXOU O PREÇO!
             </div>
           )}
         </div>
 
-        {/* Preço antigo riscado */}
+        {/* Preço antigo riscado (vermelho) */}
         {isReduced && (
-          <div style={{ display: 'flex', alignItems: 'baseline', gap: 2, color: 'rgba(255,255,255,0.85)', marginTop: 2 }}>
-            <span style={{ fontSize: 9, fontFamily: golos, textDecoration: 'line-through', textDecorationThickness: '1px' }}>
+          <div style={{ display: 'flex', alignItems: 'baseline', marginTop: 1 }}>
+            <span
+              style={{
+                position: 'relative',
+                fontSize: 7,
+                fontFamily: golos,
+                color: 'rgba(255,255,255,0.85)',
+                fontWeight: 600,
+                lineHeight: 1,
+              }}
+            >
               R$ {(data.oldPrice ?? 0).toLocaleString('pt-BR', { minimumFractionDigits: 0, maximumFractionDigits: 0 })},00
+              {/* Risca vermelha sobreposta */}
+              <span
+                aria-hidden="true"
+                style={{
+                  position: 'absolute',
+                  left: 0,
+                  right: 0,
+                  top: '50%',
+                  height: 1,
+                  backgroundColor: '#ef4444',
+                  transform: 'translateY(-50%)',
+                }}
+              />
             </span>
           </div>
         )}
 
         {/* Preço atual */}
         <div style={{ display: 'flex', alignItems: 'baseline', gap: 2, color: 'white', marginTop: isReduced ? 0 : 0 }}>
-          <span style={{ fontSize: 12, opacity: 0.75, marginRight: 1, fontFamily: golos }}>R$</span>
-          <span style={{ fontSize: Math.min(isReduced ? 24 : 20, Math.max(14, (isReduced ? 24 : 20) - Math.max(0, (price > 0 ? price.toLocaleString('pt-BR', { minimumFractionDigits: 0, maximumFractionDigits: 0 }).length : 8) - 6) * 0.8)), fontWeight: 700, lineHeight: 1, fontFamily: golos }}>
+          <span style={{ fontSize: isReduced ? 10 : 12, opacity: 0.75, marginRight: 1, fontFamily: golos }}>R$</span>
+          <span style={{ fontSize: Math.min(isReduced ? 16 : 20, Math.max(12, (isReduced ? 16 : 20) - Math.max(0, (price > 0 ? price.toLocaleString('pt-BR', { minimumFractionDigits: 0, maximumFractionDigits: 0 }).length : 8) - 6) * 0.8)), fontWeight: 700, lineHeight: 1, fontFamily: golos }}>
             {price > 0
               ? price.toLocaleString('pt-BR', { minimumFractionDigits: 0, maximumFractionDigits: 0 })
               : 'Consulte'}
           </span>
-          {price > 0 && <span style={{ fontSize: 11, opacity: 0.75, fontFamily: golos }}>,00</span>}
+          {price > 0 && <span style={{ fontSize: isReduced ? 9 : 11, opacity: 0.75, fontFamily: golos }}>,00</span>}
         </div>
 
         {/* Linha de pagamento */}
