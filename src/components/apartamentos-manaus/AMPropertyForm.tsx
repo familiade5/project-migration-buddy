@@ -230,6 +230,33 @@ export function AMPropertyForm({ data, onChange }: AMPropertyFormProps) {
                 <Switch className={switchClass} checked={data.acceptsFGTS} onCheckedChange={(v) => set('acceptsFGTS', v)} />
                 <Label className="text-sm text-gray-600">Aceita FGTS</Label>
               </div>
+              <div className="mt-2 p-3 rounded-xl border border-orange-200 bg-orange-50/60 space-y-2">
+                <div className="flex items-center gap-2">
+                  <Switch
+                    className={switchClass}
+                    checked={!!data.priceReduced}
+                    onCheckedChange={(v) => set('priceReduced', v)}
+                  />
+                  <Label className="text-sm font-semibold text-orange-700">
+                    Baixou o preço
+                  </Label>
+                </div>
+                {data.priceReduced && (
+                  <div className="space-y-1">
+                    <Label className={labelClass}>Preço antigo (R$)</Label>
+                    <Input
+                      className={inputClass}
+                      type="number"
+                      placeholder="0"
+                      value={data.oldPrice || ''}
+                      onChange={(e) => set('oldPrice', Number(e.target.value))}
+                    />
+                    <p className="text-[11px] text-gray-500">
+                      Aparece riscado na capa, e a legenda se adapta automaticamente.
+                    </p>
+                  </div>
+                )}
+              </div>
             </>
           ) : (
             <div className="space-y-1">

@@ -11,6 +11,10 @@ interface AMCaptionGeneratorProps {
 }
 
 function buildCaption(data: AMPropertyData): string {
+  // Modo especial: "Baixou o preço" — usa narrativa de oportunidade
+  if (data.priceReduced && !data.isRental && data.salePrice > 0 && (data.oldPrice ?? 0) > 0) {
+    return buildPriceReducedCaption(data);
+  }
   const lines: string[] = [];
 
   // Line 1 — title
@@ -184,6 +188,83 @@ function buildCaption(data: AMPropertyData): string {
   }
   lines.push(`🌐 https://www.facebook.com/ApartamentosManaus`);
   lines.push(`🌐 www.apartamentosmanaus.com`);
+
+  return lines.join('\n');
+}
+
+// Formata "R$ 320 mil" / "R$ 1,2 milhão" para o preço antigo de forma enxuta.
+function formatShortBRL(v: number): string {
+  if (v >= 1_000_000) {
+    const mi = v / 1_000_000;
+    const txt = mi % 1 === 0 ? mi.toFixed(0) : mi.toFixed(1).replace('.', ',');
+    return `R$ ${txt} ${mi === 1 ? 'milhão' : 'milhões'}`;
+  }
+  if (v >= 1000) {
+    const mil = v / 1000;
+    const txt = mil % 1 === 0 ? mil.toFixed(0) : mil.toFixed(0);
+    return `R$ ${txt} mil`;
+  }
+  return formatCurrency(v);
+}
+
+function buildPriceReducedCaption(data: AMPropertyData): string {
+  const lines: string[] = [];
+  const nome = data.title || 'imóvel';
+  const oldShort = formatShortBRL(data.oldPrice ?? 0);
+  const novo = formatCurrency(data.salePrice);
+
+  lines.push(`Uma nova oportunidade no ${nome} ✨`);
+  lines.push('');
+  lines.push(`O apartamento que já era uma excelente escolha, agora está com um valor ainda mais atrativo.`);
+  lines.push('');
+  lines.push(`De ${oldShort} por ${novo} 💙`);
+  lines.push('');
+
+  if (data.area > 0) lines.push(`🏢 ${data.area}m² muito bem distribuídos`);
+
+  // Quartos / suítes
+  if (data.bedrooms > 0) {
+    if (data.suites > 0) {
+      lines.push(`✔ ${data.bedrooms} quarto${data.bedrooms > 1 ? 's' : ''}, sendo ${data.suites} ${data.suites === 1 ? 'suíte' : 'suítes'}`);
+    } else {
+      lines.push(`✔ ${data.bedrooms} quarto${data.bedrooms > 1 ? 's' : ''}`);
+    }
+  }
+
+  if (data.rooms) {
+    data.rooms.split('\n').map(r => r.trim()).filter(Boolean).forEach(r => lines.push(`✔ ${r}`));
+  }
+  if (data.garageSpaces > 0) {
+    lines.push(`✔ ${data.garageSpaces} ${data.garageSpaces === 1 ? 'vaga de garagem' : 'vagas de garagem'}`);
+  }
+  if (data.leisureItems && data.leisureItems.trim()) {
+    lines.push(`✔ Área de lazer completa`);
+  }
+  if (data.acceptsFinancing) {
+    lines.push(`✔ Aceita financiamento${data.acceptsFGTS ? ' e FGTS' : ''}`);
+  }
+
+  lines.push('');
+  lines.push(`Um imóvel elegante, funcional e pronto para morar.`);
+  lines.push('');
+  lines.push(`📲 Agende sua visita.`);
+  lines.push('');
+
+  const locParts: string[] = [];
+  if (data.address) locParts.push(data.address);
+  if (data.referencePoint) locParts.push(data.referencePoint);
+  if (locParts.length > 0) {
+    lines.push(`🔜 Localização: ${locParts.join(' - ')}`);
+  }
+
+  if (data.brokerName) {
+    lines.push(`👨🏽‍💼 ${data.brokerName} | Corretor de Imóveis - Creci 3968 PF`);
+  }
+  if (data.brokerPhone) {
+    lines.push(`☎ ${data.brokerPhone} (whatsapp)`);
+  }
+  lines.push(`🖥 https://www.facebook.com/ApartamentosManaus`);
+  lines.push(`🖥 www.apartamentosmanaus.com`);
 
   return lines.join('\n');
 }

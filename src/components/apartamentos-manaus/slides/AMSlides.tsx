@@ -74,32 +74,41 @@ export const AMCoverSlide = ({
       ].filter(Boolean) as string[];
   const paymentLine = paymentParts.join(' | ');
 
-  // ORANGE BADGE: top:6, left:6 (flush with image edges), width:190, height:48
-  //   → right edge: 6+190=196, + 4px gap → notch x=200 → path x: 200+10=210
-  //   → bottom edge: 6+48=54,  + 4px gap → notch y=58  → path y: 58+10=68
-  //
-  // BLUE CARD: w:148, h:52, bottom:10, right:10
-  //   left edge: 360-10-148=202 → notch x=198 (4px gap) → path x: 198+10=208
-  //   top edge:  360-10-52=298  → notch y=294 (4px gap) → path y: 294-10=284
-  //
+  // ── Price reduction mode: card cresce para acomodar o badge "BAIXOU O PREÇO"
+  //    e o preço antigo riscado.
+  const isReduced = !!data.priceReduced && !data.isRental && (data.oldPrice ?? 0) > 0;
+  const cardW = isReduced ? 210 : 148;
+  const cardH = isReduced ? 78 : 52;
+  // Posições derivadas (mantém bottom:10, right:10)
+  const cardLeft = 360 - 10 - cardW;          // x do card
+  const cardTop = 360 - 10 - cardH;           // y do card
+  // Notch (cantos do recorte na foto): 4px de gap em volta do card
+  const notchLeft = cardLeft - 4;             // borda esquerda do notch
+  const notchTop  = cardTop - 4;              // borda superior do notch
+
+  // Notch valores numéricos para o path (mantém raio 10 nas curvas)
+  const bnTop = notchTop;       // ex: 294 (default) ou 274 (reduced)
+  const bnLeft = notchLeft;     // ex: 198 (default) ou 146 (reduced)
+  const bnTopArc = bnTop - 10;  // 284 / 264 (entrada concava vertical)
+  const bnLeftArc = bnLeft + 10;// 208 / 156 (saída concava do notch sup)
   const shapePath = [
-    'M 210 6',               // top edge start (200+10)
-    'H 344',                 // top edge to right (354-10)
-    'A 10 10 0 0 1 354 16',  // top-right outer corner
-    'V 284',                 // right edge down (294-10)
-    'Q 354 294 344 294',     // concave into bottom-right notch top
-    'H 208',                 // blue notch top edge (198+10)
-    'Q 198 294 198 304',     // convex down blue notch left side
-    'V 344',                 // blue notch left side down (354-10)
-    'A 10 10 0 0 1 188 354', // bottom-left corner of blue notch
-    'H 16',                  // bottom edge (6+10)
-    'A 10 10 0 0 1 6 344',   // outer bottom-left corner
-    'V 68',                  // left edge up (58+10)
-    'Q 6 58 16 58',          // concave into orange notch bottom-left
-    'H 190',                 // orange notch bottom edge (200-10)
-    'Q 200 58 200 48',       // convex up orange notch bottom-right (48=58-10)
-    'V 16',                  // orange notch right side up (6+10)
-    'A 10 10 0 0 1 210 6',   // arc back to start
+    'M 210 6',                         // top edge start (orange notch)
+    'H 344',
+    'A 10 10 0 0 1 354 16',            // top-right outer corner
+    `V ${bnTopArc}`,                   // right edge down to blue notch entry
+    `Q 354 ${bnTop} 344 ${bnTop}`,     // concave into blue notch top
+    `H ${bnLeftArc}`,                  // blue notch top edge
+    `Q ${bnLeft} ${bnTop} ${bnLeft} ${bnTop + 10}`, // convex down blue notch left
+    'V 344',                           // blue notch left side down
+    'A 10 10 0 0 1 188 354',           // bottom-left corner of blue notch (foto)
+    'H 16',
+    'A 10 10 0 0 1 6 344',             // outer bottom-left corner
+    'V 68',
+    'Q 6 58 16 58',                    // concave into orange notch bottom-left
+    'H 190',
+    'Q 200 58 200 48',                 // convex up orange notch bottom-right
+    'V 16',
+    'A 10 10 0 0 1 210 6',
     'Z',
   ].join(' ');
 
@@ -218,7 +227,7 @@ export const AMCoverSlide = ({
         <AMLogo width={106} variant="white" />
       </div>
 
-      {/* ── BLUE PRICE CARD: 444×157 @1080px → 148×52 @360px, bottom:10, right:10 ── */}
+      {/* ── BLUE PRICE CARD (cresce em modo "Baixou o Preço") ── */}
       <div
         style={{
           position: 'absolute',
@@ -227,9 +236,9 @@ export const AMCoverSlide = ({
           zIndex: 20,
           background: data.isRental ? 'linear-gradient(180deg, #FF8D28 52.88%, #DF7110 100%)' : 'linear-gradient(180deg, #1476D4 36.06%, #044A8E 100%)',
           borderRadius: 10,
-          padding: '5px 14px 5px',
-          width: 148,
-          height: 52,
+          padding: isReduced ? '6px 10px 6px' : '5px 14px 5px',
+          width: cardW,
+          height: cardH,
           boxSizing: 'border-box',
           boxShadow: '0 0 0 4px #ffffff',
           display: 'flex',
@@ -237,30 +246,66 @@ export const AMCoverSlide = ({
           justifyContent: 'center',
         }}
       >
-        {/* VENDA/ALUGUEL pill */}
-        <div
-          style={{
-            display: 'inline-block',
-            color: 'white',
-            fontWeight: 700,
-            fontSize: 5.5,
-            letterSpacing: '0.08em',
-            backgroundColor: 'transparent',
-            border: '1px solid rgba(255,255,255,0.4)',
-            borderRadius: 20,
-            padding: '0.5px 5px',
-            marginBottom: 1,
-            alignSelf: 'flex-start',
-            fontFamily: golos,
-          }}
-        >
-          {data.isRental ? 'ALUGUEL' : 'VENDA'}
+        {/* Linha superior: VENDA pill (+ badge BAIXOU O PREÇO em modo reduzido) */}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 4 }}>
+          <div
+            style={{
+              display: 'inline-block',
+              color: 'white',
+              fontWeight: 700,
+              fontSize: 5.5,
+              letterSpacing: '0.08em',
+              backgroundColor: 'transparent',
+              border: '1px solid rgba(255,255,255,0.4)',
+              borderRadius: 20,
+              padding: '0.5px 5px',
+              fontFamily: golos,
+            }}
+          >
+            {data.isRental ? 'ALUGUEL' : 'VENDA'}
+          </div>
+          {isReduced && (
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 3,
+                backgroundColor: 'white',
+                color: '#044A8E',
+                borderRadius: 6,
+                padding: '2px 6px',
+                fontFamily: golos,
+                fontWeight: 800,
+                fontSize: 8,
+                lineHeight: 1.05,
+                letterSpacing: '0.02em',
+                boxShadow: '0 1px 2px rgba(0,0,0,0.15)',
+              }}
+            >
+              <svg width="9" height="9" viewBox="0 0 12 12" fill="#044A8E" aria-hidden="true">
+                <path d="M6 1v7.2l2.6-2.6 1 1L6 11 2.4 6.6l1-1L6 8.2V1z"/>
+              </svg>
+              <span style={{ display: 'flex', flexDirection: 'column', lineHeight: 1 }}>
+                <span>BAIXOU</span>
+                <span>O PREÇO!</span>
+              </span>
+            </div>
+          )}
         </div>
 
-        {/* Price */}
-        <div style={{ display: 'flex', alignItems: 'baseline', gap: 2, color: 'white' }}>
+        {/* Preço antigo riscado */}
+        {isReduced && (
+          <div style={{ display: 'flex', alignItems: 'baseline', gap: 2, color: 'rgba(255,255,255,0.85)', marginTop: 2 }}>
+            <span style={{ fontSize: 9, fontFamily: golos, textDecoration: 'line-through', textDecorationThickness: '1px' }}>
+              R$ {(data.oldPrice ?? 0).toLocaleString('pt-BR', { minimumFractionDigits: 0, maximumFractionDigits: 0 })},00
+            </span>
+          </div>
+        )}
+
+        {/* Preço atual */}
+        <div style={{ display: 'flex', alignItems: 'baseline', gap: 2, color: 'white', marginTop: isReduced ? 0 : 0 }}>
           <span style={{ fontSize: 12, opacity: 0.75, marginRight: 1, fontFamily: golos }}>R$</span>
-          <span style={{ fontSize: Math.min(20, Math.max(14, 20 - Math.max(0, (price > 0 ? price.toLocaleString('pt-BR', { minimumFractionDigits: 0, maximumFractionDigits: 0 }).length : 8) - 6) * 0.8)), fontWeight: 700, lineHeight: 1, fontFamily: golos }}>
+          <span style={{ fontSize: Math.min(isReduced ? 24 : 20, Math.max(14, (isReduced ? 24 : 20) - Math.max(0, (price > 0 ? price.toLocaleString('pt-BR', { minimumFractionDigits: 0, maximumFractionDigits: 0 }).length : 8) - 6) * 0.8)), fontWeight: 700, lineHeight: 1, fontFamily: golos }}>
             {price > 0
               ? price.toLocaleString('pt-BR', { minimumFractionDigits: 0, maximumFractionDigits: 0 })
               : 'Consulte'}
@@ -268,7 +313,7 @@ export const AMCoverSlide = ({
           {price > 0 && <span style={{ fontSize: 11, opacity: 0.75, fontFamily: golos }}>,00</span>}
         </div>
 
-        {/* Payment line */}
+        {/* Linha de pagamento */}
         <div style={{ borderTop: '1px solid rgba(255,255,255,0.2)', marginTop: 3, paddingTop: 2 }}>
           <p style={{ color: 'white', fontSize: 8, opacity: 0.9, margin: 0, lineHeight: 1.3, fontFamily: golos, paddingLeft: data.isRental ? 22 : 0 }}>
             {data.isRental ? '| Locação' : paymentLine}
