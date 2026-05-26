@@ -54,24 +54,24 @@ export const VDHCorretorInfoSlide = ({}: Props) => {
       </div>
 
       {/* Eyebrow */}
-      <div style={{ position: 'absolute', top: 262, left: 0, right: 0, textAlign: 'center' }}>
+      <div style={{ position: 'absolute', top: 252, left: 0, right: 0, textAlign: 'center' }}>
         <span style={{ display: 'inline-block', padding: '12px 42px', border: `1.5px solid ${GOLD}`, borderRadius: 999, color: GOLD, fontSize: 22, letterSpacing: '0.42em', fontWeight: 600, textTransform: 'uppercase', background: 'rgba(0,0,0,0.12)' }}>
           Quem somos
         </span>
       </div>
 
       {/* Headline */}
-      <div style={{ position: 'absolute', top: 330, left: 60, right: 60, textAlign: 'center' }}>
-        <h2 style={{ color: '#ffffff', fontSize: 84, fontWeight: 500, lineHeight: 1.0, letterSpacing: '-0.01em', margin: 0, fontFamily: "'Cormorant Garamond', 'Playfair Display', Georgia, serif" }}>
+      <div style={{ position: 'absolute', top: 320, left: 60, right: 60, textAlign: 'center' }}>
+        <h2 style={{ color: '#ffffff', fontSize: 64, fontWeight: 500, lineHeight: 1.0, letterSpacing: '-0.01em', margin: 0, fontFamily: "'Cormorant Garamond', 'Playfair Display', Georgia, serif" }}>
           Iury Sampaio
         </h2>
-        <p style={{ color: 'rgba(255,255,255,0.92)', fontSize: 28, marginTop: 16, fontWeight: 400, lineHeight: 1.3 }}>
+        <p style={{ color: 'rgba(255,255,255,0.92)', fontSize: 26, marginTop: 14, fontWeight: 400, lineHeight: 1.3 }}>
           Corretor & Correspondente <span style={{ color: GOLD, fontWeight: 600 }}>Caixa credenciado</span>
         </p>
       </div>
 
       {/* Stats */}
-      <div style={{ position: 'absolute', top: 482, left: 50, right: 50, display: 'flex', justifyContent: 'center', gap: 16 }}>
+      <div style={{ position: 'absolute', top: 442, left: 50, right: 50, display: 'flex', justifyContent: 'center', gap: 16 }}>
         {[
           {
             n: '+9', l: 'anos de\nexperiência',
@@ -109,7 +109,7 @@ export const VDHCorretorInfoSlide = ({}: Props) => {
       </div>
 
       {/* Services */}
-      <div style={{ position: 'absolute', top: 712, left: 60, right: 60 }}>
+      <div style={{ position: 'absolute', top: 672, left: 60, right: 60 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 16 }}>
           <span style={{ color: GOLD, fontSize: 17, letterSpacing: '0.34em', fontWeight: 700, textTransform: 'uppercase' }}>
             O que oferecemos
@@ -130,7 +130,7 @@ export const VDHCorretorInfoSlide = ({}: Props) => {
       </div>
 
       {/* States */}
-      <div style={{ position: 'absolute', top: 846, left: 50, right: 50 }}>
+      <div style={{ position: 'absolute', top: 800, left: 50, right: 50 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 14 }}>
           <span style={{ flex: 1, height: 1, backgroundColor: 'rgba(201,168,76,0.45)' }} />
           <span style={{ color: GOLD, fontSize: 17, letterSpacing: '0.34em', fontWeight: 700, textTransform: 'uppercase' }}>
