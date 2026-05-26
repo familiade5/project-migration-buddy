@@ -125,6 +125,10 @@ const uploadExportedImage = async (
 interface PostPreviewProps {
   data: PropertyData;
   photos: string[];
+  publishOlx?: boolean;
+  onPublishOlxChange?: (value: boolean) => void;
+  olxTxType?: 'venda' | 'aluguel' | 'lancamento';
+  onOlxTxTypeChange?: (value: 'venda' | 'aluguel' | 'lancamento') => void;
 }
 
 type FormatType = 'feed' | 'story' | 'vdh';
