@@ -24,6 +24,7 @@ import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { AMInstagramPublishDialog } from './AMInstagramPublishDialog';
+import { AMPublishOlxOnlyButton } from './AMPublishOlxOnlyButton';
 import { formatCurrency } from '@/lib/formatCurrency';
 
 // Helper to convert data URL to Blob
@@ -444,6 +445,13 @@ export function AMPostPreview({ data, photos, photoPositions = {}, photoScales =
         photos={photos}
         disabled={isExporting || photos.length === 0}
         onPrepare={prepareInstagramPublication}
+      />
+
+      {/* ── OLX-only publish ── */}
+      <AMPublishOlxOnlyButton
+        data={data}
+        photos={photos}
+        disabled={isExporting || photos.length === 0}
       />
 
       {/* ── Slide name pills ── */}
