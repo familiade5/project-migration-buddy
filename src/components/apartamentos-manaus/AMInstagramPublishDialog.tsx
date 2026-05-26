@@ -16,6 +16,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { toast } from 'sonner';
+import { sanitizeCaptionForOlx } from '@/lib/olxCaption';
 
 interface PreparedPublishPayload {
   imageUrls: string[];
@@ -67,6 +68,8 @@ export const AMInstagramPublishDialog = ({
   const [step, setStep] = useState<'images' | 'caption'>('images');
   const [caption, setCaption] = useState('');
   const [captionError, setCaptionError] = useState<string | null>(null);
+  const [olxCaption, setOlxCaption] = useState('');
+  const [olxCaptionEdited, setOlxCaptionEdited] = useState(false);
   const [imageUrls, setImageUrls] = useState<string[]>([]);
   const [previewDataUrls, setPreviewDataUrls] = useState<string[]>([]);
   const [storyImageUrl, setStoryImageUrl] = useState<string | undefined>();
@@ -82,6 +85,8 @@ export const AMInstagramPublishDialog = ({
     setStep('images');
     setCaptionError(null);
     setCaption('');
+    setOlxCaption('');
+    setOlxCaptionEdited(false);
     setImageUrls([]);
     setPreviewDataUrls([]);
     setStoryImageUrl(undefined);
@@ -108,6 +113,8 @@ export const AMInstagramPublishDialog = ({
       setStoryImageUrl(prepared.storyImageUrl);
       setStoryPreviewDataUrl(prepared.storyPreviewDataUrl);
       setCaption(prepared.caption);
+      setOlxCaption(sanitizeCaptionForOlx(prepared.caption));
+      setOlxCaptionEdited(false);
       setCaptionError(null);
       setStep('images');
       setOpen(true);
