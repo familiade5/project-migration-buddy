@@ -133,7 +133,7 @@ interface PostPreviewProps {
 
 type FormatType = 'feed' | 'story' | 'vdh';
 
-export const PostPreview = ({ data, photos }: PostPreviewProps) => {
+export const PostPreview = ({ data, photos, publishOlx = true, onPublishOlxChange, olxTxType = 'venda', onOlxTxTypeChange }: PostPreviewProps) => {
   const [currentPost, setCurrentPost] = useState(0);
   const [isExporting, setIsExporting] = useState(false);
   const [format, setFormat] = useState<FormatType>('feed');
