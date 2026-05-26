@@ -104,8 +104,6 @@ export const VDHInstagramPublishDialog = ({
     setPreviewDataUrls([]);
     setStoryImageUrl(undefined);
     setStoryPreviewDataUrl(undefined);
-    setPublishOlx(false);
-    setOlxTxType('venda');
   };
 
   const handleOpenChange = (nextOpen: boolean) => {
