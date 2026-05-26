@@ -47,21 +47,21 @@ export const VDHCorretorInfoSlide = ({}: Props) => {
       </svg>
 
       {/* Logos: VDH + CAIXA AQUI */}
-      <div style={{ position: 'absolute', top: 55, left: 0, right: 0, display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 28 }}>
-        <img src={logoBase64} alt="VDH" style={{ height: 92, objectFit: 'contain', filter: 'brightness(0) invert(1)' }} />
-        <div style={{ width: 1.5, height: 60, backgroundColor: 'rgba(201,168,76,0.65)' }} />
-        <img src={caixaBase64} alt="CAIXA AQUI" style={{ height: 96, objectFit: 'contain' }} />
+      <div style={{ position: 'absolute', top: 50, left: 0, right: 0, display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 36 }}>
+        <img src={logoBase64} alt="VDH" style={{ height: 130, objectFit: 'contain', filter: 'brightness(0) invert(1)' }} />
+        <div style={{ width: 2, height: 86, backgroundColor: 'rgba(201,168,76,0.6)' }} />
+        <img src={caixaBase64} alt="CAIXA AQUI" style={{ height: 140, objectFit: 'contain' }} />
       </div>
 
       {/* Eyebrow */}
-      <div style={{ position: 'absolute', top: 190, left: 0, right: 0, textAlign: 'center' }}>
+      <div style={{ position: 'absolute', top: 215, left: 0, right: 0, textAlign: 'center' }}>
         <span style={{ display: 'inline-block', padding: '10px 36px', border: `1.5px solid ${GOLD}`, borderRadius: 999, color: GOLD, fontSize: 18, letterSpacing: '0.42em', fontWeight: 600, textTransform: 'uppercase' }}>
           Quem somos
         </span>
       </div>
 
       {/* Headline */}
-      <div style={{ position: 'absolute', top: 256, left: 60, right: 60, textAlign: 'center' }}>
+      <div style={{ position: 'absolute', top: 278, left: 60, right: 60, textAlign: 'center' }}>
         <h2 style={{ color: '#ffffff', fontSize: 72, fontWeight: 400, lineHeight: 1.0, letterSpacing: '-0.01em', margin: 0, fontFamily: "'Cormorant Garamond', 'Playfair Display', Georgia, serif" }}>
           Iury Sampaio
         </h2>
@@ -71,7 +71,7 @@ export const VDHCorretorInfoSlide = ({}: Props) => {
       </div>
 
       {/* Stats */}
-      <div style={{ position: 'absolute', top: 420, left: 60, right: 60, display: 'flex', justifyContent: 'center', gap: 18 }}>
+      <div style={{ position: 'absolute', top: 432, left: 50, right: 50, display: 'flex', justifyContent: 'center', gap: 16 }}>
         {[
           {
             n: '+9', l: 'anos de\nexperiência',
@@ -100,16 +100,16 @@ export const VDHCorretorInfoSlide = ({}: Props) => {
             ),
           },
         ].map((s, i) => (
-          <div key={i} style={{ flex: 1, border: `1.5px solid rgba(201,168,76,0.55)`, borderRadius: 20, padding: '18px 10px 20px', textAlign: 'center', minHeight: 210 }}>
-            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 6 }}>{s.icon}</div>
-            <div style={{ color: GOLD, fontSize: 56, fontWeight: 800, lineHeight: 1, letterSpacing: '-0.03em' }}>{s.n}</div>
-            <div style={{ color: 'rgba(255,255,255,0.92)', fontSize: 20, marginTop: 10, lineHeight: 1.22, whiteSpace: 'pre-line', fontWeight: 400 }}>{s.l}</div>
+          <div key={i} style={{ flex: 1, border: `1.5px solid rgba(201,168,76,0.55)`, borderRadius: 20, padding: '16px 10px 18px', textAlign: 'center', height: 196 }}>
+            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 4 }}>{s.icon}</div>
+            <div style={{ color: GOLD, fontSize: 52, fontWeight: 800, lineHeight: 1, letterSpacing: '-0.03em' }}>{s.n}</div>
+            <div style={{ color: 'rgba(255,255,255,0.92)', fontSize: 19, marginTop: 8, lineHeight: 1.22, whiteSpace: 'pre-line', fontWeight: 400 }}>{s.l}</div>
           </div>
         ))}
       </div>
 
       {/* Services */}
-      <div style={{ position: 'absolute', top: 660, left: 60, right: 60 }}>
+      <div style={{ position: 'absolute', top: 652, left: 60, right: 60 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 14 }}>
           <span style={{ color: GOLD, fontSize: 15, letterSpacing: '0.32em', fontWeight: 700, textTransform: 'uppercase' }}>
             O que oferecemos
@@ -130,7 +130,7 @@ export const VDHCorretorInfoSlide = ({}: Props) => {
       </div>
 
       {/* States */}
-      <div style={{ position: 'absolute', top: 822, left: 50, right: 50 }}>
+      <div style={{ position: 'absolute', top: 800, left: 50, right: 50 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 14 }}>
           <span style={{ flex: 1, height: 1, backgroundColor: 'rgba(201,168,76,0.45)' }} />
           <span style={{ color: GOLD, fontSize: 15, letterSpacing: '0.32em', fontWeight: 700, textTransform: 'uppercase' }}>
@@ -138,9 +138,9 @@ export const VDHCorretorInfoSlide = ({}: Props) => {
           </span>
           <span style={{ flex: 1, height: 1, backgroundColor: 'rgba(201,168,76,0.45)' }} />
         </div>
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, justifyContent: 'center' }}>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, justifyContent: 'center' }}>
           {ESTADOS.map((e) => (
-            <span key={e} style={{ padding: '9px 22px', border: '1.5px solid rgba(201,168,76,0.55)', borderRadius: 999, color: '#ffffff', fontSize: 18, fontWeight: 500 }}>
+            <span key={e} style={{ padding: '7px 18px', border: '1.5px solid rgba(201,168,76,0.55)', borderRadius: 999, color: '#ffffff', fontSize: 16, fontWeight: 500 }}>
               {e}
             </span>
           ))}
@@ -148,20 +148,20 @@ export const VDHCorretorInfoSlide = ({}: Props) => {
       </div>
 
       {/* Bottom commitment cards */}
-      <div style={{ position: 'absolute', bottom: 40, left: 50, right: 50, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 16, padding: '18px 20px', border: `1.5px solid rgba(201,168,76,0.5)`, borderRadius: 16 }}>
-          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke={GOLD} strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+      <div style={{ position: 'absolute', bottom: 36, left: 50, right: 50, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 14, padding: '14px 18px', border: `1.5px solid rgba(201,168,76,0.5)`, borderRadius: 16 }}>
+          <svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke={GOLD} strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
             <path d="M3 11l9-8 9 8" /><path d="M5 10v10h14V10" /><path d="M10 20v-6h4v6" />
           </svg>
-          <div style={{ color: '#ffffff', fontSize: 18, fontWeight: 400, lineHeight: 1.3 }}>
+          <div style={{ color: '#ffffff', fontSize: 17, fontWeight: 400, lineHeight: 1.3 }}>
             Seu sonho,<br />nosso compromisso.
           </div>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 16, padding: '18px 20px', border: `1.5px solid rgba(201,168,76,0.5)`, borderRadius: 16 }}>
-          <div style={{ color: '#ffffff', fontSize: 17, fontWeight: 400, lineHeight: 1.3, flex: 1 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 14, padding: '14px 18px', border: `1.5px solid rgba(201,168,76,0.5)`, borderRadius: 16 }}>
+          <div style={{ color: '#ffffff', fontSize: 16, fontWeight: 400, lineHeight: 1.3, flex: 1 }}>
             Segurança, confiança<br />e agilidade para<br />realizar o seu sonho.
           </div>
-          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke={GOLD} strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+          <svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke={GOLD} strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
             <path d="M3 12l3-3 3 1 3-2 3 2 3-1 3 3-4 4-2-1-2 1-2-1-2 1z" />
           </svg>
         </div>
