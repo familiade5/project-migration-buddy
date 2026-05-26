@@ -14,6 +14,7 @@ import {
 } from '@/components/ui/dialog';
 import { toast } from 'sonner';
 import { AMPropertyData } from '@/types/apartamentosManaus';
+import { sanitizeCaptionForOlx } from '@/lib/olxCaption';
 
 interface Props {
   data: AMPropertyData;
@@ -37,11 +38,8 @@ function buildDefaultDescription(d: AMPropertyData): string {
   if (d.acceptsFinancing) parts.push('Aceita financiamento.');
   if (d.acceptsFGTS) parts.push('Aceita FGTS.');
   parts.push('');
-  parts.push(`📍 ${d.address || ''}${d.neighborhood ? ' - ' + d.neighborhood : ''}, ${d.city}/${d.state}`);
-  parts.push('');
-  parts.push(`👨🏽‍💼 ${d.brokerName} | Corretor de Imóveis - Creci ${d.creci}`);
-  parts.push(`☎ ${d.brokerPhone}`);
-  return parts.filter((s) => s !== undefined).join('\n').trim();
+  parts.push(`${d.address || ''}${d.neighborhood ? ' - ' + d.neighborhood : ''}, ${d.city}/${d.state}`);
+  return sanitizeCaptionForOlx(parts.filter((s) => s !== undefined).join('\n'));
 }
 
 export function AMPublishOlxOnlyButton({ data, photos, disabled }: Props) {
