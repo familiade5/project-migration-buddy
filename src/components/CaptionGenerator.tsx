@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Copy, Download, Check, FileText, RefreshCw } from 'lucide-react';
 import { toast } from 'sonner';
