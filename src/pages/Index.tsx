@@ -22,7 +22,11 @@ const Index = () => {
   const [previewTab, setPreviewTab] = useState<'images' | 'caption'>('images');
 
   const handleExtractedData = useCallback((extractedData: Partial<PropertyData>) => {
-    setPropertyData(prev => ({ ...prev, ...extractedData }));
+    setPropertyData(prev => ({
+      ...prev,
+      ...extractedData,
+      canalPro: { ...(prev.canalPro || {} as any), ...(extractedData.canalPro || {}) } as any,
+    }));
   }, []);
 
   return (

@@ -48,6 +48,22 @@ Regras importantes:
 - Extraia o ENDEREÇO COMPLETO incluindo rua, número, complemento, bairro, cidade e estado
 - Para o paymentMethod, descreva as formas de pagamento disponíveis (ex: "À Vista, FGTS" ou "Financiamento Habitacional, FGTS")
 - IMPORTANTE sobre nome do condomínio/edifício (propertyName): Se no endereço ou título houver um nome próprio de condomínio ou edifício (ex: "EDIFÍCIO PIAZZA DE FIORE", "RESIDENCIAL VILLA VERDE", "CONDOMÍNIO JARDIM DAS FLORES"), extraia-o no campo propertyName em formato título (ex: "Edifício Piazza de Fiore"). Ignore unidades genéricas como "APTO. 302", "LOJA 01".`;
+ IMPORTANTE sobre nome do condomínio/edifício (propertyName): Se no endereço ou título houver um nome próprio de condomínio ou edifício (ex: "EDIFÍCIO PIAZZA DE FIORE", "RESIDENCIAL VILLA VERDE", "CONDOMÍNIO JARDIM DAS FLORES"), extraia-o no campo propertyName em formato título (ex: "Edifício Piazza de Fiore"). Ignore unidades genéricas como "APTO. 302", "LOJA 01".
+
+ IMPORTANTE - CAMPOS DO CANAL PRO (canalPro): Sempre que possível, preencha o objeto canalPro com TODAS as informações que estiverem visíveis no screenshot — esses campos são usados para publicação nos portais OLX/ZAP/VivaReal. Mapeamentos:
+ - canalPro.zipCode: CEP (mesmo valor de cep, sempre preencha se houver CEP)
+ - canalPro.addressNumber: número do endereço (mesmo valor de number)
+ - canalPro.totalArea: área total em número (apenas dígitos, sem "m²")
+ - canalPro.category: 'Padrão', 'Cobertura', 'Duplex', 'Triplex', 'Kitnet', 'Loft', 'Flat' ou 'Studio' conforme descrição
+ - canalPro.isCommercial: true se for imóvel comercial/loja/galpão
+ - canalPro.condoBuildYear: ano de construção se mencionado
+ - canalPro.condoFloors / condoUnitsPerFloor / condoTowers: se mencionados
+ - Diferenciais (true se mencionados): hasPets, hasAirConditioning, hasCloset, hasAmericanKitchen, hasFireplace, hasGourmetBalcony
+ - Lazer/comodidades (true se mencionados na descrição/diferenciais): amenityGym, amenityBBQ, amenityCinema, amenityGourmetSpace, amenityGarden, amenityPool, amenityPlayground, amenitySquashCourt, amenityTennisCourt, amenityMultisportCourt, amenityPartyHall, amenityGameRoom, amenityAccessibility, amenityBikeRack, amenityCoworking, amenityElevator, amenityLaundry, amenitySauna, amenitySpa, amenityGatedCommunity, amenityElectronicGate, amenity24hConcierge
+ - canalPro.condoExempt: true se "Condomínio isento"
+ - canalPro.iptuExempt: true se "IPTU isento" / "isento de IPTU"
+ - canalPro.youtubeUrl / virtualTourUrl: URLs se aparecerem
+ Só inclua campos para os quais haja evidência clara na imagem.`;
 
     // Retry logic for transient errors
     let response: Response | null = null;
@@ -132,6 +148,53 @@ Regras importantes:
                         type: "array", 
                         items: { type: "string" },
                         description: "Lista de diferenciais/características do imóvel" 
+                      },
+                      canalPro: {
+                        type: "object",
+                        description: "Campos extras para Canal Pro / OLX / ZAP / VivaReal. Preencha todos os campos visíveis no screenshot.",
+                        properties: {
+                          zipCode: { type: "string", description: "CEP no formato 00000-000" },
+                          addressNumber: { type: "string", description: "Número do endereço" },
+                          category: { type: "string", description: "Padrão, Cobertura, Duplex, Triplex, Kitnet, Loft, Flat ou Studio" },
+                          totalArea: { type: "number", description: "Área total em m² (apenas número)" },
+                          isCommercial: { type: "boolean" },
+                          hasPets: { type: "boolean" },
+                          hasAirConditioning: { type: "boolean" },
+                          hasCloset: { type: "boolean" },
+                          hasAmericanKitchen: { type: "boolean" },
+                          hasFireplace: { type: "boolean" },
+                          hasGourmetBalcony: { type: "boolean" },
+                          condoFloors: { type: "number" },
+                          condoUnitsPerFloor: { type: "number" },
+                          condoTowers: { type: "number" },
+                          condoBuildYear: { type: "string" },
+                          amenityGym: { type: "boolean" },
+                          amenityBBQ: { type: "boolean" },
+                          amenityCinema: { type: "boolean" },
+                          amenityGourmetSpace: { type: "boolean" },
+                          amenityGarden: { type: "boolean" },
+                          amenityPool: { type: "boolean" },
+                          amenityPlayground: { type: "boolean" },
+                          amenitySquashCourt: { type: "boolean" },
+                          amenityTennisCourt: { type: "boolean" },
+                          amenityMultisportCourt: { type: "boolean" },
+                          amenityPartyHall: { type: "boolean" },
+                          amenityGameRoom: { type: "boolean" },
+                          amenityAccessibility: { type: "boolean" },
+                          amenityBikeRack: { type: "boolean" },
+                          amenityCoworking: { type: "boolean" },
+                          amenityElevator: { type: "boolean" },
+                          amenityLaundry: { type: "boolean" },
+                          amenitySauna: { type: "boolean" },
+                          amenitySpa: { type: "boolean" },
+                          amenityGatedCommunity: { type: "boolean" },
+                          amenityElectronicGate: { type: "boolean" },
+                          amenity24hConcierge: { type: "boolean" },
+                          condoExempt: { type: "boolean" },
+                          iptuExempt: { type: "boolean" },
+                          youtubeUrl: { type: "string" },
+                          virtualTourUrl: { type: "string" }
+                        }
                       }
                     },
                     required: ["type", "city", "state"]
