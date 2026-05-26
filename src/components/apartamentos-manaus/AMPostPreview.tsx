@@ -128,6 +128,10 @@ interface AMPostPreviewProps {
   photos: string[];
   photoPositions?: Record<number, { x: number; y: number }>;
   photoScales?: Record<number, number>;
+  publishOlx: boolean;
+  onPublishOlxChange: (value: boolean) => void;
+  olxTxType: 'venda' | 'aluguel' | 'lancamento';
+  onOlxTxTypeChange: (value: 'venda' | 'aluguel' | 'lancamento') => void;
 }
 
 type FormatType = 'feed' | 'story';
@@ -140,7 +144,7 @@ const STORY_H = 640;
 // Max slides we'll ever support (drives fixed ref pool)
 const MAX_SLIDES = 20;
 
-export function AMPostPreview({ data, photos, photoPositions = {}, photoScales = {} }: AMPostPreviewProps) {
+export function AMPostPreview({ data, photos, photoPositions = {}, photoScales = {}, publishOlx, onPublishOlxChange, olxTxType, onOlxTxTypeChange }: AMPostPreviewProps) {
   const { user } = useAuth();
   const [currentSlide, setCurrentSlide] = useState(0);
   const [format, setFormat] = useState<FormatType>('feed');
@@ -445,6 +449,10 @@ export function AMPostPreview({ data, photos, photoPositions = {}, photoScales =
         photos={photos}
         disabled={isExporting || photos.length === 0}
         onPrepare={prepareInstagramPublication}
+        publishOlx={publishOlx}
+        onPublishOlxChange={onPublishOlxChange}
+        olxTxType={olxTxType}
+        onOlxTxTypeChange={onOlxTxTypeChange}
       />
 
       {/* ── OLX-only publish ── */}

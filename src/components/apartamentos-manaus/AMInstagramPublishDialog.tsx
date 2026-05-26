@@ -31,6 +31,10 @@ interface AMInstagramPublishDialogProps {
   photos: string[];
   disabled?: boolean;
   onPrepare: () => Promise<PreparedPublishPayload>;
+  publishOlx: boolean;
+  onPublishOlxChange: (value: boolean) => void;
+  olxTxType: 'venda' | 'aluguel' | 'lancamento';
+  onOlxTxTypeChange: (value: 'venda' | 'aluguel' | 'lancamento') => void;
 }
 
 const AM_INSTAGRAM_ACCOUNT_ID = '17841402886222668';
@@ -63,6 +67,10 @@ export const AMInstagramPublishDialog = ({
   photos,
   disabled = false,
   onPrepare,
+  publishOlx,
+  onPublishOlxChange,
+  olxTxType,
+  onOlxTxTypeChange,
 }: AMInstagramPublishDialogProps) => {
   const [open, setOpen] = useState(false);
   const [step, setStep] = useState<'images' | 'caption'>('images');
@@ -76,10 +84,6 @@ export const AMInstagramPublishDialog = ({
   const [storyPreviewDataUrl, setStoryPreviewDataUrl] = useState<string | undefined>();
   const [isPreparing, setIsPreparing] = useState(false);
   const [isPublishing, setIsPublishing] = useState(false);
-  const [publishOlx, setPublishOlx] = useState(true);
-  const [olxTxType, setOlxTxType] = useState<'venda' | 'aluguel' | 'lancamento'>(
-    data.isRental ? 'aluguel' : 'venda'
-  );
 
   const resetState = () => {
     setStep('images');
@@ -91,8 +95,6 @@ export const AMInstagramPublishDialog = ({
     setPreviewDataUrls([]);
     setStoryImageUrl(undefined);
     setStoryPreviewDataUrl(undefined);
-    setPublishOlx(false);
-    setOlxTxType(data.isRental ? 'aluguel' : 'venda');
   };
 
   const handleOpenChange = (nextOpen: boolean) => {
@@ -365,78 +367,43 @@ export const AMInstagramPublishDialog = ({
                 <span className="font-medium" style={{ color: '#6b7280' }}>{caption.trim().length}/2200</span>
               </div>
 
-              {/* OLX publish option */}
-              <div className="rounded-xl p-4 space-y-3" style={{ backgroundColor: '#fef3c7', border: '1px solid #fcd34d' }}>
-                <div className="flex items-start gap-3">
-                  <Checkbox
-                    id="publish-olx"
-                    checked={publishOlx}
-                    onCheckedChange={(v) => setPublishOlx(v === true)}
-                    className="mt-0.5"
-                  />
-                  <div className="flex-1">
-                    <Label htmlFor="publish-olx" className="text-sm font-semibold cursor-pointer" style={{ color: '#78350f' }}>
-                      <Tag className="w-4 h-4 inline mr-1.5 -mt-0.5" />
-                      Publicar também na OLX / ZAP / VivaReal
-                    </Label>
-                    <p className="text-xs mt-1" style={{ color: '#92400e' }}>
-                      O imóvel será adicionado ao catálogo XML. A OLX sincroniza automaticamente nas próximas horas.
+              {publishOlx && (
+                <div className="rounded-xl p-4 space-y-3" style={{ backgroundColor: '#fef3c7', border: '1px solid #fcd34d' }}>
+                  <div className="flex items-center gap-2 text-sm font-semibold" style={{ color: '#78350f' }}>
+                    <Tag className="w-4 h-4" />
+                    Também será publicado na OLX / ZAP / VivaReal ({olxTxType === 'lancamento' ? 'Lançamento' : olxTxType})
+                  </div>
+                  {!data.zipCode && (
+                    <p className="text-xs font-medium" style={{ color: '#dc2626' }}>
+                      ⚠ CEP obrigatório — preencha no formulário antes de continuar.
                     </p>
+                  )}
+                  <div className="space-y-1.5">
+                    <div className="flex items-center justify-between gap-2">
+                      <Label className="text-xs font-semibold uppercase tracking-wide" style={{ color: '#78350f' }}>
+                        Legenda da OLX (sem emojis e sem telefone)
+                      </Label>
+                      <button
+                        type="button"
+                        onClick={() => { setOlxCaption(sanitizeCaptionForOlx(caption)); setOlxCaptionEdited(false); }}
+                        className="text-[11px] font-semibold underline"
+                        style={{ color: '#78350f' }}
+                      >
+                        Regenerar a partir do Instagram
+                      </button>
+                    </div>
+                    <Textarea
+                      value={olxCaption}
+                      onChange={(e) => { setOlxCaption(e.target.value); setOlxCaptionEdited(true); }}
+                      maxLength={4000}
+                      className="min-h-[160px] resize-y bg-white"
+                      style={{ color: '#1f2937', borderColor: '#fcd34d' }}
+                      placeholder="Texto que vai para OLX / ZAP / VivaReal"
+                    />
+                    <p className="text-[11px] text-right" style={{ color: '#92400e' }}>{olxCaption.length}/4000</p>
                   </div>
                 </div>
-
-                {publishOlx && (
-                  <div className="pl-7 space-y-2">
-                    <Label className="text-xs font-semibold uppercase tracking-wide" style={{ color: '#78350f' }}>
-                      Tipo de anúncio
-                    </Label>
-                    <div className="flex items-center gap-1 p-1 bg-white rounded-lg" style={{ border: '1px solid #fcd34d' }}>
-                      {(['venda', 'aluguel', 'lancamento'] as const).map((t) => (
-                        <button
-                          key={t}
-                          type="button"
-                          onClick={() => setOlxTxType(t)}
-                          className="flex-1 py-1.5 rounded-md text-xs font-semibold transition-all capitalize"
-                          style={olxTxType === t
-                            ? { backgroundColor: '#F47920', color: 'white' }
-                            : { color: '#92400e', backgroundColor: 'transparent' }}
-                        >
-                          {t === 'lancamento' ? 'Lançamento' : t}
-                        </button>
-                      ))}
-                    </div>
-                    {!data.zipCode && (
-                      <p className="text-xs font-medium" style={{ color: '#dc2626' }}>
-                        ⚠ CEP obrigatório — preencha no formulário antes de continuar.
-                      </p>
-                    )}
-                    <div className="space-y-1.5 pt-2">
-                      <div className="flex items-center justify-between gap-2">
-                        <Label className="text-xs font-semibold uppercase tracking-wide" style={{ color: '#78350f' }}>
-                          Legenda da OLX (sem emojis e sem telefone)
-                        </Label>
-                        <button
-                          type="button"
-                          onClick={() => { setOlxCaption(sanitizeCaptionForOlx(caption)); setOlxCaptionEdited(false); }}
-                          className="text-[11px] font-semibold underline"
-                          style={{ color: '#78350f' }}
-                        >
-                          Regenerar a partir do Instagram
-                        </button>
-                      </div>
-                      <Textarea
-                        value={olxCaption}
-                        onChange={(e) => { setOlxCaption(e.target.value); setOlxCaptionEdited(true); }}
-                        maxLength={4000}
-                        className="min-h-[160px] resize-y bg-white"
-                        style={{ color: '#1f2937', borderColor: '#fcd34d' }}
-                        placeholder="Texto que vai para OLX / ZAP / VivaReal"
-                      />
-                      <p className="text-[11px] text-right" style={{ color: '#92400e' }}>{olxCaption.length}/4000</p>
-                    </div>
-                  </div>
-                )}
-              </div>
+              )}
             </div>
           )}
 
