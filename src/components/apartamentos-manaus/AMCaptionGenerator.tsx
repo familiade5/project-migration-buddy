@@ -274,9 +274,17 @@ export function AMCaptionGenerator({ data }: AMCaptionGeneratorProps) {
   const [caption, setCaption] = useState(() => buildCaption(data));
   const [copied, setCopied] = useState(false);
 
+  const [canalProCaption, setCanalProCaption] = useState(() => sanitizeCaptionForOlx(buildCaption(data)));
+  const [canalProEdited, setCanalProEdited] = useState(false);
+  const [canalProCopied, setCanalProCopied] = useState(false);
+
   useEffect(() => {
-    setCaption(buildCaption(data));
-  }, [data]);
+    const newCaption = buildCaption(data);
+    setCaption(newCaption);
+    if (!canalProEdited) {
+      setCanalProCaption(sanitizeCaptionForOlx(newCaption));
+    }
+  }, [data, canalProEdited]);
 
   const handleCopy = async () => {
     try {
@@ -289,19 +297,93 @@ export function AMCaptionGenerator({ data }: AMCaptionGeneratorProps) {
     }
   };
 
+  const handleCopyCanalPro = async () => {
+    try {
+      await navigator.clipboard.writeText(canalProCaption);
+      setCanalProCopied(true);
+      toast.success('Legenda Canal Pro copiada!');
+      setTimeout(() => setCanalProCopied(false), 2000);
+    } catch {
+      toast.error('Erro ao copiar');
+    }
+  };
+
   const handleRegenerate = () => {
-    setCaption(buildCaption(data));
-    toast.success('Legenda atualizada!');
+    const newCaption = buildCaption(data);
+    setCaption(newCaption);
+    setCanalProCaption(sanitizeCaptionForOlx(newCaption));
+    setCanalProEdited(false);
+    toast.success('Legendas atualizadas!');
+  };
+
+  const handleRegenerateCanalPro = () => {
+    setCanalProCaption(sanitizeCaptionForOlx(caption));
+    setCanalProEdited(false);
+    toast.success('Legenda Canal Pro regenerada!');
   };
 
   return (
-    <div className="space-y-3">
-      <Textarea
-        value={caption}
-        onChange={(e) => setCaption(e.target.value)}
-        className="min-h-[320px] text-sm font-mono border-gray-300 bg-white text-gray-900 resize-none leading-relaxed"
-        placeholder="Preencha os dados do imóvel para gerar a legenda..."
-      />
+    <div className="space-y-6">
+      {/* Instagram caption */}
+      <div className="space-y-3">
+        <div className="flex items-center justify-between">
+          <label className="text-sm font-semibold text-gray-700">Legenda Instagram</label>
+          <span className="text-xs text-gray-400">{caption.trim().length} caracteres</span>
+        </div>
+        <Textarea
+          value={caption}
+          onChange={(e) => {
+            const v = e.target.value;
+            setCaption(v);
+            if (!canalProEdited) setCanalProCaption(sanitizeCaptionForOlx(v));
+          }}
+          className="min-h-[280px] text-sm font-mono border-gray-300 bg-white text-gray-900 resize-none leading-relaxed"
+          placeholder="Preencha os dados do imóvel para gerar a legenda..."
+        />
+      </div>
+
+      {/* Canal Pro caption */}
+      <div className="space-y-3">
+        <div className="flex items-center justify-between">
+          <label className="text-sm font-semibold text-gray-700">Legenda Canal Pro (OLX / ZAP / VivaReal)</label>
+          <span className="text-xs text-gray-400">{canalProCaption.trim().length} caracteres</span>
+        </div>
+        <div className="rounded-xl p-3 bg-amber-50 border border-amber-200">
+          <p className="text-xs text-amber-800 mb-2">
+            Sem emojis e sem telefone — os portais não renderizam emojis e possuem canal de contato próprio.
+          </p>
+          <Textarea
+            value={canalProCaption}
+            onChange={(e) => {
+              setCanalProCaption(e.target.value);
+              setCanalProEdited(true);
+            }}
+            className="min-h-[200px] text-sm font-mono border-gray-300 bg-white text-gray-900 resize-none leading-relaxed"
+            placeholder="Legenda sem emojis e sem telefone..."
+          />
+        </div>
+        <div className="flex gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleRegenerateCanalPro}
+            className="gap-2 flex-1"
+          >
+            <RefreshCw className="w-4 h-4" />
+            Regenerar do Instagram
+          </Button>
+          <Button
+            size="sm"
+            onClick={handleCopyCanalPro}
+            className="gap-2 flex-1 text-white"
+            style={{ backgroundColor: canalProCopied ? '#16a34a' : '#F47920' }}
+          >
+            {canalProCopied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+            {canalProCopied ? 'Copiado!' : 'Copiar Canal Pro'}
+          </Button>
+        </div>
+      </div>
+
       <div className="flex gap-2">
         <Button
           variant="outline"
@@ -310,7 +392,7 @@ export function AMCaptionGenerator({ data }: AMCaptionGeneratorProps) {
           className="gap-2 flex-1"
         >
           <RefreshCw className="w-4 h-4" />
-          Atualizar
+          Atualizar tudo
         </Button>
         <Button
           size="sm"
@@ -319,7 +401,7 @@ export function AMCaptionGenerator({ data }: AMCaptionGeneratorProps) {
           style={{ backgroundColor: copied ? '#16a34a' : '#1B5EA6' }}
         >
           {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
-          {copied ? 'Copiado!' : 'Copiar legenda'}
+          {copied ? 'Copiado!' : 'Copiar Instagram'}
         </Button>
       </div>
     </div>
