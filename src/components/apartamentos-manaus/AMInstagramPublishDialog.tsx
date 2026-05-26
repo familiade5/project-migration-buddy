@@ -410,6 +410,30 @@ export const AMInstagramPublishDialog = ({
                         ⚠ CEP obrigatório — preencha no formulário antes de continuar.
                       </p>
                     )}
+                    <div className="space-y-1.5 pt-2">
+                      <div className="flex items-center justify-between gap-2">
+                        <Label className="text-xs font-semibold uppercase tracking-wide" style={{ color: '#78350f' }}>
+                          Legenda da OLX (sem emojis e sem telefone)
+                        </Label>
+                        <button
+                          type="button"
+                          onClick={() => { setOlxCaption(sanitizeCaptionForOlx(caption)); setOlxCaptionEdited(false); }}
+                          className="text-[11px] font-semibold underline"
+                          style={{ color: '#78350f' }}
+                        >
+                          Regenerar a partir do Instagram
+                        </button>
+                      </div>
+                      <Textarea
+                        value={olxCaption}
+                        onChange={(e) => { setOlxCaption(e.target.value); setOlxCaptionEdited(true); }}
+                        maxLength={4000}
+                        className="min-h-[160px] resize-y bg-white"
+                        style={{ color: '#1f2937', borderColor: '#fcd34d' }}
+                        placeholder="Texto que vai para OLX / ZAP / VivaReal"
+                      />
+                      <p className="text-[11px] text-right" style={{ color: '#92400e' }}>{olxCaption.length}/4000</p>
+                    </div>
                   </div>
                 )}
               </div>
