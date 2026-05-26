@@ -130,7 +130,7 @@ export const VDHCorretorInfoSlide = ({}: Props) => {
       </div>
 
       {/* States */}
-      <div style={{ position: 'absolute', top: 780, left: 50, right: 50 }}>
+      <div style={{ position: 'absolute', top: 760, left: 50, right: 50 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 14 }}>
           <span style={{ flex: 1, height: 1, backgroundColor: 'rgba(201,168,76,0.45)' }} />
           <span style={{ color: GOLD, fontSize: 17, letterSpacing: '0.34em', fontWeight: 700, textTransform: 'uppercase' }}>
