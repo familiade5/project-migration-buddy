@@ -16,6 +16,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { toast } from 'sonner';
+import { sanitizeCaptionForOlx } from '@/lib/olxCaption';
 
 interface PreparedPublishPayload {
   imageUrls: string[];
@@ -67,6 +68,8 @@ export const AMInstagramPublishDialog = ({
   const [step, setStep] = useState<'images' | 'caption'>('images');
   const [caption, setCaption] = useState('');
   const [captionError, setCaptionError] = useState<string | null>(null);
+  const [olxCaption, setOlxCaption] = useState('');
+  const [olxCaptionEdited, setOlxCaptionEdited] = useState(false);
   const [imageUrls, setImageUrls] = useState<string[]>([]);
   const [previewDataUrls, setPreviewDataUrls] = useState<string[]>([]);
   const [storyImageUrl, setStoryImageUrl] = useState<string | undefined>();
@@ -82,6 +85,8 @@ export const AMInstagramPublishDialog = ({
     setStep('images');
     setCaptionError(null);
     setCaption('');
+    setOlxCaption('');
+    setOlxCaptionEdited(false);
     setImageUrls([]);
     setPreviewDataUrls([]);
     setStoryImageUrl(undefined);
@@ -108,6 +113,8 @@ export const AMInstagramPublishDialog = ({
       setStoryImageUrl(prepared.storyImageUrl);
       setStoryPreviewDataUrl(prepared.storyPreviewDataUrl);
       setCaption(prepared.caption);
+      setOlxCaption(sanitizeCaptionForOlx(prepared.caption));
+      setOlxCaptionEdited(false);
       setCaptionError(null);
       setStep('images');
       setOpen(true);
@@ -216,7 +223,7 @@ export const AMInstagramPublishDialog = ({
             transaction_type: olxTxType,
             property_type: data.propertyType,
             title: data.title,
-            description: caption.slice(0, 4000),
+            description: (olxCaption || sanitizeCaptionForOlx(caption)).slice(0, 4000),
             address: data.address,
             zip_code: data.zipCode.replace(/\D/g, ''),
             neighborhood: data.neighborhood,
@@ -340,7 +347,12 @@ export const AMInstagramPublishDialog = ({
               </div>
               <Textarea
                 value={caption}
-                onChange={(e) => { setCaption(e.target.value); if (captionError) setCaptionError(null); }}
+                onChange={(e) => {
+                  const v = e.target.value;
+                  setCaption(v);
+                  if (!olxCaptionEdited) setOlxCaption(sanitizeCaptionForOlx(v));
+                  if (captionError) setCaptionError(null);
+                }}
                 maxLength={2200}
                 className="min-h-[300px] resize-y"
                 style={{ backgroundColor: '#ffffff', color: '#1f2937', borderColor: '#d1d5db' }}
@@ -398,6 +410,30 @@ export const AMInstagramPublishDialog = ({
                         ⚠ CEP obrigatório — preencha no formulário antes de continuar.
                       </p>
                     )}
+                    <div className="space-y-1.5 pt-2">
+                      <div className="flex items-center justify-between gap-2">
+                        <Label className="text-xs font-semibold uppercase tracking-wide" style={{ color: '#78350f' }}>
+                          Legenda da OLX (sem emojis e sem telefone)
+                        </Label>
+                        <button
+                          type="button"
+                          onClick={() => { setOlxCaption(sanitizeCaptionForOlx(caption)); setOlxCaptionEdited(false); }}
+                          className="text-[11px] font-semibold underline"
+                          style={{ color: '#78350f' }}
+                        >
+                          Regenerar a partir do Instagram
+                        </button>
+                      </div>
+                      <Textarea
+                        value={olxCaption}
+                        onChange={(e) => { setOlxCaption(e.target.value); setOlxCaptionEdited(true); }}
+                        maxLength={4000}
+                        className="min-h-[160px] resize-y bg-white"
+                        style={{ color: '#1f2937', borderColor: '#fcd34d' }}
+                        placeholder="Texto que vai para OLX / ZAP / VivaReal"
+                      />
+                      <p className="text-[11px] text-right" style={{ color: '#92400e' }}>{olxCaption.length}/4000</p>
+                    </div>
                   </div>
                 )}
               </div>
