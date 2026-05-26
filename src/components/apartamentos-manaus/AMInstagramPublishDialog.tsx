@@ -31,6 +31,10 @@ interface AMInstagramPublishDialogProps {
   photos: string[];
   disabled?: boolean;
   onPrepare: () => Promise<PreparedPublishPayload>;
+  publishOlx: boolean;
+  onPublishOlxChange: (value: boolean) => void;
+  olxTxType: 'venda' | 'aluguel' | 'lancamento';
+  onOlxTxTypeChange: (value: 'venda' | 'aluguel' | 'lancamento') => void;
 }
 
 const AM_INSTAGRAM_ACCOUNT_ID = '17841402886222668';
@@ -63,6 +67,10 @@ export const AMInstagramPublishDialog = ({
   photos,
   disabled = false,
   onPrepare,
+  publishOlx,
+  onPublishOlxChange,
+  olxTxType,
+  onOlxTxTypeChange,
 }: AMInstagramPublishDialogProps) => {
   const [open, setOpen] = useState(false);
   const [step, setStep] = useState<'images' | 'caption'>('images');
@@ -76,10 +84,6 @@ export const AMInstagramPublishDialog = ({
   const [storyPreviewDataUrl, setStoryPreviewDataUrl] = useState<string | undefined>();
   const [isPreparing, setIsPreparing] = useState(false);
   const [isPublishing, setIsPublishing] = useState(false);
-  const [publishOlx, setPublishOlx] = useState(true);
-  const [olxTxType, setOlxTxType] = useState<'venda' | 'aluguel' | 'lancamento'>(
-    data.isRental ? 'aluguel' : 'venda'
-  );
 
   const resetState = () => {
     setStep('images');
@@ -91,8 +95,6 @@ export const AMInstagramPublishDialog = ({
     setPreviewDataUrls([]);
     setStoryImageUrl(undefined);
     setStoryPreviewDataUrl(undefined);
-    setPublishOlx(false);
-    setOlxTxType(data.isRental ? 'aluguel' : 'venda');
   };
 
   const handleOpenChange = (nextOpen: boolean) => {
