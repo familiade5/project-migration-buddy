@@ -109,7 +109,7 @@ export const VDHCorretorInfoSlide = ({}: Props) => {
       </div>
 
       {/* Services */}
-      <div style={{ position: 'absolute', top: 652, left: 60, right: 60 }}>
+      <div style={{ position: 'absolute', top: 632, left: 60, right: 60 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 16 }}>
           <span style={{ color: GOLD, fontSize: 17, letterSpacing: '0.34em', fontWeight: 700, textTransform: 'uppercase' }}>
             O que oferecemos
