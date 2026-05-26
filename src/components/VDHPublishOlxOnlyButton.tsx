@@ -14,6 +14,7 @@ import {
 } from '@/components/ui/dialog';
 import { toast } from 'sonner';
 import { PropertyData } from '@/types/property';
+import { sanitizeCaptionForOlx } from '@/lib/olxCaption';
 
 interface Props {
   data: PropertyData;
@@ -41,11 +42,8 @@ function buildDefaultDescription(d: PropertyData): string {
   if (d.acceptsFGTS) parts.push('Aceita FGTS.');
   parts.push('');
   const address = (d.fullAddress || `${d.street || ''} ${d.number || ''}`).trim();
-  parts.push(`📍 ${address}${d.neighborhood ? ' - ' + d.neighborhood : ''}, ${d.city}/${d.state}`);
-  parts.push('');
-  parts.push(`👨🏽‍💼 ${d.contactName} | Corretor de Imóveis - Creci ${d.creci}`);
-  parts.push(`☎ ${d.contactPhone}`);
-  return parts.join('\n').trim();
+  parts.push(`${address}${d.neighborhood ? ' - ' + d.neighborhood : ''}, ${d.city}/${d.state}`);
+  return sanitizeCaptionForOlx(parts.join('\n'));
 }
 
 export function VDHPublishOlxOnlyButton({ data, photos, disabled }: Props) {
