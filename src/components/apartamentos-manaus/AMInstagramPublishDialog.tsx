@@ -223,7 +223,7 @@ export const AMInstagramPublishDialog = ({
             transaction_type: olxTxType,
             property_type: data.propertyType,
             title: data.title,
-            description: caption.slice(0, 4000),
+            description: (olxCaption || sanitizeCaptionForOlx(caption)).slice(0, 4000),
             address: data.address,
             zip_code: data.zipCode.replace(/\D/g, ''),
             neighborhood: data.neighborhood,
