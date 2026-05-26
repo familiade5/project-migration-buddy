@@ -104,7 +104,7 @@ export const ScreenshotExtractor = ({ onExtract }: ScreenshotExtractorProps) => 
         if (areaStr) cp.totalArea = Number(areaStr);
       }
       if (Object.keys(cp).length > 0) {
-        propertyUpdate.canalPro = cp as PropertyData['canalPro'];
+        propertyUpdate.canalPro = cp as unknown as PropertyData['canalPro'];
         fieldsFound.push('Canal Pro');
       }
 
