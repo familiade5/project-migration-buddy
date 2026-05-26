@@ -61,7 +61,7 @@ export const VDHCorretorInfoSlide = ({}: Props) => {
       </div>
 
       {/* Headline */}
-      <div style={{ position: 'absolute', top: 320, left: 60, right: 60, textAlign: 'center' }}>
+      <div style={{ position: 'absolute', top: 300, left: 60, right: 60, textAlign: 'center' }}>
         <h2 style={{ color: '#ffffff', fontSize: 64, fontWeight: 500, lineHeight: 1.0, letterSpacing: '-0.01em', margin: 0, fontFamily: "'Cormorant Garamond', 'Playfair Display', Georgia, serif" }}>
           Iury Sampaio
         </h2>
@@ -71,7 +71,7 @@ export const VDHCorretorInfoSlide = ({}: Props) => {
       </div>
 
       {/* Stats */}
-      <div style={{ position: 'absolute', top: 442, left: 50, right: 50, display: 'flex', justifyContent: 'center', gap: 16 }}>
+      <div style={{ position: 'absolute', top: 422, left: 50, right: 50, display: 'flex', justifyContent: 'center', gap: 16 }}>
         {[
           {
             n: '+9', l: 'anos de\nexperiência',
