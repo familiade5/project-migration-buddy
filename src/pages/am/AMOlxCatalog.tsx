@@ -19,7 +19,7 @@ interface OlxListing {
   created_at: string;
 }
 
-const FEED_URL = `https://${import.meta.env.VITE_SUPABASE_PROJECT_ID}.supabase.co/functions/v1/olx-feed-am`;
+const FEED_URL = `https://${import.meta.env.VITE_SUPABASE_PROJECT_ID}.supabase.co/functions/v1/unified-olx-feed`;
 
 const txLabel: Record<string, { label: string; color: string }> = {
   venda: { label: 'Venda', color: '#F47920' },
