@@ -6,9 +6,10 @@ import { PostPreview } from '@/components/PostPreview';
 import { CaptionGenerator } from '@/components/CaptionGenerator';
 import { ScreenshotExtractor } from '@/components/ScreenshotExtractor';
 import { PhotoSearcher } from '@/components/PhotoSearcher';
-import { Sparkles, Image, FileText, Upload, Edit3, Search } from 'lucide-react';
+import { Sparkles, Image, FileText, Upload, Edit3, Search, Tag } from 'lucide-react';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { useModuleActivity } from '@/hooks/useModuleActivity';
+import { Label } from '@/components/ui/label';
 
 const BRAND_BLUE = '#1a3a6b';
 const BRAND_GOLD = '#c9a84c';
@@ -20,6 +21,8 @@ const Index = () => {
   const [photos, setPhotos] = useState<string[]>([]);
   const [photosTab, setPhotosTab] = useState<'upload' | 'search'>('upload');
   const [previewTab, setPreviewTab] = useState<'images' | 'caption'>('images');
+  const [publishOlx, setPublishOlx] = useState(true);
+  const [olxTxType, setOlxTxType] = useState<'venda' | 'aluguel' | 'lancamento'>('venda');
 
   const handleExtractedData = useCallback((extractedData: Partial<PropertyData>) => {
     setPropertyData(prev => ({
@@ -52,6 +55,63 @@ const Index = () => {
           <div className="grid lg:grid-cols-2 gap-6 lg:gap-8 lg:min-h-0 lg:flex-1">
             {/* Left Column */}
             <div className="space-y-4 min-w-0 lg:min-h-0 lg:overflow-y-auto lg:pr-2 lg:pb-4">
+
+              {/* OLX publish option (top) */}
+              <div className="rounded-2xl p-4 sm:p-5 space-y-3 shadow-sm" style={{ backgroundColor: '#fef3c7', border: '1px solid #fcd34d' }}>
+                <div className="flex items-center gap-2">
+                  <Tag className="w-4 h-4 flex-shrink-0" style={{ color: '#78350f' }} />
+                  <p className="text-sm font-semibold" style={{ color: '#78350f' }}>
+                    Publicar também na OLX / ZAP / VivaReal?
+                  </p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setPublishOlx(true)}
+                    className="flex-1 py-2 rounded-lg text-sm font-semibold transition-all"
+                    style={publishOlx
+                      ? { backgroundColor: BRAND_GOLD, color: 'white' }
+                      : { backgroundColor: 'white', color: '#92400e', border: '1px solid #fcd34d' }}
+                  >
+                    Sim
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setPublishOlx(false)}
+                    className="flex-1 py-2 rounded-lg text-sm font-semibold transition-all"
+                    style={!publishOlx
+                      ? { backgroundColor: BRAND_BLUE, color: 'white' }
+                      : { backgroundColor: 'white', color: '#92400e', border: '1px solid #fcd34d' }}
+                  >
+                    Não
+                  </button>
+                </div>
+                <p className="text-xs" style={{ color: '#92400e' }}>
+                  Ao postar no Instagram, o imóvel também será adicionado ao catálogo XML. A OLX sincroniza nas próximas horas.
+                </p>
+                {publishOlx && (
+                  <div className="space-y-2 pt-1">
+                    <Label className="text-xs font-semibold uppercase tracking-wide" style={{ color: '#78350f' }}>
+                      Tipo de anúncio
+                    </Label>
+                    <div className="flex items-center gap-1 p-1 bg-white rounded-lg" style={{ border: '1px solid #fcd34d' }}>
+                      {(['venda', 'aluguel', 'lancamento'] as const).map((t) => (
+                        <button
+                          key={t}
+                          type="button"
+                          onClick={() => setOlxTxType(t)}
+                          className="flex-1 py-1.5 rounded-md text-xs font-semibold transition-all capitalize"
+                          style={olxTxType === t
+                            ? { backgroundColor: BRAND_GOLD, color: 'white' }
+                            : { color: '#92400e', backgroundColor: 'transparent' }}
+                        >
+                          {t === 'lancamento' ? 'Lançamento' : t}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
 
               {/* 1. Screenshot Extractor */}
               <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
@@ -207,7 +267,14 @@ const Index = () => {
                 </div>
                 <div className="p-4 sm:p-6 lg:h-[calc(100%-73px)] lg:overflow-y-auto">
                   {previewTab === 'images' ? (
-                    <PostPreview data={propertyData} photos={photos} />
+                    <PostPreview
+                      data={propertyData}
+                      photos={photos}
+                      publishOlx={publishOlx}
+                      onPublishOlxChange={setPublishOlx}
+                      olxTxType={olxTxType}
+                      onOlxTxTypeChange={setOlxTxType}
+                    />
                   ) : (
                     <CaptionGenerator data={propertyData} />
                   )}

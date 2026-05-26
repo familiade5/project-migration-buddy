@@ -32,6 +32,10 @@ interface VDHInstagramPublishDialogProps {
   photos?: string[];
   disabled?: boolean;
   onPrepare: () => Promise<PreparedPublishPayload>;
+  publishOlx: boolean;
+  onPublishOlxChange?: (value: boolean) => void;
+  olxTxType: 'venda' | 'aluguel' | 'lancamento';
+  onOlxTxTypeChange?: (value: 'venda' | 'aluguel' | 'lancamento') => void;
 }
 
 const preparedImagesSchema = z.object({
@@ -65,6 +69,10 @@ export const VDHInstagramPublishDialog = ({
   photos = [],
   disabled = false,
   onPrepare,
+  publishOlx,
+  onPublishOlxChange,
+  olxTxType,
+  onOlxTxTypeChange,
 }: VDHInstagramPublishDialogProps) => {
   const { crecis, formatCreci } = useCrecis();
 
@@ -80,8 +88,6 @@ export const VDHInstagramPublishDialog = ({
   const [storyPreviewDataUrl, setStoryPreviewDataUrl] = useState<string | undefined>();
   const [isPreparing, setIsPreparing] = useState(false);
   const [isPublishing, setIsPublishing] = useState(false);
-  const [publishOlx, setPublishOlx] = useState(true);
-  const [olxTxType, setOlxTxType] = useState<'venda' | 'aluguel' | 'lancamento'>('venda');
 
   const defaultCaption = useMemo(
     () => buildVdhCaption(data, crecis, formatCreci),
@@ -98,8 +104,6 @@ export const VDHInstagramPublishDialog = ({
     setPreviewDataUrls([]);
     setStoryImageUrl(undefined);
     setStoryPreviewDataUrl(undefined);
-    setPublishOlx(false);
-    setOlxTxType('venda');
   };
 
   const handleOpenChange = (nextOpen: boolean) => {
@@ -421,7 +425,7 @@ export const VDHInstagramPublishDialog = ({
                   <Checkbox
                     id="publish-olx-vdh"
                     checked={publishOlx}
-                    onCheckedChange={(v) => setPublishOlx(v === true)}
+                    onCheckedChange={(v) => onPublishOlxChange?.(v === true)}
                     className="mt-0.5"
                   />
                   <div className="flex-1">
@@ -445,7 +449,7 @@ export const VDHInstagramPublishDialog = ({
                         <button
                           key={t}
                           type="button"
-                          onClick={() => setOlxTxType(t)}
+                          onClick={() => onOlxTxTypeChange?.(t)}
                           className="flex-1 py-1.5 rounded-md text-xs font-semibold transition-all capitalize"
                           style={olxTxType === t
                             ? { backgroundColor: '#c9a84c', color: 'white' }

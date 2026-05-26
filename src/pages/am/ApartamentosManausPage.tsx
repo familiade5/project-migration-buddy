@@ -7,7 +7,6 @@ import { AMCaptionGenerator } from '@/components/apartamentos-manaus/AMCaptionGe
 import { AMPhotoManager } from '@/components/apartamentos-manaus/AMPhotoManager';
 import { AMLayout } from '@/components/layout/AMLayout';
 import { Image, Edit3, Sparkles, FileText, LayoutGrid, Smartphone, Tag } from 'lucide-react';
-import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
 
 const ApartamentosManausPage = () => {
@@ -43,25 +42,39 @@ const ApartamentosManausPage = () => {
           <div className="space-y-4">
             {/* OLX publish option (top) */}
             <div className="rounded-2xl p-4 sm:p-5 space-y-3 shadow-sm" style={{ backgroundColor: '#fef3c7', border: '1px solid #fcd34d' }}>
-              <div className="flex items-start gap-3">
-                <Checkbox
-                  id="publish-olx-top"
-                  checked={publishOlx}
-                  onCheckedChange={(v) => setPublishOlx(v === true)}
-                  className="mt-0.5"
-                />
-                <div className="flex-1 min-w-0">
-                  <Label htmlFor="publish-olx-top" className="text-sm font-semibold cursor-pointer flex items-center gap-1.5" style={{ color: '#78350f' }}>
-                    <Tag className="w-4 h-4" />
-                    Publicar também na OLX / ZAP / VivaReal
-                  </Label>
-                  <p className="text-xs mt-1" style={{ color: '#92400e' }}>
-                    Ao postar no Instagram, o imóvel também será adicionado ao catálogo XML. A OLX sincroniza nas próximas horas.
-                  </p>
-                </div>
+              <div className="flex items-center gap-2">
+                <Tag className="w-4 h-4 flex-shrink-0" style={{ color: '#78350f' }} />
+                <p className="text-sm font-semibold" style={{ color: '#78350f' }}>
+                  Publicar também na OLX / ZAP / VivaReal?
+                </p>
               </div>
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => setPublishOlx(true)}
+                  className="flex-1 py-2 rounded-lg text-sm font-semibold transition-all"
+                  style={publishOlx
+                    ? { backgroundColor: '#F47920', color: 'white' }
+                    : { backgroundColor: 'white', color: '#92400e', border: '1px solid #fcd34d' }}
+                >
+                  Sim
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setPublishOlx(false)}
+                  className="flex-1 py-2 rounded-lg text-sm font-semibold transition-all"
+                  style={!publishOlx
+                    ? { backgroundColor: '#1B5EA6', color: 'white' }
+                    : { backgroundColor: 'white', color: '#92400e', border: '1px solid #fcd34d' }}
+                >
+                  Não
+                </button>
+              </div>
+              <p className="text-xs" style={{ color: '#92400e' }}>
+                Ao postar no Instagram, o imóvel também será adicionado ao catálogo XML. A OLX sincroniza nas próximas horas.
+              </p>
               {publishOlx && (
-                <div className="pl-7 space-y-2">
+                <div className="space-y-2 pt-1">
                   <Label className="text-xs font-semibold uppercase tracking-wide" style={{ color: '#78350f' }}>
                     Tipo de anúncio
                   </Label>

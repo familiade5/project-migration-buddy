@@ -125,11 +125,15 @@ const uploadExportedImage = async (
 interface PostPreviewProps {
   data: PropertyData;
   photos: string[];
+  publishOlx?: boolean;
+  onPublishOlxChange?: (value: boolean) => void;
+  olxTxType?: 'venda' | 'aluguel' | 'lancamento';
+  onOlxTxTypeChange?: (value: 'venda' | 'aluguel' | 'lancamento') => void;
 }
 
 type FormatType = 'feed' | 'story' | 'vdh';
 
-export const PostPreview = ({ data, photos }: PostPreviewProps) => {
+export const PostPreview = ({ data, photos, publishOlx = true, onPublishOlxChange, olxTxType = 'venda', onOlxTxTypeChange }: PostPreviewProps) => {
   const [currentPost, setCurrentPost] = useState(0);
   const [isExporting, setIsExporting] = useState(false);
   const [format, setFormat] = useState<FormatType>('feed');
@@ -555,6 +559,10 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
             photos={photos}
             disabled={isExporting || posts.length === 0 || photos.length === 0}
             onPrepare={prepareInstagramPublication}
+            publishOlx={publishOlx}
+            onPublishOlxChange={onPublishOlxChange}
+            olxTxType={olxTxType}
+            onOlxTxTypeChange={onOlxTxTypeChange}
           />
         </div>
         <div className="sm:col-span-2">
