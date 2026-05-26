@@ -1,6 +1,6 @@
 import { PropertyData } from '@/types/property';
-import logoVDH from '@/assets/logo-vdh-transparent.png';
-import logoCaixaAqui from '@/assets/caixa-aqui-logo.png';
+import logoVDH from '@/assets/logo-vdh-transparent-cropped.png';
+import logoCaixaAqui from '@/assets/caixa-aqui-logo-cropped.png';
 import { useLogoBase64 } from '@/hooks/useLogoBase64';
 
 interface Props {
