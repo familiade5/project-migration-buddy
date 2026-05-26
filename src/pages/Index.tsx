@@ -56,6 +56,63 @@ const Index = () => {
             {/* Left Column */}
             <div className="space-y-4 min-w-0 lg:min-h-0 lg:overflow-y-auto lg:pr-2 lg:pb-4">
 
+              {/* OLX publish option (top) */}
+              <div className="rounded-2xl p-4 sm:p-5 space-y-3 shadow-sm" style={{ backgroundColor: '#fef3c7', border: '1px solid #fcd34d' }}>
+                <div className="flex items-center gap-2">
+                  <Tag className="w-4 h-4 flex-shrink-0" style={{ color: '#78350f' }} />
+                  <p className="text-sm font-semibold" style={{ color: '#78350f' }}>
+                    Publicar também na OLX / ZAP / VivaReal?
+                  </p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setPublishOlx(true)}
+                    className="flex-1 py-2 rounded-lg text-sm font-semibold transition-all"
+                    style={publishOlx
+                      ? { backgroundColor: BRAND_GOLD, color: 'white' }
+                      : { backgroundColor: 'white', color: '#92400e', border: '1px solid #fcd34d' }}
+                  >
+                    Sim
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setPublishOlx(false)}
+                    className="flex-1 py-2 rounded-lg text-sm font-semibold transition-all"
+                    style={!publishOlx
+                      ? { backgroundColor: BRAND_BLUE, color: 'white' }
+                      : { backgroundColor: 'white', color: '#92400e', border: '1px solid #fcd34d' }}
+                  >
+                    Não
+                  </button>
+                </div>
+                <p className="text-xs" style={{ color: '#92400e' }}>
+                  Ao postar no Instagram, o imóvel também será adicionado ao catálogo XML. A OLX sincroniza nas próximas horas.
+                </p>
+                {publishOlx && (
+                  <div className="space-y-2 pt-1">
+                    <Label className="text-xs font-semibold uppercase tracking-wide" style={{ color: '#78350f' }}>
+                      Tipo de anúncio
+                    </Label>
+                    <div className="flex items-center gap-1 p-1 bg-white rounded-lg" style={{ border: '1px solid #fcd34d' }}>
+                      {(['venda', 'aluguel', 'lancamento'] as const).map((t) => (
+                        <button
+                          key={t}
+                          type="button"
+                          onClick={() => setOlxTxType(t)}
+                          className="flex-1 py-1.5 rounded-md text-xs font-semibold transition-all capitalize"
+                          style={olxTxType === t
+                            ? { backgroundColor: BRAND_GOLD, color: 'white' }
+                            : { color: '#92400e', backgroundColor: 'transparent' }}
+                        >
+                          {t === 'lancamento' ? 'Lançamento' : t}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+
               {/* 1. Screenshot Extractor */}
               <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
                 <div className="px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-100" style={{ backgroundColor: '#EEF2FF' }}>
