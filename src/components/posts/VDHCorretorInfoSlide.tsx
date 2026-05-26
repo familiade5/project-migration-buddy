@@ -138,12 +138,21 @@ export const VDHCorretorInfoSlide = ({}: Props) => {
           </span>
           <span style={{ flex: 1, height: 1, backgroundColor: 'rgba(201,168,76,0.45)' }} />
         </div>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, auto)', gap: 10, justifyContent: 'center' }}>
-          {ESTADOS.map((e) => (
-            <span key={e} style={{ padding: '9px 22px', border: '1.5px solid rgba(201,168,76,0.55)', borderRadius: 999, color: '#ffffff', fontSize: 18, fontWeight: 600, background: 'rgba(0,0,0,0.12)' }}>
-              {e}
-            </span>
-          ))}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 10, alignItems: 'center' }}>
+          <div style={{ display: 'flex', gap: 10, justifyContent: 'center', flexWrap: 'nowrap' }}>
+            {ESTADOS.slice(0, 4).map((e) => (
+              <span key={e} style={{ padding: '9px 22px', border: '1.5px solid rgba(201,168,76,0.55)', borderRadius: 999, color: '#ffffff', fontSize: 18, fontWeight: 600, background: 'rgba(0,0,0,0.12)' }}>
+                {e}
+              </span>
+            ))}
+          </div>
+          <div style={{ display: 'flex', gap: 10, justifyContent: 'center', flexWrap: 'nowrap' }}>
+            {ESTADOS.slice(4).map((e) => (
+              <span key={e} style={{ padding: '9px 22px', border: '1.5px solid rgba(201,168,76,0.55)', borderRadius: 999, color: '#ffffff', fontSize: 18, fontWeight: 600, background: 'rgba(0,0,0,0.12)' }}>
+                {e}
+              </span>
+            ))}
+          </div>
         </div>
       </div>
 
