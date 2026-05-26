@@ -267,7 +267,14 @@ const Index = () => {
                 </div>
                 <div className="p-4 sm:p-6 lg:h-[calc(100%-73px)] lg:overflow-y-auto">
                   {previewTab === 'images' ? (
-                    <PostPreview data={propertyData} photos={photos} />
+                    <PostPreview
+                      data={propertyData}
+                      photos={photos}
+                      publishOlx={publishOlx}
+                      onPublishOlxChange={setPublishOlx}
+                      olxTxType={olxTxType}
+                      onOlxTxTypeChange={setOlxTxType}
+                    />
                   ) : (
                     <CaptionGenerator data={propertyData} />
                   )}
