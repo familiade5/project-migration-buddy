@@ -138,7 +138,7 @@ export const VDHCorretorInfoSlide = ({}: Props) => {
           </span>
           <span style={{ flex: 1, height: 1, backgroundColor: 'rgba(201,168,76,0.45)' }} />
         </div>
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, justifyContent: 'center' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, auto)', gap: 10, justifyContent: 'center' }}>
           {ESTADOS.map((e) => (
             <span key={e} style={{ padding: '9px 22px', border: '1.5px solid rgba(201,168,76,0.55)', borderRadius: 999, color: '#ffffff', fontSize: 18, fontWeight: 600, background: 'rgba(0,0,0,0.12)' }}>
               {e}
