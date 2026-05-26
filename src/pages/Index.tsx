@@ -6,9 +6,10 @@ import { PostPreview } from '@/components/PostPreview';
 import { CaptionGenerator } from '@/components/CaptionGenerator';
 import { ScreenshotExtractor } from '@/components/ScreenshotExtractor';
 import { PhotoSearcher } from '@/components/PhotoSearcher';
-import { Sparkles, Image, FileText, Upload, Edit3, Search } from 'lucide-react';
+import { Sparkles, Image, FileText, Upload, Edit3, Search, Tag } from 'lucide-react';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { useModuleActivity } from '@/hooks/useModuleActivity';
+import { Label } from '@/components/ui/label';
 
 const BRAND_BLUE = '#1a3a6b';
 const BRAND_GOLD = '#c9a84c';
@@ -20,6 +21,8 @@ const Index = () => {
   const [photos, setPhotos] = useState<string[]>([]);
   const [photosTab, setPhotosTab] = useState<'upload' | 'search'>('upload');
   const [previewTab, setPreviewTab] = useState<'images' | 'caption'>('images');
+  const [publishOlx, setPublishOlx] = useState(true);
+  const [olxTxType, setOlxTxType] = useState<'venda' | 'aluguel' | 'lancamento'>('venda');
 
   const handleExtractedData = useCallback((extractedData: Partial<PropertyData>) => {
     setPropertyData(prev => ({
