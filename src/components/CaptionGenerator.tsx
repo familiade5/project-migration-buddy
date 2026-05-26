@@ -25,12 +25,11 @@ export const CaptionGenerator = ({ data }: CaptionGeneratorProps) => {
   const [canalProEdited, setCanalProEdited] = useState(false);
 
   // Regenerate canal pro caption when caption changes (if not manually edited)
-  const memoizedCanalPro = useMemo(() => sanitizeCaptionForOlx(caption), [caption]);
-  useMemo(() => {
+  useEffect(() => {
     if (!canalProEdited) {
-      setCanalProCaption(memoizedCanalPro);
+      setCanalProCaption(sanitizeCaptionForOlx(caption));
     }
-  }, [memoizedCanalPro, canalProEdited]);
+  }, [caption, canalProEdited]);
 
   const handleCopy = async () => {
     try {
