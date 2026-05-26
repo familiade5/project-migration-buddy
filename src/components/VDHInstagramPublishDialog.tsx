@@ -69,6 +69,10 @@ export const VDHInstagramPublishDialog = ({
   photos = [],
   disabled = false,
   onPrepare,
+  publishOlx,
+  onPublishOlxChange,
+  olxTxType,
+  onOlxTxTypeChange,
 }: VDHInstagramPublishDialogProps) => {
   const { crecis, formatCreci } = useCrecis();
 
@@ -84,8 +88,6 @@ export const VDHInstagramPublishDialog = ({
   const [storyPreviewDataUrl, setStoryPreviewDataUrl] = useState<string | undefined>();
   const [isPreparing, setIsPreparing] = useState(false);
   const [isPublishing, setIsPublishing] = useState(false);
-  const [publishOlx, setPublishOlx] = useState(true);
-  const [olxTxType, setOlxTxType] = useState<'venda' | 'aluguel' | 'lancamento'>('venda');
 
   const defaultCaption = useMemo(
     () => buildVdhCaption(data, crecis, formatCreci),
