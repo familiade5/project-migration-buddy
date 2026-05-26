@@ -48,20 +48,20 @@ export const VDHCorretorInfoSlide = ({}: Props) => {
 
       {/* Logos: VDH + CAIXA AQUI */}
       <div style={{ position: 'absolute', top: 40, left: 0, right: 0, display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 36, zIndex: 10 }}>
-        <img src={logoBase64} alt="VDH" style={{ height: 70, width: 'auto', objectFit: 'contain', filter: 'brightness(0) invert(1)', display: 'block' }} />
-        <div style={{ width: 2, height: 120, backgroundColor: 'rgba(201,168,76,0.65)' }} />
-        <img src={caixaBase64} alt="CAIXA AQUI" style={{ height: 160, width: 'auto', objectFit: 'contain', display: 'block' }} />
+        <img src={logoBase64} alt="VDH" style={{ height: 50, width: 'auto', objectFit: 'contain', filter: 'brightness(0) invert(1)', display: 'block' }} />
+        <div style={{ width: 2, height: 100, backgroundColor: 'rgba(201,168,76,0.65)' }} />
+        <img src={caixaBase64} alt="CAIXA AQUI" style={{ height: 140, width: 'auto', objectFit: 'contain', display: 'block' }} />
       </div>
 
       {/* Eyebrow */}
-      <div style={{ position: 'absolute', top: 232, left: 0, right: 0, textAlign: 'center' }}>
-        <span style={{ display: 'inline-block', padding: '12px 42px', border: `1.5px solid ${GOLD}`, borderRadius: 999, color: GOLD, fontSize: 22, letterSpacing: '0.42em', fontWeight: 600, textTransform: 'uppercase', background: 'rgba(0,0,0,0.12)' }}>
+      <div style={{ position: 'absolute', top: 212, left: 0, right: 0, textAlign: 'center' }}>
+        <span style={{ display: 'inline-block', padding: '10px 36px', border: `1.5px solid ${GOLD}`, borderRadius: 999, color: GOLD, fontSize: 18, letterSpacing: '0.42em', fontWeight: 600, textTransform: 'uppercase', background: 'rgba(0,0,0,0.12)' }}>
           Quem somos
         </span>
       </div>
 
       {/* Headline */}
-      <div style={{ position: 'absolute', top: 300, left: 60, right: 60, textAlign: 'center' }}>
+      <div style={{ position: 'absolute', top: 280, left: 60, right: 60, textAlign: 'center' }}>
         <h2 style={{ color: '#ffffff', fontSize: 64, fontWeight: 500, lineHeight: 1.0, letterSpacing: '-0.01em', margin: 0, fontFamily: "'Cormorant Garamond', 'Playfair Display', Georgia, serif" }}>
           Iury Sampaio
         </h2>
@@ -71,7 +71,7 @@ export const VDHCorretorInfoSlide = ({}: Props) => {
       </div>
 
       {/* Stats */}
-      <div style={{ position: 'absolute', top: 422, left: 50, right: 50, display: 'flex', justifyContent: 'center', gap: 16 }}>
+      <div style={{ position: 'absolute', top: 402, left: 50, right: 50, display: 'flex', justifyContent: 'center', gap: 16 }}>
         {[
           {
             n: '+9', l: 'anos de\nexperiência',
@@ -109,7 +109,7 @@ export const VDHCorretorInfoSlide = ({}: Props) => {
       </div>
 
       {/* Services */}
-      <div style={{ position: 'absolute', top: 652, left: 60, right: 60 }}>
+      <div style={{ position: 'absolute', top: 632, left: 60, right: 60 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 16 }}>
           <span style={{ color: GOLD, fontSize: 17, letterSpacing: '0.34em', fontWeight: 700, textTransform: 'uppercase' }}>
             O que oferecemos
@@ -130,7 +130,7 @@ export const VDHCorretorInfoSlide = ({}: Props) => {
       </div>
 
       {/* States */}
-      <div style={{ position: 'absolute', top: 780, left: 50, right: 50 }}>
+      <div style={{ position: 'absolute', top: 760, left: 50, right: 50 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 14 }}>
           <span style={{ flex: 1, height: 1, backgroundColor: 'rgba(201,168,76,0.45)' }} />
           <span style={{ color: GOLD, fontSize: 17, letterSpacing: '0.34em', fontWeight: 700, textTransform: 'uppercase' }}>
