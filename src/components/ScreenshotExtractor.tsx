@@ -94,6 +94,20 @@ export const ScreenshotExtractor = ({ onExtract }: ScreenshotExtractorProps) => 
       if (typeof extractedData.hasAreaServico === 'boolean') propertyUpdate.hasAreaServico = extractedData.hasAreaServico;
       if (extractedData.features && Array.isArray(extractedData.features)) { propertyUpdate.features = extractedData.features; fieldsFound.push('Diferenciais'); }
 
+      // ===== Canal Pro extras =====
+      const cp: Record<string, unknown> = { ...(extractedData.canalPro || {}) };
+      // Auto-derivar a partir dos campos top-level quando IA não preencheu
+      if (!cp.zipCode && extractedData.cep) cp.zipCode = extractedData.cep;
+      if (!cp.addressNumber && extractedData.number) cp.addressNumber = extractedData.number;
+      if (cp.totalArea == null) {
+        const areaStr = (extractedData.areaTotal || extractedData.area || '').toString().replace(/[^\d]/g, '');
+        if (areaStr) cp.totalArea = Number(areaStr);
+      }
+      if (Object.keys(cp).length > 0) {
+        propertyUpdate.canalPro = cp as PropertyData['canalPro'];
+        fieldsFound.push('Canal Pro');
+      }
+
       setExtractedFields(fieldsFound);
       onExtract(propertyUpdate);
       
