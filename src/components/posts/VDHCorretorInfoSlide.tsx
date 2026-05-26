@@ -100,7 +100,7 @@ export const VDHCorretorInfoSlide = ({}: Props) => {
             ),
           },
         ].map((s, i) => (
-          <div key={i} style={{ flex: 1, border: `1.5px solid rgba(201,168,76,0.55)`, borderRadius: 20, padding: '18px 10px 20px', textAlign: 'center', height: 208, background: 'rgba(0,0,0,0.12)' }}>
+          <div key={i} style={{ flex: 1, border: `1.5px solid rgba(212,175,55,0.55)`, borderRadius: 20, padding: '18px 10px 20px', textAlign: 'center', height: 208, background: 'rgba(0,0,0,0.12)' }}>
             <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 6 }}>{s.icon}</div>
             <div style={{ color: GOLD, fontSize: 58, fontWeight: 800, lineHeight: 1, letterSpacing: '-0.03em' }}>{s.n}</div>
             <div style={{ color: '#ffffff', fontSize: 21, marginTop: 10, lineHeight: 1.22, whiteSpace: 'pre-line', fontWeight: 500 }}>{s.l}</div>
@@ -114,7 +114,7 @@ export const VDHCorretorInfoSlide = ({}: Props) => {
           <span style={{ color: GOLD, fontSize: 17, letterSpacing: '0.34em', fontWeight: 700, textTransform: 'uppercase' }}>
             O que oferecemos
           </span>
-          <span style={{ flex: 1, height: 1, backgroundColor: 'rgba(201,168,76,0.45)' }} />
+          <span style={{ flex: 1, height: 1, backgroundColor: 'rgba(212,175,55,0.45)' }} />
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px 28px' }}>
           {SERVICES.map((s, i) => (
@@ -132,23 +132,23 @@ export const VDHCorretorInfoSlide = ({}: Props) => {
       {/* States */}
       <div style={{ position: 'absolute', top: 760, left: 50, right: 50 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 14 }}>
-          <span style={{ flex: 1, height: 1, backgroundColor: 'rgba(201,168,76,0.45)' }} />
+          <span style={{ flex: 1, height: 1, backgroundColor: 'rgba(212,175,55,0.45)' }} />
           <span style={{ color: GOLD, fontSize: 17, letterSpacing: '0.34em', fontWeight: 700, textTransform: 'uppercase' }}>
             Atuamos nos estados
           </span>
-          <span style={{ flex: 1, height: 1, backgroundColor: 'rgba(201,168,76,0.45)' }} />
+          <span style={{ flex: 1, height: 1, backgroundColor: 'rgba(212,175,55,0.45)' }} />
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10, alignItems: 'center' }}>
           <div style={{ display: 'flex', gap: 10, justifyContent: 'center', flexWrap: 'nowrap' }}>
             {ESTADOS.slice(0, 4).map((e) => (
-              <span key={e} style={{ padding: '9px 22px', border: '1.5px solid rgba(201,168,76,0.55)', borderRadius: 999, color: '#ffffff', fontSize: 18, fontWeight: 600, background: 'rgba(0,0,0,0.12)' }}>
+              <span key={e} style={{ padding: '9px 22px', border: '1.5px solid rgba(212,175,55,0.55)', borderRadius: 999, color: '#ffffff', fontSize: 18, fontWeight: 600, background: 'rgba(0,0,0,0.12)' }}>
                 {e}
               </span>
             ))}
           </div>
           <div style={{ display: 'flex', gap: 10, justifyContent: 'center', flexWrap: 'nowrap' }}>
             {ESTADOS.slice(4).map((e) => (
-              <span key={e} style={{ padding: '9px 22px', border: '1.5px solid rgba(201,168,76,0.55)', borderRadius: 999, color: '#ffffff', fontSize: 18, fontWeight: 600, background: 'rgba(0,0,0,0.12)' }}>
+              <span key={e} style={{ padding: '9px 22px', border: '1.5px solid rgba(212,175,55,0.55)', borderRadius: 999, color: '#ffffff', fontSize: 18, fontWeight: 600, background: 'rgba(0,0,0,0.12)' }}>
                 {e}
               </span>
             ))}
@@ -158,7 +158,7 @@ export const VDHCorretorInfoSlide = ({}: Props) => {
 
       {/* Bottom commitment cards */}
       <div style={{ position: 'absolute', bottom: 32, left: 50, right: 50, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 18 }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 20, padding: '22px 24px', border: `1.5px solid rgba(201,168,76,0.5)`, borderRadius: 18, background: 'rgba(0,0,0,0.12)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 20, padding: '22px 24px', border: `1.5px solid rgba(212,175,55,0.5)`, borderRadius: 18, background: 'rgba(0,0,0,0.12)' }}>
           <svg width="68" height="68" viewBox="0 0 24 24" fill="none" stroke={GOLD} strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
             <path d="M3 11l9-8 9 8" /><path d="M5 10v10h14V10" /><path d="M10 20v-6h4v6" />
           </svg>
@@ -166,7 +166,7 @@ export const VDHCorretorInfoSlide = ({}: Props) => {
             Seu sonho,<br /><span style={{ color: GOLD, fontWeight: 700 }}>nosso compromisso.</span>
           </div>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 20, padding: '22px 24px', border: `1.5px solid rgba(201,168,76,0.5)`, borderRadius: 18, background: 'rgba(0,0,0,0.12)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 20, padding: '22px 24px', border: `1.5px solid rgba(212,175,55,0.5)`, borderRadius: 18, background: 'rgba(0,0,0,0.12)' }}>
           <div style={{ color: '#ffffff', fontSize: 20, fontWeight: 500, lineHeight: 1.3, flex: 1 }}>
             Segurança, confiança e <span style={{ color: GOLD, fontWeight: 700 }}>agilidade</span> para realizar o seu sonho.
           </div>
