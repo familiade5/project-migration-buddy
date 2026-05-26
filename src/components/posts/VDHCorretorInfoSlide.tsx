@@ -48,9 +48,9 @@ export const VDHCorretorInfoSlide = ({}: Props) => {
 
       {/* Logos: VDH + CAIXA AQUI */}
       <div style={{ position: 'absolute', top: 50, left: 0, right: 0, display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 36 }}>
-        <img src={logoBase64} alt="VDH" style={{ height: 130, objectFit: 'contain', filter: 'brightness(0) invert(1)' }} />
-        <div style={{ width: 2, height: 86, backgroundColor: 'rgba(201,168,76,0.6)' }} />
-        <img src={caixaBase64} alt="CAIXA AQUI" style={{ height: 140, objectFit: 'contain' }} />
+        <img src={logoBase64} alt="VDH" style={{ height: 320, objectFit: 'contain', filter: 'brightness(0) invert(1)' }} />
+        <div style={{ width: 2, height: 180, backgroundColor: 'rgba(201,168,76,0.6)' }} />
+        <img src={caixaBase64} alt="CAIXA AQUI" style={{ height: 320, objectFit: 'contain' }} />
       </div>
 
       {/* Eyebrow */}
