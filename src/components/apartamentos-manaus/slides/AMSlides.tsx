@@ -74,11 +74,12 @@ export const AMCoverSlide = ({
       ].filter(Boolean) as string[];
   const paymentLine = paymentParts.join(' | ');
 
-  // ── Price reduction mode: card mantém o tamanho original (148×52);
-  //    apenas o conteúdo interno muda quando "Baixou o preço" está ativo.
+  // ── Price reduction mode: card mantém largura original mas cresce em altura
+  //    para acomodar o badge "BAIXOU O PREÇO" + preço antigo riscado.
+  //    O recorte (notch) da foto acompanha proporcionalmente.
   const isReduced = !!data.priceReduced && !data.isRental && (data.oldPrice ?? 0) > 0;
   const cardW = 148;
-  const cardH = 52;
+  const cardH = isReduced ? 72 : 52;
   // Posições derivadas (mantém bottom:10, right:10)
   const cardLeft = 360 - 10 - cardW;          // x do card
   const cardTop = 360 - 10 - cardH;           // y do card
@@ -269,20 +270,20 @@ export const AMCoverSlide = ({
               style={{
                 display: 'flex',
                 alignItems: 'center',
-                gap: 2,
+                gap: 3,
                 backgroundColor: 'white',
                 color: '#044A8E',
-                borderRadius: 4,
-                padding: '1px 4px',
+                borderRadius: 5,
+                padding: '2px 5px',
                 fontFamily: golos,
                 fontWeight: 800,
-                fontSize: 5.5,
+                fontSize: 6.5,
                 lineHeight: 1,
                 letterSpacing: '0.02em',
                 whiteSpace: 'nowrap',
               }}
             >
-              <svg width="6" height="6" viewBox="0 0 12 12" fill="#044A8E" aria-hidden="true">
+              <svg width="7" height="7" viewBox="0 0 12 12" fill="#044A8E" aria-hidden="true">
                 <path d="M6 1v7.2l2.6-2.6 1 1L6 11 2.4 6.6l1-1L6 8.2V1z"/>
               </svg>
               BAIXOU O PREÇO!
@@ -292,13 +293,13 @@ export const AMCoverSlide = ({
 
         {/* Preço antigo riscado (vermelho) */}
         {isReduced && (
-          <div style={{ display: 'flex', alignItems: 'baseline', marginTop: 1 }}>
+          <div style={{ display: 'flex', alignItems: 'baseline', marginTop: 3 }}>
             <span
               style={{
                 position: 'relative',
-                fontSize: 7,
+                fontSize: 9,
                 fontFamily: golos,
-                color: 'rgba(255,255,255,0.85)',
+                color: 'rgba(255,255,255,0.9)',
                 fontWeight: 600,
                 lineHeight: 1,
               }}
@@ -312,7 +313,7 @@ export const AMCoverSlide = ({
                   left: 0,
                   right: 0,
                   top: '50%',
-                  height: 1,
+                  height: 1.5,
                   backgroundColor: '#ef4444',
                   transform: 'translateY(-50%)',
                 }}
@@ -322,14 +323,14 @@ export const AMCoverSlide = ({
         )}
 
         {/* Preço atual */}
-        <div style={{ display: 'flex', alignItems: 'baseline', gap: 2, color: 'white', marginTop: isReduced ? 0 : 0 }}>
-          <span style={{ fontSize: isReduced ? 10 : 12, opacity: 0.75, marginRight: 1, fontFamily: golos }}>R$</span>
-          <span style={{ fontSize: Math.min(isReduced ? 16 : 20, Math.max(12, (isReduced ? 16 : 20) - Math.max(0, (price > 0 ? price.toLocaleString('pt-BR', { minimumFractionDigits: 0, maximumFractionDigits: 0 }).length : 8) - 6) * 0.8)), fontWeight: 700, lineHeight: 1, fontFamily: golos }}>
+        <div style={{ display: 'flex', alignItems: 'baseline', gap: 2, color: 'white', marginTop: isReduced ? 2 : 0 }}>
+          <span style={{ fontSize: 12, opacity: 0.75, marginRight: 1, fontFamily: golos }}>R$</span>
+          <span style={{ fontSize: Math.min(20, Math.max(14, 20 - Math.max(0, (price > 0 ? price.toLocaleString('pt-BR', { minimumFractionDigits: 0, maximumFractionDigits: 0 }).length : 8) - 6) * 0.8)), fontWeight: 700, lineHeight: 1, fontFamily: golos }}>
             {price > 0
               ? price.toLocaleString('pt-BR', { minimumFractionDigits: 0, maximumFractionDigits: 0 })
               : 'Consulte'}
           </span>
-          {price > 0 && <span style={{ fontSize: isReduced ? 9 : 11, opacity: 0.75, fontFamily: golos }}>,00</span>}
+          {price > 0 && <span style={{ fontSize: 11, opacity: 0.75, fontFamily: golos }}>,00</span>}
         </div>
 
         {/* Linha de pagamento */}
