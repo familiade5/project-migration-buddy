@@ -25,6 +25,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useActivityLog } from '@/hooks/useActivityLog';
 import { createCrmPropertyFromCreative, copyImageToCrmStorage } from '@/services/crmIntegration';
 import { VDHInstagramPublishDialog } from './VDHInstagramPublishDialog';
+import { VDHPublishOlxOnlyButton } from './VDHPublishOlxOnlyButton';
 import type { Json } from '@/integrations/supabase/types';
 
 // ── iOS CORS fix: convert external URLs to base64 data URLs ──────────────────
@@ -554,6 +555,13 @@ export const PostPreview = ({ data, photos }: PostPreviewProps) => {
             photos={photos}
             disabled={isExporting || posts.length === 0 || photos.length === 0}
             onPrepare={prepareInstagramPublication}
+          />
+        </div>
+        <div className="sm:col-span-2">
+          <VDHPublishOlxOnlyButton
+            data={data}
+            photos={photos}
+            disabled={isExporting || photos.length === 0}
           />
         </div>
       </div>
