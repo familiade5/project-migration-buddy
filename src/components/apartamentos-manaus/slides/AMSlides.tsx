@@ -265,39 +265,15 @@ export const AMCoverSlide = ({
           >
             {data.isRental ? 'ALUGUEL' : 'VENDA'}
           </div>
-          {isReduced && (
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: 3,
-                backgroundColor: 'white',
-                color: '#044A8E',
-                borderRadius: 5,
-                padding: '2px 5px',
-                fontFamily: golos,
-                fontWeight: 800,
-                fontSize: 6.5,
-                lineHeight: 1,
-                letterSpacing: '0.02em',
-                whiteSpace: 'nowrap',
-              }}
-            >
-              <svg width="7" height="7" viewBox="0 0 12 12" fill="#044A8E" aria-hidden="true">
-                <path d="M6 1v7.2l2.6-2.6 1 1L6 11 2.4 6.6l1-1L6 8.2V1z"/>
-              </svg>
-              BAIXOU O PREÇO!
-            </div>
-          )}
         </div>
 
         {/* Preço antigo riscado (vermelho) */}
         {isReduced && (
-          <div style={{ display: 'flex', alignItems: 'baseline', marginTop: 3 }}>
+          <div style={{ display: 'flex', alignItems: 'baseline', marginTop: 4 }}>
             <span
               style={{
                 position: 'relative',
-                fontSize: 9,
+                fontSize: 11,
                 fontFamily: golos,
                 color: 'rgba(255,255,255,0.9)',
                 fontWeight: 600,
