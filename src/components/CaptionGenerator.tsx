@@ -1,10 +1,11 @@
 import { useMemo, useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Copy, Download, Check, FileText } from 'lucide-react';
+import { Copy, Download, Check, FileText, RefreshCw } from 'lucide-react';
 import { toast } from 'sonner';
 import { PropertyData } from '@/types/property';
 import { useCrecis } from '@/hooks/useCrecis';
 import { buildVdhCaption } from '@/lib/vdhCaption';
+import { sanitizeCaptionForOlx } from '@/lib/olxCaption';
 
 interface CaptionGeneratorProps {
   data: PropertyData;
