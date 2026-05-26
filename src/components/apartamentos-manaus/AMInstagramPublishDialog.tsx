@@ -347,7 +347,12 @@ export const AMInstagramPublishDialog = ({
               </div>
               <Textarea
                 value={caption}
-                onChange={(e) => { setCaption(e.target.value); if (captionError) setCaptionError(null); }}
+                onChange={(e) => {
+                  const v = e.target.value;
+                  setCaption(v);
+                  if (!olxCaptionEdited) setOlxCaption(sanitizeCaptionForOlx(v));
+                  if (captionError) setCaptionError(null);
+                }}
                 maxLength={2200}
                 className="min-h-[300px] resize-y"
                 style={{ backgroundColor: '#ffffff', color: '#1f2937', borderColor: '#d1d5db' }}
