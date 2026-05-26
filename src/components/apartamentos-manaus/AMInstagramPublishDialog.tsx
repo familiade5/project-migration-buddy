@@ -73,7 +73,7 @@ export const AMInstagramPublishDialog = ({
   const [storyPreviewDataUrl, setStoryPreviewDataUrl] = useState<string | undefined>();
   const [isPreparing, setIsPreparing] = useState(false);
   const [isPublishing, setIsPublishing] = useState(false);
-  const [publishOlx, setPublishOlx] = useState(false);
+  const [publishOlx, setPublishOlx] = useState(true);
   const [olxTxType, setOlxTxType] = useState<'venda' | 'aluguel' | 'lancamento'>(
     data.isRental ? 'aluguel' : 'venda'
   );
