@@ -29,7 +29,7 @@ export const VDHCorretorInfoSlide = ({}: Props) => {
     <div
       className="post-template"
       style={{
-        background: 'radial-gradient(ellipse at center, #00773b 0%, #005a2c 60%, #003d1e 100%)',
+        background: '#003d1e',
         backgroundColor: BG,
         width: 1080,
         height: 1080,
