@@ -160,6 +160,13 @@ export function AMPublishOlxOnlyButton({ data, photos, disabled }: Props) {
               <Label className="text-xs font-semibold uppercase tracking-wide text-gray-600">
                 Descrição (vai para os portais)
               </Label>
+              <button
+                type="button"
+                onClick={() => setDescription(buildDefaultDescription(data, txType))}
+                className="text-[11px] font-semibold underline text-gray-500 hover:text-gray-700"
+              >
+                Regenerar descrição padrão
+              </button>
               <Textarea
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
