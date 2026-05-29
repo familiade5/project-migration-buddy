@@ -16,7 +16,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { toast } from 'sonner';
-import { sanitizeCaptionForOlx } from '@/lib/olxCaption';
+import { sanitizeCaptionForOlx, buildOlxDescription } from '@/lib/olxCaption';
 
 interface PreparedPublishPayload {
   imageUrls: string[];
@@ -115,7 +115,7 @@ export const AMInstagramPublishDialog = ({
       setStoryImageUrl(prepared.storyImageUrl);
       setStoryPreviewDataUrl(prepared.storyPreviewDataUrl);
       setCaption(prepared.caption);
-      setOlxCaption(sanitizeCaptionForOlx(prepared.caption));
+      setOlxCaption(buildOlxDescription(data, olxTxType));
       setOlxCaptionEdited(false);
       setCaptionError(null);
       setStep('images');
@@ -352,7 +352,8 @@ export const AMInstagramPublishDialog = ({
                 onChange={(e) => {
                   const v = e.target.value;
                   setCaption(v);
-                  if (!olxCaptionEdited) setOlxCaption(sanitizeCaptionForOlx(v));
+                  // OLX description is built from the structured property data, not from
+                  // the Instagram caption — keep them independent unless user regenerates.
                   if (captionError) setCaptionError(null);
                 }}
                 maxLength={2200}
@@ -385,11 +386,11 @@ export const AMInstagramPublishDialog = ({
                       </Label>
                       <button
                         type="button"
-                        onClick={() => { setOlxCaption(sanitizeCaptionForOlx(caption)); setOlxCaptionEdited(false); }}
+                        onClick={() => { setOlxCaption(buildOlxDescription(data, olxTxType)); setOlxCaptionEdited(false); }}
                         className="text-[11px] font-semibold underline"
                         style={{ color: '#78350f' }}
                       >
-                        Regenerar a partir do Instagram
+                        Regenerar descrição padrão OLX
                       </button>
                     </div>
                     <Textarea

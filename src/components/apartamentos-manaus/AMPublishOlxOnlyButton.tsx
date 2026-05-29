@@ -14,7 +14,7 @@ import {
 } from '@/components/ui/dialog';
 import { toast } from 'sonner';
 import { AMPropertyData } from '@/types/apartamentosManaus';
-import { sanitizeCaptionForOlx } from '@/lib/olxCaption';
+import { buildOlxDescription } from '@/lib/olxCaption';
 
 interface Props {
   data: AMPropertyData;
@@ -22,24 +22,11 @@ interface Props {
   disabled?: boolean;
 }
 
-function buildDefaultDescription(d: AMPropertyData): string {
-  const parts: string[] = [];
-  parts.push(d.title || `${d.propertyType} em ${d.neighborhood || d.city}`);
-  parts.push('');
-  const specs: string[] = [];
-  if (d.bedrooms) specs.push(`${d.bedrooms} quarto(s)`);
-  if (d.suites) specs.push(`${d.suites} suíte(s)`);
-  if (d.bathrooms) specs.push(`${d.bathrooms} banheiro(s)`);
-  if (d.area) specs.push(`${d.area}m²`);
-  if (d.garageSpaces) specs.push(`${d.garageSpaces} vaga(s)`);
-  if (d.floor) specs.push(`${d.floor}º andar`);
-  if (specs.length) parts.push(specs.join(' · '));
-  if (d.furnished) parts.push('Mobiliado.');
-  if (d.acceptsFinancing) parts.push('Aceita financiamento.');
-  if (d.acceptsFGTS) parts.push('Aceita FGTS.');
-  parts.push('');
-  parts.push(`${d.address || ''}${d.neighborhood ? ' - ' + d.neighborhood : ''}, ${d.city}/${d.state}`);
-  return sanitizeCaptionForOlx(parts.filter((s) => s !== undefined).join('\n'));
+function buildDefaultDescription(
+  d: AMPropertyData,
+  txType: 'venda' | 'aluguel' | 'lancamento',
+): string {
+  return buildOlxDescription(d, txType);
 }
 
 export function AMPublishOlxOnlyButton({ data, photos, disabled }: Props) {
@@ -64,7 +51,7 @@ export function AMPublishOlxOnlyButton({ data, photos, disabled }: Props) {
       return;
     }
     setTxType(data.isRental ? 'aluguel' : 'venda');
-    setDescription(buildDefaultDescription(data));
+    setDescription(buildDefaultDescription(data, data.isRental ? 'aluguel' : 'venda'));
     setOpen(true);
   };
 
@@ -173,6 +160,13 @@ export function AMPublishOlxOnlyButton({ data, photos, disabled }: Props) {
               <Label className="text-xs font-semibold uppercase tracking-wide text-gray-600">
                 Descrição (vai para os portais)
               </Label>
+              <button
+                type="button"
+                onClick={() => setDescription(buildDefaultDescription(data, txType))}
+                className="text-[11px] font-semibold underline text-gray-500 hover:text-gray-700"
+              >
+                Regenerar descrição padrão
+              </button>
               <Textarea
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
