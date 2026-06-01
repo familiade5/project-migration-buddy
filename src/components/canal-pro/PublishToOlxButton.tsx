@@ -7,6 +7,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { toast } from 'sonner';
 import { CanalProExtraData } from '@/types/canalProExtra';
+import { uploadOlxPhotos } from '@/lib/olxPhotos';
 
 export interface OlxListingPayload {
   code: string;
@@ -108,6 +109,11 @@ export function PublishToOlxButton({
     setIsPublishing(true);
     try {
       const code = draft.code?.trim() || `${codePrefix}-${Date.now().toString(36).toUpperCase()}`;
+      const uploadedPhotos = await uploadOlxPhotos(draft.photos, codePrefix.toLowerCase(), code);
+      if (!uploadedPhotos.length) {
+        toast.error('Falha ao subir as fotos do imóvel. Tente novamente.');
+        return;
+      }
       const payload = {
         ...draft,
         code,
@@ -116,6 +122,7 @@ export function PublishToOlxButton({
         sale_price: txType === 'aluguel' ? null : (draft.sale_price ?? null),
         rental_price: txType === 'aluguel' ? (draft.rental_price ?? null) : null,
         zip_code: draft.zip_code.replace(/\D/g, ''),
+        photos: uploadedPhotos,
         is_active: true,
       };
       const { error } = await (supabase as unknown as { from: (t: string) => { insert: (p: unknown) => Promise<{ error: { message: string } | null }> } })
