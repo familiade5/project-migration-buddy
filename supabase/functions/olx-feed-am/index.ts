@@ -26,6 +26,12 @@ function cdata(v: unknown): string {
   return `<![CDATA[${s}]]>`;
 }
 
+function formatCep(v: unknown): string {
+  const d = String(v ?? '').replace(/\D/g, '');
+  if (d.length !== 8) return '';
+  return `${d.slice(0, 5)}-${d.slice(5)}`;
+}
+
 function mapPropertyType(t: string): { category: string; type: string } {
   const x = (t || '').toLowerCase();
   if (x.includes('cobertura')) return { category: 'Apartamento', type: 'Cobertura' };
@@ -98,7 +104,7 @@ ${photosXml}
       <Neighborhood>${esc(p.neighborhood)}</Neighborhood>
       <Address>${esc(p.address)}</Address>
       <StreetNumber>${esc(p.address_number)}</StreetNumber>
-      <PostalCode>${esc(p.zip_code)}</PostalCode>
+      <PostalCode>${esc(formatCep(p.zip_code))}</PostalCode>
     </Location>
     <ContactInfo>
       <Name>${cdata(p.broker_name)}</Name>
