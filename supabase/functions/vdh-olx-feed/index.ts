@@ -97,7 +97,7 @@ ${photosXml}
       <Neighborhood>${esc(p.neighborhood)}</Neighborhood>
       <Address>${esc(p.address)}</Address>
       <StreetNumber>${esc(p.address_number)}</StreetNumber>
-      <PostalCode>${esc(p.zip_code)}</PostalCode>
+      <PostalCode>${esc((() => { const d = String(p.zip_code ?? '').replace(/\D/g, ''); return d.length === 8 ? `${d.slice(0,5)}-${d.slice(5)}` : ''; })())}</PostalCode>
     </Location>
     <ContactInfo>
       <Name>${cdata(p.broker_name)}</Name>
