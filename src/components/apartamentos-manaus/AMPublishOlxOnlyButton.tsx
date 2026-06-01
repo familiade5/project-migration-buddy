@@ -15,6 +15,7 @@ import {
 import { toast } from 'sonner';
 import { AMPropertyData } from '@/types/apartamentosManaus';
 import { buildOlxDescription } from '@/lib/olxCaption';
+import { uploadOlxPhotos } from '@/lib/olxPhotos';
 
 interface Props {
   data: AMPropertyData;
@@ -59,6 +60,11 @@ export function AMPublishOlxOnlyButton({ data, photos, disabled }: Props) {
     setIsPublishing(true);
     try {
       const code = `AM-${Date.now().toString(36).toUpperCase()}`;
+      const uploadedPhotos = await uploadOlxPhotos(photos, 'am', code);
+      if (!uploadedPhotos.length) {
+        toast.error('Falha ao subir as fotos do imóvel. Tente novamente.');
+        return;
+      }
       const payload = {
         code,
         transaction_type: txType,
@@ -83,7 +89,7 @@ export function AMPublishOlxOnlyButton({ data, photos, disabled }: Props) {
         iptu: data.iptu || 0,
         accepts_financing: data.acceptsFinancing,
         accepts_fgts: data.acceptsFGTS,
-        photos,
+        photos: uploadedPhotos,
         broker_name: data.brokerName,
         broker_phone: data.brokerPhone,
         creci: data.creci,

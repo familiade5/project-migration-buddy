@@ -79,8 +79,14 @@ export function VDHPublishOlxOnlyButton({ data, photos, disabled }: Props) {
       const code = `VDH-${Date.now().toString(36).toUpperCase()}`;
       const title = `${data.type || 'Imóvel'}${data.bedrooms ? ` ${data.bedrooms} quartos` : ''} - ${data.neighborhood || data.city}`;
       const address = (data.fullAddress || `${data.street || ''} ${data.number || ''}`).trim();
+      const { uploadOlxPhotos } = await import('@/lib/olxPhotos');
+      const uploaded = await uploadOlxPhotos(photos, 'vdh', code);
+      if (!uploaded.length) {
+        toast.error('Falha ao subir as fotos do imóvel. Tente novamente.');
+        return;
+      }
       const sobreNosUrl = `${window.location.origin}/vdh-sobre-nos.png`;
-      const out = [...photos];
+      const out = [...uploaded];
       if (out.length > 0) out.splice(1, 0, sobreNosUrl);
       else out.push(sobreNosUrl);
 

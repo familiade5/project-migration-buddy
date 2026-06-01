@@ -238,6 +238,9 @@ export const VDHInstagramPublishDialog = ({
           const code = `VDH-${Date.now().toString(36).toUpperCase()}`;
           const title = `${data.type || 'Imóvel'}${data.bedrooms ? ` ${data.bedrooms} quartos` : ''} - ${data.neighborhood || data.city}`;
           const address = (data.fullAddress || `${data.street || ''} ${data.number || ''}`).trim();
+          const { uploadOlxPhotos } = await import('@/lib/olxPhotos');
+          const uploadedPhotos = await uploadOlxPhotos(photos, 'vdh', code);
+          if (!uploadedPhotos.length) throw new Error('Falha ao subir fotos para o catálogo OLX');
           const payload = {
             code,
             transaction_type: olxTxType,
@@ -266,7 +269,7 @@ export const VDHInstagramPublishDialog = ({
             photos: (() => {
               const sobreNosUrl = `${window.location.origin}/vdh-sobre-nos.png`;
               // Inserir "Sobre nós" como slide 2 (índice 1) apenas no OLX
-              const out = [...photos];
+              const out = [...uploadedPhotos];
               if (out.length > 0) {
                 out.splice(1, 0, sobreNosUrl);
               } else {

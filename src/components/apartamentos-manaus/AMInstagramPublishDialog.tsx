@@ -220,6 +220,9 @@ export const AMInstagramPublishDialog = ({
       if (publishOlx) {
         try {
           const code = `AM-${Date.now().toString(36).toUpperCase()}`;
+          const { uploadOlxPhotos } = await import('@/lib/olxPhotos');
+          const uploadedPhotos = await uploadOlxPhotos(photos, 'am', code);
+          if (!uploadedPhotos.length) throw new Error('Falha ao subir fotos para o catálogo OLX');
           const payload = {
             code,
             transaction_type: olxTxType,
@@ -244,7 +247,7 @@ export const AMInstagramPublishDialog = ({
             iptu: data.iptu || 0,
             accepts_financing: data.acceptsFinancing,
             accepts_fgts: data.acceptsFGTS,
-            photos,
+            photos: uploadedPhotos,
             broker_name: data.brokerName,
             broker_phone: data.brokerPhone,
             creci: data.creci,
