@@ -61,7 +61,7 @@ function renderListing(p: Record<string, unknown>, prefix: string, defaultState:
   const isLaunch = p.transaction_type === 'lancamento';
   const photos = Array.isArray(p.photos) ? (p.photos as string[]) : [];
   const photosXml = photos
-    .map((url, i) => `      <Item Medium="image" Caption="Foto ${i + 1}" PrimaryImage="${i === 0 ? 'true' : 'false'}"><Url>${esc(url)}</Url></Item>`)
+    .map((url, i) => `      <Item medium="image" caption="Foto ${i + 1}"${i === 0 ? ' primary="true"' : ''}>${esc(url)}</Item>`)
     .join('\n');
 
   const price = tx === 'RENTAL' ? Number(p.rental_price ?? 0) : Number(p.sale_price ?? 0);
@@ -78,16 +78,17 @@ function renderListing(p: Record<string, unknown>, prefix: string, defaultState:
       <PropertyType>${esc(ptype.category)}</PropertyType>
       <PropertySubtype>${esc(ptype.type)}</PropertySubtype>
       <Description>${cdata(p.description)}</Description>
-      <ListingPrice>${price > 0 ? price.toFixed(2) : ''}</ListingPrice>
-      <YearlyTax>${Number(p.iptu ?? 0).toFixed(2)}</YearlyTax>
-      <PriceCurrency>BRL</PriceCurrency>
+      ${tx === 'RENTAL'
+        ? `<RentalPrice currency="BRL" period="Monthly">${price > 0 ? Math.round(price) : ''}</RentalPrice>`
+        : `<ListPrice currency="BRL">${price > 0 ? Math.round(price) : ''}</ListPrice>`}
+      <YearlyTax currency="BRL">${Math.round(Number(p.iptu ?? 0))}</YearlyTax>
       <LivingArea unit="square metres">${Number(p.area ?? 0)}</LivingArea>
       <Bedrooms>${Number(p.bedrooms ?? 0)}</Bedrooms>
       <Bathrooms>${Number(p.bathrooms ?? 0)}</Bathrooms>
       <Suites>${Number(p.suites ?? 0)}</Suites>
       <Garage type="Parking Space">${Number(p.garage_spaces ?? 0)}</Garage>
       <Floor>${esc(p.floor)}</Floor>
-      <PropertyAdministrationFee>${Number(p.condominium_fee ?? 0).toFixed(2)}</PropertyAdministrationFee>
+      <PropertyAdministrationFee currency="BRL">${Math.round(Number(p.condominium_fee ?? 0))}</PropertyAdministrationFee>
       <Furnish>${p.furnished ? 'Furnished' : 'Not Furnished'}</Furnish>
       <Media>
 ${photosXml}
@@ -135,7 +136,7 @@ Deno.serve(async (req) => {
     const now = new Date().toISOString();
 
     const xml = `<?xml version="1.0" encoding="UTF-8"?>
-<ListingDataFeed xmlns="http://www.vivareal.com/schemas/1.0/VRSync.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<ListingDataFeed xmlns="http://www.vivareal.com/schemas/1.0/VRSync" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.vivareal.com/schemas/1.0/VRSync http://xml.vivareal.com/vrsync.xsd">
   <Header>
     <Provider>Fixa App - Catálogo Unificado</Provider>
     <Email>contato@fixaapp.com.br</Email>
