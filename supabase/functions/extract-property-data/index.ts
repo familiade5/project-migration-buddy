@@ -46,7 +46,8 @@ Regras importantes:
 - Identifique o tipo de imóvel (Casa, Apartamento, Terreno, etc.)
 - IMPORTANTE sobre quartos/banheiros/garagem: Só extraia se houver NÚMERO ESPECÍFICO mencionado. Se apenas mencionar "quarto" ou "banheiro" sem quantidade, DEIXE O CAMPO VAZIO. Não invente números.
 - Extraia o ENDEREÇO COMPLETO incluindo rua, número, complemento, bairro, cidade e estado
-- Para o paymentMethod, descreva as formas de pagamento disponíveis (ex: "À Vista, FGTS" ou "Financiamento Habitacional, FGTS")
+ - Para o paymentMethod, descreva as formas de pagamento disponíveis (ex: "À Vista, FGTS" ou "Financiamento Habitacional, FGTS")
+ - CRÍTICO sobre condominiumRules e taxRules: extraia SEMPRE o TEXTO LITERAL EXATO mostrado nas seções "Condomínio:" e "Tributos:" do screenshot. NUNCA use texto padrão/genérico nem resuma — copie palavra por palavra como aparece, pois esse texto varia entre imóveis (ex.: alguns dizem apenas "Responsabilidade do comprador.", outros dizem "Sob responsabilidade do comprador, quando o débito for inferior a 10% do valor de avaliação. A CAIXA paga integralmente quando o débito for superior a 10% do valor de avaliação."). Se a seção não estiver visível no screenshot, deixe o campo vazio.
 - IMPORTANTE sobre nome do condomínio/edifício (propertyName): Se no endereço ou título houver um nome próprio de condomínio ou edifício (ex: "EDIFÍCIO PIAZZA DE FIORE", "RESIDENCIAL VILLA VERDE", "CONDOMÍNIO JARDIM DAS FLORES"), extraia-o no campo propertyName em formato título (ex: "Edifício Piazza de Fiore"). Ignore unidades genéricas como "APTO. 302", "LOJA 01".`;
  IMPORTANTE sobre nome do condomínio/edifício (propertyName): Se no endereço ou título houver um nome próprio de condomínio ou edifício (ex: "EDIFÍCIO PIAZZA DE FIORE", "RESIDENCIAL VILLA VERDE", "CONDOMÍNIO JARDIM DAS FLORES"), extraia-o no campo propertyName em formato título (ex: "Edifício Piazza de Fiore"). Ignore unidades genéricas como "APTO. 302", "LOJA 01".
 
