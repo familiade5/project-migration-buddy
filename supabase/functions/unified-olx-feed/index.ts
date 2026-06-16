@@ -74,6 +74,9 @@ function renderListing(p: Record<string, unknown>, prefix: string, defaultState:
     <Title>${cdata(p.title)}</Title>
     <TransactionType>For ${tx === 'RENTAL' ? 'Rent' : 'Sale'}</TransactionType>
     <PublicationType>${isLaunch ? 'PREMIUM' : 'STANDARD'}</PublicationType>
+    <Media>
+${photosXml}
+    </Media>
     <Details>
       <PropertyType>${esc(ptype.category)}</PropertyType>
       <PropertySubtype>${esc(ptype.type)}</PropertySubtype>
@@ -90,9 +93,6 @@ function renderListing(p: Record<string, unknown>, prefix: string, defaultState:
       <Floor>${esc(p.floor)}</Floor>
       <PropertyAdministrationFee currency="BRL">${Math.round(Number(p.condominium_fee ?? 0))}</PropertyAdministrationFee>
       <Furnish>${p.furnished ? 'Furnished' : 'Not Furnished'}</Furnish>
-      <Media>
-${photosXml}
-      </Media>
     </Details>
     <Location displayAddress="Street">
       <Country abbreviation="BR">Brasil</Country>
