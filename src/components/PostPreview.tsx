@@ -495,6 +495,34 @@ export const PostPreview = ({ data, photos, publishOlx = true, onPublishOlxChang
     }
   };
 
+  // ── OLX-only publish: capture the feed creatives (capa + slides) as HTTPS URLs
+  //    and return them so the OLX listing leads with the same images posted on Instagram.
+  const prepareOlxSlides = async (): Promise<string[]> => {
+    if (!user) throw new Error('Você precisa estar logado para publicar.');
+    if (photos.length === 0) throw new Error('Adicione pelo menos uma foto antes de publicar.');
+    setIsExporting(true);
+    try {
+      const exportPhotos = await getPhotosForExport(photos);
+      const publicationId = `vdh-olx-${crypto.randomUUID()}`;
+      const urls: string[] = [];
+      for (let i = 0; i < feedPosts.length; i++) {
+        const post = feedPosts[i];
+        const photo = exportPhotos[post.photoIndex] || exportPhotos[0] || null;
+        const dataUrl = await captureSlide(post.component, photo, exportPhotos, {
+          slideIndex: post.slideIndex,
+          totalSlides: feedPosts.length,
+        });
+        // asJpeg=true → JPEG com fundo branco, mais seguro para os crawlers OLX/ZAP/VivaReal
+        const publicUrl = await uploadExportedImage(dataUrl, user.id, publicationId, i, 'feed', true);
+        urls.push(publicUrl);
+      }
+      return urls;
+    } finally {
+      setIsExporting(false);
+      setExportSlideEl(null);
+    }
+  };
+
   const CurrentPostComponent = posts[currentPost].component;
   const currentPhoto = photos[posts[currentPost].photoIndex] || photos[0] || null;
 
@@ -570,6 +598,7 @@ export const PostPreview = ({ data, photos, publishOlx = true, onPublishOlxChang
             data={data}
             photos={photos}
             disabled={isExporting || photos.length === 0}
+            prepareSlides={prepareOlxSlides}
           />
         </div>
       </div>

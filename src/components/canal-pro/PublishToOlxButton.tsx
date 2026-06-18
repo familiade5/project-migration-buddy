@@ -57,6 +57,12 @@ interface Props {
   extraData?: CanalProExtraData;
   /** Label do botão */
   label?: string;
+  /**
+   * Captura a capa + slides desenhados do criador de post e devolve URLs HTTPS.
+   * OBRIGATÓRIO: sem isso a publicação OLX é abortada — nunca enviamos apenas
+   * as fotos originais sem os criativos editados.
+   */
+  prepareSlides?: () => Promise<string[]>;
 }
 
 export function PublishToOlxButton({
@@ -67,6 +73,7 @@ export function PublishToOlxButton({
   codePrefix = 'IM',
   validate,
   label = 'Publicar no Canal Pro (OLX / ZAP / VivaReal)',
+  prepareSlides,
 }: Props) {
   const [open, setOpen] = useState(false);
   const [txType, setTxType] = useState<'venda' | 'aluguel' | 'lancamento'>('venda');
@@ -109,11 +116,32 @@ export function PublishToOlxButton({
     setIsPublishing(true);
     try {
       const code = draft.code?.trim() || `${codePrefix}-${Date.now().toString(36).toUpperCase()}`;
-      const uploadedPhotos = await uploadOlxPhotos(draft.photos, codePrefix.toLowerCase(), code);
-      if (!uploadedPhotos.length) {
-        toast.error('Falha ao subir as fotos do imóvel. Tente novamente.');
+
+      // 1) Captura obrigatória dos slides desenhados
+      if (!prepareSlides) {
+        toast.error('Pré-visualização indisponível. Recarregue a página e tente novamente.');
         return;
       }
+      let slideUrls: string[] = [];
+      try {
+        slideUrls = await prepareSlides();
+      } catch (e) {
+        console.error('[PublishToOlxButton] prepareSlides failed', e);
+        const m = e instanceof Error ? e.message : 'Erro desconhecido';
+        toast.error(`Falha ao gerar a capa/slides do criador de post: ${m}. Tente novamente.`);
+        return;
+      }
+      if (!slideUrls.length) {
+        toast.error('Nenhum slide foi gerado. Confirme que o preview está carregado e tente novamente.');
+        return;
+      }
+
+      // 2) Upload das fotos originais como extras
+      const uploadedPhotos = await uploadOlxPhotos(draft.photos, codePrefix.toLowerCase(), code);
+
+      // 3) Slides desenhados primeiro (capa do anúncio = capa desenhada), depois fotos originais
+      const finalPhotos = [...slideUrls, ...uploadedPhotos];
+
       const payload = {
         ...draft,
         code,
@@ -122,7 +150,7 @@ export function PublishToOlxButton({
         sale_price: txType === 'aluguel' ? null : (draft.sale_price ?? null),
         rental_price: txType === 'aluguel' ? (draft.rental_price ?? null) : null,
         zip_code: draft.zip_code.replace(/\D/g, ''),
-        photos: uploadedPhotos,
+        photos: finalPhotos,
         is_active: true,
       };
       const { error } = await (supabase as unknown as { from: (t: string) => { insert: (p: unknown) => Promise<{ error: { message: string } | null }> } })

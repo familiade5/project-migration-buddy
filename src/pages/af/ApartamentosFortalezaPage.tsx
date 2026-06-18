@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { AFPropertyData, defaultAFPropertyData } from '@/types/apartamentosFortaleza';
 import { AFPostPreview } from '@/components/apartamentos-fortaleza/AFPostPreview';
 import { AFStoriesPreview } from '@/components/apartamentos-fortaleza/AFStoriesPreview';
@@ -51,6 +51,13 @@ const ApartamentosFortalezaPage = () => {
   const [propertyData, setPropertyData] = useState<AFPropertyData>(() => loadFromStorage(STORAGE_KEY_DATA, defaultAFPropertyData));
   const [photos, setPhotos] = useState<string[]>(() => loadFromStorage(STORAGE_KEY_PHOTOS, []));
   const [previewTab, setPreviewTab] = useState<'feed' | 'stories' | 'paid'>('feed');
+
+  // Capturador de slides desenhados (registrado pelo AFPostPreview).
+  // Usado pelo PublishToOlxButton para enviar à OLX as mesmas imagens do Instagram.
+  const prepareOlxSlidesRef = useRef<(() => Promise<string[]>) | null>(null);
+  const registerPrepareSlides = useCallback((fn: (() => Promise<string[]>) | null) => {
+    prepareOlxSlidesRef.current = fn;
+  }, []);
 
   useEffect(() => {
     try { localStorage.setItem(STORAGE_KEY_DATA, JSON.stringify(propertyData)); } catch {}
@@ -158,6 +165,12 @@ const ApartamentosFortalezaPage = () => {
                   accentColor={ACCENT}
                   codePrefix="AF"
                   initialCaption={propertyData.infoMessage || propertyData.title || ''}
+                  prepareSlides={async () => {
+                    if (!prepareOlxSlidesRef.current) {
+                      throw new Error('Abra a aba "Feed" do preview antes de publicar para que os criativos sejam capturados.');
+                    }
+                    return prepareOlxSlidesRef.current();
+                  }}
                   buildPayload={() => {
                     const isRental = propertyData.isRental;
                     return {
@@ -224,7 +237,7 @@ const ApartamentosFortalezaPage = () => {
               </div>
               <div className="p-4 sm:p-6">
                 {previewTab === 'feed' ? (
-                  <AFPostPreview data={propertyData} photos={photos} />
+                  <AFPostPreview data={propertyData} photos={photos} onRegisterPrepareSlides={registerPrepareSlides} />
                 ) : previewTab === 'paid' ? (
                   <AFPaidFeedPreview data={propertyData} photos={photos} />
                 ) : (
