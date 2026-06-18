@@ -68,28 +68,33 @@ export function AMPublishOlxOnlyButton({ data, photos, disabled, prepareSlides }
     try {
       const code = `AM-${Date.now().toString(36).toUpperCase()}`;
 
-      // 1) Capture designed feed slides (cover + slides) and upload as HTTPS JPEGs
-      let slideUrls: string[] = [];
-      if (prepareSlides) {
-        try {
-          slideUrls = await prepareSlides();
-        } catch (e) {
-          console.error('[AMPublishOlxOnlyButton] prepareSlides failed', e);
-          toast.error('Não foi possível gerar a capa/slides. Publicando apenas com fotos originais.');
-        }
-      }
-
-      // 2) Upload the original property photos (data URIs → HTTPS)
-      const uploadedPhotos = await uploadOlxPhotos(photos, 'am', code);
-
-      // 3) Designed slides first (capa + slides), then the original photos.
-      //    OLX/ZAP/VivaReal use the first image as the cover.
-      const finalPhotos = [...slideUrls, ...uploadedPhotos];
-
-      if (!finalPhotos.length) {
-        toast.error('Falha ao subir as fotos do imóvel. Tente novamente.');
+      // 1) Capture designed feed slides (capa + slides do criador de post) and
+      //    upload as HTTPS JPEGs. These MUST succeed — the listing requires the
+      //    designed creatives, never only the raw photos.
+      if (!prepareSlides) {
+        toast.error('Pré-visualização indisponível. Recarregue a página e tente novamente.');
         return;
       }
+      let slideUrls: string[] = [];
+      try {
+        slideUrls = await prepareSlides();
+      } catch (e) {
+        console.error('[AMPublishOlxOnlyButton] prepareSlides failed', e);
+        const m = e instanceof Error ? e.message : 'Erro desconhecido';
+        toast.error(`Falha ao gerar a capa/slides do criador de post: ${m}. Tente novamente.`);
+        return;
+      }
+      if (!slideUrls.length) {
+        toast.error('Nenhum slide foi gerado. Confirme que o preview está carregado e tente novamente.');
+        return;
+      }
+
+      // 2) Upload the original property photos (data URIs → HTTPS) as extras
+      const uploadedPhotos = await uploadOlxPhotos(photos, 'am', code);
+
+      // 3) Designed slides first (capa + slides), then the original photos as extras.
+      //    OLX/ZAP/VivaReal use the first image as the cover.
+      const finalPhotos = [...slideUrls, ...uploadedPhotos];
       const payload = {
         code,
         transaction_type: txType,

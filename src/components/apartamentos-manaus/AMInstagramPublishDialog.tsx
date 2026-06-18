@@ -221,12 +221,15 @@ export const AMInstagramPublishDialog = ({
         try {
           const code = `AM-${Date.now().toString(36).toUpperCase()}`;
           const { uploadOlxPhotos } = await import('@/lib/olxPhotos');
+          // The designed feed slides (same images posted to Instagram) MUST be in the OLX
+          // listing. Abort if they are missing — never publish only the raw photos.
+          if (!imageUrls?.length) {
+            throw new Error('Slides do criador de post indisponíveis para a OLX.');
+          }
           const uploadedPhotos = await uploadOlxPhotos(photos, 'am', code);
-          // Prepend the designed feed slides (cover + slides do criador de post) so that
-          // the OLX/ZAP/VivaReal listing leads with the creatives, not only raw photos.
-          // imageUrls are already public HTTPS URLs in exported-creatives.
-          const finalPhotos = [...(imageUrls ?? []), ...uploadedPhotos];
-          if (!finalPhotos.length) throw new Error('Falha ao subir fotos para o catálogo OLX');
+          // imageUrls are the exact images posted to Instagram (already HTTPS in
+          // exported-creatives). Prepend them so the OLX cover = the IG cover.
+          const finalPhotos = [...imageUrls, ...uploadedPhotos];
           const payload = {
             code,
             transaction_type: olxTxType,
