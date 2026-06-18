@@ -9,6 +9,8 @@ import { AF2CoverSlide, AF2PhotoSlide, AF2CTASlide } from './slides/AFSlides2';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import { generateAFPropertyPDF } from '@/lib/af/generatePropertyPDF';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/contexts/AuthContext';
 import logoAF from '@/assets/logo-apartamentos-fortaleza.png';
 
 const PRIMARY = '#0C7B8E';
@@ -17,6 +19,12 @@ const ACCENT  = '#E8562A';
 interface AFPostPreviewProps {
   data: AFPropertyData;
   photos: string[];
+  /**
+   * Registra um capturador que devolve URLs HTTPS dos slides desenhados (capa + slides do
+   * design atual). O pai usa isso para alimentar a publicação OLX com as mesmas imagens
+   * que iriam para o Instagram.
+   */
+  onRegisterPrepareSlides?: (fn: (() => Promise<string[]>) | null) => void;
 }
 
 type FormatType = 'feed' | 'story';
@@ -24,7 +32,52 @@ const SLIDE_W = 360;
 const FEED_H  = 360;
 const MAX_SLIDES = 20;
 
-export function AFPostPreview({ data, photos }: AFPostPreviewProps) {
+// ── Helpers para upload dos slides para o bucket público ──────────────────
+const dataURLtoBlob = (dataURL: string): Blob => {
+  const arr = dataURL.split(',');
+  const mime = arr[0].match(/:(.*?);/)?.[1] || 'image/png';
+  const bstr = atob(arr[1]);
+  let n = bstr.length;
+  const u8arr = new Uint8Array(n);
+  while (n--) { u8arr[n] = bstr.charCodeAt(n); }
+  return new Blob([u8arr], { type: mime });
+};
+
+const convertToJpeg = (pngDataUrl: string, quality = 0.92): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      canvas.width = img.width; canvas.height = img.height;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) { reject(new Error('Canvas context unavailable')); return; }
+      ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(img, 0, 0);
+      resolve(canvas.toDataURL('image/jpeg', quality));
+    };
+    img.onerror = () => reject(new Error('Failed to load image'));
+    img.src = pngDataUrl;
+  });
+};
+
+const uploadExportedImage = async (
+  dataUrl: string, userId: string, creativeId: string, index: number, asJpeg = true,
+): Promise<string> => {
+  let finalDataUrl = dataUrl; let contentType = 'image/png'; let ext = 'png';
+  if (asJpeg) {
+    finalDataUrl = await convertToJpeg(dataUrl);
+    contentType = 'image/jpeg'; ext = 'jpg';
+  }
+  const blob = dataURLtoBlob(finalDataUrl);
+  const fileName = `${userId}/${creativeId}/af-feed-${index + 1}.${ext}`;
+  const { error } = await supabase.storage.from('exported-creatives').upload(fileName, blob, { contentType, upsert: true });
+  if (error) throw error;
+  const { data: { publicUrl } } = supabase.storage.from('exported-creatives').getPublicUrl(fileName);
+  return publicUrl;
+};
+
+export function AFPostPreview({ data, photos, onRegisterPrepareSlides }: AFPostPreviewProps) {
+  const { user } = useAuth();
   const [currentSlide, setCurrentSlide] = useState(0);
   const [format, setFormat] = useState<FormatType>('feed');
   const [designVersion, setDesignVersion] = useState<1 | 2>(1);
@@ -111,6 +164,33 @@ export function AFPostPreview({ data, photos }: AFPostPreviewProps) {
     await new Promise(r => setTimeout(r, 120));
     return toPng(ref.current, opts);
   };
+
+  // Captura todos os feedSlides do design atual, sobe como JPEG e devolve URLs HTTPS
+  const prepareOlxSlidesRef = useRef<() => Promise<string[]>>();
+  prepareOlxSlidesRef.current = async () => {
+    if (!user) throw new Error('Você precisa estar logado para publicar.');
+    setIsExporting(true);
+    try {
+      const publicationId = `af-olx-${crypto.randomUUID()}`;
+      const urls: string[] = [];
+      for (let i = 0; i < feedSlides.length; i++) {
+        const dataUrl = await captureRef(feedRefs[i]);
+        if (!dataUrl) continue;
+        const publicUrl = await uploadExportedImage(dataUrl, user.id, publicationId, i, true);
+        urls.push(publicUrl);
+      }
+      return urls;
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
+  // Mantém o capturador do pai sempre atualizado com o design/photos atuais
+  useEffect(() => {
+    if (!onRegisterPrepareSlides) return;
+    onRegisterPrepareSlides(() => prepareOlxSlidesRef.current!());
+    return () => onRegisterPrepareSlides(null);
+  }, [onRegisterPrepareSlides]);
 
   const handleExportAll = async () => {
     setIsExporting(true);
