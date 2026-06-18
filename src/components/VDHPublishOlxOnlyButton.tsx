@@ -20,6 +20,12 @@ interface Props {
   data: PropertyData;
   photos: string[];
   disabled?: boolean;
+  /**
+   * Captura a capa + slides desenhados do criador de post, sobe como HTTPS e
+   * retorna as URLs. OBRIGATÓRIO: sem isso a publicação OLX é abortada — nunca
+   * publicamos apenas as fotos originais sem os criativos editados.
+   */
+  prepareSlides?: () => Promise<string[]>;
 }
 
 const parseCurrency = (s: string): number | null => {
@@ -46,7 +52,7 @@ function buildDefaultDescription(d: PropertyData): string {
   return sanitizeCaptionForOlx(parts.join('\n'));
 }
 
-export function VDHPublishOlxOnlyButton({ data, photos, disabled }: Props) {
+export function VDHPublishOlxOnlyButton({ data, photos, disabled, prepareSlides }: Props) {
   const [open, setOpen] = useState(false);
   const [txType, setTxType] = useState<'venda' | 'aluguel' | 'lancamento'>('venda');
   const [description, setDescription] = useState('');
@@ -79,16 +85,33 @@ export function VDHPublishOlxOnlyButton({ data, photos, disabled }: Props) {
       const code = `VDH-${Date.now().toString(36).toUpperCase()}`;
       const title = `${data.type || 'Imóvel'}${data.bedrooms ? ` ${data.bedrooms} quartos` : ''} - ${data.neighborhood || data.city}`;
       const address = (data.fullAddress || `${data.street || ''} ${data.number || ''}`).trim();
-      const { uploadOlxPhotos } = await import('@/lib/olxPhotos');
-      const uploaded = await uploadOlxPhotos(photos, 'vdh', code);
-      if (!uploaded.length) {
-        toast.error('Falha ao subir as fotos do imóvel. Tente novamente.');
+
+      // 1) Captura obrigatória da capa + slides desenhados (mesmas imagens
+      //    que iriam para o Instagram). Sem isso, abortamos.
+      if (!prepareSlides) {
+        toast.error('Pré-visualização indisponível. Recarregue a página e tente novamente.');
         return;
       }
+      let slideUrls: string[] = [];
+      try {
+        slideUrls = await prepareSlides();
+      } catch (e) {
+        console.error('[VDHPublishOlxOnlyButton] prepareSlides failed', e);
+        const m = e instanceof Error ? e.message : 'Erro desconhecido';
+        toast.error(`Falha ao gerar a capa/slides do criador de post: ${m}. Tente novamente.`);
+        return;
+      }
+      if (!slideUrls.length) {
+        toast.error('Nenhum slide foi gerado. Confirme que o preview está carregado e tente novamente.');
+        return;
+      }
+
+      const { uploadOlxPhotos } = await import('@/lib/olxPhotos');
+      const uploaded = await uploadOlxPhotos(photos, 'vdh', code);
       const sobreNosUrl = `${window.location.origin}/vdh-sobre-nos.png`;
-      const out = [...uploaded];
-      if (out.length > 0) out.splice(1, 0, sobreNosUrl);
-      else out.push(sobreNosUrl);
+      // Ordem: capa desenhada, "sobre nós", restantes slides desenhados, depois fotos originais.
+      const [coverSlide, ...restSlides] = slideUrls;
+      const out = [coverSlide, sobreNosUrl, ...restSlides, ...uploaded];
 
       const payload = {
         code,
