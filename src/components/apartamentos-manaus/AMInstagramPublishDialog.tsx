@@ -218,55 +218,57 @@ export const AMInstagramPublishDialog = ({
 
       // Salvar/atualizar no catálogo OLX se marcado
       if (publishOlx) {
-        try {
-          const code = `AM-${Date.now().toString(36).toUpperCase()}`;
-          const { uploadOlxPhotos } = await import('@/lib/olxPhotos');
-          // The designed feed slides (same images posted to Instagram) MUST be in the OLX
-          // listing. Abort if they are missing — never publish only the raw photos.
-          if (!imageUrls?.length) {
-            throw new Error('Slides do criador de post indisponíveis para a OLX.');
+        const runOlxPublish = async (): Promise<void> => {
+          try {
+            const code = `AM-${Date.now().toString(36).toUpperCase()}`;
+            const { uploadOlxPhotos } = await import('@/lib/olxPhotos');
+            if (!imageUrls?.length) {
+              throw new Error('Slides do criador de post indisponíveis para a OLX.');
+            }
+            const uploadedPhotos = await uploadOlxPhotos(photos, 'am', code);
+            const finalPhotos = [...imageUrls, ...uploadedPhotos];
+            const payload = {
+              code,
+              transaction_type: olxTxType,
+              property_type: data.propertyType,
+              title: data.title,
+              description: (olxCaption || sanitizeCaptionForOlx(caption)).slice(0, 4000),
+              address: data.address,
+              zip_code: data.zipCode.replace(/\D/g, ''),
+              neighborhood: data.neighborhood,
+              city: data.city,
+              state: data.state || 'AM',
+              area: data.area || null,
+              bedrooms: data.bedrooms || 0,
+              bathrooms: data.bathrooms || 0,
+              suites: data.suites || 0,
+              garage_spaces: data.garageSpaces || 0,
+              floor: data.floor || null,
+              furnished: data.furnished,
+              sale_price: olxTxType === 'aluguel' ? null : (data.salePrice || null),
+              rental_price: olxTxType === 'aluguel' ? (data.rentalPrice || null) : null,
+              condominium_fee: data.condominiumFee || 0,
+              iptu: data.iptu || 0,
+              accepts_financing: data.acceptsFinancing,
+              accepts_fgts: data.acceptsFGTS,
+              photos: finalPhotos,
+              broker_name: data.brokerName,
+              broker_phone: data.brokerPhone,
+              creci: data.creci,
+              is_active: true,
+            };
+            const { error: olxError } = await supabase.from('am_olx_listings').insert(payload);
+            if (olxError) throw olxError;
+            toast.success(`Imóvel adicionado ao catálogo OLX (${code})! A OLX irá sincronizar nas próximas horas.`);
+          } catch (olxErr) {
+            const m = olxErr instanceof Error ? olxErr.message : 'Erro desconhecido';
+            toast.error(`Instagram OK, mas falhou ao adicionar na OLX: ${m}`, {
+              duration: 30000,
+              action: { label: 'Tentar OLX novamente', onClick: () => { void runOlxPublish(); } },
+            });
           }
-          const uploadedPhotos = await uploadOlxPhotos(photos, 'am', code);
-          // imageUrls are the exact images posted to Instagram (already HTTPS in
-          // exported-creatives). Prepend them so the OLX cover = the IG cover.
-          const finalPhotos = [...imageUrls, ...uploadedPhotos];
-          const payload = {
-            code,
-            transaction_type: olxTxType,
-            property_type: data.propertyType,
-            title: data.title,
-            description: (olxCaption || sanitizeCaptionForOlx(caption)).slice(0, 4000),
-            address: data.address,
-            zip_code: data.zipCode.replace(/\D/g, ''),
-            neighborhood: data.neighborhood,
-            city: data.city,
-            state: data.state || 'AM',
-            area: data.area || null,
-            bedrooms: data.bedrooms || 0,
-            bathrooms: data.bathrooms || 0,
-            suites: data.suites || 0,
-            garage_spaces: data.garageSpaces || 0,
-            floor: data.floor || null,
-            furnished: data.furnished,
-            sale_price: olxTxType === 'aluguel' ? null : (data.salePrice || null),
-            rental_price: olxTxType === 'aluguel' ? (data.rentalPrice || null) : null,
-            condominium_fee: data.condominiumFee || 0,
-            iptu: data.iptu || 0,
-            accepts_financing: data.acceptsFinancing,
-            accepts_fgts: data.acceptsFGTS,
-            photos: finalPhotos,
-            broker_name: data.brokerName,
-            broker_phone: data.brokerPhone,
-            creci: data.creci,
-            is_active: true,
-          };
-          const { error: olxError } = await supabase.from('am_olx_listings').insert(payload);
-          if (olxError) throw olxError;
-          toast.success(`Imóvel adicionado ao catálogo OLX (${code})! A OLX irá sincronizar nas próximas horas.`);
-        } catch (olxErr) {
-          const m = olxErr instanceof Error ? olxErr.message : 'Erro desconhecido';
-          toast.warning(`Instagram OK, mas falhou ao adicionar na OLX: ${m}`);
-        }
+        };
+        await runOlxPublish();
       }
 
       handleOpenChange(false);
