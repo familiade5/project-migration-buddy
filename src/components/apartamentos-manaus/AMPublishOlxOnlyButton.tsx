@@ -21,6 +21,13 @@ interface Props {
   data: AMPropertyData;
   photos: string[];
   disabled?: boolean;
+  /**
+   * Optional callback to capture the designed feed slides (cover + slides do criador de post),
+   * upload them as JPEG and return their public HTTPS URLs. When provided, these slides are
+   * prepended to the original property photos so that the OLX/ZAP/VivaReal listing leads with
+   * the designed creatives instead of only the raw uploaded photos.
+   */
+  prepareSlides?: () => Promise<string[]>;
 }
 
 function buildDefaultDescription(
@@ -30,7 +37,7 @@ function buildDefaultDescription(
   return buildOlxDescription(d, txType);
 }
 
-export function AMPublishOlxOnlyButton({ data, photos, disabled }: Props) {
+export function AMPublishOlxOnlyButton({ data, photos, disabled, prepareSlides }: Props) {
   const [open, setOpen] = useState(false);
   const [txType, setTxType] = useState<'venda' | 'aluguel' | 'lancamento'>(data.isRental ? 'aluguel' : 'venda');
   const [description, setDescription] = useState('');
@@ -60,8 +67,26 @@ export function AMPublishOlxOnlyButton({ data, photos, disabled }: Props) {
     setIsPublishing(true);
     try {
       const code = `AM-${Date.now().toString(36).toUpperCase()}`;
+
+      // 1) Capture designed feed slides (cover + slides) and upload as HTTPS JPEGs
+      let slideUrls: string[] = [];
+      if (prepareSlides) {
+        try {
+          slideUrls = await prepareSlides();
+        } catch (e) {
+          console.error('[AMPublishOlxOnlyButton] prepareSlides failed', e);
+          toast.error('Não foi possível gerar a capa/slides. Publicando apenas com fotos originais.');
+        }
+      }
+
+      // 2) Upload the original property photos (data URIs → HTTPS)
       const uploadedPhotos = await uploadOlxPhotos(photos, 'am', code);
-      if (!uploadedPhotos.length) {
+
+      // 3) Designed slides first (capa + slides), then the original photos.
+      //    OLX/ZAP/VivaReal use the first image as the cover.
+      const finalPhotos = [...slideUrls, ...uploadedPhotos];
+
+      if (!finalPhotos.length) {
         toast.error('Falha ao subir as fotos do imóvel. Tente novamente.');
         return;
       }
@@ -89,7 +114,7 @@ export function AMPublishOlxOnlyButton({ data, photos, disabled }: Props) {
         iptu: data.iptu || 0,
         accepts_financing: data.acceptsFinancing,
         accepts_fgts: data.acceptsFGTS,
-        photos: uploadedPhotos,
+        photos: finalPhotos,
         broker_name: data.brokerName,
         broker_phone: data.brokerPhone,
         creci: data.creci,

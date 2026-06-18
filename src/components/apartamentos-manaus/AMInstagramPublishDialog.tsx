@@ -222,7 +222,11 @@ export const AMInstagramPublishDialog = ({
           const code = `AM-${Date.now().toString(36).toUpperCase()}`;
           const { uploadOlxPhotos } = await import('@/lib/olxPhotos');
           const uploadedPhotos = await uploadOlxPhotos(photos, 'am', code);
-          if (!uploadedPhotos.length) throw new Error('Falha ao subir fotos para o catálogo OLX');
+          // Prepend the designed feed slides (cover + slides do criador de post) so that
+          // the OLX/ZAP/VivaReal listing leads with the creatives, not only raw photos.
+          // imageUrls are already public HTTPS URLs in exported-creatives.
+          const finalPhotos = [...(imageUrls ?? []), ...uploadedPhotos];
+          if (!finalPhotos.length) throw new Error('Falha ao subir fotos para o catálogo OLX');
           const payload = {
             code,
             transaction_type: olxTxType,
@@ -247,7 +251,7 @@ export const AMInstagramPublishDialog = ({
             iptu: data.iptu || 0,
             accepts_financing: data.acceptsFinancing,
             accepts_fgts: data.acceptsFGTS,
-            photos: uploadedPhotos,
+            photos: finalPhotos,
             broker_name: data.brokerName,
             broker_phone: data.brokerPhone,
             creci: data.creci,
