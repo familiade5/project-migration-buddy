@@ -239,8 +239,11 @@ export const VDHInstagramPublishDialog = ({
           const title = `${data.type || 'Imóvel'}${data.bedrooms ? ` ${data.bedrooms} quartos` : ''} - ${data.neighborhood || data.city}`;
           const address = (data.fullAddress || `${data.street || ''} ${data.number || ''}`).trim();
           const { uploadOlxPhotos } = await import('@/lib/olxPhotos');
+          // Os slides desenhados (mesmas imagens postadas no Instagram) são OBRIGATÓRIOS na OLX.
+          if (!imageUrls?.length) {
+            throw new Error('Slides do criador de post indisponíveis para a OLX.');
+          }
           const uploadedPhotos = await uploadOlxPhotos(photos, 'vdh', code);
-          if (!uploadedPhotos.length) throw new Error('Falha ao subir fotos para o catálogo OLX');
           const payload = {
             code,
             transaction_type: olxTxType,
@@ -268,13 +271,9 @@ export const VDHInstagramPublishDialog = ({
             accepts_fgts: data.acceptsFGTS,
             photos: (() => {
               const sobreNosUrl = `${window.location.origin}/vdh-sobre-nos.png`;
-              // Inserir "Sobre nós" como slide 2 (índice 1) apenas no OLX
-              const out = [...uploadedPhotos];
-              if (out.length > 0) {
-                out.splice(1, 0, sobreNosUrl);
-              } else {
-                out.push(sobreNosUrl);
-              }
+              // Ordem OLX: capa desenhada, "sobre nós", demais slides desenhados, depois fotos originais.
+              const [cover, ...rest] = imageUrls;
+              const out = [cover, sobreNosUrl, ...rest, ...uploadedPhotos];
               return out;
             })(),
             broker_name: data.contactName,
