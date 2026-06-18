@@ -131,7 +131,10 @@ export function AMPublishOlxOnlyButton({ data, photos, disabled, prepareSlides }
       setOpen(false);
     } catch (err) {
       const m = err instanceof Error ? err.message : 'Erro desconhecido';
-      toast.error(`Falha ao adicionar ao catálogo: ${m}`);
+      toast.error(`Falha ao adicionar ao catálogo: ${m}`, {
+        duration: 15000,
+        action: { label: 'Tentar novamente', onClick: () => handlePublish() },
+      });
     } finally {
       setIsPublishing(false);
     }

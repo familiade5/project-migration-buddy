@@ -229,65 +229,68 @@ export const VDHInstagramPublishDialog = ({
 
       // Salvar no catálogo OLX se marcado
       if (publishOlx) {
-        try {
-          const parseCurrency = (s: string): number | null => {
-            if (!s) return null;
-            const n = Number(String(s).replace(/[^\d,.-]/g, '').replace(/\./g, '').replace(',', '.'));
-            return Number.isFinite(n) && n > 0 ? n : null;
-          };
-          const code = `VDH-${Date.now().toString(36).toUpperCase()}`;
-          const title = `${data.type || 'Imóvel'}${data.bedrooms ? ` ${data.bedrooms} quartos` : ''} - ${data.neighborhood || data.city}`;
-          const address = (data.fullAddress || `${data.street || ''} ${data.number || ''}`).trim();
-          const { uploadOlxPhotos } = await import('@/lib/olxPhotos');
-          // Os slides desenhados (mesmas imagens postadas no Instagram) são OBRIGATÓRIOS na OLX.
-          if (!imageUrls?.length) {
-            throw new Error('Slides do criador de post indisponíveis para a OLX.');
+        const runOlxPublish = async (): Promise<void> => {
+          try {
+            const parseCurrency = (s: string): number | null => {
+              if (!s) return null;
+              const n = Number(String(s).replace(/[^\d,.-]/g, '').replace(/\./g, '').replace(',', '.'));
+              return Number.isFinite(n) && n > 0 ? n : null;
+            };
+            const code = `VDH-${Date.now().toString(36).toUpperCase()}`;
+            const title = `${data.type || 'Imóvel'}${data.bedrooms ? ` ${data.bedrooms} quartos` : ''} - ${data.neighborhood || data.city}`;
+            const address = (data.fullAddress || `${data.street || ''} ${data.number || ''}`).trim();
+            const { uploadOlxPhotos } = await import('@/lib/olxPhotos');
+            if (!imageUrls?.length) {
+              throw new Error('Slides do criador de post indisponíveis para a OLX.');
+            }
+            const uploadedPhotos = await uploadOlxPhotos(photos, 'vdh', code);
+            const payload = {
+              code,
+              transaction_type: olxTxType,
+              property_type: data.type || 'Casa',
+              title,
+              description: (olxCaption || sanitizeCaptionForOlx(caption)).slice(0, 4000),
+              address,
+              address_number: data.number || null,
+              zip_code: data.cep.replace(/\D/g, ''),
+              neighborhood: data.neighborhood,
+              city: data.city,
+              state: data.state || 'MS',
+              area: parseCurrency(data.area) || null,
+              bedrooms: parseInt(data.bedrooms) || 0,
+              bathrooms: parseInt(data.bathrooms) || 0,
+              suites: 0,
+              garage_spaces: parseInt(data.garageSpaces) || 0,
+              floor: null,
+              furnished: false,
+              sale_price: olxTxType === 'aluguel' ? null : parseCurrency(data.minimumValue),
+              rental_price: olxTxType === 'aluguel' ? parseCurrency(data.minimumValue) : null,
+              condominium_fee: 0,
+              iptu: 0,
+              accepts_financing: data.acceptsFinancing,
+              accepts_fgts: data.acceptsFGTS,
+              photos: (() => {
+                const sobreNosUrl = `${window.location.origin}/vdh-sobre-nos.png`;
+                const [cover, ...rest] = imageUrls;
+                return [cover, sobreNosUrl, ...rest, ...uploadedPhotos];
+              })(),
+              broker_name: data.contactName,
+              broker_phone: data.contactPhone,
+              creci: data.creci,
+              is_active: true,
+            };
+            const { error: olxError } = await supabase.from('vdh_olx_listings').insert(payload);
+            if (olxError) throw olxError;
+            toast.success(`Imóvel adicionado ao catálogo OLX (${code})! A OLX irá sincronizar nas próximas horas.`);
+          } catch (olxErr) {
+            const m = olxErr instanceof Error ? olxErr.message : 'Erro desconhecido';
+            toast.error(`Instagram OK, mas falhou ao adicionar na OLX: ${m}`, {
+              duration: 30000,
+              action: { label: 'Tentar OLX novamente', onClick: () => { void runOlxPublish(); } },
+            });
           }
-          const uploadedPhotos = await uploadOlxPhotos(photos, 'vdh', code);
-          const payload = {
-            code,
-            transaction_type: olxTxType,
-            property_type: data.type || 'Casa',
-            title,
-            description: (olxCaption || sanitizeCaptionForOlx(caption)).slice(0, 4000),
-            address,
-            address_number: data.number || null,
-            zip_code: data.cep.replace(/\D/g, ''),
-            neighborhood: data.neighborhood,
-            city: data.city,
-            state: data.state || 'MS',
-            area: parseCurrency(data.area) || null,
-            bedrooms: parseInt(data.bedrooms) || 0,
-            bathrooms: parseInt(data.bathrooms) || 0,
-            suites: 0,
-            garage_spaces: parseInt(data.garageSpaces) || 0,
-            floor: null,
-            furnished: false,
-            sale_price: olxTxType === 'aluguel' ? null : parseCurrency(data.minimumValue),
-            rental_price: olxTxType === 'aluguel' ? parseCurrency(data.minimumValue) : null,
-            condominium_fee: 0,
-            iptu: 0,
-            accepts_financing: data.acceptsFinancing,
-            accepts_fgts: data.acceptsFGTS,
-            photos: (() => {
-              const sobreNosUrl = `${window.location.origin}/vdh-sobre-nos.png`;
-              // Ordem OLX: capa desenhada, "sobre nós", demais slides desenhados, depois fotos originais.
-              const [cover, ...rest] = imageUrls;
-              const out = [cover, sobreNosUrl, ...rest, ...uploadedPhotos];
-              return out;
-            })(),
-            broker_name: data.contactName,
-            broker_phone: data.contactPhone,
-            creci: data.creci,
-            is_active: true,
-          };
-          const { error: olxError } = await supabase.from('vdh_olx_listings').insert(payload);
-          if (olxError) throw olxError;
-          toast.success(`Imóvel adicionado ao catálogo OLX (${code})! A OLX irá sincronizar nas próximas horas.`);
-        } catch (olxErr) {
-          const m = olxErr instanceof Error ? olxErr.message : 'Erro desconhecido';
-          toast.warning(`Instagram OK, mas falhou ao adicionar na OLX: ${m}`);
-        }
+        };
+        await runOlxPublish();
       }
 
       handleOpenChange(false);

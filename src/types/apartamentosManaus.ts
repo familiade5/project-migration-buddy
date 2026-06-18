@@ -143,7 +143,7 @@ export const defaultAMPropertyData: AMPropertyData = {
   iptu: 0,
   brokerName: 'Iury Sampaio',
   brokerPhone: '(92) 98839-1098',
-  creci: 'CRECI 14851 MS PJ',
+  creci: 'CRECI 3968 AM PF',
   highlights: [],
   infoMessage: '',
 

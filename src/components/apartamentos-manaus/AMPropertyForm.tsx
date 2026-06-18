@@ -301,7 +301,7 @@ export function AMPropertyForm({ data, onChange }: AMPropertyFormProps) {
           </div>
           <div className="col-span-2 space-y-1">
             <Label className={labelClass}>CRECI <span className="text-gray-400 normal-case font-normal">(editável)</span></Label>
-            <Input className={inputClass} placeholder="Ex: CRECI 14851 MS PJ"
+            <Input className={inputClass} placeholder="Ex: CRECI 3968 AM PF"
               value={data.creci} onChange={(e) => set('creci', e.target.value)} />
           </div>
         </div>
