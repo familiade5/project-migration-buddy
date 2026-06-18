@@ -392,6 +392,31 @@ export function AMPostPreview({ data, photos, photoPositions = {}, photoScales =
     }
   };
 
+  // ── OLX publish preparation ───────────────────────────────────────────────
+  // Captures the currently selected feed design (cover + designed slides),
+  // uploads them as JPEG (white background, OLX/ZAP/VivaReal compatible) and
+  // returns the public HTTPS URLs so they can be prepended to the original
+  // photos in the Canal Pro listing.
+  const prepareOlxSlides = async (): Promise<string[]> => {
+    if (!user) throw new Error('Você precisa estar logado para publicar.');
+    setIsExporting(true);
+    try {
+      const publicationId = `am-olx-${crypto.randomUUID()}`;
+      const urls: string[] = [];
+      for (let i = 0; i < feedSlides.length; i++) {
+        const ref = feedRefs[i];
+        const dataUrl = await captureRef(ref);
+        if (!dataUrl) continue;
+        // asJpeg=true → JPEG with white background, safest for portal crawlers
+        const publicUrl = await uploadExportedImage(dataUrl, user.id, publicationId, i, 'olx-feed', true);
+        urls.push(publicUrl);
+      }
+      return urls;
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
   return (
     <div ref={containerRef} className="space-y-3 w-full overflow-hidden">
       {/* ── Header + Format selector ── */}
@@ -460,6 +485,7 @@ export function AMPostPreview({ data, photos, photoPositions = {}, photoScales =
         data={data}
         photos={photos}
         disabled={isExporting || photos.length === 0}
+        prepareSlides={prepareOlxSlides}
       />
 
       {/* ── Slide name pills ── */}
