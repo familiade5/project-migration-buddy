@@ -43,6 +43,10 @@ export default function LandingPage() {
 
   useEffect(() => {
     if (!slug) return;
+    // Ensure landing page always renders in light theme (even when embedded in editor iframe)
+    document.documentElement.classList.remove('dark');
+    document.documentElement.style.background = '#ffffff';
+    document.body.style.background = '#ffffff';
     (async () => {
       const { data, error } = await supabase
         .from('am_landing_pages')
