@@ -100,7 +100,8 @@ export default function LandingPage() {
       // Fetch nearby places
       const d: any = data.data || {};
       const address = [d.address, d.neighborhood, d.city, d.state].filter(Boolean).join(', ');
-      if (address) {
+      const hasCustomNearby = Array.isArray((data as any)?.copy?.nearby) && (data as any).copy.nearby.length > 0;
+      if (address && !hasCustomNearby) {
         supabase.functions.invoke('nearby-places', { body: { address } })
           .then(({ data: n }) => n && setNearby(n as any))
           .catch(() => {});
