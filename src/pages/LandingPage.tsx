@@ -452,15 +452,32 @@ export default function LandingPage() {
       {/* LOCALIZAÇÃO */}
       {mapSrc && (
         <section className="max-w-6xl mx-auto px-6 sm:px-10 mt-16">
-          <h2 className="text-3xl sm:text-4xl font-black text-slate-900 mb-2">Localização</h2>
+          <div className="flex items-center gap-2 mb-2">
+            <span className="inline-flex items-center gap-1 text-xs font-bold px-2.5 py-1 rounded-full text-white" style={{ backgroundColor: accent }}>
+              <MapPin className="w-3 h-3" /> Localização do imóvel
+            </span>
+          </div>
+          <h2 className="text-3xl sm:text-4xl font-black text-slate-900 mb-2">Onde fica este imóvel</h2>
           <p className="text-slate-600 flex items-center gap-2 mb-6"><MapPin className="w-4 h-4" style={{ color: accent }} />{address}</p>
-          <div className="rounded-3xl overflow-hidden shadow-lg border border-slate-100 aspect-[16/10]">
-            <iframe src={mapSrc} className="w-full h-full border-0" loading="lazy" title="Mapa" />
+          <div className="relative rounded-3xl overflow-hidden shadow-lg border border-slate-100 aspect-[16/10]">
+            <iframe src={mapSrc} className="w-full h-full border-0" loading="lazy" title={`Mapa — ${address}`} />
+            {/* Chip identificando que o pin é o imóvel */}
+            <div className="absolute top-4 left-4 bg-white/95 backdrop-blur px-3 py-2 rounded-xl shadow-md border border-slate-100 flex items-center gap-2 pointer-events-none">
+              <span className="w-2.5 h-2.5 rounded-full animate-pulse" style={{ backgroundColor: accent }} />
+              <span className="text-xs font-bold text-slate-800">📍 O imóvel anunciado está aqui</span>
+            </div>
+            {mapOpenUrl && (
+              <a href={mapOpenUrl} target="_blank" rel="noopener noreferrer"
+                className="absolute bottom-4 right-4 bg-white text-slate-900 text-xs font-bold px-3 py-2 rounded-xl shadow-md border border-slate-100 hover:bg-slate-50 flex items-center gap-1">
+                <MapPin className="w-3.5 h-3.5" style={{ color: accent }} /> Abrir no Google Maps
+              </a>
+            )}
           </div>
 
           {nearbyCategories.length > 0 && (
             <div className="mt-8">
-              <h3 className="text-xl font-bold text-slate-900 mb-4">O que tem por perto</h3>
+              <h3 className="text-xl font-bold text-slate-900 mb-1">O que tem por perto</h3>
+              <p className="text-sm text-slate-500 mb-4">Comércios, serviços e pontos de interesse na região do imóvel.</p>
               <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {nearbyCategories.map((cat) => (
                   <div key={cat.key} className="p-5 rounded-2xl bg-white border border-slate-100 shadow-sm">
