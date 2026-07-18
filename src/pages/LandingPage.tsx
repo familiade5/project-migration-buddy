@@ -151,7 +151,13 @@ export default function LandingPage() {
   const mapSrc = address
     ? `https://maps.google.com/maps?q=${encodeURIComponent(address)}&output=embed`
     : null;
-  const nearbyCategories = Array.isArray(nearby?.categories) ? nearby.categories : [];
+  const mapOpenUrl = address
+    ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`
+    : null;
+  const customNearby: NearbyCategory[] = Array.isArray((copy as any)?.nearby) ? (copy as any).nearby : [];
+  const nearbyCategories: NearbyCategory[] = customNearby.length > 0
+    ? customNearby.filter((c) => c && c.label && Array.isArray(c.items) && c.items.length > 0)
+    : (Array.isArray(nearby?.categories) ? nearby.categories : []);
   const videoEmbed = getVideoEmbed(copy?.videoUrl);
   const isMp4 = copy?.videoUrl && /\.mp4($|\?)/i.test(copy.videoUrl);
   const fin = copy?.financing;
