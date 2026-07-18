@@ -4,7 +4,7 @@ import { supabase } from '@/integrations/supabase/client';
 import {
   MapPin, Bed, Bath, Maximize, Car, Star, MessageCircle,
   Phone, ChevronLeft, ChevronRight, Loader2, Home as HomeIcon, Sparkles,
-  Wallet, CheckCircle2, PlayCircle, HelpCircle,
+  Wallet, CheckCircle2, PlayCircle, HelpCircle, ShieldCheck, Quote,
 } from 'lucide-react';
 import amLogo from '@/assets/logo-apartamentos-manaus.png';
 import { Instagram, Facebook } from 'lucide-react';
@@ -23,6 +23,13 @@ interface LandingRow {
     ctaText?: string;
     videoUrl?: string;
     faq?: { q: string; a: string }[];
+    whyUs?: { title: string; desc: string }[];
+    reviews?: {
+      googleUrl?: string;
+      rating?: number;
+      count?: number;
+      items?: { name: string; rating?: number; text: string }[];
+    };
     financing?: {
       minIncome?: string;
       downPayment?: string;
@@ -142,6 +149,9 @@ export default function LandingPage() {
   const fin = copy?.financing;
   const hasFinancing = !!(fin && (fin.minIncome || fin.downPayment || fin.acceptsFgts || fin.mcmv || fin.notes));
   const faq = Array.isArray(copy?.faq) ? copy!.faq!.filter((f) => f?.q && f?.a) : [];
+  const whyUs = Array.isArray(copy?.whyUs) ? copy!.whyUs!.filter((w) => w?.title || w?.desc) : [];
+  const reviews = copy?.reviews || {};
+  const reviewItems = Array.isArray(reviews.items) ? reviews.items.filter((r) => r?.name && r?.text) : [];
   const formatMoneyMaybe = (v?: string) => {
     if (!v) return '';
     const n = Number(String(v).replace(/[^\d]/g, ''));
