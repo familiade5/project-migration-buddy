@@ -85,6 +85,7 @@ export default function AMLandingEditor() {
   const [whatsappMsg, setWhatsappMsg] = useState('');
   const [generating, setGenerating] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [fetchingNearby, setFetchingNearby] = useState(false);
 
   const previewSlug = useMemo(
     () => slug || makeLandingSlug({ propertyName: data.propertyName, neighborhood: data.neighborhood, code }),
@@ -148,6 +149,30 @@ export default function AMLandingEditor() {
     } catch (e: any) {
       toast({ title: 'Erro ao gerar texto', description: e.message, variant: 'destructive' });
     } finally { setGenerating(false); }
+  };
+
+  const fetchNearby = async () => {
+    const address = [data.address, data.neighborhood, data.city, data.state].filter(Boolean).join(', ');
+    if (!address) {
+      toast({ title: 'Preencha o endereço primeiro', variant: 'destructive' });
+      return;
+    }
+    setFetchingNearby(true);
+    try {
+      const { data: resp, error } = await supabase.functions.invoke('nearby-places', { body: { address } });
+      if (error) throw error;
+      const cats = Array.isArray((resp as any)?.categories) ? (resp as any).categories : [];
+      const nearby = cats.map((c: any) => ({
+        key: c.key,
+        label: c.label,
+        icon: c.icon,
+        items: (Array.isArray(c.items) ? c.items : []).map((it: any) => ({ name: it.name, vicinity: it.vicinity })),
+      }));
+      setCopy({ ...copy, nearby });
+      toast({ title: `${nearby.length} categorias encontradas!`, description: 'Você pode editar os locais abaixo.' });
+    } catch (e: any) {
+      toast({ title: 'Erro ao buscar locais', description: e.message, variant: 'destructive' });
+    } finally { setFetchingNearby(false); }
   };
 
   const save = async (publish = true) => {
