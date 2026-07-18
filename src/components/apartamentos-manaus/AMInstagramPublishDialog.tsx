@@ -494,6 +494,18 @@ export const AMInstagramPublishDialog = ({
                   </div>
                 </div>
               )}
+
+              {publishLanding && (
+                <div className="rounded-xl p-4 space-y-2" style={{ backgroundColor: '#ecfeff', border: '1px solid #a5f3fc' }}>
+                  <div className="flex items-center gap-2 text-sm font-semibold" style={{ color: '#155e75' }}>
+                    <Globe className="w-4 h-4" />
+                    Também será criada uma Landing Page pública do imóvel
+                  </div>
+                  <p className="text-xs" style={{ color: '#155e75' }}>
+                    A página usará as fotos e dados atuais e ficará disponível em <strong>postgen.fixaapp.com.br/imovel/…</strong>. Você pode editar os textos depois em <strong>Landing Pages</strong>.
+                  </p>
+                </div>
+              )}
             </div>
           )}
 
