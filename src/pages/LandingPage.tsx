@@ -4,6 +4,7 @@ import { supabase } from '@/integrations/supabase/client';
 import {
   MapPin, Bed, Bath, Maximize, Car, Star, MessageCircle,
   Phone, ChevronLeft, ChevronRight, Loader2, Home as HomeIcon, Sparkles,
+  Wallet, CheckCircle2, PlayCircle, HelpCircle,
 } from 'lucide-react';
 
 interface LandingRow {
@@ -18,6 +19,15 @@ interface LandingRow {
     description?: string;
     benefits?: string[];
     ctaText?: string;
+    videoUrl?: string;
+    faq?: { q: string; a: string }[];
+    financing?: {
+      minIncome?: string;
+      downPayment?: string;
+      acceptsFgts?: boolean;
+      mcmv?: boolean;
+      notes?: string;
+    };
   };
   sections: string[];
   accent_color: string;
@@ -32,6 +42,16 @@ interface NearbyResp {
 
 const formatBRL = (n: number) =>
   n?.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 0 }) || 'Consulte';
+
+function getVideoEmbed(url?: string): string | null {
+  if (!url) return null;
+  const u = url.trim();
+  const yt = u.match(/(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([A-Za-z0-9_-]{6,})/);
+  if (yt) return `https://www.youtube.com/embed/${yt[1]}`;
+  const vm = u.match(/vimeo\.com\/(\d+)/);
+  if (vm) return `https://player.vimeo.com/video/${vm[1]}`;
+  return null;
+}
 
 export default function LandingPage() {
   const { slug } = useParams<{ slug: string }>();
