@@ -58,7 +58,8 @@ export default function LandingPage() {
       supabase.rpc('increment_landing_metric' as any, { _slug: slug, _metric: 'view' }).then(() => {});
 
       // Fetch nearby places
-      const address = [data.data?.address, data.data?.neighborhood, data.data?.city, data.data?.state].filter(Boolean).join(', ');
+      const d: any = data.data || {};
+      const address = [d.address, d.neighborhood, d.city, d.state].filter(Boolean).join(', ');
       if (address) {
         supabase.functions.invoke('nearby-places', { body: { address } })
           .then(({ data: n }) => n && setNearby(n as any))
