@@ -141,7 +141,7 @@ export default function LandingPage() {
   const address = [data?.address, data?.neighborhood, data?.city, data?.state].filter(Boolean).join(', ');
 
   const whatsappMsg = row.whatsapp_message || `Olá ${broker?.name || ''}! Tenho interesse no imóvel ${data?.propertyName || ''} (cód. ${row.code}). Poderia me passar mais informações?`;
-  const waPhone = (broker?.phone || '').replace(/\D/g, '');
+  const waPhone = ((broker?.phone || '').replace(/\D/g, '')) || '9282222929';
   const waUrl = `https://wa.me/55${waPhone}?text=${encodeURIComponent(whatsappMsg)}`;
 
   const trackWhats = () => {

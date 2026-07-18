@@ -78,7 +78,7 @@ export default function AMLandingEditor() {
   const [copy, setCopy] = useState<any>({ benefits: [] });
   const [broker, setBroker] = useState<any>({
     name: 'Iury Sampaio',
-    phone: '(92) 98839-1098',
+    phone: '(92) 8222-2929',
     creci: 'CRECI 3968 AM PF',
   });
   const [accent, setAccent] = useState('#1B5EA6');
