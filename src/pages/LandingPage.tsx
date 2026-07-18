@@ -454,7 +454,7 @@ export default function LandingPage() {
                 className="w-10 h-10 rounded-full bg-white border border-slate-200 flex items-center justify-center hover:bg-slate-100" style={{ color: accent }}>
                 <Instagram className="w-5 h-5" />
               </a>
-              <a href="https://www.facebook.com/apartamentosmanaus" target="_blank" rel="noopener noreferrer"
+              <a href="https://www.facebook.com/ApartamentosManaus" target="_blank" rel="noopener noreferrer"
                 className="w-10 h-10 rounded-full bg-white border border-slate-200 flex items-center justify-center hover:bg-slate-100" style={{ color: accent }}>
                 <Facebook className="w-5 h-5" />
               </a>
