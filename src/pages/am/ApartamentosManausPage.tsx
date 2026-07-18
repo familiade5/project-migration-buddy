@@ -6,7 +6,7 @@ import { AMPropertyForm } from '@/components/apartamentos-manaus/AMPropertyForm'
 import { AMCaptionGenerator } from '@/components/apartamentos-manaus/AMCaptionGenerator';
 import { AMPhotoManager } from '@/components/apartamentos-manaus/AMPhotoManager';
 import { AMLayout } from '@/components/layout/AMLayout';
-import { Image, Edit3, Sparkles, FileText, LayoutGrid, Smartphone, Tag } from 'lucide-react';
+import { Image, Edit3, Sparkles, FileText, LayoutGrid, Smartphone, Tag, Globe } from 'lucide-react';
 import { Label } from '@/components/ui/label';
 
 const ApartamentosManausPage = () => {
@@ -16,6 +16,7 @@ const ApartamentosManausPage = () => {
   const [photoScales, setPhotoScales] = useState<Record<number, number>>({});
   const [previewTab, setPreviewTab] = useState<'feed' | 'stories'>('feed');
   const [publishOlx, setPublishOlx] = useState(true);
+  const [publishLanding, setPublishLanding] = useState(true);
   const [olxTxType, setOlxTxType] = useState<'venda' | 'aluguel' | 'lancamento'>(
     defaultAMPropertyData.isRental ? 'aluguel' : 'venda'
   );
@@ -95,6 +96,41 @@ const ApartamentosManausPage = () => {
                   </div>
                 </div>
               )}
+            </div>
+
+            {/* Landing page publish option */}
+            <div className="rounded-2xl p-4 sm:p-5 space-y-3 shadow-sm" style={{ backgroundColor: '#ecfeff', border: '1px solid #a5f3fc' }}>
+              <div className="flex items-center gap-2">
+                <Globe className="w-4 h-4 flex-shrink-0" style={{ color: '#155e75' }} />
+                <p className="text-sm font-semibold" style={{ color: '#155e75' }}>
+                  Criar também uma Landing Page do imóvel?
+                </p>
+              </div>
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => setPublishLanding(true)}
+                  className="flex-1 py-2 rounded-lg text-sm font-semibold transition-all"
+                  style={publishLanding
+                    ? { backgroundColor: '#0891b2', color: 'white' }
+                    : { backgroundColor: 'white', color: '#155e75', border: '1px solid #a5f3fc' }}
+                >
+                  Sim
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setPublishLanding(false)}
+                  className="flex-1 py-2 rounded-lg text-sm font-semibold transition-all"
+                  style={!publishLanding
+                    ? { backgroundColor: '#1B5EA6', color: 'white' }
+                    : { backgroundColor: 'white', color: '#155e75', border: '1px solid #a5f3fc' }}
+                >
+                  Não
+                </button>
+              </div>
+              <p className="text-xs" style={{ color: '#155e75' }}>
+                Uma página pública será gerada com todas as fotos e dados do imóvel, pronta para compartilhar via WhatsApp com um link curto.
+              </p>
             </div>
 
             {/* Photos */}
@@ -198,6 +234,8 @@ const ApartamentosManausPage = () => {
                     onPublishOlxChange={setPublishOlx}
                     olxTxType={olxTxType}
                     onOlxTxTypeChange={setOlxTxType}
+                    publishLanding={publishLanding}
+                    onPublishLandingChange={setPublishLanding}
                   />
                 ) : (
                   <AMStoriesPreview data={propertyData} photos={photos} />
