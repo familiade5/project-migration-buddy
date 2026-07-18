@@ -472,6 +472,86 @@ export default function AMLandingEditor() {
             </details>
 
             <details className="border rounded-xl p-3">
+              <summary className="font-semibold text-sm cursor-pointer">📍 Locais próximos (mapa)</summary>
+              <div className="mt-3 space-y-3">
+                <div className="flex flex-wrap items-center gap-2">
+                  <Button size="sm" onClick={fetchNearby} disabled={fetchingNearby}
+                    style={{ backgroundColor: '#1B5EA6', color: '#fff' }} className="hover:opacity-90">
+                    {fetchingNearby ? <Loader2 className="w-4 h-4 mr-1 animate-spin" /> : <MapPin className="w-4 h-4 mr-1" />}
+                    Buscar automaticamente
+                  </Button>
+                  <Button size="sm" variant="outline"
+                    onClick={() => setCopy({ ...copy, nearby: DEFAULT_NEARBY_TEMPLATE })}
+                    className="!bg-white !text-gray-900 !border-gray-300 hover:!bg-gray-50">
+                    <Plus className="w-3.5 h-3.5 mr-1" />Categorias em branco
+                  </Button>
+                  {Array.isArray(copy.nearby) && copy.nearby.length > 0 && (
+                    <Button size="sm" variant="outline"
+                      onClick={() => setCopy({ ...copy, nearby: [] })}
+                      className="!bg-white !text-red-600 !border-red-200 hover:!bg-red-50">
+                      <Trash2 className="w-3.5 h-3.5 mr-1" />Limpar
+                    </Button>
+                  )}
+                </div>
+                <p className="text-xs text-gray-500">
+                  Busca automática usa Google Places a partir do endereço. Tudo pode ser editado, adicionado ou removido.
+                </p>
+
+                {(!copy.nearby || copy.nearby.length === 0) && (
+                  <p className="text-xs text-gray-400 italic">Nenhuma categoria personalizada. Clique em "Buscar automaticamente" ou "Categorias em branco".</p>
+                )}
+
+                {Array.isArray(copy.nearby) && copy.nearby.map((cat: any, ci: number) => (
+                  <div key={ci} className="border border-gray-200 rounded-lg p-3 space-y-2 bg-gray-50">
+                    <div className="grid grid-cols-[60px_1fr_auto] gap-2 items-center">
+                      <Input value={cat.icon || ''} placeholder="🛒" onChange={(e) => {
+                        const next = [...copy.nearby]; next[ci] = { ...next[ci], icon: e.target.value };
+                        setCopy({ ...copy, nearby: next });
+                      }} />
+                      <Input value={cat.label || ''} placeholder="Nome da categoria" onChange={(e) => {
+                        const next = [...copy.nearby]; next[ci] = { ...next[ci], label: e.target.value };
+                        setCopy({ ...copy, nearby: next });
+                      }} />
+                      <button onClick={() => setCopy({ ...copy, nearby: copy.nearby.filter((_: any, k: number) => k !== ci) })}
+                        className="text-red-500 hover:text-red-700 px-2"><X className="w-4 h-4" /></button>
+                    </div>
+                    <div className="space-y-1.5">
+                      {(cat.items || []).map((it: any, ii: number) => (
+                        <div key={ii} className="flex gap-2 items-center">
+                          <Input value={it.name || ''} placeholder="Nome do local" onChange={(e) => {
+                            const next = [...copy.nearby]; const items = [...(next[ci].items || [])];
+                            items[ii] = { ...items[ii], name: e.target.value };
+                            next[ci] = { ...next[ci], items }; setCopy({ ...copy, nearby: next });
+                          }} />
+                          <button onClick={() => {
+                            const next = [...copy.nearby];
+                            next[ci] = { ...next[ci], items: (next[ci].items || []).filter((_: any, k: number) => k !== ii) };
+                            setCopy({ ...copy, nearby: next });
+                          }} className="text-red-400 hover:text-red-600"><X className="w-3.5 h-3.5" /></button>
+                        </div>
+                      ))}
+                      <Button size="sm" variant="outline" onClick={() => {
+                        const next = [...copy.nearby];
+                        next[ci] = { ...next[ci], items: [...(next[ci].items || []), { name: '' }] };
+                        setCopy({ ...copy, nearby: next });
+                      }} className="!bg-white !text-gray-900 !border-gray-300 hover:!bg-gray-50 text-xs">
+                        <Plus className="w-3 h-3 mr-1" />Adicionar local
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+
+                {Array.isArray(copy.nearby) && (
+                  <Button size="sm" variant="outline"
+                    onClick={() => setCopy({ ...copy, nearby: [...copy.nearby, { icon: '📍', label: 'Nova categoria', items: [] }] })}
+                    className="!bg-white !text-gray-900 !border-gray-300 hover:!bg-gray-50">
+                    <Plus className="w-3.5 h-3.5 mr-1" />Adicionar categoria
+                  </Button>
+                )}
+              </div>
+            </details>
+
+            <details className="border rounded-xl p-3">
               <summary className="font-semibold text-sm cursor-pointer">👤 Corretor & CTA (contato)</summary>
               <div className="grid grid-cols-2 gap-3 mt-3">
                 <Field label="Nome" v={broker.name} on={(v) => setBroker({ ...broker, name: v })} />
