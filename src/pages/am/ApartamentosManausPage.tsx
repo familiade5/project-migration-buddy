@@ -16,7 +16,7 @@ const ApartamentosManausPage = () => {
   const [photoScales, setPhotoScales] = useState<Record<number, number>>({});
   const [previewTab, setPreviewTab] = useState<'feed' | 'stories'>('feed');
   const [publishOlx, setPublishOlx] = useState(true);
-  const [publishLanding, setPublishLanding] = useState(true);
+  const [publishLanding, setPublishLanding] = useState(false);
   const [olxTxType, setOlxTxType] = useState<'venda' | 'aluguel' | 'lancamento'>(
     defaultAMPropertyData.isRental ? 'aluguel' : 'venda'
   );
