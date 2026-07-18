@@ -161,6 +161,63 @@ export type Database = {
         }
         Relationships: []
       }
+      am_landing_pages: {
+        Row: {
+          accent_color: string
+          broker: Json
+          code: string
+          copy: Json
+          created_at: string
+          created_by: string | null
+          data: Json
+          id: string
+          is_active: boolean
+          photos: Json
+          sections: Json
+          slug: string
+          updated_at: string
+          view_count: number
+          whatsapp_click_count: number
+          whatsapp_message: string | null
+        }
+        Insert: {
+          accent_color?: string
+          broker?: Json
+          code: string
+          copy?: Json
+          created_at?: string
+          created_by?: string | null
+          data?: Json
+          id?: string
+          is_active?: boolean
+          photos?: Json
+          sections?: Json
+          slug: string
+          updated_at?: string
+          view_count?: number
+          whatsapp_click_count?: number
+          whatsapp_message?: string | null
+        }
+        Update: {
+          accent_color?: string
+          broker?: Json
+          code?: string
+          copy?: Json
+          created_at?: string
+          created_by?: string | null
+          data?: Json
+          id?: string
+          is_active?: boolean
+          photos?: Json
+          sections?: Json
+          slug?: string
+          updated_at?: string
+          view_count?: number
+          whatsapp_click_count?: number
+          whatsapp_message?: string | null
+        }
+        Relationships: []
+      }
       am_olx_listings: {
         Row: {
           accepts_fgts: boolean | null
@@ -2541,6 +2598,10 @@ export type Database = {
         Returns: boolean
       }
       has_vdh_inbox_access: { Args: { _user_id: string }; Returns: boolean }
+      increment_landing_metric: {
+        Args: { _metric: string; _slug: string }
+        Returns: undefined
+      }
       log_user_activity: {
         Args: {
           p_action: string

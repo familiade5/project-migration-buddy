@@ -26,6 +26,7 @@ import AFOlxCatalog from "./pages/af/AFOlxCatalog";
 import VDHOlxCatalog from "./pages/VDHOlxCatalog";
 import TrafegoPago from "./pages/TrafegoPago";
 import AutoPostApproval from "./pages/AutoPostApproval";
+import LandingPage from "./pages/LandingPage";
 
 
 const queryClient = new QueryClient();
@@ -110,6 +111,8 @@ const App = () => (
             <Route path="/aprovacao-posts" element={
               <ProtectedRoute requireAdmin><AutoPostApproval /></ProtectedRoute>
             } />
+            {/* Landing pages públicas (sem auth) */}
+            <Route path="/imovel/:slug" element={<LandingPage />} />
             
             <Route path="*" element={<NotFound />} />
           </Routes>
