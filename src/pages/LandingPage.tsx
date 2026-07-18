@@ -49,6 +49,13 @@ interface NearbyResp {
   categories: { key: string; label: string; icon: string; items: { name: string; vicinity: string; rating: number | null }[] }[];
 }
 
+interface NearbyCategory {
+  key?: string;
+  label: string;
+  icon: string;
+  items: { name: string; vicinity?: string }[];
+}
+
 const formatBRL = (n: number) =>
   n?.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 0 }) || 'Consulte';
 
