@@ -479,8 +479,8 @@ export default function LandingPage() {
               <h3 className="text-xl font-bold text-slate-900 mb-1">O que tem por perto</h3>
               <p className="text-sm text-slate-500 mb-4">Comércios, serviços e pontos de interesse na região do imóvel.</p>
               <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                {nearbyCategories.map((cat) => (
-                  <div key={cat.key} className="p-5 rounded-2xl bg-white border border-slate-100 shadow-sm">
+                {nearbyCategories.map((cat, ci) => (
+                  <div key={cat.key || `${cat.label}-${ci}`} className="p-5 rounded-2xl bg-white border border-slate-100 shadow-sm">
                     <div className="flex items-center gap-2 mb-3 font-bold text-slate-800">
                       <span className="text-xl">{cat.icon}</span>{cat.label}
                     </div>
