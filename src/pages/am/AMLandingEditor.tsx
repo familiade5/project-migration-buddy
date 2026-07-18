@@ -147,7 +147,7 @@ export default function AMLandingEditor() {
 
   return (
     <AMLayout>
-      <div className="p-4 sm:p-6 lg:p-8 max-w-[1600px] mx-auto">
+      <div className="p-4 sm:p-6 lg:p-8 max-w-[1600px] mx-auto [&_summary]:text-gray-900 [&_label]:text-gray-700 [&_input]:!bg-white [&_input]:!text-gray-900 [&_textarea]:!bg-white [&_textarea]:!text-gray-900 [&_details]:!border-gray-200 [&_details]:!bg-white">
         <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
             <h1 className="text-2xl font-bold text-gray-900">Landing Pages de Imóveis</h1>
