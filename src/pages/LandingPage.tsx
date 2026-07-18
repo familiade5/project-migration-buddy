@@ -114,6 +114,7 @@ export default function LandingPage() {
   const mapSrc = address
     ? `https://maps.google.com/maps?q=${encodeURIComponent(address)}&output=embed`
     : null;
+  const nearbyCategories = Array.isArray(nearby?.categories) ? nearby.categories : [];
 
   return (
     <div className="min-h-screen bg-white pb-24" style={{ fontFamily: 'Golos Text, system-ui, sans-serif' }}>
@@ -240,17 +241,17 @@ export default function LandingPage() {
             <iframe src={mapSrc} className="w-full h-full border-0" loading="lazy" title="Mapa" />
           </div>
 
-          {nearby && nearby.categories.length > 0 && (
+          {nearbyCategories.length > 0 && (
             <div className="mt-8">
               <h3 className="text-xl font-bold text-slate-900 mb-4">O que tem por perto</h3>
               <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                {nearby.categories.map((cat) => (
+                {nearbyCategories.map((cat) => (
                   <div key={cat.key} className="p-5 rounded-2xl bg-white border border-slate-100 shadow-sm">
                     <div className="flex items-center gap-2 mb-3 font-bold text-slate-800">
                       <span className="text-xl">{cat.icon}</span>{cat.label}
                     </div>
                     <ul className="space-y-1.5 text-sm text-slate-600">
-                      {cat.items.map((it, i) => (
+                      {(Array.isArray(cat.items) ? cat.items : []).map((it, i) => (
                         <li key={i} className="flex items-start gap-2">
                           <span className="w-1 h-1 rounded-full mt-2 flex-shrink-0" style={{ backgroundColor: accent }} />
                           <span>{it.name}</span>
