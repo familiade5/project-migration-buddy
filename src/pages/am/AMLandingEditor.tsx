@@ -4,7 +4,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { makeLandingSlug } from '@/lib/landingSlug';
 import { toast } from '@/hooks/use-toast';
-import { Sparkles, Save, ExternalLink, Loader2, Plus, X, Trash2, RefreshCw, Copy } from 'lucide-react';
+import { Sparkles, Save, ExternalLink, Loader2, Plus, X, Trash2, RefreshCw, Copy, MapPin } from 'lucide-react';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -39,6 +39,15 @@ const DEFAULT_REVIEWS = {
     { name: 'Ernandes Santos', rating: 5, text: 'Recomendo demais!' },
   ],
 };
+
+const DEFAULT_NEARBY_TEMPLATE = [
+  { key: 'supermarket', label: 'Supermercados', icon: '🛒', items: [] as { name: string; vicinity?: string }[] },
+  { key: 'school', label: 'Escolas', icon: '🎓', items: [] },
+  { key: 'hospital', label: 'Hospitais', icon: '🏥', items: [] },
+  { key: 'shopping_mall', label: 'Shoppings', icon: '🛍️', items: [] },
+  { key: 'pharmacy', label: 'Farmácias', icon: '💊', items: [] },
+  { key: 'restaurant', label: 'Restaurantes', icon: '🍽️', items: [] },
+];
 
 const DEFAULT_DATA = {
   propertyName: '',
