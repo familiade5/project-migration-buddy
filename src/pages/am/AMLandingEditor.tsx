@@ -153,7 +153,12 @@ export default function AMLandingEditor() {
     loadList();
   };
 
-  const publicUrl = `${window.location.origin}/imovel/${previewSlug}`;
+  // Sempre usar o domínio público oficial para links compartilháveis,
+  // nunca expor URLs de preview/lovable.app
+  const PUBLIC_DOMAIN = 'https://postgen.fixaapp.com.br';
+  const publicUrl = `${PUBLIC_DOMAIN}/imovel/${previewSlug}`;
+  // Preview interno usa origem atual (para funcionar dentro do iframe do editor)
+  const previewUrl = `${window.location.origin}/imovel/${previewSlug}`;
 
   return (
     <AMLayout>
@@ -372,7 +377,7 @@ export default function AMLandingEditor() {
               )}
             </div>
             {editingId ? (
-              <iframe id="landing-preview" src={publicUrl} className="w-full flex-1" title="Preview" />
+              <iframe id="landing-preview" src={previewUrl} className="w-full flex-1" title="Preview" />
             ) : (
               <div className="flex-1 flex items-center justify-center text-center p-8 text-gray-400">
                 Salve a landing para visualizar o preview ao vivo
