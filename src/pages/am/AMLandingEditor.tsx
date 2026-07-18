@@ -153,7 +153,12 @@ export default function AMLandingEditor() {
     loadList();
   };
 
-  const publicUrl = `${window.location.origin}/imovel/${previewSlug}`;
+  // Sempre usar o domínio público oficial para links compartilháveis,
+  // nunca expor URLs de preview/lovable.app
+  const PUBLIC_DOMAIN = 'https://postgen.fixaapp.com.br';
+  const publicUrl = `${PUBLIC_DOMAIN}/imovel/${previewSlug}`;
+  // Preview interno usa origem atual (para funcionar dentro do iframe do editor)
+  const previewUrl = `${window.location.origin}/imovel/${previewSlug}`;
 
   return (
     <AMLayout>
