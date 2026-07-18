@@ -357,6 +357,88 @@ export default function AMLandingEditor() {
 
             <details className="border rounded-xl p-3">
               <summary className="font-semibold text-sm cursor-pointer">👤 Corretor & CTA</summary>
+            </details>
+
+            <details className="border rounded-xl p-3">
+              <summary className="font-semibold text-sm cursor-pointer">🤝 Por que comprar/vender conosco</summary>
+              <div className="mt-3 space-y-3">
+                {(copy.whyUs || DEFAULT_WHY_US).map((item: any, i: number) => (
+                  <div key={i} className="border border-gray-200 rounded-lg p-3 space-y-2 bg-gray-50">
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="text-xs font-semibold text-gray-500">Motivo {i + 1}</span>
+                      <button onClick={() => setCopy({ ...copy, whyUs: (copy.whyUs || DEFAULT_WHY_US).filter((_: any, k: number) => k !== i) })}
+                        className="text-red-500 hover:text-red-700"><X className="w-3.5 h-3.5" /></button>
+                    </div>
+                    <Input value={item.title} placeholder="Título (ex: Credenciados da Caixa)" onChange={(e) => {
+                      const next = [...(copy.whyUs || DEFAULT_WHY_US)]; next[i] = { ...next[i], title: e.target.value };
+                      setCopy({ ...copy, whyUs: next });
+                    }} />
+                    <Textarea rows={2} value={item.desc} placeholder="Descrição" onChange={(e) => {
+                      const next = [...(copy.whyUs || DEFAULT_WHY_US)]; next[i] = { ...next[i], desc: e.target.value };
+                      setCopy({ ...copy, whyUs: next });
+                    }} />
+                  </div>
+                ))}
+                <div className="flex gap-2">
+                  <Button size="sm" variant="outline" onClick={() => setCopy({ ...copy, whyUs: [...(copy.whyUs || DEFAULT_WHY_US), { title: '', desc: '' }] })}
+                    className="!bg-white !text-gray-900 !border-gray-300 hover:!bg-gray-50"><Plus className="w-3.5 h-3.5 mr-1" />Adicionar motivo</Button>
+                  <Button size="sm" variant="outline" onClick={() => setCopy({ ...copy, whyUs: DEFAULT_WHY_US })}
+                    className="!bg-white !text-gray-900 !border-gray-300 hover:!bg-gray-50"><RefreshCw className="w-3.5 h-3.5 mr-1" />Restaurar padrão</Button>
+                </div>
+              </div>
+            </details>
+
+            <details className="border rounded-xl p-3">
+              <summary className="font-semibold text-sm cursor-pointer">⭐ Avaliações Google</summary>
+              <div className="mt-3 space-y-3">
+                <div className="grid grid-cols-3 gap-2">
+                  <div>
+                    <Label className="text-xs">Nota</Label>
+                    <Input type="number" step="0.1" value={copy.reviews?.rating ?? 5} onChange={(e) => setCopy({ ...copy, reviews: { ...(copy.reviews || DEFAULT_REVIEWS), rating: parseFloat(e.target.value) || 0 } })} />
+                  </div>
+                  <div>
+                    <Label className="text-xs">Total de avaliações</Label>
+                    <Input type="number" value={copy.reviews?.count ?? 0} onChange={(e) => setCopy({ ...copy, reviews: { ...(copy.reviews || DEFAULT_REVIEWS), count: parseInt(e.target.value) || 0 } })} />
+                  </div>
+                  <div className="col-span-3">
+                    <Label className="text-xs">Link Google (ver todas)</Label>
+                    <Input value={copy.reviews?.googleUrl || ''} onChange={(e) => setCopy({ ...copy, reviews: { ...(copy.reviews || DEFAULT_REVIEWS), googleUrl: e.target.value } })} />
+                  </div>
+                </div>
+                {(copy.reviews?.items || DEFAULT_REVIEWS.items).map((r: any, i: number) => (
+                  <div key={i} className="border border-gray-200 rounded-lg p-3 space-y-2 bg-gray-50">
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="text-xs font-semibold text-gray-500">Avaliação {i + 1}</span>
+                      <button onClick={() => setCopy({ ...copy, reviews: { ...(copy.reviews || DEFAULT_REVIEWS), items: (copy.reviews?.items || DEFAULT_REVIEWS.items).filter((_: any, k: number) => k !== i) } })}
+                        className="text-red-500 hover:text-red-700"><X className="w-3.5 h-3.5" /></button>
+                    </div>
+                    <div className="grid grid-cols-3 gap-2">
+                      <Input className="col-span-2" value={r.name} placeholder="Nome" onChange={(e) => {
+                        const items = [...(copy.reviews?.items || DEFAULT_REVIEWS.items)]; items[i] = { ...items[i], name: e.target.value };
+                        setCopy({ ...copy, reviews: { ...(copy.reviews || DEFAULT_REVIEWS), items } });
+                      }} />
+                      <Input type="number" min={1} max={5} value={r.rating ?? 5} placeholder="Nota" onChange={(e) => {
+                        const items = [...(copy.reviews?.items || DEFAULT_REVIEWS.items)]; items[i] = { ...items[i], rating: parseInt(e.target.value) || 5 };
+                        setCopy({ ...copy, reviews: { ...(copy.reviews || DEFAULT_REVIEWS), items } });
+                      }} />
+                    </div>
+                    <Textarea rows={2} value={r.text} placeholder="Comentário" onChange={(e) => {
+                      const items = [...(copy.reviews?.items || DEFAULT_REVIEWS.items)]; items[i] = { ...items[i], text: e.target.value };
+                      setCopy({ ...copy, reviews: { ...(copy.reviews || DEFAULT_REVIEWS), items } });
+                    }} />
+                  </div>
+                ))}
+                <div className="flex gap-2">
+                  <Button size="sm" variant="outline" onClick={() => setCopy({ ...copy, reviews: { ...(copy.reviews || DEFAULT_REVIEWS), items: [...(copy.reviews?.items || DEFAULT_REVIEWS.items), { name: '', rating: 5, text: '' }] } })}
+                    className="!bg-white !text-gray-900 !border-gray-300 hover:!bg-gray-50"><Plus className="w-3.5 h-3.5 mr-1" />Adicionar avaliação</Button>
+                  <Button size="sm" variant="outline" onClick={() => setCopy({ ...copy, reviews: DEFAULT_REVIEWS })}
+                    className="!bg-white !text-gray-900 !border-gray-300 hover:!bg-gray-50"><RefreshCw className="w-3.5 h-3.5 mr-1" />Restaurar padrão</Button>
+                </div>
+              </div>
+            </details>
+
+            <details className="border rounded-xl p-3">
+              <summary className="font-semibold text-sm cursor-pointer">👤 Corretor & CTA (contato)</summary>
               <div className="grid grid-cols-2 gap-3 mt-3">
                 <Field label="Nome" v={broker.name} on={(v) => setBroker({ ...broker, name: v })} />
                 <Field label="Telefone WhatsApp" v={broker.phone} on={(v) => setBroker({ ...broker, phone: v })} />
