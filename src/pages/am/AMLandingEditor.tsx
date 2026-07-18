@@ -10,6 +10,15 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 
+const DEFAULT_FAQ = [
+  { q: 'Qual a renda mínima para financiar?', a: 'A renda familiar mínima recomendada é cerca de 3x o valor da parcela. Simulamos o valor exato de acordo com seu perfil, sem compromisso.' },
+  { q: 'Posso usar o FGTS?', a: 'Sim! O FGTS pode ser utilizado como entrada, para amortizar o saldo devedor ou para reduzir o valor das parcelas, desde que atenda aos requisitos da Caixa.' },
+  { q: 'Qual o valor de entrada necessário?', a: 'A entrada normalmente varia entre 10% e 20% do valor do imóvel, mas em alguns casos (como Minha Casa Minha Vida) pode ser bem menor. Fale com o corretor para calcular.' },
+  { q: 'O imóvel aceita Minha Casa Minha Vida?', a: 'Sim, quando o perfil e a renda familiar se enquadram nas faixas do programa. Podemos verificar isso rapidamente para você.' },
+  { q: 'Quais documentos preciso para financiar?', a: 'RG, CPF, comprovante de renda, comprovante de residência, certidão de estado civil e extrato do FGTS. O corretor auxilia em todo o processo.' },
+  { q: 'Quanto tempo demora a aprovação?', a: 'Após a análise de crédito, o processo geralmente leva de 30 a 45 dias até a assinatura do contrato.' },
+];
+
 const DEFAULT_DATA = {
   propertyName: '',
   propertyType: 'Apartamento',
@@ -71,7 +80,8 @@ export default function AMLandingEditor() {
     setCode(row.code);
     setData(row.data || DEFAULT_DATA);
     setPhotos((row.photos as any) || []);
-    setCopy((row.copy as any) || { benefits: [] });
+    const c = (row.copy as any) || {};
+    setCopy({ benefits: [], ...c, faq: Array.isArray(c.faq) && c.faq.length ? c.faq : DEFAULT_FAQ });
     setBroker((row.broker as any) || {});
     setAccent(row.accent_color || '#1B5EA6');
     setWhatsappMsg(row.whatsapp_message || '');
@@ -79,7 +89,7 @@ export default function AMLandingEditor() {
 
   const resetForm = () => {
     setEditingId(null); setSlug(''); setCode(''); setData(DEFAULT_DATA); setPhotos([]);
-    setCopy({ benefits: [] }); setWhatsappMsg('');
+    setCopy({ benefits: [], faq: DEFAULT_FAQ }); setWhatsappMsg('');
   };
 
   const addPhoto = () => {
@@ -252,6 +262,64 @@ export default function AMLandingEditor() {
                     onChange={(e) => setCopy({ ...copy, benefits: e.target.value.split('\n').filter(Boolean) })} />
                 </div>
                 <Field label="Texto do botão WhatsApp" v={copy.ctaText || ''} on={(v) => setCopy({ ...copy, ctaText: v })} full />
+              </div>
+            </details>
+
+            <details className="border rounded-xl p-3">
+              <summary className="font-semibold text-sm cursor-pointer">💰 Financiamento & Condições</summary>
+              <div className="grid grid-cols-2 gap-3 mt-3">
+                <Field label="Renda mínima sugerida (R$)" v={copy.financing?.minIncome || ''} on={(v) => setCopy({ ...copy, financing: { ...(copy.financing || {}), minIncome: v } })} />
+                <Field label="Entrada necessária (R$ ou %)" v={copy.financing?.downPayment || ''} on={(v) => setCopy({ ...copy, financing: { ...(copy.financing || {}), downPayment: v } })} />
+                <div className="col-span-2 flex items-center gap-2">
+                  <input type="checkbox" id="fgts" checked={!!copy.financing?.acceptsFgts} onChange={(e) => setCopy({ ...copy, financing: { ...(copy.financing || {}), acceptsFgts: e.target.checked } })} />
+                  <label htmlFor="fgts" className="text-sm">Aceita FGTS</label>
+                </div>
+                <div className="col-span-2 flex items-center gap-2">
+                  <input type="checkbox" id="mcmv" checked={!!copy.financing?.mcmv} onChange={(e) => setCopy({ ...copy, financing: { ...(copy.financing || {}), mcmv: e.target.checked } })} />
+                  <label htmlFor="mcmv" className="text-sm">Enquadra em Minha Casa Minha Vida</label>
+                </div>
+                <div className="col-span-2">
+                  <Label className="text-xs">Observações sobre financiamento</Label>
+                  <Textarea rows={3} value={copy.financing?.notes || ''} onChange={(e) => setCopy({ ...copy, financing: { ...(copy.financing || {}), notes: e.target.value } })}
+                    placeholder="Ex: financiamento direto com Caixa, prazo até 420 meses..." />
+                </div>
+              </div>
+            </details>
+
+            <details className="border rounded-xl p-3">
+              <summary className="font-semibold text-sm cursor-pointer">🎬 Vídeo do imóvel</summary>
+              <div className="mt-3 space-y-2">
+                <Field label="Link do vídeo (YouTube, Vimeo ou MP4)" v={copy.videoUrl || ''} on={(v) => setCopy({ ...copy, videoUrl: v })} full />
+                <p className="text-xs text-gray-500">Cole a URL completa. Ex: https://youtu.be/xxxx ou https://www.youtube.com/watch?v=xxxx</p>
+              </div>
+            </details>
+
+            <details className="border rounded-xl p-3">
+              <summary className="font-semibold text-sm cursor-pointer">❓ Perguntas frequentes (FAQ)</summary>
+              <div className="mt-3 space-y-3">
+                {(copy.faq || DEFAULT_FAQ).map((item: any, i: number) => (
+                  <div key={i} className="border border-gray-200 rounded-lg p-3 space-y-2 bg-gray-50">
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="text-xs font-semibold text-gray-500">Pergunta {i + 1}</span>
+                      <button onClick={() => setCopy({ ...copy, faq: (copy.faq || DEFAULT_FAQ).filter((_: any, k: number) => k !== i) })}
+                        className="text-red-500 hover:text-red-700"><X className="w-3.5 h-3.5" /></button>
+                    </div>
+                    <Input value={item.q} placeholder="Pergunta" onChange={(e) => {
+                      const next = [...(copy.faq || DEFAULT_FAQ)]; next[i] = { ...next[i], q: e.target.value };
+                      setCopy({ ...copy, faq: next });
+                    }} />
+                    <Textarea rows={2} value={item.a} placeholder="Resposta" onChange={(e) => {
+                      const next = [...(copy.faq || DEFAULT_FAQ)]; next[i] = { ...next[i], a: e.target.value };
+                      setCopy({ ...copy, faq: next });
+                    }} />
+                  </div>
+                ))}
+                <div className="flex gap-2">
+                  <Button size="sm" variant="outline" onClick={() => setCopy({ ...copy, faq: [...(copy.faq || DEFAULT_FAQ), { q: '', a: '' }] })}
+                    className="!bg-white !text-gray-900 !border-gray-300 hover:!bg-gray-50"><Plus className="w-3.5 h-3.5 mr-1" />Adicionar pergunta</Button>
+                  <Button size="sm" variant="outline" onClick={() => setCopy({ ...copy, faq: DEFAULT_FAQ })}
+                    className="!bg-white !text-gray-900 !border-gray-300 hover:!bg-gray-50"><RefreshCw className="w-3.5 h-3.5 mr-1" />Restaurar padrão</Button>
+                </div>
               </div>
             </details>
 
