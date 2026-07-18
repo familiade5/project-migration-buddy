@@ -377,7 +377,7 @@ export default function AMLandingEditor() {
               )}
             </div>
             {editingId ? (
-              <iframe id="landing-preview" src={publicUrl} className="w-full flex-1" title="Preview" />
+              <iframe id="landing-preview" src={previewUrl} className="w-full flex-1" title="Preview" />
             ) : (
               <div className="flex-1 flex items-center justify-center text-center p-8 text-gray-400">
                 Salve a landing para visualizar o preview ao vivo
