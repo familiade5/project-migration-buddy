@@ -135,6 +135,17 @@ export default function LandingPage() {
     ? `https://maps.google.com/maps?q=${encodeURIComponent(address)}&output=embed`
     : null;
   const nearbyCategories = Array.isArray(nearby?.categories) ? nearby.categories : [];
+  const videoEmbed = getVideoEmbed(copy?.videoUrl);
+  const isMp4 = copy?.videoUrl && /\.mp4($|\?)/i.test(copy.videoUrl);
+  const fin = copy?.financing;
+  const hasFinancing = !!(fin && (fin.minIncome || fin.downPayment || fin.acceptsFgts || fin.mcmv || fin.notes));
+  const faq = Array.isArray(copy?.faq) ? copy!.faq!.filter((f) => f?.q && f?.a) : [];
+  const formatMoneyMaybe = (v?: string) => {
+    if (!v) return '';
+    const n = Number(String(v).replace(/[^\d]/g, ''));
+    if (!n) return v;
+    return n.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 0 });
+  };
 
   return (
     <div className="min-h-screen bg-white pb-24" style={{ fontFamily: 'Golos Text, system-ui, sans-serif' }}>
@@ -247,6 +258,94 @@ export default function LandingPage() {
                 </div>
                 <p className="text-slate-800 pt-1.5 font-medium">{b}</p>
               </div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* VÍDEO */}
+      {(videoEmbed || isMp4) && (
+        <section className="max-w-5xl mx-auto px-6 sm:px-10 mt-16">
+          <h2 className="text-3xl sm:text-4xl font-black text-slate-900 mb-6 flex items-center gap-3">
+            <PlayCircle className="w-8 h-8" style={{ color: accent }} />
+            Vídeo do imóvel
+          </h2>
+          <div className="rounded-3xl overflow-hidden shadow-2xl aspect-video bg-black">
+            {videoEmbed ? (
+              <iframe src={videoEmbed} className="w-full h-full" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen title="Vídeo do imóvel" />
+            ) : (
+              <video src={copy!.videoUrl} controls className="w-full h-full object-cover" />
+            )}
+          </div>
+        </section>
+      )}
+
+      {/* FINANCIAMENTO */}
+      {hasFinancing && (
+        <section className="max-w-6xl mx-auto px-6 sm:px-10 mt-16">
+          <h2 className="text-3xl sm:text-4xl font-black text-slate-900 mb-2 flex items-center gap-3">
+            <Wallet className="w-8 h-8" style={{ color: accent }} />
+            Condições de financiamento
+          </h2>
+          <p className="text-slate-600 mb-6">Informações para você tirar suas dúvidas antes mesmo de simular.</p>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {fin?.minIncome && (
+              <div className="p-5 rounded-2xl border border-slate-100 bg-white shadow-sm">
+                <div className="text-xs uppercase tracking-wider text-slate-500 font-semibold mb-1">Renda mínima sugerida</div>
+                <div className="text-2xl font-black" style={{ color: accent }}>{formatMoneyMaybe(fin.minIncome)}</div>
+              </div>
+            )}
+            {fin?.downPayment && (
+              <div className="p-5 rounded-2xl border border-slate-100 bg-white shadow-sm">
+                <div className="text-xs uppercase tracking-wider text-slate-500 font-semibold mb-1">Entrada</div>
+                <div className="text-2xl font-black text-slate-900">{fin.downPayment}</div>
+              </div>
+            )}
+            {fin?.acceptsFgts && (
+              <div className="p-5 rounded-2xl border border-emerald-200 bg-emerald-50">
+                <div className="flex items-center gap-2 text-emerald-700 font-bold"><CheckCircle2 className="w-5 h-5" />Aceita FGTS</div>
+                <div className="text-sm text-emerald-800/80 mt-1">Use seu saldo como entrada ou para reduzir parcelas.</div>
+              </div>
+            )}
+            {fin?.mcmv && (
+              <div className="p-5 rounded-2xl border border-amber-200 bg-amber-50">
+                <div className="flex items-center gap-2 text-amber-700 font-bold"><CheckCircle2 className="w-5 h-5" />Minha Casa Minha Vida</div>
+                <div className="text-sm text-amber-800/80 mt-1">Subsídio do governo e juros reduzidos, conforme perfil.</div>
+              </div>
+            )}
+          </div>
+          {fin?.notes && (
+            <div className="mt-4 p-5 rounded-2xl bg-slate-50 border border-slate-100 text-slate-700 whitespace-pre-line">
+              {fin.notes}
+            </div>
+          )}
+          <div className="mt-6">
+            <a href={waUrl} target="_blank" rel="noopener noreferrer" onClick={trackWhats}
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl bg-[#25D366] hover:bg-[#20b859] text-white font-bold shadow-lg">
+              <MessageCircle className="w-5 h-5" />
+              Simular financiamento sem compromisso
+            </a>
+          </div>
+        </section>
+      )}
+
+      {/* FAQ */}
+      {faq.length > 0 && (
+        <section className="max-w-4xl mx-auto px-6 sm:px-10 mt-16">
+          <h2 className="text-3xl sm:text-4xl font-black text-slate-900 mb-2 flex items-center gap-3">
+            <HelpCircle className="w-8 h-8" style={{ color: accent }} />
+            Perguntas frequentes
+          </h2>
+          <p className="text-slate-600 mb-6">Tire suas principais dúvidas antes de falar com o corretor.</p>
+          <div className="space-y-3">
+            {faq.map((item, i) => (
+              <details key={i} className="group rounded-2xl border border-slate-200 bg-white p-5 open:shadow-md transition">
+                <summary className="cursor-pointer list-none flex items-start justify-between gap-4 font-bold text-slate-900">
+                  <span>{item.q}</span>
+                  <span className="flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-white text-sm transition-transform group-open:rotate-45" style={{ backgroundColor: accent }}>+</span>
+                </summary>
+                <p className="mt-3 text-slate-700 leading-relaxed whitespace-pre-line">{item.a}</p>
+              </details>
             ))}
           </div>
         </section>
