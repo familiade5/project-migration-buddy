@@ -4,7 +4,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { makeLandingSlug } from '@/lib/landingSlug';
 import { toast } from '@/hooks/use-toast';
-import { Sparkles, Save, ExternalLink, Loader2, Plus, X, Trash2, RefreshCw, Copy } from 'lucide-react';
+import { Sparkles, Save, ExternalLink, Loader2, Plus, X, Trash2, RefreshCw, Copy, MapPin } from 'lucide-react';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -39,6 +39,15 @@ const DEFAULT_REVIEWS = {
     { name: 'Ernandes Santos', rating: 5, text: 'Recomendo demais!' },
   ],
 };
+
+const DEFAULT_NEARBY_TEMPLATE = [
+  { key: 'supermarket', label: 'Supermercados', icon: '🛒', items: [] as { name: string; vicinity?: string }[] },
+  { key: 'school', label: 'Escolas', icon: '🎓', items: [] },
+  { key: 'hospital', label: 'Hospitais', icon: '🏥', items: [] },
+  { key: 'shopping_mall', label: 'Shoppings', icon: '🛍️', items: [] },
+  { key: 'pharmacy', label: 'Farmácias', icon: '💊', items: [] },
+  { key: 'restaurant', label: 'Restaurantes', icon: '🍽️', items: [] },
+];
 
 const DEFAULT_DATA = {
   propertyName: '',
@@ -76,6 +85,7 @@ export default function AMLandingEditor() {
   const [whatsappMsg, setWhatsappMsg] = useState('');
   const [generating, setGenerating] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [fetchingNearby, setFetchingNearby] = useState(false);
 
   const previewSlug = useMemo(
     () => slug || makeLandingSlug({ propertyName: data.propertyName, neighborhood: data.neighborhood, code }),
@@ -139,6 +149,30 @@ export default function AMLandingEditor() {
     } catch (e: any) {
       toast({ title: 'Erro ao gerar texto', description: e.message, variant: 'destructive' });
     } finally { setGenerating(false); }
+  };
+
+  const fetchNearby = async () => {
+    const address = [data.address, data.neighborhood, data.city, data.state].filter(Boolean).join(', ');
+    if (!address) {
+      toast({ title: 'Preencha o endereço primeiro', variant: 'destructive' });
+      return;
+    }
+    setFetchingNearby(true);
+    try {
+      const { data: resp, error } = await supabase.functions.invoke('nearby-places', { body: { address } });
+      if (error) throw error;
+      const cats = Array.isArray((resp as any)?.categories) ? (resp as any).categories : [];
+      const nearby = cats.map((c: any) => ({
+        key: c.key,
+        label: c.label,
+        icon: c.icon,
+        items: (Array.isArray(c.items) ? c.items : []).map((it: any) => ({ name: it.name, vicinity: it.vicinity })),
+      }));
+      setCopy({ ...copy, nearby });
+      toast({ title: `${nearby.length} categorias encontradas!`, description: 'Você pode editar os locais abaixo.' });
+    } catch (e: any) {
+      toast({ title: 'Erro ao buscar locais', description: e.message, variant: 'destructive' });
+    } finally { setFetchingNearby(false); }
   };
 
   const save = async (publish = true) => {
@@ -434,6 +468,86 @@ export default function AMLandingEditor() {
                   <Button size="sm" variant="outline" onClick={() => setCopy({ ...copy, reviews: DEFAULT_REVIEWS })}
                     className="!bg-white !text-gray-900 !border-gray-300 hover:!bg-gray-50"><RefreshCw className="w-3.5 h-3.5 mr-1" />Restaurar padrão</Button>
                 </div>
+              </div>
+            </details>
+
+            <details className="border rounded-xl p-3">
+              <summary className="font-semibold text-sm cursor-pointer">📍 Locais próximos (mapa)</summary>
+              <div className="mt-3 space-y-3">
+                <div className="flex flex-wrap items-center gap-2">
+                  <Button size="sm" onClick={fetchNearby} disabled={fetchingNearby}
+                    style={{ backgroundColor: '#1B5EA6', color: '#fff' }} className="hover:opacity-90">
+                    {fetchingNearby ? <Loader2 className="w-4 h-4 mr-1 animate-spin" /> : <MapPin className="w-4 h-4 mr-1" />}
+                    Buscar automaticamente
+                  </Button>
+                  <Button size="sm" variant="outline"
+                    onClick={() => setCopy({ ...copy, nearby: DEFAULT_NEARBY_TEMPLATE })}
+                    className="!bg-white !text-gray-900 !border-gray-300 hover:!bg-gray-50">
+                    <Plus className="w-3.5 h-3.5 mr-1" />Categorias em branco
+                  </Button>
+                  {Array.isArray(copy.nearby) && copy.nearby.length > 0 && (
+                    <Button size="sm" variant="outline"
+                      onClick={() => setCopy({ ...copy, nearby: [] })}
+                      className="!bg-white !text-red-600 !border-red-200 hover:!bg-red-50">
+                      <Trash2 className="w-3.5 h-3.5 mr-1" />Limpar
+                    </Button>
+                  )}
+                </div>
+                <p className="text-xs text-gray-500">
+                  Busca automática usa Google Places a partir do endereço. Tudo pode ser editado, adicionado ou removido.
+                </p>
+
+                {(!copy.nearby || copy.nearby.length === 0) && (
+                  <p className="text-xs text-gray-400 italic">Nenhuma categoria personalizada. Clique em "Buscar automaticamente" ou "Categorias em branco".</p>
+                )}
+
+                {Array.isArray(copy.nearby) && copy.nearby.map((cat: any, ci: number) => (
+                  <div key={ci} className="border border-gray-200 rounded-lg p-3 space-y-2 bg-gray-50">
+                    <div className="grid grid-cols-[60px_1fr_auto] gap-2 items-center">
+                      <Input value={cat.icon || ''} placeholder="🛒" onChange={(e) => {
+                        const next = [...copy.nearby]; next[ci] = { ...next[ci], icon: e.target.value };
+                        setCopy({ ...copy, nearby: next });
+                      }} />
+                      <Input value={cat.label || ''} placeholder="Nome da categoria" onChange={(e) => {
+                        const next = [...copy.nearby]; next[ci] = { ...next[ci], label: e.target.value };
+                        setCopy({ ...copy, nearby: next });
+                      }} />
+                      <button onClick={() => setCopy({ ...copy, nearby: copy.nearby.filter((_: any, k: number) => k !== ci) })}
+                        className="text-red-500 hover:text-red-700 px-2"><X className="w-4 h-4" /></button>
+                    </div>
+                    <div className="space-y-1.5">
+                      {(cat.items || []).map((it: any, ii: number) => (
+                        <div key={ii} className="flex gap-2 items-center">
+                          <Input value={it.name || ''} placeholder="Nome do local" onChange={(e) => {
+                            const next = [...copy.nearby]; const items = [...(next[ci].items || [])];
+                            items[ii] = { ...items[ii], name: e.target.value };
+                            next[ci] = { ...next[ci], items }; setCopy({ ...copy, nearby: next });
+                          }} />
+                          <button onClick={() => {
+                            const next = [...copy.nearby];
+                            next[ci] = { ...next[ci], items: (next[ci].items || []).filter((_: any, k: number) => k !== ii) };
+                            setCopy({ ...copy, nearby: next });
+                          }} className="text-red-400 hover:text-red-600"><X className="w-3.5 h-3.5" /></button>
+                        </div>
+                      ))}
+                      <Button size="sm" variant="outline" onClick={() => {
+                        const next = [...copy.nearby];
+                        next[ci] = { ...next[ci], items: [...(next[ci].items || []), { name: '' }] };
+                        setCopy({ ...copy, nearby: next });
+                      }} className="!bg-white !text-gray-900 !border-gray-300 hover:!bg-gray-50 text-xs">
+                        <Plus className="w-3 h-3 mr-1" />Adicionar local
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+
+                {Array.isArray(copy.nearby) && (
+                  <Button size="sm" variant="outline"
+                    onClick={() => setCopy({ ...copy, nearby: [...copy.nearby, { icon: '📍', label: 'Nova categoria', items: [] }] })}
+                    className="!bg-white !text-gray-900 !border-gray-300 hover:!bg-gray-50">
+                    <Plus className="w-3.5 h-3.5 mr-1" />Adicionar categoria
+                  </Button>
+                )}
               </div>
             </details>
 

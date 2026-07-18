@@ -49,6 +49,13 @@ interface NearbyResp {
   categories: { key: string; label: string; icon: string; items: { name: string; vicinity: string; rating: number | null }[] }[];
 }
 
+interface NearbyCategory {
+  key?: string;
+  label: string;
+  icon: string;
+  items: { name: string; vicinity?: string }[];
+}
+
 const formatBRL = (n: number) =>
   n?.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 0 }) || 'Consulte';
 
@@ -93,7 +100,8 @@ export default function LandingPage() {
       // Fetch nearby places
       const d: any = data.data || {};
       const address = [d.address, d.neighborhood, d.city, d.state].filter(Boolean).join(', ');
-      if (address) {
+      const hasCustomNearby = Array.isArray((data as any)?.copy?.nearby) && (data as any).copy.nearby.length > 0;
+      if (address && !hasCustomNearby) {
         supabase.functions.invoke('nearby-places', { body: { address } })
           .then(({ data: n }) => n && setNearby(n as any))
           .catch(() => {});
@@ -143,7 +151,13 @@ export default function LandingPage() {
   const mapSrc = address
     ? `https://maps.google.com/maps?q=${encodeURIComponent(address)}&output=embed`
     : null;
-  const nearbyCategories = Array.isArray(nearby?.categories) ? nearby.categories : [];
+  const mapOpenUrl = address
+    ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`
+    : null;
+  const customNearby: NearbyCategory[] = Array.isArray((copy as any)?.nearby) ? (copy as any).nearby : [];
+  const nearbyCategories: NearbyCategory[] = customNearby.length > 0
+    ? customNearby.filter((c) => c && c.label && Array.isArray(c.items) && c.items.length > 0)
+    : (Array.isArray(nearby?.categories) ? nearby.categories : []);
   const videoEmbed = getVideoEmbed(copy?.videoUrl);
   const isMp4 = copy?.videoUrl && /\.mp4($|\?)/i.test(copy.videoUrl);
   const fin = copy?.financing;
@@ -438,18 +452,35 @@ export default function LandingPage() {
       {/* LOCALIZAÇÃO */}
       {mapSrc && (
         <section className="max-w-6xl mx-auto px-6 sm:px-10 mt-16">
-          <h2 className="text-3xl sm:text-4xl font-black text-slate-900 mb-2">Localização</h2>
+          <div className="flex items-center gap-2 mb-2">
+            <span className="inline-flex items-center gap-1 text-xs font-bold px-2.5 py-1 rounded-full text-white" style={{ backgroundColor: accent }}>
+              <MapPin className="w-3 h-3" /> Localização do imóvel
+            </span>
+          </div>
+          <h2 className="text-3xl sm:text-4xl font-black text-slate-900 mb-2">Onde fica este imóvel</h2>
           <p className="text-slate-600 flex items-center gap-2 mb-6"><MapPin className="w-4 h-4" style={{ color: accent }} />{address}</p>
-          <div className="rounded-3xl overflow-hidden shadow-lg border border-slate-100 aspect-[16/10]">
-            <iframe src={mapSrc} className="w-full h-full border-0" loading="lazy" title="Mapa" />
+          <div className="relative rounded-3xl overflow-hidden shadow-lg border border-slate-100 aspect-[16/10]">
+            <iframe src={mapSrc} className="w-full h-full border-0" loading="lazy" title={`Mapa — ${address}`} />
+            {/* Chip identificando que o pin é o imóvel */}
+            <div className="absolute top-4 left-4 bg-white/95 backdrop-blur px-3 py-2 rounded-xl shadow-md border border-slate-100 flex items-center gap-2 pointer-events-none">
+              <span className="w-2.5 h-2.5 rounded-full animate-pulse" style={{ backgroundColor: accent }} />
+              <span className="text-xs font-bold text-slate-800">📍 O imóvel anunciado está aqui</span>
+            </div>
+            {mapOpenUrl && (
+              <a href={mapOpenUrl} target="_blank" rel="noopener noreferrer"
+                className="absolute bottom-4 right-4 bg-white text-slate-900 text-xs font-bold px-3 py-2 rounded-xl shadow-md border border-slate-100 hover:bg-slate-50 flex items-center gap-1">
+                <MapPin className="w-3.5 h-3.5" style={{ color: accent }} /> Abrir no Google Maps
+              </a>
+            )}
           </div>
 
           {nearbyCategories.length > 0 && (
             <div className="mt-8">
-              <h3 className="text-xl font-bold text-slate-900 mb-4">O que tem por perto</h3>
+              <h3 className="text-xl font-bold text-slate-900 mb-1">O que tem por perto</h3>
+              <p className="text-sm text-slate-500 mb-4">Comércios, serviços e pontos de interesse na região do imóvel.</p>
               <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                {nearbyCategories.map((cat) => (
-                  <div key={cat.key} className="p-5 rounded-2xl bg-white border border-slate-100 shadow-sm">
+                {nearbyCategories.map((cat, ci) => (
+                  <div key={cat.key || `${cat.label}-${ci}`} className="p-5 rounded-2xl bg-white border border-slate-100 shadow-sm">
                     <div className="flex items-center gap-2 mb-3 font-bold text-slate-800">
                       <span className="text-xl">{cat.icon}</span>{cat.label}
                     </div>
