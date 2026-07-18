@@ -6,6 +6,8 @@ import {
   Phone, ChevronLeft, ChevronRight, Loader2, Home as HomeIcon, Sparkles,
   Wallet, CheckCircle2, PlayCircle, HelpCircle,
 } from 'lucide-react';
+import amLogo from '@/assets/logo-apartamentos-manaus.png';
+import { Instagram, Facebook } from 'lucide-react';
 
 interface LandingRow {
   id: string;
@@ -422,6 +424,54 @@ export default function LandingPage() {
         <MessageCircle className="w-6 h-6" />
         <span className="hidden sm:inline">WhatsApp</span>
       </a>
+
+      {/* FOOTER Apartamentos Manaus */}
+      <footer className="mt-20 border-t border-slate-200 bg-slate-50">
+        <div className="max-w-6xl mx-auto px-6 sm:px-10 py-12 grid gap-10 md:grid-cols-3">
+          <div>
+            <img src={amLogo} alt="Apartamentos Manaus" className="h-14 w-auto mb-4" />
+            <p className="text-sm text-slate-600 leading-relaxed">
+              Imobiliária especializada em apartamentos em Manaus. Compra, venda e locação com atendimento consultivo do início ao fim.
+            </p>
+            <p className="text-xs text-slate-500 mt-3">CRECI: 3968</p>
+          </div>
+          <div>
+            <h3 className="text-sm font-bold uppercase tracking-wider mb-4" style={{ color: accent }}>Contato</h3>
+            <ul className="space-y-2 text-sm text-slate-700">
+              <li><span className="font-semibold">Apartamentos Manaus</span><br />(92) 8222-2929</li>
+              <li><span className="font-semibold">Apartamentos Manaus</span><br />(92) 8839-1098</li>
+              <li>
+                <a href="https://www.apartamentosmanaus.com.br/contato" target="_blank" rel="noopener noreferrer" className="hover:underline" style={{ color: accent }}>
+                  Fale conosco
+                </a>
+              </li>
+            </ul>
+          </div>
+          <div>
+            <h3 className="text-sm font-bold uppercase tracking-wider mb-4" style={{ color: accent }}>Acompanhe nossas redes</h3>
+            <div className="flex items-center gap-3">
+              <a href="https://www.instagram.com/apartamentosmanaus/" target="_blank" rel="noopener noreferrer"
+                className="w-10 h-10 rounded-full bg-white border border-slate-200 flex items-center justify-center hover:bg-slate-100" style={{ color: accent }}>
+                <Instagram className="w-5 h-5" />
+              </a>
+              <a href="https://www.facebook.com/apartamentosmanaus" target="_blank" rel="noopener noreferrer"
+                className="w-10 h-10 rounded-full bg-white border border-slate-200 flex items-center justify-center hover:bg-slate-100" style={{ color: accent }}>
+                <Facebook className="w-5 h-5" />
+              </a>
+            </div>
+            <a href="https://www.apartamentosmanaus.com.br" target="_blank" rel="noopener noreferrer"
+              className="inline-block mt-6 text-sm font-semibold hover:underline" style={{ color: accent }}>
+              apartamentosmanaus.com.br →
+            </a>
+          </div>
+        </div>
+        <div className="border-t border-slate-200">
+          <div className="max-w-6xl mx-auto px-6 sm:px-10 py-5 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-slate-500">
+            <p>© {new Date().getFullYear()} Apartamentos Manaus Imobiliária. Todos os direitos reservados.</p>
+            <p>CRECI-AM 3968</p>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }
