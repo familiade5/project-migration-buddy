@@ -147,13 +147,13 @@ export default function AMLandingEditor() {
 
   return (
     <AMLayout>
-      <div className="p-4 sm:p-6 lg:p-8 max-w-[1600px] mx-auto">
+      <div className="p-4 sm:p-6 lg:p-8 max-w-[1600px] mx-auto [&_summary]:text-gray-900 [&_label]:text-gray-700 [&_input]:!bg-white [&_input]:!text-gray-900 [&_textarea]:!bg-white [&_textarea]:!text-gray-900 [&_details]:!border-gray-200 [&_details]:!bg-white">
         <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
             <h1 className="text-2xl font-bold text-gray-900">Landing Pages de Imóveis</h1>
             <p className="text-sm text-gray-500">Crie páginas de apresentação para captar leads via WhatsApp</p>
           </div>
-          <Button onClick={resetForm} variant="outline"><Plus className="w-4 h-4 mr-1" />Nova landing</Button>
+          <Button onClick={resetForm} variant="outline" className="!bg-white !text-gray-900 !border-gray-300 hover:!bg-gray-50"><Plus className="w-4 h-4 mr-1" />Nova landing</Button>
         </div>
 
         <div className="grid lg:grid-cols-[280px_1fr_1fr] gap-4">
@@ -184,11 +184,11 @@ export default function AMLandingEditor() {
             <div className="flex items-center justify-between">
               <h2 className="font-bold text-gray-900">Editor</h2>
               <div className="flex gap-2">
-                <Button size="sm" variant="outline" onClick={generateCopy} disabled={generating}>
+                <Button size="sm" variant="outline" onClick={generateCopy} disabled={generating} className="!bg-white !text-gray-900 !border-gray-300 hover:!bg-gray-50">
                   {generating ? <Loader2 className="w-4 h-4 mr-1 animate-spin" /> : <Sparkles className="w-4 h-4 mr-1" />}
                   Gerar texto IA
                 </Button>
-                <Button size="sm" onClick={() => save(true)} disabled={saving} style={{ backgroundColor: '#1B5EA6' }}>
+                <Button size="sm" onClick={() => save(true)} disabled={saving} style={{ backgroundColor: '#1B5EA6', color: '#fff' }} className="hover:opacity-90">
                   {saving ? <Loader2 className="w-4 h-4 mr-1 animate-spin" /> : <Save className="w-4 h-4 mr-1" />}
                   Publicar
                 </Button>
@@ -220,7 +220,7 @@ export default function AMLandingEditor() {
               <div className="mt-3 space-y-2">
                 <div className="flex gap-2">
                   <Input value={photoInput} onChange={(e) => setPhotoInput(e.target.value)} placeholder="URL da imagem (https://...)" />
-                  <Button size="sm" onClick={addPhoto}>Adicionar</Button>
+                  <Button size="sm" onClick={addPhoto} style={{ backgroundColor: '#1B5EA6', color: '#fff' }}>Adicionar</Button>
                 </div>
                 <div className="grid grid-cols-4 gap-2">
                   {photos.map((p, i) => (
@@ -283,10 +283,10 @@ export default function AMLandingEditor() {
                   <p className="text-xs text-green-700 truncate">{publicUrl}</p>
                 </div>
                 <div className="flex gap-1 flex-shrink-0">
-                  <Button size="sm" variant="outline" onClick={() => { navigator.clipboard.writeText(publicUrl); toast({ title: 'Copiado!' }); }}>
+                  <Button size="sm" variant="outline" onClick={() => { navigator.clipboard.writeText(publicUrl); toast({ title: 'Copiado!' }); }} className="!bg-white !text-gray-900 !border-gray-300 hover:!bg-gray-50">
                     <Copy className="w-3.5 h-3.5" />
                   </Button>
-                  <Button size="sm" variant="outline" onClick={() => window.open(publicUrl, '_blank')}>
+                  <Button size="sm" variant="outline" onClick={() => window.open(publicUrl, '_blank')} className="!bg-white !text-gray-900 !border-gray-300 hover:!bg-gray-50">
                     <ExternalLink className="w-3.5 h-3.5" />
                   </Button>
                 </div>
