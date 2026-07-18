@@ -13,6 +13,7 @@ import {
   Image,
   BarChart3,
   Tag,
+  Globe,
 } from 'lucide-react';
 import {
   DropdownMenu,
@@ -31,6 +32,7 @@ interface AMLayoutProps {
 
 const navigation = [
   { name: 'Criar Post', href: '/apartamentos-manaus', icon: Home },
+  { name: 'Landing Pages', href: '/apartamentos-manaus/landing', icon: Globe },
   { name: 'Biblioteca', href: '/apartamentos-manaus/biblioteca', icon: BookOpen },
   { name: 'Catálogo OLX', href: '/apartamentos-manaus/olx', icon: Tag },
 ];

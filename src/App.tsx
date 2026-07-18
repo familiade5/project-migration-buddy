@@ -20,6 +20,7 @@ import AMLibrary from "./pages/am/AMLibrary";
 import AMAdmin from "./pages/am/AMAdmin";
 import AMOlxCatalog from "./pages/am/AMOlxCatalog";
 import AMAdsMetrics from "./pages/am/AMAdsMetrics";
+import AMLandingEditor from "./pages/am/AMLandingEditor";
 import AFAuth from "./pages/af/AFAuth";
 import ApartamentosFortalezaPage from "./pages/af/ApartamentosFortalezaPage";
 import AFOlxCatalog from "./pages/af/AFOlxCatalog";
@@ -94,6 +95,9 @@ const App = () => (
             } />
             <Route path="/apartamentos-manaus/metricas-ads" element={
               <ProtectedRoute><AMAdsMetrics /></ProtectedRoute>
+            } />
+            <Route path="/apartamentos-manaus/landing" element={
+              <ProtectedRoute><AMLandingEditor /></ProtectedRoute>
             } />
             {/* Apartamentos Fortaleza */}
             <Route path="/af/auth" element={<AFAuth />} />
