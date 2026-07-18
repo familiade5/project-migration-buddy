@@ -4,7 +4,7 @@ import { supabase } from '@/integrations/supabase/client';
 import {
   MapPin, Bed, Bath, Maximize, Car, Star, MessageCircle,
   Phone, ChevronLeft, ChevronRight, Loader2, Home as HomeIcon, Sparkles,
-  Wallet, CheckCircle2, PlayCircle, HelpCircle,
+  Wallet, CheckCircle2, PlayCircle, HelpCircle, ShieldCheck, Quote,
 } from 'lucide-react';
 import amLogo from '@/assets/logo-apartamentos-manaus.png';
 import { Instagram, Facebook } from 'lucide-react';
@@ -23,6 +23,13 @@ interface LandingRow {
     ctaText?: string;
     videoUrl?: string;
     faq?: { q: string; a: string }[];
+    whyUs?: { title: string; desc: string }[];
+    reviews?: {
+      googleUrl?: string;
+      rating?: number;
+      count?: number;
+      items?: { name: string; rating?: number; text: string }[];
+    };
     financing?: {
       minIncome?: string;
       downPayment?: string;
@@ -142,6 +149,9 @@ export default function LandingPage() {
   const fin = copy?.financing;
   const hasFinancing = !!(fin && (fin.minIncome || fin.downPayment || fin.acceptsFgts || fin.mcmv || fin.notes));
   const faq = Array.isArray(copy?.faq) ? copy!.faq!.filter((f) => f?.q && f?.a) : [];
+  const whyUs = Array.isArray(copy?.whyUs) ? copy!.whyUs!.filter((w) => w?.title || w?.desc) : [];
+  const reviews = copy?.reviews || {};
+  const reviewItems = Array.isArray(reviews.items) ? reviews.items.filter((r) => r?.name && r?.text) : [];
   const formatMoneyMaybe = (v?: string) => {
     if (!v) return '';
     const n = Number(String(v).replace(/[^\d]/g, ''));
@@ -348,6 +358,78 @@ export default function LandingPage() {
                 </summary>
                 <p className="mt-3 text-slate-700 leading-relaxed whitespace-pre-line">{item.a}</p>
               </details>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* POR QUE COMPRAR/VENDER CONOSCO */}
+      {whyUs.length > 0 && (
+        <section className="max-w-6xl mx-auto px-6 sm:px-10 mt-16">
+          <h2 className="text-3xl sm:text-4xl font-black text-slate-900 mb-2 flex items-center gap-3">
+            <ShieldCheck className="w-8 h-8" style={{ color: accent }} />
+            Por que comprar e vender conosco
+          </h2>
+          <p className="text-slate-600 mb-6">Motivos reais para confiar na Apartamentos Manaus.</p>
+          <div className="grid sm:grid-cols-2 gap-4">
+            {whyUs.map((w, i) => (
+              <div key={i} className="p-6 rounded-2xl bg-white border border-slate-100 shadow-sm hover:shadow-md transition">
+                <div className="flex items-start gap-3 mb-2">
+                  <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style={{ backgroundColor: `${accent}15`, color: accent }}>
+                    <CheckCircle2 className="w-5 h-5" />
+                  </div>
+                  <h3 className="text-lg font-bold text-slate-900 pt-1.5">{w.title}</h3>
+                </div>
+                {w.desc && <p className="text-slate-600 leading-relaxed pl-13">{w.desc}</p>}
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* AVALIAÇÕES GOOGLE */}
+      {(reviewItems.length > 0 || reviews.googleUrl) && (
+        <section className="max-w-6xl mx-auto px-6 sm:px-10 mt-16">
+          <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-6">
+            <div>
+              <h2 className="text-3xl sm:text-4xl font-black text-slate-900 mb-2">O que dizem sobre nós</h2>
+              <div className="flex items-center gap-3">
+                <div className="flex items-center gap-1">
+                  {Array.from({ length: 5 }).map((_, i) => (
+                    <Star key={i} className="w-5 h-5 fill-amber-400 text-amber-400" />
+                  ))}
+                </div>
+                <span className="text-2xl font-black text-slate-900">{(reviews.rating ?? 5).toFixed(1)}</span>
+                <span className="text-sm text-slate-500">no Google ({reviews.count ?? reviewItems.length} avaliações)</span>
+              </div>
+            </div>
+            {reviews.googleUrl && (
+              <a href={reviews.googleUrl} target="_blank" rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 px-5 py-3 rounded-2xl bg-white border border-slate-200 font-semibold text-slate-800 hover:bg-slate-50 shadow-sm">
+                Ver todas no Google →
+              </a>
+            )}
+          </div>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {reviewItems.map((r, i) => (
+              <div key={i} className="p-6 rounded-2xl bg-white border border-slate-100 shadow-sm relative">
+                <Quote className="w-8 h-8 text-slate-200 absolute top-4 right-4" />
+                <div className="flex items-center gap-1 mb-3">
+                  {Array.from({ length: r.rating ?? 5 }).map((_, k) => (
+                    <Star key={k} className="w-4 h-4 fill-amber-400 text-amber-400" />
+                  ))}
+                </div>
+                <p className="text-slate-700 leading-relaxed mb-4 text-sm">"{r.text}"</p>
+                <div className="flex items-center gap-3 pt-3 border-t border-slate-100">
+                  <div className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold" style={{ backgroundColor: accent }}>
+                    {r.name?.[0]?.toUpperCase() || '?'}
+                  </div>
+                  <div>
+                    <div className="font-bold text-slate-900 text-sm">{r.name}</div>
+                    <div className="text-xs text-slate-500">via Google</div>
+                  </div>
+                </div>
+              </div>
             ))}
           </div>
         </section>
