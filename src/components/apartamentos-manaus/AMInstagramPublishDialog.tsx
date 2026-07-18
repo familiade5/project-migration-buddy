@@ -1,8 +1,10 @@
 import { useMemo, useState } from 'react';
 import { z } from 'zod';
-import { Loader2, Send, ImageIcon, PencilLine, CheckCircle2, Tag } from 'lucide-react';
+import { Loader2, Send, ImageIcon, PencilLine, CheckCircle2, Tag, Globe } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { AMPropertyData } from '@/types/apartamentosManaus';
+import { makeLandingSlug } from '@/lib/landingSlug';
+import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -35,6 +37,8 @@ interface AMInstagramPublishDialogProps {
   onPublishOlxChange: (value: boolean) => void;
   olxTxType: 'venda' | 'aluguel' | 'lancamento';
   onOlxTxTypeChange: (value: 'venda' | 'aluguel' | 'lancamento') => void;
+  publishLanding: boolean;
+  onPublishLandingChange: (value: boolean) => void;
 }
 
 const AM_INSTAGRAM_ACCOUNT_ID = '17841402886222668';
@@ -71,7 +75,10 @@ export const AMInstagramPublishDialog = ({
   onPublishOlxChange,
   olxTxType,
   onOlxTxTypeChange,
+  publishLanding,
+  onPublishLandingChange,
 }: AMInstagramPublishDialogProps) => {
+  const { user } = useAuth();
   const [open, setOpen] = useState(false);
   const [step, setStep] = useState<'images' | 'caption'>('images');
   const [caption, setCaption] = useState('');
@@ -269,6 +276,76 @@ export const AMInstagramPublishDialog = ({
           }
         };
         await runOlxPublish();
+      }
+
+      // Criar landing page se marcado
+      if (publishLanding) {
+        const runLandingPublish = async (): Promise<void> => {
+          try {
+            const { uploadOlxPhotos } = await import('@/lib/olxPhotos');
+            const code = `AM-${Date.now().toString(36).toUpperCase()}`;
+            const slug = makeLandingSlug({
+              propertyName: data.title,
+              neighborhood: data.neighborhood,
+              code,
+            });
+            const publicPhotos = await uploadOlxPhotos(photos, 'landing', code);
+            const landingData = {
+              propertyName: data.title,
+              propertyType: data.propertyType,
+              neighborhood: data.neighborhood,
+              city: data.city,
+              state: data.state || 'AM',
+              address: data.address,
+              bedrooms: data.bedrooms || 0,
+              bathrooms: data.bathrooms || 0,
+              suites: data.suites || 0,
+              area: data.area || 0,
+              garageSpaces: data.garageSpaces || 0,
+              salePrice: data.salePrice || 0,
+              rentalPrice: data.rentalPrice || 0,
+              isRental: !!data.isRental,
+            };
+            const broker = {
+              name: data.brokerName || 'Iury Sampaio',
+              phone: data.brokerPhone || '(92) 98839-1098',
+              creci: data.creci || 'CRECI 3968 AM PF',
+            };
+            const copyPayload: any = {
+              benefits: Array.isArray(data.highlights) ? data.highlights.filter(Boolean) : [],
+              description: data.infoMessage || '',
+            };
+            const { error: landingError } = await supabase.from('am_landing_pages').insert({
+              code,
+              slug,
+              data: landingData,
+              photos: publicPhotos,
+              copy: copyPayload,
+              broker,
+              accent_color: '#1B5EA6',
+              whatsapp_message: `Olá! Tenho interesse no imóvel ${data.title || ''}`.trim(),
+              is_active: true,
+              sections: ['hero', 'specs', 'gallery', 'description', 'benefits', 'location', 'contact'],
+              created_by: user?.id,
+            });
+            if (landingError) throw landingError;
+            const url = `https://postgen.fixaapp.com.br/imovel/${slug}`;
+            toast.success(`Landing page criada! ${url}`, {
+              duration: 20000,
+              action: {
+                label: 'Copiar link',
+                onClick: () => { void navigator.clipboard.writeText(url); },
+              },
+            });
+          } catch (landingErr) {
+            const m = landingErr instanceof Error ? landingErr.message : 'Erro desconhecido';
+            toast.error(`Falhou ao criar a landing page: ${m}`, {
+              duration: 20000,
+              action: { label: 'Tentar novamente', onClick: () => { void runLandingPublish(); } },
+            });
+          }
+        };
+        await runLandingPublish();
       }
 
       handleOpenChange(false);
