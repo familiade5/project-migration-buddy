@@ -157,7 +157,7 @@ export const AFStory4_T4_Slide1 = ({
         </div>
       </div>
 
-      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: -8 }}>
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: 40, position: 'relative', zIndex: 10 }}>
         <Logo size={150} />
       </div>
     </div>
