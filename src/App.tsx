@@ -25,7 +25,7 @@ import AFAuth from "./pages/af/AFAuth";
 import ApartamentosFortalezaPage from "./pages/af/ApartamentosFortalezaPage";
 import AFOlxCatalog from "./pages/af/AFOlxCatalog";
 import VDHOlxCatalog from "./pages/VDHOlxCatalog";
-import TrafegoPago from "./pages/TrafegoPago";
+
 import AutoPostApproval from "./pages/AutoPostApproval";
 import LandingPage from "./pages/LandingPage";
 
@@ -106,10 +106,6 @@ const App = () => (
             } />
             <Route path="/apartamentos-fortaleza/olx" element={
               <ProtectedRoute requireAdmin><AFOlxCatalog /></ProtectedRoute>
-            } />
-            {/* Tráfego Pago - Master admin only */}
-            <Route path="/trafego-pago" element={
-              <ProtectedRoute><TrafegoPago /></ProtectedRoute>
             } />
             {/* Auto Post Approval */}
             <Route path="/aprovacao-posts" element={
