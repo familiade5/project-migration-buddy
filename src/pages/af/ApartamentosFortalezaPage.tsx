@@ -6,7 +6,8 @@ import { AFPropertyForm } from '@/components/apartamentos-fortaleza/AFPropertyFo
 import { AFCaptionGenerator } from '@/components/apartamentos-fortaleza/AFCaptionGenerator';
 import { AFPhotoManager } from '@/components/apartamentos-fortaleza/AFPhotoManager';
 import { AFLayout } from '@/components/layout/AFLayout';
-import { Image, Edit3, Sparkles, FileText, LayoutGrid, Smartphone, Zap, Tag } from 'lucide-react';
+import { Image, Edit3, Sparkles, FileText, LayoutGrid, Smartphone, Zap, Tag, RotateCcw } from 'lucide-react';
+import { toast } from 'sonner';
 import { AFPaidFeedPreview } from '@/components/apartamentos-fortaleza/AFPaidFeedPreview';
 import { PublishToOlxButton } from '@/components/canal-pro/PublishToOlxButton';
 
@@ -52,6 +53,17 @@ const ApartamentosFortalezaPage = () => {
   const [photos, setPhotos] = useState<string[]>(() => loadFromStorage(STORAGE_KEY_PHOTOS, []));
   const [previewTab, setPreviewTab] = useState<'feed' | 'stories' | 'paid'>('feed');
 
+  // Limpa fotos + dados do imóvel (e o cache local) para começar um post do zero
+  const handleNewPost = () => {
+    setPhotos([]);
+    setPropertyData(defaultAFPropertyData);
+    try {
+      localStorage.removeItem(STORAGE_KEY_PHOTOS);
+      localStorage.removeItem(STORAGE_KEY_DATA);
+    } catch { /* ignore */ }
+    toast.success('Novo post iniciado — fotos e dados limpos');
+  };
+
   // Capturador de slides desenhados (registrado pelo AFPostPreview).
   // Usado pelo PublishToOlxButton para enviar à OLX as mesmas imagens do Instagram.
   const prepareOlxSlidesRef = useRef<(() => Promise<string[]>) | null>(null);
@@ -89,10 +101,19 @@ const ApartamentosFortalezaPage = () => {
             <h1 className="text-xl font-bold text-gray-900">Gerador de Posts</h1>
             <p className="text-sm text-gray-500">Crie criativos profissionais para Instagram</p>
           </div>
-          <div className="flex items-center gap-2 px-4 py-2.5 rounded-full text-white text-sm font-medium shadow"
-            style={{ backgroundColor: PRIMARY }}>
-            <Sparkles className="w-4 h-4" />
-            <span>Feed + Story + Legenda</span>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={handleNewPost}
+              className="flex items-center gap-2 px-4 py-2.5 rounded-full text-sm font-medium border border-gray-200 bg-white text-gray-700 hover:bg-gray-50 transition-colors shadow-sm"
+            >
+              <RotateCcw className="w-4 h-4" />
+              <span>Novo post</span>
+            </button>
+            <div className="flex items-center gap-2 px-4 py-2.5 rounded-full text-white text-sm font-medium shadow"
+              style={{ backgroundColor: PRIMARY }}>
+              <Sparkles className="w-4 h-4" />
+              <span>Feed + Story + Legenda</span>
+            </div>
           </div>
         </div>
 
