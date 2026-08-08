@@ -94,11 +94,9 @@ export function AFPostPreview({ data, photos, onRegisterPrepareSlides }: AFPostP
     return () => ro.disconnect();
   }, []);
 
-  const f0=useRef<HTMLDivElement>(null),f1=useRef<HTMLDivElement>(null),f2=useRef<HTMLDivElement>(null),f3=useRef<HTMLDivElement>(null),f4=useRef<HTMLDivElement>(null);
-  const f5=useRef<HTMLDivElement>(null),f6=useRef<HTMLDivElement>(null),f7=useRef<HTMLDivElement>(null),f8=useRef<HTMLDivElement>(null),f9=useRef<HTMLDivElement>(null);
-  const f10=useRef<HTMLDivElement>(null),f11=useRef<HTMLDivElement>(null),f12=useRef<HTMLDivElement>(null),f13=useRef<HTMLDivElement>(null),f14=useRef<HTMLDivElement>(null);
-  const f15=useRef<HTMLDivElement>(null),f16=useRef<HTMLDivElement>(null),f17=useRef<HTMLDivElement>(null),f18=useRef<HTMLDivElement>(null),f19=useRef<HTMLDivElement>(null);
-  const feedRefs = [f0,f1,f2,f3,f4,f5,f6,f7,f8,f9,f10,f11,f12,f13,f14,f15,f16,f17,f18,f19];
+  // Refs dinâmicos: suportam qualquer quantidade de slides (antes eram fixos em 20)
+  const feedNodes = useRef<(HTMLDivElement | null)[]>([]);
+  const setFeedNode = (i: number) => (el: HTMLDivElement | null) => { feedNodes.current[i] = el; };
 
   const buildFeedSlides = () => {
     const p = photos;
