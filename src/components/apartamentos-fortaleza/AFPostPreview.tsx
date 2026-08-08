@@ -155,12 +155,15 @@ export function AFPostPreview({ data, photos, onRegisterPrepareSlides }: AFPostP
   const prev = () => setCurrentSlide((p) => (p === 0 ? totalSlides - 1 : p - 1));
   const next = () => setCurrentSlide((p) => (p === totalSlides - 1 ? 0 : p + 1));
 
-  const captureRef = async (ref: React.RefObject<HTMLDivElement>) => {
-    if (!ref.current) return null;
+  const captureNode = async (index: number, totalCount: number) => {
+    const node = feedNodes.current[index];
+    if (!node) return null;
     const opts = exportOptions();
-    await toPng(ref.current, opts);
+    // Muitos slides (ex.: 37 fotos) estouram a memória do navegador em pixelRatio 3
+    if (totalCount > 20) opts.pixelRatio = Math.min(opts.pixelRatio, 2);
+    await toPng(node, opts);
     await new Promise(r => setTimeout(r, 120));
-    return toPng(ref.current, opts);
+    return toPng(node, opts);
   };
 
   // Captura todos os feedSlides do design atual, sobe como JPEG e devolve URLs HTTPS
@@ -172,7 +175,7 @@ export function AFPostPreview({ data, photos, onRegisterPrepareSlides }: AFPostP
       const publicationId = `af-olx-${crypto.randomUUID()}`;
       const urls: string[] = [];
       for (let i = 0; i < feedSlides.length; i++) {
-        const dataUrl = await captureRef(feedRefs[i]);
+        const dataUrl = await captureNode(i, feedSlides.length);
         if (!dataUrl) continue;
         const publicUrl = await uploadExportedImage(dataUrl, user.id, publicationId, i, true);
         urls.push(publicUrl);
@@ -196,9 +199,11 @@ export function AFPostPreview({ data, photos, onRegisterPrepareSlides }: AFPostP
       const zip = new JSZip();
       const folder = zip.folder('af-feed') as JSZip;
       for (let i = 0; i < feedSlides.length; i++) {
-        const url = await captureRef(feedRefs[i]);
+        const url = await captureNode(i, feedSlides.length);
         if (!url) continue;
         folder.file(`${String(i + 1).padStart(2, '0')}-${feedSlides[i].name.toLowerCase()}.png`, url.split(',')[1], { base64: true });
+        // libera memória entre capturas
+        await new Promise(r => setTimeout(r, 30));
       }
       const blob = await zip.generateAsync({ type: 'blob' });
       const a = document.createElement('a');
@@ -212,7 +217,7 @@ export function AFPostPreview({ data, photos, onRegisterPrepareSlides }: AFPostP
   const handleExportSingle = async () => {
     setIsExporting(true);
     try {
-      const url = await captureRef(feedRefs[safeIndex]);
+      const url = await captureNode(safeIndex, feedSlides.length);
       if (!url) return;
       const a = document.createElement('a');
       a.download = `af-feed-${safeIndex + 1}-${slides[safeIndex].name.toLowerCase()}.png`;
@@ -319,12 +324,9 @@ export function AFPostPreview({ data, photos, onRegisterPrepareSlides }: AFPostP
 
       <div className="fixed -left-[9999px] top-0 pointer-events-none" aria-hidden="true">
         {feedSlides.map((slide, i) => (
-          <div key={`fexp-${i}`} ref={feedRefs[i]} style={{ width: SLIDE_W, height: FEED_H, overflow: 'hidden' }}>
+          <div key={`fexp-${i}`} ref={setFeedNode(i)} style={{ width: SLIDE_W, height: FEED_H, overflow: 'hidden' }}>
             {slide.el}
           </div>
-        ))}
-        {Array.from({ length: MAX_SLIDES - feedSlides.length }).map((_, i) => (
-          <div key={`fpad-${i}`} ref={feedRefs[feedSlides.length + i]} />
         ))}
       </div>
     </div>
