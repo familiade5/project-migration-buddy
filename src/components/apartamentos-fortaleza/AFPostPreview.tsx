@@ -1,6 +1,6 @@
 import { useRef, useState, useEffect } from 'react';
 import { toPng } from 'html-to-image';
-import { safePixelRatio } from '@/lib/exportUtils';
+import { exportOptions } from '@/lib/exportUtils';
 import JSZip from 'jszip';
 import { Download, ChevronLeft, ChevronRight, Loader2, FileText } from 'lucide-react';
 import { AFPropertyData } from '@/types/apartamentosFortaleza';
