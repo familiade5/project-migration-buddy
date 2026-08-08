@@ -1071,7 +1071,7 @@ export const AFStoryCoverSlide = ({
       {/* Bottom content */}
       <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '0 20px 36px', zIndex: 10 }}>
         <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: 11, fontWeight: 600, letterSpacing: '0.12em', textTransform: 'uppercase', margin: '0 0 6px' }}>
-          {data.neighborhood || 'Manaus'} — {data.city || 'AM'}
+          {data.neighborhood || 'Fortaleza'} — {data.city || 'CE'}
         </p>
         <p style={{ color: 'white', fontSize: 24, fontWeight: 900, lineHeight: 1.25, margin: '0 0 16px', textShadow: '0 2px 12px rgba(0,0,0,0.4)' }}>
           {data.title || 'Apartamento Disponível'}
