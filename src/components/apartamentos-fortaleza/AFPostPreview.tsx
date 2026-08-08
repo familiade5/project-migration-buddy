@@ -159,7 +159,7 @@ export function AFPostPreview({ data, photos, onRegisterPrepareSlides }: AFPostP
 
   const captureRef = async (ref: React.RefObject<HTMLDivElement>) => {
     if (!ref.current) return null;
-    const opts = { quality: 1, pixelRatio: safePixelRatio(), cacheBust: true };
+    const opts = exportOptions();
     await toPng(ref.current, opts);
     await new Promise(r => setTimeout(r, 120));
     return toPng(ref.current, opts);
@@ -207,7 +207,7 @@ export function AFPostPreview({ data, photos, onRegisterPrepareSlides }: AFPostP
       a.href = URL.createObjectURL(blob); a.download = `af-feed-${data.title || 'imovel'}.zip`; a.click();
       URL.revokeObjectURL(a.href);
       toast.success(`${feedSlides.length} slides exportados!`);
-    } catch { toast.error('Erro ao exportar'); }
+    } catch (e) { console.error('AF export error', e); toast.error('Erro ao exportar'); }
     finally { setIsExporting(false); }
   };
 
@@ -220,7 +220,8 @@ export function AFPostPreview({ data, photos, onRegisterPrepareSlides }: AFPostP
       a.download = `af-feed-${safeIndex + 1}-${slides[safeIndex].name.toLowerCase()}.png`;
       a.href = url; a.click();
       toast.success('Slide exportado!');
-    } finally { setIsExporting(false); }
+    } catch (e) { console.error('AF export error', e); toast.error('Erro ao exportar'); }
+    finally { setIsExporting(false); }
   };
 
   const handleExportPDF = async () => {
