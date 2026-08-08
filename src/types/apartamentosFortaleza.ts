@@ -35,6 +35,9 @@ export interface AFPropertyData {
   cashOnly: boolean;
   isRental: boolean;
   rentalPrice: number;
+  // Redução de preço (capa "BAIXOU O PREÇO") — paridade com AM
+  priceReduced?: boolean;
+  oldPrice?: number;
   condominiumFee: number;
   condoIncludes: string;
   iptu: number;
