@@ -14,3 +14,15 @@ export const isIOS = (): boolean => {
 
 /** Safe pixel ratio: 1 on iOS/iPad, 3 on desktop (melhor qualidade de logo) */
 export const safePixelRatio = (): number => (isIOS() ? 1 : 3);
+
+/**
+ * Opções padrão para html-to-image.
+ * skipFonts evita SecurityError ao tentar ler cssRules de folhas remotas
+ * (ex.: fonts.googleapis.com), que quebrava a exportação.
+ */
+export const exportOptions = () => ({
+  quality: 1,
+  pixelRatio: safePixelRatio(),
+  cacheBust: true,
+  skipFonts: true,
+});
