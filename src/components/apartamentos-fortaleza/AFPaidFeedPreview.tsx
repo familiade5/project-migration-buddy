@@ -1,6 +1,6 @@
 import { useRef, useState, useEffect } from 'react';
 import { toPng } from 'html-to-image';
-import { safePixelRatio } from '@/lib/exportUtils';
+import { exportOptions } from '@/lib/exportUtils';
 import JSZip from 'jszip';
 import { Download, ChevronLeft, ChevronRight, Loader2, Zap } from 'lucide-react';
 import { AFPropertyData } from '@/types/apartamentosFortaleza';
@@ -81,7 +81,7 @@ export function AFPaidFeedPreview({ data, photos }: Props) {
 
   const captureRef = async (el: HTMLDivElement | null) => {
     if (!el) return null;
-    const opts = { quality: 1, pixelRatio: safePixelRatio(), cacheBust: true };
+    const opts = exportOptions();
     await toPng(el, opts);
     await new Promise(r => setTimeout(r, 120));
     return toPng(el, opts);
@@ -104,7 +104,7 @@ export function AFPaidFeedPreview({ data, photos }: Props) {
       a.click();
       URL.revokeObjectURL(a.href);
       toast.success(`${slides.length} slides de tráfego pago exportados!`);
-    } catch { toast.error('Erro ao exportar'); }
+    } catch (e) { console.error('AF paid export error', e); toast.error('Erro ao exportar'); }
     finally { setIsExporting(false); }
   };
 
