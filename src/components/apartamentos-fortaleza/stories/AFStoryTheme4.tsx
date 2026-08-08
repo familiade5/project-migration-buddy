@@ -51,16 +51,35 @@ export const AFStory4_T4_Slide1 = ({
       position: 'relative', width: STORY_W, height: STORY_H,
       backgroundColor: '#ffffff', fontFamily: 'Arial, sans-serif', overflow: 'hidden',
     }}>
-      {data.address && (
-        <div style={{ padding: '16px 18px 0', display: 'flex', alignItems: 'center', gap: 6 }}>
-          <span style={{ color: '#F47920', fontSize: 13 }}>📍</span>
-          <p style={{ color: '#555', fontSize: 11, margin: 0, fontWeight: 500 }}>{data.address}</p>
+      {(data.neighborhood || data.city) && (
+        <div style={{ padding: '60px 18px 0', display: 'flex', alignItems: 'center', gap: 6 }}>
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="#F47920" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5z"/>
+          </svg>
+          <p style={{ color: '#555', fontSize: 11, margin: 0, fontWeight: 500 }}>
+            {[data.neighborhood, data.city ? `${data.city}${data.state ? ' - ' + data.state : ''}` : ''].filter(Boolean).join(', ')}
+          </p>
         </div>
       )}
 
-      <div style={{ padding: '10px 18px 0', display: 'flex', alignItems: 'stretch', gap: 10 }}>
-        <div style={{ flex: 1, backgroundColor: '#F47920', borderRadius: 10, padding: '10px 14px' }}>
-          <p style={{ color: 'white', fontSize: 16, fontWeight: 900, margin: '0 0 5px', lineHeight: 1.2 }}>
+      <div style={{ padding: '10px 18px 0', display: 'flex', alignItems: 'stretch', gap: 4 }}>
+        <div style={{
+          flex: 1, minWidth: 0, background: 'linear-gradient(180deg, #F47920 52.88%, #D2600F 100%)',
+          borderRadius: 10, padding: '12px 12px', overflow: 'hidden',
+        }}>
+          <p style={{
+            color: 'white',
+            fontSize: (() => {
+              const len = (data.title || 'Apartamento').length;
+              if (len <= 14) return 20;
+              if (len <= 20) return 17;
+              if (len <= 28) return 14;
+              if (len <= 38) return 12;
+              return 10;
+            })(),
+            fontWeight: 900, margin: '0 0 5px', lineHeight: 1.15,
+            wordBreak: 'break-word', overflowWrap: 'anywhere',
+          }}>
             {data.title || 'Apartamento'}
           </p>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'nowrap' }}>
@@ -84,10 +103,10 @@ export const AFStory4_T4_Slide1 = ({
 
         {data.acceptsFinancing && (
           <div style={{
-            width: 108, alignSelf: 'stretch', borderRadius: 10, overflow: 'hidden',
+            width: 112, alignSelf: 'stretch', borderRadius: 10, overflow: 'hidden',
             flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center',
           }}>
-            <img src={logoCaixa} alt="CAIXA" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+            <img src={logoCaixa} alt="CAIXA" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block', transform: 'scale(1.05)' }} />
           </div>
         )}
       </div>
@@ -109,33 +128,37 @@ export const AFStory4_T4_Slide1 = ({
             {img(3) ? <img src={img(3)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <div style={{ width: '100%', height: '100%', backgroundColor: '#e2e8f0' }} />}
           </div>
           <div style={{
-            flex: 1, height: 100, backgroundColor: '#1B5EA6', borderRadius: 10,
+            flex: 1, height: 100,
+            background: data.isRental
+              ? 'linear-gradient(180deg, #F47920 52.88%, #D2600F 100%)'
+              : 'linear-gradient(180deg, #1476D4 36.06%, #044A8E 100%)',
+            borderRadius: 10,
             display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '8px 12px',
           }}>
             <div style={{
               display: 'inline-block', alignSelf: 'flex-start',
-              color: 'white', fontWeight: 700, fontSize: 8, letterSpacing: '0.08em',
-              backgroundColor: 'rgba(255,255,255,0.2)', border: '1px solid rgba(255,255,255,0.4)',
-              borderRadius: 20, padding: '1px 8px', marginBottom: 4,
+              color: 'white', fontWeight: 700, fontSize: 5, letterSpacing: '0.08em',
+              backgroundColor: 'transparent', border: '1px solid rgba(255,255,255,0.4)',
+              borderRadius: 20, padding: '0px 4px', marginBottom: 2,
             }}>
-              {data.isRental ? 'LOCAÇÃO' : 'VENDA'}
+              {data.isRental ? 'ALUGUEL' : 'VENDA'}
             </div>
             <div style={{ display: 'flex', alignItems: 'baseline', gap: 1, color: 'white' }}>
-              <span style={{ fontSize: 10, opacity: 0.75, marginRight: 1 }}>R$</span>
-              <span style={{ fontSize: 19, fontWeight: 700, lineHeight: 1 }}>{priceParts.main || 'Consulte'}</span>
+              <span style={{ fontSize: 14, opacity: 0.75, marginRight: 1 }}>R$</span>
+              <span style={{ fontSize: 28, fontWeight: 700, lineHeight: 1 }}>{priceParts.main || 'Consulte'}</span>
               {priceParts.cents && <span style={{ fontSize: 10, opacity: 0.75 }}>{priceParts.cents}</span>}
             </div>
             <div style={{ borderTop: '1px solid rgba(255,255,255,0.2)', marginTop: 4, paddingTop: 3 }}>
-              <p style={{ color: 'white', fontSize: 8, opacity: 0.9, margin: 0, lineHeight: 1.3 }}>
-                {data.isRental ? 'Locação' : ['À vista', data.acceptsFinancing && 'Aceita financiamento'].filter(Boolean).join(' | ')}
+              <p style={{ color: 'white', fontSize: 8, opacity: 0.9, margin: 0, lineHeight: 1.3, paddingLeft: 18 }}>
+                {data.isRental ? '| Locação' : ['À vista', data.acceptsFinancing && 'Aceita financiamento'].filter(Boolean).join(' | ')}
               </p>
             </div>
           </div>
         </div>
       </div>
 
-      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: 10 }}>
-        <Logo size={85} />
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: -8 }}>
+        <Logo size={150} />
       </div>
     </div>
   );
