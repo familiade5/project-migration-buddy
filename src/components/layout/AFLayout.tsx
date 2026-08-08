@@ -8,6 +8,7 @@ import {
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { AFLogoSVG } from '@/components/apartamentos-fortaleza/AFLogo';
 import logoVDH from '@/assets/logo-vdh.jpg';
+import logoAM from '@/assets/logo-apartamentos-manaus.png';
 
 interface AFLayoutProps { children: React.ReactNode; }
 
@@ -48,12 +49,18 @@ export function AFLayout({ children }: AFLayoutProps) {
             </button>
           </div>
 
-          <div className="px-4 py-3 border-b" style={{ borderColor: '#E5E7EB' }}>
+          <div className="px-4 py-3 border-b space-y-2" style={{ borderColor: '#E5E7EB' }}>
             <Link to="/" onClick={() => setSidebarOpen(false)}
               className="flex items-center gap-3 w-full px-4 py-2.5 rounded-xl border transition-all hover:opacity-90"
               style={{ backgroundColor: '#F5F0E8', borderColor: '#E0CFA0' }}>
               <img src={logoVDH} alt="Venda Direta Hoje" className="h-6 w-auto object-contain rounded" />
               <span className="text-xs font-semibold truncate" style={{ color: '#1a3a6b' }}>Venda Direta Hoje</span>
+            </Link>
+            <Link to="/apartamentos-manaus" onClick={() => setSidebarOpen(false)}
+              className="flex items-center gap-3 w-full px-4 py-2.5 rounded-xl border transition-all hover:opacity-90"
+              style={{ backgroundColor: '#EBF2FC', borderColor: '#C3D9F0' }}>
+              <img src={logoAM} alt="Apartamentos Manaus" className="h-9 w-auto object-contain" />
+              <span className="text-xs font-semibold truncate" style={{ color: '#1B5EA6' }}>Apartamentos Manaus</span>
             </Link>
           </div>
 
