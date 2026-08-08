@@ -49,7 +49,16 @@ const compressForStorage = (src: string, maxW = 1200, quality = 0.78): Promise<s
 };
 
 const ApartamentosFortalezaPage = () => {
-  const [propertyData, setPropertyData] = useState<AFPropertyData>(() => loadFromStorage(STORAGE_KEY_DATA, defaultAFPropertyData));
+  const [propertyData, setPropertyData] = useState<AFPropertyData>(() => {
+    const stored = loadFromStorage(STORAGE_KEY_DATA, defaultAFPropertyData) as AFPropertyData;
+    // Corretor padrão AF sempre pré-preenchido quando estiver vazio
+    return {
+      ...stored,
+      brokerName: stored.brokerName?.trim() || defaultAFPropertyData.brokerName,
+      brokerPhone: stored.brokerPhone?.trim() || defaultAFPropertyData.brokerPhone,
+      creci: stored.creci?.trim() || defaultAFPropertyData.creci,
+    };
+  });
   const [photos, setPhotos] = useState<string[]>(() => loadFromStorage(STORAGE_KEY_PHOTOS, []));
   const [previewTab, setPreviewTab] = useState<'feed' | 'stories' | 'paid'>('feed');
 

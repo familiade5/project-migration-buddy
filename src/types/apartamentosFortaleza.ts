@@ -86,7 +86,7 @@ export const defaultAFPropertyData: AFPropertyData = {
   iptu: 0,
   brokerName: 'Almir Neto',
   brokerPhone: '(85) 99123-1214',
-  creci: '29013',
+  creci: 'CRECI 29013',
   highlights: [],
   infoMessage: '',
   canalPro: defaultCanalProExtraData,
