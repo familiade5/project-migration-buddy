@@ -1340,7 +1340,7 @@ export const AFStoryInfoSlide = ({
         </div>
 
         <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: 11, textAlign: 'center', margin: '0 0 4px' }}>
-          {data.brokerName || 'Iury Sampaio'} • Corretor de Imóveis
+          {data.brokerName || 'Almir Neto'} • Corretor de Imóveis
         </p>
         <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: 10, textAlign: 'center', margin: '0 0 4px' }}>Creci 3968 PF</p>
         <p style={{ color: 'rgba(255,255,255,0.35)', fontSize: 10, textAlign: 'center', margin: 0 }}>🌐 www.apartamentosmanaus.com</p>
