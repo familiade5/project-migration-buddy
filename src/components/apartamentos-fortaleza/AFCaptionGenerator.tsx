@@ -91,7 +91,7 @@ export function AFCaptionGenerator({ data }: AFCaptionGeneratorProps) {
   };
 
   const handleRegenerate = () => {
-    setCaption(buildCaption(data));
+    setCaption(buildAFCaption(data));
     toast.success('Legenda atualizada!');
   };
 
