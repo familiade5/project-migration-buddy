@@ -14,6 +14,8 @@ Deno.serve(async (req) => {
   const me = await get("me?fields=id,name");
   const businesses = await get("me/businesses?fields=id,name&limit=50");
   const out: Record<string, unknown> = { me, businesses };
+  out.assigned_pages = await get("me/assigned_pages?fields=id,name,instagram_business_account{id,username}&limit=100");
+  out.accounts = await get("me/accounts?fields=id,name,instagram_business_account{id,username}&limit=100");
   const list = (businesses?.data ?? []) as Array<{ id: string; name: string }>;
   for (const b of list) {
     out[`pages_${b.id}`] = await get(
