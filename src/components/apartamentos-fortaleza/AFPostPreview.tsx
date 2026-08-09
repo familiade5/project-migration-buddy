@@ -9,6 +9,8 @@ import { AF2CoverSlide, AF2PhotoSlide, AF2CTASlide } from './slides/AFSlides2';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import { generateAFPropertyPDF } from '@/lib/af/generatePropertyPDF';
+import { AFInstagramPublishDialog } from './AFInstagramPublishDialog';
+import { buildAFCaption } from './AFCaptionGenerator';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import logoAF from '@/assets/logo-apartamentos-fortaleza.png';
@@ -192,6 +194,31 @@ export function AFPostPreview({ data, photos, onRegisterPrepareSlides }: AFPostP
     onRegisterPrepareSlides(() => prepareOlxSlidesRef.current!());
     return () => onRegisterPrepareSlides(null);
   }, [onRegisterPrepareSlides]);
+
+  // ── Preparação da publicação no Instagram do AF ───────────────────────────
+  const prepareInstagramPublication = async () => {
+    if (!user) throw new Error('Você precisa estar logado para publicar.');
+    if (photos.length === 0) throw new Error('Adicione pelo menos uma foto.');
+    setIsExporting(true);
+    try {
+      const publicationId = `af-instagram-${crypto.randomUUID()}`;
+      const previewDataUrls: string[] = [];
+      const imageUrls: string[] = [];
+      const total = Math.min(feedSlides.length, 15);
+      for (let i = 0; i < total; i++) {
+        const dataUrl = await captureNode(i, feedSlides.length);
+        if (!dataUrl) continue;
+        previewDataUrls.push(dataUrl);
+        imageUrls.push(await uploadExportedImage(dataUrl, user.id, publicationId, i, true));
+      }
+      return { previewDataUrls, imageUrls, caption: buildAFCaption(data) };
+    } catch (error) {
+      console.error('Error preparing AF Instagram publication:', error);
+      throw error instanceof Error ? error : new Error('Não foi possível preparar a publicação.');
+    } finally {
+      setIsExporting(false);
+    }
+  };
 
   const handleExportAll = async () => {
     setIsExporting(true);
