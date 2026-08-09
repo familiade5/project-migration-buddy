@@ -303,6 +303,14 @@ export function AFPostPreview({ data, photos, onRegisterPrepareSlides }: AFPostP
         </Button>
       </div>
 
+      {/* ── Publicação no Instagram AF ── */}
+      <AFInstagramPublishDialog
+        data={data}
+        photos={photos}
+        disabled={isExporting || isExportingPdf}
+        onPrepare={prepareInstagramPublication}
+      />
+
       <div className="flex items-center gap-1 flex-wrap">
         {slides.map((slide, index) => (
           <button key={slide.id} onClick={() => setCurrentSlide(index)}
