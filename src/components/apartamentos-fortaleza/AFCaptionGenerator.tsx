@@ -10,7 +10,7 @@ interface AFCaptionGeneratorProps {
   data: AFPropertyData;
 }
 
-function buildCaption(data: AFPropertyData): string {
+export function buildAFCaption(data: AFPropertyData): string {
   const lines: string[] = [];
 
   const titleParts = [data.title].filter(Boolean);
@@ -72,11 +72,11 @@ function buildCaption(data: AFPropertyData): string {
 }
 
 export function AFCaptionGenerator({ data }: AFCaptionGeneratorProps) {
-  const [caption, setCaption] = useState(() => buildCaption(data));
+  const [caption, setCaption] = useState(() => buildAFCaption(data));
   const [copied, setCopied] = useState(false);
 
   useEffect(() => {
-    setCaption(buildCaption(data));
+    setCaption(buildAFCaption(data));
   }, [data]);
 
   const handleCopy = async () => {
@@ -91,7 +91,7 @@ export function AFCaptionGenerator({ data }: AFCaptionGeneratorProps) {
   };
 
   const handleRegenerate = () => {
-    setCaption(buildCaption(data));
+    setCaption(buildAFCaption(data));
     toast.success('Legenda atualizada!');
   };
 
