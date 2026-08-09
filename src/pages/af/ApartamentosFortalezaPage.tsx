@@ -6,7 +6,7 @@ import { AFPropertyForm } from '@/components/apartamentos-fortaleza/AFPropertyFo
 import { AFCaptionGenerator } from '@/components/apartamentos-fortaleza/AFCaptionGenerator';
 import { AFPhotoManager } from '@/components/apartamentos-fortaleza/AFPhotoManager';
 import { AFLayout } from '@/components/layout/AFLayout';
-import { Image, Edit3, Sparkles, FileText, LayoutGrid, Smartphone, Tag, RotateCcw } from 'lucide-react';
+import { Image, Edit3, Sparkles, FileText, LayoutGrid, Smartphone, Tag } from 'lucide-react';
 import { toast } from 'sonner';
 import { PublishToOlxButton } from '@/components/canal-pro/PublishToOlxButton';
 
@@ -15,62 +15,19 @@ const ACCENT = '#E8562A';
 const STORAGE_KEY_DATA = 'af_property_data';
 const STORAGE_KEY_PHOTOS = 'af_photos';
 
-const loadFromStorage = <T,>(key: string, fallback: T): T => {
-  try {
-    const raw = localStorage.getItem(key);
-    return raw ? (JSON.parse(raw) as T) : fallback;
-  } catch { return fallback; }
-};
-
-// Compresses a base64 image to a smaller size before localStorage storage.
-// This prevents exceeding the ~5MB localStorage quota with large photos.
-const compressForStorage = (src: string, maxW = 1200, quality = 0.78): Promise<string> => {
-  return new Promise((resolve) => {
-    // Already small enough (< 150KB base64) — skip compression
-    if (src.length < 150_000) { resolve(src); return; }
-    const img = document.createElement('img') as HTMLImageElement;
-    img.onload = () => {
-      const ratio = Math.min(1, maxW / (img.naturalWidth || maxW));
-      const canvas = document.createElement('canvas');
-      canvas.width = Math.round((img.naturalWidth || maxW) * ratio);
-      canvas.height = Math.round((img.naturalHeight || maxW) * ratio);
-      const ctx = canvas.getContext('2d');
-      if (ctx) {
-        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-        resolve(canvas.toDataURL('image/jpeg', quality));
-      } else {
-        resolve(src);
-      }
-    };
-    img.onerror = () => resolve(src);
-    img.src = src;
-  });
-};
-
 const ApartamentosFortalezaPage = () => {
-  const [propertyData, setPropertyData] = useState<AFPropertyData>(() => {
-    const stored = loadFromStorage(STORAGE_KEY_DATA, defaultAFPropertyData) as AFPropertyData;
-    // Corretor padrão AF sempre pré-preenchido quando estiver vazio
-    return {
-      ...stored,
-      brokerName: stored.brokerName?.trim() || defaultAFPropertyData.brokerName,
-      brokerPhone: stored.brokerPhone?.trim() || defaultAFPropertyData.brokerPhone,
-      creci: stored.creci?.trim() || defaultAFPropertyData.creci,
-    };
-  });
-  const [photos, setPhotos] = useState<string[]>(() => loadFromStorage(STORAGE_KEY_PHOTOS, []));
+  // Igual ao AM: sempre começa limpo ao entrar na página (sem cache local)
+  const [propertyData, setPropertyData] = useState<AFPropertyData>(defaultAFPropertyData);
+  const [photos, setPhotos] = useState<string[]>([]);
   const [previewTab, setPreviewTab] = useState<'feed' | 'stories'>('feed');
 
-  // Limpa fotos + dados do imóvel (e o cache local) para começar um post do zero
-  const handleNewPost = () => {
-    setPhotos([]);
-    setPropertyData(defaultAFPropertyData);
+  // Limpa qualquer cache antigo de sessões anteriores
+  useEffect(() => {
     try {
       localStorage.removeItem(STORAGE_KEY_PHOTOS);
       localStorage.removeItem(STORAGE_KEY_DATA);
     } catch { /* ignore */ }
-    toast.success('Novo post iniciado — fotos e dados limpos');
-  };
+  }, []);
 
   // Capturador de slides desenhados (registrado pelo AFPostPreview).
   // Usado pelo PublishToOlxButton para enviar à OLX as mesmas imagens do Instagram.
@@ -78,28 +35,6 @@ const ApartamentosFortalezaPage = () => {
   const registerPrepareSlides = useCallback((fn: (() => Promise<string[]>) | null) => {
     prepareOlxSlidesRef.current = fn;
   }, []);
-
-  useEffect(() => {
-    try { localStorage.setItem(STORAGE_KEY_DATA, JSON.stringify(propertyData)); } catch {}
-  }, [propertyData]);
-
-  // Compress photos before saving to prevent localStorage quota errors
-  useEffect(() => {
-    if (photos.length === 0) {
-      try { localStorage.removeItem(STORAGE_KEY_PHOTOS); } catch {}
-      return;
-    }
-    Promise.all(photos.map(p => compressForStorage(p))).then(compressed => {
-      try {
-        localStorage.setItem(STORAGE_KEY_PHOTOS, JSON.stringify(compressed));
-      } catch {
-        // If still too large, save only the first 6
-        try {
-          localStorage.setItem(STORAGE_KEY_PHOTOS, JSON.stringify(compressed.slice(0, 6)));
-        } catch {}
-      }
-    });
-  }, [photos]);
 
   return (
     <AFLayout>
@@ -110,13 +45,6 @@ const ApartamentosFortalezaPage = () => {
             <p className="text-sm text-gray-500">Crie criativos profissionais para Instagram</p>
           </div>
           <div className="flex items-center gap-2">
-            <button
-              onClick={handleNewPost}
-              className="flex items-center gap-2 px-4 py-2.5 rounded-full text-sm font-medium border border-gray-200 bg-white text-gray-700 hover:bg-gray-50 transition-colors shadow-sm"
-            >
-              <RotateCcw className="w-4 h-4" />
-              <span>Novo post</span>
-            </button>
             <div className="flex items-center gap-2 px-4 py-2.5 rounded-full text-white text-sm font-medium shadow"
               style={{ backgroundColor: PRIMARY }}>
               <Sparkles className="w-4 h-4" />
