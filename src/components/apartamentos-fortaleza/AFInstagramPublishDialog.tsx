@@ -18,6 +18,8 @@ import { toast } from 'sonner';
 interface PreparedPublishPayload {
   imageUrls: string[];
   previewDataUrls: string[];
+  storyImageUrl?: string;
+  storyPreviewDataUrl?: string;
   caption: string;
 }
 
@@ -71,6 +73,8 @@ export const AFInstagramPublishDialog = ({
   const [captionError, setCaptionError] = useState<string | null>(null);
   const [imageUrls, setImageUrls] = useState<string[]>([]);
   const [previewDataUrls, setPreviewDataUrls] = useState<string[]>([]);
+  const [storyImageUrl, setStoryImageUrl] = useState<string | undefined>();
+  const [storyPreviewDataUrl, setStoryPreviewDataUrl] = useState<string | undefined>();
   const [isPreparing, setIsPreparing] = useState(false);
   const [isPublishing, setIsPublishing] = useState(false);
 
@@ -80,6 +84,8 @@ export const AFInstagramPublishDialog = ({
     setCaption('');
     setImageUrls([]);
     setPreviewDataUrls([]);
+    setStoryImageUrl(undefined);
+    setStoryPreviewDataUrl(undefined);
   };
 
   const handleOpenChange = (nextOpen: boolean) => {
@@ -99,6 +105,8 @@ export const AFInstagramPublishDialog = ({
       }
       setPreviewDataUrls(prepared.previewDataUrls);
       setImageUrls(prepared.imageUrls);
+      setStoryImageUrl(prepared.storyImageUrl);
+      setStoryPreviewDataUrl(prepared.storyPreviewDataUrl);
       setCaption(prepared.caption);
       setCaptionError(null);
       setStep('images');
@@ -147,6 +155,29 @@ export const AFInstagramPublishDialog = ({
 
       if (facebookResult?.success) {
         toast.success('Também publicado na página do Facebook do AF!');
+      } else if (facebookResult && !facebookResult.skipped) {
+        toast.warning('Instagram OK, mas o Facebook falhou.');
+      }
+
+      // Story (mesmo fluxo do AM)
+      if (storyImageUrl) {
+        try {
+          const { data: storyResponse, error: storyError } = await supabase.functions.invoke('publish-social-media', {
+            body: {
+              story_image_url: storyImageUrl,
+              instagram_account_id: AF_INSTAGRAM_ACCOUNT,
+            },
+          });
+          if (storyError || !storyResponse?.instagram_story?.success) {
+            console.error('AF Story publish error:', storyError);
+            toast.warning('Carrossel publicado, mas o Story falhou.');
+          } else {
+            toast.success('Story do AF também publicado!');
+          }
+        } catch (storyErr) {
+          console.error('AF Story publish error:', storyErr);
+          toast.warning('Carrossel publicado, mas o Story não foi postado.');
+        }
       }
 
       toast.success('Carrossel do AF publicado no Instagram com sucesso!');
@@ -220,7 +251,7 @@ export const AFInstagramPublishDialog = ({
                 style={{ backgroundColor: '#e0f2fe', color: '#0c4a6e', border: '1px solid #bae6fd' }}
               >
                 Você está prestes a publicar <strong>{previewDataUrls.length} imagem(ns)</strong> no Instagram do
-                Apartamentos Fortaleza.
+                Apartamentos Fortaleza.{storyPreviewDataUrl && <> + <strong>1 Story</strong>.</>}
               </div>
               <div className="grid max-h-[60vh] grid-cols-1 gap-3 overflow-y-auto pr-1 sm:grid-cols-2">
                 {previewDataUrls.map((url, index) => (
@@ -239,20 +270,38 @@ export const AFInstagramPublishDialog = ({
                     <img src={url} alt={`Slide ${index + 1}`} className="block h-auto w-full" loading="lazy" />
                   </div>
                 ))}
+                {storyPreviewDataUrl && (
+                  <div className="overflow-hidden rounded-xl" style={{ border: '1px solid #0C7B8E', backgroundColor: '#f0fbfd' }}>
+                    <div
+                      className="flex items-center justify-between px-3 py-2 text-xs font-semibold uppercase tracking-wide"
+                      style={{ borderBottom: '1px solid #0C7B8E', color: '#0C7B8E' }}
+                    >
+                      <span>Story AF</span>
+                      <span>9:16</span>
+                    </div>
+                    <img src={storyPreviewDataUrl} alt="Story AF" className="block h-auto w-full" loading="lazy" />
+                  </div>
+                )}
               </div>
             </div>
           ) : (
-            <div className="space-y-3">
+            <div className="space-y-4">
+              <div className="rounded-xl px-4 py-3 text-sm" style={{ backgroundColor: '#e0f2fe', color: '#0c4a6e', border: '1px solid #bae6fd' }}>
+                Se a legenda estiver certa, confirme. Se precisar, edite antes do envio.
+              </div>
               <Textarea
                 value={caption}
-                onChange={(event) => setCaption(event.target.value)}
-                rows={14}
-                className="text-sm"
+                onChange={(event) => { setCaption(event.target.value); if (captionError) setCaptionError(null); }}
+                maxLength={2200}
+                className="min-h-[300px] resize-y text-sm"
                 style={{ backgroundColor: '#ffffff', color: '#111827', borderColor: '#d1d5db' }}
+                placeholder="Digite a legenda do Instagram"
               />
-              <div className="flex items-center justify-between text-xs" style={{ color: '#6b7280' }}>
-                <span>{caption.trim().length}/2200 caracteres</span>
-                {captionError && <span style={{ color: '#dc2626' }}>{captionError}</span>}
+              <div className="flex items-center justify-between gap-3 text-xs">
+                <span style={{ color: captionError ? '#dc2626' : '#6b7280' }}>
+                  {captionError || 'A legenda será usada na descrição da publicação.'}
+                </span>
+                <span className="font-medium" style={{ color: '#6b7280' }}>{caption.trim().length}/2200</span>
               </div>
             </div>
           )}
