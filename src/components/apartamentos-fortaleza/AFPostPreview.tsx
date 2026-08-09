@@ -6,6 +6,7 @@ import { Download, ChevronLeft, ChevronRight, Loader2, FileText } from 'lucide-r
 import { AFPropertyData } from '@/types/apartamentosFortaleza';
 import { AFCoverSlide, AFSpecsSlide, AFLocationSlide, AFPhotoSlide, AFInfoSlide } from './slides/AFSlides';
 import { AF2CoverSlide, AF2PhotoSlide, AF2CTASlide } from './slides/AFSlides2';
+import { AFStory4_T4_Slide1 } from './stories/AFStoryTheme4';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import { generateAFPropertyPDF } from '@/lib/af/generatePropertyPDF';
@@ -32,6 +33,7 @@ interface AFPostPreviewProps {
 type FormatType = 'feed' | 'story';
 const SLIDE_W = 360;
 const FEED_H  = 360;
+const STORY_H = 640;
 const MAX_SLIDES = 20;
 
 // ── Helpers para upload dos slides para o bucket público ──────────────────
@@ -63,7 +65,7 @@ const convertToJpeg = (pngDataUrl: string, quality = 0.92): Promise<string> => {
 };
 
 const uploadExportedImage = async (
-  dataUrl: string, userId: string, creativeId: string, index: number, asJpeg = true,
+  dataUrl: string, userId: string, creativeId: string, index: number, asJpeg = true, kind: 'feed' | 'story' = 'feed',
 ): Promise<string> => {
   let finalDataUrl = dataUrl; let contentType = 'image/png'; let ext = 'png';
   if (asJpeg) {
@@ -71,7 +73,7 @@ const uploadExportedImage = async (
     contentType = 'image/jpeg'; ext = 'jpg';
   }
   const blob = dataURLtoBlob(finalDataUrl);
-  const fileName = `${userId}/${creativeId}/af-feed-${index + 1}.${ext}`;
+  const fileName = `${userId}/${creativeId}/af-${kind}-${index + 1}.${ext}`;
   const { error } = await supabase.storage.from('exported-creatives').upload(fileName, blob, { contentType, upsert: true });
   if (error) throw error;
   const { data: { publicUrl } } = supabase.storage.from('exported-creatives').getPublicUrl(fileName);
@@ -99,6 +101,7 @@ export function AFPostPreview({ data, photos, onRegisterPrepareSlides }: AFPostP
   // Refs dinâmicos: suportam qualquer quantidade de slides (antes eram fixos em 20)
   const feedNodes = useRef<(HTMLDivElement | null)[]>([]);
   const setFeedNode = (i: number) => (el: HTMLDivElement | null) => { feedNodes.current[i] = el; };
+  const storyNode = useRef<HTMLDivElement | null>(null);
 
   const buildFeedSlides = () => {
     const p = photos;
@@ -211,7 +214,22 @@ export function AFPostPreview({ data, photos, onRegisterPrepareSlides }: AFPostP
         previewDataUrls.push(dataUrl);
         imageUrls.push(await uploadExportedImage(dataUrl, user.id, publicationId, i, true));
       }
-      return { previewDataUrls, imageUrls, caption: buildAFCaption(data) };
+
+      // Story 1 (mesmo fluxo do AM: carrossel + 1 Story)
+      let storyImageUrl: string | undefined;
+      let storyPreviewDataUrl: string | undefined;
+      if (storyNode.current) {
+        const opts = exportOptions();
+        await toPng(storyNode.current, opts);
+        await new Promise(r => setTimeout(r, 120));
+        const storyDataUrl = await toPng(storyNode.current, opts);
+        if (storyDataUrl) {
+          storyPreviewDataUrl = storyDataUrl;
+          storyImageUrl = await uploadExportedImage(storyDataUrl, user.id, publicationId, 0, true, 'story');
+        }
+      }
+
+      return { previewDataUrls, imageUrls, storyImageUrl, storyPreviewDataUrl, caption: buildAFCaption(data) };
     } catch (error) {
       console.error('Error preparing AF Instagram publication:', error);
       throw error instanceof Error ? error : new Error('Não foi possível preparar a publicação.');
@@ -363,6 +381,9 @@ export function AFPostPreview({ data, photos, onRegisterPrepareSlides }: AFPostP
             {slide.el}
           </div>
         ))}
+        <div ref={storyNode} style={{ width: SLIDE_W, height: STORY_H, overflow: 'hidden' }}>
+          <AFStory4_T4_Slide1 data={data} photos={photos} />
+        </div>
       </div>
     </div>
   );
