@@ -66,9 +66,16 @@ Deno.serve(async (req) => {
 
     const body = await req.json();
 
-    // Support per-request account override; fallback to default VDH account
-    const INSTAGRAM_BUSINESS_ACCOUNT_ID = body.instagram_account_id
-      || Deno.env.get("INSTAGRAM_BUSINESS_ACCOUNT_ID");
+    // Support per-request account override; a non-numeric value is treated as
+    // the name of a secret holding the account ID (e.g. "AF_INSTAGRAM_BUSINESS_ACCOUNT_ID").
+    let INSTAGRAM_BUSINESS_ACCOUNT_ID: string | undefined;
+    if (body.instagram_account_id) {
+      const val = String(body.instagram_account_id);
+      INSTAGRAM_BUSINESS_ACCOUNT_ID = /^\d+$/.test(val) ? val : Deno.env.get(val) || undefined;
+    }
+    if (!INSTAGRAM_BUSINESS_ACCOUNT_ID) {
+      INSTAGRAM_BUSINESS_ACCOUNT_ID = Deno.env.get("INSTAGRAM_BUSINESS_ACCOUNT_ID");
+    }
     if (!INSTAGRAM_BUSINESS_ACCOUNT_ID) {
       throw new Error("INSTAGRAM_BUSINESS_ACCOUNT_ID não configurado");
     }
