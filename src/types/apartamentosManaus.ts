@@ -14,6 +14,7 @@ export interface AMPropertyData {
   bathrooms: number;
   area: number;
   garageSpaces: number;
+  coveredGarage?: boolean; // vaga de garagem coberta
   suites: number;
   floor: string;
   totalFloors: string;
@@ -124,6 +125,7 @@ export const defaultAMPropertyData: AMPropertyData = {
   bathrooms: 0,
   area: 0,
   garageSpaces: 0,
+  coveredGarage: false,
   suites: 0,
   floor: '',
   totalFloors: '',
