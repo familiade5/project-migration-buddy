@@ -31,7 +31,8 @@ function buildCaption(data: AMPropertyData): string {
   // Pricing
   if (data.isRental) {
     if (data.rentalPrice > 0) {
-      lines.push(`💰 Valor de Locação ${formatCurrency(data.rentalPrice)}/mês`);
+      const condoPart = data.rentIncludesCondo ? ' c/ condomínio incluso' : '';
+      lines.push(`💰 Valor de Locação ${formatCurrency(data.rentalPrice)}/mês${condoPart}`);
     }
   } else {
     if (data.salePrice > 0) {
