@@ -87,7 +87,10 @@ function buildAMCaption(data: AMPropertyData): string {
   lines.push(`🏢 ${titleParts.join(' - ')}`);
   lines.push('');
   if (data.isRental) {
-    if (data.rentalPrice > 0) lines.push(`💰 Valor de Locação ${formatCurrency(data.rentalPrice)}/mês`);
+    if (data.rentalPrice > 0) {
+      const condoPart = data.rentIncludesCondo ? ' c/ condomínio incluso' : '';
+      lines.push(`💰 Valor de Locação ${formatCurrency(data.rentalPrice)}/mês${condoPart}`);
+    }
   } else {
     if (data.salePrice > 0) {
       const financing = data.acceptsFinancing ? `Aceita financiamento${data.acceptsFGTS ? ' e FGTS' : ''}` : 'À vista';
@@ -96,8 +99,16 @@ function buildAMCaption(data: AMPropertyData): string {
     if (data.subsidy > 0) lines.push(`💰 Subsídio de até ${formatCurrency(data.subsidy)} - dependendo da renda`);
   }
   lines.push('');
-  if (data.bedrooms > 0) lines.push(`✅ ${data.bedrooms} ${data.bedrooms === 1 ? 'quarto' : 'quartos'}`);
-  if (data.suites > 0) lines.push(`✅ ${data.suites} ${data.suites === 1 ? 'suíte' : 'suítes'}`);
+  if (data.bedrooms > 0) {
+    const quartoLabel = `${data.bedrooms} ${data.bedrooms === 1 ? 'quarto' : 'quartos'}`;
+    if (data.suites > 0) {
+      lines.push(`✅ ${quartoLabel} sendo ${data.suites} ${data.suites === 1 ? 'suíte' : 'suítes'}`);
+    } else {
+      lines.push(`✅ ${quartoLabel}`);
+    }
+  } else if (data.suites > 0) {
+    lines.push(`✅ ${data.suites} ${data.suites === 1 ? 'suíte' : 'suítes'}`);
+  }
   if (data.floor) lines.push(`✅ ${data.floor}° Andar`);
   if (data.rooms) data.rooms.split('\n').map(r => r.trim()).filter(Boolean).forEach(r => lines.push(`✅ ${r}`));
   if (data.garageSpaces > 0) lines.push(`✅ ${data.garageSpaces} ${data.garageSpaces === 1 ? 'vaga de garagem' : 'vagas de garagem'}`);
