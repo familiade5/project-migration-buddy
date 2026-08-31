@@ -104,7 +104,13 @@ export function buildOlxDescription(
   const headerParts: string[] = [];
   if (d.title?.trim()) headerParts.push(d.title.trim());
   else if (d.propertyType) headerParts.push(d.propertyType);
-  if (d.bedrooms) headerParts.push(`${d.bedrooms} Quarto${d.bedrooms > 1 ? 's' : ''}`);
+  if (d.bedrooms)
+    headerParts.push(
+      d.suites && d.suites > 0
+        ? `${d.bedrooms} Quarto${d.bedrooms > 1 ? 's' : ''} sendo ${d.suites} ${d.suites === 1 ? 'Suíte' : 'Suítes'}`
+        : `${d.bedrooms} Quarto${d.bedrooms > 1 ? 's' : ''}`,
+    );
+
   if (d.neighborhood) headerParts.push(d.neighborhood);
   if (headerParts.length) lines.push(headerParts.join(' - '));
   lines.push('');
@@ -124,9 +130,18 @@ export function buildOlxDescription(
   }
 
   // Specs (one per line, agency style)
-  if (d.bedrooms) lines.push(`${d.bedrooms} quarto${d.bedrooms > 1 ? 's' : ''}`);
-  if (d.suites) lines.push(`${d.suites} suíte${d.suites > 1 ? 's' : ''}`);
+  if (d.bedrooms) {
+    const quartoLabel = `${d.bedrooms} quarto${d.bedrooms > 1 ? 's' : ''}`;
+    if (d.suites && d.suites > 0) {
+      lines.push(`${quartoLabel} sendo ${d.suites} ${d.suites === 1 ? 'suíte' : 'suítes'}`);
+    } else {
+      lines.push(quartoLabel);
+    }
+  } else if (d.suites) {
+    lines.push(`${d.suites} ${d.suites === 1 ? 'suíte' : 'suítes'}`);
+  }
   if (d.bathrooms) lines.push(`${d.bathrooms} banheiro${d.bathrooms > 1 ? 's' : ''}`);
+
   const floorLabel = ordinal(d.floor);
   if (floorLabel) lines.push(floorLabel);
   if (d.garageSpaces) lines.push(`${d.garageSpaces} vaga${d.garageSpaces > 1 ? 's' : ''} de garagem`);
