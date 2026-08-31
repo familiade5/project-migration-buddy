@@ -259,10 +259,31 @@ export function AMPropertyForm({ data, onChange }: AMPropertyFormProps) {
               </div>
             </>
           ) : (
-            <div className="space-y-1">
-              <Label className={labelClass}>Valor do Aluguel (R$)</Label>
-              <Input className={inputClass} type="number" placeholder="0"
-                value={data.rentalPrice || ''} onChange={(e) => set('rentalPrice', Number(e.target.value))} />
+            <div className="space-y-2">
+              <div className="space-y-1">
+                <Label className={labelClass}>Valor do Aluguel (R$)</Label>
+                <Input className={inputClass} type="number" placeholder="0"
+                  value={data.rentalPrice || ''} onChange={(e) => set('rentalPrice', Number(e.target.value))} />
+              </div>
+              <div className="space-y-1">
+                <Label className={labelClass}>Condomínio incluso no aluguel?</Label>
+                <div className="flex gap-2">
+                  <button type="button" onClick={() => set('rentIncludesCondo', true)}
+                    className="flex-1 py-2 rounded-lg text-xs font-semibold border transition"
+                    style={data.rentIncludesCondo
+                      ? { backgroundColor: '#1B5EA6', color: '#fff', borderColor: '#1B5EA6' }
+                      : { backgroundColor: '#fff', color: '#334155', borderColor: '#cbd5e1' }}>
+                    Sim
+                  </button>
+                  <button type="button" onClick={() => set('rentIncludesCondo', false)}
+                    className="flex-1 py-2 rounded-lg text-xs font-semibold border transition"
+                    style={!data.rentIncludesCondo
+                      ? { backgroundColor: '#1B5EA6', color: '#fff', borderColor: '#1B5EA6' }
+                      : { backgroundColor: '#fff', color: '#334155', borderColor: '#cbd5e1' }}>
+                    Não
+                  </button>
+                </div>
+              </div>
             </div>
           )}
         </div>

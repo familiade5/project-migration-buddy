@@ -33,6 +33,7 @@ export interface AMPropertyData {
   cashOnly: boolean;
   isRental: boolean;
   rentalPrice: number;
+  rentIncludesCondo?: boolean; // aluguel com condomínio incluso
   // Price reduction (capa "BAIXOU O PREÇO")
   priceReduced?: boolean;
   oldPrice?: number;
@@ -136,6 +137,7 @@ export const defaultAMPropertyData: AMPropertyData = {
   cashOnly: false,
   isRental: false,
   rentalPrice: 0,
+  rentIncludesCondo: false,
   priceReduced: false,
   oldPrice: 0,
   condominiumFee: 0,

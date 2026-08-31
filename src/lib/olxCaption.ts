@@ -115,6 +115,7 @@ export function buildOlxDescription(
   if (price && price > 0) {
     const label = isRent ? 'Aluguel' : txType === 'lancamento' ? 'Lançamento a partir de' : 'Venda';
     let priceLine = `Valor de ${label} de ${formatBRL(price)}`;
+    if (isRent && (d as any).rentIncludesCondo) priceLine += ' c/ condominio incluso';
     if (!isRent && d.acceptsFinancing && d.acceptsFGTS) priceLine += ' Aceita financiamento e FGTS';
     else if (!isRent && d.acceptsFinancing) priceLine += ' Aceita financiamento';
     else if (!isRent && d.acceptsFGTS) priceLine += ' Aceita FGTS';
