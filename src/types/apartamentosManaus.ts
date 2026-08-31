@@ -137,6 +137,7 @@ export const defaultAMPropertyData: AMPropertyData = {
   cashOnly: false,
   isRental: false,
   rentalPrice: 0,
+  rentIncludesCondo: false,
   priceReduced: false,
   oldPrice: 0,
   condominiumFee: 0,
