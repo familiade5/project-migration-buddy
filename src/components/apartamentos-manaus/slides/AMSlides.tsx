@@ -426,7 +426,7 @@ export const AMSpecsSlide = ({
   const specs: string[] = [
     bedroomsLabel,
     ...(data.rooms ? data.rooms.split('\n').filter(Boolean) : []),
-    data.garageSpaces > 0 ? `${data.garageSpaces} vaga${data.garageSpaces > 1 ? 's' : ''} de garagem` : '',
+    data.garageSpaces > 0 ? `${data.garageSpaces} vaga${data.garageSpaces > 1 ? 's' : ''} de garagem${data.coveredGarage ? (data.garageSpaces > 1 ? ' cobertas' : ' coberta') : ''}` : '',
     data.floor ? `${data.floor}° andar` : '',
     data.area > 0 ? `${data.area}m²` : '',
   ].filter(Boolean).slice(0, 6);

@@ -137,7 +137,7 @@ export const AM2CoverSlide = ({ data, photos, objectPosition, scale }: { data: A
   const bedroomsLabel = data.suites > 0
     ? `${data.suites} SUÍTE${data.suites > 1 ? 'S' : ''}`
     : `${data.bedrooms || 0} QUARTO${(data.bedrooms || 0) !== 1 ? 'S' : ''}`;
-  const garageLabel = `${data.garageSpaces || 0} VAGA${(data.garageSpaces || 0) !== 1 ? 'S' : ''} DE GARAGEM`;
+  const garageLabel = `${data.garageSpaces || 0} VAGA${(data.garageSpaces || 0) !== 1 ? 'S' : ''} DE GARAGEM${data.coveredGarage ? ((data.garageSpaces || 0) !== 1 ? ' COBERTAS' : ' COBERTA') : ''}`;
   const leisureLabel = ((data.leisureItems || '').split(/[,\n]/).map(item => item.trim()).filter(Boolean)[0] || 'CHURRASQUEIRA').toUpperCase();
 
   const specLabelStyle: React.CSSProperties = {
@@ -250,7 +250,7 @@ const getSlideContent = (data: AMPropertyData, slideIndex: number): { headline: 
   const bedroomsText = data.suites > 0
     ? `${data.suites} SUÍTE${data.suites > 1 ? 'S' : ''}`
     : data.bedrooms > 0 ? `${data.bedrooms} QUARTO${data.bedrooms > 1 ? 'S' : ''}` : '';
-  const garageText = data.garageSpaces > 0 ? `${data.garageSpaces} VAGA${data.garageSpaces > 1 ? 'S' : ''} DE GARAGEM` : '';
+  const garageText = data.garageSpaces > 0 ? `${data.garageSpaces} VAGA${data.garageSpaces > 1 ? 'S' : ''} DE GARAGEM${data.coveredGarage ? (data.garageSpaces > 1 ? ' COBERTAS' : ' COBERTA') : ''}` : '';
   const areaText = data.area > 0 ? `${data.area}M²` : '';
   const bathText = data.bathrooms > 0 ? `${data.bathrooms} BANHEIRO${data.bathrooms > 1 ? 'S' : ''}` : '';
   const leisureItems = (data.leisureItems || '').split(/[,\n]/).map(i => i.trim()).filter(Boolean);
