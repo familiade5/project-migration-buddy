@@ -166,6 +166,33 @@ export function AMPropertyForm({ data, onChange }: AMPropertyFormProps) {
               value={data.floor} onChange={(e) => set('floor', e.target.value)} />
           </div>
         </div>
+        {data.garageSpaces > 0 && (
+          <div className="space-y-1 pt-1">
+            <Label className={labelClass}>A vaga de garagem é coberta?</Label>
+            <div className="flex items-center gap-1 p-1 bg-gray-100 rounded-xl w-full">
+              <button
+                type="button"
+                onClick={() => set('coveredGarage', true)}
+                className="flex-1 py-2 rounded-lg text-sm font-semibold transition-all"
+                style={data.coveredGarage
+                  ? { backgroundColor: '#1B5EA6', color: 'white', boxShadow: '0 1px 4px rgba(0,0,0,0.15)' }
+                  : { color: '#6B7280', backgroundColor: 'transparent' }}
+              >
+                Sim
+              </button>
+              <button
+                type="button"
+                onClick={() => set('coveredGarage', false)}
+                className="flex-1 py-2 rounded-lg text-sm font-semibold transition-all"
+                style={!data.coveredGarage
+                  ? { backgroundColor: '#F47920', color: 'white', boxShadow: '0 1px 4px rgba(0,0,0,0.15)' }
+                  : { color: '#6B7280', backgroundColor: 'transparent' }}
+              >
+                Não
+              </button>
+            </div>
+          </div>
+        )}
         <div className="space-y-1">
           <Label className={labelClass}>Cômodos (um por linha)</Label>
           <Textarea className={textareaClass} rows={3}
