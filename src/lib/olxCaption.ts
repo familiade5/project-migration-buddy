@@ -59,6 +59,7 @@ export interface OlxDescriptionInput {
   bathrooms?: number;
   area?: number;
   garageSpaces?: number;
+  coveredGarage?: boolean;
   floor?: string | number;
   furnished?: boolean;
   salePrice?: number;
@@ -144,7 +145,7 @@ export function buildOlxDescription(
 
   const floorLabel = ordinal(d.floor);
   if (floorLabel) lines.push(floorLabel);
-  if (d.garageSpaces) lines.push(`${d.garageSpaces} vaga${d.garageSpaces > 1 ? 's' : ''} de garagem`);
+  if (d.garageSpaces) lines.push(`${d.garageSpaces} vaga${d.garageSpaces > 1 ? 's' : ''} de garagem${d.coveredGarage ? (d.garageSpaces > 1 ? ' cobertas' : ' coberta') : ''}`);
   if (d.area) lines.push(`${d.area}m²`);
   if (d.furnished) lines.push('Mobiliado');
 

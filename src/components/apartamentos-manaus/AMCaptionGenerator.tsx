@@ -63,7 +63,7 @@ function buildCaption(data: AMPropertyData): string {
   if (data.rooms) {
     data.rooms.split('\n').map(r => r.trim()).filter(Boolean).forEach(r => lines.push(`✅ ${r}`));
   }
-  if (data.garageSpaces > 0) lines.push(`✅ ${data.garageSpaces} ${data.garageSpaces === 1 ? 'vaga de garagem' : 'vagas de garagem'}`);
+  if (data.garageSpaces > 0) lines.push(`✅ ${data.garageSpaces} ${data.garageSpaces === 1 ? 'vaga' : 'vagas'} de garagem${data.coveredGarage ? (data.garageSpaces === 1 ? ' coberta' : ' cobertas') : ''}`);
   if (data.area > 0) lines.push(`✅ ${data.area}m²`);
   lines.push('');
 
@@ -237,7 +237,7 @@ function buildPriceReducedCaption(data: AMPropertyData): string {
     data.rooms.split('\n').map(r => r.trim()).filter(Boolean).forEach(r => lines.push(`✔ ${r}`));
   }
   if (data.garageSpaces > 0) {
-    lines.push(`✔ ${data.garageSpaces} ${data.garageSpaces === 1 ? 'vaga de garagem' : 'vagas de garagem'}`);
+    lines.push(`✔ ${data.garageSpaces} ${data.garageSpaces === 1 ? 'vaga' : 'vagas'} de garagem${data.coveredGarage ? (data.garageSpaces === 1 ? ' coberta' : ' cobertas') : ''}`);
   }
   if (data.leisureItems && data.leisureItems.trim()) {
     lines.push(`✔ Área de lazer completa`);
