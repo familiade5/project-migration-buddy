@@ -13,16 +13,23 @@ const loginSchema = z.object({
   password: z.string().min(6, 'Senha deve ter no mínimo 6 caracteres'),
 });
 
+const signupSchema = loginSchema.extend({
+  fullName: z.string().min(3, 'Informe seu nome completo'),
+});
+
 export default function Auth() {
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [mode, setMode] = useState<'login' | 'signup'>('login');
+  const [signupDone, setSignupDone] = useState(false);
   const [formData, setFormData] = useState({
     email: '',
     password: '',
+    fullName: '',
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  const { signIn, user } = useAuth();
+  const { signIn, signUp, user } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const { toast } = useToast();
@@ -41,10 +48,8 @@ export default function Auth() {
     setIsLoading(true);
 
     try {
-      const result = loginSchema.safeParse({
-        email: formData.email,
-        password: formData.password,
-      });
+      const schema = mode === 'signup' ? signupSchema : loginSchema;
+      const result = schema.safeParse(formData);
 
       if (!result.success) {
         const fieldErrors: Record<string, string> = {};
@@ -54,6 +59,25 @@ export default function Auth() {
           }
         });
         setErrors(fieldErrors);
+        setIsLoading(false);
+        return;
+      }
+
+      if (mode === 'signup') {
+        const { error } = await signUp(formData.email, formData.password, formData.fullName);
+        if (error) {
+          toast({
+            title: 'Erro ao criar conta',
+            description: error.message,
+            variant: 'destructive',
+          });
+        } else {
+          setSignupDone(true);
+          toast({
+            title: 'Cadastro enviado!',
+            description: 'Aguarde a aprovação de um administrador para acessar o sistema.',
+          });
+        }
         setIsLoading(false);
         return;
       }
@@ -84,6 +108,7 @@ export default function Auth() {
       setIsLoading(false);
     }
   };
+
 
   return (
     <div className="min-h-screen bg-background flex">
@@ -137,15 +162,54 @@ export default function Auth() {
 
           <div className="text-center">
             <h2 className="font-display text-3xl font-semibold text-foreground">
-              Bem-vindo de volta
+              {mode === 'signup' ? 'Criar conta' : 'Bem-vindo de volta'}
             </h2>
             <p className="mt-2 text-muted-foreground">
-              Entre com suas credenciais para acessar
+              {mode === 'signup'
+                ? 'Cadastre-se e aguarde a aprovação de um administrador'
+                : 'Entre com suas credenciais para acessar'}
             </p>
           </div>
 
+          {signupDone ? (
+            <div className="glass-card rounded-xl p-6 text-center space-y-4">
+              <h3 className="font-display text-xl text-foreground">Cadastro enviado!</h3>
+              <p className="text-muted-foreground text-sm">
+                Sua solicitação de acesso foi registrada. Assim que um administrador aprovar, você poderá
+                entrar normalmente com seu email e senha.
+              </p>
+              <Button
+                variant="outline"
+                className="w-full"
+                onClick={() => {
+                  setSignupDone(false);
+                  setMode('login');
+                }}
+              >
+                Voltar para o login
+              </Button>
+            </div>
+          ) : (
           <form onSubmit={handleSubmit} className="space-y-6">
+            {mode === 'signup' && (
+              <div className="space-y-2">
+                <Label htmlFor="fullName">Nome completo</Label>
+                <div className="relative">
+                  <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+                  <Input
+                    id="fullName"
+                    type="text"
+                    placeholder="Seu nome"
+                    className="pl-10 input-premium"
+                    value={formData.fullName}
+                    onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
+                  />
+                </div>
+                {errors.fullName && <p className="text-sm text-destructive">{errors.fullName}</p>}
+              </div>
+            )}
             <div className="space-y-2">
+
               <Label htmlFor="email">Email</Label>
               <div className="relative">
                 <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
@@ -195,15 +259,33 @@ export default function Auth() {
             >
               {isLoading ? (
                 <Loader2 className="w-5 h-5 animate-spin" />
+              ) : mode === 'signup' ? (
+                'Solicitar acesso'
               ) : (
                 'Entrar'
               )}
             </Button>
           </form>
+          )}
 
-          <p className="text-center text-sm text-muted-foreground">
-            Acesso restrito. Entre em contato com o administrador.
-          </p>
+          {!signupDone && (
+            <div className="text-center space-y-2">
+              <button
+                type="button"
+                onClick={() => {
+                  setErrors({});
+                  setMode(mode === 'login' ? 'signup' : 'login');
+                }}
+                className="text-sm text-gold hover:underline"
+              >
+                {mode === 'login' ? 'Não tem conta? Criar conta' : 'Já tem conta? Entrar'}
+              </button>
+              <p className="text-center text-sm text-muted-foreground">
+                Novos cadastros passam por aprovação do administrador.
+              </p>
+            </div>
+          )}
+
         </div>
       </div>
     </div>

@@ -73,7 +73,9 @@ interface Profile {
   full_name: string;
   temp_password: boolean | null;
   created_at: string;
+  approval_status?: string | null;
 }
+
 
 interface UserWithRole extends Profile {
   role: 'admin' | 'user';
@@ -361,9 +363,51 @@ export default function Admin() {
   };
 
   const filteredUsers = users.filter(user => 
-    user.full_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    user.email.toLowerCase().includes(searchQuery.toLowerCase())
+    user.approval_status !== 'pending' && (
+      user.full_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      user.email.toLowerCase().includes(searchQuery.toLowerCase())
+    )
   );
+
+  const pendingUsers = users.filter(u => u.approval_status === 'pending');
+
+  const handleApproval = async (target: UserWithRole, approve: boolean) => {
+    setIsProcessing(true);
+    try {
+      const { error } = await supabase
+        .from('profiles')
+        .update({
+          approval_status: approve ? 'approved' : 'rejected',
+          approved_at: new Date().toISOString(),
+          approved_by: currentUser?.id ?? null,
+        })
+        .eq('id', target.id);
+      if (error) throw error;
+
+      if (approve) {
+        const { error: roleError } = await supabase
+          .from('user_roles')
+          .insert({ user_id: target.id, role: 'user' });
+        // ignore duplicate role errors
+        if (roleError && !roleError.message.includes('duplicate')) throw roleError;
+      }
+
+      toast({
+        title: approve ? 'Acesso aprovado' : 'Acesso recusado',
+        description: `${target.full_name} foi ${approve ? 'aprovado' : 'recusado'}.`,
+      });
+      fetchUsers();
+    } catch (error: unknown) {
+      toast({
+        title: 'Erro ao processar pedido',
+        description: (error as Error).message,
+        variant: 'destructive',
+      });
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
 
   const stats = {
     totalUsers: users.length,
@@ -468,11 +512,70 @@ export default function Admin() {
               <Users className="w-4 h-4 mr-2" />
               Usuários
             </TabsTrigger>
+            <TabsTrigger value="requests" className="data-[state=active]:bg-gold data-[state=active]:text-primary-foreground">
+              <UserPlus className="w-4 h-4 mr-2" />
+              Pedidos de acesso
+              {pendingUsers.length > 0 && (
+                <span className="ml-2 rounded-full bg-destructive px-2 text-xs text-destructive-foreground">
+                  {pendingUsers.length}
+                </span>
+              )}
+            </TabsTrigger>
             <TabsTrigger value="logs" className="data-[state=active]:bg-gold data-[state=active]:text-primary-foreground">
               <Activity className="w-4 h-4 mr-2" />
               Atividades
             </TabsTrigger>
           </TabsList>
+
+          {/* Access requests */}
+          <TabsContent value="requests" className="space-y-4">
+            <div className="glass-card rounded-xl overflow-hidden">
+              {pendingUsers.length === 0 ? (
+                <p className="p-8 text-center text-muted-foreground">Nenhum pedido de acesso pendente.</p>
+              ) : (
+                <Table>
+                  <TableHeader>
+                    <TableRow className="border-border hover:bg-transparent">
+                      <TableHead className="text-muted-foreground">Nome</TableHead>
+                      <TableHead className="text-muted-foreground">Email</TableHead>
+                      <TableHead className="text-muted-foreground">Solicitado em</TableHead>
+                      <TableHead className="text-right text-muted-foreground">Ações</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {pendingUsers.map((p) => (
+                      <TableRow key={p.id} className="border-border">
+                        <TableCell className="font-medium">{p.full_name}</TableCell>
+                        <TableCell className="text-muted-foreground">{p.email}</TableCell>
+                        <TableCell className="text-muted-foreground">
+                          {format(new Date(p.created_at), "dd/MM/yyyy 'às' HH:mm", { locale: ptBR })}
+                        </TableCell>
+                        <TableCell className="text-right space-x-2">
+                          <Button
+                            size="sm"
+                            disabled={isProcessing}
+                            className="bg-gold hover:bg-gold-dark text-primary-foreground"
+                            onClick={() => handleApproval(p, true)}
+                          >
+                            <Check className="w-4 h-4 mr-1" /> Aprovar
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            disabled={isProcessing}
+                            onClick={() => handleApproval(p, false)}
+                          >
+                            Recusar
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              )}
+            </div>
+          </TabsContent>
+
 
           {/* Users Tab */}
           <TabsContent value="users" className="space-y-4">
