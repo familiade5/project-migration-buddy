@@ -1,28 +1,23 @@
 project_id = "kubdwbzahemthstrxrxh"
 
-[functions.extract-property-data]
-verify_jwt = false
-
-[functions.search-property-photos]
-verify_jwt = false
-
-[functions.cleanup-inactive-portals]
-verify_jwt = false
-
-[functions.cleanup-old-creatives]
-verify_jwt = false
-
-[functions.autentique-integration]
-verify_jwt = false
-
-[functions.autentique-webhook]
-verify_jwt = false
-
-[functions.generate-slide-image]
-verify_jwt = false
-
-[functions.vdh-instagram-webhook]
-verify_jwt = false
-
-[functions.olx-feed-am]
-verify_jwt = false
+[functions]
+  [functions.autentique-integration]
+    verify_jwt = false
+  [functions.autentique-webhook]
+    verify_jwt = false
+  [functions.auth-email-hook]
+    verify_jwt = false
+  [functions.cleanup-inactive-portals]
+    verify_jwt = false
+  [functions.cleanup-old-creatives]
+    verify_jwt = false
+  [functions.extract-property-data]
+    verify_jwt = false
+  [functions.generate-slide-image]
+    verify_jwt = false
+  [functions.olx-feed-am]
+    verify_jwt = false
+  [functions.search-property-photos]
+    verify_jwt = false
+  [functions.vdh-instagram-webhook]
+    verify_jwt = false
