@@ -27,6 +27,11 @@ export function ProtectedRoute({ children, requireAdmin = false }: ProtectedRout
     return <Navigate to="/auth" state={{ from: location }} replace />;
   }
 
+  // Contas de cliente do portal não acessam o sistema interno
+  if (user.user_metadata?.portal_client === true) {
+    return <Navigate to="/portal" replace />;
+  }
+
   const status = profile?.approval_status;
   if (status === 'pending' || status === 'rejected') {
     const rejected = status === 'rejected';
