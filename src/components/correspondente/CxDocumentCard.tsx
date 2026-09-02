@@ -1,11 +1,12 @@
 import { Button } from '@/components/ui/button';
 import { CxDocument, CX_DOC_LABEL, CxExtraction } from '@/types/correspondente';
 import { CopyField } from './CopyField';
-import { ExternalLink, Loader2, RefreshCw, Trash2, FileText, AlertCircle, CheckCircle2 } from 'lucide-react';
+import { Eye, Download, Loader2, RefreshCw, Trash2, FileText, AlertCircle, CheckCircle2 } from 'lucide-react';
 
 interface Props {
   doc: CxDocument;
   onOpen: (doc: CxDocument) => void;
+  onDownload: (doc: CxDocument) => void;
   onDelete: (doc: CxDocument) => void;
   onRetry: (doc: CxDocument) => void;
 }
