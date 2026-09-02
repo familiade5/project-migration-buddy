@@ -82,7 +82,9 @@ Deno.serve(async (req) => {
       user_metadata: {
         full_name: fullName,
         temp_password: true,
+        created_by_admin: true,
       },
+
     });
 
     if (createError) {
