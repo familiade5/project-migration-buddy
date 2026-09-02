@@ -166,16 +166,25 @@ export default function CorrespondenteCaixaPage() {
               </p>
             </div>
           </div>
-          <div className="hidden sm:flex items-center gap-2">
-            <div className="flex items-center gap-2 px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-sm text-slate-600">
+          <div className="flex items-center gap-2 flex-wrap justify-end">
+            <div className="hidden lg:flex items-center gap-2 px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-sm text-slate-600">
               <Users className="w-4 h-4 text-slate-400" />
               <span className="font-semibold text-slate-900">{stats.active}</span> clientes
             </div>
-            <div className="flex items-center gap-2 px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-sm text-slate-600">
+            <div className="hidden lg:flex items-center gap-2 px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-sm text-slate-600">
               <Clock className="w-4 h-4 text-amber-500" />
               <span className="font-semibold text-amber-600">{stats.pending}</span> pendentes
             </div>
+            <Button
+              variant="outline"
+              className="bg-white border-slate-200"
+              onClick={() => setLinkOpen(true)}
+            >
+              <Link2 className="w-4 h-4 mr-2" style={{ color: BRAND }} />
+              Link para o cliente
+            </Button>
           </div>
+
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-[380px_1fr] gap-6 h-[calc(100%-88px)]">
