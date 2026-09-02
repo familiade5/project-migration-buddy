@@ -38,6 +38,10 @@ export default function Auth() {
 
   useEffect(() => {
     if (user) {
+      if (user.user_metadata?.portal_client === true) {
+        navigate('/portal', { replace: true });
+        return;
+      }
       navigate(from, { replace: true });
     }
   }, [user, navigate, from]);
