@@ -1486,6 +1486,9 @@ export type Database = {
       profiles: {
         Row: {
           address: string | null
+          approval_status: string
+          approved_at: string | null
+          approved_by: string | null
           avatar_url: string | null
           created_at: string | null
           email: string
@@ -1497,6 +1500,9 @@ export type Database = {
         }
         Insert: {
           address?: string | null
+          approval_status?: string
+          approved_at?: string | null
+          approved_by?: string | null
           avatar_url?: string | null
           created_at?: string | null
           email: string
@@ -1508,6 +1514,9 @@ export type Database = {
         }
         Update: {
           address?: string | null
+          approval_status?: string
+          approved_at?: string | null
+          approved_by?: string | null
           avatar_url?: string | null
           created_at?: string | null
           email?: string
@@ -2727,6 +2736,7 @@ export type Database = {
         Args: { _metric: string; _slug: string }
         Returns: undefined
       }
+      is_approved_user: { Args: { _user_id: string }; Returns: boolean }
       is_internal_user: { Args: { _user_id: string }; Returns: boolean }
       log_user_activity: {
         Args: {
