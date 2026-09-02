@@ -27,6 +27,9 @@ import AFOlxCatalog from "./pages/af/AFOlxCatalog";
 import VDHOlxCatalog from "./pages/VDHOlxCatalog";
 
 import CorrespondenteCaixaPage from "./pages/correspondente/CorrespondenteCaixaPage";
+import PortalAuth from "./pages/portal/PortalAuth";
+import PortalDashboard from "./pages/portal/PortalDashboard";
+
 import AutoPostApproval from "./pages/AutoPostApproval";
 import LandingPage from "./pages/LandingPage";
 
