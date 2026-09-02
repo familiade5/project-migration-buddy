@@ -37,7 +37,11 @@ import {
   Inbox,
   Users,
   Clock,
+  Link2,
+  Copy,
+  MessageCircle,
 } from 'lucide-react';
+import { toast } from 'sonner';
 
 const BRAND = '#1a3a6b';
 
@@ -81,6 +85,13 @@ export default function CorrespondenteCaixaPage() {
   const [uploading, setUploading] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
   const [reviewNotes, setReviewNotes] = useState('');
+  const [linkOpen, setLinkOpen] = useState(false);
+  const portalUrl = `${window.location.origin}/portal/auth`;
+
+  const copyPortalLink = () => {
+    navigator.clipboard.writeText(portalUrl);
+    toast.success('Link copiado! Envie para o cliente.');
+  };
 
   const selected: CxClient | null = useMemo(
     () => clients.find((c) => c.id === selectedId) ?? null,
@@ -166,16 +177,25 @@ export default function CorrespondenteCaixaPage() {
               </p>
             </div>
           </div>
-          <div className="hidden sm:flex items-center gap-2">
-            <div className="flex items-center gap-2 px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-sm text-slate-600">
+          <div className="flex items-center gap-2 flex-wrap justify-end">
+            <div className="hidden lg:flex items-center gap-2 px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-sm text-slate-600">
               <Users className="w-4 h-4 text-slate-400" />
               <span className="font-semibold text-slate-900">{stats.active}</span> clientes
             </div>
-            <div className="flex items-center gap-2 px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-sm text-slate-600">
+            <div className="hidden lg:flex items-center gap-2 px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-sm text-slate-600">
               <Clock className="w-4 h-4 text-amber-500" />
               <span className="font-semibold text-amber-600">{stats.pending}</span> pendentes
             </div>
+            <Button
+              variant="outline"
+              className="bg-white border-slate-200"
+              onClick={() => setLinkOpen(true)}
+            >
+              <Link2 className="w-4 h-4 mr-2" style={{ color: BRAND }} />
+              Link para o cliente
+            </Button>
           </div>
+
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-[380px_1fr] gap-6 h-[calc(100%-88px)]">
@@ -380,9 +400,7 @@ export default function CorrespondenteCaixaPage() {
                         size="sm"
                         variant="outline"
                         className="bg-white h-8"
-                        onClick={() => {
-                          navigator.clipboard.writeText(`${window.location.origin}/portal/auth`);
-                        }}
+                        onClick={copyPortalLink}
                       >
                         Copiar link do portal
                       </Button>
@@ -542,6 +560,52 @@ export default function CorrespondenteCaixaPage() {
           </section>
         </div>
       </div>
+
+      <Dialog open={linkOpen} onOpenChange={setLinkOpen}>
+        <DialogContent className="bg-white border-slate-200 sm:max-w-lg">
+          <DialogHeader>
+            <DialogTitle className="text-slate-900 flex items-center gap-2">
+              <Link2 className="w-5 h-5" style={{ color: BRAND }} />
+              Link do Portal do Cliente
+            </DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <p className="text-sm text-slate-600">
+              Envie este link para o cliente. Ele cria a conta com e-mail e senha, envia os documentos
+              (podendo incluir o cônjuge) e acompanha o status da análise.
+            </p>
+            <div className="flex gap-2">
+              <Input readOnly value={portalUrl} className="bg-slate-50 border-slate-200 text-slate-900" />
+              <Button
+                className="text-white hover:opacity-90 flex-shrink-0"
+                style={{ backgroundColor: BRAND }}
+                onClick={copyPortalLink}
+              >
+                <Copy className="w-4 h-4 mr-2" /> Copiar
+              </Button>
+            </div>
+            <Button
+              variant="outline"
+              className="w-full bg-white border-slate-200"
+              onClick={() => {
+                const phone = (selected?.whatsapp || selected?.phone || '').replace(/\D/g, '');
+                const text = encodeURIComponent(
+                  `Olá${selected ? ` ${selected.full_name.split(' ')[0]}` : ''}! Para dar andamento na sua análise de crédito, acesse o portal e envie seus documentos: ${portalUrl}`,
+                );
+                const target = phone
+                  ? `https://wa.me/55${phone}?text=${text}`
+                  : `https://wa.me/?text=${text}`;
+                window.open(target, '_blank');
+              }}
+            >
+              <MessageCircle className="w-4 h-4 mr-2 text-emerald-600" />
+              {selected?.whatsapp || selected?.phone
+                ? `Enviar no WhatsApp para ${selected.full_name.split(' ')[0]}`
+                : 'Enviar no WhatsApp'}
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
 
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogContent className="bg-white border-slate-200 sm:max-w-lg">
