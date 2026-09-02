@@ -13,16 +13,23 @@ const loginSchema = z.object({
   password: z.string().min(6, 'Senha deve ter no mínimo 6 caracteres'),
 });
 
+const signupSchema = loginSchema.extend({
+  fullName: z.string().min(3, 'Informe seu nome completo'),
+});
+
 export default function Auth() {
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [mode, setMode] = useState<'login' | 'signup'>('login');
+  const [signupDone, setSignupDone] = useState(false);
   const [formData, setFormData] = useState({
     email: '',
     password: '',
+    fullName: '',
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  const { signIn, user } = useAuth();
+  const { signIn, signUp, user } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const { toast } = useToast();
@@ -41,10 +48,8 @@ export default function Auth() {
     setIsLoading(true);
 
     try {
-      const result = loginSchema.safeParse({
-        email: formData.email,
-        password: formData.password,
-      });
+      const schema = mode === 'signup' ? signupSchema : loginSchema;
+      const result = schema.safeParse(formData);
 
       if (!result.success) {
         const fieldErrors: Record<string, string> = {};
@@ -54,6 +59,25 @@ export default function Auth() {
           }
         });
         setErrors(fieldErrors);
+        setIsLoading(false);
+        return;
+      }
+
+      if (mode === 'signup') {
+        const { error } = await signUp(formData.email, formData.password, formData.fullName);
+        if (error) {
+          toast({
+            title: 'Erro ao criar conta',
+            description: error.message,
+            variant: 'destructive',
+          });
+        } else {
+          setSignupDone(true);
+          toast({
+            title: 'Cadastro enviado!',
+            description: 'Aguarde a aprovação de um administrador para acessar o sistema.',
+          });
+        }
         setIsLoading(false);
         return;
       }
@@ -84,6 +108,7 @@ export default function Auth() {
       setIsLoading(false);
     }
   };
+
 
   return (
     <div className="min-h-screen bg-background flex">
