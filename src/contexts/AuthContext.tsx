@@ -93,11 +93,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             const { data, error } = await supabase
               .from('user_roles')
               .select('role')
-              .eq('user_id', userId)
-              .eq('role', 'admin')
-              .maybeSingle();
+              .eq('user_id', userId);
             if (error) throw error;
-            return data;
+            return data ?? [];
           }),
         ]);
 
@@ -108,10 +106,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         }
 
         if (adminResult.status === 'fulfilled') {
-          if (isMountedRef.current) setIsAdmin(!!adminResult.value);
+          const roles = adminResult.value.map((r) => r.role);
+          if (isMountedRef.current) {
+            setIsAdmin(roles.includes('admin'));
+            setIsInternal(roles.length > 0);
+          }
         } else {
-          console.error('Error checking admin role:', adminResult.reason);
-          if (isMountedRef.current) setIsAdmin(false);
+          console.error('Error checking roles:', adminResult.reason);
+          if (isMountedRef.current) {
+            setIsAdmin(false);
+            setIsInternal(false);
+          }
         }
       } catch (error) {
         console.error('Error fetching user data:', error);
