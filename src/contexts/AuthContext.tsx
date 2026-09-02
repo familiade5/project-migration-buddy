@@ -9,7 +9,9 @@ interface Profile {
   full_name: string;
   avatar_url: string | null;
   temp_password: boolean | null;
+  approval_status?: string | null;
 }
+
 
 interface AuthContextType {
   user: User | null;
