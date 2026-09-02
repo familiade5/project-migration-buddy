@@ -38,7 +38,7 @@ export function CxDocumentCard({ doc, onOpen, onDownload, onDelete, onRetry }: P
         <div className="flex items-center gap-2 flex-shrink-0">
           <span className={`hidden lg:inline-flex items-center gap-1.5 px-2 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${status.bg} ${status.color}`}>
             {status.icon}
-            {status.label}
+            {doc.status === 'done' ? CX_DOC_LABEL(doc.doc_type) : status.label}
           </span>
           <Button
             size="sm"
