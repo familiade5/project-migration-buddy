@@ -45,17 +45,19 @@ export default function PortalAuth() {
           email: email.trim(),
           password,
           options: {
-            emailRedirectTo: `${window.location.origin}/portal`,
             data: { full_name: fullName.trim(), portal_client: true },
           },
         });
         if (error) throw error;
-        if (data.session) {
-          navigate('/portal', { replace: true });
-        } else {
-          toast.success('Conta criada! Verifique seu e-mail para confirmar o acesso.');
-          setMode('login');
+        if (!data.session) {
+          const { error: signInError } = await supabase.auth.signInWithPassword({
+            email: email.trim(),
+            password,
+          });
+          if (signInError) throw signInError;
         }
+        navigate('/portal', { replace: true });
+
       } else {
         const { error } = await supabase.auth.signInWithPassword({
           email: email.trim(),
