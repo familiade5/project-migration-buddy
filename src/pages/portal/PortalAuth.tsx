@@ -19,7 +19,12 @@ export default function PortalAuth() {
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
-      if (data.session) navigate('/portal', { replace: true });
+      const session = data.session;
+      // Só entra direto se for uma conta de cliente do portal.
+      // Sessões da equipe (sem o flag portal_client) veem a tela de login/cadastro.
+      if (session?.user?.user_metadata?.portal_client === true) {
+        navigate('/portal', { replace: true });
+      }
     });
   }, [navigate]);
 
