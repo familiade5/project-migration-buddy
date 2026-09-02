@@ -112,6 +112,10 @@ const App = () => (
             <Route path="/correspondente-caixa" element={
               <ProtectedRoute><CorrespondenteCaixaPage /></ProtectedRoute>
             } />
+            {/* Portal do cliente (público) */}
+            <Route path="/portal/auth" element={<PortalAuth />} />
+            <Route path="/portal" element={<PortalDashboard />} />
+
             {/* Auto Post Approval */}
             <Route path="/aprovacao-posts" element={
               <ProtectedRoute requireAdmin><AutoPostApproval /></ProtectedRoute>
