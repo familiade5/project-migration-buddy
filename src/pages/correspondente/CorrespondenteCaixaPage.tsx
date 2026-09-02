@@ -70,7 +70,7 @@ function getClientStatus(client: CxClient, docs: CxDocument[]): ClientStatus {
 }
 
 export default function CorrespondenteCaixaPage() {
-  const { clients, isLoading, createClient, deleteClient } = useCxClients();
+  const { clients, isLoading, createClient, updateClient, deleteClient } = useCxClients();
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [search, setSearch] = useState('');
   const [dialogOpen, setDialogOpen] = useState(false);
