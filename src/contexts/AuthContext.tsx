@@ -18,6 +18,7 @@ interface AuthContextType {
   session: Session | null;
   profile: Profile | null;
   isAdmin: boolean;
+  isInternal: boolean;
   rolesLoaded: boolean;
   isLoading: boolean;
   signIn: (email: string, password: string) => Promise<{ error: Error | null }>;
@@ -55,6 +56,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [isInternal, setIsInternal] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [rolesLoaded, setRolesLoaded] = useState(false);
   const fetchingRef = useRef(false);
@@ -156,6 +158,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       } else if (event === 'SIGNED_OUT') {
         setProfile(null);
         setIsAdmin(false);
+        setIsInternal(false);
         setRolesLoaded(false);
       }
     });
@@ -276,6 +279,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setSession(null);
     setProfile(null);
     setIsAdmin(false);
+    setIsInternal(false);
   };
 
   const updatePassword = async (newPassword: string) => {
@@ -309,6 +313,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         session,
         profile,
         isAdmin,
+        isInternal,
         rolesLoaded,
         isLoading,
         signIn,
