@@ -42,7 +42,7 @@ export function CxDocumentCard({ doc, onOpen, onDownload, onDelete, onRetry }: P
           </span>
           <Button
             size="sm"
-            className="h-8 gap-1.5 bg-[#1a3a6b]/10 text-[#1a3a6b] hover:bg-[#1a3a6b]/20 border border-[#1a3a6b]/30"
+            className="h-8 gap-1.5 bg-white text-[#1a3a6b] hover:bg-blue-50 border border-[#1a3a6b]/30"
             onClick={() => onOpen(doc)}
           >
             <Eye className="w-4 h-4" />
@@ -51,7 +51,7 @@ export function CxDocumentCard({ doc, onOpen, onDownload, onDelete, onRetry }: P
           <Button
             size="sm"
             variant="outline"
-            className="h-8 gap-1.5 border-[#1a3a6b]/30 text-[#1a3a6b] hover:bg-[#1a3a6b]/10"
+            className="h-8 gap-1.5 bg-white text-[#1a3a6b] border-[#1a3a6b]/30 hover:bg-blue-50"
             onClick={() => onDownload(doc)}
           >
             <Download className="w-4 h-4" />
