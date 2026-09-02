@@ -512,11 +512,70 @@ export default function Admin() {
               <Users className="w-4 h-4 mr-2" />
               Usuários
             </TabsTrigger>
+            <TabsTrigger value="requests" className="data-[state=active]:bg-gold data-[state=active]:text-primary-foreground">
+              <UserPlus className="w-4 h-4 mr-2" />
+              Pedidos de acesso
+              {pendingUsers.length > 0 && (
+                <span className="ml-2 rounded-full bg-destructive px-2 text-xs text-destructive-foreground">
+                  {pendingUsers.length}
+                </span>
+              )}
+            </TabsTrigger>
             <TabsTrigger value="logs" className="data-[state=active]:bg-gold data-[state=active]:text-primary-foreground">
               <Activity className="w-4 h-4 mr-2" />
               Atividades
             </TabsTrigger>
           </TabsList>
+
+          {/* Access requests */}
+          <TabsContent value="requests" className="space-y-4">
+            <div className="glass-card rounded-xl overflow-hidden">
+              {pendingUsers.length === 0 ? (
+                <p className="p-8 text-center text-muted-foreground">Nenhum pedido de acesso pendente.</p>
+              ) : (
+                <Table>
+                  <TableHeader>
+                    <TableRow className="border-border hover:bg-transparent">
+                      <TableHead className="text-muted-foreground">Nome</TableHead>
+                      <TableHead className="text-muted-foreground">Email</TableHead>
+                      <TableHead className="text-muted-foreground">Solicitado em</TableHead>
+                      <TableHead className="text-right text-muted-foreground">Ações</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {pendingUsers.map((p) => (
+                      <TableRow key={p.id} className="border-border">
+                        <TableCell className="font-medium">{p.full_name}</TableCell>
+                        <TableCell className="text-muted-foreground">{p.email}</TableCell>
+                        <TableCell className="text-muted-foreground">
+                          {format(new Date(p.created_at), "dd/MM/yyyy 'às' HH:mm", { locale: ptBR })}
+                        </TableCell>
+                        <TableCell className="text-right space-x-2">
+                          <Button
+                            size="sm"
+                            disabled={isProcessing}
+                            className="bg-gold hover:bg-gold-dark text-primary-foreground"
+                            onClick={() => handleApproval(p, true)}
+                          >
+                            <Check className="w-4 h-4 mr-1" /> Aprovar
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            disabled={isProcessing}
+                            onClick={() => handleApproval(p, false)}
+                          >
+                            Recusar
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              )}
+            </div>
+          </TabsContent>
+
 
           {/* Users Tab */}
           <TabsContent value="users" className="space-y-4">
