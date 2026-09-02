@@ -128,7 +128,7 @@ export default function CorrespondenteCaixaPage() {
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Buscar cliente…"
-                className="pl-9 bg-white border-gray-200"
+                className="pl-9 bg-white border-gray-200 text-gray-900 placeholder:text-gray-400"
               />
             </div>
 
@@ -233,12 +233,12 @@ export default function CorrespondenteCaixaPage() {
                     <div className="flex-1">
                       <Label className="text-xs text-gray-600">Tipo do documento</Label>
                       <Select value={docType} onValueChange={setDocType}>
-                        <SelectTrigger className="mt-1 bg-white border-gray-200">
+                        <SelectTrigger className="mt-1 bg-white border-gray-200 text-gray-900 placeholder:text-gray-400">
                           <SelectValue />
                         </SelectTrigger>
-                        <SelectContent className="bg-white">
+                        <SelectContent className="bg-white border-gray-200 text-gray-900">
                           {CX_DOC_TYPES.map((t) => (
-                            <SelectItem key={t.value} value={t.value}>
+                            <SelectItem key={t.value} value={t.value} className="text-gray-900 focus:bg-gray-100 focus:text-gray-900">
                               {t.label}
                             </SelectItem>
                           ))}
@@ -309,7 +309,7 @@ export default function CorrespondenteCaixaPage() {
                 value={form.full_name}
                 onChange={(e) => setForm({ ...form, full_name: e.target.value })}
                 placeholder="Nome completo"
-                className="mt-1 bg-white border-gray-200"
+                className="mt-1 bg-white border-gray-200 text-gray-900 placeholder:text-gray-400"
               />
             </div>
             <div className="grid grid-cols-2 gap-3">
@@ -319,7 +319,7 @@ export default function CorrespondenteCaixaPage() {
                   value={form.phone}
                   onChange={(e) => setForm({ ...form, phone: e.target.value })}
                   placeholder="(00) 00000-0000"
-                  className="mt-1 bg-white border-gray-200"
+                  className="mt-1 bg-white border-gray-200 text-gray-900 placeholder:text-gray-400"
                 />
               </div>
               <div>
@@ -328,7 +328,7 @@ export default function CorrespondenteCaixaPage() {
                   value={form.whatsapp}
                   onChange={(e) => setForm({ ...form, whatsapp: e.target.value })}
                   placeholder="(00) 00000-0000"
-                  className="mt-1 bg-white border-gray-200"
+                  className="mt-1 bg-white border-gray-200 text-gray-900 placeholder:text-gray-400"
                 />
               </div>
             </div>
@@ -338,7 +338,7 @@ export default function CorrespondenteCaixaPage() {
                 value={form.email}
                 onChange={(e) => setForm({ ...form, email: e.target.value })}
                 placeholder="cliente@email.com"
-                className="mt-1 bg-white border-gray-200"
+                className="mt-1 bg-white border-gray-200 text-gray-900 placeholder:text-gray-400"
               />
             </div>
             <div>
@@ -346,13 +346,13 @@ export default function CorrespondenteCaixaPage() {
               <Textarea
                 value={form.notes}
                 onChange={(e) => setForm({ ...form, notes: e.target.value })}
-                className="mt-1 bg-white border-gray-200"
+                className="mt-1 bg-white border-gray-200 text-gray-900 placeholder:text-gray-400"
                 rows={3}
               />
             </div>
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setDialogOpen(false)}>
+            <Button variant="outline" className="bg-white border-gray-300 text-gray-700 hover:bg-gray-50" onClick={() => setDialogOpen(false)}>
               Cancelar
             </Button>
             <Button
