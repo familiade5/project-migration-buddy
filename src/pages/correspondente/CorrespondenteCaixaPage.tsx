@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -19,7 +19,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { useCxClients, useCxDocuments } from '@/hooks/useCxClients';
-import { CX_DOC_TYPES, CX_CHECKLIST, CX_DOC_LABEL, CxClient, CxDocument } from '@/types/correspondente';
+import { CX_DOC_TYPES, CX_CHECKLIST, CX_DOC_LABEL, CX_SUBMISSION_STATUS, CxClient, CxDocument } from '@/types/correspondente';
 import { CxDocumentCard } from '@/components/correspondente/CxDocumentCard';
 import { CopyField } from '@/components/correspondente/CopyField';
 import {
@@ -80,6 +80,7 @@ export default function CorrespondenteCaixaPage() {
   const [docType, setDocType] = useState<string>('rg');
   const [uploading, setUploading] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
+  const [reviewNotes, setReviewNotes] = useState('');
 
   const selected: CxClient | null = useMemo(
     () => clients.find((c) => c.id === selectedId) ?? null,
@@ -88,6 +89,10 @@ export default function CorrespondenteCaixaPage() {
 
   const { documents, uploadDocument, deleteDocument, openDocument, downloadDocument, retryExtraction } =
     useCxDocuments(selected?.id ?? null);
+
+  useEffect(() => {
+    setReviewNotes(selected?.review_notes || '');
+  }, [selected?.id, selected?.review_notes]);
 
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
@@ -389,7 +394,7 @@ export default function CorrespondenteCaixaPage() {
                           updateClient(selected.id, {
                             submission_status: v,
                             reviewed_at: new Date().toISOString(),
-                          } as Partial<CxClient>)
+                          })
                         }
                       >
                         <SelectTrigger className="sm:w-56 bg-white border-slate-200 text-slate-900">
@@ -417,7 +422,7 @@ export default function CorrespondenteCaixaPage() {
                             updateClient(selected.id, {
                               review_notes: reviewNotes || null,
                               reviewed_at: new Date().toISOString(),
-                            } as Partial<CxClient>)
+                            })
                           }
                         >
                           Salvar

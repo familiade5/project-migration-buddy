@@ -9,6 +9,12 @@ type ClientInput = {
   phone?: string | null;
   whatsapp?: string | null;
   notes?: string | null;
+  submission_status?: string | null;
+  review_notes?: string | null;
+  reviewed_at?: string | null;
+  submitted_at?: string | null;
+  parent_client_id?: string | null;
+  relationship?: string | null;
 };
 
 export function useCxClients() {
