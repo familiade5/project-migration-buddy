@@ -364,7 +364,69 @@ export default function CorrespondenteCaixaPage() {
                       <p className="text-sm text-slate-700 whitespace-pre-wrap">{selected.notes}</p>
                     </div>
                   )}
+
+                  {/* Retorno para o cliente */}
+                  <div className="mt-4 p-4 rounded-xl border border-slate-200 bg-slate-50 space-y-3">
+                    <div className="flex items-center justify-between gap-3 flex-wrap">
+                      <p className="text-xs font-bold uppercase tracking-wide text-slate-500">
+                        Status do envio do cliente
+                      </p>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="bg-white h-8"
+                        onClick={() => {
+                          navigator.clipboard.writeText(`${window.location.origin}/portal/auth`);
+                        }}
+                      >
+                        Copiar link do portal
+                      </Button>
+                    </div>
+                    <div className="flex flex-col sm:flex-row gap-3">
+                      <Select
+                        value={selected.submission_status || 'rascunho'}
+                        onValueChange={(v) =>
+                          updateClient(selected.id, {
+                            submission_status: v,
+                            reviewed_at: new Date().toISOString(),
+                          } as Partial<CxClient>)
+                        }
+                      >
+                        <SelectTrigger className="sm:w-56 bg-white border-slate-200 text-slate-900">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent className="bg-white border-slate-200 text-slate-900">
+                          {CX_SUBMISSION_STATUS.map((s) => (
+                            <SelectItem key={s.value} value={s.value} className="text-slate-900">
+                              {s.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <div className="flex-1 flex gap-2">
+                        <Textarea
+                          value={reviewNotes}
+                          onChange={(e) => setReviewNotes(e.target.value)}
+                          placeholder="Mensagem para o cliente (ex.: falta o extrato do FGTS)"
+                          className="bg-white border-slate-200 text-slate-900 min-h-[42px]"
+                        />
+                        <Button
+                          className="text-white hover:opacity-90 self-start"
+                          style={{ backgroundColor: BRAND }}
+                          onClick={() =>
+                            updateClient(selected.id, {
+                              review_notes: reviewNotes || null,
+                              reviewed_at: new Date().toISOString(),
+                            } as Partial<CxClient>)
+                          }
+                        >
+                          Salvar
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
                 </div>
+
 
                 <div className="p-6 space-y-6">
                   {/* Checklist + upload */}
