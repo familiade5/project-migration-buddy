@@ -461,6 +461,7 @@ export default function CorrespondenteCaixaPage() {
                             key={doc.id}
                             doc={doc}
                             onOpen={openDocument}
+                            onDownload={downloadDocument}
                             onDelete={deleteDocument}
                             onRetry={retryExtraction}
                           />
