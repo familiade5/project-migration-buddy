@@ -1,7 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { CxDocument, CX_DOC_LABEL, CxExtraction } from '@/types/correspondente';
 import { CopyField } from './CopyField';
-import { ExternalLink, Loader2, RefreshCw, Trash2, FileText, AlertCircle } from 'lucide-react';
+import { ExternalLink, Loader2, RefreshCw, Trash2, FileText, AlertCircle, CheckCircle2 } from 'lucide-react';
 
 interface Props {
   doc: CxDocument;
@@ -10,33 +10,42 @@ interface Props {
   onRetry: (doc: CxDocument) => void;
 }
 
+const STATUS_MAP: Record<string, { label: string; color: string; bg: string; icon: React.ReactNode }> = {
+  pending: { label: 'Pendente', color: 'text-slate-600', bg: 'bg-slate-100', icon: <FileText className="w-3.5 h-3.5" /> },
+  processing: { label: 'Lendo', color: 'text-blue-600', bg: 'bg-blue-50', icon: <Loader2 className="w-3.5 h-3.5 animate-spin" /> },
+  done: { label: 'Pronto', color: 'text-emerald-600', bg: 'bg-emerald-50', icon: <CheckCircle2 className="w-3.5 h-3.5" /> },
+  error: { label: 'Erro', color: 'text-red-600', bg: 'bg-red-50', icon: <AlertCircle className="w-3.5 h-3.5" /> },
+};
+
 export function CxDocumentCard({ doc, onOpen, onDelete, onRetry }: Props) {
   const extraction = doc.extracted as CxExtraction;
   const groups = Array.isArray(extraction?.groups) ? extraction.groups : [];
+  const status = STATUS_MAP[doc.status] || STATUS_MAP.pending;
 
   return (
-    <div className="rounded-xl border border-gray-200 bg-white overflow-hidden">
-      <div className="flex items-center justify-between gap-3 px-4 py-3 border-b border-gray-100 bg-gray-50">
+    <div className="rounded-2xl border border-slate-200 bg-white overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+      <div className="flex items-center justify-between gap-3 px-5 py-4 border-b border-slate-100 bg-slate-50/60">
         <div className="flex items-center gap-3 min-w-0">
-          <FileText className="w-4 h-4 text-gray-500 flex-shrink-0" />
+          <div className={`p-2 rounded-lg ${status.bg} ${status.color}`}>
+            {status.icon}
+          </div>
           <div className="min-w-0">
-            <p className="text-sm font-semibold text-gray-900 truncate">{CX_DOC_LABEL(doc.doc_type)}</p>
-            <p className="text-[11px] text-gray-500 truncate">{doc.file_name}</p>
+            <p className="text-sm font-bold text-slate-900 truncate">{CX_DOC_LABEL(doc.doc_type)}</p>
+            <p className="text-[11px] text-slate-500 truncate">{doc.file_name}</p>
           </div>
         </div>
         <div className="flex items-center gap-1 flex-shrink-0">
-          {doc.status === 'processing' && (
-            <span className="flex items-center gap-1.5 text-xs text-blue-600 mr-1">
-              <Loader2 className="w-3.5 h-3.5 animate-spin" /> Lendo…
-            </span>
-          )}
-          <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-gray-500" onClick={() => onOpen(doc)}>
+          <span className={`hidden sm:inline-flex items-center gap-1.5 px-2 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${status.bg} ${status.color}`}>
+            {status.icon}
+            {status.label}
+          </span>
+          <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-slate-500 hover:text-[#1a3a6b] hover:bg-blue-50" onClick={() => onOpen(doc)}>
             <ExternalLink className="w-4 h-4" />
           </Button>
           <Button
             variant="ghost"
             size="sm"
-            className="h-8 w-8 p-0 text-gray-500"
+            className="h-8 w-8 p-0 text-slate-500 hover:text-[#1a3a6b] hover:bg-blue-50"
             disabled={doc.status === 'processing'}
             onClick={() => onRetry(doc)}
           >
@@ -45,7 +54,7 @@ export function CxDocumentCard({ doc, onOpen, onDelete, onRetry }: Props) {
           <Button
             variant="ghost"
             size="sm"
-            className="h-8 w-8 p-0 text-gray-500 hover:text-red-600"
+            className="h-8 w-8 p-0 text-slate-500 hover:text-red-600 hover:bg-red-50"
             onClick={() => onDelete(doc)}
           >
             <Trash2 className="w-4 h-4" />
@@ -53,25 +62,31 @@ export function CxDocumentCard({ doc, onOpen, onDelete, onRetry }: Props) {
         </div>
       </div>
 
-      <div className="p-4 space-y-4">
+      <div className="p-5 space-y-5">
         {doc.status === 'error' && (
-          <div className="flex items-start gap-2 text-sm text-red-600 bg-red-50 border border-red-100 rounded-lg p-3">
+          <div className="flex items-start gap-2 text-sm text-red-600 bg-red-50 border border-red-100 rounded-xl p-3">
             <AlertCircle className="w-4 h-4 mt-0.5 flex-shrink-0" />
             <span>{doc.error_message || 'Falha ao ler o documento.'}</span>
           </div>
         )}
 
         {doc.status === 'processing' && (
-          <p className="text-sm text-gray-500">Extraindo informações com IA…</p>
+          <div className="flex items-center gap-2 text-sm text-slate-500">
+            <Loader2 className="w-4 h-4 animate-spin text-blue-600" />
+            Extraindo informações com IA…
+          </div>
         )}
 
         {doc.status === 'done' && groups.length === 0 && (
-          <p className="text-sm text-gray-500">Nenhum dado identificado neste documento.</p>
+          <p className="text-sm text-slate-500">Nenhum dado identificado neste documento.</p>
         )}
 
         {groups.map((group, gi) => (
-          <div key={`${group.title}-${gi}`} className="space-y-2">
-            <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">{group.title}</p>
+          <div key={`${group.title}-${gi}`} className="space-y-3">
+            <p className="text-xs font-bold uppercase tracking-wide text-slate-400 flex items-center gap-2">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#1a3a6b]" />
+              {group.title}
+            </p>
             <div className="grid gap-2 sm:grid-cols-2">
               {group.fields.map((f, fi) => (
                 <CopyField key={`${f.label}-${fi}`} label={f.label} value={f.value} />
