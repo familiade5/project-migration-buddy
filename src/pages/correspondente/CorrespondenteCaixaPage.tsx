@@ -86,7 +86,7 @@ export default function CorrespondenteCaixaPage() {
     [clients, selectedId],
   );
 
-  const { documents, uploadDocument, deleteDocument, openDocument, retryExtraction } =
+  const { documents, uploadDocument, deleteDocument, openDocument, downloadDocument, retryExtraction } =
     useCxDocuments(selected?.id ?? null);
 
   const filtered = useMemo(() => {
@@ -461,6 +461,7 @@ export default function CorrespondenteCaixaPage() {
                             key={doc.id}
                             doc={doc}
                             onOpen={openDocument}
+                            onDownload={downloadDocument}
                             onDelete={deleteDocument}
                             onRetry={retryExtraction}
                           />

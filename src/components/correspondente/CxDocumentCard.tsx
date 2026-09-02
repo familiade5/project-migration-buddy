@@ -1,11 +1,12 @@
 import { Button } from '@/components/ui/button';
 import { CxDocument, CX_DOC_LABEL, CxExtraction } from '@/types/correspondente';
 import { CopyField } from './CopyField';
-import { ExternalLink, Loader2, RefreshCw, Trash2, FileText, AlertCircle, CheckCircle2 } from 'lucide-react';
+import { Eye, Download, Loader2, RefreshCw, Trash2, FileText, AlertCircle, CheckCircle2 } from 'lucide-react';
 
 interface Props {
   doc: CxDocument;
   onOpen: (doc: CxDocument) => void;
+  onDownload: (doc: CxDocument) => void;
   onDelete: (doc: CxDocument) => void;
   onRetry: (doc: CxDocument) => void;
 }
@@ -17,7 +18,7 @@ const STATUS_MAP: Record<string, { label: string; color: string; bg: string; ico
   error: { label: 'Erro', color: 'text-red-600', bg: 'bg-red-50', icon: <AlertCircle className="w-3.5 h-3.5" /> },
 };
 
-export function CxDocumentCard({ doc, onOpen, onDelete, onRetry }: Props) {
+export function CxDocumentCard({ doc, onOpen, onDownload, onDelete, onRetry }: Props) {
   const extraction = doc.extracted as CxExtraction;
   const groups = Array.isArray(extraction?.groups) ? extraction.groups : [];
   const status = STATUS_MAP[doc.status] || STATUS_MAP.pending;
@@ -34,17 +35,32 @@ export function CxDocumentCard({ doc, onOpen, onDelete, onRetry }: Props) {
             <p className="text-[11px] text-slate-500 truncate">{doc.file_name}</p>
           </div>
         </div>
-        <div className="flex items-center gap-1 flex-shrink-0">
-          <span className={`hidden sm:inline-flex items-center gap-1.5 px-2 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${status.bg} ${status.color}`}>
+        <div className="flex items-center gap-2 flex-shrink-0">
+          <span className={`hidden lg:inline-flex items-center gap-1.5 px-2 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${status.bg} ${status.color}`}>
             {status.icon}
             {status.label}
           </span>
-          <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-slate-500 hover:text-[#1a3a6b] hover:bg-blue-50" onClick={() => onOpen(doc)}>
-            <ExternalLink className="w-4 h-4" />
+          <Button
+            size="sm"
+            className="h-8 gap-1.5 bg-[#1a3a6b] hover:bg-[#152f57] text-white"
+            onClick={() => onOpen(doc)}
+          >
+            <Eye className="w-4 h-4" />
+            <span className="hidden sm:inline">Visualizar</span>
+          </Button>
+          <Button
+            size="sm"
+            variant="outline"
+            className="h-8 gap-1.5 border-slate-300 text-slate-700 hover:bg-slate-100"
+            onClick={() => onDownload(doc)}
+          >
+            <Download className="w-4 h-4" />
+            <span className="hidden sm:inline">Baixar</span>
           </Button>
           <Button
             variant="ghost"
             size="sm"
+            title="Reprocessar leitura"
             className="h-8 w-8 p-0 text-slate-500 hover:text-[#1a3a6b] hover:bg-blue-50"
             disabled={doc.status === 'processing'}
             onClick={() => onRetry(doc)}
@@ -54,6 +70,7 @@ export function CxDocumentCard({ doc, onOpen, onDelete, onRetry }: Props) {
           <Button
             variant="ghost"
             size="sm"
+            title="Excluir documento"
             className="h-8 w-8 p-0 text-slate-500 hover:text-red-600 hover:bg-red-50"
             onClick={() => onDelete(doc)}
           >
