@@ -86,7 +86,8 @@ export default function CorrespondenteCaixaPage() {
   const fileRef = useRef<HTMLInputElement>(null);
   const [reviewNotes, setReviewNotes] = useState('');
   const [linkOpen, setLinkOpen] = useState(false);
-  const portalUrl = `${window.location.origin}/portal/auth`;
+  const PORTAL_BASE_URL = 'https://postgen.fixaapp.com.br';
+  const portalUrl = `${PORTAL_BASE_URL}/portal/auth`;
 
   const copyPortalLink = () => {
     navigator.clipboard.writeText(portalUrl);
