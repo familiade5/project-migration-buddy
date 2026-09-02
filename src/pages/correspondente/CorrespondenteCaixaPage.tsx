@@ -400,7 +400,7 @@ export default function CorrespondenteCaixaPage() {
                       <Button
                         size="sm"
                         variant="outline"
-                        className="bg-white h-8"
+                        className="bg-white h-8 border-slate-200 text-slate-700 hover:bg-slate-50 hover:text-slate-900"
                         onClick={copyPortalLink}
                       >
                         Copiar link do portal
