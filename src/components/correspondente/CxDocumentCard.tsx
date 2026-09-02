@@ -18,7 +18,7 @@ const STATUS_MAP: Record<string, { label: string; color: string; bg: string; ico
   error: { label: 'Erro', color: 'text-red-600', bg: 'bg-red-50', icon: <AlertCircle className="w-3.5 h-3.5" /> },
 };
 
-export function CxDocumentCard({ doc, onOpen, onDelete, onRetry }: Props) {
+export function CxDocumentCard({ doc, onOpen, onDownload, onDelete, onRetry }: Props) {
   const extraction = doc.extracted as CxExtraction;
   const groups = Array.isArray(extraction?.groups) ? extraction.groups : [];
   const status = STATUS_MAP[doc.status] || STATUS_MAP.pending;
