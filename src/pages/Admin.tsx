@@ -361,9 +361,51 @@ export default function Admin() {
   };
 
   const filteredUsers = users.filter(user => 
-    user.full_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    user.email.toLowerCase().includes(searchQuery.toLowerCase())
+    user.approval_status !== 'pending' && (
+      user.full_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      user.email.toLowerCase().includes(searchQuery.toLowerCase())
+    )
   );
+
+  const pendingUsers = users.filter(u => u.approval_status === 'pending');
+
+  const handleApproval = async (target: UserWithRole, approve: boolean) => {
+    setIsProcessing(true);
+    try {
+      const { error } = await supabase
+        .from('profiles')
+        .update({
+          approval_status: approve ? 'approved' : 'rejected',
+          approved_at: new Date().toISOString(),
+          approved_by: currentUser?.id ?? null,
+        })
+        .eq('id', target.id);
+      if (error) throw error;
+
+      if (approve) {
+        const { error: roleError } = await supabase
+          .from('user_roles')
+          .insert({ user_id: target.id, role: 'user' });
+        // ignore duplicate role errors
+        if (roleError && !roleError.message.includes('duplicate')) throw roleError;
+      }
+
+      toast({
+        title: approve ? 'Acesso aprovado' : 'Acesso recusado',
+        description: `${target.full_name} foi ${approve ? 'aprovado' : 'recusado'}.`,
+      });
+      fetchUsers();
+    } catch (error: unknown) {
+      toast({
+        title: 'Erro ao processar pedido',
+        description: (error as Error).message,
+        variant: 'destructive',
+      });
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
 
   const stats = {
     totalUsers: users.length,
