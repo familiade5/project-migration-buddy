@@ -533,7 +533,6 @@ export default function PortalDashboard() {
               Adicionar
             </Button>
           </DialogFooter>
-        </DialogFooter>
         </DialogContent>
       </Dialog>
     </div>
