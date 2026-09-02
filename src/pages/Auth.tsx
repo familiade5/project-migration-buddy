@@ -162,15 +162,54 @@ export default function Auth() {
 
           <div className="text-center">
             <h2 className="font-display text-3xl font-semibold text-foreground">
-              Bem-vindo de volta
+              {mode === 'signup' ? 'Criar conta' : 'Bem-vindo de volta'}
             </h2>
             <p className="mt-2 text-muted-foreground">
-              Entre com suas credenciais para acessar
+              {mode === 'signup'
+                ? 'Cadastre-se e aguarde a aprovação de um administrador'
+                : 'Entre com suas credenciais para acessar'}
             </p>
           </div>
 
+          {signupDone ? (
+            <div className="glass-card rounded-xl p-6 text-center space-y-4">
+              <h3 className="font-display text-xl text-foreground">Cadastro enviado!</h3>
+              <p className="text-muted-foreground text-sm">
+                Sua solicitação de acesso foi registrada. Assim que um administrador aprovar, você poderá
+                entrar normalmente com seu email e senha.
+              </p>
+              <Button
+                variant="outline"
+                className="w-full"
+                onClick={() => {
+                  setSignupDone(false);
+                  setMode('login');
+                }}
+              >
+                Voltar para o login
+              </Button>
+            </div>
+          ) : (
           <form onSubmit={handleSubmit} className="space-y-6">
+            {mode === 'signup' && (
+              <div className="space-y-2">
+                <Label htmlFor="fullName">Nome completo</Label>
+                <div className="relative">
+                  <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+                  <Input
+                    id="fullName"
+                    type="text"
+                    placeholder="Seu nome"
+                    className="pl-10 input-premium"
+                    value={formData.fullName}
+                    onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
+                  />
+                </div>
+                {errors.fullName && <p className="text-sm text-destructive">{errors.fullName}</p>}
+              </div>
+            )}
             <div className="space-y-2">
+
               <Label htmlFor="email">Email</Label>
               <div className="relative">
                 <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
