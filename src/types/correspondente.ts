@@ -23,9 +23,28 @@ export interface CxClient {
   notes: string | null;
   extracted: Record<string, unknown>;
   created_by_user_id: string | null;
+  portal_user_id?: string | null;
+  parent_client_id?: string | null;
+  relationship?: string | null;
+  submission_status?: string | null;
+  submitted_at?: string | null;
+  review_notes?: string | null;
+  reviewed_at?: string | null;
   created_at: string;
   updated_at: string;
 }
+
+export const CX_SUBMISSION_STATUS = [
+  { value: 'rascunho', label: 'Em preenchimento', color: 'text-slate-600', bg: 'bg-slate-100' },
+  { value: 'enviado', label: 'Enviado', color: 'text-blue-700', bg: 'bg-blue-50' },
+  { value: 'em_analise', label: 'Em análise', color: 'text-indigo-700', bg: 'bg-indigo-50' },
+  { value: 'pendencia', label: 'Pendência', color: 'text-amber-700', bg: 'bg-amber-50' },
+  { value: 'aprovado', label: 'Tudo certo', color: 'text-emerald-700', bg: 'bg-emerald-50' },
+] as const;
+
+export const CX_STATUS_INFO = (value?: string | null) =>
+  CX_SUBMISSION_STATUS.find((s) => s.value === (value || 'rascunho')) || CX_SUBMISSION_STATUS[0];
+
 
 export interface CxDocument {
   id: string;

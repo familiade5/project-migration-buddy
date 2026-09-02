@@ -27,6 +27,9 @@ import AFOlxCatalog from "./pages/af/AFOlxCatalog";
 import VDHOlxCatalog from "./pages/VDHOlxCatalog";
 
 import CorrespondenteCaixaPage from "./pages/correspondente/CorrespondenteCaixaPage";
+import PortalAuth from "./pages/portal/PortalAuth";
+import PortalDashboard from "./pages/portal/PortalDashboard";
+
 import AutoPostApproval from "./pages/AutoPostApproval";
 import LandingPage from "./pages/LandingPage";
 
@@ -112,6 +115,10 @@ const App = () => (
             <Route path="/correspondente-caixa" element={
               <ProtectedRoute><CorrespondenteCaixaPage /></ProtectedRoute>
             } />
+            {/* Portal do cliente (público) */}
+            <Route path="/portal/auth" element={<PortalAuth />} />
+            <Route path="/portal" element={<PortalDashboard />} />
+
             {/* Auto Post Approval */}
             <Route path="/aprovacao-posts" element={
               <ProtectedRoute requireAdmin><AutoPostApproval /></ProtectedRoute>
