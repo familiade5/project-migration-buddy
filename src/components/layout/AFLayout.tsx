@@ -9,6 +9,7 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { AFLogoSVG } from '@/components/apartamentos-fortaleza/AFLogo';
 import logoVDH from '@/assets/logo-vdh.jpg';
 import logoAM from '@/assets/logo-apartamentos-manaus.png';
+import logoCC from '@/assets/logo-correspondente-caixa.png';
 
 interface AFLayoutProps { children: React.ReactNode; }
 
