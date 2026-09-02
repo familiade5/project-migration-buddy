@@ -9,7 +9,7 @@ interface ProtectedRouteProps {
 }
 
 export function ProtectedRoute({ children, requireAdmin = false }: ProtectedRouteProps) {
-  const { user, isAdmin, isLoading, rolesLoaded, profile, signOut } = useAuth();
+  const { user, isAdmin, isInternal, isLoading, rolesLoaded, profile, signOut } = useAuth();
   const location = useLocation();
 
   if (isLoading || (user && !rolesLoaded)) {
@@ -59,6 +59,11 @@ export function ProtectedRoute({ children, requireAdmin = false }: ProtectedRout
         </div>
       </div>
     );
+  }
+
+  // Sem papel interno no banco = conta de cliente: só a área de documentos
+  if (!isInternal) {
+    return <Navigate to="/portal" replace />;
   }
 
   if (requireAdmin && !isAdmin) {

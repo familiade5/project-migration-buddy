@@ -18,6 +18,7 @@ interface AuthContextType {
   session: Session | null;
   profile: Profile | null;
   isAdmin: boolean;
+  isInternal: boolean;
   rolesLoaded: boolean;
   isLoading: boolean;
   signIn: (email: string, password: string) => Promise<{ error: Error | null }>;
@@ -55,6 +56,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [isInternal, setIsInternal] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [rolesLoaded, setRolesLoaded] = useState(false);
   const fetchingRef = useRef(false);
@@ -93,11 +95,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             const { data, error } = await supabase
               .from('user_roles')
               .select('role')
-              .eq('user_id', userId)
-              .eq('role', 'admin')
-              .maybeSingle();
+              .eq('user_id', userId);
             if (error) throw error;
-            return data;
+            return data ?? [];
           }),
         ]);
 
@@ -108,10 +108,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         }
 
         if (adminResult.status === 'fulfilled') {
-          if (isMountedRef.current) setIsAdmin(!!adminResult.value);
+          const roles = adminResult.value.map((r) => r.role);
+          if (isMountedRef.current) {
+            setIsAdmin(roles.includes('admin'));
+            setIsInternal(roles.length > 0);
+          }
         } else {
-          console.error('Error checking admin role:', adminResult.reason);
-          if (isMountedRef.current) setIsAdmin(false);
+          console.error('Error checking roles:', adminResult.reason);
+          if (isMountedRef.current) {
+            setIsAdmin(false);
+            setIsInternal(false);
+          }
         }
       } catch (error) {
         console.error('Error fetching user data:', error);
@@ -151,6 +158,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       } else if (event === 'SIGNED_OUT') {
         setProfile(null);
         setIsAdmin(false);
+        setIsInternal(false);
         setRolesLoaded(false);
       }
     });
@@ -271,6 +279,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setSession(null);
     setProfile(null);
     setIsAdmin(false);
+    setIsInternal(false);
   };
 
   const updatePassword = async (newPassword: string) => {
@@ -304,6 +313,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         session,
         profile,
         isAdmin,
+        isInternal,
         rolesLoaded,
         isLoading,
         signIn,
