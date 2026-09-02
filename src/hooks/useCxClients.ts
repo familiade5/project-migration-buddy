@@ -234,6 +234,7 @@ export function useCxDocuments(clientId: string | null) {
     uploadDocument,
     deleteDocument,
     openDocument,
+    downloadDocument,
     retryExtraction,
   };
 }
