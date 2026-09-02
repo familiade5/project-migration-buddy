@@ -1371,7 +1371,14 @@ export type Database = {
           full_name: string
           id: string
           notes: string | null
+          parent_client_id: string | null
           phone: string | null
+          portal_user_id: string | null
+          relationship: string | null
+          review_notes: string | null
+          reviewed_at: string | null
+          submission_status: string
+          submitted_at: string | null
           updated_at: string
           whatsapp: string | null
         }
@@ -1383,7 +1390,14 @@ export type Database = {
           full_name: string
           id?: string
           notes?: string | null
+          parent_client_id?: string | null
           phone?: string | null
+          portal_user_id?: string | null
+          relationship?: string | null
+          review_notes?: string | null
+          reviewed_at?: string | null
+          submission_status?: string
+          submitted_at?: string | null
           updated_at?: string
           whatsapp?: string | null
         }
@@ -1395,11 +1409,26 @@ export type Database = {
           full_name?: string
           id?: string
           notes?: string | null
+          parent_client_id?: string | null
           phone?: string | null
+          portal_user_id?: string | null
+          relationship?: string | null
+          review_notes?: string | null
+          reviewed_at?: string | null
+          submission_status?: string
+          submitted_at?: string | null
           updated_at?: string
           whatsapp?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "cx_clients_parent_client_id_fkey"
+            columns: ["parent_client_id"]
+            isOneToOne: false
+            referencedRelation: "cx_clients"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       cx_documents: {
         Row: {
@@ -2682,6 +2711,10 @@ export type Database = {
         Args: { _property_id: string; _user_id: string }
         Returns: boolean
       }
+      cx_can_access_client: {
+        Args: { _client_id: string; _user_id: string }
+        Returns: boolean
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -2694,6 +2727,7 @@ export type Database = {
         Args: { _metric: string; _slug: string }
         Returns: undefined
       }
+      is_internal_user: { Args: { _user_id: string }; Returns: boolean }
       log_user_activity: {
         Args: {
           p_action: string
