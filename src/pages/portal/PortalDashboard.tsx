@@ -108,7 +108,8 @@ export default function PortalDashboard() {
     supabase.auth.getSession().then(async ({ data }) => {
       if (!active) return;
       const session = data.session;
-      if (!session) {
+      // Exige sessão de cliente do portal: sessões da equipe não veem dados aqui.
+      if (!session || session.user.user_metadata?.portal_client !== true) {
         navigate('/portal/auth', { replace: true });
         return;
       }
