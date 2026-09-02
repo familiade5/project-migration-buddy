@@ -188,7 +188,7 @@ export default function CorrespondenteCaixaPage() {
             </div>
             <Button
               variant="outline"
-              className="bg-white border-slate-200"
+              className="bg-white border-slate-200 text-slate-700 hover:text-slate-900"
               onClick={() => setLinkOpen(true)}
             >
               <Link2 className="w-4 h-4 mr-2" style={{ color: BRAND }} />
@@ -586,7 +586,7 @@ export default function CorrespondenteCaixaPage() {
             </div>
             <Button
               variant="outline"
-              className="w-full bg-white border-slate-200"
+              className="w-full bg-white border-slate-200 text-slate-700 hover:text-slate-900"
               onClick={() => {
                 const phone = (selected?.whatsapp || selected?.phone || '').replace(/\D/g, '');
                 const text = encodeURIComponent(
