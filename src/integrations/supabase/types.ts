@@ -1362,6 +1362,98 @@ export type Database = {
         }
         Relationships: []
       }
+      cx_clients: {
+        Row: {
+          created_at: string
+          created_by_user_id: string | null
+          email: string | null
+          extracted: Json
+          full_name: string
+          id: string
+          notes: string | null
+          phone: string | null
+          updated_at: string
+          whatsapp: string | null
+        }
+        Insert: {
+          created_at?: string
+          created_by_user_id?: string | null
+          email?: string | null
+          extracted?: Json
+          full_name: string
+          id?: string
+          notes?: string | null
+          phone?: string | null
+          updated_at?: string
+          whatsapp?: string | null
+        }
+        Update: {
+          created_at?: string
+          created_by_user_id?: string | null
+          email?: string | null
+          extracted?: Json
+          full_name?: string
+          id?: string
+          notes?: string | null
+          phone?: string | null
+          updated_at?: string
+          whatsapp?: string | null
+        }
+        Relationships: []
+      }
+      cx_documents: {
+        Row: {
+          client_id: string
+          created_at: string
+          doc_type: string
+          error_message: string | null
+          extracted: Json
+          file_name: string
+          file_path: string
+          id: string
+          mime_type: string | null
+          status: string
+          updated_at: string
+          uploaded_by_user_id: string | null
+        }
+        Insert: {
+          client_id: string
+          created_at?: string
+          doc_type?: string
+          error_message?: string | null
+          extracted?: Json
+          file_name: string
+          file_path: string
+          id?: string
+          mime_type?: string | null
+          status?: string
+          updated_at?: string
+          uploaded_by_user_id?: string | null
+        }
+        Update: {
+          client_id?: string
+          created_at?: string
+          doc_type?: string
+          error_message?: string | null
+          extracted?: Json
+          file_name?: string
+          file_path?: string
+          id?: string
+          mime_type?: string | null
+          status?: string
+          updated_at?: string
+          uploaded_by_user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cx_documents_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "cx_clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           address: string | null
