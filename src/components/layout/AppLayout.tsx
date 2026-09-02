@@ -91,9 +91,11 @@ export function AppLayout({ children }: AppLayoutProps) {
           <div className="flex items-center justify-between px-4 py-3 border-b" style={{ borderColor: '#E5E7EB' }}>
             <div className="flex items-center min-w-0 flex-1">
               <img
-                src={logoVDH}
-                alt="Venda Direta Hoje"
-                className="h-10 w-auto max-w-[160px] object-contain flex-shrink-0"
+                src={location.pathname.startsWith('/correspondente-caixa') ? logoCC : logoVDH}
+                alt={location.pathname.startsWith('/correspondente-caixa') ? 'Correspondente Caixa' : 'Venda Direta Hoje'}
+                className={location.pathname.startsWith('/correspondente-caixa')
+                  ? 'h-10 w-10 object-contain flex-shrink-0'
+                  : 'h-10 w-auto max-w-[160px] object-contain flex-shrink-0'}
               />
             </div>
             <button
@@ -267,9 +269,11 @@ export function AppLayout({ children }: AppLayoutProps) {
             </button>
             <div className="flex items-center">
               <img
-                src={logoVDH}
-                alt="Venda Direta Hoje"
-                className="h-9 w-auto max-w-[140px] object-contain"
+                src={location.pathname.startsWith('/correspondente-caixa') ? logoCC : logoVDH}
+                alt={location.pathname.startsWith('/correspondente-caixa') ? 'Correspondente Caixa' : 'Venda Direta Hoje'}
+                className={location.pathname.startsWith('/correspondente-caixa')
+                  ? 'h-9 w-9 object-contain'
+                  : 'h-9 w-auto max-w-[140px] object-contain'}
               />
             </div>
             <DropdownMenu>
