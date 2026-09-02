@@ -26,6 +26,7 @@ import ApartamentosFortalezaPage from "./pages/af/ApartamentosFortalezaPage";
 import AFOlxCatalog from "./pages/af/AFOlxCatalog";
 import VDHOlxCatalog from "./pages/VDHOlxCatalog";
 
+import CorrespondenteCaixaPage from "./pages/correspondente/CorrespondenteCaixaPage";
 import AutoPostApproval from "./pages/AutoPostApproval";
 import LandingPage from "./pages/LandingPage";
 
@@ -106,6 +107,10 @@ const App = () => (
             } />
             <Route path="/apartamentos-fortaleza/olx" element={
               <ProtectedRoute requireAdmin><AFOlxCatalog /></ProtectedRoute>
+            } />
+            {/* Correspondente Caixa */}
+            <Route path="/correspondente-caixa" element={
+              <ProtectedRoute><CorrespondenteCaixaPage /></ProtectedRoute>
             } />
             {/* Auto Post Approval */}
             <Route path="/aprovacao-posts" element={
