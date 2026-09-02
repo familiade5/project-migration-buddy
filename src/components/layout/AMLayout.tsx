@@ -26,6 +26,7 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { AMLogoSVG } from '@/components/apartamentos-manaus/AMLogo';
 import logoVDH from '@/assets/logo-vdh.jpg';
 import logoAF from '@/assets/logo-apartamentos-fortaleza.png';
+import logoCC from '@/assets/logo-correspondente-caixa.png';
 
 interface AMLayoutProps {
   children: React.ReactNode;
