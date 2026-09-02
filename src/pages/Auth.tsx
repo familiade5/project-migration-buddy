@@ -259,15 +259,33 @@ export default function Auth() {
             >
               {isLoading ? (
                 <Loader2 className="w-5 h-5 animate-spin" />
+              ) : mode === 'signup' ? (
+                'Solicitar acesso'
               ) : (
                 'Entrar'
               )}
             </Button>
           </form>
+          )}
 
-          <p className="text-center text-sm text-muted-foreground">
-            Acesso restrito. Entre em contato com o administrador.
-          </p>
+          {!signupDone && (
+            <div className="text-center space-y-2">
+              <button
+                type="button"
+                onClick={() => {
+                  setErrors({});
+                  setMode(mode === 'login' ? 'signup' : 'login');
+                }}
+                className="text-sm text-gold hover:underline"
+              >
+                {mode === 'login' ? 'Não tem conta? Criar conta' : 'Já tem conta? Entrar'}
+              </button>
+              <p className="text-center text-sm text-muted-foreground">
+                Novos cadastros passam por aprovação do administrador.
+              </p>
+            </div>
+          )}
+
         </div>
       </div>
     </div>
