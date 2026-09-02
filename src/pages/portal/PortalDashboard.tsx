@@ -332,7 +332,7 @@ export default function PortalDashboard() {
                   <Users className="w-4 h-4" style={{ color: BRAND }} />
                   Pessoas do processo
                 </h3>
-                <Button size="sm" variant="outline" className="bg-white" onClick={() => setPersonOpen(true)}>
+                <Button size="sm" variant="outline" className="bg-white border-slate-200 text-slate-700 hover:bg-slate-50 hover:text-slate-900" onClick={() => setPersonOpen(true)}>
                   <Plus className="w-4 h-4 mr-1" /> Adicionar pessoa
                 </Button>
               </div>
@@ -465,7 +465,7 @@ export default function PortalDashboard() {
                         <Button
                           size="sm"
                           variant="outline"
-                          className="bg-white h-8"
+                          className="bg-white h-8 border-slate-200 text-slate-700 hover:bg-slate-50 hover:text-slate-900"
                           onClick={() => openDocument(doc)}
                         >
                           Visualizar
@@ -522,7 +522,7 @@ export default function PortalDashboard() {
             </div>
           </div>
           <DialogFooter>
-            <Button variant="outline" className="bg-white" onClick={() => setPersonOpen(false)}>
+            <Button variant="outline" className="bg-white border-slate-200 text-slate-700 hover:bg-slate-50 hover:text-slate-900" onClick={() => setPersonOpen(false)}>
               Cancelar
             </Button>
             <Button
