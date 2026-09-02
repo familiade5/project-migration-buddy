@@ -197,6 +197,24 @@ export function useCxDocuments(clientId: string | null) {
     window.open(data.signedUrl, '_blank');
   }, []);
 
+  const downloadDocument = useCallback(async (doc: CxDocument) => {
+    const { data, error } = await supabase.storage
+      .from('correspondente-docs')
+      .download(doc.file_path);
+    if (error || !data) {
+      toast.error('Não foi possível baixar o arquivo');
+      return;
+    }
+    const url = URL.createObjectURL(data);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = doc.file_name || 'documento';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 2000);
+  }, []);
+
   const retryExtraction = useCallback(async (doc: CxDocument) => {
     const { data, error } = await supabase.storage
       .from('correspondente-docs')
