@@ -40,7 +40,7 @@ const navigation = [
   { name: 'Posts Educativos', href: '/educativo', icon: BookOpen },
   { name: 'Biblioteca', href: '/library', icon: Calendar },
   { name: 'Calculadora', href: '/calculadora', icon: Calculator },
-  { name: 'Correspondente Caixa', href: '/correspondente-caixa', icon: Landmark },
+  
 ];
 
 const adminNavigation = [
