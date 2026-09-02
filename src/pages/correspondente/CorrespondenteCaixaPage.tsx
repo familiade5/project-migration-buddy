@@ -562,7 +562,7 @@ export default function CorrespondenteCaixaPage() {
       </div>
 
       <Dialog open={linkOpen} onOpenChange={setLinkOpen}>
-        <DialogContent className="bg-white border-slate-200 sm:max-w-lg">
+        <DialogContent className="bg-white border-slate-200 text-slate-900 sm:max-w-lg">
           <DialogHeader>
             <DialogTitle className="text-slate-900 flex items-center gap-2">
               <Link2 className="w-5 h-5" style={{ color: BRAND }} />
