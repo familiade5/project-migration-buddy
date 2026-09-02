@@ -27,8 +27,9 @@ export function ProtectedRoute({ children, requireAdmin = false }: ProtectedRout
     return <Navigate to="/auth" state={{ from: location }} replace />;
   }
 
-  // Contas de cliente do portal não acessam o sistema interno
-  if (user.user_metadata?.portal_client === true) {
+  // Contas de cliente do portal não acessam o sistema interno.
+  // Checagem baseada em papéis do banco (não em metadados editáveis pelo usuário).
+  if (user.user_metadata?.portal_client === true || !isInternal) {
     return <Navigate to="/portal" replace />;
   }
 
