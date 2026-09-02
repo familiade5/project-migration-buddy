@@ -159,6 +159,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setProfile(null);
         setIsAdmin(false);
         setIsInternal(false);
+        setIsInternal(false);
         setRolesLoaded(false);
       }
     });
@@ -279,6 +280,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setSession(null);
     setProfile(null);
     setIsAdmin(false);
+    setIsInternal(false);
     setIsInternal(false);
   };
 
