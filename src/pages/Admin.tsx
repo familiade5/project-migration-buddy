@@ -73,7 +73,9 @@ interface Profile {
   full_name: string;
   temp_password: boolean | null;
   created_at: string;
+  approval_status?: string | null;
 }
+
 
 interface UserWithRole extends Profile {
   role: 'admin' | 'user';
