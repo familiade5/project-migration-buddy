@@ -21,6 +21,7 @@ import {
 import { useCxClients, useCxDocuments } from '@/hooks/useCxClients';
 import { CX_DOC_TYPES, CX_CHECKLIST, CX_DOC_LABEL, CX_SUBMISSION_STATUS, CxClient, CxDocument } from '@/types/correspondente';
 import { CxDocumentWorkspace } from '@/components/correspondente/CxDocumentWorkspace';
+import { CxNarrativeWorkspace } from '@/components/correspondente/CxNarrativeWorkspace';
 
 import { CopyField } from '@/components/correspondente/CopyField';
 import {
@@ -43,6 +44,7 @@ import {
   MessageCircle,
   PanelLeftClose,
   PanelLeftOpen,
+  Building2,
 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -78,6 +80,7 @@ function getClientStatus(client: CxClient, docs: CxDocument[]): ClientStatus {
 
 export default function CorrespondenteCaixaPage() {
   const { clients, isLoading, createClient, updateClient, deleteClient } = useCxClients();
+  const [tab, setTab] = useState<'clientes' | 'narrativas'>('clientes');
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [search, setSearch] = useState('');
   const [dialogOpen, setDialogOpen] = useState(false);
