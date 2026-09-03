@@ -1,7 +1,7 @@
 import { CxBankAnalysis, CxBankCredit } from '@/types/correspondente';
-import { cxCoverageWarning, cxFormatBRL, cxSummarizeAnalysis } from '@/lib/cxIncome';
+import { cxCoverageWarning, cxFormatBRL, cxIsGambling, cxSummarizeAnalysis } from '@/lib/cxIncome';
 import { Button } from '@/components/ui/button';
-import { Check, X, TrendingUp, AlertTriangle } from 'lucide-react';
+import { Check, X, TrendingUp, AlertTriangle, Ban } from 'lucide-react';
 
 interface Props {
   analysis: CxBankAnalysis;
