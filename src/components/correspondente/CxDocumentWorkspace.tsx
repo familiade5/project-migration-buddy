@@ -3,6 +3,8 @@ import { CxDocument, CX_DOC_LABEL, CxExtraction } from '@/types/correspondente';
 import { CxDocumentCard } from './CxDocumentCard';
 import { CxBankIncomeSummary } from './CxBankIncomeSummary';
 import { CxIrpfSummary } from './CxIrpfSummary';
+import { CxPropertySummary } from './CxPropertySummary';
+
 import { cxGetBankAnalysis } from '@/lib/cxIncome';
 import {
   FileText,
