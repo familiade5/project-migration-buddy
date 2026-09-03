@@ -343,6 +343,8 @@ export default function CorrespondenteCaixaPage() {
               )}
             </div>
           </aside>
+          )}
+
 
           {/* Detail */}
           <section className="bg-white rounded-2xl border border-slate-200 shadow-sm flex flex-col overflow-hidden">
