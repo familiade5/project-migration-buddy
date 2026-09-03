@@ -284,6 +284,35 @@ export function AMPropertyForm({ data, onChange }: AMPropertyFormProps) {
                   </div>
                 )}
               </div>
+
+              {/* ── Oportunidade: entrada zero / entrada baixa ── */}
+              <div className="mt-2 p-3 rounded-xl border border-blue-200 bg-blue-50/60 space-y-2">
+                <div className="flex items-center gap-2">
+                  <Switch
+                    className={switchClass}
+                    checked={!!data.opportunity}
+                    onCheckedChange={(v) => set('opportunity', v)}
+                  />
+                  <Label className="text-sm font-semibold text-blue-700">
+                    Oportunidade
+                  </Label>
+                </div>
+                {data.opportunity && (
+                  <div className="space-y-1">
+                    <Label className={labelClass}>Entrada a partir de (R$)</Label>
+                    <Input
+                      className={inputClass}
+                      type="number"
+                      placeholder="0 = Entrada Zero"
+                      value={data.downPaymentFrom || ''}
+                      onChange={(e) => set('downPaymentFrom', Number(e.target.value))}
+                    />
+                    <p className="text-[11px] text-gray-500">
+                      Deixe em 0 para exibir “Entrada Zero”. Aparece como selo de destaque na capa.
+                    </p>
+                  </div>
+                )}
+              </div>
             </>
           ) : (
             <div className="space-y-2">
