@@ -178,6 +178,8 @@ export const CX_DOC_TYPES = [
   { value: 'ctps', label: 'CTPS' },
   { value: 'extrato_fgts', label: 'Extrato de FGTS' },
   { value: 'extrato_bancario', label: 'Extrato Bancário (comprovação de renda)' },
+  { value: 'matricula_imovel', label: 'Matrícula / Narrativa do Imóvel' },
+
   { value: 'outro', label: 'Outro' },
 ] as const;
 
