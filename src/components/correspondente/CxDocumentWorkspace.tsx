@@ -93,7 +93,7 @@ export function CxDocumentWorkspace({
   if (documents.length === 0) return null;
 
   return (
-    <div className="grid gap-4 lg:grid-cols-[268px_minmax(0,1fr)]">
+    <div className="grid gap-4 lg:grid-cols-[236px_minmax(0,1fr)]">
       {/* Rail de tipos */}
       <aside className="lg:sticky lg:top-4 lg:self-start">
         <div className="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
