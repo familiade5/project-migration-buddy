@@ -460,12 +460,12 @@ export const AMCoverSlide = ({
                     A PARTIR DE
                   </span>
                   <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'center', gap: 1, marginTop: 1 }}>
-                    <span style={{ color: '#FFE14D', fontSize: 11, fontWeight: 900, lineHeight: 1, textShadow }}>R$</span>
-                    <span style={{ color: '#FFE14D', fontSize: mil ? 25 : 18, fontWeight: 900, lineHeight: 1, letterSpacing: '-0.03em', textShadow }}>
+                    <span style={{ color: '#ffffff', fontSize: 11, fontWeight: 900, lineHeight: 1, textShadow }}>R$</span>
+                    <span style={{ color: '#ffffff', fontSize: mil ? 25 : 18, fontWeight: 900, lineHeight: 1, letterSpacing: '-0.03em', textShadow }}>
                       {valueMain}
                     </span>
                     {mil && (
-                      <span style={{ color: '#FFE14D', fontSize: 13, fontWeight: 900, lineHeight: 1, textShadow }}>MIL</span>
+                      <span style={{ color: '#ffffff', fontSize: 13, fontWeight: 900, lineHeight: 1, textShadow }}>MIL</span>
                     )}
                   </div>
                 </>
@@ -474,7 +474,7 @@ export const AMCoverSlide = ({
                   <span style={{ color: '#FFE14D', fontSize: 16, fontWeight: 900, lineHeight: 1, letterSpacing: '-0.02em', textShadow }}>
                     ENTRADA
                   </span>
-                  <span style={{ color: '#FFE14D', fontSize: 25, fontWeight: 900, lineHeight: 1, letterSpacing: '-0.03em', textShadow }}>
+                  <span style={{ color: '#ffffff', fontSize: 25, fontWeight: 900, lineHeight: 1, letterSpacing: '-0.03em', textShadow }}>
                     ZERO
                   </span>
                 </>
