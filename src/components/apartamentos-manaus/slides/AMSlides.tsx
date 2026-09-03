@@ -381,7 +381,7 @@ export const AMCoverSlide = ({
 
       {/* ── SELO "OPORTUNIDADE" — balão de explosão (starburst) no canto direito ── */}
       {isOpportunity && (() => {
-        const size = 132;
+        const size = 108;
         const cx = size / 2;
         const cy = size / 2;
         const spikes = 16;
@@ -406,8 +406,8 @@ export const AMCoverSlide = ({
           <div
             style={{
               position: 'absolute',
-              top: 8,
-              right: 6,
+              top: 12,
+              right: 8,
               width: size,
               height: size,
               zIndex: 40,
@@ -440,51 +440,51 @@ export const AMCoverSlide = ({
                 alignItems: 'center',
                 justifyContent: 'center',
                 textAlign: 'center',
-                padding: '0 12px',
+                padding: '0 10px',
                 boxSizing: 'border-box',
               }}
             >
               {/* raios decorativos superiores */}
-              <div style={{ display: 'flex', alignItems: 'flex-end', gap: 3, marginBottom: 3 }}>
-                <div style={{ width: 2.5, height: 7, background: '#FFE14D', borderRadius: 2, transform: 'rotate(-22deg)' }} />
-                <div style={{ width: 2.5, height: 10, background: '#FFE14D', borderRadius: 2 }} />
-                <div style={{ width: 2.5, height: 7, background: '#FFE14D', borderRadius: 2, transform: 'rotate(22deg)' }} />
+              <div style={{ display: 'flex', alignItems: 'flex-end', gap: 2, marginBottom: 2 }}>
+                <div style={{ width: 2, height: 6, background: '#FFE14D', borderRadius: 2, transform: 'rotate(-22deg)' }} />
+                <div style={{ width: 2, height: 8, background: '#FFE14D', borderRadius: 2 }} />
+                <div style={{ width: 2, height: 6, background: '#FFE14D', borderRadius: 2, transform: 'rotate(22deg)' }} />
               </div>
 
               {downPayment > 0 ? (
                 <>
-                  <span style={{ color: '#FFE14D', fontSize: 17, fontWeight: 900, lineHeight: 1, letterSpacing: '-0.01em', textShadow }}>
+                  <span style={{ color: '#FFE14D', fontSize: 14, fontWeight: 900, lineHeight: 1, letterSpacing: '-0.01em', textShadow }}>
                     ENTRADA
                   </span>
-                  <span style={{ color: '#FFE14D', fontSize: 9, fontWeight: 800, lineHeight: 1.1, letterSpacing: '0.02em', textShadow: '0 1.5px 0 #A63C00' }}>
+                  <span style={{ color: '#FFE14D', fontSize: 7, fontWeight: 800, lineHeight: 1.1, letterSpacing: '0.02em', textShadow: '0 1.5px 0 #A63C00' }}>
                     A PARTIR DE
                   </span>
                   <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'center', gap: 1, marginTop: 1 }}>
-                    <span style={{ color: '#FFE14D', fontSize: 13, fontWeight: 900, lineHeight: 1, textShadow }}>R$</span>
-                    <span style={{ color: '#FFE14D', fontSize: mil ? 30 : 22, fontWeight: 900, lineHeight: 1, letterSpacing: '-0.03em', textShadow }}>
+                    <span style={{ color: '#FFE14D', fontSize: 11, fontWeight: 900, lineHeight: 1, textShadow }}>R$</span>
+                    <span style={{ color: '#FFE14D', fontSize: mil ? 25 : 18, fontWeight: 900, lineHeight: 1, letterSpacing: '-0.03em', textShadow }}>
                       {valueMain}
                     </span>
                     {mil && (
-                      <span style={{ color: '#FFE14D', fontSize: 16, fontWeight: 900, lineHeight: 1, textShadow }}>MIL</span>
+                      <span style={{ color: '#FFE14D', fontSize: 13, fontWeight: 900, lineHeight: 1, textShadow }}>MIL</span>
                     )}
                   </div>
                 </>
               ) : (
                 <>
-                  <span style={{ color: '#FFE14D', fontSize: 20, fontWeight: 900, lineHeight: 1, letterSpacing: '-0.02em', textShadow }}>
+                  <span style={{ color: '#FFE14D', fontSize: 16, fontWeight: 900, lineHeight: 1, letterSpacing: '-0.02em', textShadow }}>
                     ENTRADA
                   </span>
-                  <span style={{ color: '#FFE14D', fontSize: 30, fontWeight: 900, lineHeight: 1, letterSpacing: '-0.03em', textShadow }}>
+                  <span style={{ color: '#FFE14D', fontSize: 25, fontWeight: 900, lineHeight: 1, letterSpacing: '-0.03em', textShadow }}>
                     ZERO
                   </span>
                 </>
               )}
 
               {/* raios decorativos inferiores */}
-              <div style={{ display: 'flex', alignItems: 'flex-start', gap: 3, marginTop: 4 }}>
-                <div style={{ width: 2.5, height: 7, background: '#FFE14D', borderRadius: 2, transform: 'rotate(22deg)' }} />
-                <div style={{ width: 2.5, height: 10, background: '#FFE14D', borderRadius: 2 }} />
-                <div style={{ width: 2.5, height: 7, background: '#FFE14D', borderRadius: 2, transform: 'rotate(-22deg)' }} />
+              <div style={{ display: 'flex', alignItems: 'flex-start', gap: 2, marginTop: 3 }}>
+                <div style={{ width: 2, height: 6, background: '#FFE14D', borderRadius: 2, transform: 'rotate(22deg)' }} />
+                <div style={{ width: 2, height: 8, background: '#FFE14D', borderRadius: 2 }} />
+                <div style={{ width: 2, height: 6, background: '#FFE14D', borderRadius: 2, transform: 'rotate(-22deg)' }} />
               </div>
             </div>
           </div>
