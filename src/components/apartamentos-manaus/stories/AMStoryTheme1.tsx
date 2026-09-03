@@ -7,6 +7,7 @@
 
 import { AMPropertyData } from '@/types/apartamentosManaus';
 import logoAM from '@/assets/logo-apartamentos-manaus.png';
+import { AMOpportunityBurst } from '../slides/AMOpportunityBurst';
 
 const STORY_W = 360;
 const STORY_H = 640;
@@ -120,6 +121,11 @@ export const AMStory1_T1_Curiosity = ({
         </div>
       </div>
     </div>
+
+    {/* SELO OPORTUNIDADE */}
+    {!!data.opportunity && !data.isRental && (
+      <AMOpportunityBurst downPayment={data.downPaymentFrom ?? 0} size={96} style={{ position: 'absolute', top: 12, right: 10, zIndex: 40 }} />
+    )}
 
     {/* Bottom counter */}
     <div style={{

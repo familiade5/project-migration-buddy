@@ -7,6 +7,7 @@
 
 import { AMPropertyData } from '@/types/apartamentosManaus';
 import logoAM from '@/assets/logo-apartamentos-manaus.png';
+import { AMOpportunityBurst } from '../slides/AMOpportunityBurst';
 
 const STORY_W = 360;
 const STORY_H = 640;
@@ -32,8 +33,11 @@ export const AMStory3_T3_Curiosity = ({
 }: {
   data: AMPropertyData;
   photo?: string;
-}) => (
+}) => (<>
   <div style={{ position: 'relative', width: STORY_W, height: STORY_H, backgroundColor: '#0c0c0c', fontFamily: 'Arial, sans-serif', overflow: 'hidden' }}>
+    {!!data.opportunity && !data.isRental && (
+      <AMOpportunityBurst downPayment={data.downPaymentFrom ?? 0} size={96} style={{ position: 'absolute', top: 12, right: 10, zIndex: 40 }} />
+    )}
     {/* Full bleed photo — sombra mais clara para a foto aparecer */}
     {photo && (
       <img src={photo} alt="" style={{
@@ -127,7 +131,7 @@ export const AMStory3_T3_Curiosity = ({
       </div>
     </div>
   </div>
-);
+</>);
 
 /* ── Story 2: Revelação — fotos maiores (68%) + card no rodapé ───────────────*/
 export const AMStory3_T3_Reveal = ({

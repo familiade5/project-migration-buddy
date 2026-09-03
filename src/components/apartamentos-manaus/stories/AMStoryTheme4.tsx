@@ -12,6 +12,8 @@
 import { AMPropertyData } from '@/types/apartamentosManaus';
 import logoAM from '@/assets/logo-apartamentos-manaus.png';
 import logoCaixa from '@/assets/logo-caixa.png';
+import { AMOpportunityBurst } from '../slides/AMOpportunityBurst';
+
 
 const STORY_W = 360;
 const STORY_H = 640;
@@ -127,6 +129,17 @@ export const AMStory4_T4_Slide1 = ({
           </div>
         )}
       </div>
+
+      {/* ── SELO "OPORTUNIDADE" — balão de explosão (starburst) ── */}
+      {!!data.opportunity && !data.isRental && (
+        <AMOpportunityBurst
+          downPayment={data.downPaymentFrom ?? 0}
+          size={96}
+          style={{ position: 'absolute', top: 168, right: 10, zIndex: 40 }}
+        />
+      )}
+
+
 
       {/* ── Fotos ── */}
       <div style={{ padding: '10px 18px 0' }}>
