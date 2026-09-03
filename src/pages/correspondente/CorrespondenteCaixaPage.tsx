@@ -578,7 +578,35 @@ export default function CorrespondenteCaixaPage() {
               Link do Portal do Cliente
             </DialogTitle>
           </DialogHeader>
+          <div className="mb-4 p-3 rounded-xl border border-slate-200 bg-slate-50 space-y-2">
+            <p className="text-xs font-bold uppercase tracking-wide text-slate-500">
+              Link geral — Área do Cliente
+            </p>
+            <p className="text-xs text-slate-500">
+              Qualquer cliente pode criar o próprio acesso e enviar documentos por este link.
+            </p>
+            <div className="flex gap-2">
+              <Input
+                readOnly
+                value={`${PORTAL_BASE_URL}/portal/auth`}
+                className="bg-white border-slate-200 !text-slate-900 h-9"
+                style={{ color: '#0f172a' }}
+              />
+              <Button
+                size="sm"
+                className="text-white hover:opacity-90 flex-shrink-0 h-9"
+                style={{ backgroundColor: BRAND }}
+                onClick={() => {
+                  navigator.clipboard.writeText(`${PORTAL_BASE_URL}/portal/auth`);
+                  toast.success('Link da área do cliente copiado!');
+                }}
+              >
+                <Copy className="w-4 h-4 mr-2" /> Copiar
+              </Button>
+            </div>
+          </div>
           {!selected ? (
+
             <div className="space-y-3">
               <p className="text-sm text-slate-600">
                 Selecione o cliente para gerar o link exclusivo dele.
