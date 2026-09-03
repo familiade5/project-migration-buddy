@@ -29,11 +29,45 @@ export interface CxBankAnalysis {
   credits: CxBankCredit[];
 }
 
+export interface CxIrpfPjIncome {
+  cnpj?: string | null;
+  sourceName?: string | null;
+  taxableIncome: number;
+  inssWithheld?: boolean | null;
+  inssAmount?: number | null;
+  irrfAmount?: number | null;
+}
+
+export interface CxIrpfExemptIncome {
+  description: string;
+  cnpj?: string | null;
+  sourceName?: string | null;
+  amount: number;
+  isProfitDistribution?: boolean | null;
+}
+
+export interface CxIrpfAsset {
+  code?: string | null;
+  description: string;
+  category?: 'empresa' | 'imovel' | 'veiculo' | 'outro' | string | null;
+  value?: number | null;
+}
+
+export interface CxIrpfAnalysis {
+  holder?: string | null;
+  cpf?: string | null;
+  year?: string | null;
+  pjIncomes: CxIrpfPjIncome[];
+  exemptIncomes: CxIrpfExemptIncome[];
+  assets: CxIrpfAsset[];
+}
+
 export interface CxExtraction {
   documentType?: string | null;
   summary?: string | null;
   groups: CxGroup[];
   bankAnalysis?: CxBankAnalysis | null;
+  irpfAnalysis?: CxIrpfAnalysis | null;
 }
 
 export interface CxClient {
