@@ -155,7 +155,14 @@ export const cxGetBankAnalysis = (doc: CxDocument): CxBankAnalysis | null => {
   const extraction = doc.extracted as CxExtraction;
   const analysis = extraction?.bankAnalysis;
   if (!analysis || !Array.isArray(analysis.credits)) return null;
-  return analysis;
+  // Betting / gambling deposits are never accepted as income by the banks,
+  // unless the analyst explicitly decided to keep them.
+  const credits = analysis.credits.map((c) =>
+    c.included && cxIsGambling(c) && c.reason !== 'Ajustado manualmente'
+      ? { ...c, included: false, reason: 'Casa de apostas/jogos' }
+      : c,
+  );
+  return { ...analysis, credits };
 };
 
 /** Consolidates every bank statement of a client into a single monthly income average. */
