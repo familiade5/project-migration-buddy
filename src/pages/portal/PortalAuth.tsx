@@ -107,7 +107,7 @@ export default function PortalAuth() {
           <p className="text-sm text-slate-500 mt-1">
             {hasInvite
               ? 'Crie seu acesso exclusivo e envie sua documentação com segurança'
-              : 'Acesse com o e-mail e a senha que você cadastrou pelo seu link exclusivo'}
+              : 'Entre ou crie sua conta para enviar sua documentação com segurança'}
           </p>
         </div>
 
@@ -116,7 +116,7 @@ export default function PortalAuth() {
           className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 space-y-4"
         >
           <div className="flex bg-slate-100 rounded-lg p-1">
-            {(hasInvite ? (['signup', 'login'] as const) : (['login'] as const)).map((m) => (
+            {(hasInvite ? (['signup', 'login'] as const) : (['login', 'signup'] as const)).map((m) => (
               <button
                 key={m}
                 type="button"
@@ -129,6 +129,7 @@ export default function PortalAuth() {
               </button>
             ))}
           </div>
+
 
           {mode === 'signup' && (
             <div>
