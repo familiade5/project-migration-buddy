@@ -174,45 +174,63 @@ export default function CorrespondenteCaixaPage() {
   const receivedTypes = new Set(documents.map((d) => d.doc_type));
 
   return (
-    <AppLayout>
-      <div className="p-4 lg:p-8 max-w-[1600px] mx-auto h-[calc(100vh-64px)]">
-        {/* Page header */}
-        <div className="flex items-center justify-between gap-3 mb-6">
-          <div className="flex items-center gap-3">
-            <div className="p-2.5 rounded-xl bg-blue-50">
-              <Landmark className="w-6 h-6" style={{ color: BRAND }} />
-            </div>
-            <div>
-              <h1 className="text-2xl font-bold text-slate-900">Correspondente Caixa</h1>
-              <p className="text-sm text-slate-500">
-                Envie a documentação do cliente e copie os dados prontos para o SICAQ
-              </p>
-            </div>
+    <CxShell
+      right={
+        <>
+          <div className="hidden lg:flex items-center gap-2 px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-600">
+            <Users className="w-4 h-4 text-slate-400" />
+            <span className="font-semibold text-slate-900">{stats.active}</span> clientes
           </div>
-          <div className="flex items-center gap-2 flex-wrap justify-end">
-            <div className="hidden lg:flex items-center gap-2 px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-sm text-slate-600">
-              <Users className="w-4 h-4 text-slate-400" />
-              <span className="font-semibold text-slate-900">{stats.active}</span> clientes
-            </div>
-            <div className="hidden lg:flex items-center gap-2 px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-sm text-slate-600">
-              <Clock className="w-4 h-4 text-amber-500" />
-              <span className="font-semibold text-amber-600">{stats.pending}</span> pendentes
-            </div>
-            <Button
-              variant="outline"
-              className="bg-white border-slate-200 text-slate-700 hover:text-slate-900"
-              onClick={() => setLinkOpen(true)}
-            >
-              <Link2 className="w-4 h-4 mr-2" style={{ color: BRAND }} />
-              Link para o cliente
-            </Button>
+          <div className="hidden lg:flex items-center gap-2 px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-600">
+            <Clock className="w-4 h-4 text-amber-500" />
+            <span className="font-semibold text-amber-600">{stats.pending}</span> pendentes
           </div>
-
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-[380px_1fr] gap-6 h-[calc(100%-88px)]">
+          <Button
+            variant="outline"
+            className="bg-white border-slate-200 text-slate-700 hover:text-slate-900"
+            onClick={() => setLinkOpen(true)}
+          >
+            <Link2 className="w-4 h-4 mr-2" style={{ color: BRAND }} />
+            <span className="hidden sm:inline">Link para o cliente</span>
+          </Button>
+        </>
+      }
+    >
+      <div className="h-[calc(100vh-108px)]">
+        <div
+          className={`grid grid-cols-1 gap-5 h-full transition-all ${
+            listOpen ? 'lg:grid-cols-[340px_minmax(0,1fr)]' : 'lg:grid-cols-[64px_minmax(0,1fr)]'
+          }`}
+        >
           {/* Clients list */}
+          {!listOpen ? (
+            <aside className="hidden lg:flex bg-white rounded-2xl border border-slate-200 shadow-sm flex-col items-center py-4 gap-3">
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-9 w-9 p-0 text-slate-500 hover:text-slate-900"
+                title="Mostrar lista de clientes"
+                onClick={() => setListOpen(true)}
+              >
+                <PanelLeftOpen className="w-5 h-5" />
+              </Button>
+              <div className="h-px w-8 bg-slate-200" />
+              {filtered.slice(0, 12).map((c) => (
+                <button
+                  key={c.id}
+                  onClick={() => setSelectedId(c.id)}
+                  title={c.full_name}
+                  className={`w-10 h-10 rounded-full text-xs font-semibold transition-colors ${
+                    c.id === selectedId ? 'bg-[#1a3a6b] text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                  }`}
+                >
+                  {getInitials(c.full_name)}
+                </button>
+              ))}
+            </aside>
+          ) : (
           <aside className="bg-white rounded-2xl border border-slate-200 flex flex-col overflow-hidden shadow-sm">
+
             <div className="p-5 border-b border-slate-100 space-y-4">
               <div className="flex items-center justify-between">
                 <h2 className="text-lg font-bold" style={{ color: BRAND }}>Clientes</h2>
