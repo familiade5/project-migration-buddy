@@ -129,7 +129,8 @@ export function CxBankCreditsTable({ analysis, onToggle, disabled }: Props) {
                   </div>
                 </td>
               </tr>
-            ))}
+              );
+            })}
           </tbody>
         </table>
       </div>
