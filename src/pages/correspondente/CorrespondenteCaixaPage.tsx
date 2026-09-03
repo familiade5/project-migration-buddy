@@ -641,6 +641,8 @@ export default function CorrespondenteCaixaPage() {
                 : 'Enviar no WhatsApp'}
             </Button>
           </div>
+          )}
+
         </DialogContent>
       </Dialog>
 
