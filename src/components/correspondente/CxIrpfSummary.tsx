@@ -257,12 +257,16 @@ export function CxIrpfSummary({ documents }: { documents: CxDocument[] }) {
                     {s.belowLimit ? (
                       <p className="mt-1.5 flex items-start gap-1.5 font-semibold">
                         <AlertTriangle className="w-3.5 h-3.5 mt-[1px] flex-shrink-0" />
-                        Total abaixo de {cxFormatBRL(CX_IRPF_EXEMPT_LIMIT)} — o lucro pode não estar corretamente isento
-                        no IRPF. Pedir o balanço/contabilidade da empresa antes de usar essa renda.
+                        Total abaixo de{' '}
+                        <CopyText value={cxFormatBRL(CX_IRPF_EXEMPT_LIMIT)} label="Limite isenção" /> — o lucro pode
+                        não estar corretamente isento no IRPF. Pedir o balanço/contabilidade da empresa antes de usar
+                        essa renda.
                       </p>
                     ) : (
                       <p className="mt-1.5 font-semibold">
-                        Total acima de {cxFormatBRL(CX_IRPF_EXEMPT_LIMIT)} — isenção do lucro distribuído consistente.
+                        Total acima de{' '}
+                        <CopyText value={cxFormatBRL(CX_IRPF_EXEMPT_LIMIT)} label="Limite isenção" /> — isenção do lucro
+                        distribuído consistente.
                       </p>
                     )}
                   </div>
@@ -288,7 +292,12 @@ export function CxIrpfSummary({ documents }: { documents: CxDocument[] }) {
                       {s.companyAssets.map((a, i) => (
                         <p key={i} className="text-[11px] text-slate-700 pl-5">
                           {a.description}
-                          {a.value ? ` — ${cxFormatBRL(a.value)}` : ''}
+                          {a.value ? (
+                            <>
+                              {' — '}
+                              <CopyText value={cxFormatBRL(a.value)} label="Valor do bem" className="text-slate-700" />
+                            </>
+                          ) : null}
                         </p>
                       ))}
                     </div>
@@ -301,7 +310,12 @@ export function CxIrpfSummary({ documents }: { documents: CxDocument[] }) {
                       {s.realEstateAssets.map((a, i) => (
                         <p key={i} className="text-[11px] text-slate-700 pl-5">
                           {a.description}
-                          {a.value ? ` — ${cxFormatBRL(a.value)}` : ''}
+                          {a.value ? (
+                            <>
+                              {' — '}
+                              <CopyText value={cxFormatBRL(a.value)} label="Valor do bem" className="text-slate-700" />
+                            </>
+                          ) : null}
                         </p>
                       ))}
                     </div>
