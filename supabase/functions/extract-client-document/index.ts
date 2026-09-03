@@ -60,11 +60,12 @@ Leia o extrato bancário enviado e liste TODAS as entradas (créditos) do perío
 Para cada crédito, decida se ele CONTA como renda (included = true) ou NÃO CONTA (included = false), seguindo estas regras rígidas:
 - NÃO CONTA: transferência, PIX, TED ou DOC recebido em que a contraparte é a MESMA PESSOA titular da conta (mesmo nome ou mesmo CPF do titular) — é dinheiro dele mesmo.
 - NÃO CONTA: estornos, devoluções, cancelamentos, "estorno de", "devolução de compra", chargeback.
+- NÃO CONTA (MUITO IMPORTANTE): qualquer crédito vindo de casas de apostas, bets, cassinos, jogos de azar, loterias online, apostas esportivas ou plataformas de jogos (ex.: Bet365, Betano, Blaze, Betfair, Sportingbet, Pixbet, Estrela Bet, KTO, Stake, "BET", "CASSINO", "GAMING", "APOSTAS", "LOTERIA", "JOGOS"). Bancos NÃO aceitam esse tipo de valor como renda. Nesses casos SEMPRE use kind = "aposta", included = false e reason = "Casa de apostas/jogos".
 - NÃO CONTA: resgates de aplicação/poupança, transferências entre contas do próprio titular, empréstimos, financiamentos, cheque especial, saldo anterior.
 - NÃO CONTA: lançamentos duplicados do mesmo valor no mesmo dia que sejam claramente o par de um estorno.
 - CONTA: salário, pró-labore, pagamentos de clientes, PIX/TED de terceiros com origem em pessoa ou empresa DIFERENTE do titular, depósitos em dinheiro, benefícios recorrentes.
 - Débitos/saídas NÃO devem ser listados.
-Sempre preencha "reason" explicando em poucas palavras por que foi contado ou descartado (ex.: "PIX do próprio titular", "estorno", "PIX de terceiro").
+Sempre preencha "reason" explicando em poucas palavras por que foi contado ou descartado (ex.: "PIX do próprio titular", "estorno", "PIX de terceiro", "Casa de apostas/jogos").
 
 Regras gerais:
 - NUNCA invente lançamentos. Liste apenas o que está no extrato.
