@@ -78,6 +78,9 @@ export const AMCoverSlide = ({
   //    para acomodar o badge "BAIXOU O PREÇO" + preço antigo riscado.
   //    O recorte (notch) da foto acompanha proporcionalmente.
   const isReduced = !!data.priceReduced && !data.isRental && (data.oldPrice ?? 0) > 0;
+  // ── Modo "Oportunidade": entrada zero / entrada baixa
+  const isOpportunity = !!data.opportunity && !data.isRental;
+  const downPayment = data.downPaymentFrom ?? 0;
   const cardW = 148;
   const cardH = isReduced ? 72 : 52;
   // Posições derivadas (mantém bottom:10, right:10)
