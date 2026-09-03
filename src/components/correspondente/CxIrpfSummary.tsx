@@ -120,10 +120,26 @@ export function CxIrpfSummary({ documents }: { documents: CxDocument[] }) {
                       ))}
                       <tr className="border-t border-slate-200 bg-slate-50">
                         <td className="px-3 py-2 font-bold text-slate-700">Total</td>
-                        <td className="px-3 py-2 text-right font-bold text-slate-900">{cxFormatBRL(s.totalPj)}</td>
-                        <td className="px-3 py-2 text-right font-bold text-slate-700">{cxFormatBRL(s.totalPj / 12)}</td>
+                        <td className="px-3 py-2 text-right font-bold text-slate-900">
+                          <CopyText value={cxFormatBRL(s.totalPj)} label="Total PJ" className="justify-end" />
+                        </td>
                         <td className="px-3 py-2 text-right font-bold text-slate-700">
-                          {s.total13 > 0 ? cxFormatBRL(s.total13) : '—'}
+                          <CopyText
+                            value={cxFormatBRL(s.totalPj / 12)}
+                            label="Total mensal PJ"
+                            className="justify-end"
+                          />
+                        </td>
+                        <td className="px-3 py-2 text-right font-bold text-slate-700">
+                          {s.total13 > 0 ? (
+                            <CopyText
+                              value={cxFormatBRL(s.total13)}
+                              label="Total 13º"
+                              className="justify-end"
+                            />
+                          ) : (
+                            '—'
+                          )}
                         </td>
                         <td />
                       </tr>
