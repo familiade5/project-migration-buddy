@@ -234,15 +234,27 @@ export default function CorrespondenteCaixaPage() {
             <div className="p-5 border-b border-slate-100 space-y-4">
               <div className="flex items-center justify-between">
                 <h2 className="text-lg font-bold" style={{ color: BRAND }}>Clientes</h2>
-                <Button
-                  size="sm"
-                  className="h-8 w-8 p-0 text-white hover:opacity-90"
-                  style={{ backgroundColor: BRAND }}
-                  onClick={() => setDialogOpen(true)}
-                >
-                  <Plus className="w-4 h-4" />
-                </Button>
+                <div className="flex items-center gap-1">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="hidden lg:flex h-8 w-8 p-0 text-slate-400 hover:text-slate-900"
+                    title="Recolher lista"
+                    onClick={() => setListOpen(false)}
+                  >
+                    <PanelLeftClose className="w-4 h-4" />
+                  </Button>
+                  <Button
+                    size="sm"
+                    className="h-8 w-8 p-0 text-white hover:opacity-90"
+                    style={{ backgroundColor: BRAND }}
+                    onClick={() => setDialogOpen(true)}
+                  >
+                    <Plus className="w-4 h-4" />
+                  </Button>
+                </div>
               </div>
+
 
               <div className="relative">
                 <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
