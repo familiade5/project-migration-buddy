@@ -44,8 +44,16 @@ function buildCaption(data: AMPropertyData): string {
     if (data.subsidy > 0) {
       lines.push(`💰 Subsídio de até ${formatCurrency(data.subsidy)} - dependendo da renda`);
     }
+    if (data.opportunity && !data.isRental) {
+      if ((data.downPaymentFrom ?? 0) === 0) {
+        lines.push(`🌟 Entrada Zero`);
+      } else if (data.downPaymentFrom > 0) {
+        lines.push(`🌟 Entrada a partir de ${formatCurrency(data.downPaymentFrom)}`);
+      }
+    }
   }
   lines.push('');
+
 
   // Specs
   if (data.bedrooms > 0) {
