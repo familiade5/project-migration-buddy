@@ -1,7 +1,7 @@
 import { CxBankAnalysis, CxBankCredit } from '@/types/correspondente';
-import { cxCoverageWarning, cxFormatBRL, cxSummarizeAnalysis } from '@/lib/cxIncome';
+import { cxCoverageWarning, cxFormatBRL, cxIsGambling, cxSummarizeAnalysis } from '@/lib/cxIncome';
 import { Button } from '@/components/ui/button';
-import { Check, X, TrendingUp, AlertTriangle } from 'lucide-react';
+import { Check, X, TrendingUp, AlertTriangle, Ban } from 'lucide-react';
 
 interface Props {
   analysis: CxBankAnalysis;
@@ -12,6 +12,8 @@ interface Props {
 export function CxBankCreditsTable({ analysis, onToggle, disabled }: Props) {
   const summary = cxSummarizeAnalysis(analysis);
   const warning = cxCoverageWarning(summary);
+  const gamblingCredits = analysis.credits.filter((c) => cxIsGambling(c));
+  const gamblingTotal = gamblingCredits.reduce((s, c) => s + c.amount, 0);
 
   return (
     <div className="space-y-4 text-slate-800">
@@ -39,6 +41,24 @@ export function CxBankCreditsTable({ analysis, onToggle, disabled }: Props) {
           </div>
         </div>
       )}
+
+      {gamblingCredits.length > 0 && (
+        <div className="rounded-2xl border border-red-300 bg-red-50 p-4 flex gap-3">
+          <Ban className="w-5 h-5 text-red-600 shrink-0 mt-0.5" />
+          <div>
+            <p className="text-xs font-bold text-red-700 uppercase tracking-wide">
+              Depósitos de casas de apostas / jogos detectados
+            </p>
+            <p className="text-xs text-red-700 mt-1">
+              {gamblingCredits.length} lançamento(s) somando {cxFormatBRL(gamblingTotal)} vindos de bets, cassinos ou jogos.
+              Bancos não aceitam esses valores como renda, então eles foram retirados do cálculo e estão marcados em
+              vermelho na tabela. O analista pode contabilizá-los manualmente se julgar necessário.
+            </p>
+          </div>
+        </div>
+      )}
+
+
 
       {summary.months.length > 0 && (
         <div className="grid gap-2 sm:grid-cols-3">
@@ -68,10 +88,18 @@ export function CxBankCreditsTable({ analysis, onToggle, disabled }: Props) {
             </tr>
           </thead>
           <tbody>
-            {analysis.credits.map((c: CxBankCredit, i: number) => (
+            {analysis.credits.map((c: CxBankCredit, i: number) => {
+              const gambling = cxIsGambling(c);
+              return (
               <tr
                 key={`${c.date}-${c.description}-${i}`}
-                className={`border-t border-slate-100 ${c.included ? 'bg-white text-slate-800' : 'bg-slate-100 text-slate-600'}`}
+                className={`border-t border-slate-100 ${
+                  gambling
+                    ? 'bg-red-50 text-red-700 font-semibold'
+                    : c.included
+                      ? 'bg-white text-slate-800'
+                      : 'bg-slate-100 text-slate-600'
+                }`}
               >
                 <td className="px-3 py-2 whitespace-nowrap">{c.date}</td>
                 <td className="px-3 py-2 max-w-[220px] truncate" title={c.description}>
@@ -80,18 +108,32 @@ export function CxBankCreditsTable({ analysis, onToggle, disabled }: Props) {
                 <td className="px-3 py-2 max-w-[160px] truncate" title={c.counterparty || ''}>
                   {c.counterparty || '—'}
                 </td>
-                <td className={`px-3 py-2 text-right font-semibold ${c.included ? 'text-emerald-700' : 'line-through'}`}>
+                <td
+                  className={`px-3 py-2 text-right font-semibold ${
+                    gambling ? 'text-red-700 line-through' : c.included ? 'text-emerald-700' : 'line-through'
+                  }`}
+                >
                   {cxFormatBRL(c.amount)}
                 </td>
                 <td className="px-3 py-2">
                   <div className="flex items-center gap-2">
                     <span
                       className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold ${
-                        c.included ? 'bg-emerald-50 text-emerald-700' : 'bg-red-50 text-red-600'
+                        gambling
+                          ? 'bg-red-100 text-red-700'
+                          : c.included
+                            ? 'bg-emerald-50 text-emerald-700'
+                            : 'bg-red-50 text-red-600'
                       }`}
                     >
-                      {c.included ? <Check className="w-3 h-3" /> : <X className="w-3 h-3" />}
-                      {c.included ? 'Conta como renda' : c.reason || 'Descartado'}
+                      {gambling ? <Ban className="w-3 h-3" /> : c.included ? <Check className="w-3 h-3" /> : <X className="w-3 h-3" />}
+                      {gambling
+                        ? c.included
+                          ? 'Apostas/jogos — mantido pelo analista'
+                          : 'Apostas/jogos — não conta como renda'
+                        : c.included
+                          ? 'Conta como renda'
+                          : c.reason || 'Descartado'}
                     </span>
                     {onToggle && (
                       <Button
@@ -107,7 +149,8 @@ export function CxBankCreditsTable({ analysis, onToggle, disabled }: Props) {
                   </div>
                 </td>
               </tr>
-            ))}
+              );
+            })}
           </tbody>
         </table>
       </div>
