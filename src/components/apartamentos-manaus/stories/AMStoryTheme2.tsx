@@ -7,6 +7,7 @@
 
 import { AMPropertyData } from '@/types/apartamentosManaus';
 import logoAM from '@/assets/logo-apartamentos-manaus.png';
+import { AMOpportunityBurst } from '../slides/AMOpportunityBurst';
 
 const STORY_W = 360;
 const STORY_H = 640;
@@ -32,8 +33,11 @@ export const AMStory2_T2_Curiosity = ({
 }: {
   data: AMPropertyData;
   photo?: string;
-}) => (
+}) => (<>
   <div style={{ position: 'relative', width: STORY_W, height: STORY_H, backgroundColor: '#ffffff', fontFamily: 'Arial, sans-serif', overflow: 'hidden' }}>
+    {!!data.opportunity && !data.isRental && (
+      <AMOpportunityBurst downPayment={data.downPaymentFrom ?? 0} size={96} style={{ position: 'absolute', top: 12, right: 10, zIndex: 40 }} />
+    )}
     {/* Blue vertical stripe left */}
     <div style={{ position: 'absolute', left: 0, top: 0, width: 6, height: '100%', backgroundColor: '#1B5EA6', zIndex: 5 }} />
 
