@@ -1,7 +1,7 @@
 import { CxBankAnalysis, CxBankCredit } from '@/types/correspondente';
-import { cxFormatBRL, cxSummarizeCredits } from '@/lib/cxIncome';
+import { cxCoverageWarning, cxFormatBRL, cxSummarizeAnalysis } from '@/lib/cxIncome';
 import { Button } from '@/components/ui/button';
-import { Check, X, TrendingUp } from 'lucide-react';
+import { Check, X, TrendingUp, AlertTriangle } from 'lucide-react';
 
 interface Props {
   analysis: CxBankAnalysis;
@@ -10,7 +10,8 @@ interface Props {
 }
 
 export function CxBankCreditsTable({ analysis, onToggle, disabled }: Props) {
-  const summary = cxSummarizeCredits(analysis.credits);
+  const summary = cxSummarizeAnalysis(analysis);
+  const warning = cxCoverageWarning(summary);
 
   return (
     <div className="space-y-4">
@@ -26,12 +27,30 @@ export function CxBankCreditsTable({ analysis, onToggle, disabled }: Props) {
         </p>
       </div>
 
+      {warning && (
+        <div className="rounded-2xl border border-red-300 bg-red-50 p-4 flex gap-3">
+          <AlertTriangle className="w-5 h-5 text-red-600 shrink-0 mt-0.5" />
+          <div>
+            <p className="text-xs font-bold text-red-700 uppercase tracking-wide">Extrato com mês incompleto</p>
+            <p className="text-xs text-red-700 mt-1">{warning}</p>
+            <p className="text-xs text-red-800 font-semibold mt-2">
+              Média proporcional (por dias cobertos): {cxFormatBRL(summary.proRataAverage)}
+            </p>
+          </div>
+        </div>
+      )}
+
       {summary.months.length > 0 && (
         <div className="grid gap-2 sm:grid-cols-3">
           {summary.months.map((m) => (
             <div key={m.key} className="rounded-xl border border-slate-200 bg-white px-3 py-2">
               <p className="text-[11px] font-semibold text-slate-500">{m.key}</p>
               <p className="text-sm font-bold text-slate-900">{cxFormatBRL(m.total)}</p>
+              <p className={`text-[10px] mt-0.5 ${m.complete ? 'text-slate-400' : 'text-red-600 font-semibold'}`}>
+                {m.complete
+                  ? 'Mês completo'
+                  : `Parcial: dias ${m.firstDay}–${m.lastDay} de ${m.totalDays}`}
+              </p>
             </div>
           ))}
         </div>

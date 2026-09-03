@@ -21,7 +21,7 @@ import {
 import { useCxClients, useCxDocuments } from '@/hooks/useCxClients';
 import { CX_DOC_TYPES, CX_CHECKLIST, CX_DOC_LABEL, CX_SUBMISSION_STATUS, CxClient, CxDocument } from '@/types/correspondente';
 import { CxDocumentCard } from '@/components/correspondente/CxDocumentCard';
-import { cxConsolidateBankStatements, cxFormatBRL } from '@/lib/cxIncome';
+import { cxConsolidateBankStatements, cxCoverageWarning, cxFormatBRL } from '@/lib/cxIncome';
 import { CopyField } from '@/components/correspondente/CopyField';
 import {
   Plus,
@@ -111,6 +111,7 @@ export default function CorrespondenteCaixaPage() {
   const { documents, uploadDocument, deleteDocument, openDocument, downloadDocument, retryExtraction, updateExtraction } =
     useCxDocuments(selected?.id ?? null);
   const income = cxConsolidateBankStatements(documents);
+  const incomeWarning = cxCoverageWarning(income);
 
   useEffect(() => {
     setReviewNotes(selected?.review_notes || '');
@@ -546,11 +547,23 @@ export default function CorrespondenteCaixaPage() {
                         Média mensal consolidada em {income.months.length} mês(es), já descontando PIX/transferências do
                         próprio titular, estornos e resgates ({income.excludedCount} lançamento(s) descartado(s)).
                       </p>
+                      {incomeWarning && (
+                        <div className="rounded-xl border border-red-300 bg-red-50 p-3">
+                          <p className="text-xs font-bold text-red-700">⚠️ Extrato com mês incompleto</p>
+                          <p className="text-xs text-red-700 mt-1">{incomeWarning}</p>
+                          <p className="text-xs text-red-800 font-semibold mt-1">
+                            Média proporcional (por dias cobertos): {cxFormatBRL(income.proRataAverage)}
+                          </p>
+                        </div>
+                      )}
                       <div className="grid gap-2 sm:grid-cols-3">
                         {income.months.map((m) => (
                           <div key={m.key} className="rounded-xl border border-emerald-200 bg-white px-3 py-2">
                             <p className="text-[11px] font-semibold text-slate-500">{m.key}</p>
                             <p className="text-sm font-bold text-slate-900">{cxFormatBRL(m.total)}</p>
+                            <p className={`text-[10px] mt-0.5 ${m.complete ? 'text-slate-400' : 'text-red-600 font-semibold'}`}>
+                              {m.complete ? 'Mês completo' : `Parcial: dias ${m.firstDay}–${m.lastDay} de ${m.totalDays}`}
+                            </p>
                           </div>
                         ))}
                       </div>
