@@ -319,7 +319,42 @@ export function CxNarrativeWorkspace({ header }: Props) {
                   />
                 </div>
               </div>
+
+              <div className="mt-4 bg-slate-50 border border-slate-200 rounded-2xl p-4">
+                <div className="flex items-center justify-between gap-3 mb-3">
+                  <p className="text-[11px] font-bold uppercase tracking-wide text-slate-500">
+                    Dados do imóvel — clique para copiar
+                  </p>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="bg-white border-slate-200 text-slate-700 hover:text-slate-900"
+                    onClick={async () => {
+                      const lines = [
+                        `Imóvel: ${selected.name}`,
+                        selected.address ? `Endereço: ${selected.address}` : '',
+                        selected.registration_number ? `Matrícula: ${selected.registration_number}` : '',
+                        selected.notary_office ? `Cartório: ${selected.notary_office}` : '',
+                        selected.notes ? `Observações: ${selected.notes}` : '',
+                      ].filter(Boolean);
+                      await cxCopyToClipboard(lines.join('\n'));
+                      toast.success('Dados do imóvel copiados');
+                    }}
+                  >
+                    <Copy className="w-3.5 h-3.5 mr-2" /> Copiar tudo
+                  </Button>
+                </div>
+                <div className="grid gap-2 sm:grid-cols-2">
+                  <CopyField label="Nome do imóvel" value={selected.name} />
+                  {selected.registration_number && (
+                    <CopyField label="Matrícula" value={selected.registration_number} />
+                  )}
+                  {selected.notary_office && <CopyField label="Cartório" value={selected.notary_office} />}
+                  {selected.address && <CopyField label="Endereço" value={selected.address} />}
+                </div>
+              </div>
             </div>
+
 
             <div className="p-6 space-y-6">
               <div className="bg-slate-50 rounded-2xl border border-slate-200 p-5 space-y-4">
