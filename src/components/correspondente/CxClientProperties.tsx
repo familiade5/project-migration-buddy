@@ -48,6 +48,7 @@ export function CxClientProperties({ clientId }: { clientId: string }) {
   const { properties, isLoading, updateProperty } = useCxProperties();
   const [openId, setOpenId] = useState<string | null>(null);
   const [linking, setLinking] = useState(false);
+  const [showLink, setShowLink] = useState(false);
 
   const linked = useMemo(
     () => properties.filter((p) => p.client_id === clientId),
@@ -64,7 +65,10 @@ export function CxClientProperties({ clientId }: { clientId: string }) {
     setLinking(true);
     const ok = await updateProperty(propertyId, { client_id: clientId });
     setLinking(false);
-    if (ok) toast.success('Imóvel vinculado ao cliente');
+    if (ok) {
+      setShowLink(false);
+      toast.success('Imóvel vinculado ao cliente');
+    }
   };
 
   return (
@@ -113,7 +117,7 @@ export function CxClientProperties({ clientId }: { clientId: string }) {
           <Building2 className="w-9 h-9 text-slate-300 mx-auto mb-2" />
           <p className="text-sm font-medium text-slate-600">Nenhum imóvel vinculado</p>
           <p className="text-xs text-slate-400 mt-1">
-            Use a busca acima para vincular a narrativa de um imóvel já checado.
+            Use o botão acima para vincular a narrativa de um imóvel já checado.
           </p>
         </div>
       ) : (
