@@ -20,7 +20,7 @@ import {
 } from '@/components/ui/dialog';
 import { useCxClients, useCxDocuments } from '@/hooks/useCxClients';
 import { CX_DOC_TYPES, CX_CHECKLIST, CX_DOC_LABEL, CX_SUBMISSION_STATUS, CxClient, CxDocument } from '@/types/correspondente';
-import { CxDocumentCard } from '@/components/correspondente/CxDocumentCard';
+import { CxDocumentWorkspace } from '@/components/correspondente/CxDocumentWorkspace';
 import { cxConsolidateBankStatements, cxCoverageWarning, cxFormatBRL } from '@/lib/cxIncome';
 import { CopyField } from '@/components/correspondente/CopyField';
 import {
@@ -585,20 +585,16 @@ export default function CorrespondenteCaixaPage() {
                         </p>
                       </div>
                     ) : (
-                      <div className="space-y-4">
-                        {documents.map((doc) => (
-                          <CxDocumentCard
-                            key={doc.id}
-                            doc={doc}
-                            onOpen={openDocument}
-                            onDownload={downloadDocument}
-                            onDelete={deleteDocument}
-                            onRetry={retryExtraction}
-                            onUpdateExtraction={updateExtraction}
-                          />
-                        ))}
-                      </div>
+                      <CxDocumentWorkspace
+                        documents={documents}
+                        onOpen={openDocument}
+                        onDownload={downloadDocument}
+                        onDelete={deleteDocument}
+                        onRetry={retryExtraction}
+                        onUpdateExtraction={updateExtraction}
+                      />
                     )}
+
                   </div>
                 </div>
               </div>
