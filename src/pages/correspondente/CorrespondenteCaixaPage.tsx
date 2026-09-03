@@ -585,20 +585,16 @@ export default function CorrespondenteCaixaPage() {
                         </p>
                       </div>
                     ) : (
-                      <div className="space-y-4">
-                        {documents.map((doc) => (
-                          <CxDocumentCard
-                            key={doc.id}
-                            doc={doc}
-                            onOpen={openDocument}
-                            onDownload={downloadDocument}
-                            onDelete={deleteDocument}
-                            onRetry={retryExtraction}
-                            onUpdateExtraction={updateExtraction}
-                          />
-                        ))}
-                      </div>
+                      <CxDocumentWorkspace
+                        documents={documents}
+                        onOpen={openDocument}
+                        onDownload={downloadDocument}
+                        onDelete={deleteDocument}
+                        onRetry={retryExtraction}
+                        onUpdateExtraction={updateExtraction}
+                      />
                     )}
+
                   </div>
                 </div>
               </div>
