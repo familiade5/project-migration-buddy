@@ -26,6 +26,9 @@ import {
   CxProperty,
 } from '@/types/correspondente';
 import { CxDocumentWorkspace } from './CxDocumentWorkspace';
+import { CopyText, cxCopyToClipboard } from './CopyText';
+import { CopyField } from './CopyField';
+import { toast } from 'sonner';
 import {
   Plus,
   Search,
@@ -36,7 +39,9 @@ import {
   FileText,
   Inbox,
   Calendar,
+  Copy,
 } from 'lucide-react';
+
 
 const BRAND = '#1a3a6b';
 
