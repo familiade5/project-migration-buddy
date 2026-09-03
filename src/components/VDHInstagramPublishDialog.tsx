@@ -317,7 +317,7 @@ export const VDHInstagramPublishDialog = ({
 
       <Dialog open={open} onOpenChange={handleOpenChange}>
         <DialogContent
-          className="max-w-4xl sm:rounded-lg"
+          className="max-w-4xl sm:rounded-lg max-h-[90vh] overflow-y-auto"
           style={{
             backgroundColor: '#ffffff',
             color: '#111827',

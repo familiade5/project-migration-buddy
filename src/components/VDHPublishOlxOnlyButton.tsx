@@ -174,7 +174,7 @@ export function VDHPublishOlxOnlyButton({ data, photos, disabled, prepareSlides 
       </Button>
 
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="max-w-2xl sm:rounded-lg" style={{ backgroundColor: '#ffffff', color: '#111827' }}>
+        <DialogContent className="max-w-2xl sm:rounded-lg max-h-[90vh] overflow-y-auto" style={{ backgroundColor: '#ffffff', color: '#111827' }}>
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2" style={{ color: '#111827' }}>
               <Tag className="w-5 h-5" />
