@@ -2,6 +2,8 @@ import { AlertTriangle, Building2, Home, ShieldCheck, ShieldAlert } from 'lucide
 import { CxDocument } from '@/types/correspondente';
 import { cxFormatBRL } from '@/lib/cxIncome';
 import { cxGetIrpfAnalysis, cxSummarizeIrpf, CX_IRPF_EXEMPT_LIMIT } from '@/lib/cxIrpf';
+import { CopyText } from '@/components/correspondente/CopyText';
+
 
 export function CxIrpfSummary({ documents }: { documents: CxDocument[] }) {
   const analyses = documents
