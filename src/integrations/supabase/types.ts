@@ -1373,6 +1373,7 @@ export type Database = {
           notes: string | null
           parent_client_id: string | null
           phone: string | null
+          portal_token: string | null
           portal_user_id: string | null
           relationship: string | null
           review_notes: string | null
@@ -1392,6 +1393,7 @@ export type Database = {
           notes?: string | null
           parent_client_id?: string | null
           phone?: string | null
+          portal_token?: string | null
           portal_user_id?: string | null
           relationship?: string | null
           review_notes?: string | null
@@ -1411,6 +1413,7 @@ export type Database = {
           notes?: string | null
           parent_client_id?: string | null
           phone?: string | null
+          portal_token?: string | null
           portal_user_id?: string | null
           relationship?: string | null
           review_notes?: string | null
@@ -2723,6 +2726,15 @@ export type Database = {
       cx_can_access_client: {
         Args: { _client_id: string; _user_id: string }
         Returns: boolean
+      }
+      cx_claim_invite: { Args: { _token: string }; Returns: string }
+      cx_invite_info: {
+        Args: { _token: string }
+        Returns: {
+          claimed: boolean
+          client_id: string
+          full_name: string
+        }[]
       }
       has_role: {
         Args: {

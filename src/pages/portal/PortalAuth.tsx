@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -11,7 +11,9 @@ const BRAND = '#1a3a6b';
 
 export default function PortalAuth() {
   const navigate = useNavigate();
-  const [mode, setMode] = useState<'login' | 'signup'>('signup');
+  const { token } = useParams<{ token?: string }>();
+  const hasInvite = Boolean(token);
+  const [mode, setMode] = useState<'login' | 'signup'>(hasInvite ? 'signup' : 'login');
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -23,10 +25,16 @@ export default function PortalAuth() {
       // Só entra direto se for uma conta de cliente do portal.
       // Sessões da equipe (sem o flag portal_client) veem a tela de login/cadastro.
       if (session?.user?.user_metadata?.portal_client === true) {
-        navigate('/portal', { replace: true });
+        if (token) {
+          supabase.rpc('cx_claim_invite', { _token: token }).then(() => {
+            navigate('/portal', { replace: true });
+          });
+        } else {
+          navigate('/portal', { replace: true });
+        }
       }
     });
-  }, [navigate]);
+  }, [navigate, token]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -56,6 +64,10 @@ export default function PortalAuth() {
           });
           if (signInError) throw signInError;
         }
+        if (token) {
+          const { error: claimError } = await supabase.rpc('cx_claim_invite', { _token: token });
+          if (claimError) throw claimError;
+        }
         navigate('/portal', { replace: true });
 
       } else {
@@ -64,6 +76,10 @@ export default function PortalAuth() {
           password,
         });
         if (error) throw error;
+        if (token) {
+          const { error: claimError } = await supabase.rpc('cx_claim_invite', { _token: token });
+          if (claimError) throw claimError;
+        }
         navigate('/portal', { replace: true });
       }
     } catch (err) {
@@ -89,7 +105,9 @@ export default function PortalAuth() {
           </div>
           <h1 className="text-2xl font-bold text-slate-900">Portal do Cliente</h1>
           <p className="text-sm text-slate-500 mt-1">
-            Envie sua documentação para análise de crédito com segurança
+            {hasInvite
+              ? 'Crie seu acesso exclusivo e envie sua documentação com segurança'
+              : 'Acesse com o e-mail e a senha que você cadastrou pelo seu link exclusivo'}
           </p>
         </div>
 
@@ -98,7 +116,7 @@ export default function PortalAuth() {
           className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 space-y-4"
         >
           <div className="flex bg-slate-100 rounded-lg p-1">
-            {(['signup', 'login'] as const).map((m) => (
+            {(hasInvite ? (['signup', 'login'] as const) : (['login'] as const)).map((m) => (
               <button
                 key={m}
                 type="button"
