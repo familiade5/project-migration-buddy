@@ -1499,6 +1499,7 @@ export type Database = {
       cx_properties: {
         Row: {
           address: string | null
+          client_id: string | null
           created_at: string
           created_by_user_id: string | null
           id: string
@@ -1511,6 +1512,7 @@ export type Database = {
         }
         Insert: {
           address?: string | null
+          client_id?: string | null
           created_at?: string
           created_by_user_id?: string | null
           id?: string
@@ -1523,6 +1525,7 @@ export type Database = {
         }
         Update: {
           address?: string | null
+          client_id?: string | null
           created_at?: string
           created_by_user_id?: string | null
           id?: string
@@ -1533,7 +1536,15 @@ export type Database = {
           status?: string
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "cx_properties_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "cx_clients"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       profiles: {
         Row: {
