@@ -20,7 +20,7 @@ import {
 } from '@/components/ui/dialog';
 import { useCxClients, useCxDocuments } from '@/hooks/useCxClients';
 import { CX_DOC_TYPES, CX_CHECKLIST, CX_DOC_LABEL, CX_SUBMISSION_STATUS, CxClient, CxDocument } from '@/types/correspondente';
-import { CxDocumentCard } from '@/components/correspondente/CxDocumentCard';
+import { CxDocumentWorkspace } from '@/components/correspondente/CxDocumentWorkspace';
 import { cxConsolidateBankStatements, cxCoverageWarning, cxFormatBRL } from '@/lib/cxIncome';
 import { CopyField } from '@/components/correspondente/CopyField';
 import {
