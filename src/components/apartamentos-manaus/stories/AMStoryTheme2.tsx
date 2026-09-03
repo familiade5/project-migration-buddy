@@ -132,7 +132,7 @@ export const AMStory2_T2_Curiosity = ({
       </div>
     </div>
   </div>
-);
+</>);
 
 /* ── Story 2: Revelação — fotos grandes 68%, info no rodapé ──────────────────*/
 export const AMStory2_T2_Reveal = ({

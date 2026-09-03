@@ -131,7 +131,7 @@ export const AMStory3_T3_Curiosity = ({
       </div>
     </div>
   </div>
-);
+</>);
 
 /* ── Story 2: Revelação — fotos maiores (68%) + card no rodapé ───────────────*/
 export const AMStory3_T3_Reveal = ({
