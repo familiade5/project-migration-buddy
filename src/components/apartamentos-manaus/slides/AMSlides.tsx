@@ -379,152 +379,118 @@ export const AMCoverSlide = ({
         </div>
       )}
 
-      {/* ── SELO "OPORTUNIDADE" — entrada zero / entrada baixa (canto direito, premium) ── */}
-      {isOpportunity && (
-        <div
-          style={{
-            position: 'absolute',
-            top: 10,
-            right: 10,
-            zIndex: 40,
-            transform: 'rotate(2deg)',
-            fontFamily: golos,
-          }}
-        >
-          {/* Glow backdrop */}
+      {/* ── SELO "OPORTUNIDADE" — balão de explosão (starburst) no canto direito ── */}
+      {isOpportunity && (() => {
+        const size = 132;
+        const cx = size / 2;
+        const cy = size / 2;
+        const spikes = 16;
+        const rOut = size / 2 - 2;
+        const rIn = rOut * 0.845;
+        const pts: string[] = [];
+        for (let i = 0; i < spikes * 2; i++) {
+          const r = i % 2 === 0 ? rOut : rIn;
+          const a = (Math.PI * i) / spikes - Math.PI / 2;
+          pts.push(`${(cx + r * Math.cos(a)).toFixed(2)},${(cy + r * Math.sin(a)).toFixed(2)}`);
+        }
+        const burst = pts.join(' ');
+
+        const mil = downPayment > 0 && downPayment % 1000 === 0;
+        const valueMain = downPayment > 0
+          ? (mil ? String(downPayment / 1000) : downPayment.toLocaleString('pt-BR'))
+          : '';
+
+        const textShadow = '0 2px 0 #A63C00, 0 3px 0 #8C3200, 0 4px 6px rgba(0,0,0,0.35)';
+
+        return (
           <div
             style={{
               position: 'absolute',
-              top: -4,
-              left: -4,
-              right: -4,
-              bottom: -4,
-              background: 'linear-gradient(90deg, #FF8D28, rgba(255,255,255,0.55), #DF7110)',
-              borderRadius: 18,
-              filter: 'blur(6px)',
-              opacity: 0.35,
-              zIndex: -1,
-            }}
-          />
-
-          {/* Badge body */}
-          <div
-            style={{
-              position: 'relative',
-              width: downPayment > 0 ? 126 : 112,
-              borderRadius: 14,
-              overflow: 'hidden',
-              background: 'linear-gradient(135deg, #1476D4 0%, #044A8E 100%)',
-              border: '1px solid rgba(255,255,255,0.22)',
-              boxShadow: '0 10px 28px rgba(4,74,142,0.35)',
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              padding: downPayment > 0 ? '6px 8px 7px' : '10px 8px 11px',
+              top: 8,
+              right: 6,
+              width: size,
+              height: size,
+              zIndex: 40,
+              transform: 'rotate(-7deg)',
+              fontFamily: golos,
             }}
           >
-            {/* Glossy reflection overlay */}
+            <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} style={{ position: 'absolute', top: 0, left: 0, display: 'block' }}>
+              <defs>
+                <linearGradient id="amOppBurstGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#FFA23F" />
+                  <stop offset="55%" stopColor="#F97A12" />
+                  <stop offset="100%" stopColor="#D45E05" />
+                </linearGradient>
+              </defs>
+              {/* contorno branco do adesivo */}
+              <polygon points={burst} fill="#ffffff" transform={`translate(${cx} ${cy}) scale(1.035) translate(${-cx} ${-cy})`} />
+              <polygon points={burst} fill="url(#amOppBurstGrad)" />
+              {/* brilho superior */}
+              <ellipse cx={cx} cy={cy * 0.62} rx={rIn * 0.72} ry={rIn * 0.34} fill="#ffffff" opacity="0.12" />
+            </svg>
+
+            {/* Conteúdo */}
             <div
               style={{
                 position: 'absolute',
-                top: 0,
-                left: 0,
-                width: '100%',
-                height: '50%',
-                background: 'linear-gradient(180deg, rgba(255,255,255,0.13), transparent)',
-                pointerEvents: 'none',
+                inset: 0,
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                textAlign: 'center',
+                padding: '0 12px',
+                boxSizing: 'border-box',
               }}
-            />
+            >
+              {/* raios decorativos superiores */}
+              <div style={{ display: 'flex', alignItems: 'flex-end', gap: 3, marginBottom: 3 }}>
+                <div style={{ width: 2.5, height: 7, background: '#FFE14D', borderRadius: 2, transform: 'rotate(-22deg)' }} />
+                <div style={{ width: 2.5, height: 10, background: '#FFE14D', borderRadius: 2 }} />
+                <div style={{ width: 2.5, height: 7, background: '#FFE14D', borderRadius: 2, transform: 'rotate(22deg)' }} />
+              </div>
 
-            {downPayment > 0 ? (
-              <>
-                <span
-                  style={{
-                    color: 'rgba(255,255,255,0.9)',
-                    fontSize: 6,
-                    letterSpacing: '0.1em',
-                    fontWeight: 700,
-                    lineHeight: 1,
-                    marginBottom: 2,
-                    position: 'relative',
-                    zIndex: 1,
-                  }}
-                >
-                  ENTRADA A PARTIR DE
-                </span>
-                <div
-                  style={{
-                    display: 'flex',
-                    alignItems: 'baseline',
-                    gap: 2,
-                    position: 'relative',
-                    zIndex: 1,
-                  }}
-                >
-                  <span style={{ fontSize: 10, opacity: 0.9, fontWeight: 700, color: '#ffffff' }}>R$</span>
-                  <span
-                    style={{
-                      fontSize: 21,
-                      fontWeight: 900,
-                      lineHeight: 1,
-                      backgroundImage: 'linear-gradient(180deg, #FF8D28, #DF7110)',
-                      WebkitBackgroundClip: 'text',
-                      backgroundClip: 'text',
-                      WebkitTextFillColor: 'transparent',
-                      color: 'transparent',
-                    }}
-                  >
-                    {downPayment.toLocaleString('pt-BR', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
+              {downPayment > 0 ? (
+                <>
+                  <span style={{ color: '#FFE14D', fontSize: 17, fontWeight: 900, lineHeight: 1, letterSpacing: '-0.01em', textShadow }}>
+                    ENTRADA
                   </span>
-                </div>
-                <div style={{ marginTop: 4, display: 'flex', gap: 2, position: 'relative', zIndex: 1 }}>
-                  <div style={{ width: 20, height: 3, background: '#FF8D28', borderRadius: 2 }} />
-                  <div style={{ width: 6, height: 3, background: 'rgba(255,255,255,0.3)', borderRadius: 2 }} />
-                  <div style={{ width: 3, height: 3, background: 'rgba(255,255,255,0.1)', borderRadius: 2 }} />
-                </div>
-              </>
-            ) : (
-              <>
-                <span
-                  style={{
-                    color: '#ffffff',
-                    fontSize: 16,
-                    fontWeight: 900,
-                    lineHeight: 1,
-                    letterSpacing: '-0.02em',
-                    position: 'relative',
-                    zIndex: 1,
-                  }}
-                >
-                  ENTRADA
-                </span>
-                <span
-                  style={{
-                    fontSize: 22,
-                    fontWeight: 900,
-                    lineHeight: 1,
-                    letterSpacing: '-0.02em',
-                    position: 'relative',
-                    zIndex: 1,
-                    backgroundImage: 'linear-gradient(180deg, #FF8D28, #DF7110)',
-                    WebkitBackgroundClip: 'text',
-                    backgroundClip: 'text',
-                    WebkitTextFillColor: 'transparent',
-                    color: 'transparent',
-                  }}
-                >
-                  ZERO
-                </span>
-                <div style={{ marginTop: 5, display: 'flex', gap: 2, position: 'relative', zIndex: 1 }}>
-                  <div style={{ width: 24, height: 3, background: '#FF8D28', borderRadius: 2 }} />
-                  <div style={{ width: 7, height: 3, background: 'rgba(255,255,255,0.3)', borderRadius: 2 }} />
-                  <div style={{ width: 4, height: 3, background: 'rgba(255,255,255,0.1)', borderRadius: 2 }} />
-                </div>
-              </>
-            )}
+                  <span style={{ color: '#FFE14D', fontSize: 9, fontWeight: 800, lineHeight: 1.1, letterSpacing: '0.02em', textShadow: '0 1.5px 0 #A63C00' }}>
+                    A PARTIR DE
+                  </span>
+                  <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'center', gap: 1, marginTop: 1 }}>
+                    <span style={{ color: '#FFE14D', fontSize: 13, fontWeight: 900, lineHeight: 1, textShadow }}>R$</span>
+                    <span style={{ color: '#FFE14D', fontSize: mil ? 30 : 22, fontWeight: 900, lineHeight: 1, letterSpacing: '-0.03em', textShadow }}>
+                      {valueMain}
+                    </span>
+                    {mil && (
+                      <span style={{ color: '#FFE14D', fontSize: 16, fontWeight: 900, lineHeight: 1, textShadow }}>MIL</span>
+                    )}
+                  </div>
+                </>
+              ) : (
+                <>
+                  <span style={{ color: '#FFE14D', fontSize: 20, fontWeight: 900, lineHeight: 1, letterSpacing: '-0.02em', textShadow }}>
+                    ENTRADA
+                  </span>
+                  <span style={{ color: '#FFE14D', fontSize: 30, fontWeight: 900, lineHeight: 1, letterSpacing: '-0.03em', textShadow }}>
+                    ZERO
+                  </span>
+                </>
+              )}
+
+              {/* raios decorativos inferiores */}
+              <div style={{ display: 'flex', alignItems: 'flex-start', gap: 3, marginTop: 4 }}>
+                <div style={{ width: 2.5, height: 7, background: '#FFE14D', borderRadius: 2, transform: 'rotate(22deg)' }} />
+                <div style={{ width: 2.5, height: 10, background: '#FFE14D', borderRadius: 2 }} />
+                <div style={{ width: 2.5, height: 7, background: '#FFE14D', borderRadius: 2, transform: 'rotate(-22deg)' }} />
+              </div>
+            </div>
           </div>
-        </div>
-      )}
+        );
+      })()}
+
     </div>
   );
 };
