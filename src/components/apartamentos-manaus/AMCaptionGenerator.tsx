@@ -230,7 +230,17 @@ function buildPriceReducedCaption(data: AMPropertyData): string {
   lines.push(`De ${oldShort} por ${novo} 💙`);
   lines.push('');
 
+  if (data.opportunity && !data.isRental) {
+    if ((data.downPaymentFrom ?? 0) === 0) {
+      lines.push(`🌟 Entrada Zero`);
+    } else if (data.downPaymentFrom > 0) {
+      lines.push(`🌟 Entrada a partir de ${formatCurrency(data.downPaymentFrom)}`);
+    }
+    lines.push('');
+  }
+
   if (data.area > 0) lines.push(`🏢 ${data.area}m² muito bem distribuídos`);
+
 
   // Quartos / suítes
   if (data.bedrooms > 0) {
