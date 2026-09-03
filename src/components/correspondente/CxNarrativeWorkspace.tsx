@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -24,6 +24,8 @@ import {
   CX_PROPERTY_STATUS,
   CX_PROPERTY_STATUS_INFO,
   CxProperty,
+  CxPropertyAnalysis,
+  CxExtraction,
 } from '@/types/correspondente';
 import { CxDocumentWorkspace } from './CxDocumentWorkspace';
 import { CopyText, cxCopyToClipboard } from './CopyText';
@@ -52,6 +54,39 @@ function formatDate(iso: string) {
   if (Number.isNaN(d.getTime())) return '';
   return d.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' });
 }
+
+const OK_NOTE = '✅ Tudo certo para transferência.';
+const PENDING_PREFIX = '⚠️ Impedimentos para transferência:';
+
+const LIEN_LABELS: Record<string, string> = {
+  penhora: 'Penhora',
+  alienacao_fiduciaria: 'Alienação fiduciária',
+  caucao: 'Caução',
+  hipoteca: 'Hipoteca',
+  usufruto: 'Usufruto',
+  processo: 'Processo judicial',
+  indisponibilidade: 'Indisponibilidade de bens',
+  outro: 'Ônus',
+};
+
+function buildTransferNotes(analysis: CxPropertyAnalysis): string {
+  const active = (analysis.liens || []).filter((l) => l.active !== false);
+  if (active.length === 0) return `${OK_NOTE} Nenhum ônus ativo na matrícula.`;
+  const items = active.map((l) => {
+    const label = LIEN_LABELS[l.type] || 'Ônus';
+    const extra = [l.creditor ? `credor ${l.creditor}` : '', l.act ? `ato ${l.act}` : '']
+      .filter(Boolean)
+      .join(', ');
+    return `• ${label}${extra ? ` (${extra})` : ''} — ${l.description || 'consta na matrícula'}`;
+  });
+  return `${PENDING_PREFIX}\n${items.join('\n')}`;
+}
+
+function isAutoNote(notes?: string | null) {
+  const v = (notes || '').trim();
+  return v === '' || v.startsWith(OK_NOTE) || v.startsWith(PENDING_PREFIX);
+}
+
 
 interface Props {
   header?: React.ReactNode;
@@ -89,6 +124,29 @@ export function CxNarrativeWorkspace({ header }: Props) {
 
   const { documents, uploadDocument, deleteDocument, openDocument, downloadDocument, retryExtraction, updateExtraction } =
     useCxDocuments(null, selected?.id ?? null);
+
+  // Preenche automaticamente matrícula, cartório, endereço e observações
+  // assim que a narrativa da matrícula é lida.
+  useEffect(() => {
+    if (!selected) return;
+    const analysis = documents
+      .map((d) => (d.extracted as CxExtraction | null)?.propertyAnalysis)
+      .find((a): a is CxPropertyAnalysis => !!a);
+    if (!analysis) return;
+
+    const patch: Record<string, string> = {};
+    if (!selected.registration_number && analysis.registrationNumber)
+      patch.registration_number = analysis.registrationNumber;
+    if (!selected.notary_office && analysis.notaryOffice) patch.notary_office = analysis.notaryOffice;
+    const addr = analysis.address || analysis.lastAddress;
+    if (!selected.address && addr) patch.address = addr;
+
+    const autoNote = buildTransferNotes(analysis);
+    if (isAutoNote(selected.notes) && (selected.notes || '').trim() !== autoNote) patch.notes = autoNote;
+
+    if (Object.keys(patch).length > 0) updateProperty(selected.id, patch);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [documents, selected?.id, selected?.registration_number, selected?.notary_office, selected?.address, selected?.notes]);
 
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
@@ -332,6 +390,7 @@ export function CxNarrativeWorkspace({ header }: Props) {
                 <div>
                   <Label className="text-xs font-semibold text-slate-600">Matrícula</Label>
                   <Input
+                    key={`reg-${selected.id}-${selected.registration_number || ''}`}
                     defaultValue={selected.registration_number || ''}
                     onBlur={(e) =>
                       updateProperty(selected.id, { registration_number: e.target.value || null })
@@ -343,6 +402,7 @@ export function CxNarrativeWorkspace({ header }: Props) {
                 <div>
                   <Label className="text-xs font-semibold text-slate-600">Cartório</Label>
                   <Input
+                    key={`not-${selected.id}-${selected.notary_office || ''}`}
                     defaultValue={selected.notary_office || ''}
                     onBlur={(e) => updateProperty(selected.id, { notary_office: e.target.value || null })}
                     placeholder="Cartório de registro"
@@ -352,11 +412,12 @@ export function CxNarrativeWorkspace({ header }: Props) {
                 <div className="sm:col-span-2">
                   <Label className="text-xs font-semibold text-slate-600">Observações</Label>
                   <Textarea
+                    key={`obs-${selected.id}-${selected.notes || ''}`}
                     defaultValue={selected.notes || ''}
                     onBlur={(e) => updateProperty(selected.id, { notes: e.target.value || null })}
                     placeholder="Anotações da checagem"
                     className="mt-1 bg-white border-slate-200 text-slate-900"
-                    rows={2}
+                    rows={4}
                   />
                 </div>
               </div>
