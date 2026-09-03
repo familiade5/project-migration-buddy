@@ -529,7 +529,7 @@ export const PropertyForm = ({ data, onChange }: PropertyFormProps) => {
                   ...data,
                   selectedBroker: 'almir',
                   contactName: 'Almir Neto',
-                  contactPhone: '(85) 99271-0485',
+                  contactPhone: '(85) 99123-1214',
                   creci: 'CRECI 29013 CE',
                 })}
                 className="mt-2 w-full flex items-center justify-center gap-2 py-2.5 rounded-xl border-2 border-dashed border-gray-300 text-gray-500 text-sm font-medium hover:border-blue-400 hover:text-blue-600 hover:bg-blue-50 transition-all"
@@ -543,7 +543,7 @@ export const PropertyForm = ({ data, onChange }: PropertyFormProps) => {
               >
                 <div>
                   <p className="font-semibold text-sm" style={{ color: '#1a3a6b' }}>Almir Neto - Regional</p>
-                  <p className="text-xs text-gray-400">CRECI 29013 CE · (85) 99271-0485</p>
+                  <p className="text-xs text-gray-400">CRECI 29013 CE · (85) 99123-1214</p>
                 </div>
                 <button
                   type="button"
