@@ -69,19 +69,45 @@ export function CxIrpfSummary({ documents }: { documents: CxDocument[] }) {
                           </td>
 
                           <td className="px-3 py-2 text-right font-semibold text-slate-800">
-                            {cxFormatBRL(r.taxableIncome)}
+                            <CopyText
+                              value={cxFormatBRL(r.taxableIncome)}
+                              label="Rendimento anual"
+                              className="justify-end"
+                            />
                           </td>
                           <td className="px-3 py-2 text-right text-slate-600">
-                            {cxFormatBRL((r.taxableIncome || 0) / 12)}
+                            <CopyText
+                              value={cxFormatBRL((r.taxableIncome || 0) / 12)}
+                              label="Média mensal"
+                              className="justify-end"
+                            />
                           </td>
                           <td className="px-3 py-2 text-right text-slate-600">
-                            {r.thirteenthSalary ? cxFormatBRL(r.thirteenthSalary) : '—'}
+                            {r.thirteenthSalary ? (
+                              <CopyText
+                                value={cxFormatBRL(r.thirteenthSalary)}
+                                label="13º salário"
+                                className="justify-end"
+                              />
+                            ) : (
+                              '—'
+                            )}
                           </td>
                           <td className="px-3 py-2">
                             {r.inssWithheld ? (
                               <span className="inline-flex items-center gap-1 text-emerald-700 font-semibold">
                                 <ShieldCheck className="w-3.5 h-3.5" />
-                                Recolhido{r.inssAmount ? ` · ${cxFormatBRL(r.inssAmount)}` : ''}
+                                Recolhido
+                                {r.inssAmount ? (
+                                  <>
+                                    {' · '}
+                                    <CopyText
+                                      value={cxFormatBRL(r.inssAmount)}
+                                      label="INSS"
+                                      className="text-emerald-700"
+                                    />
+                                  </>
+                                ) : null}
                               </span>
                             ) : (
                               <span className="inline-flex items-center gap-1 text-amber-700 font-semibold">
