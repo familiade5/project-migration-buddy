@@ -152,7 +152,7 @@ export function useCxDocuments(clientId: string | null, propertyId?: string | nu
     if (!scopeId) return;
     const { data: userData } = await supabase.auth.getUser();
     const ext = file.name.split('.').pop() || 'bin';
-    const path = `${isProperty ? 'imoveis/' : ''}${scopeId}/${crypto.randomUUID()}.${ext}`;
+    const path = `${scopeId}/${crypto.randomUUID()}.${ext}`;
 
     const { error: upErr } = await supabase.storage
       .from('correspondente-docs')
