@@ -307,28 +307,23 @@ export function CxNarrativeWorkspace({ header }: Props) {
                   <Label className="text-xs font-semibold text-slate-600 flex items-center gap-1.5">
                     <UserRound className="w-3.5 h-3.5" /> Cliente vinculado
                   </Label>
-                  <Select
-                    value={selected.client_id || 'none'}
-                    onValueChange={(v) =>
-                      updateProperty(selected.id, { client_id: v === 'none' ? null : v })
-                    }
-                  >
-                    <SelectTrigger className="mt-1 bg-white border-slate-200 text-slate-900">
-                      <SelectValue placeholder="Selecionar cliente" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-white border-slate-200 text-slate-900 max-h-72">
-                      <SelectItem value="none" className="text-slate-900">
-                        Sem cliente vinculado
-                      </SelectItem>
-                      {clients
+                  <div className="mt-1">
+                    <CxSearchSelect
+                      value={selected.client_id}
+                      onChange={(v) => updateProperty(selected.id, { client_id: v })}
+                      placeholder="Buscar e selecionar cliente"
+                      searchPlaceholder="Buscar cliente pelo nome…"
+                      emptyText="Nenhum cliente encontrado"
+                      clearLabel="Sem cliente vinculado"
+                      options={clients
                         .filter((c) => !c.parent_client_id)
-                        .map((c) => (
-                          <SelectItem key={c.id} value={c.id} className="text-slate-900">
-                            {c.full_name}
-                          </SelectItem>
-                        ))}
-                    </SelectContent>
-                  </Select>
+                        .map((c) => ({
+                          value: c.id,
+                          label: c.full_name,
+                          hint: c.phone || c.email || undefined,
+                        }))}
+                    />
+                  </div>
                   <p className="text-[11px] text-slate-400 mt-1">
                     O imóvel e a narrativa aparecem na ficha deste cliente.
                   </p>
