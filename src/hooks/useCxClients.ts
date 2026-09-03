@@ -87,28 +87,32 @@ const fileToBase64 = (file: File): Promise<string> =>
     reader.onerror = reject;
   });
 
-export function useCxDocuments(clientId: string | null) {
+export function useCxDocuments(clientId: string | null, propertyId?: string | null) {
   const [documents, setDocuments] = useState<CxDocument[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
+  const scopeId = propertyId ?? clientId;
+  const isProperty = !!propertyId;
+
   const fetchDocuments = useCallback(async () => {
-    if (!clientId) {
+    if (!scopeId) {
       setDocuments([]);
       return;
     }
     setIsLoading(true);
-    const { data, error } = await supabase
-      .from('cx_documents')
-      .select('*')
-      .eq('client_id', clientId)
-      .order('created_at', { ascending: false });
+    const query = supabase.from('cx_documents').select('*');
+    const { data, error } = await (isProperty
+      ? query.eq('property_id', scopeId)
+      : query.eq('client_id', scopeId)
+    ).order('created_at', { ascending: false });
     if (error) {
       toast.error('Erro ao carregar documentos', { description: error.message });
     } else {
       setDocuments((data || []) as unknown as CxDocument[]);
     }
     setIsLoading(false);
-  }, [clientId]);
+  }, [scopeId, isProperty]);
+
 
   useEffect(() => {
     fetchDocuments();
