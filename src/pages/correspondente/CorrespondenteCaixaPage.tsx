@@ -87,6 +87,12 @@ export default function CorrespondenteCaixaPage() {
   const [reviewNotes, setReviewNotes] = useState('');
   const [linkOpen, setLinkOpen] = useState(false);
   const PORTAL_BASE_URL = 'https://postgen.fixaapp.com.br';
+
+  const selected: CxClient | null = useMemo(
+    () => clients.find((c) => c.id === selectedId) ?? null,
+    [clients, selectedId],
+  );
+
   const portalUrl = selected?.portal_token
     ? `${PORTAL_BASE_URL}/portal/convite/${selected.portal_token}`
     : '';
@@ -100,10 +106,6 @@ export default function CorrespondenteCaixaPage() {
     toast.success('Link exclusivo copiado! Envie para este cliente.');
   };
 
-  const selected: CxClient | null = useMemo(
-    () => clients.find((c) => c.id === selectedId) ?? null,
-    [clients, selectedId],
-  );
 
   const { documents, uploadDocument, deleteDocument, openDocument, downloadDocument, retryExtraction } =
     useCxDocuments(selected?.id ?? null);
