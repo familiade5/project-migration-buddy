@@ -44,6 +44,7 @@ export function CxIrpfSummary({ documents }: { documents: CxDocument[] }) {
                         <th className="text-left font-semibold px-3 py-2">CNPJ / Fonte pagadora</th>
                         <th className="text-right font-semibold px-3 py-2">Rendimento anual</th>
                         <th className="text-right font-semibold px-3 py-2">Média mensal</th>
+                        <th className="text-right font-semibold px-3 py-2">13º salário</th>
                         <th className="text-left font-semibold px-3 py-2">INSS</th>
                       </tr>
                     </thead>
@@ -59,6 +60,9 @@ export function CxIrpfSummary({ documents }: { documents: CxDocument[] }) {
                           </td>
                           <td className="px-3 py-2 text-right text-slate-600">
                             {cxFormatBRL((r.taxableIncome || 0) / 12)}
+                          </td>
+                          <td className="px-3 py-2 text-right text-slate-600">
+                            {r.thirteenthSalary ? cxFormatBRL(r.thirteenthSalary) : '—'}
                           </td>
                           <td className="px-3 py-2">
                             {r.inssWithheld ? (
@@ -79,6 +83,9 @@ export function CxIrpfSummary({ documents }: { documents: CxDocument[] }) {
                         <td className="px-3 py-2 font-bold text-slate-700">Total</td>
                         <td className="px-3 py-2 text-right font-bold text-slate-900">{cxFormatBRL(s.totalPj)}</td>
                         <td className="px-3 py-2 text-right font-bold text-slate-700">{cxFormatBRL(s.totalPj / 12)}</td>
+                        <td className="px-3 py-2 text-right font-bold text-slate-700">
+                          {s.total13 > 0 ? cxFormatBRL(s.total13) : '—'}
+                        </td>
                         <td />
                       </tr>
                     </tbody>
