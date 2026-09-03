@@ -174,3 +174,19 @@ export const cxCoverageWarning = (summary: CxIncomeSummary): string | null => {
     .join(', ');
   return `Atenção: o extrato parece não cobrir o mês completo — ${detail}. A média mensal acima pode estar subestimada. Observação: dias sem movimentação não aparecem no extrato, então confira o período impresso no cabeçalho antes de pedir ao cliente o extrato fechado do 1º ao último dia do mês.`;
 };
+
+const GAMBLING_PATTERNS = [
+  'aposta', 'apostas', 'bet', 'bets', 'bet365', 'betano', 'betfair', 'sportingbet', 'pixbet',
+  'estrela bet', 'kto', 'stake', 'blaze', 'cassino', 'casino', 'gaming', 'jogo', 'jogos',
+  'loteria', 'lottery', 'poker', 'bingo', 'esportes da sorte', 'sorte online', 'rivalo', '1xbet',
+  'betsson', 'novibet', 'superbet', 'vaidebet', 'betnacional', 'esportivas',
+];
+
+/** Detects credits that came from betting houses / gambling platforms (never accepted as income). */
+export const cxIsGambling = (credit: { description?: string; counterparty?: string | null; kind?: string | null; reason?: string | null }) => {
+  const haystack = `${credit.description || ''} ${credit.counterparty || ''} ${credit.kind || ''} ${credit.reason || ''}`
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '');
+  return GAMBLING_PATTERNS.some((p) => new RegExp(`(^|[^a-z])${p}([^a-z]|$)`).test(haystack));
+};
