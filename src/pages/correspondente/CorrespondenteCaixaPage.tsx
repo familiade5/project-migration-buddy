@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { AppLayout } from '@/components/layout/AppLayout';
+import { CxShell } from '@/components/correspondente/CxShell';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -41,6 +41,8 @@ import {
   Link2,
   Copy,
   MessageCircle,
+  PanelLeftClose,
+  PanelLeftOpen,
 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -87,6 +89,7 @@ export default function CorrespondenteCaixaPage() {
   const fileRef = useRef<HTMLInputElement>(null);
   const [reviewNotes, setReviewNotes] = useState('');
   const [linkOpen, setLinkOpen] = useState(false);
+  const [listOpen, setListOpen] = useState(true);
   const PORTAL_BASE_URL = 'https://postgen.fixaapp.com.br';
 
   const selected: CxClient | null = useMemo(
@@ -812,6 +815,6 @@ export default function CorrespondenteCaixaPage() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </AppLayout>
+    </CxShell>
   );
 }
