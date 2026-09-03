@@ -244,11 +244,16 @@ export function CxNarrativeWorkspace({ header }: Props) {
                     <Building2 className="w-7 h-7" />
                   </div>
                   <div className="min-w-0">
-                    <h2 className="text-xl font-bold text-slate-900 truncate">{selected.name}</h2>
+                    <CopyText
+                      value={selected.name}
+                      label="Nome do imóvel"
+                      className="text-xl font-bold text-slate-900"
+                    />
                     <p className="text-xs text-slate-500 mt-0.5">
                       {selected.address || 'Endereço não informado'}
                     </p>
                   </div>
+
                 </div>
                 <div className="flex items-center gap-2">
                   <Select
