@@ -80,7 +80,14 @@ function getClientStatus(client: CxClient, docs: CxDocument[]): ClientStatus {
 
 export default function CorrespondenteCaixaPage() {
   const { clients, isLoading, createClient, updateClient, deleteClient } = useCxClients();
-  const [tab, setTab] = useState<'clientes' | 'narrativas'>('clientes');
+  const [tab, setTabState] = useState<'clientes' | 'narrativas'>(
+    () => (localStorage.getItem('cx_tab') === 'narrativas' ? 'narrativas' : 'clientes'),
+  );
+  const setTab = (t: 'clientes' | 'narrativas') => {
+    setTabState(t);
+    localStorage.setItem('cx_tab', t);
+  };
+
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [search, setSearch] = useState('');
   const [dialogOpen, setDialogOpen] = useState(false);
