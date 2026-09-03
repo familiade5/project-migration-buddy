@@ -149,10 +149,10 @@ export function useCxDocuments(clientId: string | null, propertyId?: string | nu
   }, [fetchDocuments]);
 
   const uploadDocument = useCallback(async (file: File, docType: string) => {
-    if (!clientId) return;
+    if (!scopeId) return;
     const { data: userData } = await supabase.auth.getUser();
     const ext = file.name.split('.').pop() || 'bin';
-    const path = `${clientId}/${crypto.randomUUID()}.${ext}`;
+    const path = `${isProperty ? 'imoveis/' : ''}${scopeId}/${crypto.randomUUID()}.${ext}`;
 
     const { error: upErr } = await supabase.storage
       .from('correspondente-docs')
@@ -165,7 +165,8 @@ export function useCxDocuments(clientId: string | null, propertyId?: string | nu
     const { data, error } = await supabase
       .from('cx_documents')
       .insert({
-        client_id: clientId,
+        client_id: isProperty ? null : scopeId,
+        property_id: isProperty ? scopeId : null,
         doc_type: docType,
         file_name: file.name,
         file_path: path,
@@ -183,7 +184,8 @@ export function useCxDocuments(clientId: string | null, propertyId?: string | nu
 
     await fetchDocuments();
     await extractDocument(data as unknown as CxDocument, file);
-  }, [clientId, fetchDocuments, extractDocument]);
+  }, [scopeId, isProperty, fetchDocuments, extractDocument]);
+
 
   const deleteDocument = useCallback(async (doc: CxDocument) => {
     await supabase.storage.from('correspondente-docs').remove([doc.file_path]);
