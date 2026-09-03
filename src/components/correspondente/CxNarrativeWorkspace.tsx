@@ -90,17 +90,15 @@ export function CxNarrativeWorkspace({ header }: Props) {
     setSaving(true);
     const created = await createProperty({
       name: form.name.trim(),
-      address: form.address.trim() || null,
-      registration_number: form.registration_number.trim() || null,
-      notary_office: form.notary_office.trim() || null,
       notes: form.notes.trim() || null,
     });
     setSaving(false);
     if (created) {
       setSelectedId(created.id);
       setDialogOpen(false);
-      setForm({ name: '', address: '', registration_number: '', notary_office: '', notes: '' });
+      setForm({ name: '', notes: '' });
     }
+
   };
 
   const handleFiles = async (files: FileList | null) => {
