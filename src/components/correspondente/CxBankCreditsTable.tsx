@@ -12,6 +12,8 @@ interface Props {
 export function CxBankCreditsTable({ analysis, onToggle, disabled }: Props) {
   const summary = cxSummarizeAnalysis(analysis);
   const warning = cxCoverageWarning(summary);
+  const gamblingCredits = analysis.credits.filter((c) => cxIsGambling(c));
+  const gamblingTotal = gamblingCredits.reduce((s, c) => s + c.amount, 0);
 
   return (
     <div className="space-y-4 text-slate-800">
