@@ -52,9 +52,20 @@ export function CxIrpfSummary({ documents }: { documents: CxDocument[] }) {
                       {s.analysis.pjIncomes.map((r, i) => (
                         <tr key={i} className="border-t border-slate-100">
                           <td className="px-3 py-2">
-                            <span className="block font-semibold text-slate-800">{r.cnpj || '—'}</span>
-                            {r.sourceName && <span className="block text-slate-500">{r.sourceName}</span>}
+                            <CopyText
+                              value={r.cnpj || '—'}
+                              label="CNPJ"
+                              className="block font-semibold text-slate-800"
+                            />
+                            {r.sourceName && (
+                              <CopyText
+                                value={r.sourceName}
+                                label="Empresa"
+                                className="block text-slate-500"
+                              />
+                            )}
                           </td>
+
                           <td className="px-3 py-2 text-right font-semibold text-slate-800">
                             {cxFormatBRL(r.taxableIncome)}
                           </td>
