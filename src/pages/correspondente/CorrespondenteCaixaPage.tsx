@@ -87,11 +87,17 @@ export default function CorrespondenteCaixaPage() {
   const [reviewNotes, setReviewNotes] = useState('');
   const [linkOpen, setLinkOpen] = useState(false);
   const PORTAL_BASE_URL = 'https://postgen.fixaapp.com.br';
-  const portalUrl = `${PORTAL_BASE_URL}/portal/auth`;
+  const portalUrl = selected?.portal_token
+    ? `${PORTAL_BASE_URL}/portal/convite/${selected.portal_token}`
+    : '';
 
   const copyPortalLink = () => {
+    if (!portalUrl) {
+      toast.error('Selecione um cliente para gerar o link exclusivo.');
+      return;
+    }
     navigator.clipboard.writeText(portalUrl);
-    toast.success('Link copiado! Envie para o cliente.');
+    toast.success('Link exclusivo copiado! Envie para este cliente.');
   };
 
   const selected: CxClient | null = useMemo(
@@ -572,7 +578,8 @@ export default function CorrespondenteCaixaPage() {
           </DialogHeader>
           <div className="space-y-4">
             <p className="text-sm text-slate-600">
-              Envie este link para o cliente. Ele cria a conta com e-mail e senha, envia os documentos
+              Este link é exclusivo de {selected?.full_name || 'este cliente'} e não deve ser
+              repassado a outras pessoas. Com ele o cliente cria o próprio acesso, envia os documentos
               (podendo incluir o cônjuge) e acompanha o status da análise.
             </p>
             <div className="flex gap-2">

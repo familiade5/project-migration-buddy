@@ -24,6 +24,7 @@ export interface CxClient {
   extracted: Record<string, unknown>;
   created_by_user_id: string | null;
   portal_user_id?: string | null;
+  portal_token?: string | null;
   parent_client_id?: string | null;
   relationship?: string | null;
   submission_status?: string | null;

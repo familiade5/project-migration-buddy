@@ -117,6 +117,7 @@ const App = () => (
             } />
             {/* Portal do cliente (público) */}
             <Route path="/portal/auth" element={<PortalAuth />} />
+            <Route path="/portal/convite/:token" element={<PortalAuth />} />
             <Route path="/portal" element={<PortalDashboard />} />
 
             {/* Auto Post Approval */}
