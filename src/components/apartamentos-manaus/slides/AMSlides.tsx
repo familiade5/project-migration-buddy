@@ -379,97 +379,94 @@ export const AMCoverSlide = ({
         </div>
       )}
 
-      {/* ── SELO "OPORTUNIDADE" — entrada zero / entrada baixa (abaixo do badge laranja) ── */}
+      {/* ── SELO "OPORTUNIDADE" — entrada zero / entrada baixa (canto direito) ── */}
       {isOpportunity && (
         <div
           style={{
             position: 'absolute',
-            top: 62,
-            left: 6,
-            zIndex: 30,
-            borderRadius: 10,
+            top: 8,
+            right: 8,
+            zIndex: 40,
+            width: downPayment > 0 ? 118 : 104,
+            borderRadius: 12,
             overflow: 'hidden',
-            boxShadow: '0 0 0 3px #ffffff, 0 4px 10px rgba(4,74,142,0.35)',
+            boxShadow: '0 0 0 3px #ffffff, 0 6px 18px rgba(4,74,142,0.45)',
+            transform: 'rotate(2deg)',
             fontFamily: golos,
           }}
         >
-          {/* Faixa superior laranja */}
+          {/* Faixa laranja apenas com destaque visual (sem texto) */}
           <div
             style={{
               background: 'linear-gradient(180deg, #FF8D28 52.88%, #DF7110 100%)',
-              padding: '3px 9px',
+              padding: '5px 8px',
               display: 'flex',
               alignItems: 'center',
+              justifyContent: 'center',
               gap: 4,
             }}
           >
-            <svg width="8" height="8" viewBox="0 0 20 20" aria-hidden="true" style={{ display: 'block' }}>
+            <svg width="10" height="10" viewBox="0 0 20 20" aria-hidden="true" style={{ display: 'block' }}>
               <path
                 d="M10 0l2.4 6.1L19 7l-4.8 4.3L15.6 18 10 14.6 4.4 18l1.4-6.7L1 7l6.6-.9z"
                 fill="#ffffff"
               />
             </svg>
-            <span
-              style={{
-                color: '#ffffff',
-                fontWeight: 800,
-                fontSize: 7,
-                letterSpacing: '0.16em',
-                lineHeight: 1,
-              }}
-            >
-              OPORTUNIDADE
-            </span>
+            <svg width="8" height="8" viewBox="0 0 20 20" aria-hidden="true" style={{ display: 'block', opacity: 0.9 }}>
+              <path
+                d="M10 0l2.4 6.1L19 7l-4.8 4.3L15.6 18 10 14.6 4.4 18l1.4-6.7L1 7l6.6-.9z"
+                fill="#ffffff"
+              />
+            </svg>
           </div>
 
-          {/* Corpo azul */}
+          {/* Corpo do selo */}
           <div
             style={{
-              background: 'linear-gradient(180deg, #1476D4 36.06%, #044A8E 100%)',
-              padding: '5px 9px 6px',
+              background:
+                downPayment > 0
+                  ? 'linear-gradient(180deg, #1476D4 36.06%, #044A8E 100%)'
+                  : 'linear-gradient(180deg, #FF9E3D 0%, #DF7110 100%)',
+              padding: downPayment > 0 ? '5px 8px 6px' : '8px 8px 9px',
               display: 'flex',
               flexDirection: 'column',
+              alignItems: 'center',
               gap: 1,
-              minWidth: 104,
             }}
           >
             {downPayment > 0 ? (
               <>
                 <span
                   style={{
-                    color: 'rgba(255,255,255,0.78)',
+                    color: 'rgba(255,255,255,0.85)',
                     fontSize: 6,
                     letterSpacing: '0.1em',
-                    fontWeight: 600,
+                    fontWeight: 700,
                     lineHeight: 1,
                   }}
                 >
                   ENTRADA A PARTIR DE
                 </span>
                 <div style={{ display: 'flex', alignItems: 'baseline', gap: 2, color: '#ffffff' }}>
-                  <span style={{ fontSize: 9, opacity: 0.8, fontWeight: 700 }}>R$</span>
-                  <span style={{ fontSize: 17, fontWeight: 800, lineHeight: 1 }}>
+                  <span style={{ fontSize: 10, opacity: 0.9, fontWeight: 700 }}>R$</span>
+                  <span style={{ fontSize: 20, fontWeight: 800, lineHeight: 1 }}>
                     {downPayment.toLocaleString('pt-BR', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
                   </span>
                 </div>
               </>
             ) : (
-              <>
-                <span
-                  style={{
-                    color: 'rgba(255,255,255,0.78)',
-                    fontSize: 6,
-                    letterSpacing: '0.1em',
-                    fontWeight: 600,
-                    lineHeight: 1,
-                  }}
-                >
-                  SAIA DO ALUGUEL COM
-                </span>
-                <span style={{ color: '#ffffff', fontSize: 15, fontWeight: 800, lineHeight: 1.1 }}>
-                  ENTRADA ZERO
-                </span>
-              </>
+              <span
+                style={{
+                  color: '#ffffff',
+                  fontSize: 17,
+                  fontWeight: 900,
+                  lineHeight: 1,
+                  letterSpacing: '0.02em',
+                  textShadow: '0 1px 2px rgba(0,0,0,0.25)',
+                }}
+              >
+                ENTRADA ZERO
+              </span>
             )}
           </div>
         </div>
