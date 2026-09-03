@@ -22,6 +22,8 @@ const DOC_HINTS: Record<string, string> = {
     "Carteira de Trabalho (CTPS). Extraia: Nome completo, CPF, PIS/PASEP, Número e série da CTPS, Empresa atual, CNPJ, Cargo, Data de admissão, Último salário registrado.",
   extrato_fgts:
     "Extrato de FGTS. Extraia: Nome do trabalhador, CPF, PIS/PASEP, Empregador, CNPJ, Saldo total do FGTS, Data do saldo, Conta/Número da conta vinculada.",
+  extrato_bancario:
+    "Extrato bancário usado para comprovação de renda. Extraia: Nome do titular, Banco, Agência/Conta, Período do extrato e TODAS as entradas (créditos) do período.",
   outro: "Documento genérico. Extraia todos os dados identificáveis relevantes para análise de crédito imobiliário.",
 };
 
@@ -48,6 +50,29 @@ serve(async (req) => {
     const type = typeof docType === "string" && DOC_HINTS[docType] ? docType : "outro";
     const mime = typeof mimeType === "string" && mimeType ? mimeType : "image/jpeg";
     const isPdf = mime.includes("pdf");
+
+    const isBank = type === "extrato_bancario";
+
+    const bankPrompt = `Você é um analista de crédito imobiliário da CAIXA especializado em comprovação de renda por extrato bancário.
+
+Leia o extrato bancário enviado e liste TODAS as entradas (créditos) do período, uma por uma, com data, descrição original, contraparte (quem enviou) e valor.
+
+Para cada crédito, decida se ele CONTA como renda (included = true) ou NÃO CONTA (included = false), seguindo estas regras rígidas:
+- NÃO CONTA: transferência, PIX, TED ou DOC recebido em que a contraparte é a MESMA PESSOA titular da conta (mesmo nome ou mesmo CPF do titular) — é dinheiro dele mesmo.
+- NÃO CONTA: estornos, devoluções, cancelamentos, "estorno de", "devolução de compra", chargeback.
+- NÃO CONTA: resgates de aplicação/poupança, transferências entre contas do próprio titular, empréstimos, financiamentos, cheque especial, saldo anterior.
+- NÃO CONTA: lançamentos duplicados do mesmo valor no mesmo dia que sejam claramente o par de um estorno.
+- CONTA: salário, pró-labore, pagamentos de clientes, PIX/TED de terceiros com origem em pessoa ou empresa DIFERENTE do titular, depósitos em dinheiro, benefícios recorrentes.
+- Débitos/saídas NÃO devem ser listados.
+Sempre preencha "reason" explicando em poucas palavras por que foi contado ou descartado (ex.: "PIX do próprio titular", "estorno", "PIX de terceiro").
+
+Regras gerais:
+- NUNCA invente lançamentos. Liste apenas o que está no extrato.
+- "amount" deve ser um NÚMERO puro em reais (ex.: 1520.35), sem "R$" e sem separador de milhar.
+- "date" no formato DD/MM/AAAA.
+- Em "months" liste as competências presentes no formato MM/AAAA.
+- Em "groups" traga os dados de identificação (Titular, Banco, Agência, Conta, Período, CPF se visível).
+- Retorne o resultado APENAS pela função extract_document_data.`;
 
     const systemPrompt = `Você é um especialista em análise documental para correspondente bancário CAIXA (crédito imobiliário e preenchimento do SICAQ).
 
@@ -112,8 +137,39 @@ Regras:
                 additionalProperties: false,
               },
             },
+            bankAnalysis: {
+              type: "object",
+              description: "Preencher SOMENTE quando o documento for um extrato bancário.",
+              properties: {
+                holder: { type: "string" },
+                bank: { type: "string" },
+                account: { type: "string" },
+                period: { type: "string" },
+                months: { type: "array", items: { type: "string" } },
+                credits: {
+                  type: "array",
+                  items: {
+                    type: "object",
+                    properties: {
+                      date: { type: "string" },
+                      description: { type: "string" },
+                      counterparty: { type: "string" },
+                      kind: { type: "string", description: "pix, ted, doc, deposito, salario, estorno, resgate, outro" },
+                      amount: { type: "number" },
+                      included: { type: "boolean" },
+                      reason: { type: "string" },
+                    },
+                    required: ["date", "description", "amount", "included", "reason"],
+                    additionalProperties: false,
+                  },
+                },
+              },
+              required: ["credits", "months"],
+              additionalProperties: false,
+            },
           },
           required: ["groups"],
+
           additionalProperties: false,
         },
       },
@@ -132,11 +188,16 @@ Regras:
         body: JSON.stringify({
           model: "google/gemini-3-flash-preview",
           messages: [
-            { role: "system", content: systemPrompt },
+            { role: "system", content: isBank ? bankPrompt : systemPrompt },
             {
               role: "user",
               content: [
-                { type: "text", text: "Extraia os dados deste documento." },
+                {
+                  type: "text",
+                  text: isBank
+                    ? "Liste todos os créditos deste extrato bancário e classifique cada um conforme as regras."
+                    : "Extraia os dados deste documento.",
+                },
                 contentBlock,
               ],
             },
@@ -195,12 +256,36 @@ Regras:
           .filter((g: { fields: unknown[] }) => g.fields.length > 0)
       : [];
 
+    let bankAnalysis = null;
+    if (isBank && data.bankAnalysis && Array.isArray(data.bankAnalysis.credits)) {
+      const credits = data.bankAnalysis.credits
+        .map((c: Record<string, unknown>) => ({
+          date: String(c.date || ""),
+          description: String(c.description || ""),
+          counterparty: c.counterparty ? String(c.counterparty) : null,
+          kind: c.kind ? String(c.kind) : null,
+          amount: Number(c.amount) || 0,
+          included: c.included !== false,
+          reason: c.reason ? String(c.reason) : null,
+        }))
+        .filter((c: { amount: number }) => c.amount > 0);
+      bankAnalysis = {
+        holder: data.bankAnalysis.holder || null,
+        bank: data.bankAnalysis.bank || null,
+        account: data.bankAnalysis.account || null,
+        period: data.bankAnalysis.period || null,
+        months: Array.isArray(data.bankAnalysis.months) ? data.bankAnalysis.months.map(String) : [],
+        credits,
+      };
+    }
+
     return new Response(
       JSON.stringify({
         data: {
           documentType: data.documentType || null,
           summary: data.summary || null,
           groups,
+          bankAnalysis,
         },
       }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } },

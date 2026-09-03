@@ -21,6 +21,7 @@ import {
 import { useCxClients, useCxDocuments } from '@/hooks/useCxClients';
 import { CX_DOC_TYPES, CX_CHECKLIST, CX_DOC_LABEL, CX_SUBMISSION_STATUS, CxClient, CxDocument } from '@/types/correspondente';
 import { CxDocumentCard } from '@/components/correspondente/CxDocumentCard';
+import { cxConsolidateBankStatements, cxFormatBRL } from '@/lib/cxIncome';
 import { CopyField } from '@/components/correspondente/CopyField';
 import {
   Plus,
@@ -107,8 +108,9 @@ export default function CorrespondenteCaixaPage() {
   };
 
 
-  const { documents, uploadDocument, deleteDocument, openDocument, downloadDocument, retryExtraction } =
+  const { documents, uploadDocument, deleteDocument, openDocument, downloadDocument, retryExtraction, updateExtraction } =
     useCxDocuments(selected?.id ?? null);
+  const income = cxConsolidateBankStatements(documents);
 
   useEffect(() => {
     setReviewNotes(selected?.review_notes || '');
@@ -534,6 +536,27 @@ export default function CorrespondenteCaixaPage() {
                     </p>
                   </div>
 
+                  {income.bankDocs.length > 0 && (
+                    <div className="rounded-2xl border border-emerald-200 bg-emerald-50/70 p-5 space-y-3">
+                      <h3 className="text-sm font-bold text-emerald-900">
+                        Renda por extrato bancário — {income.bankDocs.length} extrato(s)
+                      </h3>
+                      <p className="text-3xl font-extrabold text-emerald-900">{cxFormatBRL(income.monthlyAverage)}</p>
+                      <p className="text-xs text-emerald-700">
+                        Média mensal consolidada em {income.months.length} mês(es), já descontando PIX/transferências do
+                        próprio titular, estornos e resgates ({income.excludedCount} lançamento(s) descartado(s)).
+                      </p>
+                      <div className="grid gap-2 sm:grid-cols-3">
+                        {income.months.map((m) => (
+                          <div key={m.key} className="rounded-xl border border-emerald-200 bg-white px-3 py-2">
+                            <p className="text-[11px] font-semibold text-slate-500">{m.key}</p>
+                            <p className="text-sm font-bold text-slate-900">{cxFormatBRL(m.total)}</p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
                   {/* Extracted documents */}
                   <div>
                     <h3 className="text-sm font-bold text-slate-900 mb-3 flex items-center gap-2">
@@ -558,6 +581,7 @@ export default function CorrespondenteCaixaPage() {
                             onDownload={downloadDocument}
                             onDelete={deleteDocument}
                             onRetry={retryExtraction}
+                            onUpdateExtraction={updateExtraction}
                           />
                         ))}
                       </div>

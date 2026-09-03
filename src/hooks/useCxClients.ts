@@ -221,6 +221,18 @@ export function useCxDocuments(clientId: string | null) {
     setTimeout(() => URL.revokeObjectURL(url), 2000);
   }, []);
 
+  const updateExtraction = useCallback(async (doc: CxDocument, extraction: CxExtraction) => {
+    const { error } = await supabase
+      .from('cx_documents')
+      .update({ extracted: extraction as never })
+      .eq('id', doc.id);
+    if (error) {
+      toast.error('Erro ao salvar ajuste', { description: error.message });
+      return;
+    }
+    setDocuments((prev) => prev.map((d) => (d.id === doc.id ? { ...d, extracted: extraction } : d)));
+  }, []);
+
   const retryExtraction = useCallback(async (doc: CxDocument) => {
     const { data, error } = await supabase.storage
       .from('correspondente-docs')
@@ -242,5 +254,6 @@ export function useCxDocuments(clientId: string | null) {
     openDocument,
     downloadDocument,
     retryExtraction,
+    updateExtraction,
   };
 }

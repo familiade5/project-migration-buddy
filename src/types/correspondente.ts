@@ -8,10 +8,30 @@ export interface CxGroup {
   fields: CxField[];
 }
 
+export interface CxBankCredit {
+  date: string;
+  description: string;
+  counterparty?: string | null;
+  kind?: string | null;
+  amount: number;
+  included: boolean;
+  reason?: string | null;
+}
+
+export interface CxBankAnalysis {
+  holder?: string | null;
+  bank?: string | null;
+  account?: string | null;
+  period?: string | null;
+  months: string[];
+  credits: CxBankCredit[];
+}
+
 export interface CxExtraction {
   documentType?: string | null;
   summary?: string | null;
   groups: CxGroup[];
+  bankAnalysis?: CxBankAnalysis | null;
 }
 
 export interface CxClient {
@@ -72,6 +92,7 @@ export const CX_DOC_TYPES = [
   { value: 'recibo_ir', label: 'Recibo do Imposto de Renda' },
   { value: 'ctps', label: 'CTPS' },
   { value: 'extrato_fgts', label: 'Extrato de FGTS' },
+  { value: 'extrato_bancario', label: 'Extrato Bancário (comprovação de renda)' },
   { value: 'outro', label: 'Outro' },
 ] as const;
 
