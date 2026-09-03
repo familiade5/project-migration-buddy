@@ -10,6 +10,7 @@ type PropertyInput = {
   notary_office?: string | null;
   notes?: string | null;
   status?: string | null;
+  client_id?: string | null;
 };
 
 export function useCxProperties() {

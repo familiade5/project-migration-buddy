@@ -22,6 +22,7 @@ import { useCxClients, useCxDocuments } from '@/hooks/useCxClients';
 import { CX_DOC_TYPES, CX_CHECKLIST, CX_DOC_LABEL, CX_SUBMISSION_STATUS, CxClient, CxDocument } from '@/types/correspondente';
 import { CxDocumentWorkspace } from '@/components/correspondente/CxDocumentWorkspace';
 import { CxNarrativeWorkspace } from '@/components/correspondente/CxNarrativeWorkspace';
+import { CxClientProperties } from '@/components/correspondente/CxClientProperties';
 
 import { CopyField } from '@/components/correspondente/CopyField';
 import {
@@ -611,6 +612,15 @@ export default function CorrespondenteCaixaPage() {
                     </p>
                   </div>
 
+
+                  {/* Imóveis vinculados */}
+                  <div>
+                    <h3 className="text-sm font-bold text-slate-900 mb-3 flex items-center gap-2">
+                      <Building2 className="w-4 h-4 text-[#1a3a6b]" />
+                      Imóveis e narrativas do cliente
+                    </h3>
+                    <CxClientProperties clientId={selected.id} />
+                  </div>
 
                   {/* Extracted documents */}
                   <div>
