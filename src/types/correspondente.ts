@@ -64,13 +64,60 @@ export interface CxIrpfAnalysis {
   assets: CxIrpfAsset[];
 }
 
+export interface CxPropertyLien {
+  /** penhora, alienacao_fiduciaria, caucao, hipoteca, usufruto, processo, indisponibilidade, outro */
+  type: string;
+  act?: string | null;
+  date?: string | null;
+  creditor?: string | null;
+  description: string;
+  /** false quando já houve baixa/cancelamento averbado */
+  active?: boolean | null;
+}
+
+export interface CxPropertyAddressEntry {
+  act?: string | null;
+  date?: string | null;
+  kind?: 'endereco' | 'construcao' | string | null;
+  address?: string | null;
+  cep?: string | null;
+  description?: string | null;
+}
+
+export interface CxPropertyOwner {
+  name: string;
+  cpf?: string | null;
+  qualification?: string | null;
+  acquisitionAct?: string | null;
+  acquisitionDate?: string | null;
+  current?: boolean | null;
+}
+
+export interface CxPropertyAnalysis {
+  address?: string | null;
+  description?: string | null;
+  registrationNumber?: string | null;
+  notaryOffice?: string | null;
+  municipalRegistration?: string | null;
+  firstAddress?: string | null;
+  lastAddress?: string | null;
+  liens: CxPropertyLien[];
+  addressEntries: CxPropertyAddressEntry[];
+  owners: CxPropertyOwner[];
+  fgtsUsed?: boolean | null;
+  fgtsDate?: string | null;
+  fgtsNote?: string | null;
+}
+
 export interface CxExtraction {
   documentType?: string | null;
   summary?: string | null;
   groups: CxGroup[];
   bankAnalysis?: CxBankAnalysis | null;
   irpfAnalysis?: CxIrpfAnalysis | null;
+  propertyAnalysis?: CxPropertyAnalysis | null;
 }
+
 
 export interface CxClient {
   id: string;
