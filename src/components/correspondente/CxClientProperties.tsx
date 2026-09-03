@@ -70,28 +70,39 @@ export function CxClientProperties({ clientId }: { clientId: string }) {
   return (
     <div className="space-y-3">
       {/* Vincular narrativa existente */}
-      <div className="bg-white rounded-2xl border border-slate-200 p-4">
-        <p className="text-xs font-semibold text-slate-600 flex items-center gap-1.5 mb-2">
-          <Link2 className="w-3.5 h-3.5" /> Vincular narrativa de um imóvel
-        </p>
-        <div className="flex items-center gap-2">
-          <div className="flex-1 min-w-0">
-            <CxSearchSelect
-              value={null}
-              onChange={handleLink}
-              placeholder="Buscar imóvel pelo nome…"
-              searchPlaceholder="Buscar imóvel pelo nome, endereço ou matrícula…"
-              emptyText="Nenhum imóvel disponível"
-              options={available.map((p) => ({
-                value: p.id,
-                label: p.name,
-                hint: p.address || p.registration_number || undefined,
-              }))}
-            />
+      <div>
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          className="text-slate-700"
+          onClick={() => setShowLink((v) => !v)}
+        >
+          <Link2 className="w-3.5 h-3.5 mr-1.5" />
+          Vincular narrativa existente
+          {showLink ? <ChevronUp className="w-3.5 h-3.5 ml-1.5" /> : <ChevronDown className="w-3.5 h-3.5 ml-1.5" />}
+        </Button>
+        {showLink && (
+          <div className="mt-2 flex items-center gap-2">
+            <div className="flex-1 min-w-0">
+              <CxSearchSelect
+                value={null}
+                onChange={handleLink}
+                placeholder="Buscar imóvel pelo nome…"
+                searchPlaceholder="Buscar imóvel pelo nome, endereço ou matrícula…"
+                emptyText="Nenhum imóvel disponível"
+                options={available.map((p) => ({
+                  value: p.id,
+                  label: p.name,
+                  hint: p.address || p.registration_number || undefined,
+                }))}
+              />
+            </div>
+            {linking && <Loader2 className="w-4 h-4 animate-spin text-slate-400" />}
           </div>
-          {linking && <Loader2 className="w-4 h-4 animate-spin text-slate-400" />}
-        </div>
+        )}
       </div>
+
 
       {isLoading ? (
         <div className="py-6 flex justify-center">
