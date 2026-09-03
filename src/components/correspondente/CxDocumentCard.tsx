@@ -37,7 +37,7 @@ export function CxDocumentCard({ doc, onOpen, onDownload, onDelete, onRetry, onU
 
   return (
     <div className="rounded-2xl border border-slate-200 bg-white overflow-hidden shadow-sm hover:shadow-md transition-shadow">
-      <div className="flex items-center justify-between gap-3 px-5 py-4 border-b border-slate-100 bg-slate-50/60">
+      <div className="flex flex-wrap items-center justify-between gap-3 px-5 py-4 border-b border-slate-100 bg-slate-50/60">
         <div className="flex items-center gap-3 min-w-0">
           <div className={`p-2 rounded-lg ${status.bg} ${status.color}`}>
             {status.icon}
