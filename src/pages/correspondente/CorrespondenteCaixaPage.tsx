@@ -21,6 +21,7 @@ import {
 import { useCxClients, useCxDocuments } from '@/hooks/useCxClients';
 import { CX_DOC_TYPES, CX_CHECKLIST, CX_DOC_LABEL, CX_SUBMISSION_STATUS, CxClient, CxDocument } from '@/types/correspondente';
 import { CxDocumentWorkspace } from '@/components/correspondente/CxDocumentWorkspace';
+import { CxNarrativeWorkspace } from '@/components/correspondente/CxNarrativeWorkspace';
 
 import { CopyField } from '@/components/correspondente/CopyField';
 import {
@@ -43,6 +44,7 @@ import {
   MessageCircle,
   PanelLeftClose,
   PanelLeftOpen,
+  Building2,
 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -78,6 +80,7 @@ function getClientStatus(client: CxClient, docs: CxDocument[]): ClientStatus {
 
 export default function CorrespondenteCaixaPage() {
   const { clients, isLoading, createClient, updateClient, deleteClient } = useCxClients();
+  const [tab, setTab] = useState<'clientes' | 'narrativas'>('clientes');
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [search, setSearch] = useState('');
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -198,12 +201,41 @@ export default function CorrespondenteCaixaPage() {
         </>
       }
     >
-      <div className="h-[calc(100vh-108px)]">
+      <div className="h-[calc(100vh-108px)] flex flex-col gap-4">
+        <div className="flex flex-wrap gap-2 bg-white border border-slate-200 rounded-2xl p-1.5 shadow-sm self-start">
+          <button
+            onClick={() => setTab('narrativas')}
+            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-colors ${
+              tab === 'narrativas'
+                ? 'bg-[#1a3a6b] text-white shadow-sm'
+                : 'text-slate-600 hover:bg-slate-50'
+            }`}
+          >
+            <Building2 className="w-4 h-4" />
+            Checagem de Narrativas
+          </button>
+          <button
+            onClick={() => setTab('clientes')}
+            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-colors ${
+              tab === 'clientes' ? 'bg-[#1a3a6b] text-white shadow-sm' : 'text-slate-600 hover:bg-slate-50'
+            }`}
+          >
+            <Users className="w-4 h-4" />
+            Clientes
+          </button>
+        </div>
+
+        {tab === 'narrativas' ? (
+          <div className="flex-1 min-h-0">
+            <CxNarrativeWorkspace />
+          </div>
+        ) : (
         <div
-          className={`grid grid-cols-1 gap-5 h-full transition-all ${
+          className={`grid grid-cols-1 gap-5 flex-1 min-h-0 transition-all ${
             listOpen ? 'lg:grid-cols-[340px_minmax(0,1fr)]' : 'lg:grid-cols-[64px_minmax(0,1fr)]'
           }`}
         >
+
           {/* Clients list */}
           {!listOpen ? (
             <aside className="hidden lg:flex bg-white rounded-2xl border border-slate-200 shadow-sm flex-col items-center py-4 gap-3">
@@ -603,7 +635,9 @@ export default function CorrespondenteCaixaPage() {
             )}
           </section>
         </div>
+        )}
       </div>
+
 
       <Dialog open={linkOpen} onOpenChange={setLinkOpen}>
         <DialogContent className="bg-white border-slate-200 text-slate-900 sm:max-w-lg">

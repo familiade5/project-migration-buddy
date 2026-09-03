@@ -87,28 +87,32 @@ const fileToBase64 = (file: File): Promise<string> =>
     reader.onerror = reject;
   });
 
-export function useCxDocuments(clientId: string | null) {
+export function useCxDocuments(clientId: string | null, propertyId?: string | null) {
   const [documents, setDocuments] = useState<CxDocument[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
+  const scopeId = propertyId ?? clientId;
+  const isProperty = !!propertyId;
+
   const fetchDocuments = useCallback(async () => {
-    if (!clientId) {
+    if (!scopeId) {
       setDocuments([]);
       return;
     }
     setIsLoading(true);
-    const { data, error } = await supabase
-      .from('cx_documents')
-      .select('*')
-      .eq('client_id', clientId)
-      .order('created_at', { ascending: false });
+    const query = supabase.from('cx_documents').select('*');
+    const { data, error } = await (isProperty
+      ? query.eq('property_id', scopeId)
+      : query.eq('client_id', scopeId)
+    ).order('created_at', { ascending: false });
     if (error) {
       toast.error('Erro ao carregar documentos', { description: error.message });
     } else {
       setDocuments((data || []) as unknown as CxDocument[]);
     }
     setIsLoading(false);
-  }, [clientId]);
+  }, [scopeId, isProperty]);
+
 
   useEffect(() => {
     fetchDocuments();
@@ -145,10 +149,10 @@ export function useCxDocuments(clientId: string | null) {
   }, [fetchDocuments]);
 
   const uploadDocument = useCallback(async (file: File, docType: string) => {
-    if (!clientId) return;
+    if (!scopeId) return;
     const { data: userData } = await supabase.auth.getUser();
     const ext = file.name.split('.').pop() || 'bin';
-    const path = `${clientId}/${crypto.randomUUID()}.${ext}`;
+    const path = `${scopeId}/${crypto.randomUUID()}.${ext}`;
 
     const { error: upErr } = await supabase.storage
       .from('correspondente-docs')
@@ -161,7 +165,8 @@ export function useCxDocuments(clientId: string | null) {
     const { data, error } = await supabase
       .from('cx_documents')
       .insert({
-        client_id: clientId,
+        client_id: isProperty ? null : scopeId,
+        property_id: isProperty ? scopeId : null,
         doc_type: docType,
         file_name: file.name,
         file_path: path,
@@ -179,7 +184,8 @@ export function useCxDocuments(clientId: string | null) {
 
     await fetchDocuments();
     await extractDocument(data as unknown as CxDocument, file);
-  }, [clientId, fetchDocuments, extractDocument]);
+  }, [scopeId, isProperty, fetchDocuments, extractDocument]);
+
 
   const deleteDocument = useCallback(async (doc: CxDocument) => {
     await supabase.storage.from('correspondente-docs').remove([doc.file_path]);
