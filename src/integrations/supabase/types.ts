@@ -1435,7 +1435,7 @@ export type Database = {
       }
       cx_documents: {
         Row: {
-          client_id: string
+          client_id: string | null
           created_at: string
           doc_type: string
           error_message: string | null
@@ -1444,12 +1444,13 @@ export type Database = {
           file_path: string
           id: string
           mime_type: string | null
+          property_id: string | null
           status: string
           updated_at: string
           uploaded_by_user_id: string | null
         }
         Insert: {
-          client_id: string
+          client_id?: string | null
           created_at?: string
           doc_type?: string
           error_message?: string | null
@@ -1458,12 +1459,13 @@ export type Database = {
           file_path: string
           id?: string
           mime_type?: string | null
+          property_id?: string | null
           status?: string
           updated_at?: string
           uploaded_by_user_id?: string | null
         }
         Update: {
-          client_id?: string
+          client_id?: string | null
           created_at?: string
           doc_type?: string
           error_message?: string | null
@@ -1472,6 +1474,7 @@ export type Database = {
           file_path?: string
           id?: string
           mime_type?: string | null
+          property_id?: string | null
           status?: string
           updated_at?: string
           uploaded_by_user_id?: string | null
@@ -1484,7 +1487,53 @@ export type Database = {
             referencedRelation: "cx_clients"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "cx_documents_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "cx_properties"
+            referencedColumns: ["id"]
+          },
         ]
+      }
+      cx_properties: {
+        Row: {
+          address: string | null
+          created_at: string
+          created_by_user_id: string | null
+          id: string
+          name: string
+          notary_office: string | null
+          notes: string | null
+          registration_number: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          address?: string | null
+          created_at?: string
+          created_by_user_id?: string | null
+          id?: string
+          name: string
+          notary_office?: string | null
+          notes?: string | null
+          registration_number?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          address?: string | null
+          created_at?: string
+          created_by_user_id?: string | null
+          id?: string
+          name?: string
+          notary_office?: string | null
+          notes?: string | null
+          registration_number?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
       }
       profiles: {
         Row: {
