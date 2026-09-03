@@ -162,7 +162,17 @@ export function CxIrpfSummary({ documents }: { documents: CxDocument[] }) {
               {s.profitLines.length === 0 ? (
                 <p className="text-xs text-slate-500">
                   Sem rendimento de sócio / retirada de lucro declarado.
-                  {s.otherExemptTotal > 0 && ` Outros isentos: ${cxFormatBRL(s.otherExemptTotal)}.`}
+                  {s.otherExemptTotal > 0 && (
+                    <>
+                      {' Outros isentos: '}
+                      <CopyText
+                        value={cxFormatBRL(s.otherExemptTotal)}
+                        label="Outros isentos"
+                        className="text-slate-500"
+                      />
+                      .
+                    </>
+                  )}
                 </p>
               ) : (
                 <div className="space-y-2">
@@ -183,17 +193,28 @@ export function CxIrpfSummary({ documents }: { documents: CxDocument[] }) {
                           <p className="text-[11px] text-slate-600">{p.description}</p>
                         </div>
                         <div className="text-right">
-                          <p className="text-xs text-slate-600">Anual: {cxFormatBRL(p.annual)}</p>
+                          <p className="text-xs text-slate-600">
+                            Anual:{' '}
+                            <CopyText value={cxFormatBRL(p.annual)} label="Lucro anual" className="text-slate-600" />
+                          </p>
                           <p className="text-sm font-extrabold text-slate-900">
-                            {cxFormatBRL(p.monthly)} <span className="text-[10px] font-semibold text-slate-500">/mês</span>
+                            <CopyText value={cxFormatBRL(p.monthly)} label="Lucro mensal" />{' '}
+                            <span className="text-[10px] font-semibold text-slate-500">/mês</span>
                           </p>
                         </div>
                       </div>
                     </div>
                   ))}
                   <p className="text-[11px] text-slate-600">
-                    Total de lucros/dividendos: <strong>{cxFormatBRL(s.totalProfitAnnual)}</strong> ao ano ·{' '}
-                    <strong>{cxFormatBRL(s.totalProfitMonthly)}</strong> por mês (÷ 12).
+                    Total de lucros/dividendos:{' '}
+                    <strong>
+                      <CopyText value={cxFormatBRL(s.totalProfitAnnual)} label="Total lucros anual" />
+                    </strong>{' '}
+                    ao ano ·{' '}
+                    <strong>
+                      <CopyText value={cxFormatBRL(s.totalProfitMonthly)} label="Total lucros mensal" />
+                    </strong>{' '}
+                    por mês (÷ 12).
                   </p>
                   <div
                     className={`rounded-xl border p-3 text-[11px] ${
@@ -201,12 +222,36 @@ export function CxIrpfSummary({ documents }: { documents: CxDocument[] }) {
                     }`}
                   >
                     <p className="font-semibold text-slate-800">
-                      Soma de todos os rendimentos do ano: <strong>{cxFormatBRL(s.totalAnnualIncome)}</strong>{' '}
+                      Soma de todos os rendimentos do ano:{' '}
+                      <strong>
+                        <CopyText value={cxFormatBRL(s.totalAnnualIncome)} label="Total rendimentos" />
+                      </strong>{' '}
                       <span className="font-normal text-slate-500">
-                        (tributáveis {cxFormatBRL(s.totalPj)}
-                        {s.total13 > 0 ? ` + 13º ${cxFormatBRL(s.total13)}` : ''} + lucros{' '}
-                        {cxFormatBRL(s.totalProfitAnnual)}
-                        {s.otherExemptTotal > 0 ? ` + outros isentos ${cxFormatBRL(s.otherExemptTotal)}` : ''})
+                        (tributáveis{' '}
+                        <CopyText value={cxFormatBRL(s.totalPj)} label="Tributáveis" className="text-slate-500" />
+                        {s.total13 > 0 ? (
+                          <>
+                            {' + 13º '}
+                            <CopyText value={cxFormatBRL(s.total13)} label="13º salário" className="text-slate-500" />
+                          </>
+                        ) : null}{' '}
+                        + lucros{' '}
+                        <CopyText
+                          value={cxFormatBRL(s.totalProfitAnnual)}
+                          label="Lucros e dividendos"
+                          className="text-slate-500"
+                        />
+                        {s.otherExemptTotal > 0 ? (
+                          <>
+                            {' + outros isentos '}
+                            <CopyText
+                              value={cxFormatBRL(s.otherExemptTotal)}
+                              label="Outros isentos"
+                              className="text-slate-500"
+                            />
+                          </>
+                        ) : null}
+                        )
                       </span>
                     </p>
                     {s.belowLimit ? (
