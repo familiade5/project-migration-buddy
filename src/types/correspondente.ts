@@ -207,6 +207,7 @@ export interface CxProperty {
   notary_office: string | null;
   notes: string | null;
   status: string;
+  client_id: string | null;
   created_by_user_id: string | null;
   created_at: string;
   updated_at: string;
