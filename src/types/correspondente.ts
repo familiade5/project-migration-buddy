@@ -23,6 +23,8 @@ export interface CxBankAnalysis {
   bank?: string | null;
   account?: string | null;
   period?: string | null;
+  periodStart?: string | null;
+  periodEnd?: string | null;
   months: string[];
   credits: CxBankCredit[];
 }

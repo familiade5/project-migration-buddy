@@ -71,6 +71,7 @@ Regras gerais:
 - "amount" deve ser um NÚMERO puro em reais (ex.: 1520.35), sem "R$" e sem separador de milhar.
 - "date" no formato DD/MM/AAAA.
 - Em "months" liste as competências presentes no formato MM/AAAA.
+- Em "periodStart" e "periodEnd" informe a PRIMEIRA e a ÚLTIMA data do período coberto pelo extrato, no formato DD/MM/AAAA, exatamente como consta no cabeçalho do documento (ou, na falta dele, a primeira e a última data de lançamento).
 - Em "groups" traga os dados de identificação (Titular, Banco, Agência, Conta, Período, CPF se visível).
 - Retorne o resultado APENAS pela função extract_document_data.`;
 
@@ -145,6 +146,8 @@ Regras:
                 bank: { type: "string" },
                 account: { type: "string" },
                 period: { type: "string" },
+                periodStart: { type: "string", description: "Primeira data coberta pelo extrato (DD/MM/AAAA)" },
+                periodEnd: { type: "string", description: "Última data coberta pelo extrato (DD/MM/AAAA)" },
                 months: { type: "array", items: { type: "string" } },
                 credits: {
                   type: "array",
@@ -274,6 +277,8 @@ Regras:
         bank: data.bankAnalysis.bank || null,
         account: data.bankAnalysis.account || null,
         period: data.bankAnalysis.period || null,
+        periodStart: data.bankAnalysis.periodStart || null,
+        periodEnd: data.bankAnalysis.periodEnd || null,
         months: Array.isArray(data.bankAnalysis.months) ? data.bankAnalysis.months.map(String) : [],
         credits,
       };
