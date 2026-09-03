@@ -176,11 +176,16 @@ export function CxPropertySummary({ documents }: { documents: CxDocument[] }) {
               <div className="grid gap-2 sm:grid-cols-2">
                 <div className="rounded-xl border border-slate-200 p-3">
                   <p className="text-[10.5px] font-bold uppercase tracking-wide text-slate-400">Primeiro endereço</p>
-                  <p className="text-[13px] text-slate-800">{analysis.firstAddress || '—'}</p>
+                  <CopyText value={analysis.firstAddress} label="Primeiro endereço" className="text-[13px] text-slate-800" />
                 </div>
                 <div className="rounded-xl border border-slate-200 p-3">
                   <p className="text-[10.5px] font-bold uppercase tracking-wide text-slate-400">Último endereço averbado</p>
-                  <p className="text-[13px] text-slate-800">{analysis.lastAddress || analysis.address || '—'}</p>
+                  <CopyText
+                    value={analysis.lastAddress || analysis.address}
+                    label="Último endereço"
+                    className="text-[13px] text-slate-800"
+                  />
+
                 </div>
               </div>
               {analysis.addressEntries.length > 0 && (
@@ -225,11 +230,21 @@ export function CxPropertySummary({ documents }: { documents: CxDocument[] }) {
               <div className="grid gap-2 sm:grid-cols-2">
                 <div className="rounded-xl border border-slate-200 p-3">
                   <p className="text-[10.5px] font-bold uppercase tracking-wide text-slate-400">Nº da matrícula</p>
-                  <p className="text-[13px] font-semibold text-slate-800">{analysis.registrationNumber || '—'}</p>
+                  <CopyText
+                    value={analysis.registrationNumber}
+                    label="Nº da matrícula"
+                    className="text-[13px] font-semibold text-slate-800"
+                  />
+
                 </div>
                 <div className="rounded-xl border border-slate-200 p-3">
                   <p className="text-[10.5px] font-bold uppercase tracking-wide text-slate-400">Cartório</p>
-                  <p className="text-[13px] font-semibold text-slate-800">{analysis.notaryOffice || '—'}</p>
+                  <CopyText
+                    value={analysis.notaryOffice}
+                    label="Cartório"
+                    className="text-[13px] font-semibold text-slate-800"
+                  />
+
                 </div>
               </div>
             </Section>
@@ -248,8 +263,9 @@ export function CxPropertySummary({ documents }: { documents: CxDocument[] }) {
                       }`}
                     >
                       <div className="flex flex-wrap items-center gap-2">
-                        <p className="text-[13px] font-bold text-slate-900">{o.name}</p>
-                        {o.cpf && <span className="text-xs text-slate-600">CPF {o.cpf}</span>}
+                        <CopyText value={o.name} label="Nome" className="text-[13px] font-bold text-slate-900" />
+                        {o.cpf && <CopyText value={o.cpf} label="CPF" className="text-xs text-slate-600" />}
+
                         {o.current && (
                           <span className="px-2 py-0.5 rounded-full bg-[#1a3a6b] text-white text-[10px] font-bold">
                             Proprietário atual
@@ -271,10 +287,15 @@ export function CxPropertySummary({ documents }: { documents: CxDocument[] }) {
             {/* 6 - Inscrição municipal */}
             <Section n={6} title="Matrícula municipal / IPU" icon={<Landmark className="w-3.5 h-3.5" />}>
               {analysis.municipalRegistration ? (
-                <p className="text-[13px] font-semibold text-slate-800 rounded-xl border border-slate-200 p-3">
-                  {analysis.municipalRegistration}
-                </p>
+                <div className="rounded-xl border border-slate-200 p-3">
+                  <CopyText
+                    value={analysis.municipalRegistration}
+                    label="Inscrição municipal"
+                    className="text-[13px] font-semibold text-slate-800"
+                  />
+                </div>
               ) : (
+
                 <p className="text-xs text-amber-800 bg-amber-50 border border-amber-200 rounded-xl p-3 flex items-start gap-2">
                   <AlertTriangle className="w-4 h-4 flex-shrink-0" />
                   Inscrição municipal (IPTU/IPU) não encontrada no documento — solicitar ao cliente ou consultar a
