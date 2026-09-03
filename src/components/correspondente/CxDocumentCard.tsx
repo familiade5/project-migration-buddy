@@ -1,5 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { CxDocument, CX_DOC_LABEL, CxExtraction } from '@/types/correspondente';
+import { CxBankCreditsTable } from './CxBankCreditsTable';
+import { cxGetBankAnalysis } from '@/lib/cxIncome';
 import { CopyField } from './CopyField';
 import { Eye, Download, Loader2, RefreshCw, Trash2, FileText, AlertCircle, CheckCircle2 } from 'lucide-react';
 
@@ -9,6 +11,7 @@ interface Props {
   onDownload: (doc: CxDocument) => void;
   onDelete: (doc: CxDocument) => void;
   onRetry: (doc: CxDocument) => void;
+  onUpdateExtraction?: (doc: CxDocument, extraction: CxExtraction) => void;
 }
 
 const STATUS_MAP: Record<string, { label: string; color: string; bg: string; icon: React.ReactNode }> = {
@@ -18,9 +21,18 @@ const STATUS_MAP: Record<string, { label: string; color: string; bg: string; ico
   error: { label: 'Erro', color: 'text-red-600', bg: 'bg-red-50', icon: <AlertCircle className="w-3.5 h-3.5" /> },
 };
 
-export function CxDocumentCard({ doc, onOpen, onDownload, onDelete, onRetry }: Props) {
+export function CxDocumentCard({ doc, onOpen, onDownload, onDelete, onRetry, onUpdateExtraction }: Props) {
   const extraction = doc.extracted as CxExtraction;
   const groups = Array.isArray(extraction?.groups) ? extraction.groups : [];
+  const bankAnalysis = cxGetBankAnalysis(doc);
+
+  const toggleCredit = (index: number, included: boolean) => {
+    if (!bankAnalysis || !onUpdateExtraction) return;
+    const credits = bankAnalysis.credits.map((c, i) =>
+      i === index ? { ...c, included, reason: included ? 'Ajustado manualmente' : 'Descartado manualmente' } : c,
+    );
+    onUpdateExtraction(doc, { ...extraction, bankAnalysis: { ...bankAnalysis, credits } });
+  };
   const status = STATUS_MAP[doc.status] || STATUS_MAP.pending;
 
   return (
@@ -96,6 +108,10 @@ export function CxDocumentCard({ doc, onOpen, onDownload, onDelete, onRetry }: P
 
         {doc.status === 'done' && groups.length === 0 && (
           <p className="text-sm text-slate-500">Nenhum dado identificado neste documento.</p>
+        )}
+
+        {bankAnalysis && (
+          <CxBankCreditsTable analysis={bankAnalysis} onToggle={onUpdateExtraction ? toggleCredit : undefined} />
         )}
 
         {groups.map((group, gi) => (
