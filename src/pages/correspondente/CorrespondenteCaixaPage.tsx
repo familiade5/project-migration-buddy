@@ -632,7 +632,9 @@ export default function CorrespondenteCaixaPage() {
             )}
           </section>
         </div>
+        )}
       </div>
+
 
       <Dialog open={linkOpen} onOpenChange={setLinkOpen}>
         <DialogContent className="bg-white border-slate-200 text-slate-900 sm:max-w-lg">
