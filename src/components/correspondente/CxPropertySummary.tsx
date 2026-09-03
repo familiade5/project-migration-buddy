@@ -141,9 +141,17 @@ export function CxPropertySummary({ documents }: { documents: CxDocument[] }) {
             {/* 1 - Imóvel */}
             <Section n={1} title="Endereço e descrição do imóvel" icon={<Home className="w-3.5 h-3.5" />}>
               <div className="rounded-xl border border-slate-200 p-3 space-y-1">
-                <p className="text-[13px] font-semibold text-slate-800">{analysis.address || 'Endereço não identificado'}</p>
-                {analysis.description && <p className="text-xs text-slate-600">{analysis.description}</p>}
+                <CopyText
+                  value={analysis.address}
+                  label="Endereço"
+                  emptyText="Endereço não identificado"
+                  className="text-[13px] font-semibold text-slate-800"
+                />
+                {analysis.description && (
+                  <CopyText value={analysis.description} label="Descrição" className="text-xs text-slate-600" />
+                )}
               </div>
+
             </Section>
 
             {/* 2 - Ônus */}
