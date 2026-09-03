@@ -82,9 +82,10 @@ Regras gerais:
 
 Leia a declaração completa e preencha a função extract_document_data com "irpfAnalysis", detalhando:
 
-1) RENDIMENTOS TRIBUTÁVEIS RECEBIDOS DE PESSOA JURÍDICA (ficha "Rendimentos Tributáveis Recebidos de PJ"): para CADA fonte pagadora liste o CNPJ, o nome da fonte, o rendimento tributável do ano, o valor de INSS (contribuição previdenciária oficial) e o IRRF. Marque inssWithheld = true SOMENTE se houver contribuição previdenciária oficial > 0 para aquela fonte; caso contrário false.
+1) RENDIMENTOS TRIBUTÁVEIS RECEBIDOS DE PESSOA JURÍDICA (ficha/quadro "RENDIMENTOS TRIBUTÁVEIS RECEBIDOS DE PESSOA JURÍDICA PELO TITULAR"): a tabela tem as colunas "NOME DA FONTE PAGADORA" (com a linha "CNPJ/CPF:" logo abaixo), "REND. RECEBIDOS DE PES. JURÍDICA", "CONTR. PREVID. OFICIAL", "IMPOSTO RETIDO NA FONTE", "13º SALÁRIO" e "IRRF SOBRE 13º SALÁRIO". Crie UM item por fonte pagadora com: cnpj (o CNPJ/CPF logo abaixo do nome), sourceName (nome completo da fonte, mesmo quebrado em várias linhas), taxableIncome (REND. RECEBIDOS), inssAmount (CONTR. PREVID. OFICIAL), irrfAmount (IMPOSTO RETIDO NA FONTE), thirteenthSalary (13º SALÁRIO) e irrf13Amount (IRRF SOBRE 13º). NÃO inclua a linha "TOTAL" como fonte pagadora. Marque inssWithheld = true SOMENTE se CONTR. PREVID. OFICIAL > 0 para aquela fonte; caso contrário false (0,00 = false).
 
-2) RENDIMENTOS ISENTOS E NÃO TRIBUTÁVEIS (ficha "Rendimentos Isentos e Não Tributáveis"): liste cada linha com descrição, CNPJ/nome da fonte quando houver e valor. Marque isProfitDistribution = true quando a linha for "Lucros e dividendos recebidos", "Rendimentos de sócio/titular de microempresa ou empresa de pequeno porte", retirada de lucro ou distribuição de lucros.
+2) RENDIMENTOS ISENTOS E NÃO TRIBUTÁVEIS (quadro "RENDIMENTOS ISENTOS E NÃO TRIBUTÁVEIS"): esse quadro tem itens numerados; alguns têm subtabelas com "Beneficiário / CPF / CNPJ da Fonte Pagadora / Nome da Fonte Pagadora / Valor". Liste UMA linha por fonte pagadora dessas subtabelas (e uma linha para os itens sem subtabela), sempre com description (o texto do item, ex.: "13. Rendimento de sócio ou titular de microempresa..."), cnpj (CNPJ da fonte pagadora), sourceName e amount.
+   Marque isProfitDistribution = true APENAS para lucros e dividendos recebidos, distribuição/retirada de lucro e "Rendimento de sócio ou titular de microempresa ou empresa de pequeno porte optante pelo Simples Nacional". Itens como poupança, LCI/LCA, CRI/CRA, indenizações, PLR, bolsas e heranças têm isProfitDistribution = false.
 
 3) BENS E DIREITOS (ficha "Bens e Direitos"): liste cada bem com código, descrição e valor, e classifique category como: "empresa" (participação societária, quotas, capital social, ações de empresa própria), "imovel" (apartamento, casa, terreno, sala, loja), "veiculo" ou "outro".
 
@@ -177,6 +178,8 @@ Regras:
                       inssWithheld: { type: "boolean", description: "true se houve contribuição previdenciária oficial (INSS) para essa fonte" },
                       inssAmount: { type: "number" },
                       irrfAmount: { type: "number" },
+                      thirteenthSalary: { type: "number", description: "Coluna 13º SALÁRIO" },
+                      irrf13Amount: { type: "number", description: "Coluna IRRF SOBRE 13º SALÁRIO" },
                     },
                     required: ["taxableIncome", "inssWithheld"],
                     additionalProperties: false,
@@ -381,7 +384,11 @@ Regras:
               inssWithheld: r.inssWithheld === true || num(r.inssAmount) > 0,
               inssAmount: r.inssAmount != null ? num(r.inssAmount) : null,
               irrfAmount: r.irrfAmount != null ? num(r.irrfAmount) : null,
+              thirteenthSalary: r.thirteenthSalary != null ? num(r.thirteenthSalary) : null,
+              irrf13Amount: r.irrf13Amount != null ? num(r.irrf13Amount) : null,
             }))
+            .filter((r: { taxableIncome: number; sourceName: string | null }) =>
+              r.taxableIncome > 0 && !/^total$/i.test((r.sourceName || "").trim()))
           : [],
         exemptIncomes: Array.isArray(a.exemptIncomes)
           ? a.exemptIncomes
