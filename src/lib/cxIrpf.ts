@@ -37,7 +37,6 @@ export interface CxIrpfProfitLine {
   description: string;
   annual: number;
   monthly: number;
-  belowLimit: boolean;
 }
 
 export interface CxIrpfSummary {
@@ -49,6 +48,10 @@ export interface CxIrpfSummary {
   totalProfitAnnual: number;
   totalProfitMonthly: number;
   otherExemptTotal: number;
+  /** Soma de todos os rendimentos declarados no ano (tributáveis + 13º + isentos) */
+  totalAnnualIncome: number;
+  /** true quando a soma de todos os rendimentos fica abaixo do limite de isenção */
+  belowLimit: boolean;
   companyAssets: CxIrpfAsset[];
   realEstateAssets: CxIrpfAsset[];
   mcmvWarning: boolean;
@@ -67,7 +70,6 @@ export function cxSummarizeIrpf(analysis: CxIrpfAnalysis): CxIrpfSummary {
       description: r.description,
       annual: r.amount || 0,
       monthly: (r.amount || 0) / 12,
-      belowLimit: (r.amount || 0) < CX_IRPF_EXEMPT_LIMIT,
     }));
 
   const totalProfitAnnual = profitLines.reduce((s, r) => s + r.annual, 0);
@@ -78,6 +80,8 @@ export function cxSummarizeIrpf(analysis: CxIrpfAnalysis): CxIrpfSummary {
   const companyAssets = analysis.assets.filter(cxIsCompanyAsset);
   const realEstateAssets = analysis.assets.filter((a) => !cxIsCompanyAsset(a) && cxIsRealEstateAsset(a));
 
+  const totalAnnualIncome = totalPj + total13 + totalProfitAnnual + otherExemptTotal;
+
   return {
     analysis,
     totalPj,
@@ -87,8 +91,11 @@ export function cxSummarizeIrpf(analysis: CxIrpfAnalysis): CxIrpfSummary {
     totalProfitAnnual,
     totalProfitMonthly: totalProfitAnnual / 12,
     otherExemptTotal,
+    totalAnnualIncome,
+    belowLimit: totalProfitAnnual > 0 && totalAnnualIncome < CX_IRPF_EXEMPT_LIMIT,
     companyAssets,
     realEstateAssets,
     mcmvWarning: companyAssets.length > 0 || realEstateAssets.length > 0,
   };
 }
+
