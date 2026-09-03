@@ -381,7 +381,7 @@ export const AMCoverSlide = ({
 
       {/* ── SELO "OPORTUNIDADE" — balão de explosão (starburst) no canto direito ── */}
       {isOpportunity && (() => {
-        const size = 132;
+        const size = 108;
         const cx = size / 2;
         const cy = size / 2;
         const spikes = 16;
