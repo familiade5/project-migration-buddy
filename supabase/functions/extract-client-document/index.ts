@@ -158,7 +158,7 @@ Regras:
                       date: { type: "string" },
                       description: { type: "string" },
                       counterparty: { type: "string" },
-                      kind: { type: "string", description: "pix, ted, doc, deposito, salario, estorno, resgate, outro" },
+                      kind: { type: "string", description: "pix, ted, doc, deposito, salario, estorno, resgate, aposta, outro. Use 'aposta' para casas de apostas/bets/cassinos/jogos." },
                       amount: { type: "number" },
                       included: { type: "boolean" },
                       reason: { type: "string" },
