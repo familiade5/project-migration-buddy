@@ -57,7 +57,15 @@ interface Props {
 
 export function CxNarrativeWorkspace({ header }: Props) {
   const { properties, isLoading, createProperty, updateProperty, deleteProperty } = useCxProperties();
-  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [selectedId, setSelectedIdState] = useState<string | null>(
+    () => localStorage.getItem('cx_narrative_selected') || null,
+  );
+  const setSelectedId = (id: string | null) => {
+    setSelectedIdState(id);
+    if (id) localStorage.setItem('cx_narrative_selected', id);
+    else localStorage.removeItem('cx_narrative_selected');
+  };
+
   const [search, setSearch] = useState('');
   const [dialogOpen, setDialogOpen] = useState(false);
   const [saving, setSaving] = useState(false);
