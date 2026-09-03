@@ -28,6 +28,7 @@ import {
 import { CxDocumentWorkspace } from './CxDocumentWorkspace';
 import { CopyText, cxCopyToClipboard } from './CopyText';
 import { CopyField } from './CopyField';
+import { CxSearchSelect } from './CxSearchSelect';
 import { toast } from 'sonner';
 import {
   Plus,
