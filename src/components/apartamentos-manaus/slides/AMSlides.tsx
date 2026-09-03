@@ -378,6 +378,102 @@ export const AMCoverSlide = ({
           </span>
         </div>
       )}
+
+      {/* ── SELO "OPORTUNIDADE" — entrada zero / entrada baixa (abaixo do badge laranja) ── */}
+      {isOpportunity && (
+        <div
+          style={{
+            position: 'absolute',
+            top: 62,
+            left: 6,
+            zIndex: 30,
+            borderRadius: 10,
+            overflow: 'hidden',
+            boxShadow: '0 0 0 3px #ffffff, 0 4px 10px rgba(4,74,142,0.35)',
+            fontFamily: golos,
+          }}
+        >
+          {/* Faixa superior laranja */}
+          <div
+            style={{
+              background: 'linear-gradient(180deg, #FF8D28 52.88%, #DF7110 100%)',
+              padding: '3px 9px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: 4,
+            }}
+          >
+            <svg width="8" height="8" viewBox="0 0 20 20" aria-hidden="true" style={{ display: 'block' }}>
+              <path
+                d="M10 0l2.4 6.1L19 7l-4.8 4.3L15.6 18 10 14.6 4.4 18l1.4-6.7L1 7l6.6-.9z"
+                fill="#ffffff"
+              />
+            </svg>
+            <span
+              style={{
+                color: '#ffffff',
+                fontWeight: 800,
+                fontSize: 7,
+                letterSpacing: '0.16em',
+                lineHeight: 1,
+              }}
+            >
+              OPORTUNIDADE
+            </span>
+          </div>
+
+          {/* Corpo azul */}
+          <div
+            style={{
+              background: 'linear-gradient(180deg, #1476D4 36.06%, #044A8E 100%)',
+              padding: '5px 9px 6px',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 1,
+              minWidth: 104,
+            }}
+          >
+            {downPayment > 0 ? (
+              <>
+                <span
+                  style={{
+                    color: 'rgba(255,255,255,0.78)',
+                    fontSize: 6,
+                    letterSpacing: '0.1em',
+                    fontWeight: 600,
+                    lineHeight: 1,
+                  }}
+                >
+                  ENTRADA A PARTIR DE
+                </span>
+                <div style={{ display: 'flex', alignItems: 'baseline', gap: 2, color: '#ffffff' }}>
+                  <span style={{ fontSize: 9, opacity: 0.8, fontWeight: 700 }}>R$</span>
+                  <span style={{ fontSize: 17, fontWeight: 800, lineHeight: 1 }}>
+                    {downPayment.toLocaleString('pt-BR', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
+                  </span>
+                </div>
+              </>
+            ) : (
+              <>
+                <span
+                  style={{
+                    color: 'rgba(255,255,255,0.78)',
+                    fontSize: 6,
+                    letterSpacing: '0.1em',
+                    fontWeight: 600,
+                    lineHeight: 1,
+                  }}
+                >
+                  SAIA DO ALUGUEL COM
+                </span>
+                <span style={{ color: '#ffffff', fontSize: 15, fontWeight: 800, lineHeight: 1.1 }}>
+                  ENTRADA ZERO
+                </span>
+              </>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 };
