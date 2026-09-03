@@ -52,6 +52,7 @@ serve(async (req) => {
     const isPdf = mime.includes("pdf");
 
     const isBank = type === "extrato_bancario";
+    const isIrpf = type === "imposto_renda";
 
     const bankPrompt = `Você é um analista de crédito imobiliário da CAIXA especializado em comprovação de renda por extrato bancário.
 
@@ -74,6 +75,24 @@ Regras gerais:
 - Em "months" liste as competências presentes no formato MM/AAAA.
 - Em "periodStart" e "periodEnd" informe a PRIMEIRA e a ÚLTIMA data do período coberto pelo extrato, no formato DD/MM/AAAA, exatamente como consta no cabeçalho do documento (ou, na falta dele, a primeira e a última data de lançamento).
 - Em "groups" traga os dados de identificação (Titular, Banco, Agência, Conta, Período, CPF se visível).
+- Retorne o resultado APENAS pela função extract_document_data.`;
+
+
+    const irpfPrompt = `Você é um analista de crédito imobiliário da CAIXA especializado em leitura de Declaração de Imposto de Renda Pessoa Física (IRPF).
+
+Leia a declaração completa e preencha a função extract_document_data com "irpfAnalysis", detalhando:
+
+1) RENDIMENTOS TRIBUTÁVEIS RECEBIDOS DE PESSOA JURÍDICA (ficha "Rendimentos Tributáveis Recebidos de PJ"): para CADA fonte pagadora liste o CNPJ, o nome da fonte, o rendimento tributável do ano, o valor de INSS (contribuição previdenciária oficial) e o IRRF. Marque inssWithheld = true SOMENTE se houver contribuição previdenciária oficial > 0 para aquela fonte; caso contrário false.
+
+2) RENDIMENTOS ISENTOS E NÃO TRIBUTÁVEIS (ficha "Rendimentos Isentos e Não Tributáveis"): liste cada linha com descrição, CNPJ/nome da fonte quando houver e valor. Marque isProfitDistribution = true quando a linha for "Lucros e dividendos recebidos", "Rendimentos de sócio/titular de microempresa ou empresa de pequeno porte", retirada de lucro ou distribuição de lucros.
+
+3) BENS E DIREITOS (ficha "Bens e Direitos"): liste cada bem com código, descrição e valor, e classifique category como: "empresa" (participação societária, quotas, capital social, ações de empresa própria), "imovel" (apartamento, casa, terreno, sala, loja), "veiculo" ou "outro".
+
+Regras:
+- NUNCA invente dados; liste apenas o que consta na declaração.
+- Valores como NÚMERO puro em reais (ex.: 125430.55), sem "R$" e sem separador de milhar.
+- CNPJ no formato 00.000.000/0000-00.
+- Em "groups" traga os dados de identificação e os totais (Declarante, CPF, Exercício/Ano-calendário, Total de rendimentos tributáveis, Total de isentos, Imposto devido, Imposto a pagar/restituir, Total de bens e direitos).
 - Retorne o resultado APENAS pela função extract_document_data.`;
 
     const systemPrompt = `Você é um especialista em análise documental para correspondente bancário CAIXA (crédito imobiliário e preenchimento do SICAQ).
@@ -139,6 +158,65 @@ Regras:
                 additionalProperties: false,
               },
             },
+            irpfAnalysis: {
+              type: "object",
+              description: "Preencher SOMENTE quando o documento for uma Declaração de Imposto de Renda (IRPF).",
+              properties: {
+                holder: { type: "string" },
+                cpf: { type: "string" },
+                year: { type: "string", description: "Exercício / ano-calendário" },
+                pjIncomes: {
+                  type: "array",
+                  description: "Rendimentos tributáveis recebidos de pessoa jurídica, um item por fonte pagadora.",
+                  items: {
+                    type: "object",
+                    properties: {
+                      cnpj: { type: "string" },
+                      sourceName: { type: "string" },
+                      taxableIncome: { type: "number" },
+                      inssWithheld: { type: "boolean", description: "true se houve contribuição previdenciária oficial (INSS) para essa fonte" },
+                      inssAmount: { type: "number" },
+                      irrfAmount: { type: "number" },
+                    },
+                    required: ["taxableIncome", "inssWithheld"],
+                    additionalProperties: false,
+                  },
+                },
+                exemptIncomes: {
+                  type: "array",
+                  description: "Rendimentos isentos e não tributáveis.",
+                  items: {
+                    type: "object",
+                    properties: {
+                      description: { type: "string" },
+                      cnpj: { type: "string" },
+                      sourceName: { type: "string" },
+                      amount: { type: "number" },
+                      isProfitDistribution: { type: "boolean", description: "true para lucros/dividendos, retirada de lucro ou rendimento de sócio" },
+                    },
+                    required: ["description", "amount", "isProfitDistribution"],
+                    additionalProperties: false,
+                  },
+                },
+                assets: {
+                  type: "array",
+                  description: "Bens e direitos declarados.",
+                  items: {
+                    type: "object",
+                    properties: {
+                      code: { type: "string" },
+                      description: { type: "string" },
+                      category: { type: "string", description: "empresa, imovel, veiculo ou outro" },
+                      value: { type: "number" },
+                    },
+                    required: ["description", "category"],
+                    additionalProperties: false,
+                  },
+                },
+              },
+              required: ["pjIncomes", "exemptIncomes", "assets"],
+              additionalProperties: false,
+            },
             bankAnalysis: {
               type: "object",
               description: "Preencher SOMENTE quando o documento for um extrato bancário.",
@@ -192,7 +270,7 @@ Regras:
         body: JSON.stringify({
           model: "google/gemini-3-flash-preview",
           messages: [
-            { role: "system", content: isBank ? bankPrompt : systemPrompt },
+            { role: "system", content: isBank ? bankPrompt : isIrpf ? irpfPrompt : systemPrompt },
             {
               role: "user",
               content: [
@@ -200,6 +278,8 @@ Regras:
                   type: "text",
                   text: isBank
                     ? "Liste todos os créditos deste extrato bancário e classifique cada um conforme as regras."
+                    : isIrpf
+                    ? "Extraia os rendimentos de PJ, os rendimentos isentos e não tributáveis e os bens e direitos desta declaração de imposto de renda."
                     : "Extraia os dados deste documento.",
                 },
                 contentBlock,
@@ -285,6 +365,46 @@ Regras:
       };
     }
 
+    let irpfAnalysis = null;
+    if (isIrpf && data.irpfAnalysis) {
+      const a = data.irpfAnalysis;
+      const num = (v: unknown) => (Number(v) || 0);
+      irpfAnalysis = {
+        holder: a.holder || null,
+        cpf: a.cpf || null,
+        year: a.year || null,
+        pjIncomes: Array.isArray(a.pjIncomes)
+          ? a.pjIncomes.map((r: Record<string, unknown>) => ({
+              cnpj: r.cnpj ? String(r.cnpj) : null,
+              sourceName: r.sourceName ? String(r.sourceName) : null,
+              taxableIncome: num(r.taxableIncome),
+              inssWithheld: r.inssWithheld === true || num(r.inssAmount) > 0,
+              inssAmount: r.inssAmount != null ? num(r.inssAmount) : null,
+              irrfAmount: r.irrfAmount != null ? num(r.irrfAmount) : null,
+            }))
+          : [],
+        exemptIncomes: Array.isArray(a.exemptIncomes)
+          ? a.exemptIncomes
+              .map((r: Record<string, unknown>) => ({
+                description: String(r.description || ""),
+                cnpj: r.cnpj ? String(r.cnpj) : null,
+                sourceName: r.sourceName ? String(r.sourceName) : null,
+                amount: num(r.amount),
+                isProfitDistribution: r.isProfitDistribution === true,
+              }))
+              .filter((r: { amount: number }) => r.amount > 0)
+          : [],
+        assets: Array.isArray(a.assets)
+          ? a.assets.map((r: Record<string, unknown>) => ({
+              code: r.code ? String(r.code) : null,
+              description: String(r.description || ""),
+              category: r.category ? String(r.category).toLowerCase() : "outro",
+              value: r.value != null ? num(r.value) : null,
+            }))
+          : [],
+      };
+    }
+
     return new Response(
       JSON.stringify({
         data: {
@@ -292,6 +412,7 @@ Regras:
           summary: data.summary || null,
           groups,
           bankAnalysis,
+          irpfAnalysis,
         },
       }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } },

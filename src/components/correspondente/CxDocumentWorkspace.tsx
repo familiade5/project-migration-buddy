@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { CxDocument, CX_DOC_LABEL, CxExtraction } from '@/types/correspondente';
 import { CxDocumentCard } from './CxDocumentCard';
 import { CxBankIncomeSummary } from './CxBankIncomeSummary';
+import { CxIrpfSummary } from './CxIrpfSummary';
 import { cxGetBankAnalysis } from '@/lib/cxIncome';
 import {
   FileText,
@@ -147,6 +148,8 @@ export function CxDocumentWorkspace({
         {activeGroup?.type === 'extrato_bancario' && (
           <CxBankIncomeSummary documents={documents} />
         )}
+
+        {activeGroup?.type === 'imposto_renda' && <CxIrpfSummary documents={documents} />}
 
         {activeGroup && activeGroup.docs.length > 1 && (
           <div className="flex flex-wrap gap-2">
