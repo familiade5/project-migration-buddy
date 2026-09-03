@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { CxDocument, CX_DOC_LABEL, CxExtraction } from '@/types/correspondente';
 import { CxDocumentCard } from './CxDocumentCard';
+import { CxBankIncomeSummary } from './CxBankIncomeSummary';
 import { cxGetBankAnalysis } from '@/lib/cxIncome';
 import {
   FileText,
@@ -143,6 +144,10 @@ export function CxDocumentWorkspace({
 
       {/* Painel do documento ativo */}
       <div className="min-w-0 space-y-3">
+        {activeGroup?.type === 'extrato_bancario' && (
+          <CxBankIncomeSummary documents={documents} />
+        )}
+
         {activeGroup && activeGroup.docs.length > 1 && (
           <div className="flex flex-wrap gap-2">
             {activeGroup.docs.map((d, i) => {
