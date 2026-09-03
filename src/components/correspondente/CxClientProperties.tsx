@@ -48,6 +48,7 @@ export function CxClientProperties({ clientId }: { clientId: string }) {
   const { properties, isLoading, updateProperty } = useCxProperties();
   const [openId, setOpenId] = useState<string | null>(null);
   const [linking, setLinking] = useState(false);
+  const [showLink, setShowLink] = useState(false);
 
   const linked = useMemo(
     () => properties.filter((p) => p.client_id === clientId),
@@ -64,34 +65,48 @@ export function CxClientProperties({ clientId }: { clientId: string }) {
     setLinking(true);
     const ok = await updateProperty(propertyId, { client_id: clientId });
     setLinking(false);
-    if (ok) toast.success('Imóvel vinculado ao cliente');
+    if (ok) {
+      setShowLink(false);
+      toast.success('Imóvel vinculado ao cliente');
+    }
   };
 
   return (
     <div className="space-y-3">
       {/* Vincular narrativa existente */}
-      <div className="bg-white rounded-2xl border border-slate-200 p-4">
-        <p className="text-xs font-semibold text-slate-600 flex items-center gap-1.5 mb-2">
-          <Link2 className="w-3.5 h-3.5" /> Vincular narrativa de um imóvel
-        </p>
-        <div className="flex items-center gap-2">
-          <div className="flex-1 min-w-0">
-            <CxSearchSelect
-              value={null}
-              onChange={handleLink}
-              placeholder="Buscar imóvel pelo nome…"
-              searchPlaceholder="Buscar imóvel pelo nome, endereço ou matrícula…"
-              emptyText="Nenhum imóvel disponível"
-              options={available.map((p) => ({
-                value: p.id,
-                label: p.name,
-                hint: p.address || p.registration_number || undefined,
-              }))}
-            />
+      <div>
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          className="text-slate-700"
+          onClick={() => setShowLink((v) => !v)}
+        >
+          <Link2 className="w-3.5 h-3.5 mr-1.5" />
+          Vincular narrativa existente
+          {showLink ? <ChevronUp className="w-3.5 h-3.5 ml-1.5" /> : <ChevronDown className="w-3.5 h-3.5 ml-1.5" />}
+        </Button>
+        {showLink && (
+          <div className="mt-2 flex items-center gap-2">
+            <div className="flex-1 min-w-0">
+              <CxSearchSelect
+                value={null}
+                onChange={handleLink}
+                placeholder="Buscar imóvel pelo nome…"
+                searchPlaceholder="Buscar imóvel pelo nome, endereço ou matrícula…"
+                emptyText="Nenhum imóvel disponível"
+                options={available.map((p) => ({
+                  value: p.id,
+                  label: p.name,
+                  hint: p.address || p.registration_number || undefined,
+                }))}
+              />
+            </div>
+            {linking && <Loader2 className="w-4 h-4 animate-spin text-slate-400" />}
           </div>
-          {linking && <Loader2 className="w-4 h-4 animate-spin text-slate-400" />}
-        </div>
+        )}
       </div>
+
 
       {isLoading ? (
         <div className="py-6 flex justify-center">
@@ -102,7 +117,7 @@ export function CxClientProperties({ clientId }: { clientId: string }) {
           <Building2 className="w-9 h-9 text-slate-300 mx-auto mb-2" />
           <p className="text-sm font-medium text-slate-600">Nenhum imóvel vinculado</p>
           <p className="text-xs text-slate-400 mt-1">
-            Use a busca acima para vincular a narrativa de um imóvel já checado.
+            Use o botão acima para vincular a narrativa de um imóvel já checado.
           </p>
         </div>
       ) : (
