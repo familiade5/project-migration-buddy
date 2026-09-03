@@ -379,94 +379,148 @@ export const AMCoverSlide = ({
         </div>
       )}
 
-      {/* ── SELO "OPORTUNIDADE" — entrada zero / entrada baixa (canto direito) ── */}
+      {/* ── SELO "OPORTUNIDADE" — entrada zero / entrada baixa (canto direito, premium) ── */}
       {isOpportunity && (
         <div
           style={{
             position: 'absolute',
-            top: 8,
-            right: 8,
+            top: 10,
+            right: 10,
             zIndex: 40,
-            width: downPayment > 0 ? 118 : 104,
-            borderRadius: 12,
-            overflow: 'hidden',
-            boxShadow: '0 0 0 3px #ffffff, 0 6px 18px rgba(4,74,142,0.45)',
             transform: 'rotate(2deg)',
             fontFamily: golos,
           }}
         >
-          {/* Faixa laranja apenas com destaque visual (sem texto) */}
+          {/* Glow backdrop */}
           <div
             style={{
-              background: 'linear-gradient(180deg, #FF8D28 52.88%, #DF7110 100%)',
-              padding: '5px 8px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: 4,
+              position: 'absolute',
+              top: -4,
+              left: -4,
+              right: -4,
+              bottom: -4,
+              background: 'linear-gradient(90deg, #FF8D28, rgba(255,255,255,0.55), #DF7110)',
+              borderRadius: 18,
+              filter: 'blur(6px)',
+              opacity: 0.35,
+              zIndex: -1,
             }}
-          >
-            <svg width="10" height="10" viewBox="0 0 20 20" aria-hidden="true" style={{ display: 'block' }}>
-              <path
-                d="M10 0l2.4 6.1L19 7l-4.8 4.3L15.6 18 10 14.6 4.4 18l1.4-6.7L1 7l6.6-.9z"
-                fill="#ffffff"
-              />
-            </svg>
-            <svg width="8" height="8" viewBox="0 0 20 20" aria-hidden="true" style={{ display: 'block', opacity: 0.9 }}>
-              <path
-                d="M10 0l2.4 6.1L19 7l-4.8 4.3L15.6 18 10 14.6 4.4 18l1.4-6.7L1 7l6.6-.9z"
-                fill="#ffffff"
-              />
-            </svg>
-          </div>
+          />
 
-          {/* Corpo do selo */}
+          {/* Badge body */}
           <div
             style={{
-              background:
-                downPayment > 0
-                  ? 'linear-gradient(180deg, #1476D4 36.06%, #044A8E 100%)'
-                  : 'linear-gradient(180deg, #FF9E3D 0%, #DF7110 100%)',
-              padding: downPayment > 0 ? '5px 8px 6px' : '8px 8px 9px',
+              position: 'relative',
+              width: downPayment > 0 ? 126 : 112,
+              borderRadius: 14,
+              overflow: 'hidden',
+              background: 'linear-gradient(135deg, #1476D4 0%, #044A8E 100%)',
+              border: '1px solid rgba(255,255,255,0.22)',
+              boxShadow: '0 10px 28px rgba(4,74,142,0.35)',
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'center',
-              gap: 1,
+              padding: downPayment > 0 ? '6px 8px 7px' : '10px 8px 11px',
             }}
           >
+            {/* Glossy reflection overlay */}
+            <div
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                width: '100%',
+                height: '50%',
+                background: 'linear-gradient(180deg, rgba(255,255,255,0.13), transparent)',
+                pointerEvents: 'none',
+              }}
+            />
+
             {downPayment > 0 ? (
               <>
                 <span
                   style={{
-                    color: 'rgba(255,255,255,0.85)',
+                    color: 'rgba(255,255,255,0.9)',
                     fontSize: 6,
                     letterSpacing: '0.1em',
                     fontWeight: 700,
                     lineHeight: 1,
+                    marginBottom: 2,
+                    position: 'relative',
+                    zIndex: 1,
                   }}
                 >
                   ENTRADA A PARTIR DE
                 </span>
-                <div style={{ display: 'flex', alignItems: 'baseline', gap: 2, color: '#ffffff' }}>
-                  <span style={{ fontSize: 10, opacity: 0.9, fontWeight: 700 }}>R$</span>
-                  <span style={{ fontSize: 20, fontWeight: 800, lineHeight: 1 }}>
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'baseline',
+                    gap: 2,
+                    position: 'relative',
+                    zIndex: 1,
+                  }}
+                >
+                  <span style={{ fontSize: 10, opacity: 0.9, fontWeight: 700, color: '#ffffff' }}>R$</span>
+                  <span
+                    style={{
+                      fontSize: 21,
+                      fontWeight: 900,
+                      lineHeight: 1,
+                      backgroundImage: 'linear-gradient(180deg, #FF8D28, #DF7110)',
+                      WebkitBackgroundClip: 'text',
+                      backgroundClip: 'text',
+                      WebkitTextFillColor: 'transparent',
+                      color: 'transparent',
+                    }}
+                  >
                     {downPayment.toLocaleString('pt-BR', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
                   </span>
                 </div>
+                <div style={{ marginTop: 4, display: 'flex', gap: 2, position: 'relative', zIndex: 1 }}>
+                  <div style={{ width: 20, height: 3, background: '#FF8D28', borderRadius: 2 }} />
+                  <div style={{ width: 6, height: 3, background: 'rgba(255,255,255,0.3)', borderRadius: 2 }} />
+                  <div style={{ width: 3, height: 3, background: 'rgba(255,255,255,0.1)', borderRadius: 2 }} />
+                </div>
               </>
             ) : (
-              <span
-                style={{
-                  color: '#ffffff',
-                  fontSize: 17,
-                  fontWeight: 900,
-                  lineHeight: 1,
-                  letterSpacing: '0.02em',
-                  textShadow: '0 1px 2px rgba(0,0,0,0.25)',
-                }}
-              >
-                ENTRADA ZERO
-              </span>
+              <>
+                <span
+                  style={{
+                    color: '#ffffff',
+                    fontSize: 16,
+                    fontWeight: 900,
+                    lineHeight: 1,
+                    letterSpacing: '-0.02em',
+                    position: 'relative',
+                    zIndex: 1,
+                  }}
+                >
+                  ENTRADA
+                </span>
+                <span
+                  style={{
+                    fontSize: 22,
+                    fontWeight: 900,
+                    lineHeight: 1,
+                    letterSpacing: '-0.02em',
+                    position: 'relative',
+                    zIndex: 1,
+                    backgroundImage: 'linear-gradient(180deg, #FF8D28, #DF7110)',
+                    WebkitBackgroundClip: 'text',
+                    backgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    color: 'transparent',
+                  }}
+                >
+                  ZERO
+                </span>
+                <div style={{ marginTop: 5, display: 'flex', gap: 2, position: 'relative', zIndex: 1 }}>
+                  <div style={{ width: 24, height: 3, background: '#FF8D28', borderRadius: 2 }} />
+                  <div style={{ width: 7, height: 3, background: 'rgba(255,255,255,0.3)', borderRadius: 2 }} />
+                  <div style={{ width: 4, height: 3, background: 'rgba(255,255,255,0.1)', borderRadius: 2 }} />
+                </div>
+              </>
             )}
           </div>
         </div>
