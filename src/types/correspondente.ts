@@ -36,6 +36,8 @@ export interface CxIrpfPjIncome {
   inssWithheld?: boolean | null;
   inssAmount?: number | null;
   irrfAmount?: number | null;
+  thirteenthSalary?: number | null;
+  irrf13Amount?: number | null;
 }
 
 export interface CxIrpfExemptIncome {

@@ -43,6 +43,7 @@ export interface CxIrpfProfitLine {
 export interface CxIrpfSummary {
   analysis: CxIrpfAnalysis;
   totalPj: number;
+  total13: number;
   pjWithoutInss: number;
   profitLines: CxIrpfProfitLine[];
   totalProfitAnnual: number;
@@ -55,6 +56,7 @@ export interface CxIrpfSummary {
 
 export function cxSummarizeIrpf(analysis: CxIrpfAnalysis): CxIrpfSummary {
   const totalPj = analysis.pjIncomes.reduce((s, r) => s + (r.taxableIncome || 0), 0);
+  const total13 = analysis.pjIncomes.reduce((s, r) => s + (r.thirteenthSalary || 0), 0);
   const pjWithoutInss = analysis.pjIncomes.filter((r) => !r.inssWithheld).length;
 
   const profitLines: CxIrpfProfitLine[] = analysis.exemptIncomes
@@ -79,6 +81,7 @@ export function cxSummarizeIrpf(analysis: CxIrpfAnalysis): CxIrpfSummary {
   return {
     analysis,
     totalPj,
+    total13,
     pjWithoutInss,
     profitLines,
     totalProfitAnnual,
