@@ -53,6 +53,39 @@ function formatDate(iso: string) {
   return d.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' });
 }
 
+const OK_NOTE = '✅ Tudo certo para transferência.';
+const PENDING_PREFIX = '⚠️ Impedimentos para transferência:';
+
+const LIEN_LABELS: Record<string, string> = {
+  penhora: 'Penhora',
+  alienacao_fiduciaria: 'Alienação fiduciária',
+  caucao: 'Caução',
+  hipoteca: 'Hipoteca',
+  usufruto: 'Usufruto',
+  processo: 'Processo judicial',
+  indisponibilidade: 'Indisponibilidade de bens',
+  outro: 'Ônus',
+};
+
+function buildTransferNotes(analysis: CxPropertyAnalysis): string {
+  const active = (analysis.liens || []).filter((l) => l.active !== false);
+  if (active.length === 0) return `${OK_NOTE} Nenhum ônus ativo na matrícula.`;
+  const items = active.map((l) => {
+    const label = LIEN_LABELS[l.type] || 'Ônus';
+    const extra = [l.creditor ? `credor ${l.creditor}` : '', l.act ? `ato ${l.act}` : '']
+      .filter(Boolean)
+      .join(', ');
+    return `• ${label}${extra ? ` (${extra})` : ''} — ${l.description || 'consta na matrícula'}`;
+  });
+  return `${PENDING_PREFIX}\n${items.join('\n')}`;
+}
+
+function isAutoNote(notes?: string | null) {
+  const v = (notes || '').trim();
+  return v === '' || v.startsWith(OK_NOTE) || v.startsWith(PENDING_PREFIX);
+}
+
+
 interface Props {
   header?: React.ReactNode;
 }
