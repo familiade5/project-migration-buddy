@@ -198,3 +198,32 @@ export const CX_CHECKLIST = [
   'ctps',
   'extrato_fgts',
 ];
+
+export interface CxProperty {
+  id: string;
+  name: string;
+  address: string | null;
+  registration_number: string | null;
+  notary_office: string | null;
+  notes: string | null;
+  status: string;
+  created_by_user_id: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export const CX_PROPERTY_STATUS = [
+  { value: 'em_analise', label: 'Em análise', color: 'text-blue-700', bg: 'bg-blue-50' },
+  { value: 'pendencia', label: 'Com pendência', color: 'text-amber-700', bg: 'bg-amber-50' },
+  { value: 'aprovado', label: 'Liberado', color: 'text-emerald-700', bg: 'bg-emerald-50' },
+  { value: 'reprovado', label: 'Reprovado', color: 'text-red-700', bg: 'bg-red-50' },
+] as const;
+
+export const CX_PROPERTY_STATUS_INFO = (value?: string | null) =>
+  CX_PROPERTY_STATUS.find((s) => s.value === (value || 'em_analise')) || CX_PROPERTY_STATUS[0];
+
+/** Documentos usados na checagem de narrativa do imóvel */
+export const CX_PROPERTY_DOC_TYPES = [
+  { value: 'matricula_imovel', label: 'Matrícula / Narrativa do Imóvel' },
+  { value: 'outro', label: 'Outro documento do imóvel' },
+] as const;
