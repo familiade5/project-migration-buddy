@@ -585,7 +585,12 @@ export default function CorrespondenteCaixaPage() {
               (podendo incluir o cônjuge) e acompanha o status da análise.
             </p>
             <div className="flex gap-2">
-              <Input readOnly value={portalUrl} className="bg-slate-50 border-slate-200 text-slate-900" />
+              <Input
+                readOnly
+                value={portalUrl}
+                className="bg-slate-50 border-slate-200 !text-slate-900"
+                style={{ color: '#0f172a' }}
+              />
               <Button
                 className="text-white hover:opacity-90 flex-shrink-0"
                 style={{ backgroundColor: BRAND }}
