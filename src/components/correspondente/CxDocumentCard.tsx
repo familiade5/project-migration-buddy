@@ -47,7 +47,7 @@ export function CxDocumentCard({ doc, onOpen, onDownload, onDelete, onRetry, onU
             <p className="text-[11px] text-slate-500 truncate">{doc.file_name}</p>
           </div>
         </div>
-        <div className="flex items-center gap-2 flex-shrink-0">
+        <div className="flex flex-wrap items-center gap-2 ml-auto">
           <span className={`hidden lg:inline-flex items-center gap-1.5 px-2 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${status.bg} ${status.color}`}>
             {status.icon}
             {doc.status === 'done' ? CX_DOC_LABEL(doc.doc_type) : status.label}
