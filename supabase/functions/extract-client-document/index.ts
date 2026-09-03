@@ -24,6 +24,8 @@ const DOC_HINTS: Record<string, string> = {
     "Extrato de FGTS. Extraia: Nome do trabalhador, CPF, PIS/PASEP, Empregador, CNPJ, Saldo total do FGTS, Data do saldo, Conta/Número da conta vinculada.",
   extrato_bancario:
     "Extrato bancário usado para comprovação de renda. Extraia: Nome do titular, Banco, Agência/Conta, Período do extrato e TODAS as entradas (créditos) do período.",
+  matricula_imovel:
+    "Matrícula do imóvel / certidão narrativa do registro de imóveis. Extraia: Número da matrícula, Cartório/Registro de Imóveis, Endereço e descrição do imóvel, Averbações, Registros, Ônus (penhoras, alienações, hipotecas, cauções), Proprietários.",
   outro: "Documento genérico. Extraia todos os dados identificáveis relevantes para análise de crédito imobiliário.",
 };
 
@@ -53,6 +55,7 @@ serve(async (req) => {
 
     const isBank = type === "extrato_bancario";
     const isIrpf = type === "imposto_renda";
+    const isProperty = type === "matricula_imovel";
 
     const bankPrompt = `Você é um analista de crédito imobiliário da CAIXA especializado em comprovação de renda por extrato bancário.
 
@@ -94,6 +97,31 @@ Regras:
 - Valores como NÚMERO puro em reais (ex.: 125430.55), sem "R$" e sem separador de milhar.
 - CNPJ no formato 00.000.000/0000-00.
 - Em "groups" traga os dados de identificação e os totais (Declarante, CPF, Exercício/Ano-calendário, Total de rendimentos tributáveis, Total de isentos, Imposto devido, Imposto a pagar/restituir, Total de bens e direitos).
+- Retorne o resultado APENAS pela função extract_document_data.`;
+
+
+    const propertyPrompt = `Você é um analista de correspondente bancário CAIXA especializado em análise de matrícula de imóvel / certidão narrativa do registro de imóveis, verificando se há impedimentos para a transferência do bem.
+
+Leia TODOS os atos (registros R-x e averbações AV-x) da matrícula, do primeiro ao último, e preencha "propertyAnalysis":
+
+1) IMÓVEL: "address" com o endereço completo atual do imóvel (com CEP se constar) e "description" com a descrição do imóvel (tipo, área privativa/total, fração ideal, confrontações resumidas, vaga, unidade, bloco).
+
+2) ÔNUS E RESTRIÇÕES ("liens"): liste TODA penhora, arresto, indisponibilidade, hipoteca, alienação fiduciária, caução, usufruto, cláusula de inalienabilidade, ação judicial, execução fiscal ou qualquer ato que possa impedir a transferência. Para cada um: type (penhora, alienacao_fiduciaria, caucao, hipoteca, usufruto, processo, indisponibilidade ou outro), act (ex.: "AV-7"), date (DD/MM/AAAA), creditor (banco/credor/exequente), description (texto resumido do ato, incluindo número do processo e vara quando houver) e active = false SOMENTE se houver averbação posterior de baixa/cancelamento/quitação do mesmo ato; caso contrário active = true.
+
+3) ENDEREÇOS E CONSTRUÇÕES ("addressEntries"): liste em ordem cronológica as averbações de mudança/retificação de endereço/denominação de logradouro e as averbações de construção/habite-se/ampliação/demolição, com act, date, kind ("endereco" ou "construcao"), address (endereço averbado), cep (quando constar) e description. Preencha também "firstAddress" (o endereço da abertura da matrícula) e "lastAddress" (o endereço mais recente averbado), ambos com CEP quando houver.
+
+4) MATRÍCULA: "registrationNumber" (número da matrícula) e "notaryOffice" (nome/número do cartório de registro de imóveis e comarca/UF).
+
+5) PROPRIETÁRIOS ("owners"): liste os proprietários na ordem cronológica dos registros, priorizando os ÚLTIMOS. Para cada um: name (nome completo), cpf, qualification (nacionalidade, estado civil, regime de bens, profissão, cônjuge — exatamente como consta) , acquisitionAct (ex.: "R-5"), acquisitionDate e current = true apenas para o(s) proprietário(s) atual(is).
+
+6) MATRÍCULA MUNICIPAL / IPU: "municipalRegistration" com a numeração da inscrição municipal, IPTU ou IPU quando constar no documento. Se NÃO houver, deixe o campo ausente (não invente).
+
+7) FGTS: "fgtsUsed" = true se algum registro/averbação mencionar uso do FGTS na aquisição (ex.: "com recursos do FGTS", "utilização de recursos do FGTS", SFH com FGTS); nesse caso preencha "fgtsDate" com a data do ato (DD/MM/AAAA) e "fgtsNote" com o trecho resumido. Se não houver menção, fgtsUsed = false.
+
+Regras:
+- NUNCA invente dados; extraia apenas o que consta no documento.
+- Datas DD/MM/AAAA, CPF 000.000.000-00, CEP 00000-000.
+- Em "groups" traga um resumo de identificação (Matrícula, Cartório, Endereço, Proprietário atual, Área, Inscrição municipal).
 - Retorne o resultado APENAS pela função extract_document_data.`;
 
     const systemPrompt = `Você é um especialista em análise documental para correspondente bancário CAIXA (crédito imobiliário e preenchimento do SICAQ).
@@ -220,6 +248,72 @@ Regras:
               required: ["pjIncomes", "exemptIncomes", "assets"],
               additionalProperties: false,
             },
+            propertyAnalysis: {
+              type: "object",
+              description: "Preencher SOMENTE quando o documento for matrícula de imóvel / certidão narrativa.",
+              properties: {
+                address: { type: "string" },
+                description: { type: "string" },
+                registrationNumber: { type: "string" },
+                notaryOffice: { type: "string" },
+                municipalRegistration: { type: "string", description: "Inscrição municipal / IPTU / IPU" },
+                firstAddress: { type: "string" },
+                lastAddress: { type: "string" },
+                liens: {
+                  type: "array",
+                  items: {
+                    type: "object",
+                    properties: {
+                      type: { type: "string", description: "penhora, alienacao_fiduciaria, caucao, hipoteca, usufruto, processo, indisponibilidade, outro" },
+                      act: { type: "string" },
+                      date: { type: "string" },
+                      creditor: { type: "string" },
+                      description: { type: "string" },
+                      active: { type: "boolean" },
+                    },
+                    required: ["type", "description", "active"],
+                    additionalProperties: false,
+                  },
+                },
+                addressEntries: {
+                  type: "array",
+                  items: {
+                    type: "object",
+                    properties: {
+                      act: { type: "string" },
+                      date: { type: "string" },
+                      kind: { type: "string", description: "endereco ou construcao" },
+                      address: { type: "string" },
+                      cep: { type: "string" },
+                      description: { type: "string" },
+                    },
+                    required: ["kind"],
+                    additionalProperties: false,
+                  },
+                },
+                owners: {
+                  type: "array",
+                  items: {
+                    type: "object",
+                    properties: {
+                      name: { type: "string" },
+                      cpf: { type: "string" },
+                      qualification: { type: "string" },
+                      acquisitionAct: { type: "string" },
+                      acquisitionDate: { type: "string" },
+                      current: { type: "boolean" },
+                    },
+                    required: ["name"],
+                    additionalProperties: false,
+                  },
+                },
+                fgtsUsed: { type: "boolean" },
+                fgtsDate: { type: "string" },
+                fgtsNote: { type: "string" },
+              },
+              required: ["liens", "addressEntries", "owners", "fgtsUsed"],
+              additionalProperties: false,
+            },
             bankAnalysis: {
               type: "object",
               description: "Preencher SOMENTE quando o documento for um extrato bancário.",
@@ -273,7 +367,7 @@ Regras:
         body: JSON.stringify({
           model: "google/gemini-3-flash-preview",
           messages: [
-            { role: "system", content: isBank ? bankPrompt : isIrpf ? irpfPrompt : systemPrompt },
+            { role: "system", content: isBank ? bankPrompt : isIrpf ? irpfPrompt : isProperty ? propertyPrompt : systemPrompt },
             {
               role: "user",
               content: [
@@ -283,6 +377,8 @@ Regras:
                     ? "Liste todos os créditos deste extrato bancário e classifique cada um conforme as regras."
                     : isIrpf
                     ? "Extraia os rendimentos de PJ, os rendimentos isentos e não tributáveis e os bens e direitos desta declaração de imposto de renda."
+                    : isProperty
+                    ? "Analise esta matrícula/narrativa do imóvel: endereço, ônus (penhoras, alienações, cauções, processos), averbações de endereço e construção, matrícula e cartório, proprietários com CPF e qualificação, inscrição municipal/IPU e uso de FGTS."
                     : "Extraia os dados deste documento.",
                 },
                 contentBlock,
@@ -412,6 +508,58 @@ Regras:
       };
     }
 
+    let propertyAnalysis = null;
+    if (isProperty && data.propertyAnalysis) {
+      const a = data.propertyAnalysis;
+      const str = (v: unknown) => (v != null && String(v).trim() !== "" ? String(v).trim() : null);
+      propertyAnalysis = {
+        address: str(a.address),
+        description: str(a.description),
+        registrationNumber: str(a.registrationNumber),
+        notaryOffice: str(a.notaryOffice),
+        municipalRegistration: str(a.municipalRegistration),
+        firstAddress: str(a.firstAddress),
+        lastAddress: str(a.lastAddress),
+        liens: Array.isArray(a.liens)
+          ? a.liens
+              .map((l: Record<string, unknown>) => ({
+                type: String(l.type || "outro").toLowerCase(),
+                act: str(l.act),
+                date: str(l.date),
+                creditor: str(l.creditor),
+                description: String(l.description || ""),
+                active: l.active !== false,
+              }))
+              .filter((l: { description: string }) => l.description.trim() !== "")
+          : [],
+        addressEntries: Array.isArray(a.addressEntries)
+          ? a.addressEntries.map((e: Record<string, unknown>) => ({
+              act: str(e.act),
+              date: str(e.date),
+              kind: String(e.kind || "endereco").toLowerCase(),
+              address: str(e.address),
+              cep: str(e.cep),
+              description: str(e.description),
+            }))
+          : [],
+        owners: Array.isArray(a.owners)
+          ? a.owners
+              .map((o: Record<string, unknown>) => ({
+                name: String(o.name || ""),
+                cpf: str(o.cpf),
+                qualification: str(o.qualification),
+                acquisitionAct: str(o.acquisitionAct),
+                acquisitionDate: str(o.acquisitionDate),
+                current: o.current === true,
+              }))
+              .filter((o: { name: string }) => o.name.trim() !== "")
+          : [],
+        fgtsUsed: a.fgtsUsed === true,
+        fgtsDate: str(a.fgtsDate),
+        fgtsNote: str(a.fgtsNote),
+      };
+    }
+
     return new Response(
       JSON.stringify({
         data: {
@@ -420,6 +568,7 @@ Regras:
           groups,
           bankAnalysis,
           irpfAnalysis,
+          propertyAnalysis,
         },
       }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } },
