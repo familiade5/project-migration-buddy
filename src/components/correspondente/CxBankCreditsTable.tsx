@@ -14,7 +14,7 @@ export function CxBankCreditsTable({ analysis, onToggle, disabled }: Props) {
   const warning = cxCoverageWarning(summary);
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 text-slate-800">
       <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-4">
         <div className="flex items-center gap-2 text-emerald-800">
           <TrendingUp className="w-4 h-4" />
@@ -44,9 +44,9 @@ export function CxBankCreditsTable({ analysis, onToggle, disabled }: Props) {
         <div className="grid gap-2 sm:grid-cols-3">
           {summary.months.map((m) => (
             <div key={m.key} className="rounded-xl border border-slate-200 bg-white px-3 py-2">
-              <p className="text-[11px] font-semibold text-slate-500">{m.key}</p>
+              <p className="text-[11px] font-semibold text-slate-600">{m.key}</p>
               <p className="text-sm font-bold text-slate-900">{cxFormatBRL(m.total)}</p>
-              <p className={`text-[10px] mt-0.5 ${m.complete ? 'text-slate-400' : 'text-red-600 font-semibold'}`}>
+              <p className={`text-[10px] mt-0.5 ${m.complete ? 'text-slate-500' : 'text-red-600 font-semibold'}`}>
                 {m.complete
                   ? 'Mês completo'
                   : `Parcial: dias ${m.firstDay}–${m.lastDay} de ${m.totalDays}`}
@@ -58,7 +58,7 @@ export function CxBankCreditsTable({ analysis, onToggle, disabled }: Props) {
 
       <div className="overflow-x-auto rounded-xl border border-slate-200">
         <table className="w-full text-left text-xs">
-          <thead className="bg-slate-50 text-slate-500">
+          <thead className="bg-slate-100 text-slate-700">
             <tr>
               <th className="px-3 py-2 font-semibold">Data</th>
               <th className="px-3 py-2 font-semibold">Descrição</th>
@@ -71,7 +71,7 @@ export function CxBankCreditsTable({ analysis, onToggle, disabled }: Props) {
             {analysis.credits.map((c: CxBankCredit, i: number) => (
               <tr
                 key={`${c.date}-${c.description}-${i}`}
-                className={`border-t border-slate-100 ${c.included ? 'bg-white' : 'bg-slate-50/70 text-slate-400'}`}
+                className={`border-t border-slate-100 ${c.included ? 'bg-white text-slate-800' : 'bg-slate-100 text-slate-600'}`}
               >
                 <td className="px-3 py-2 whitespace-nowrap">{c.date}</td>
                 <td className="px-3 py-2 max-w-[220px] truncate" title={c.description}>

@@ -114,7 +114,8 @@ export const cxSummarize = (
         total: totals.get(key) || 0,
         coveredDays,
         totalDays,
-        complete: coveredDays >= totalDays,
+        // Dias sem movimentação não aparecem no extrato: tolerância nas bordas do mês.
+        complete: coveredDays >= totalDays || ((list[0] ?? 1) <= 5 && (list[list.length - 1] ?? totalDays) >= totalDays - 5),
         firstDay: list[0] ?? 1,
         lastDay: list[list.length - 1] ?? totalDays,
       };
@@ -171,5 +172,5 @@ export const cxCoverageWarning = (summary: CxIncomeSummary): string | null => {
   const detail = summary.incompleteMonths
     .map((m) => `${m.key} (dias ${m.firstDay} a ${m.lastDay} de ${m.totalDays})`)
     .join(', ');
-  return `Atenção: o extrato não cobre o mês completo — ${detail}. A média mensal acima está subestimada; peça ao cliente o extrato fechado do 1º ao último dia de cada mês.`;
+  return `Atenção: o extrato parece não cobrir o mês completo — ${detail}. A média mensal acima pode estar subestimada. Observação: dias sem movimentação não aparecem no extrato, então confira o período impresso no cabeçalho antes de pedir ao cliente o extrato fechado do 1º ao último dia do mês.`;
 };

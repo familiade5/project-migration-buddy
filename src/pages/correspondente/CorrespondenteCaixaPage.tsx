@@ -561,7 +561,7 @@ export default function CorrespondenteCaixaPage() {
                           <div key={m.key} className="rounded-xl border border-emerald-200 bg-white px-3 py-2">
                             <p className="text-[11px] font-semibold text-slate-500">{m.key}</p>
                             <p className="text-sm font-bold text-slate-900">{cxFormatBRL(m.total)}</p>
-                            <p className={`text-[10px] mt-0.5 ${m.complete ? 'text-slate-400' : 'text-red-600 font-semibold'}`}>
+                            <p className={`text-[10px] mt-0.5 ${m.complete ? 'text-slate-500' : 'text-red-600 font-semibold'}`}>
                               {m.complete ? 'Mês completo' : `Parcial: dias ${m.firstDay}–${m.lastDay} de ${m.totalDays}`}
                             </p>
                           </div>
