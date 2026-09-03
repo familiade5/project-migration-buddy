@@ -18,7 +18,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { useCxProperties } from '@/hooks/useCxProperties';
-import { useCxDocuments } from '@/hooks/useCxClients';
+import { useCxClients, useCxDocuments } from '@/hooks/useCxClients';
 import {
   CX_PROPERTY_DOC_TYPES,
   CX_PROPERTY_STATUS,
@@ -40,6 +40,7 @@ import {
   Inbox,
   Calendar,
   Copy,
+  UserRound,
 } from 'lucide-react';
 
 
@@ -301,6 +302,36 @@ export function CxNarrativeWorkspace({ header }: Props) {
               </div>
 
               <div className="grid gap-3 sm:grid-cols-2 mt-6">
+                <div className="sm:col-span-2">
+                  <Label className="text-xs font-semibold text-slate-600 flex items-center gap-1.5">
+                    <UserRound className="w-3.5 h-3.5" /> Cliente vinculado
+                  </Label>
+                  <Select
+                    value={selected.client_id || 'none'}
+                    onValueChange={(v) =>
+                      updateProperty(selected.id, { client_id: v === 'none' ? null : v })
+                    }
+                  >
+                    <SelectTrigger className="mt-1 bg-white border-slate-200 text-slate-900">
+                      <SelectValue placeholder="Selecionar cliente" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-white border-slate-200 text-slate-900 max-h-72">
+                      <SelectItem value="none" className="text-slate-900">
+                        Sem cliente vinculado
+                      </SelectItem>
+                      {clients
+                        .filter((c) => !c.parent_client_id)
+                        .map((c) => (
+                          <SelectItem key={c.id} value={c.id} className="text-slate-900">
+                            {c.full_name}
+                          </SelectItem>
+                        ))}
+                    </SelectContent>
+                  </Select>
+                  <p className="text-[11px] text-slate-400 mt-1">
+                    O imóvel e a narrativa aparecem na ficha deste cliente.
+                  </p>
+                </div>
                 <div>
                   <Label className="text-xs font-semibold text-slate-600">Matrícula</Label>
                   <Input
