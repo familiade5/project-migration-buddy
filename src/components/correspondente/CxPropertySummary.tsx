@@ -11,7 +11,9 @@ import {
   Users,
 } from 'lucide-react';
 import { CxDocument, CxPropertyLien } from '@/types/correspondente';
+import { CopyText } from './CopyText';
 import { cxGetPropertyAnalysis, cxSummarizeProperty, cxIsBlockingLien } from '@/lib/cxProperty';
+
 
 const LIEN_LABEL: Record<string, string> = {
   penhora: 'Penhora',
