@@ -1,0 +1,1 @@
+REVOKE EXECUTE ON FUNCTION public.cx_invite_info(text) FROM anon;
