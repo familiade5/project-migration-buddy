@@ -58,11 +58,9 @@ export function CxNarrativeWorkspace({ header }: Props) {
   const [saving, setSaving] = useState(false);
   const [form, setForm] = useState({
     name: '',
-    address: '',
-    registration_number: '',
-    notary_office: '',
     notes: '',
   });
+
 
   const [docType, setDocType] = useState<string>('matricula_imovel');
   const [uploading, setUploading] = useState(false);
