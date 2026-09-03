@@ -42,6 +42,24 @@ export function CxBankCreditsTable({ analysis, onToggle, disabled }: Props) {
         </div>
       )}
 
+      {gamblingCredits.length > 0 && (
+        <div className="rounded-2xl border border-red-300 bg-red-50 p-4 flex gap-3">
+          <Ban className="w-5 h-5 text-red-600 shrink-0 mt-0.5" />
+          <div>
+            <p className="text-xs font-bold text-red-700 uppercase tracking-wide">
+              Depósitos de casas de apostas / jogos detectados
+            </p>
+            <p className="text-xs text-red-700 mt-1">
+              {gamblingCredits.length} lançamento(s) somando {cxFormatBRL(gamblingTotal)} vindos de bets, cassinos ou jogos.
+              Bancos não aceitam esses valores como renda, então eles foram retirados do cálculo e estão marcados em
+              vermelho na tabela. O analista pode contabilizá-los manualmente se julgar necessário.
+            </p>
+          </div>
+        </div>
+      )}
+
+
+
       {summary.months.length > 0 && (
         <div className="grid gap-2 sm:grid-cols-3">
           {summary.months.map((m) => (
