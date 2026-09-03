@@ -3,6 +3,8 @@ import { CxDocument, CX_DOC_LABEL, CxExtraction } from '@/types/correspondente';
 import { CxDocumentCard } from './CxDocumentCard';
 import { CxBankIncomeSummary } from './CxBankIncomeSummary';
 import { CxIrpfSummary } from './CxIrpfSummary';
+import { CxPropertySummary } from './CxPropertySummary';
+
 import { cxGetBankAnalysis } from '@/lib/cxIncome';
 import {
   FileText,
@@ -150,6 +152,9 @@ export function CxDocumentWorkspace({
         )}
 
         {activeGroup?.type === 'imposto_renda' && <CxIrpfSummary documents={documents} />}
+
+        {activeGroup?.type === 'matricula_imovel' && <CxPropertySummary documents={documents} />}
+
 
         {activeGroup && activeGroup.docs.length > 1 && (
           <div className="flex flex-wrap gap-2">
