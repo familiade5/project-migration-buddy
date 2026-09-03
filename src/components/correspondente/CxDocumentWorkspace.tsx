@@ -153,6 +153,9 @@ export function CxDocumentWorkspace({
 
         {activeGroup?.type === 'imposto_renda' && <CxIrpfSummary documents={documents} />}
 
+        {activeGroup?.type === 'matricula_imovel' && <CxPropertySummary documents={documents} />}
+
+
         {activeGroup && activeGroup.docs.length > 1 && (
           <div className="flex flex-wrap gap-2">
             {activeGroup.docs.map((d, i) => {
