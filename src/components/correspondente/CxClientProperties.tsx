@@ -79,7 +79,7 @@ export function CxClientProperties({ clientId }: { clientId: string }) {
           type="button"
           variant="outline"
           size="sm"
-          className="text-slate-700"
+          className="bg-white text-slate-700 border-slate-300 hover:bg-slate-50 hover:text-slate-900 dark:bg-slate-100 dark:text-slate-900 dark:hover:bg-white"
           onClick={() => setShowLink((v) => !v)}
         >
           <Link2 className="w-3.5 h-3.5 mr-1.5" />
