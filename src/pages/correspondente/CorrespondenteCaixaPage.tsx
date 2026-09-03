@@ -204,6 +204,15 @@ export default function CorrespondenteCaixaPage() {
       <div className="h-[calc(100vh-108px)] flex flex-col gap-4">
         <div className="flex flex-wrap gap-2 bg-white border border-slate-200 rounded-2xl p-1.5 shadow-sm self-start">
           <button
+            onClick={() => setTab('clientes')}
+            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-colors ${
+              tab === 'clientes' ? 'bg-[#1a3a6b] text-white shadow-sm' : 'text-slate-600 hover:bg-slate-50'
+            }`}
+          >
+            <Users className="w-4 h-4" />
+            Clientes
+          </button>
+          <button
             onClick={() => setTab('narrativas')}
             className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-colors ${
               tab === 'narrativas'
@@ -214,15 +223,7 @@ export default function CorrespondenteCaixaPage() {
             <Building2 className="w-4 h-4" />
             Checagem de Narrativas
           </button>
-          <button
-            onClick={() => setTab('clientes')}
-            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-colors ${
-              tab === 'clientes' ? 'bg-[#1a3a6b] text-white shadow-sm' : 'text-slate-600 hover:bg-slate-50'
-            }`}
-          >
-            <Users className="w-4 h-4" />
-            Clientes
-          </button>
+
         </div>
 
         {tab === 'narrativas' ? (

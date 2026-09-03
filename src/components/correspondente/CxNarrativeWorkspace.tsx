@@ -58,11 +58,9 @@ export function CxNarrativeWorkspace({ header }: Props) {
   const [saving, setSaving] = useState(false);
   const [form, setForm] = useState({
     name: '',
-    address: '',
-    registration_number: '',
-    notary_office: '',
     notes: '',
   });
+
 
   const [docType, setDocType] = useState<string>('matricula_imovel');
   const [uploading, setUploading] = useState(false);
@@ -92,17 +90,15 @@ export function CxNarrativeWorkspace({ header }: Props) {
     setSaving(true);
     const created = await createProperty({
       name: form.name.trim(),
-      address: form.address.trim() || null,
-      registration_number: form.registration_number.trim() || null,
-      notary_office: form.notary_office.trim() || null,
       notes: form.notes.trim() || null,
     });
     setSaving(false);
     if (created) {
       setSelectedId(created.id);
       setDialogOpen(false);
-      setForm({ name: '', address: '', registration_number: '', notary_office: '', notes: '' });
+      setForm({ name: '', notes: '' });
     }
+
   };
 
   const handleFiles = async (files: FileList | null) => {
@@ -416,35 +412,8 @@ export function CxNarrativeWorkspace({ header }: Props) {
                 className="mt-1 bg-white border-slate-200 text-slate-900"
               />
             </div>
-            <div>
-              <Label className="text-xs font-semibold text-slate-600">Endereço</Label>
-              <Input
-                value={form.address}
-                onChange={(e) => setForm({ ...form, address: e.target.value })}
-                placeholder="Rua, número, bairro, cidade"
-                className="mt-1 bg-white border-slate-200 text-slate-900"
-              />
-            </div>
-            <div className="grid grid-cols-2 gap-3">
-              <div>
-                <Label className="text-xs font-semibold text-slate-600">Matrícula</Label>
-                <Input
-                  value={form.registration_number}
-                  onChange={(e) => setForm({ ...form, registration_number: e.target.value })}
-                  placeholder="Nº"
-                  className="mt-1 bg-white border-slate-200 text-slate-900"
-                />
-              </div>
-              <div>
-                <Label className="text-xs font-semibold text-slate-600">Cartório</Label>
-                <Input
-                  value={form.notary_office}
-                  onChange={(e) => setForm({ ...form, notary_office: e.target.value })}
-                  placeholder="Cartório"
-                  className="mt-1 bg-white border-slate-200 text-slate-900"
-                />
-              </div>
-            </div>
+
+
             <div>
               <Label className="text-xs font-semibold text-slate-600">Observações</Label>
               <Textarea
