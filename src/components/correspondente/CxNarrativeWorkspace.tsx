@@ -58,6 +58,7 @@ interface Props {
 
 export function CxNarrativeWorkspace({ header }: Props) {
   const { properties, isLoading, createProperty, updateProperty, deleteProperty } = useCxProperties();
+  const { clients } = useCxClients();
   const [selectedId, setSelectedIdState] = useState<string | null>(
     () => localStorage.getItem('cx_narrative_selected') || null,
   );
