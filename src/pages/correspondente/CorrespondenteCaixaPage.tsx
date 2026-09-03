@@ -198,12 +198,41 @@ export default function CorrespondenteCaixaPage() {
         </>
       }
     >
-      <div className="h-[calc(100vh-108px)]">
+      <div className="h-[calc(100vh-108px)] flex flex-col gap-4">
+        <div className="flex flex-wrap gap-2 bg-white border border-slate-200 rounded-2xl p-1.5 shadow-sm self-start">
+          <button
+            onClick={() => setTab('narrativas')}
+            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-colors ${
+              tab === 'narrativas'
+                ? 'bg-[#1a3a6b] text-white shadow-sm'
+                : 'text-slate-600 hover:bg-slate-50'
+            }`}
+          >
+            <Building2 className="w-4 h-4" />
+            Checagem de Narrativas
+          </button>
+          <button
+            onClick={() => setTab('clientes')}
+            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-colors ${
+              tab === 'clientes' ? 'bg-[#1a3a6b] text-white shadow-sm' : 'text-slate-600 hover:bg-slate-50'
+            }`}
+          >
+            <Users className="w-4 h-4" />
+            Clientes
+          </button>
+        </div>
+
+        {tab === 'narrativas' ? (
+          <div className="flex-1 min-h-0">
+            <CxNarrativeWorkspace />
+          </div>
+        ) : (
         <div
-          className={`grid grid-cols-1 gap-5 h-full transition-all ${
+          className={`grid grid-cols-1 gap-5 flex-1 min-h-0 transition-all ${
             listOpen ? 'lg:grid-cols-[340px_minmax(0,1fr)]' : 'lg:grid-cols-[64px_minmax(0,1fr)]'
           }`}
         >
+
           {/* Clients list */}
           {!listOpen ? (
             <aside className="hidden lg:flex bg-white rounded-2xl border border-slate-200 shadow-sm flex-col items-center py-4 gap-3">
