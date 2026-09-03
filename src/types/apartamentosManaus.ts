@@ -38,6 +38,9 @@ export interface AMPropertyData {
   // Price reduction (capa "BAIXOU O PREÇO")
   priceReduced?: boolean;
   oldPrice?: number;
+  // Oportunidade (entrada zero / entrada baixa)
+  opportunity?: boolean;
+  downPaymentFrom?: number; // 0 = entrada zero
   condominiumFee: number;
   condoIncludes: string;  // Ex: "água, gás e segurança 24h"
   iptu: number;
@@ -142,6 +145,8 @@ export const defaultAMPropertyData: AMPropertyData = {
   rentIncludesCondo: false,
   priceReduced: false,
   oldPrice: 0,
+  opportunity: false,
+  downPaymentFrom: 0,
   condominiumFee: 0,
   condoIncludes: '',
   iptu: 0,
