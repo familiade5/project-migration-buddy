@@ -123,15 +123,19 @@ export function CxIrpfSummary({ documents }: { documents: CxDocument[] }) {
               ) : (
                 <div className="space-y-2">
                   {s.profitLines.map((p, i) => (
-                    <div
-                      key={i}
-                      className={`rounded-xl border p-3 ${
-                        p.belowLimit ? 'border-red-300 bg-red-50' : 'border-emerald-200 bg-emerald-50/60'
-                      }`}
-                    >
+                    <div key={i} className="rounded-xl border border-slate-200 bg-slate-50/60 p-3">
                       <div className="flex flex-wrap items-baseline justify-between gap-2">
                         <div className="min-w-0">
-                          <p className="text-xs font-bold text-slate-900">{p.cnpj || p.sourceName || 'Sócio / lucro'}</p>
+                          <div className="flex flex-wrap items-baseline gap-x-2">
+                            <CopyText
+                              value={p.cnpj || p.sourceName || 'Sócio / lucro'}
+                              label="CNPJ"
+                              className="text-xs font-bold text-slate-900"
+                            />
+                            {p.cnpj && p.sourceName && (
+                              <CopyText value={p.sourceName} label="Empresa" className="text-[11px] text-slate-600" />
+                            )}
+                          </div>
                           <p className="text-[11px] text-slate-600">{p.description}</p>
                         </div>
                         <div className="text-right">
@@ -141,20 +145,40 @@ export function CxIrpfSummary({ documents }: { documents: CxDocument[] }) {
                           </p>
                         </div>
                       </div>
-                      {p.belowLimit && (
-                        <p className="mt-2 flex items-start gap-1.5 text-[11px] font-semibold text-red-700">
-                          <AlertTriangle className="w-3.5 h-3.5 mt-[1px] flex-shrink-0" />
-                          Valor anual abaixo de {cxFormatBRL(CX_IRPF_EXEMPT_LIMIT)} — o lucro não deveria estar isento no
-                          IRPF. Verificar a apuração da empresa e pedir o balanço/contabilidade antes de usar essa renda.
-                        </p>
-                      )}
                     </div>
                   ))}
                   <p className="text-[11px] text-slate-600">
                     Total de lucros/dividendos: <strong>{cxFormatBRL(s.totalProfitAnnual)}</strong> ao ano ·{' '}
                     <strong>{cxFormatBRL(s.totalProfitMonthly)}</strong> por mês (÷ 12).
                   </p>
+                  <div
+                    className={`rounded-xl border p-3 text-[11px] ${
+                      s.belowLimit ? 'border-red-300 bg-red-50 text-red-700' : 'border-emerald-200 bg-emerald-50/60 text-emerald-800'
+                    }`}
+                  >
+                    <p className="font-semibold text-slate-800">
+                      Soma de todos os rendimentos do ano: <strong>{cxFormatBRL(s.totalAnnualIncome)}</strong>{' '}
+                      <span className="font-normal text-slate-500">
+                        (tributáveis {cxFormatBRL(s.totalPj)}
+                        {s.total13 > 0 ? ` + 13º ${cxFormatBRL(s.total13)}` : ''} + lucros{' '}
+                        {cxFormatBRL(s.totalProfitAnnual)}
+                        {s.otherExemptTotal > 0 ? ` + outros isentos ${cxFormatBRL(s.otherExemptTotal)}` : ''})
+                      </span>
+                    </p>
+                    {s.belowLimit ? (
+                      <p className="mt-1.5 flex items-start gap-1.5 font-semibold">
+                        <AlertTriangle className="w-3.5 h-3.5 mt-[1px] flex-shrink-0" />
+                        Total abaixo de {cxFormatBRL(CX_IRPF_EXEMPT_LIMIT)} — o lucro pode não estar corretamente isento
+                        no IRPF. Pedir o balanço/contabilidade da empresa antes de usar essa renda.
+                      </p>
+                    ) : (
+                      <p className="mt-1.5 font-semibold">
+                        Total acima de {cxFormatBRL(CX_IRPF_EXEMPT_LIMIT)} — isenção do lucro distribuído consistente.
+                      </p>
+                    )}
+                  </div>
                 </div>
+
               )}
             </section>
 
