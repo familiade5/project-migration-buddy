@@ -381,12 +381,12 @@ export const AMCoverSlide = ({
         </div>
       )}
 
-      {/* ── SELO "OPORTUNIDADE" — balão de explosão (starburst) no canto direito ── */}
+      {/* ── SELO "OPORTUNIDADE" — balão de explosão vermelho abaixo do nome do imóvel, próximo ao centro ── */}
       {isOpportunity && (
         <AMOpportunityBurst
           downPayment={downPayment}
           size={108}
-          style={{ position: 'absolute', top: 12, right: 8, zIndex: 40 }}
+          style={{ position: 'absolute', top: 58, left: 130, zIndex: 40 }}
         />
       )}
 
