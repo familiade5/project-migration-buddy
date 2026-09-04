@@ -1,7 +1,9 @@
 /**
- * SELO "OPORTUNIDADE" — balão de explosão (starburst)
+ * SELO "OPORTUNIDADE" — balão de explosão 3D (starburst)
  * Usado no Slide 1 do Feed e no Slide 1 do Story do AM.
  */
+
+import { useId } from 'react';
 
 const golos = "'Golos Text', Arial, sans-serif";
 
@@ -14,6 +16,11 @@ export const AMOpportunityBurst = ({
   size?: number;
   style?: React.CSSProperties;
 }) => {
+  const uid = useId();
+  const gradId = `amOppBurstGrad-${uid}`;
+  const shadowId = `amOppBurstShadow-${uid}`;
+  const shineId = `amOppBurstShine-${uid}`;
+
   const cx = size / 2;
   const cy = size / 2;
   const spikes = 16;
@@ -36,7 +43,7 @@ export const AMOpportunityBurst = ({
     ? (mil ? String(downPayment / 1000) : downPayment.toLocaleString('pt-BR'))
     : '';
 
-  const textShadow = '0 2px 0 #991b1b, 0 3px 0 #7f1d1d, 0 4px 6px rgba(0,0,0,0.35)';
+  const textShadow = '0 1.5px 0 #7f1d1d, 0 2.5px 0 #550f0f, 0 3px 5px rgba(0,0,0,0.35)';
 
   return (
     <div
@@ -46,22 +53,49 @@ export const AMOpportunityBurst = ({
         transform: 'rotate(-7deg)',
         fontFamily: golos,
         position: 'relative',
+        filter: 'drop-shadow(0 4px 4px rgba(0,0,0,0.35))',
         ...style,
       }}
     >
       <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} style={{ position: 'absolute', top: 0, left: 0, display: 'block' }}>
         <defs>
-          <linearGradient id="amOppBurstGrad" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#ef4444" />
-            <stop offset="55%" stopColor="#dc2626" />
-            <stop offset="100%" stopColor="#b91c1c" />
+          {/* gradiente radial 3D: centro iluminado, bordas escuras */}
+          <radialGradient id={gradId} cx="35%" cy="30%" r="75%" fx="30%" fy="25%">
+            <stop offset="0%" stopColor="#ff6b6b" />
+            <stop offset="35%" stopColor="#ef4444" />
+            <stop offset="70%" stopColor="#dc2626" />
+            <stop offset="100%" stopColor="#991b1b" />
+          </radialGradient>
+          {/* sombra projetada para dar volume */}
+          <filter id={shadowId} x="-30%" y="-30%" width="160%" height="160%">
+            <feDropShadow dx="0" dy="3" stdDeviation="3" floodColor="#550f0f" floodOpacity="0.5" />
+          </filter>
+          {/* brilho glossy */}
+          <linearGradient id={shineId} x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="rgba(255,255,255,0.55)" />
+            <stop offset="45%" stopColor="rgba(255,255,255,0.08)" />
+            <stop offset="100%" stopColor="rgba(255,255,255,0)" />
           </linearGradient>
         </defs>
-        {/* contorno branco do adesivo */}
-        <polygon points={burst} fill="#ffffff" transform={`translate(${cx} ${cy}) scale(1.065) translate(${-cx} ${-cy})`} />
-        <polygon points={burst} fill="url(#amOppBurstGrad)" />
-        {/* brilho superior */}
-        <ellipse cx={cx} cy={cy * 0.62} rx={rIn * 0.72} ry={rIn * 0.34} fill="#ffffff" opacity="0.12" />
+
+        {/* contorno branco do adesivo (mais grosso) */}
+        <polygon
+          points={burst}
+          fill="#ffffff"
+          transform={`translate(${cx} ${cy}) scale(1.075) translate(${-cx} ${-cy})`}
+          filter={`url(#${shadowId})`}
+        />
+        {/* corpo vermelho 3D */}
+        <polygon points={burst} fill={`url(#${gradId})`} />
+        {/* brilho superior volumétrico */}
+        <ellipse cx={cx} cy={cy * 0.58} rx={rIn * 0.78} ry={rIn * 0.40} fill="#ffffff" opacity="0.18" />
+        {/* reflexo glossy diagonal */}
+        <polygon
+          points={burst}
+          fill={`url(#${shineId})`}
+          opacity="0.35"
+          clipPath="inset(0 0 45% 0)"
+        />
       </svg>
 
       <div
@@ -89,7 +123,7 @@ export const AMOpportunityBurst = ({
             <span style={{ color: '#FFE14D', fontSize: s(14), fontWeight: 900, lineHeight: 1, letterSpacing: '-0.01em', textShadow }}>
               ENTRADA
             </span>
-            <span style={{ color: '#FFE14D', fontSize: s(7), fontWeight: 800, lineHeight: 1.1, letterSpacing: '0.02em', textShadow: '0 1.5px 0 #991b1b' }}>
+            <span style={{ color: '#FFE14D', fontSize: s(7), fontWeight: 800, lineHeight: 1.1, letterSpacing: '0.02em', textShadow: '0 1.5px 0 #7f1d1d' }}>
               A PARTIR DE
             </span>
             <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'center', gap: 1, marginTop: 1 }}>
