@@ -97,35 +97,35 @@ export const AMOpportunityBurst = ({
       >
         {/* raios decorativos superiores */}
         <div style={{ display: 'flex', alignItems: 'flex-end', gap: 2, marginBottom: 2 }}>
-          <div style={{ width: 2, height: s(6), background: '#FFE14D', borderRadius: 2, transform: 'rotate(-22deg)' }} />
-          <div style={{ width: 2, height: s(8), background: '#FFE14D', borderRadius: 2 }} />
-          <div style={{ width: 2, height: s(6), background: '#FFE14D', borderRadius: 2, transform: 'rotate(22deg)' }} />
+          <div style={{ width: 2, height: s(6), background: '#ffffff', borderRadius: 2, transform: 'rotate(-22deg)' }} />
+          <div style={{ width: 2, height: s(8), background: '#ffffff', borderRadius: 2 }} />
+          <div style={{ width: 2, height: s(6), background: '#ffffff', borderRadius: 2, transform: 'rotate(22deg)' }} />
         </div>
 
         {downPayment > 0 ? (
           <>
-            <span style={{ color: '#FFE14D', fontSize: s(14), fontWeight: 900, lineHeight: 1, letterSpacing: '-0.01em' }}>
+            <span style={{ color: '#ffffff', fontSize: s(14), fontWeight: 900, lineHeight: 1, letterSpacing: '-0.01em' }}>
               ENTRADA
             </span>
-            <span style={{ color: '#FFE14D', fontSize: s(7), fontWeight: 800, lineHeight: 1.1, letterSpacing: '0.02em' }}>
+            <span style={{ color: '#ffffff', fontSize: s(7), fontWeight: 800, lineHeight: 1.1, letterSpacing: '0.02em' }}>
               A PARTIR DE
             </span>
             <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'center', gap: 1, marginTop: 1 }}>
-              <span style={{ color: '#FFE14D', fontSize: s(11), fontWeight: 900, lineHeight: 1 }}>R$</span>
-              <span style={{ color: '#FFE14D', fontSize: mil ? s(25) : s(18), fontWeight: 900, lineHeight: 1, letterSpacing: '-0.03em' }}>
+              <span style={{ color: '#ffffff', fontSize: s(11), fontWeight: 900, lineHeight: 1 }}>R$</span>
+              <span style={{ color: '#ffffff', fontSize: mil ? s(25) : s(18), fontWeight: 900, lineHeight: 1, letterSpacing: '-0.03em' }}>
                 {valueMain}
               </span>
               {mil && (
-                <span style={{ color: '#FFE14D', fontSize: s(13), fontWeight: 900, lineHeight: 1 }}>MIL</span>
+                <span style={{ color: '#ffffff', fontSize: s(13), fontWeight: 900, lineHeight: 1 }}>MIL</span>
               )}
             </div>
           </>
         ) : (
           <>
-            <span style={{ color: '#FFE14D', fontSize: s(16), fontWeight: 900, lineHeight: 1, letterSpacing: '-0.02em' }}>
+            <span style={{ color: '#ffffff', fontSize: s(16), fontWeight: 900, lineHeight: 1, letterSpacing: '-0.02em' }}>
               ENTRADA
             </span>
-            <span style={{ color: '#FFE14D', fontSize: s(25), fontWeight: 900, lineHeight: 1, letterSpacing: '-0.03em' }}>
+            <span style={{ color: '#ffffff', fontSize: s(25), fontWeight: 900, lineHeight: 1, letterSpacing: '-0.03em' }}>
               ZERO
             </span>
           </>
@@ -133,9 +133,9 @@ export const AMOpportunityBurst = ({
 
         {/* raios decorativos inferiores */}
         <div style={{ display: 'flex', alignItems: 'flex-start', gap: 2, marginTop: 3 }}>
-          <div style={{ width: 2, height: s(6), background: '#FFE14D', borderRadius: 2, transform: 'rotate(22deg)' }} />
-          <div style={{ width: 2, height: s(8), background: '#FFE14D', borderRadius: 2 }} />
-          <div style={{ width: 2, height: s(6), background: '#FFE14D', borderRadius: 2, transform: 'rotate(-22deg)' }} />
+          <div style={{ width: 2, height: s(6), background: '#ffffff', borderRadius: 2, transform: 'rotate(22deg)' }} />
+          <div style={{ width: 2, height: s(8), background: '#ffffff', borderRadius: 2 }} />
+          <div style={{ width: 2, height: s(6), background: '#ffffff', borderRadius: 2, transform: 'rotate(-22deg)' }} />
         </div>
       </div>
     </div>
