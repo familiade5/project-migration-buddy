@@ -19,7 +19,6 @@ export const AMOpportunityBurst = ({
   const uid = useId();
   const gradId = `amOppBurstGrad-${uid}`;
   const shadowId = `amOppBurstShadow-${uid}`;
-  const shineId = `amOppBurstShine-${uid}`;
 
   const cx = size / 2;
   const cy = size / 2;
@@ -70,12 +69,6 @@ export const AMOpportunityBurst = ({
           <filter id={shadowId} x="-30%" y="-30%" width="160%" height="160%">
             <feDropShadow dx="0" dy="3" stdDeviation="3" floodColor="#550f0f" floodOpacity="0.5" />
           </filter>
-          {/* brilho glossy */}
-          <linearGradient id={shineId} x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="rgba(255,255,255,0.55)" />
-            <stop offset="45%" stopColor="rgba(255,255,255,0.08)" />
-            <stop offset="100%" stopColor="rgba(255,255,255,0)" />
-          </linearGradient>
         </defs>
 
         {/* contorno branco do adesivo (mais grosso) */}
@@ -87,15 +80,6 @@ export const AMOpportunityBurst = ({
         />
         {/* corpo vermelho 3D */}
         <polygon points={burst} fill={`url(#${gradId})`} />
-        {/* brilho superior volumétrico */}
-        <ellipse cx={cx} cy={cy * 0.58} rx={rIn * 0.78} ry={rIn * 0.40} fill="#ffffff" opacity="0.18" />
-        {/* reflexo glossy diagonal */}
-        <polygon
-          points={burst}
-          fill={`url(#${shineId})`}
-          opacity="0.35"
-          clipPath="inset(0 0 45% 0)"
-        />
       </svg>
 
       <div
