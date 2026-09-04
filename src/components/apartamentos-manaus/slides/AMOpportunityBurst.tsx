@@ -18,7 +18,6 @@ export const AMOpportunityBurst = ({
 }) => {
   const uid = useId();
   const gradId = `amOppBurstGrad-${uid}`;
-  const shadowId = `amOppBurstShadow-${uid}`;
 
   const cx = size / 2;
   const cy = size / 2;
@@ -42,9 +41,6 @@ export const AMOpportunityBurst = ({
     ? (mil ? String(downPayment / 1000) : downPayment.toLocaleString('pt-BR'))
     : '';
 
-  // sombra extrudada amarela -> vermelho escuro, estilo adesivo 3D
-  const text3D = '1px 1px 0 #991b1b, 2px 2px 0 #7f1d1d, 3px 3px 0 #550f0f';
-
   return (
     <div
       style={{
@@ -53,7 +49,6 @@ export const AMOpportunityBurst = ({
         transform: 'rotate(-7deg)',
         fontFamily: golos,
         position: 'relative',
-        filter: 'drop-shadow(0 4px 4px rgba(0,0,0,0.35))',
         ...style,
       }}
     >
@@ -66,10 +61,6 @@ export const AMOpportunityBurst = ({
             <stop offset="70%" stopColor="#dc2626" />
             <stop offset="100%" stopColor="#991b1b" />
           </radialGradient>
-          {/* sombra projetada para dar volume */}
-          <filter id={shadowId} x="-30%" y="-30%" width="160%" height="160%">
-            <feDropShadow dx="0" dy="3" stdDeviation="3" floodColor="#550f0f" floodOpacity="0.5" />
-          </filter>
         </defs>
 
         {/* contorno branco do adesivo (mais grosso) */}
@@ -77,7 +68,6 @@ export const AMOpportunityBurst = ({
           points={burst}
           fill="#ffffff"
           transform={`translate(${cx} ${cy}) scale(1.075) translate(${-cx} ${-cy})`}
-          filter={`url(#${shadowId})`}
         />
         {/* corpo vermelho 3D */}
         <polygon points={burst} fill={`url(#${gradId})`} />
@@ -105,28 +95,28 @@ export const AMOpportunityBurst = ({
 
         {downPayment > 0 ? (
           <>
-            <span style={{ color: '#FFF200', fontSize: s(15), fontWeight: 900, lineHeight: 1, letterSpacing: '-0.02em', textShadow: text3D }}>
+            <span style={{ color: '#FFF200', fontSize: s(15), fontWeight: 900, lineHeight: 1, letterSpacing: '-0.02em' }}>
               ENTRADA
             </span>
-            <span style={{ color: '#FFF200', fontSize: s(6), fontWeight: 800, lineHeight: 1.05, letterSpacing: '0.02em', textShadow: text3D }}>
+            <span style={{ color: '#FFF200', fontSize: s(6), fontWeight: 800, lineHeight: 1.05, letterSpacing: '0.02em' }}>
               A PARTIR DE
             </span>
             <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'center', gap: 1, marginTop: 0 }}>
-              <span style={{ color: '#FFF200', fontSize: s(11), fontWeight: 900, lineHeight: 1, textShadow: text3D }}>R$</span>
-              <span style={{ color: '#FFF200', fontSize: mil ? s(28) : s(21), fontWeight: 900, lineHeight: 1, letterSpacing: '-0.03em', textShadow: text3D }}>
+              <span style={{ color: '#FFF200', fontSize: s(11), fontWeight: 900, lineHeight: 1 }}>R$</span>
+              <span style={{ color: '#FFF200', fontSize: mil ? s(28) : s(21), fontWeight: 900, lineHeight: 1, letterSpacing: '-0.03em' }}>
                 {valueMain}
               </span>
               {mil && (
-                <span style={{ color: '#FFF200', fontSize: s(12), fontWeight: 900, lineHeight: 1, textShadow: text3D }}>MIL</span>
+                <span style={{ color: '#FFF200', fontSize: s(12), fontWeight: 900, lineHeight: 1 }}>MIL</span>
               )}
             </div>
           </>
         ) : (
           <>
-            <span style={{ color: '#FFF200', fontSize: s(19), fontWeight: 900, lineHeight: 1, letterSpacing: '-0.02em', textShadow: text3D }}>
+            <span style={{ color: '#FFF200', fontSize: s(19), fontWeight: 900, lineHeight: 1, letterSpacing: '-0.02em' }}>
               ENTRADA
             </span>
-            <span style={{ color: '#FFF200', fontSize: s(32), fontWeight: 900, lineHeight: 1, letterSpacing: '-0.03em', textShadow: text3D }}>
+            <span style={{ color: '#FFF200', fontSize: s(32), fontWeight: 900, lineHeight: 1, letterSpacing: '-0.03em' }}>
               ZERO
             </span>
           </>
