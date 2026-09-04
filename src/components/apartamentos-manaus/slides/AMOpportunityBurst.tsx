@@ -42,7 +42,8 @@ export const AMOpportunityBurst = ({
     ? (mil ? String(downPayment / 1000) : downPayment.toLocaleString('pt-BR'))
     : '';
 
-  
+  // sombra extrudada amarela -> vermelho escuro, estilo adesivo 3D
+  const text3D = '1px 1px 0 #991b1b, 2px 2px 0 #7f1d1d, 3px 3px 0 #550f0f';
 
   return (
     <div
