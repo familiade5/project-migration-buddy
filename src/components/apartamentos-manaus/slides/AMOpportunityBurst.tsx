@@ -42,7 +42,8 @@ export const AMOpportunityBurst = ({
     ? (mil ? String(downPayment / 1000) : downPayment.toLocaleString('pt-BR'))
     : '';
 
-  
+  // sombra extrudada amarela -> vermelho escuro, estilo adesivo 3D
+  const text3D = '1px 1px 0 #991b1b, 2px 2px 0 #7f1d1d, 3px 3px 0 #550f0f';
 
   return (
     <div
@@ -91,51 +92,51 @@ export const AMOpportunityBurst = ({
           alignItems: 'center',
           justifyContent: 'center',
           textAlign: 'center',
-          padding: `0 ${s(10)}px`,
+        padding: `${s(2)}px ${s(4)}px`,
           boxSizing: 'border-box',
         }}
       >
         {/* raios decorativos superiores */}
-        <div style={{ display: 'flex', alignItems: 'flex-end', gap: 2, marginBottom: 2 }}>
-          <div style={{ width: 2, height: s(6), background: '#ffffff', borderRadius: 2, transform: 'rotate(-22deg)' }} />
-          <div style={{ width: 2, height: s(8), background: '#ffffff', borderRadius: 2 }} />
-          <div style={{ width: 2, height: s(6), background: '#ffffff', borderRadius: 2, transform: 'rotate(22deg)' }} />
+        <div style={{ display: 'flex', alignItems: 'flex-end', gap: 2, marginBottom: 1 }}>
+          <div style={{ width: 2, height: s(5), background: '#FFE500', borderRadius: 2, transform: 'rotate(-22deg)' }} />
+          <div style={{ width: 2, height: s(7), background: '#FFE500', borderRadius: 2 }} />
+          <div style={{ width: 2, height: s(5), background: '#FFE500', borderRadius: 2, transform: 'rotate(22deg)' }} />
         </div>
 
         {downPayment > 0 ? (
           <>
-            <span style={{ color: '#ffffff', fontSize: s(14), fontWeight: 900, lineHeight: 1, letterSpacing: '-0.01em' }}>
+            <span style={{ color: '#FFE500', fontSize: s(15), fontWeight: 900, lineHeight: 1, letterSpacing: '-0.02em', textShadow: text3D }}>
               ENTRADA
             </span>
-            <span style={{ color: '#ffffff', fontSize: s(7), fontWeight: 800, lineHeight: 1.1, letterSpacing: '0.02em' }}>
+            <span style={{ color: '#FFE500', fontSize: s(6), fontWeight: 800, lineHeight: 1.05, letterSpacing: '0.02em', textShadow: text3D }}>
               A PARTIR DE
             </span>
-            <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'center', gap: 1, marginTop: 1 }}>
-              <span style={{ color: '#ffffff', fontSize: s(11), fontWeight: 900, lineHeight: 1 }}>R$</span>
-              <span style={{ color: '#ffffff', fontSize: mil ? s(25) : s(18), fontWeight: 900, lineHeight: 1, letterSpacing: '-0.03em' }}>
+            <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'center', gap: 1, marginTop: 0 }}>
+              <span style={{ color: '#FFE500', fontSize: s(11), fontWeight: 900, lineHeight: 1, textShadow: text3D }}>R$</span>
+              <span style={{ color: '#FFE500', fontSize: mil ? s(28) : s(21), fontWeight: 900, lineHeight: 1, letterSpacing: '-0.03em', textShadow: text3D }}>
                 {valueMain}
               </span>
               {mil && (
-                <span style={{ color: '#ffffff', fontSize: s(13), fontWeight: 900, lineHeight: 1 }}>MIL</span>
+                <span style={{ color: '#FFE500', fontSize: s(12), fontWeight: 900, lineHeight: 1, textShadow: text3D }}>MIL</span>
               )}
             </div>
           </>
         ) : (
           <>
-            <span style={{ color: '#ffffff', fontSize: s(16), fontWeight: 900, lineHeight: 1, letterSpacing: '-0.02em' }}>
+            <span style={{ color: '#FFE500', fontSize: s(19), fontWeight: 900, lineHeight: 1, letterSpacing: '-0.02em', textShadow: text3D }}>
               ENTRADA
             </span>
-            <span style={{ color: '#ffffff', fontSize: s(25), fontWeight: 900, lineHeight: 1, letterSpacing: '-0.03em' }}>
+            <span style={{ color: '#FFE500', fontSize: s(32), fontWeight: 900, lineHeight: 1, letterSpacing: '-0.03em', textShadow: text3D }}>
               ZERO
             </span>
           </>
         )}
 
         {/* raios decorativos inferiores */}
-        <div style={{ display: 'flex', alignItems: 'flex-start', gap: 2, marginTop: 3 }}>
-          <div style={{ width: 2, height: s(6), background: '#ffffff', borderRadius: 2, transform: 'rotate(22deg)' }} />
-          <div style={{ width: 2, height: s(8), background: '#ffffff', borderRadius: 2 }} />
-          <div style={{ width: 2, height: s(6), background: '#ffffff', borderRadius: 2, transform: 'rotate(-22deg)' }} />
+        <div style={{ display: 'flex', alignItems: 'flex-start', gap: 2, marginTop: 2 }}>
+          <div style={{ width: 2, height: s(5), background: '#FFE500', borderRadius: 2, transform: 'rotate(22deg)' }} />
+          <div style={{ width: 2, height: s(7), background: '#FFE500', borderRadius: 2 }} />
+          <div style={{ width: 2, height: s(5), background: '#FFE500', borderRadius: 2, transform: 'rotate(-22deg)' }} />
         </div>
       </div>
     </div>
