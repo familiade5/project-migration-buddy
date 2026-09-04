@@ -43,7 +43,7 @@ export const AMOpportunityBurst = ({
     ? (mil ? String(downPayment / 1000) : downPayment.toLocaleString('pt-BR'))
     : '';
 
-  const textShadow = '0 1.5px 0 #7f1d1d, 0 2.5px 0 #550f0f, 0 3px 5px rgba(0,0,0,0.35)';
+  
 
   return (
     <div
@@ -120,28 +120,28 @@ export const AMOpportunityBurst = ({
 
         {downPayment > 0 ? (
           <>
-            <span style={{ color: '#FFE14D', fontSize: s(14), fontWeight: 900, lineHeight: 1, letterSpacing: '-0.01em', textShadow }}>
+            <span style={{ color: '#FFE14D', fontSize: s(14), fontWeight: 900, lineHeight: 1, letterSpacing: '-0.01em' }}>
               ENTRADA
             </span>
-            <span style={{ color: '#FFE14D', fontSize: s(7), fontWeight: 800, lineHeight: 1.1, letterSpacing: '0.02em', textShadow: '0 1.5px 0 #7f1d1d' }}>
+            <span style={{ color: '#FFE14D', fontSize: s(7), fontWeight: 800, lineHeight: 1.1, letterSpacing: '0.02em' }}>
               A PARTIR DE
             </span>
             <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'center', gap: 1, marginTop: 1 }}>
-              <span style={{ color: '#FFE14D', fontSize: s(11), fontWeight: 900, lineHeight: 1, textShadow }}>R$</span>
-              <span style={{ color: '#FFE14D', fontSize: mil ? s(25) : s(18), fontWeight: 900, lineHeight: 1, letterSpacing: '-0.03em', textShadow }}>
+              <span style={{ color: '#FFE14D', fontSize: s(11), fontWeight: 900, lineHeight: 1 }}>R$</span>
+              <span style={{ color: '#FFE14D', fontSize: mil ? s(25) : s(18), fontWeight: 900, lineHeight: 1, letterSpacing: '-0.03em' }}>
                 {valueMain}
               </span>
               {mil && (
-                <span style={{ color: '#FFE14D', fontSize: s(13), fontWeight: 900, lineHeight: 1, textShadow }}>MIL</span>
+                <span style={{ color: '#FFE14D', fontSize: s(13), fontWeight: 900, lineHeight: 1 }}>MIL</span>
               )}
             </div>
           </>
         ) : (
           <>
-            <span style={{ color: '#FFE14D', fontSize: s(16), fontWeight: 900, lineHeight: 1, letterSpacing: '-0.02em', textShadow }}>
+            <span style={{ color: '#FFE14D', fontSize: s(16), fontWeight: 900, lineHeight: 1, letterSpacing: '-0.02em' }}>
               ENTRADA
             </span>
-            <span style={{ color: '#FFE14D', fontSize: s(25), fontWeight: 900, lineHeight: 1, letterSpacing: '-0.03em', textShadow }}>
+            <span style={{ color: '#FFE14D', fontSize: s(25), fontWeight: 900, lineHeight: 1, letterSpacing: '-0.03em' }}>
               ZERO
             </span>
           </>
