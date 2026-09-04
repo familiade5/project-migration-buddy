@@ -386,7 +386,7 @@ export const AMCoverSlide = ({
         <AMOpportunityBurst
           downPayment={downPayment}
           size={108}
-          style={{ position: 'absolute', top: 58, left: 130, zIndex: 40 }}
+          style={{ position: 'absolute', top: 58, left: 108, zIndex: 40 }}
         />
       )}
 

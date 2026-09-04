@@ -58,7 +58,7 @@ export const AMOpportunityBurst = ({
           </linearGradient>
         </defs>
         {/* contorno branco do adesivo */}
-        <polygon points={burst} fill="#ffffff" transform={`translate(${cx} ${cy}) scale(1.035) translate(${-cx} ${-cy})`} />
+        <polygon points={burst} fill="#ffffff" transform={`translate(${cx} ${cy}) scale(1.065) translate(${-cx} ${-cy})`} />
         <polygon points={burst} fill="url(#amOppBurstGrad)" />
         {/* brilho superior */}
         <ellipse cx={cx} cy={cy * 0.62} rx={rIn * 0.72} ry={rIn * 0.34} fill="#ffffff" opacity="0.12" />
