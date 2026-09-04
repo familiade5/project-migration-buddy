@@ -69,12 +69,6 @@ export const AMOpportunityBurst = ({
           <filter id={shadowId} x="-30%" y="-30%" width="160%" height="160%">
             <feDropShadow dx="0" dy="3" stdDeviation="3" floodColor="#550f0f" floodOpacity="0.5" />
           </filter>
-          {/* brilho glossy */}
-          <linearGradient id={shineId} x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="rgba(255,255,255,0.55)" />
-            <stop offset="45%" stopColor="rgba(255,255,255,0.08)" />
-            <stop offset="100%" stopColor="rgba(255,255,255,0)" />
-          </linearGradient>
         </defs>
 
         {/* contorno branco do adesivo (mais grosso) */}
