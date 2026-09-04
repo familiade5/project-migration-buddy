@@ -19,7 +19,6 @@ export const AMOpportunityBurst = ({
   const uid = useId();
   const gradId = `amOppBurstGrad-${uid}`;
   const shadowId = `amOppBurstShadow-${uid}`;
-  const shineId = `amOppBurstShine-${uid}`;
 
   const cx = size / 2;
   const cy = size / 2;
