@@ -323,11 +323,12 @@ export default function Admin() {
         description: err.message,
         variant: 'destructive',
       });
-    } finally {
-      setIsProcessing(false);
       setPasswordDialogOpen(false);
       setSelectedUser(null);
+    } finally {
+      setIsProcessing(false);
     }
+
   };
 
   const handleToggleRole = async (user: UserWithRole) => {
