@@ -113,10 +113,10 @@ export const AMOpportunityBurst = ({
           </>
         ) : (
           <>
-            <span style={{ color: '#FFF200', fontSize: s(19), fontWeight: 900, lineHeight: 1, letterSpacing: '-0.02em' }}>
+            <span style={{ color: '#FFF200', fontSize: s(17), fontWeight: 900, lineHeight: 1, letterSpacing: '-0.02em' }}>
               ENTRADA
             </span>
-            <span style={{ color: '#FFF200', fontSize: s(32), fontWeight: 900, lineHeight: 1, letterSpacing: '-0.03em' }}>
+            <span style={{ color: '#FFF200', fontSize: s(29), fontWeight: 900, lineHeight: 1, letterSpacing: '-0.03em' }}>
               ZERO
             </span>
           </>
