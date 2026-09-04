@@ -36,7 +36,7 @@ export const AMOpportunityBurst = ({
     ? (mil ? String(downPayment / 1000) : downPayment.toLocaleString('pt-BR'))
     : '';
 
-  const textShadow = '0 2px 0 #A63C00, 0 3px 0 #8C3200, 0 4px 6px rgba(0,0,0,0.35)';
+  const textShadow = '0 2px 0 #991b1b, 0 3px 0 #7f1d1d, 0 4px 6px rgba(0,0,0,0.35)';
 
   return (
     <div
@@ -52,9 +52,9 @@ export const AMOpportunityBurst = ({
       <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} style={{ position: 'absolute', top: 0, left: 0, display: 'block' }}>
         <defs>
           <linearGradient id="amOppBurstGrad" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#FFA23F" />
-            <stop offset="55%" stopColor="#F97A12" />
-            <stop offset="100%" stopColor="#D45E05" />
+            <stop offset="0%" stopColor="#ef4444" />
+            <stop offset="55%" stopColor="#dc2626" />
+            <stop offset="100%" stopColor="#b91c1c" />
           </linearGradient>
         </defs>
         {/* contorno branco do adesivo */}
@@ -89,16 +89,16 @@ export const AMOpportunityBurst = ({
             <span style={{ color: '#FFE14D', fontSize: s(14), fontWeight: 900, lineHeight: 1, letterSpacing: '-0.01em', textShadow }}>
               ENTRADA
             </span>
-            <span style={{ color: '#FFE14D', fontSize: s(7), fontWeight: 800, lineHeight: 1.1, letterSpacing: '0.02em', textShadow: '0 1.5px 0 #A63C00' }}>
+            <span style={{ color: '#FFE14D', fontSize: s(7), fontWeight: 800, lineHeight: 1.1, letterSpacing: '0.02em', textShadow: '0 1.5px 0 #991b1b' }}>
               A PARTIR DE
             </span>
             <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'center', gap: 1, marginTop: 1 }}>
-              <span style={{ color: '#ffffff', fontSize: s(11), fontWeight: 900, lineHeight: 1, textShadow }}>R$</span>
-              <span style={{ color: '#ffffff', fontSize: mil ? s(25) : s(18), fontWeight: 900, lineHeight: 1, letterSpacing: '-0.03em', textShadow }}>
+              <span style={{ color: '#FFE14D', fontSize: s(11), fontWeight: 900, lineHeight: 1, textShadow }}>R$</span>
+              <span style={{ color: '#FFE14D', fontSize: mil ? s(25) : s(18), fontWeight: 900, lineHeight: 1, letterSpacing: '-0.03em', textShadow }}>
                 {valueMain}
               </span>
               {mil && (
-                <span style={{ color: '#ffffff', fontSize: s(13), fontWeight: 900, lineHeight: 1, textShadow }}>MIL</span>
+                <span style={{ color: '#FFE14D', fontSize: s(13), fontWeight: 900, lineHeight: 1, textShadow }}>MIL</span>
               )}
             </div>
           </>
@@ -107,7 +107,7 @@ export const AMOpportunityBurst = ({
             <span style={{ color: '#FFE14D', fontSize: s(16), fontWeight: 900, lineHeight: 1, letterSpacing: '-0.02em', textShadow }}>
               ENTRADA
             </span>
-            <span style={{ color: '#ffffff', fontSize: s(25), fontWeight: 900, lineHeight: 1, letterSpacing: '-0.03em', textShadow }}>
+            <span style={{ color: '#FFE14D', fontSize: s(25), fontWeight: 900, lineHeight: 1, letterSpacing: '-0.03em', textShadow }}>
               ZERO
             </span>
           </>
