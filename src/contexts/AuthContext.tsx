@@ -20,6 +20,7 @@ interface AuthContextType {
   isAdmin: boolean;
   isInternal: boolean;
   rolesLoaded: boolean;
+  rolesError: boolean;
   isLoading: boolean;
   signIn: (email: string, password: string) => Promise<{ error: Error | null }>;
   signUp: (email: string, password: string, fullName: string) => Promise<{ error: Error | null }>;
@@ -27,6 +28,7 @@ interface AuthContextType {
   updatePassword: (newPassword: string) => Promise<{ error: Error | null }>;
   refreshProfile: () => Promise<void>;
 }
+
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -59,6 +61,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [isInternal, setIsInternal] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [rolesLoaded, setRolesLoaded] = useState(false);
+  const [rolesError, setRolesError] = useState(false);
   const fetchingRef = useRef(false);
   const initRef = useRef(false);
 
@@ -112,12 +115,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           if (isMountedRef.current) {
             setIsAdmin(roles.includes('admin'));
             setIsInternal(roles.length > 0);
+            setRolesError(false);
           }
         } else {
           console.error('Error checking roles:', adminResult.reason);
+          // Não rebaixar o usuário por falha de rede: marcamos erro e deixamos
+          // a tela pedir nova tentativa em vez de mandá-lo para o portal.
           if (isMountedRef.current) {
-            setIsAdmin(false);
-            setIsInternal(false);
+            setRolesError(true);
           }
         }
       } catch (error) {
@@ -160,6 +165,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setIsAdmin(false);
         setIsInternal(false);
         setRolesLoaded(false);
+        setRolesError(false);
       }
     });
 
@@ -315,6 +321,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         isAdmin,
         isInternal,
         rolesLoaded,
+        rolesError,
         isLoading,
         signIn,
         signUp,
