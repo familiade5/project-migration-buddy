@@ -134,7 +134,7 @@ export function CxPropertySummary({ documents }: { documents: CxDocument[] }) {
                       {s.fgtsReleaseDate ? ` — carência até ${s.fgtsReleaseDate}` : ''}.
                     </li>
                   )}
-                  {s.missingMunicipal && <li>• Inscrição municipal / IPU não localizada no documento.</li>}
+                  {s.missingMunicipal && <li>• Inscrição / cadastro municipal (IPTU) não localizada no documento.</li>}
                   {clear && s.missingMunicipal === false && <li>• Documento sem ônus ativos registrados.</li>}
                 </ul>
               </div>
@@ -285,12 +285,12 @@ export function CxPropertySummary({ documents }: { documents: CxDocument[] }) {
             </Section>
 
             {/* 6 - Inscrição municipal */}
-            <Section n={6} title="Matrícula municipal / IPU" icon={<Landmark className="w-3.5 h-3.5" />}>
+            <Section n={6} title="Inscrição / cadastro municipal (IPTU)" icon={<Landmark className="w-3.5 h-3.5" />}>
               {analysis.municipalRegistration ? (
                 <div className="rounded-xl border border-slate-200 p-3">
                   <CopyText
                     value={analysis.municipalRegistration}
-                    label="Inscrição municipal"
+                    label="Inscrição / cadastro municipal"
                     className="text-[13px] font-semibold text-slate-800"
                   />
                 </div>
@@ -298,7 +298,7 @@ export function CxPropertySummary({ documents }: { documents: CxDocument[] }) {
 
                 <p className="text-xs text-amber-800 bg-amber-50 border border-amber-200 rounded-xl p-3 flex items-start gap-2">
                   <AlertTriangle className="w-4 h-4 flex-shrink-0" />
-                  Inscrição municipal (IPTU/IPU) não encontrada no documento — solicitar ao cliente ou consultar a
+                  Inscrição / cadastro municipal (IPTU) não encontrada no documento — solicitar ao cliente ou consultar a
                   prefeitura.
                 </p>
               )}

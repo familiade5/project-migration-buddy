@@ -114,7 +114,7 @@ Leia TODOS os atos (registros R-x e averbações AV-x) da matrícula, do primeir
 
 5) PROPRIETÁRIOS ("owners"): liste os proprietários na ordem cronológica dos registros, priorizando os ÚLTIMOS. Para cada um: name (nome completo), cpf, qualification (nacionalidade, estado civil, regime de bens, profissão, cônjuge — exatamente como consta) , acquisitionAct (ex.: "R-5"), acquisitionDate e current = true apenas para o(s) proprietário(s) atual(is).
 
-6) MATRÍCULA MUNICIPAL / IPU: "municipalRegistration" com a numeração da inscrição municipal, IPTU ou IPU quando constar no documento. Se NÃO houver, deixe o campo ausente (não invente).
+6) INSCRIÇÃO MUNICIPAL / IPTU: "municipalRegistration" com a numeração encontrada no documento sob QUALQUER uma destas denominações: "inscrição municipal", "cadastro municipal", "cadastro imobiliário", "inscrição imobiliária", "inscrição cadastral", "matrícula municipal", "IPTU", "IPU", "código do imóvel na prefeitura", "SQL" ou "nº de cadastro na prefeitura". Copie apenas a numeração (mantendo pontos/traços originais). Se NÃO houver nenhuma dessas, deixe o campo ausente (não invente).
 
 7) FGTS: "fgtsUsed" = true se algum registro/averbação mencionar uso do FGTS na aquisição (ex.: "com recursos do FGTS", "utilização de recursos do FGTS", SFH com FGTS); nesse caso preencha "fgtsDate" com a data do ato (DD/MM/AAAA) e "fgtsNote" com o trecho resumido. Se não houver menção, fgtsUsed = false.
 
@@ -256,7 +256,7 @@ Regras:
                 description: { type: "string" },
                 registrationNumber: { type: "string" },
                 notaryOffice: { type: "string" },
-                municipalRegistration: { type: "string", description: "Inscrição municipal / IPTU / IPU" },
+                municipalRegistration: { type: "string", description: "Inscrição/cadastro municipal, cadastro imobiliário ou IPTU" },
                 firstAddress: { type: "string" },
                 lastAddress: { type: "string" },
                 liens: {
@@ -378,7 +378,7 @@ Regras:
                     : isIrpf
                     ? "Extraia os rendimentos de PJ, os rendimentos isentos e não tributáveis e os bens e direitos desta declaração de imposto de renda."
                     : isProperty
-                    ? "Analise esta matrícula/narrativa do imóvel: endereço, ônus (penhoras, alienações, cauções, processos), averbações de endereço e construção, matrícula e cartório, proprietários com CPF e qualificação, inscrição municipal/IPU e uso de FGTS."
+                    ? "Analise esta matrícula/narrativa do imóvel: endereço, ônus (penhoras, alienações, cauções, processos), averbações de endereço e construção, matrícula e cartório, proprietários com CPF e qualificação, inscrição/cadastro municipal (IPTU, cadastro imobiliário, inscrição cadastral) e uso de FGTS."
                     : "Extraia os dados deste documento.",
                 },
                 contentBlock,
