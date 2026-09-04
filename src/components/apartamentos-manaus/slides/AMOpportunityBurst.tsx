@@ -43,7 +43,7 @@ export const AMOpportunityBurst = ({
     ? (mil ? String(downPayment / 1000) : downPayment.toLocaleString('pt-BR'))
     : '';
 
-  const textShadow = '0 1.5px 0 #7f1d1d, 0 2.5px 0 #550f0f, 0 3px 5px rgba(0,0,0,0.35)';
+  
 
   return (
     <div
