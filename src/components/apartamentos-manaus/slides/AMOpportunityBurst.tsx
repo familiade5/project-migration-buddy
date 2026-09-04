@@ -87,15 +87,6 @@ export const AMOpportunityBurst = ({
         />
         {/* corpo vermelho 3D */}
         <polygon points={burst} fill={`url(#${gradId})`} />
-        {/* brilho superior volumétrico */}
-        <ellipse cx={cx} cy={cy * 0.58} rx={rIn * 0.78} ry={rIn * 0.40} fill="#ffffff" opacity="0.18" />
-        {/* reflexo glossy diagonal */}
-        <polygon
-          points={burst}
-          fill={`url(#${shineId})`}
-          opacity="0.35"
-          clipPath="inset(0 0 45% 0)"
-        />
       </svg>
 
       <div
