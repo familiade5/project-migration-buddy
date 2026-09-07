@@ -239,7 +239,7 @@ export const VDHInstagramPublishDialog = ({
             const code = `VDH-${Date.now().toString(36).toUpperCase()}`;
             const title = `${data.type || 'Imóvel'}${data.bedrooms ? ` ${data.bedrooms} quartos` : ''} - ${data.neighborhood || data.city}`;
             const address = (data.fullAddress || `${data.street || ''} ${data.number || ''}`).trim();
-            const { uploadOlxPhotos } = await import('@/lib/olxPhotos');
+            const { uploadOlxPhotos, ensureMinOlxPhotos } = await import('@/lib/olxPhotos');
             if (!imageUrls?.length) {
               throw new Error('Slides do criador de post indisponíveis para a OLX.');
             }
