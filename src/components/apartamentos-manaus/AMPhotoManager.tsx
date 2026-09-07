@@ -37,7 +37,7 @@ export function AMPhotoManager({ photos, onChange, photoPositions = {}, onPositi
       reader.onload = (e) => {
         const img = new Image();
         img.onload = () => {
-          const MAX = 1600;
+          const MAX = 2400;
           let { width, height } = img;
           if (width > MAX || height > MAX) {
             if (width >= height) {
@@ -54,7 +54,7 @@ export function AMPhotoManager({ photos, onChange, photoPositions = {}, onPositi
           const ctx = canvas.getContext('2d');
           if (!ctx) return resolve(e.target?.result as string);
           ctx.drawImage(img, 0, 0, width, height);
-          resolve(canvas.toDataURL('image/jpeg', 0.82));
+          resolve(canvas.toDataURL('image/jpeg', 0.94));
         };
         img.onerror = () => resolve(e.target?.result as string);
         img.src = e.target?.result as string;

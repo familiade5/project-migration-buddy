@@ -47,7 +47,7 @@ const dataURLtoBlob = (dataURL: string): Blob => {
   return new Blob([u8arr], { type: mime });
 };
 
-const convertToJpeg = (pngDataUrl: string, quality = 0.92): Promise<string> => {
+const convertToJpeg = (pngDataUrl: string, quality = 0.97): Promise<string> => {
   return new Promise((resolve, reject) => {
     const img = new Image();
     img.onload = () => {

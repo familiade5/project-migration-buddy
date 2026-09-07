@@ -39,7 +39,7 @@ const dataURLtoBlob = (dataURL: string): Blob => {
 };
 
 // Convert PNG to JPEG for Story compatibility
-const convertToJpeg = (pngDataUrl: string, quality = 0.92): Promise<string> => {
+const convertToJpeg = (pngDataUrl: string, quality = 0.97): Promise<string> => {
   return new Promise((resolve, reject) => {
     const img = new Image();
     img.onload = () => {

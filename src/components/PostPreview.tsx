@@ -64,7 +64,7 @@ const dataURLtoBlob = (dataURL: string): Blob => {
 };
 
 // Convert a PNG data URL to JPEG data URL using canvas
-const convertToJpeg = (pngDataUrl: string, quality = 0.92): Promise<string> => {
+const convertToJpeg = (pngDataUrl: string, quality = 0.97): Promise<string> => {
   return new Promise((resolve, reject) => {
     const img = new Image();
     img.onload = () => {
