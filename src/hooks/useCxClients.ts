@@ -87,6 +87,10 @@ const fileToBase64 = (file: File): Promise<string> =>
     reader.onerror = reject;
   });
 
+/** Depois disso, uma leitura "em andamento" é considerada interrompida. */
+const STALE_PROCESSING_MS = 5 * 60 * 1000;
+const EXTRACTION_TIMEOUT_MS = 4 * 60 * 1000;
+
 export function useCxDocuments(clientId: string | null, propertyId?: string | null) {
   const [documents, setDocuments] = useState<CxDocument[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -108,7 +112,27 @@ export function useCxDocuments(clientId: string | null, propertyId?: string | nu
     if (error) {
       toast.error('Erro ao carregar documentos', { description: error.message });
     } else {
-      setDocuments((data || []) as unknown as CxDocument[]);
+      const rows = (data || []) as unknown as CxDocument[];
+
+      // Leituras interrompidas (aba fechada / recarregada) ficariam "Lendo" para sempre.
+      const stale = rows.filter(
+        (d) =>
+          d.status === 'processing' &&
+          Date.now() - new Date(d.updated_at).getTime() > STALE_PROCESSING_MS,
+      );
+      if (stale.length > 0) {
+        const message = 'A leitura foi interrompida. Clique em reprocessar para tentar novamente.';
+        await supabase
+          .from('cx_documents')
+          .update({ status: 'error', error_message: message })
+          .in('id', stale.map((d) => d.id));
+        stale.forEach((d) => {
+          d.status = 'error';
+          d.error_message = message;
+        });
+      }
+
+      setDocuments(rows);
     }
     setIsLoading(false);
   }, [scopeId, isProperty]);
@@ -123,7 +147,7 @@ export function useCxDocuments(clientId: string | null, propertyId?: string | nu
     await fetchDocuments();
     try {
       const base64 = await fileToBase64(file);
-      const { data, error } = await supabase.functions.invoke('extract-client-document', {
+      const invocation = supabase.functions.invoke('extract-client-document', {
         body: {
           fileBase64: base64,
           mimeType: file.type,
@@ -131,6 +155,13 @@ export function useCxDocuments(clientId: string | null, propertyId?: string | nu
           docType: doc.doc_type,
         },
       });
+      const timeout = new Promise<never>((_, reject) =>
+        setTimeout(
+          () => reject(new Error('A leitura demorou demais. Tente novamente ou envie um arquivo menor.')),
+          EXTRACTION_TIMEOUT_MS,
+        ),
+      );
+      const { data, error } = await Promise.race([invocation, timeout]);
       if (error) throw new Error(error.message);
       if ((data as { error?: string })?.error) throw new Error((data as { error: string }).error);
 
@@ -147,6 +178,7 @@ export function useCxDocuments(clientId: string | null, propertyId?: string | nu
     }
     await fetchDocuments();
   }, [fetchDocuments]);
+
 
   const uploadDocument = useCallback(async (file: File, docType: string) => {
     if (!scopeId) return;
