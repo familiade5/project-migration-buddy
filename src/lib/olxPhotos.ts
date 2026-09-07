@@ -49,3 +49,22 @@ export async function uploadOlxPhotos(
   }
   return out;
 }
+/**
+ * Portais (OLX/ZAP/VivaReal) exigem no mínimo 5 imagens. Quando o anúncio tem
+ * menos que isso, repetimos as imagens existentes até atingir o mínimo.
+ * Cada repetição recebe um parâmetro único para não ser descartada como duplicada.
+ */
+export function ensureMinOlxPhotos(photos: string[], min = 5): string[] {
+  const base = photos.filter(Boolean);
+  if (base.length === 0 || base.length >= min) return base;
+  const out = [...base];
+  let round = 1;
+  while (out.length < min) {
+    for (const p of base) {
+      if (out.length >= min) break;
+      out.push(p.includes('?') ? `${p}&r=${round}` : `${p}?r=${round}`);
+    }
+    round++;
+  }
+  return out;
+}
