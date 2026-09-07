@@ -33,7 +33,11 @@ export function CxDocumentCard({ doc, onOpen, onDownload, onDelete, onRetry, onU
     );
     onUpdateExtraction(doc, { ...extraction, bankAnalysis: { ...bankAnalysis, credits } });
   };
+  const isStuck =
+    doc.status === 'processing' &&
+    Date.now() - new Date(doc.updated_at).getTime() > 5 * 60 * 1000;
   const status = STATUS_MAP[doc.status] || STATUS_MAP.pending;
+
 
   return (
     <div className="rounded-2xl border border-slate-200 bg-white overflow-hidden shadow-sm hover:shadow-md transition-shadow">
@@ -74,7 +78,7 @@ export function CxDocumentCard({ doc, onOpen, onDownload, onDelete, onRetry, onU
             size="sm"
             title="Reprocessar leitura"
             className="h-8 w-8 p-0 text-slate-500 hover:text-[#1a3a6b] hover:bg-blue-50"
-            disabled={doc.status === 'processing'}
+            disabled={doc.status === 'processing' && !isStuck}
             onClick={() => onRetry(doc)}
           >
             <RefreshCw className="w-4 h-4" />
