@@ -106,12 +106,12 @@ export function VDHPublishOlxOnlyButton({ data, photos, disabled, prepareSlides 
         return;
       }
 
-      const { uploadOlxPhotos } = await import('@/lib/olxPhotos');
+      const { uploadOlxPhotos, ensureMinOlxPhotos } = await import('@/lib/olxPhotos');
       const uploaded = await uploadOlxPhotos(photos, 'vdh', code);
       const sobreNosUrl = `${window.location.origin}/vdh-sobre-nos.png`;
       // Ordem: capa desenhada, "sobre nós", restantes slides desenhados, depois fotos originais.
       const [coverSlide, ...restSlides] = slideUrls;
-      const out = [coverSlide, sobreNosUrl, ...restSlides, ...uploaded];
+      const out = ensureMinOlxPhotos([coverSlide, sobreNosUrl, ...restSlides, ...uploaded], 5);
 
       const payload = {
         code,
