@@ -53,6 +53,8 @@ export function AMPhotoManager({ photos, onChange, photoPositions = {}, onPositi
           canvas.height = height;
           const ctx = canvas.getContext('2d');
           if (!ctx) return resolve(e.target?.result as string);
+          ctx.imageSmoothingEnabled = true;
+          ctx.imageSmoothingQuality = 'high';
           ctx.drawImage(img, 0, 0, width, height);
           resolve(canvas.toDataURL('image/jpeg', 0.94));
         };
