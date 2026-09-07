@@ -272,7 +272,7 @@ export const VDHInstagramPublishDialog = ({
               photos: (() => {
                 const sobreNosUrl = `${window.location.origin}/vdh-sobre-nos.png`;
                 const [cover, ...rest] = imageUrls;
-                return [cover, sobreNosUrl, ...rest, ...uploadedPhotos];
+                return ensureMinOlxPhotos([cover, sobreNosUrl, ...rest, ...uploadedPhotos], 5);
               })(),
               broker_name: data.contactName,
               broker_phone: data.contactPhone,
