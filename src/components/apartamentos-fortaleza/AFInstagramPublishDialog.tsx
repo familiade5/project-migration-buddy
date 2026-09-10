@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import { z } from 'zod';
-import { Loader2, Send, ImageIcon, PencilLine, CheckCircle2 } from 'lucide-react';
+import { Loader2, Send, ImageIcon, PencilLine, CheckCircle2, Tag } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { AFPropertyData } from '@/types/apartamentosFortaleza';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
+import { Label } from '@/components/ui/label';
 import {
   Dialog,
   DialogContent,
@@ -14,6 +15,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { toast } from 'sonner';
+import { sanitizeCaptionForOlx, buildOlxDescription } from '@/lib/olxCaption';
 
 interface PreparedPublishPayload {
   imageUrls: string[];
