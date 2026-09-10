@@ -116,6 +116,7 @@ export const AFInstagramPublishDialog = ({
       setStoryImageUrl(prepared.storyImageUrl);
       setStoryPreviewDataUrl(prepared.storyPreviewDataUrl);
       setCaption(prepared.caption);
+      setOlxCaption(buildOlxDescription(data as never, olxTxType));
       setCaptionError(null);
       setStep('images');
       setOpen(true);
