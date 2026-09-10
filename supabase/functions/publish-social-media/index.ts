@@ -226,39 +226,43 @@ Deno.serve(async (req) => {
           }
         }
       } else {
-        console.log(`Publishing carousel with ${imageUrls.length} images to Instagram...`);
-
-        const childrenIds: string[] = [];
-
-        for (let i = 0; i < imageUrls.length; i++) {
-          console.log(`Creating child container ${i + 1}/${imageUrls.length}...`);
-
-          const childRes = await fetch(
-            `${GRAPH_API}/${INSTAGRAM_BUSINESS_ACCOUNT_ID}/media`,
-            {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                image_url: imageUrls[i],
-                is_carousel_item: true,
-                access_token: META_ACCESS_TOKEN,
-              }),
-            },
-          );
-          const childData = await childRes.json();
-
-          if (childData.error) {
-            console.error(`Child container ${i + 1} error:`, JSON.stringify(childData.error));
-            throw new Error(
-              childData.error.error_user_msg ||
-                childData.error.message ||
-                `Erro ao criar item ${i + 1} do carrossel`,
-            );
-          }
-
-          await waitForContainerReady(childData.id, META_ACCESS_TOKEN);
-          childrenIds.push(childData.id);
+        // Instagram aceita no máximo 10 itens por carrossel.
+        const carouselUrls = imageUrls.slice(0, 10);
+        if (imageUrls.length > 10) {
+          console.log(`Carousel truncated from ${imageUrls.length} to 10 images (Instagram limit).`);
         }
+        console.log(`Publishing carousel with ${carouselUrls.length} images to Instagram...`);
+
+        // Criação dos containers em paralelo para evitar o timeout de 150s.
+        const childrenIds: string[] = await Promise.all(
+          carouselUrls.map(async (url, i) => {
+            const childRes = await fetch(
+              `${GRAPH_API}/${INSTAGRAM_BUSINESS_ACCOUNT_ID}/media`,
+              {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  image_url: url,
+                  is_carousel_item: true,
+                  access_token: META_ACCESS_TOKEN,
+                }),
+              },
+            );
+            const childData = await childRes.json();
+
+            if (childData.error) {
+              console.error(`Child container ${i + 1} error:`, JSON.stringify(childData.error));
+              throw new Error(
+                childData.error.error_user_msg ||
+                  childData.error.message ||
+                  `Erro ao criar item ${i + 1} do carrossel`,
+              );
+            }
+
+            await waitForContainerReady(childData.id, META_ACCESS_TOKEN, 40, 1500);
+            return childData.id as string;
+          }),
+        );
 
         console.log("All children ready. Creating carousel container...");
 
