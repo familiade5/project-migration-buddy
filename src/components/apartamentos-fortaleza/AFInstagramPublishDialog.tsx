@@ -228,7 +228,7 @@ export const AFInstagramPublishDialog = ({
               property_type: data.propertyType,
               title: data.title,
               description: (olxCaption || sanitizeCaptionForOlx(caption)).slice(0, 4000),
-              address: data.address,
+              address: olxAddress,
               zip_code: zipCode.replace(/\D/g, ''),
               neighborhood: data.neighborhood,
               city: data.city,
