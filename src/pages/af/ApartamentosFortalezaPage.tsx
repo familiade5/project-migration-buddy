@@ -31,12 +31,6 @@ const ApartamentosFortalezaPage = () => {
     } catch { /* ignore */ }
   }, []);
 
-  // Capturador de slides desenhados (registrado pelo AFPostPreview).
-  // Usado pelo PublishToOlxButton para enviar à OLX as mesmas imagens do Instagram.
-  const prepareOlxSlidesRef = useRef<(() => Promise<string[]>) | null>(null);
-  const registerPrepareSlides = useCallback((fn: (() => Promise<string[]>) | null) => {
-    prepareOlxSlidesRef.current = fn;
-  }, []);
 
   return (
     <AFLayout>
