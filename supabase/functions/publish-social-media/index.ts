@@ -311,7 +311,7 @@ Deno.serve(async (req) => {
               success: true,
               id: publishData.id,
               type: "carousel",
-              slides: imageUrls.length,
+              slides: childrenIds.length,
             };
           }
         }
