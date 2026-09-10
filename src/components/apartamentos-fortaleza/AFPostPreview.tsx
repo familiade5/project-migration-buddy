@@ -28,6 +28,8 @@ interface AFPostPreviewProps {
    * que iriam para o Instagram.
    */
   onRegisterPrepareSlides?: (fn: (() => Promise<string[]>) | null) => void;
+  publishOlx?: boolean;
+  olxTxType?: 'venda' | 'aluguel' | 'lancamento';
 }
 
 type FormatType = 'feed' | 'story';
@@ -80,7 +82,7 @@ const uploadExportedImage = async (
   return publicUrl;
 };
 
-export function AFPostPreview({ data, photos, onRegisterPrepareSlides }: AFPostPreviewProps) {
+export function AFPostPreview({ data, photos, onRegisterPrepareSlides, publishOlx = false, olxTxType = 'venda' }: AFPostPreviewProps) {
   const { user } = useAuth();
   const [currentSlide, setCurrentSlide] = useState(0);
   const [format, setFormat] = useState<FormatType>('feed');
@@ -327,6 +329,8 @@ export function AFPostPreview({ data, photos, onRegisterPrepareSlides }: AFPostP
         photos={photos}
         disabled={isExporting || isExportingPdf}
         onPrepare={prepareInstagramPublication}
+        publishOlx={publishOlx}
+        olxTxType={olxTxType}
       />
 
       <div className="flex items-center gap-1 flex-wrap">

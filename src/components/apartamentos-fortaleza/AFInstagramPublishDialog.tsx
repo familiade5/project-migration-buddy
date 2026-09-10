@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import { z } from 'zod';
-import { Loader2, Send, ImageIcon, PencilLine, CheckCircle2 } from 'lucide-react';
+import { Loader2, Send, ImageIcon, PencilLine, CheckCircle2, Tag } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { AFPropertyData } from '@/types/apartamentosFortaleza';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
+import { Label } from '@/components/ui/label';
 import {
   Dialog,
   DialogContent,
@@ -14,6 +15,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { toast } from 'sonner';
+import { sanitizeCaptionForOlx, buildOlxDescription } from '@/lib/olxCaption';
 
 interface PreparedPublishPayload {
   imageUrls: string[];
@@ -28,6 +30,8 @@ interface AFInstagramPublishDialogProps {
   photos: string[];
   disabled?: boolean;
   onPrepare: () => Promise<PreparedPublishPayload>;
+  publishOlx?: boolean;
+  olxTxType?: 'venda' | 'aluguel' | 'lancamento';
 }
 
 /**
@@ -66,10 +70,13 @@ export const AFInstagramPublishDialog = ({
   photos,
   disabled = false,
   onPrepare,
+  publishOlx = false,
+  olxTxType = 'venda',
 }: AFInstagramPublishDialogProps) => {
   const [open, setOpen] = useState(false);
   const [step, setStep] = useState<'images' | 'caption'>('images');
   const [caption, setCaption] = useState('');
+  const [olxCaption, setOlxCaption] = useState('');
   const [captionError, setCaptionError] = useState<string | null>(null);
   const [imageUrls, setImageUrls] = useState<string[]>([]);
   const [previewDataUrls, setPreviewDataUrls] = useState<string[]>([]);
@@ -82,6 +89,7 @@ export const AFInstagramPublishDialog = ({
     setStep('images');
     setCaptionError(null);
     setCaption('');
+    setOlxCaption('');
     setImageUrls([]);
     setPreviewDataUrls([]);
     setStoryImageUrl(undefined);
@@ -108,6 +116,7 @@ export const AFInstagramPublishDialog = ({
       setStoryImageUrl(prepared.storyImageUrl);
       setStoryPreviewDataUrl(prepared.storyPreviewDataUrl);
       setCaption(prepared.caption);
+      setOlxCaption(buildOlxDescription(data as never, olxTxType));
       setCaptionError(null);
       setStep('images');
       setOpen(true);
@@ -126,6 +135,22 @@ export const AFInstagramPublishDialog = ({
       setCaptionError(captionMessage);
       toast.error(captionMessage || 'Revise a legenda e as imagens antes de publicar.');
       return;
+    }
+
+    const zipCode = data.canalPro?.zipCode || '';
+    if (publishOlx) {
+      if (!zipCode.trim()) {
+        toast.error('CEP é obrigatório para publicar na OLX. Preencha no formulário.');
+        return;
+      }
+      if (!data.address?.trim() || !data.neighborhood?.trim() || !data.city?.trim()) {
+        toast.error('Endereço, bairro e cidade são obrigatórios para a OLX.');
+        return;
+      }
+      if (photos.length === 0) {
+        toast.error('Adicione pelo menos 1 foto do imóvel para publicar na OLX.');
+        return;
+      }
     }
 
     setCaptionError(null);
@@ -181,6 +206,61 @@ export const AFInstagramPublishDialog = ({
       }
 
       toast.success('Carrossel do AF publicado no Instagram com sucesso!');
+
+      if (publishOlx) {
+        const runOlxPublish = async (): Promise<void> => {
+          try {
+            const code = `AF-${Date.now().toString(36).toUpperCase()}`;
+            const { uploadOlxPhotos, ensureMinOlxPhotos } = await import('@/lib/olxPhotos');
+            if (!imageUrls?.length) {
+              throw new Error('Slides do criador de post indisponíveis para a OLX.');
+            }
+            const uploadedPhotos = await uploadOlxPhotos(photos, 'af', code);
+            const finalPhotos = ensureMinOlxPhotos([...imageUrls, ...uploadedPhotos], 5);
+            const payload = {
+              code,
+              transaction_type: olxTxType,
+              property_type: data.propertyType,
+              title: data.title,
+              description: (olxCaption || sanitizeCaptionForOlx(caption)).slice(0, 4000),
+              address: data.address,
+              zip_code: zipCode.replace(/\D/g, ''),
+              neighborhood: data.neighborhood,
+              city: data.city,
+              state: data.state || 'CE',
+              area: data.area || null,
+              bedrooms: data.bedrooms || 0,
+              bathrooms: data.bathrooms || 0,
+              suites: data.suites || 0,
+              garage_spaces: data.garageSpaces || 0,
+              floor: data.floor || null,
+              furnished: data.furnished,
+              sale_price: olxTxType === 'aluguel' ? null : (data.salePrice || null),
+              rental_price: olxTxType === 'aluguel' ? (data.rentalPrice || null) : null,
+              condominium_fee: data.condominiumFee || 0,
+              iptu: data.iptu || 0,
+              accepts_financing: data.acceptsFinancing,
+              accepts_fgts: data.acceptsFGTS,
+              photos: finalPhotos,
+              broker_name: data.brokerName,
+              broker_phone: data.brokerPhone,
+              creci: data.creci,
+              is_active: true,
+            };
+            const { error: olxError } = await supabase.from('af_olx_listings').insert(payload);
+            if (olxError) throw olxError;
+            toast.success(`Imóvel adicionado ao catálogo OLX (${code})! A OLX irá sincronizar nas próximas horas.`);
+          } catch (olxErr) {
+            const m = olxErr instanceof Error ? olxErr.message : 'Erro desconhecido';
+            toast.error(`Instagram OK, mas falhou ao adicionar na OLX: ${m}`, {
+              duration: 30000,
+              action: { label: 'Tentar OLX novamente', onClick: () => { void runOlxPublish(); } },
+            });
+          }
+        };
+        await runOlxPublish();
+      }
+
       handleOpenChange(false);
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Não foi possível publicar no Instagram.';
@@ -303,6 +383,44 @@ export const AFInstagramPublishDialog = ({
                 </span>
                 <span className="font-medium" style={{ color: '#6b7280' }}>{caption.trim().length}/2200</span>
               </div>
+
+              {publishOlx && (
+                <div className="rounded-xl p-4 space-y-3" style={{ backgroundColor: '#fef3c7', border: '1px solid #fcd34d' }}>
+                  <div className="flex items-center gap-2 text-sm font-semibold" style={{ color: '#78350f' }}>
+                    <Tag className="w-4 h-4" />
+                    Também será publicado na OLX / ZAP / VivaReal ({olxTxType === 'lancamento' ? 'Lançamento' : olxTxType})
+                  </div>
+                  {!data.canalPro?.zipCode && (
+                    <p className="text-xs font-medium" style={{ color: '#dc2626' }}>
+                      ⚠ CEP obrigatório — preencha no formulário antes de continuar.
+                    </p>
+                  )}
+                  <div className="space-y-1.5">
+                    <div className="flex items-center justify-between gap-2">
+                      <Label className="text-xs font-semibold uppercase tracking-wide" style={{ color: '#78350f' }}>
+                        Legenda da OLX (sem emojis e sem telefone)
+                      </Label>
+                      <button
+                        type="button"
+                        onClick={() => setOlxCaption(buildOlxDescription(data as never, olxTxType))}
+                        className="text-[11px] font-semibold underline"
+                        style={{ color: '#78350f' }}
+                      >
+                        Regenerar descrição padrão OLX
+                      </button>
+                    </div>
+                    <Textarea
+                      value={olxCaption}
+                      onChange={(e) => setOlxCaption(e.target.value)}
+                      maxLength={4000}
+                      className="min-h-[160px] resize-y bg-white"
+                      style={{ color: '#1f2937', borderColor: '#fcd34d' }}
+                      placeholder="Texto que vai para OLX / ZAP / VivaReal"
+                    />
+                    <p className="text-[11px] text-right" style={{ color: '#92400e' }}>{olxCaption.length}/4000</p>
+                  </div>
+                </div>
+              )}
             </div>
           )}
 

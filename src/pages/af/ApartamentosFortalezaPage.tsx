@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { AFPropertyData, defaultAFPropertyData } from '@/types/apartamentosFortaleza';
 import { AFPostPreview } from '@/components/apartamentos-fortaleza/AFPostPreview';
 import { AFStoriesPreview } from '@/components/apartamentos-fortaleza/AFStoriesPreview';
@@ -7,8 +7,7 @@ import { AFCaptionGenerator } from '@/components/apartamentos-fortaleza/AFCaptio
 import { AFPhotoManager } from '@/components/apartamentos-fortaleza/AFPhotoManager';
 import { AFLayout } from '@/components/layout/AFLayout';
 import { Image, Edit3, Sparkles, FileText, LayoutGrid, Smartphone, Tag } from 'lucide-react';
-import { toast } from 'sonner';
-import { PublishToOlxButton } from '@/components/canal-pro/PublishToOlxButton';
+import { Label } from '@/components/ui/label';
 
 const PRIMARY = '#0C7B8E';
 const ACCENT = '#E8562A';
@@ -20,6 +19,9 @@ const ApartamentosFortalezaPage = () => {
   const [propertyData, setPropertyData] = useState<AFPropertyData>(defaultAFPropertyData);
   const [photos, setPhotos] = useState<string[]>([]);
   const [previewTab, setPreviewTab] = useState<'feed' | 'stories'>('feed');
+  const [publishOlx, setPublishOlx] = useState(true);
+  const [olxTxType, setOlxTxType] = useState<'venda' | 'aluguel' | 'lancamento'>('venda');
+
 
   // Limpa qualquer cache antigo de sessões anteriores
   useEffect(() => {
@@ -29,12 +31,6 @@ const ApartamentosFortalezaPage = () => {
     } catch { /* ignore */ }
   }, []);
 
-  // Capturador de slides desenhados (registrado pelo AFPostPreview).
-  // Usado pelo PublishToOlxButton para enviar à OLX as mesmas imagens do Instagram.
-  const prepareOlxSlidesRef = useRef<(() => Promise<string[]>) | null>(null);
-  const registerPrepareSlides = useCallback((fn: (() => Promise<string[]>) | null) => {
-    prepareOlxSlidesRef.current = fn;
-  }, []);
 
   return (
     <AFLayout>
@@ -55,6 +51,63 @@ const ApartamentosFortalezaPage = () => {
 
         <div className="grid lg:grid-cols-2 gap-4 lg:gap-8">
           <div className="space-y-4">
+            {/* OLX publish option (top) */}
+            <div className="rounded-2xl p-4 sm:p-5 space-y-3 shadow-sm" style={{ backgroundColor: '#fef3c7', border: '1px solid #fcd34d' }}>
+              <div className="flex items-center gap-2">
+                <Tag className="w-4 h-4 flex-shrink-0" style={{ color: '#78350f' }} />
+                <p className="text-sm font-semibold" style={{ color: '#78350f' }}>
+                  Publicar também na OLX / ZAP / VivaReal?
+                </p>
+              </div>
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => setPublishOlx(true)}
+                  className="flex-1 py-2 rounded-lg text-sm font-semibold transition-all"
+                  style={publishOlx
+                    ? { backgroundColor: ACCENT, color: 'white' }
+                    : { backgroundColor: 'white', color: '#92400e', border: '1px solid #fcd34d' }}
+                >
+                  Sim
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setPublishOlx(false)}
+                  className="flex-1 py-2 rounded-lg text-sm font-semibold transition-all"
+                  style={!publishOlx
+                    ? { backgroundColor: PRIMARY, color: 'white' }
+                    : { backgroundColor: 'white', color: '#92400e', border: '1px solid #fcd34d' }}
+                >
+                  Não
+                </button>
+              </div>
+              <p className="text-xs" style={{ color: '#92400e' }}>
+                Ao postar no Instagram, o imóvel também será adicionado ao catálogo XML. A OLX sincroniza nas próximas horas.
+              </p>
+              {publishOlx && (
+                <div className="space-y-2 pt-1">
+                  <Label className="text-xs font-semibold uppercase tracking-wide" style={{ color: '#78350f' }}>
+                    Tipo de anúncio
+                  </Label>
+                  <div className="flex items-center gap-1 p-1 bg-white rounded-lg" style={{ border: '1px solid #fcd34d' }}>
+                    {(['venda', 'aluguel', 'lancamento'] as const).map((t) => (
+                      <button
+                        key={t}
+                        type="button"
+                        onClick={() => setOlxTxType(t)}
+                        className="flex-1 py-1.5 rounded-md text-xs font-semibold transition-all capitalize"
+                        style={olxTxType === t
+                          ? { backgroundColor: ACCENT, color: 'white' }
+                          : { color: '#92400e', backgroundColor: 'transparent' }}
+                      >
+                        {t === 'lancamento' ? 'Lançamento' : t}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+
             {/* Photos */}
             <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
               <div className="px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-100" style={{ backgroundColor: '#EDF7F9' }}>
@@ -103,66 +156,8 @@ const ApartamentosFortalezaPage = () => {
               <div className="p-4 sm:p-6"><AFCaptionGenerator data={propertyData} /></div>
             </div>
 
-            {/* Publish to OLX / Canal Pro */}
-            <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
-              <div className="px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-100" style={{ backgroundColor: '#FFF8F0' }}>
-                <div className="flex items-center gap-3">
-                  <div className="p-2 rounded-lg text-white flex-shrink-0" style={{ backgroundColor: ACCENT }}>
-                    <Tag className="w-4 h-4" />
-                  </div>
-                  <div className="min-w-0">
-                    <h2 className="font-semibold text-gray-900 text-sm sm:text-base">Publicar no Canal Pro</h2>
-                    <p className="text-xs text-gray-500">Envia para OLX / ZAP / VivaReal via feed XML</p>
-                  </div>
-                </div>
-              </div>
-              <div className="p-4 sm:p-6">
-                <PublishToOlxButton
-                  tableName="af_olx_listings"
-                  accentColor={ACCENT}
-                  codePrefix="AF"
-                  initialCaption={propertyData.infoMessage || propertyData.title || ''}
-                  prepareSlides={async () => {
-                    if (!prepareOlxSlidesRef.current) {
-                      throw new Error('Abra a aba "Feed" do preview antes de publicar para que os criativos sejam capturados.');
-                    }
-                    return prepareOlxSlidesRef.current();
-                  }}
-                  buildPayload={() => {
-                    const isRental = propertyData.isRental;
-                    return {
-                      code: `AF-${Date.now().toString(36).toUpperCase()}`,
-                      transaction_type: isRental ? 'aluguel' : 'venda',
-                      property_type: propertyData.propertyType || 'Apartamento',
-                      title: propertyData.title || `${propertyData.propertyType} ${propertyData.bedrooms} quartos - ${propertyData.neighborhood}`,
-                      address: propertyData.address,
-                      zip_code: (propertyData as unknown as { zipCode?: string }).zipCode || '',
-                      neighborhood: propertyData.neighborhood,
-                      city: propertyData.city,
-                      state: propertyData.state || 'CE',
-                      area: propertyData.area || null,
-                      bedrooms: propertyData.bedrooms || 0,
-                      bathrooms: propertyData.bathrooms || 0,
-                      suites: propertyData.suites || 0,
-                      garage_spaces: propertyData.garageSpaces || 0,
-                      floor: propertyData.floor || null,
-                      furnished: propertyData.furnished,
-                      sale_price: isRental ? null : (propertyData.salePrice || null),
-                      rental_price: isRental ? (propertyData.rentalPrice || null) : null,
-                      condominium_fee: propertyData.condominiumFee || 0,
-                      iptu: propertyData.iptu || 0,
-                      accepts_financing: propertyData.acceptsFinancing,
-                      accepts_fgts: propertyData.acceptsFGTS,
-                      photos,
-                      broker_name: propertyData.brokerName,
-                      broker_phone: propertyData.brokerPhone,
-                      creci: propertyData.creci,
-                    };
-                  }}
-                />
-              </div>
-            </div>
           </div>
+
 
           {/* Preview */}
           <div className="lg:sticky lg:top-6 self-start">
@@ -189,7 +184,7 @@ const ApartamentosFortalezaPage = () => {
               </div>
               <div className="p-4 sm:p-6">
                 {previewTab === 'feed' ? (
-                  <AFPostPreview data={propertyData} photos={photos} onRegisterPrepareSlides={registerPrepareSlides} />
+                  <AFPostPreview data={propertyData} photos={photos} publishOlx={publishOlx} olxTxType={olxTxType} />
                 ) : (
                   <AFStoriesPreview data={propertyData} photos={photos} />
                 )}
