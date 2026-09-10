@@ -28,6 +28,8 @@ interface AFPostPreviewProps {
    * que iriam para o Instagram.
    */
   onRegisterPrepareSlides?: (fn: (() => Promise<string[]>) | null) => void;
+  publishOlx?: boolean;
+  olxTxType?: 'venda' | 'aluguel' | 'lancamento';
 }
 
 type FormatType = 'feed' | 'story';
