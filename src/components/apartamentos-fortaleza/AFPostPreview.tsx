@@ -82,7 +82,7 @@ const uploadExportedImage = async (
   return publicUrl;
 };
 
-export function AFPostPreview({ data, photos, onRegisterPrepareSlides }: AFPostPreviewProps) {
+export function AFPostPreview({ data, photos, onRegisterPrepareSlides, publishOlx = false, olxTxType = 'venda' }: AFPostPreviewProps) {
   const { user } = useAuth();
   const [currentSlide, setCurrentSlide] = useState(0);
   const [format, setFormat] = useState<FormatType>('feed');
