@@ -7,8 +7,7 @@ import { AFCaptionGenerator } from '@/components/apartamentos-fortaleza/AFCaptio
 import { AFPhotoManager } from '@/components/apartamentos-fortaleza/AFPhotoManager';
 import { AFLayout } from '@/components/layout/AFLayout';
 import { Image, Edit3, Sparkles, FileText, LayoutGrid, Smartphone, Tag } from 'lucide-react';
-import { toast } from 'sonner';
-import { PublishToOlxButton } from '@/components/canal-pro/PublishToOlxButton';
+import { Label } from '@/components/ui/label';
 
 const PRIMARY = '#0C7B8E';
 const ACCENT = '#E8562A';
