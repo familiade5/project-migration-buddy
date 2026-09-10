@@ -184,7 +184,7 @@ const ApartamentosFortalezaPage = () => {
               </div>
               <div className="p-4 sm:p-6">
                 {previewTab === 'feed' ? (
-                  <AFPostPreview data={propertyData} photos={photos} onRegisterPrepareSlides={registerPrepareSlides} />
+                  <AFPostPreview data={propertyData} photos={photos} publishOlx={publishOlx} olxTxType={olxTxType} />
                 ) : (
                   <AFStoriesPreview data={propertyData} photos={photos} />
                 )}
