@@ -383,6 +383,44 @@ export const AFInstagramPublishDialog = ({
                 </span>
                 <span className="font-medium" style={{ color: '#6b7280' }}>{caption.trim().length}/2200</span>
               </div>
+
+              {publishOlx && (
+                <div className="rounded-xl p-4 space-y-3" style={{ backgroundColor: '#fef3c7', border: '1px solid #fcd34d' }}>
+                  <div className="flex items-center gap-2 text-sm font-semibold" style={{ color: '#78350f' }}>
+                    <Tag className="w-4 h-4" />
+                    Também será publicado na OLX / ZAP / VivaReal ({olxTxType === 'lancamento' ? 'Lançamento' : olxTxType})
+                  </div>
+                  {!data.canalPro?.zipCode && (
+                    <p className="text-xs font-medium" style={{ color: '#dc2626' }}>
+                      ⚠ CEP obrigatório — preencha no formulário antes de continuar.
+                    </p>
+                  )}
+                  <div className="space-y-1.5">
+                    <div className="flex items-center justify-between gap-2">
+                      <Label className="text-xs font-semibold uppercase tracking-wide" style={{ color: '#78350f' }}>
+                        Legenda da OLX (sem emojis e sem telefone)
+                      </Label>
+                      <button
+                        type="button"
+                        onClick={() => setOlxCaption(buildOlxDescription(data as never, olxTxType))}
+                        className="text-[11px] font-semibold underline"
+                        style={{ color: '#78350f' }}
+                      >
+                        Regenerar descrição padrão OLX
+                      </button>
+                    </div>
+                    <Textarea
+                      value={olxCaption}
+                      onChange={(e) => setOlxCaption(e.target.value)}
+                      maxLength={4000}
+                      className="min-h-[160px] resize-y bg-white"
+                      style={{ color: '#1f2937', borderColor: '#fcd34d' }}
+                      placeholder="Texto que vai para OLX / ZAP / VivaReal"
+                    />
+                    <p className="text-[11px] text-right" style={{ color: '#92400e' }}>{olxCaption.length}/4000</p>
+                  </div>
+                </div>
+              )}
             </div>
           )}
 
