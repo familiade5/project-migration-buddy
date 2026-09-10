@@ -329,6 +329,8 @@ export function AFPostPreview({ data, photos, onRegisterPrepareSlides, publishOl
         photos={photos}
         disabled={isExporting || isExportingPdf}
         onPrepare={prepareInstagramPublication}
+        publishOlx={publishOlx}
+        olxTxType={olxTxType}
       />
 
       <div className="flex items-center gap-1 flex-wrap">
