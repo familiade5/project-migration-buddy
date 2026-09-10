@@ -19,6 +19,9 @@ const ApartamentosFortalezaPage = () => {
   const [propertyData, setPropertyData] = useState<AFPropertyData>(defaultAFPropertyData);
   const [photos, setPhotos] = useState<string[]>([]);
   const [previewTab, setPreviewTab] = useState<'feed' | 'stories'>('feed');
+  const [publishOlx, setPublishOlx] = useState(true);
+  const [olxTxType, setOlxTxType] = useState<'venda' | 'aluguel' | 'lancamento'>('venda');
+
 
   // Limpa qualquer cache antigo de sessões anteriores
   useEffect(() => {
