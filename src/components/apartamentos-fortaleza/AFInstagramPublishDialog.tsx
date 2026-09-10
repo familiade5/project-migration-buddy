@@ -30,6 +30,8 @@ interface AFInstagramPublishDialogProps {
   photos: string[];
   disabled?: boolean;
   onPrepare: () => Promise<PreparedPublishPayload>;
+  publishOlx?: boolean;
+  olxTxType?: 'venda' | 'aluguel' | 'lancamento';
 }
 
 /**
