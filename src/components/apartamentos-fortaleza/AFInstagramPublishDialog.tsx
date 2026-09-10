@@ -138,13 +138,18 @@ export const AFInstagramPublishDialog = ({
     }
 
     const zipCode = data.canalPro?.zipCode || '';
+    // A OLX só precisa do CEP: endereço/bairro/cidade são herdados do que já foi
+    // preenchido no post do Instagram (com fallbacks) para não travar a publicação.
+    const olxNeighborhood = (data.neighborhood || '').trim();
+    const olxCity = (data.city || '').trim() || 'Fortaleza';
+    const olxAddress =
+      (data.address || '').trim() ||
+      (data.referencePoint || '').trim() ||
+      [olxNeighborhood, olxCity].filter(Boolean).join(', ') ||
+      olxCity;
     if (publishOlx) {
       if (!zipCode.trim()) {
         toast.error('CEP é obrigatório para publicar na OLX. Preencha no formulário.');
-        return;
-      }
-      if (!data.address?.trim() || !data.neighborhood?.trim() || !data.city?.trim()) {
-        toast.error('Endereço, bairro e cidade são obrigatórios para a OLX.');
         return;
       }
       if (photos.length === 0) {
