@@ -137,6 +137,22 @@ export const AFInstagramPublishDialog = ({
       return;
     }
 
+    const zipCode = data.canalPro?.zipCode || '';
+    if (publishOlx) {
+      if (!zipCode.trim()) {
+        toast.error('CEP é obrigatório para publicar na OLX. Preencha no formulário.');
+        return;
+      }
+      if (!data.address?.trim() || !data.neighborhood?.trim() || !data.city?.trim()) {
+        toast.error('Endereço, bairro e cidade são obrigatórios para a OLX.');
+        return;
+      }
+      if (photos.length === 0) {
+        toast.error('Adicione pelo menos 1 foto do imóvel para publicar na OLX.');
+        return;
+      }
+    }
+
     setCaptionError(null);
     setIsPublishing(true);
     try {
