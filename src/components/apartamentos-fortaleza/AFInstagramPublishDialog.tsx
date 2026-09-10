@@ -89,6 +89,7 @@ export const AFInstagramPublishDialog = ({
     setStep('images');
     setCaptionError(null);
     setCaption('');
+    setOlxCaption('');
     setImageUrls([]);
     setPreviewDataUrls([]);
     setStoryImageUrl(undefined);
