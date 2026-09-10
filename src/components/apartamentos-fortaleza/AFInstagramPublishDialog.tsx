@@ -70,10 +70,13 @@ export const AFInstagramPublishDialog = ({
   photos,
   disabled = false,
   onPrepare,
+  publishOlx = false,
+  olxTxType = 'venda',
 }: AFInstagramPublishDialogProps) => {
   const [open, setOpen] = useState(false);
   const [step, setStep] = useState<'images' | 'caption'>('images');
   const [caption, setCaption] = useState('');
+  const [olxCaption, setOlxCaption] = useState('');
   const [captionError, setCaptionError] = useState<string | null>(null);
   const [imageUrls, setImageUrls] = useState<string[]>([]);
   const [previewDataUrls, setPreviewDataUrls] = useState<string[]>([]);
