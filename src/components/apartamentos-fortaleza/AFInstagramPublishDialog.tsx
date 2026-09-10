@@ -206,6 +206,61 @@ export const AFInstagramPublishDialog = ({
       }
 
       toast.success('Carrossel do AF publicado no Instagram com sucesso!');
+
+      if (publishOlx) {
+        const runOlxPublish = async (): Promise<void> => {
+          try {
+            const code = `AF-${Date.now().toString(36).toUpperCase()}`;
+            const { uploadOlxPhotos, ensureMinOlxPhotos } = await import('@/lib/olxPhotos');
+            if (!imageUrls?.length) {
+              throw new Error('Slides do criador de post indisponíveis para a OLX.');
+            }
+            const uploadedPhotos = await uploadOlxPhotos(photos, 'af', code);
+            const finalPhotos = ensureMinOlxPhotos([...imageUrls, ...uploadedPhotos], 5);
+            const payload = {
+              code,
+              transaction_type: olxTxType,
+              property_type: data.propertyType,
+              title: data.title,
+              description: (olxCaption || sanitizeCaptionForOlx(caption)).slice(0, 4000),
+              address: data.address,
+              zip_code: zipCode.replace(/\D/g, ''),
+              neighborhood: data.neighborhood,
+              city: data.city,
+              state: data.state || 'CE',
+              area: data.area || null,
+              bedrooms: data.bedrooms || 0,
+              bathrooms: data.bathrooms || 0,
+              suites: data.suites || 0,
+              garage_spaces: data.garageSpaces || 0,
+              floor: data.floor || null,
+              furnished: data.furnished,
+              sale_price: olxTxType === 'aluguel' ? null : (data.salePrice || null),
+              rental_price: olxTxType === 'aluguel' ? (data.rentalPrice || null) : null,
+              condominium_fee: data.condominiumFee || 0,
+              iptu: data.iptu || 0,
+              accepts_financing: data.acceptsFinancing,
+              accepts_fgts: data.acceptsFGTS,
+              photos: finalPhotos,
+              broker_name: data.brokerName,
+              broker_phone: data.brokerPhone,
+              creci: data.creci,
+              is_active: true,
+            };
+            const { error: olxError } = await supabase.from('af_olx_listings').insert(payload);
+            if (olxError) throw olxError;
+            toast.success(`Imóvel adicionado ao catálogo OLX (${code})! A OLX irá sincronizar nas próximas horas.`);
+          } catch (olxErr) {
+            const m = olxErr instanceof Error ? olxErr.message : 'Erro desconhecido';
+            toast.error(`Instagram OK, mas falhou ao adicionar na OLX: ${m}`, {
+              duration: 30000,
+              action: { label: 'Tentar OLX novamente', onClick: () => { void runOlxPublish(); } },
+            });
+          }
+        };
+        await runOlxPublish();
+      }
+
       handleOpenChange(false);
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Não foi possível publicar no Instagram.';
