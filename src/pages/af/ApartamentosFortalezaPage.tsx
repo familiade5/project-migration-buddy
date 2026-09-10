@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { AFPropertyData, defaultAFPropertyData } from '@/types/apartamentosFortaleza';
 import { AFPostPreview } from '@/components/apartamentos-fortaleza/AFPostPreview';
 import { AFStoriesPreview } from '@/components/apartamentos-fortaleza/AFStoriesPreview';
