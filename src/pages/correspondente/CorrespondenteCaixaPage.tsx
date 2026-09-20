@@ -232,31 +232,60 @@ export default function CorrespondenteCaixaPage() {
       }
     >
       <div className="h-[calc(100vh-108px)] flex flex-col gap-4">
-        <div className="flex flex-wrap gap-2 bg-white border border-slate-200 rounded-2xl p-1.5 shadow-sm self-start">
-          <button
-            onClick={() => setTab('clientes')}
-            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-colors ${
-              tab === 'clientes' ? 'bg-[#1a3a6b] text-white shadow-sm' : 'text-slate-600 hover:bg-slate-50'
-            }`}
-          >
-            <Users className="w-4 h-4" />
-            Clientes
-          </button>
-          <button
-            onClick={() => setTab('narrativas')}
-            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-colors ${
-              tab === 'narrativas'
-                ? 'bg-[#1a3a6b] text-white shadow-sm'
-                : 'text-slate-600 hover:bg-slate-50'
-            }`}
-          >
-            <Building2 className="w-4 h-4" />
-            Checagem de Narrativas
-          </button>
+        <div className="flex flex-wrap items-center gap-3">
+          <div className="flex flex-wrap gap-2 bg-white border border-slate-200 rounded-2xl p-1.5 shadow-sm">
+            {([
+              ['painel', 'Painel', LayoutDashboard],
+              ['funil', 'Funil de crédito', KanbanSquare],
+              ['monitoramento', 'Monitoramento', BellRing],
+              ['clientes', 'Clientes e documentos', Users],
+              ['narrativas', 'Checagem de Narrativas', Building2],
+            ] as const).map(([key, label, Icon]) => (
+              <button
+                key={key}
+                onClick={() => setTab(key)}
+                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-colors ${
+                  tab === key ? 'bg-[#1a3a6b] text-white shadow-sm' : 'text-slate-600 hover:bg-slate-50'
+                }`}
+              >
+                <Icon className="w-4 h-4" />
+                {label}
+              </button>
+            ))}
+          </div>
 
+          {(tab === 'painel' || tab === 'funil' || tab === 'monitoramento') && (
+            <Button
+              className="text-white hover:opacity-90"
+              style={{ backgroundColor: BRAND }}
+              onClick={() => {
+                setEditingDeal(null);
+                setDealFormOpen(true);
+              }}
+            >
+              <Plus className="w-4 h-4 mr-2" /> Novo caso
+            </Button>
+          )}
         </div>
 
-        {tab === 'narrativas' ? (
+        {tab === 'painel' ? (
+          <div className="flex-1 min-h-0 overflow-y-auto pr-1">
+            <CxCrmDashboard deals={deals} clients={clients} onOpenStage={() => setTab('funil')} />
+          </div>
+        ) : tab === 'funil' ? (
+          <div className="flex-1 min-h-0 overflow-auto">
+            <CxDealKanban
+              deals={deals}
+              clientName={clientNameOf}
+              onMove={(id, from, to) => moveDeal(id, from, to)}
+              onCardClick={(d) => setDetailDealId(d.id)}
+            />
+          </div>
+        ) : tab === 'monitoramento' ? (
+          <div className="flex-1 min-h-0 overflow-y-auto pr-1">
+            <CxMonitoringList deals={deals} clientName={clientNameOf} onOpen={(d) => setDetailDealId(d.id)} />
+          </div>
+        ) : tab === 'narrativas' ? (
           <div className="flex-1 min-h-0">
             <CxNarrativeWorkspace />
           </div>
