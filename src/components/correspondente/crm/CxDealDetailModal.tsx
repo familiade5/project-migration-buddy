@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -17,7 +17,9 @@ import {
   cxStageCfg,
 } from '@/types/cxCrm';
 import { useCxDealDetail } from '@/hooks/useCxDeals';
-import { CalendarClock, FileText, History, Pencil, Trash2 } from 'lucide-react';
+import { CalendarClock, FileText, History, Loader2, Pencil, Sparkles, Trash2 } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
+import { toast } from 'sonner';
 
 const BRAND = '#1a3a6b';
 const BTN = 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50 hover:text-slate-900';
