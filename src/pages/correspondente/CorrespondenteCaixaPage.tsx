@@ -733,6 +733,7 @@ export default function CorrespondenteCaixaPage() {
                   </div>
 
                   {/* Extracted documents */}
+                  {clientTab === 'documentos' && (
                   <div>
                     <h3 className="text-sm font-bold text-slate-900 mb-3 flex items-center gap-2">
                       <FileText className="w-4 h-4 text-[#1a3a6b]" />
@@ -758,6 +759,17 @@ export default function CorrespondenteCaixaPage() {
                     )}
 
                   </div>
+                  )}
+
+                  {clientTab === 'historico' && (
+                    <div>
+                      <h3 className="text-sm font-bold text-slate-900 mb-3 flex items-center gap-2">
+                        <History className="w-4 h-4 text-[#1a3a6b]" />
+                        Histórico do cliente
+                      </h3>
+                      <CxClientTimeline events={events} />
+                    </div>
+                  )}
                 </div>
               </div>
             )}
