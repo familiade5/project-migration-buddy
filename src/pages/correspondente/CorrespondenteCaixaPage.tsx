@@ -349,6 +349,28 @@ export default function CorrespondenteCaixaPage() {
             <CxNarrativeWorkspace />
           </div>
         ) : (
+        <div className="flex-1 min-h-0 flex flex-col gap-4 overflow-y-auto lg:overflow-visible">
+        <div className="flex items-center justify-between gap-3">
+          <button
+            onClick={() => setShowIntake((v) => !v)}
+            className="flex items-center gap-2 text-xs font-semibold text-[#1a3a6b] hover:underline"
+          >
+            <Sparkles className="w-4 h-4" />
+            {showIntake ? 'Ocultar recepção inteligente' : 'Abrir recepção inteligente'}
+          </button>
+        </div>
+        {showIntake && (
+          <CxIntakePanel
+            items={intake.items}
+            running={intake.running}
+            onProcess={(files, docTypeHint) => intake.processFiles(files, docTypeHint)}
+            onOpenClient={(clientId) => {
+              setSelectedId(clientId);
+              setClientTab('ficha');
+            }}
+            onClear={intake.clear}
+          />
+        )}
         <div
           className={`grid grid-cols-1 gap-5 flex-1 min-h-0 transition-all ${
             listOpen ? 'lg:grid-cols-[340px_minmax(0,1fr)]' : 'lg:grid-cols-[64px_minmax(0,1fr)]'
