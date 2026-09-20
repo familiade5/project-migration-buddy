@@ -649,13 +649,14 @@ export default function CorrespondenteCaixaPage() {
                             <Button
                               variant="outline"
                               size="sm"
-                              className="h-8 border-slate-200 text-xs text-slate-600 hover:text-red-600 hover:border-red-200"
+                              className="h-8 bg-white border-slate-200 text-xs font-medium text-slate-700 hover:bg-red-50 hover:text-red-600 hover:border-red-300 shadow-sm"
                               onClick={async () => {
                                 if (confirm(`Retirar ${selected.full_name} do funil de crédito?`)) {
                                   await deleteDeal(deal.id);
                                 }
                               }}
                             >
+                              <Trash2 className="w-3.5 h-3.5 mr-1.5 text-red-500" />
                               Retirar do funil
                             </Button>
                           )}
