@@ -209,6 +209,7 @@ export function useCxIntake({ clients, refreshClients }: IntakeArgs) {
       setRunning(false);
       await refreshClients();
       toast.success('Leitura concluída', { description: 'Os documentos foram organizados por cliente.' });
+      return results;
     },
     [clients, refreshClients],
   );
