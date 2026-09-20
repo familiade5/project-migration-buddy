@@ -31,7 +31,14 @@ import { CxDealKanban } from '@/components/correspondente/crm/CxDealKanban';
 import { CxDealFormModal } from '@/components/correspondente/crm/CxDealFormModal';
 import { CxDealDetailModal } from '@/components/correspondente/crm/CxDealDetailModal';
 import { CxMonitoringList } from '@/components/correspondente/crm/CxMonitoringList';
-import { LayoutDashboard, KanbanSquare, BellRing } from 'lucide-react';
+import { CxIntakePanel } from '@/components/correspondente/CxIntakePanel';
+import { CxClientOverview } from '@/components/correspondente/CxClientOverview';
+import { CxClientTimeline } from '@/components/correspondente/CxClientTimeline';
+import { useCxIntake } from '@/hooks/useCxIntake';
+import { useCxClientEvents, logCxClientEvent } from '@/hooks/useCxClientEvents';
+import { CxProfileData, formatCpf, onlyDigits } from '@/lib/cxProfile';
+import { supabase } from '@/integrations/supabase/client';
+import { LayoutDashboard, KanbanSquare, BellRing, IdCard, History, Sparkles } from 'lucide-react';
 
 import { CopyField } from '@/components/correspondente/CopyField';
 import {
@@ -92,7 +99,7 @@ type CxTab = 'painel' | 'funil' | 'monitoramento' | 'clientes' | 'narrativas';
 const CX_TABS: CxTab[] = ['painel', 'funil', 'monitoramento', 'clientes', 'narrativas'];
 
 export default function CorrespondenteCaixaPage() {
-  const { clients, isLoading, createClient, updateClient, deleteClient } = useCxClients();
+  const { clients, isLoading, createClient, updateClient, deleteClient, fetchClients } = useCxClients();
   const { properties: cxProperties } = useCxProperties();
   const { deals, createDeal, updateDeal, moveDeal, deleteDeal } = useCxDeals();
   const [tab, setTabState] = useState<CxTab>(() => {
@@ -123,6 +130,8 @@ export default function CorrespondenteCaixaPage() {
   const [reviewNotes, setReviewNotes] = useState('');
   const [linkOpen, setLinkOpen] = useState(false);
   const [listOpen, setListOpen] = useState(true);
+  const [clientTab, setClientTab] = useState<'ficha' | 'documentos' | 'imoveis' | 'historico'>('ficha');
+  const [showIntake, setShowIntake] = useState(true);
   const PORTAL_BASE_URL = 'https://postgen.fixaapp.com.br';
 
   const selected: CxClient | null = useMemo(
@@ -144,9 +153,50 @@ export default function CorrespondenteCaixaPage() {
   };
 
 
-  const { documents, uploadDocument, deleteDocument, openDocument, downloadDocument, retryExtraction, updateExtraction } =
+  const { documents, uploadDocument, deleteDocument, openDocument, downloadDocument, retryExtraction, updateExtraction, fetchDocuments } =
     useCxDocuments(selected?.id ?? null);
 
+  const { events, fetchEvents } = useCxClientEvents(selected?.id ?? null);
+
+  const intake = useCxIntake({
+    clients,
+    refreshClients: async () => {
+      await fetchClients();
+      await fetchDocuments();
+      await fetchEvents();
+    },
+  });
+
+  const fillProfileFromDocuments = async (profile: CxProfileData) => {
+    if (!selected) return;
+    const patch: Record<string, unknown> = {};
+    (Object.keys(profile) as (keyof CxProfileData)[]).forEach((key) => {
+      if (key === 'full_name') return;
+      const current = (selected as unknown as Record<string, unknown>)[key];
+      const next = profile[key];
+      if ((current == null || current === '') && next != null && next !== '') {
+        patch[key] = key === 'cpf' ? formatCpf(String(next)) : next;
+      }
+    });
+    if (Object.keys(patch).length === 0) {
+      toast.info('A ficha já está com todos os dados encontrados.');
+      return;
+    }
+    patch.profile_updated_at = new Date().toISOString();
+    const { error } = await supabase.from('cx_clients').update(patch).eq('id', selected.id);
+    if (error) {
+      toast.error('Não foi possível preencher a ficha', { description: error.message });
+      return;
+    }
+    await logCxClientEvent(selected.id, {
+      kind: 'cliente',
+      title: 'Ficha preenchida com os documentos',
+      description: `${Object.keys(patch).length - 1} campo(s) atualizados automaticamente.`,
+    });
+    await fetchClients();
+    await fetchEvents();
+    toast.success('Ficha atualizada com os dados dos documentos');
+  };
 
   useEffect(() => {
     setReviewNotes(selected?.review_notes || '');
@@ -155,11 +205,13 @@ export default function CorrespondenteCaixaPage() {
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
     if (!q) return clients;
+    const digits = onlyDigits(q);
     return clients.filter(
       (c) =>
         c.full_name.toLowerCase().includes(q) ||
         (c.phone || '').includes(q) ||
-        (c.email || '').toLowerCase().includes(q),
+        (c.email || '').toLowerCase().includes(q) ||
+        (digits.length >= 3 && onlyDigits(c.cpf).includes(digits)),
     );
   }, [clients, search]);
 
@@ -193,6 +245,7 @@ export default function CorrespondenteCaixaPage() {
       setSelectedId(created.id);
       setDialogOpen(false);
       setForm({ full_name: '', email: '', phone: '', whatsapp: '', notes: '' });
+      await logCxClientEvent(created.id, { kind: 'cliente', title: 'Cliente cadastrado manualmente' });
     }
   };
 
@@ -201,8 +254,14 @@ export default function CorrespondenteCaixaPage() {
     setUploading(true);
     for (const file of Array.from(files)) {
       await uploadDocument(file, docType);
+      await logCxClientEvent(selected.id, {
+        kind: 'documento',
+        title: 'Documento anexado',
+        description: `${CX_DOC_LABEL(docType)} — ${file.name}`,
+      });
     }
     setUploading(false);
+    await fetchEvents();
     if (fileRef.current) fileRef.current.value = '';
   };
 
@@ -290,6 +349,28 @@ export default function CorrespondenteCaixaPage() {
             <CxNarrativeWorkspace />
           </div>
         ) : (
+        <div className="flex-1 min-h-0 flex flex-col gap-4 overflow-y-auto lg:overflow-visible">
+        <div className="flex items-center justify-between gap-3">
+          <button
+            onClick={() => setShowIntake((v) => !v)}
+            className="flex items-center gap-2 text-xs font-semibold text-[#1a3a6b] hover:underline"
+          >
+            <Sparkles className="w-4 h-4" />
+            {showIntake ? 'Ocultar recepção inteligente' : 'Abrir recepção inteligente'}
+          </button>
+        </div>
+        {showIntake && (
+          <CxIntakePanel
+            items={intake.items}
+            running={intake.running}
+            onProcess={(files, docTypeHint) => intake.processFiles(files, docTypeHint)}
+            onOpenClient={(clientId) => {
+              setSelectedId(clientId);
+              setClientTab('ficha');
+            }}
+            onClear={intake.clear}
+          />
+        )}
         <div
           className={`grid grid-cols-1 gap-5 flex-1 min-h-0 transition-all ${
             listOpen ? 'lg:grid-cols-[340px_minmax(0,1fr)]' : 'lg:grid-cols-[64px_minmax(0,1fr)]'
@@ -589,8 +670,43 @@ export default function CorrespondenteCaixaPage() {
                 </div>
 
 
+                <div className="px-6 pt-4 border-b border-slate-100 flex gap-1 overflow-x-auto">
+                  {([
+                    { id: 'ficha', label: 'Ficha', icon: IdCard },
+                    { id: 'documentos', label: 'Documentos', icon: FileText },
+                    { id: 'imoveis', label: 'Imóveis', icon: Building2 },
+                    { id: 'historico', label: 'Histórico', icon: History },
+                  ] as const).map((t) => {
+                    const Icon = t.icon;
+                    const active = clientTab === t.id;
+                    return (
+                      <button
+                        key={t.id}
+                        onClick={() => setClientTab(t.id)}
+                        className={`flex items-center gap-2 px-4 py-2.5 text-sm font-semibold rounded-t-lg border-b-2 transition-colors whitespace-nowrap ${
+                          active
+                            ? 'border-[#1a3a6b] text-[#1a3a6b] bg-slate-50'
+                            : 'border-transparent text-slate-500 hover:text-slate-800'
+                        }`}
+                      >
+                        <Icon className="w-4 h-4" />
+                        {t.label}
+                      </button>
+                    );
+                  })}
+                </div>
+
                 <div className="p-6 space-y-6">
+                  {clientTab === 'ficha' && (
+                    <CxClientOverview
+                      client={selected}
+                      documents={documents}
+                      onFillFromDocuments={fillProfileFromDocuments}
+                    />
+                  )}
+
                   {/* Checklist + upload */}
+                  {clientTab === 'documentos' && (
                   <div className="bg-slate-50 rounded-2xl border border-slate-200 p-5 space-y-4">
                     <div className="flex items-center justify-between">
                       <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
@@ -662,9 +778,11 @@ export default function CorrespondenteCaixaPage() {
                       Imagens ou PDF (até 25MB). Vários arquivos do mesmo tipo podem ser enviados juntos — ex.: os 3 últimos contracheques.
                     </p>
                   </div>
+                  )}
 
 
                   {/* Imóveis vinculados */}
+                  {clientTab === 'imoveis' && (
                   <div>
                     <h3 className="text-sm font-bold text-slate-900 mb-3 flex items-center gap-2">
                       <Building2 className="w-4 h-4 text-[#1a3a6b]" />
@@ -672,8 +790,10 @@ export default function CorrespondenteCaixaPage() {
                     </h3>
                     <CxClientProperties clientId={selected.id} />
                   </div>
+                  )}
 
                   {/* Extracted documents */}
+                  {clientTab === 'documentos' && (
                   <div>
                     <h3 className="text-sm font-bold text-slate-900 mb-3 flex items-center gap-2">
                       <FileText className="w-4 h-4 text-[#1a3a6b]" />
@@ -699,10 +819,22 @@ export default function CorrespondenteCaixaPage() {
                     )}
 
                   </div>
+                  )}
+
+                  {clientTab === 'historico' && (
+                    <div>
+                      <h3 className="text-sm font-bold text-slate-900 mb-3 flex items-center gap-2">
+                        <History className="w-4 h-4 text-[#1a3a6b]" />
+                        Histórico do cliente
+                      </h3>
+                      <CxClientTimeline events={events} />
+                    </div>
+                  )}
                 </div>
               </div>
             )}
           </section>
+        </div>
         </div>
         )}
       </div>

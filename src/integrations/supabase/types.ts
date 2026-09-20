@@ -1362,66 +1362,155 @@ export type Database = {
         }
         Relationships: []
       }
+      cx_client_events: {
+        Row: {
+          actor_name: string | null
+          actor_user_id: string | null
+          client_id: string
+          created_at: string
+          description: string | null
+          id: string
+          kind: string
+          metadata: Json
+          title: string
+        }
+        Insert: {
+          actor_name?: string | null
+          actor_user_id?: string | null
+          client_id: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          kind?: string
+          metadata?: Json
+          title: string
+        }
+        Update: {
+          actor_name?: string | null
+          actor_user_id?: string | null
+          client_id?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          kind?: string
+          metadata?: Json
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cx_client_events_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "cx_clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       cx_clients: {
         Row: {
+          address: string | null
+          birth_date: string | null
+          city: string | null
+          cpf: string | null
           created_at: string
           created_by_user_id: string | null
           email: string | null
+          employer: string | null
           extracted: Json
           full_name: string
           id: string
+          marital_status: string | null
+          monthly_income: number | null
+          mother_name: string | null
+          neighborhood: string | null
           notes: string | null
           parent_client_id: string | null
           phone: string | null
           portal_token: string | null
           portal_user_id: string | null
+          profession: string | null
+          profile: Json
+          profile_updated_at: string | null
           relationship: string | null
           review_notes: string | null
           reviewed_at: string | null
+          rg: string | null
+          state: string | null
           submission_status: string
           submitted_at: string | null
           updated_at: string
           whatsapp: string | null
+          zip_code: string | null
         }
         Insert: {
+          address?: string | null
+          birth_date?: string | null
+          city?: string | null
+          cpf?: string | null
           created_at?: string
           created_by_user_id?: string | null
           email?: string | null
+          employer?: string | null
           extracted?: Json
           full_name: string
           id?: string
+          marital_status?: string | null
+          monthly_income?: number | null
+          mother_name?: string | null
+          neighborhood?: string | null
           notes?: string | null
           parent_client_id?: string | null
           phone?: string | null
           portal_token?: string | null
           portal_user_id?: string | null
+          profession?: string | null
+          profile?: Json
+          profile_updated_at?: string | null
           relationship?: string | null
           review_notes?: string | null
           reviewed_at?: string | null
+          rg?: string | null
+          state?: string | null
           submission_status?: string
           submitted_at?: string | null
           updated_at?: string
           whatsapp?: string | null
+          zip_code?: string | null
         }
         Update: {
+          address?: string | null
+          birth_date?: string | null
+          city?: string | null
+          cpf?: string | null
           created_at?: string
           created_by_user_id?: string | null
           email?: string | null
+          employer?: string | null
           extracted?: Json
           full_name?: string
           id?: string
+          marital_status?: string | null
+          monthly_income?: number | null
+          mother_name?: string | null
+          neighborhood?: string | null
           notes?: string | null
           parent_client_id?: string | null
           phone?: string | null
           portal_token?: string | null
           portal_user_id?: string | null
+          profession?: string | null
+          profile?: Json
+          profile_updated_at?: string | null
           relationship?: string | null
           review_notes?: string | null
           reviewed_at?: string | null
+          rg?: string | null
+          state?: string | null
           submission_status?: string
           submitted_at?: string | null
           updated_at?: string
           whatsapp?: string | null
+          zip_code?: string | null
         }
         Relationships: [
           {
