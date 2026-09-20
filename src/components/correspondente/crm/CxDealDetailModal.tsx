@@ -12,6 +12,7 @@ import {
   CxStage,
   CX_REJECTION_CONFIG,
   cxCurrency,
+  CX_BANKS,
   cxDaysUntil,
   cxStageCfg,
 } from '@/types/cxCrm';
@@ -19,6 +20,10 @@ import { useCxDealDetail } from '@/hooks/useCxDeals';
 import { CalendarClock, FileText, History, Pencil, Trash2 } from 'lucide-react';
 
 const BRAND = '#1a3a6b';
+const BTN = 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50 hover:text-slate-900';
+const POPOVER = 'bg-white text-slate-900 border-slate-200';
+const ITEM = 'text-slate-700 focus:bg-slate-100 focus:text-slate-900';
+const FIELD = 'bg-white border-slate-200 text-slate-900 placeholder:text-slate-400';
 
 interface Props {
   deal: CxDeal | null;
@@ -52,6 +57,18 @@ export function CxDealDetailModal({
   const { history, checks, addCheck, refetch } = useCxDealDetail(deal?.id ?? null);
   const [check, setCheck] = useState({ rating: '', margin_value: '', approved_value: '', result: '', notes: '' });
   const [review, setReview] = useState({ next_review_at: '', review_interval_days: '30' });
+  const [fin, setFin] = useState<FinForm>(emptyFin);
+  const [finDirty, setFinDirty] = useState(false);
+
+  const resetFin = (d: CxDeal) => {
+    setFin(finFromDeal(d));
+    setFinDirty(false);
+  };
+
+  const setFinField = (key: keyof FinForm, value: string) => {
+    setFin((p) => ({ ...p, [key]: value }));
+    setFinDirty(true);
+  };
 
   useEffect(() => {
     if (!deal) return;
@@ -60,6 +77,7 @@ export function CxDealDetailModal({
       review_interval_days: String(deal.review_interval_days ?? 30),
     });
     setCheck({ rating: '', margin_value: '', approved_value: '', result: '', notes: '' });
+    resetFin(deal);
   }, [deal?.id]);
 
   if (!deal) return null;
@@ -67,6 +85,26 @@ export function CxDealDetailModal({
   const cfg = cxStageCfg(stages, deal.stage);
   const days = cxDaysUntil(deal.next_review_at);
   const isRejected = deal.stage === 'reprovado';
+
+  const saveFin = async () => {
+    const ok = await onUpdate(deal.id, {
+      bank: fin.bank || null,
+      property_value: num(fin.property_value),
+      financing_value: num(fin.financing_value),
+      down_payment: num(fin.down_payment),
+      fgts_value: num(fin.fgts_value),
+      subsidy_value: num(fin.subsidy_value),
+      monthly_income: num(fin.monthly_income),
+      installment_value: num(fin.installment_value),
+      rating: fin.rating.trim() || null,
+      margin_value: num(fin.margin_value),
+      approved_value: num(fin.approved_value),
+      responsible_name: fin.responsible_name.trim() || null,
+      pendencies: fin.pendencies.trim() || null,
+      notes: fin.notes.trim() || null,
+    });
+    if (ok) setFinDirty(false);
+  };
 
   const saveReview = async () => {
     await onUpdate(deal.id, {
@@ -122,16 +160,16 @@ export function CxDealDetailModal({
         </DialogHeader>
 
         <div className="flex flex-wrap gap-2">
-          <Button size="sm" variant="outline" onClick={() => onEdit(deal)}>
+          <Button size="sm" variant="outline" className={BTN} onClick={() => onEdit(deal)}>
             <Pencil className="w-3.5 h-3.5 mr-1.5" /> Editar
           </Button>
-          <Button size="sm" variant="outline" onClick={() => onOpenClient(deal.client_id)}>
+          <Button size="sm" variant="outline" className={BTN} onClick={() => onOpenClient(deal.client_id)}>
             <FileText className="w-3.5 h-3.5 mr-1.5" /> Documentos do cliente
           </Button>
           <Button
             size="sm"
             variant="outline"
-            className="text-red-600 hover:text-red-700 ml-auto"
+            className="ml-auto bg-white border-slate-200 text-red-600 hover:bg-red-50 hover:text-red-700"
             onClick={() => {
               onDelete(deal.id);
               onClose();
@@ -145,10 +183,10 @@ export function CxDealDetailModal({
           <section className="rounded-2xl border border-slate-200 p-4 space-y-3">
             <h4 className="text-xs font-bold uppercase tracking-wide text-slate-400">Etapa</h4>
             <Select value={deal.stage} onValueChange={(v) => onMove(deal.id, deal.stage, v as CxDealStage)}>
-              <SelectTrigger className="bg-white"><SelectValue /></SelectTrigger>
-              <SelectContent>
+              <SelectTrigger className={FIELD}><SelectValue /></SelectTrigger>
+              <SelectContent className={POPOVER}>
                 {stages.map((s) => (
-                  <SelectItem key={s.key} value={s.key}>{s.label}</SelectItem>
+                  <SelectItem key={s.key} value={s.key} className={ITEM}>{s.label}</SelectItem>
                 ))}
               </SelectContent>
             </Select>
@@ -160,10 +198,10 @@ export function CxDealDetailModal({
                   value={deal.rejection_reason || ''}
                   onValueChange={(v) => onUpdate(deal.id, { rejection_reason: v as CxRejectionReason })}
                 >
-                  <SelectTrigger className="bg-white"><SelectValue placeholder="Selecione o motivo" /></SelectTrigger>
-                  <SelectContent>
+                  <SelectTrigger className={FIELD}><SelectValue placeholder="Selecione o motivo" /></SelectTrigger>
+                  <SelectContent className={POPOVER}>
                     {(Object.keys(CX_REJECTION_CONFIG) as CxRejectionReason[]).map((r) => (
-                      <SelectItem key={r} value={r}>{CX_REJECTION_CONFIG[r].label}</SelectItem>
+                      <SelectItem key={r} value={r} className={ITEM}>{CX_REJECTION_CONFIG[r].label}</SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
@@ -172,7 +210,7 @@ export function CxDealDetailModal({
                   onBlur={(e) => onUpdate(deal.id, { rejection_notes: e.target.value || null })}
                   rows={2}
                   placeholder="Detalhes da devolutiva do banco…"
-                  className="bg-white"
+                  className={FIELD}
                 />
               </div>
             )}
@@ -191,7 +229,7 @@ export function CxDealDetailModal({
                   type="date"
                   value={review.next_review_at}
                   onChange={(e) => setReview((p) => ({ ...p, next_review_at: e.target.value }))}
-                  className="bg-white"
+                  className={FIELD}
                 />
               </div>
               <div>
@@ -200,7 +238,7 @@ export function CxDealDetailModal({
                   type="number"
                   value={review.review_interval_days}
                   onChange={(e) => setReview((p) => ({ ...p, review_interval_days: e.target.value }))}
-                  className="bg-white"
+                  className={FIELD}
                 />
               </div>
             </div>
@@ -215,47 +253,74 @@ export function CxDealDetailModal({
           </section>
         </div>
 
-        <section className="rounded-2xl border border-slate-200 p-4">
-          <h4 className="text-xs font-bold uppercase tracking-wide text-slate-400 mb-3">Dados do financiamento</h4>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-sm">
-            <Info label="Banco" value={deal.bank || '—'} />
-            <Info label="Valor do imóvel" value={money(deal.property_value)} />
-            <Info label="Financiado" value={money(deal.financing_value)} />
-            <Info label="Entrada" value={money(deal.down_payment)} />
-            <Info label="FGTS" value={money(deal.fgts_value)} />
-            <Info label="Subsídio" value={money(deal.subsidy_value)} />
-            <Info label="Renda" value={money(deal.monthly_income)} />
-            <Info label="Parcela" value={money(deal.installment_value)} />
-            <Info label="Rating" value={deal.rating || '—'} />
-            <Info label="Margem" value={money(deal.margin_value)} />
-            <Info label="Valor aprovado" value={money(deal.approved_value)} />
-            <Info label="Responsável" value={deal.responsible_name || '—'} />
+        <section className="rounded-2xl border border-slate-200 p-4 space-y-3">
+          <div className="flex items-center justify-between gap-2">
+            <h4 className="text-xs font-bold uppercase tracking-wide text-slate-400">Dados do financiamento</h4>
+            {finDirty && <span className="text-[11px] font-semibold text-amber-600">Alterações não salvas</span>}
           </div>
-          {deal.pendencies && (
-            <p className="mt-3 text-sm text-amber-700 bg-amber-50 rounded-xl p-3">
-              <strong>Pendências:</strong> {deal.pendencies}
-            </p>
-          )}
-          {deal.notes && <p className="mt-3 text-sm text-slate-600 whitespace-pre-wrap">{deal.notes}</p>}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <div className="space-y-1">
+              <Label className="text-[10px] font-semibold uppercase tracking-wide text-slate-400">Banco</Label>
+              <Select value={fin.bank} onValueChange={(v) => setFinField('bank', v)}>
+                <SelectTrigger className={FIELD}><SelectValue placeholder="Selecione" /></SelectTrigger>
+                <SelectContent className={POPOVER}>
+                  {CX_BANKS.map((b) => (
+                    <SelectItem key={b} value={b} className={ITEM}>{b}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <NumField label="Valor do imóvel" value={fin.property_value} onChange={(v) => setFinField('property_value', v)} />
+            <NumField label="Financiado" value={fin.financing_value} onChange={(v) => setFinField('financing_value', v)} />
+            <NumField label="Entrada" value={fin.down_payment} onChange={(v) => setFinField('down_payment', v)} />
+            <NumField label="FGTS" value={fin.fgts_value} onChange={(v) => setFinField('fgts_value', v)} />
+            <NumField label="Subsídio" value={fin.subsidy_value} onChange={(v) => setFinField('subsidy_value', v)} />
+            <NumField label="Renda" value={fin.monthly_income} onChange={(v) => setFinField('monthly_income', v)} />
+            <NumField label="Parcela" value={fin.installment_value} onChange={(v) => setFinField('installment_value', v)} />
+            <TxtField label="Rating" value={fin.rating} onChange={(v) => setFinField('rating', v)} />
+            <NumField label="Margem" value={fin.margin_value} onChange={(v) => setFinField('margin_value', v)} />
+            <NumField label="Valor aprovado" value={fin.approved_value} onChange={(v) => setFinField('approved_value', v)} />
+            <TxtField label="Responsável" value={fin.responsible_name} onChange={(v) => setFinField('responsible_name', v)} />
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div className="space-y-1">
+              <Label className="text-[10px] font-semibold uppercase tracking-wide text-slate-400">Pendências</Label>
+              <Textarea rows={2} value={fin.pendencies} onChange={(e) => setFinField('pendencies', e.target.value)} className={FIELD} />
+            </div>
+            <div className="space-y-1">
+              <Label className="text-[10px] font-semibold uppercase tracking-wide text-slate-400">Observações</Label>
+              <Textarea rows={2} value={fin.notes} onChange={(e) => setFinField('notes', e.target.value)} className={FIELD} />
+            </div>
+          </div>
+          <div className="flex gap-2">
+            <Button size="sm" className="text-white" style={{ backgroundColor: BRAND }} onClick={saveFin} disabled={!finDirty}>
+              Salvar dados do financiamento
+            </Button>
+            {finDirty && (
+              <Button size="sm" variant="outline" className={BTN} onClick={() => resetFin(deal)}>
+                Descartar
+              </Button>
+            )}
+          </div>
         </section>
 
         <section className="rounded-2xl border border-slate-200 p-4 space-y-3">
           <h4 className="text-xs font-bold uppercase tracking-wide text-slate-400">Nova consulta de rating / margem</h4>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-            <Input placeholder="Rating" value={check.rating} onChange={(e) => setCheck((p) => ({ ...p, rating: e.target.value }))} className="bg-white" />
-            <Input type="number" placeholder="Margem (R$)" value={check.margin_value} onChange={(e) => setCheck((p) => ({ ...p, margin_value: e.target.value }))} className="bg-white" />
-            <Input type="number" placeholder="Valor aprovado (R$)" value={check.approved_value} onChange={(e) => setCheck((p) => ({ ...p, approved_value: e.target.value }))} className="bg-white" />
+            <Input placeholder="Rating" value={check.rating} onChange={(e) => setCheck((p) => ({ ...p, rating: e.target.value }))} className={FIELD} />
+            <Input type="number" placeholder="Margem (R$)" value={check.margin_value} onChange={(e) => setCheck((p) => ({ ...p, margin_value: e.target.value }))} className={FIELD} />
+            <Input type="number" placeholder="Valor aprovado (R$)" value={check.approved_value} onChange={(e) => setCheck((p) => ({ ...p, approved_value: e.target.value }))} className={FIELD} />
             <Select value={check.result} onValueChange={(v) => setCheck((p) => ({ ...p, result: v }))}>
-              <SelectTrigger className="bg-white"><SelectValue placeholder="Resultado" /></SelectTrigger>
-              <SelectContent>
-                <SelectItem value="liberado">Liberado</SelectItem>
-                <SelectItem value="parcial">Parcialmente liberado</SelectItem>
-                <SelectItem value="sem_margem">Sem margem</SelectItem>
-                <SelectItem value="sem_rating">Sem rating</SelectItem>
+              <SelectTrigger className={FIELD}><SelectValue placeholder="Resultado" /></SelectTrigger>
+              <SelectContent className={POPOVER}>
+                <SelectItem value="liberado" className={ITEM}>Liberado</SelectItem>
+                <SelectItem value="parcial" className={ITEM}>Parcialmente liberado</SelectItem>
+                <SelectItem value="sem_margem" className={ITEM}>Sem margem</SelectItem>
+                <SelectItem value="sem_rating" className={ITEM}>Sem rating</SelectItem>
               </SelectContent>
             </Select>
           </div>
-          <Textarea rows={2} placeholder="Observações da consulta…" value={check.notes} onChange={(e) => setCheck((p) => ({ ...p, notes: e.target.value }))} className="bg-white" />
+          <Textarea rows={2} placeholder="Observações da consulta…" value={check.notes} onChange={(e) => setCheck((p) => ({ ...p, notes: e.target.value }))} className={FIELD} />
           <Button size="sm" className="text-white" style={{ backgroundColor: BRAND }} onClick={submitCheck}>
             Registrar consulta e reagendar
           </Button>
@@ -301,11 +366,77 @@ export function CxDealDetailModal({
   );
 }
 
-function Info({ label, value }: { label: string; value: string }) {
+interface FinForm {
+  bank: string;
+  property_value: string;
+  financing_value: string;
+  down_payment: string;
+  fgts_value: string;
+  subsidy_value: string;
+  monthly_income: string;
+  installment_value: string;
+  rating: string;
+  margin_value: string;
+  approved_value: string;
+  responsible_name: string;
+  pendencies: string;
+  notes: string;
+}
+
+const emptyFin: FinForm = {
+  bank: '', property_value: '', financing_value: '', down_payment: '', fgts_value: '',
+  subsidy_value: '', monthly_income: '', installment_value: '', rating: '',
+  margin_value: '', approved_value: '', responsible_name: '', pendencies: '', notes: '',
+};
+
+const s = (v: unknown) => (v === null || v === undefined ? '' : String(v));
+
+function finFromDeal(d: CxDeal): FinForm {
+  return {
+    bank: s(d.bank),
+    property_value: s(d.property_value),
+    financing_value: s(d.financing_value),
+    down_payment: s(d.down_payment),
+    fgts_value: s(d.fgts_value),
+    subsidy_value: s(d.subsidy_value),
+    monthly_income: s(d.monthly_income),
+    installment_value: s(d.installment_value),
+    rating: s(d.rating),
+    margin_value: s(d.margin_value),
+    approved_value: s(d.approved_value),
+    responsible_name: s(d.responsible_name),
+    pendencies: s(d.pendencies),
+    notes: s(d.notes),
+  };
+}
+
+function num(v: string): number | null {
+  const t = v.replace(/\./g, '').replace(',', '.').trim();
+  if (!t) return null;
+  const n = Number(t);
+  return Number.isNaN(n) ? null : n;
+}
+
+function NumField({ label, value, onChange }: { label: string; value: string; onChange: (v: string) => void }) {
   return (
-    <div>
-      <p className="text-[10px] font-semibold uppercase tracking-wide text-slate-400">{label}</p>
-      <p className="text-sm font-semibold text-slate-800">{value}</p>
+    <div className="space-y-1">
+      <Label className="text-[10px] font-semibold uppercase tracking-wide text-slate-400">{label}</Label>
+      <Input
+        inputMode="decimal"
+        placeholder="R$ 0"
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        className={FIELD}
+      />
+    </div>
+  );
+}
+
+function TxtField({ label, value, onChange }: { label: string; value: string; onChange: (v: string) => void }) {
+  return (
+    <div className="space-y-1">
+      <Label className="text-[10px] font-semibold uppercase tracking-wide text-slate-400">{label}</Label>
+      <Input value={value} onChange={(e) => onChange(e.target.value)} className={FIELD} />
     </div>
   );
 }
