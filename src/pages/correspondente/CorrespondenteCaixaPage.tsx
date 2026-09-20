@@ -245,6 +245,7 @@ export default function CorrespondenteCaixaPage() {
       setSelectedId(created.id);
       setDialogOpen(false);
       setForm({ full_name: '', email: '', phone: '', whatsapp: '', notes: '' });
+      await logCxClientEvent(created.id, { kind: 'cliente', title: 'Cliente cadastrado manualmente' });
     }
   };
 
@@ -253,8 +254,14 @@ export default function CorrespondenteCaixaPage() {
     setUploading(true);
     for (const file of Array.from(files)) {
       await uploadDocument(file, docType);
+      await logCxClientEvent(selected.id, {
+        kind: 'documento',
+        title: 'Documento anexado',
+        description: `${CX_DOC_LABEL(docType)} — ${file.name}`,
+      });
     }
     setUploading(false);
+    await fetchEvents();
     if (fileRef.current) fileRef.current.value = '';
   };
 
