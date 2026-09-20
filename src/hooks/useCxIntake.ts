@@ -94,8 +94,9 @@ export function useCxIntake({ clients, refreshClients }: IntakeArgs) {
   const clear = useCallback(() => setItems([]), []);
 
   const processFiles = useCallback(
-    async (files: File[], docTypeHint: string) => {
-      if (files.length === 0) return;
+    async (files: File[], docTypeHint: string): Promise<{ clientId: string; created: boolean }[]> => {
+      const results: { clientId: string; created: boolean }[] = [];
+      if (files.length === 0) return results;
       const queued: CxIntakeItem[] = files.map((f) => ({
         id: crypto.randomUUID(),
         fileName: f.name,
