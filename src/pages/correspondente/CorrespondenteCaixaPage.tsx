@@ -1030,6 +1030,79 @@ export default function CorrespondenteCaixaPage() {
                 rows={3}
               />
             </div>
+
+            <div className="rounded-xl border border-slate-200 bg-slate-50 p-3 space-y-3">
+              <div className="flex items-start justify-between gap-3">
+                <div className="min-w-0">
+                  <p className="text-sm font-semibold text-slate-800 flex items-center gap-2">
+                    <Sparkles className="w-4 h-4 text-[#1a3a6b]" />
+                    Criar a partir de um documento (opcional)
+                  </p>
+                  <p className="text-xs text-slate-500 leading-relaxed mt-0.5">
+                    Anexe a CNH, o RG ou outro documento: os dados são lidos, o cliente é criado e o
+                    arquivo já fica salvo na ficha, pronto para copiar as informações.
+                  </p>
+                </div>
+                <Button
+                  size="sm"
+                  className="h-9 w-9 p-0 flex-shrink-0 text-white hover:opacity-90"
+                  style={{ backgroundColor: BRAND }}
+                  title="Anexar documento"
+                  onClick={() => newDocRef.current?.click()}
+                >
+                  <Plus className="w-4 h-4" />
+                </Button>
+              </div>
+
+              <input
+                ref={newDocRef}
+                type="file"
+                multiple
+                accept="image/*,application/pdf"
+                className="hidden"
+                onChange={(e) => {
+                  const list = e.target.files;
+                  if (list && list.length > 0) setNewDocFiles((prev) => [...prev, ...Array.from(list)]);
+                  if (newDocRef.current) newDocRef.current.value = '';
+                }}
+              />
+
+              {newDocFiles.length > 0 && (
+                <div className="space-y-2">
+                  <div>
+                    <Label className="text-xs font-semibold text-slate-600">Tipo do documento</Label>
+                    <Select value={newDocType} onValueChange={setNewDocType}>
+                      <SelectTrigger className="mt-1 bg-white border-slate-200 text-slate-900">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent className="bg-white border-slate-200 text-slate-900">
+                        <SelectItem value="auto" className="text-slate-900">Identificar automaticamente</SelectItem>
+                        {CX_DOC_TYPES.map((t) => (
+                          <SelectItem key={t.value} value={t.value} className="text-slate-900">
+                            {t.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  {newDocFiles.map((f, i) => (
+                    <div
+                      key={`${f.name}-${i}`}
+                      className="flex items-center gap-2 bg-white rounded-lg border border-slate-200 px-3 py-2"
+                    >
+                      <FileText className="w-4 h-4 text-slate-400 flex-shrink-0" />
+                      <span className="text-xs text-slate-700 truncate flex-1">{f.name}</span>
+                      <button
+                        className="text-slate-400 hover:text-red-500"
+                        onClick={() => setNewDocFiles((prev) => prev.filter((_, idx) => idx !== i))}
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
           <DialogFooter>
             <Button variant="outline" className="bg-white border-slate-300 text-slate-700 hover:bg-slate-50" onClick={() => setDialogOpen(false)}>
