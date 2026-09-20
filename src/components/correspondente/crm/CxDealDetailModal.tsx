@@ -56,6 +56,18 @@ export function CxDealDetailModal({
   const { history, checks, addCheck, refetch } = useCxDealDetail(deal?.id ?? null);
   const [check, setCheck] = useState({ rating: '', margin_value: '', approved_value: '', result: '', notes: '' });
   const [review, setReview] = useState({ next_review_at: '', review_interval_days: '30' });
+  const [fin, setFin] = useState<FinForm>(emptyFin);
+  const [finDirty, setFinDirty] = useState(false);
+
+  const resetFin = (d: CxDeal) => {
+    setFin(finFromDeal(d));
+    setFinDirty(false);
+  };
+
+  const setFinField = (key: keyof FinForm, value: string) => {
+    setFin((p) => ({ ...p, [key]: value }));
+    setFinDirty(true);
+  };
 
   useEffect(() => {
     if (!deal) return;
@@ -64,6 +76,7 @@ export function CxDealDetailModal({
       review_interval_days: String(deal.review_interval_days ?? 30),
     });
     setCheck({ rating: '', margin_value: '', approved_value: '', result: '', notes: '' });
+    resetFin(deal);
   }, [deal?.id]);
 
   if (!deal) return null;
