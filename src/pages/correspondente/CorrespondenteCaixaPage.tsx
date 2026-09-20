@@ -123,6 +123,9 @@ export default function CorrespondenteCaixaPage() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [form, setForm] = useState({ full_name: '', email: '', phone: '', whatsapp: '', notes: '' });
   const [saving, setSaving] = useState(false);
+  const [newDocFiles, setNewDocFiles] = useState<File[]>([]);
+  const [newDocType, setNewDocType] = useState('auto');
+  const newDocRef = useRef<HTMLInputElement>(null);
 
   const [docType, setDocType] = useState<string>('rg');
   const [uploading, setUploading] = useState(false);
