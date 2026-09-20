@@ -130,6 +130,8 @@ export default function CorrespondenteCaixaPage() {
   const [reviewNotes, setReviewNotes] = useState('');
   const [linkOpen, setLinkOpen] = useState(false);
   const [listOpen, setListOpen] = useState(true);
+  const [clientTab, setClientTab] = useState<'ficha' | 'documentos' | 'imoveis' | 'historico'>('ficha');
+  const [showIntake, setShowIntake] = useState(true);
   const PORTAL_BASE_URL = 'https://postgen.fixaapp.com.br';
 
   const selected: CxClient | null = useMemo(
