@@ -23,6 +23,15 @@ import { CX_DOC_TYPES, CX_CHECKLIST, CX_DOC_LABEL, CX_SUBMISSION_STATUS, CxClien
 import { CxDocumentWorkspace } from '@/components/correspondente/CxDocumentWorkspace';
 import { CxNarrativeWorkspace } from '@/components/correspondente/CxNarrativeWorkspace';
 import { CxClientProperties } from '@/components/correspondente/CxClientProperties';
+import { useCxProperties } from '@/hooks/useCxProperties';
+import { useCxDeals } from '@/hooks/useCxDeals';
+import { CxDeal, CxDealStage } from '@/types/cxCrm';
+import { CxCrmDashboard } from '@/components/correspondente/crm/CxCrmDashboard';
+import { CxDealKanban } from '@/components/correspondente/crm/CxDealKanban';
+import { CxDealFormModal } from '@/components/correspondente/crm/CxDealFormModal';
+import { CxDealDetailModal } from '@/components/correspondente/crm/CxDealDetailModal';
+import { CxMonitoringList } from '@/components/correspondente/crm/CxMonitoringList';
+import { LayoutDashboard, KanbanSquare, BellRing } from 'lucide-react';
 
 import { CopyField } from '@/components/correspondente/CopyField';
 import {
@@ -79,15 +88,28 @@ function getClientStatus(client: CxClient, docs: CxDocument[]): ClientStatus {
   return { label: 'Pendente', color: 'text-amber-600', bg: 'bg-amber-50' };
 }
 
+type CxTab = 'painel' | 'funil' | 'monitoramento' | 'clientes' | 'narrativas';
+const CX_TABS: CxTab[] = ['painel', 'funil', 'monitoramento', 'clientes', 'narrativas'];
+
 export default function CorrespondenteCaixaPage() {
   const { clients, isLoading, createClient, updateClient, deleteClient } = useCxClients();
-  const [tab, setTabState] = useState<'clientes' | 'narrativas'>(
-    () => (localStorage.getItem('cx_tab') === 'narrativas' ? 'narrativas' : 'clientes'),
-  );
-  const setTab = (t: 'clientes' | 'narrativas') => {
+  const { properties: cxProperties } = useCxProperties();
+  const { deals, createDeal, updateDeal, moveDeal, deleteDeal } = useCxDeals();
+  const [tab, setTabState] = useState<CxTab>(() => {
+    const saved = localStorage.getItem('cx_tab') as CxTab | null;
+    return saved && CX_TABS.includes(saved) ? saved : 'painel';
+  });
+  const setTab = (t: CxTab) => {
     setTabState(t);
     localStorage.setItem('cx_tab', t);
   };
+
+  const [dealFormOpen, setDealFormOpen] = useState(false);
+  const [editingDeal, setEditingDeal] = useState<CxDeal | null>(null);
+  const [detailDealId, setDetailDealId] = useState<string | null>(null);
+  const detailDeal = useMemo(() => deals.find((d) => d.id === detailDealId) ?? null, [deals, detailDealId]);
+  const clientNameOf = (id: string) => clients.find((c) => c.id === id)?.full_name || 'Cliente';
+
 
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [search, setSearch] = useState('');
@@ -210,31 +232,60 @@ export default function CorrespondenteCaixaPage() {
       }
     >
       <div className="h-[calc(100vh-108px)] flex flex-col gap-4">
-        <div className="flex flex-wrap gap-2 bg-white border border-slate-200 rounded-2xl p-1.5 shadow-sm self-start">
-          <button
-            onClick={() => setTab('clientes')}
-            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-colors ${
-              tab === 'clientes' ? 'bg-[#1a3a6b] text-white shadow-sm' : 'text-slate-600 hover:bg-slate-50'
-            }`}
-          >
-            <Users className="w-4 h-4" />
-            Clientes
-          </button>
-          <button
-            onClick={() => setTab('narrativas')}
-            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-colors ${
-              tab === 'narrativas'
-                ? 'bg-[#1a3a6b] text-white shadow-sm'
-                : 'text-slate-600 hover:bg-slate-50'
-            }`}
-          >
-            <Building2 className="w-4 h-4" />
-            Checagem de Narrativas
-          </button>
+        <div className="flex flex-wrap items-center gap-3">
+          <div className="flex flex-wrap gap-2 bg-white border border-slate-200 rounded-2xl p-1.5 shadow-sm">
+            {([
+              ['painel', 'Painel', LayoutDashboard],
+              ['funil', 'Funil de crédito', KanbanSquare],
+              ['monitoramento', 'Monitoramento', BellRing],
+              ['clientes', 'Clientes e documentos', Users],
+              ['narrativas', 'Checagem de Narrativas', Building2],
+            ] as const).map(([key, label, Icon]) => (
+              <button
+                key={key}
+                onClick={() => setTab(key)}
+                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-colors ${
+                  tab === key ? 'bg-[#1a3a6b] text-white shadow-sm' : 'text-slate-600 hover:bg-slate-50'
+                }`}
+              >
+                <Icon className="w-4 h-4" />
+                {label}
+              </button>
+            ))}
+          </div>
 
+          {(tab === 'painel' || tab === 'funil' || tab === 'monitoramento') && (
+            <Button
+              className="text-white hover:opacity-90"
+              style={{ backgroundColor: BRAND }}
+              onClick={() => {
+                setEditingDeal(null);
+                setDealFormOpen(true);
+              }}
+            >
+              <Plus className="w-4 h-4 mr-2" /> Novo caso
+            </Button>
+          )}
         </div>
 
-        {tab === 'narrativas' ? (
+        {tab === 'painel' ? (
+          <div className="flex-1 min-h-0 overflow-y-auto pr-1">
+            <CxCrmDashboard deals={deals} clients={clients} onOpenStage={() => setTab('funil')} />
+          </div>
+        ) : tab === 'funil' ? (
+          <div className="flex-1 min-h-0 overflow-auto">
+            <CxDealKanban
+              deals={deals}
+              clientName={clientNameOf}
+              onMove={(id, from, to) => moveDeal(id, from, to)}
+              onCardClick={(d) => setDetailDealId(d.id)}
+            />
+          </div>
+        ) : tab === 'monitoramento' ? (
+          <div className="flex-1 min-h-0 overflow-y-auto pr-1">
+            <CxMonitoringList deals={deals} clientName={clientNameOf} onOpen={(d) => setDetailDealId(d.id)} />
+          </div>
+        ) : tab === 'narrativas' ? (
           <div className="flex-1 min-h-0">
             <CxNarrativeWorkspace />
           </div>
@@ -834,6 +885,44 @@ export default function CorrespondenteCaixaPage() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      <CxDealFormModal
+        open={dealFormOpen}
+        onClose={() => {
+          setDealFormOpen(false);
+          setEditingDeal(null);
+        }}
+        clients={clients}
+        properties={cxProperties}
+        deal={editingDeal}
+        defaultClientId={selectedId}
+        onSubmit={async (data) => {
+          if (editingDeal) {
+            await updateDeal(editingDeal.id, data as Partial<CxDeal>);
+          } else {
+            const created = await createDeal(data);
+            if (created) setDetailDealId(created.id);
+          }
+        }}
+      />
+
+      <CxDealDetailModal
+        deal={detailDeal}
+        clientName={detailDeal ? clientNameOf(detailDeal.client_id) : ''}
+        onClose={() => setDetailDealId(null)}
+        onUpdate={(id, patch) => updateDeal(id, patch, true)}
+        onMove={(id, from, to) => moveDeal(id, from, to as CxDealStage)}
+        onDelete={(id) => deleteDeal(id)}
+        onEdit={(d) => {
+          setEditingDeal(d);
+          setDealFormOpen(true);
+        }}
+        onOpenClient={(clientId) => {
+          setSelectedId(clientId);
+          setDetailDealId(null);
+          setTab('clientes');
+        }}
+      />
     </CxShell>
   );
 }
