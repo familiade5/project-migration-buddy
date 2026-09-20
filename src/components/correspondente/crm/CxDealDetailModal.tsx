@@ -365,11 +365,77 @@ export function CxDealDetailModal({
   );
 }
 
-function Info({ label, value }: { label: string; value: string }) {
+interface FinForm {
+  bank: string;
+  property_value: string;
+  financing_value: string;
+  down_payment: string;
+  fgts_value: string;
+  subsidy_value: string;
+  monthly_income: string;
+  installment_value: string;
+  rating: string;
+  margin_value: string;
+  approved_value: string;
+  responsible_name: string;
+  pendencies: string;
+  notes: string;
+}
+
+const emptyFin: FinForm = {
+  bank: '', property_value: '', financing_value: '', down_payment: '', fgts_value: '',
+  subsidy_value: '', monthly_income: '', installment_value: '', rating: '',
+  margin_value: '', approved_value: '', responsible_name: '', pendencies: '', notes: '',
+};
+
+const s = (v: unknown) => (v === null || v === undefined ? '' : String(v));
+
+function finFromDeal(d: CxDeal): FinForm {
+  return {
+    bank: s(d.bank),
+    property_value: s(d.property_value),
+    financing_value: s(d.financing_value),
+    down_payment: s(d.down_payment),
+    fgts_value: s(d.fgts_value),
+    subsidy_value: s(d.subsidy_value),
+    monthly_income: s(d.monthly_income),
+    installment_value: s(d.installment_value),
+    rating: s(d.rating),
+    margin_value: s(d.margin_value),
+    approved_value: s(d.approved_value),
+    responsible_name: s(d.responsible_name),
+    pendencies: s(d.pendencies),
+    notes: s(d.notes),
+  };
+}
+
+function num(v: string): number | null {
+  const t = v.replace(/\./g, '').replace(',', '.').trim();
+  if (!t) return null;
+  const n = Number(t);
+  return Number.isNaN(n) ? null : n;
+}
+
+function NumField({ label, value, onChange }: { label: string; value: string; onChange: (v: string) => void }) {
   return (
-    <div>
-      <p className="text-[10px] font-semibold uppercase tracking-wide text-slate-400">{label}</p>
-      <p className="text-sm font-semibold text-slate-800">{value}</p>
+    <div className="space-y-1">
+      <Label className="text-[10px] font-semibold uppercase tracking-wide text-slate-400">{label}</Label>
+      <Input
+        inputMode="decimal"
+        placeholder="R$ 0"
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        className={FIELD}
+      />
+    </div>
+  );
+}
+
+function TxtField({ label, value, onChange }: { label: string; value: string; onChange: (v: string) => void }) {
+  return (
+    <div className="space-y-1">
+      <Label className="text-[10px] font-semibold uppercase tracking-wide text-slate-400">{label}</Label>
+      <Input value={value} onChange={(e) => onChange(e.target.value)} className={FIELD} />
     </div>
   );
 }
