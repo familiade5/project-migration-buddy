@@ -606,6 +606,47 @@ export default function CorrespondenteCaixaPage() {
                     </Button>
                   </div>
 
+                  {/* Posição no funil */}
+                  {(() => {
+                    const deal = deals.find((d) => d.client_id === selected.id) || null;
+                    const cfg = deal ? cxStageCfg(stages, deal.stage) : null;
+                    return (
+                      <div className="mt-4 flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
+                        <span className="text-xs font-semibold text-slate-500">Posição no funil</span>
+                        <div className="flex items-center gap-2">
+                          {deal && cfg ? (
+                            <span className={`inline-flex items-center rounded-full border px-2 py-0.5 text-[11px] font-semibold ${cfg.bg} ${cfg.border} ${cfg.color}`}>
+                              {cfg.label}
+                            </span>
+                          ) : (
+                            <span className="text-xs text-slate-400">Fora do funil</span>
+                          )}
+                          <Select
+                            value={deal?.stage || ''}
+                            onValueChange={async (to) => {
+                              if (deal) {
+                                if (to !== deal.stage) await moveDeal(deal.id, deal.stage, to as CxDealStage);
+                              } else {
+                                await createDeal({ client_id: selected.id, stage: to as CxDealStage, title: selected.full_name });
+                              }
+                            }}
+                          >
+                            <SelectTrigger className="h-8 w-48 bg-white border-slate-200 text-slate-900 text-xs focus:ring-[#1a3a6b]/20 focus:border-[#1a3a6b]">
+                              <SelectValue placeholder="Mover para..." />
+                            </SelectTrigger>
+                            <SelectContent className="bg-white border-slate-200 text-slate-900">
+                              {stages.map((s) => (
+                                <SelectItem key={s.key} value={s.key} className="text-xs text-slate-900 focus:bg-slate-100 focus:text-slate-900">
+                                  {s.label}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      </div>
+                    );
+                  })()}
+
                   <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4 mt-6">
                     <CopyField label="Nome" value={selected.full_name} />
                     {selected.email && <CopyField label="E-mail" value={selected.email} />}
