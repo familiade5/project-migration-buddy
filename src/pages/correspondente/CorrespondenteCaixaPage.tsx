@@ -153,9 +153,50 @@ export default function CorrespondenteCaixaPage() {
   };
 
 
-  const { documents, uploadDocument, deleteDocument, openDocument, downloadDocument, retryExtraction, updateExtraction } =
+  const { documents, uploadDocument, deleteDocument, openDocument, downloadDocument, retryExtraction, updateExtraction, fetchDocuments } =
     useCxDocuments(selected?.id ?? null);
 
+  const { events, fetchEvents } = useCxClientEvents(selected?.id ?? null);
+
+  const intake = useCxIntake({
+    clients,
+    refreshClients: async () => {
+      await fetchClients();
+      await fetchDocuments();
+      await fetchEvents();
+    },
+  });
+
+  const fillProfileFromDocuments = async (profile: CxProfileData) => {
+    if (!selected) return;
+    const patch: Record<string, unknown> = {};
+    (Object.keys(profile) as (keyof CxProfileData)[]).forEach((key) => {
+      if (key === 'full_name') return;
+      const current = (selected as unknown as Record<string, unknown>)[key];
+      const next = profile[key];
+      if ((current == null || current === '') && next != null && next !== '') {
+        patch[key] = key === 'cpf' ? formatCpf(String(next)) : next;
+      }
+    });
+    if (Object.keys(patch).length === 0) {
+      toast.info('A ficha já está com todos os dados encontrados.');
+      return;
+    }
+    patch.profile_updated_at = new Date().toISOString();
+    const { error } = await supabase.from('cx_clients').update(patch).eq('id', selected.id);
+    if (error) {
+      toast.error('Não foi possível preencher a ficha', { description: error.message });
+      return;
+    }
+    await logCxClientEvent(selected.id, {
+      kind: 'cliente',
+      title: 'Ficha preenchida com os documentos',
+      description: `${Object.keys(patch).length - 1} campo(s) atualizados automaticamente.`,
+    });
+    await fetchClients();
+    await fetchEvents();
+    toast.success('Ficha atualizada com os dados dos documentos');
+  };
 
   useEffect(() => {
     setReviewNotes(selected?.review_notes || '');
@@ -164,11 +205,13 @@ export default function CorrespondenteCaixaPage() {
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
     if (!q) return clients;
+    const digits = onlyDigits(q);
     return clients.filter(
       (c) =>
         c.full_name.toLowerCase().includes(q) ||
         (c.phone || '').includes(q) ||
-        (c.email || '').toLowerCase().includes(q),
+        (c.email || '').toLowerCase().includes(q) ||
+        (digits.length >= 3 && onlyDigits(c.cpf).includes(digits)),
     );
   }, [clients, search]);
 
