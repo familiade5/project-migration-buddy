@@ -99,7 +99,7 @@ type CxTab = 'painel' | 'funil' | 'monitoramento' | 'clientes' | 'narrativas';
 const CX_TABS: CxTab[] = ['painel', 'funil', 'monitoramento', 'clientes', 'narrativas'];
 
 export default function CorrespondenteCaixaPage() {
-  const { clients, isLoading, createClient, updateClient, deleteClient } = useCxClients();
+  const { clients, isLoading, createClient, updateClient, deleteClient, fetchClients } = useCxClients();
   const { properties: cxProperties } = useCxProperties();
   const { deals, createDeal, updateDeal, moveDeal, deleteDeal } = useCxDeals();
   const [tab, setTabState] = useState<CxTab>(() => {
