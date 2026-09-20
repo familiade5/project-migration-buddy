@@ -166,6 +166,31 @@ export function CxDealDetailModal({
           <Button size="sm" variant="outline" className={BTN} onClick={() => onOpenClient(deal.client_id)}>
             <FileText className="w-3.5 h-3.5 mr-1.5" /> Documentos do cliente
           </Button>
+          <input
+            ref={finFileRef}
+            type="file"
+            accept="image/*,application/pdf"
+            className="hidden"
+            onChange={(e) => {
+              const f = e.target.files?.[0];
+              e.target.value = '';
+              if (f) extractFinancing(f);
+            }}
+          />
+          <Button
+            size="sm"
+            variant="outline"
+            className={BTN}
+            disabled={finLoading}
+            onClick={() => finFileRef.current?.click()}
+          >
+            {finLoading ? (
+              <Loader2 className="w-3.5 h-3.5 mr-1.5 animate-spin" />
+            ) : (
+              <Sparkles className="w-3.5 h-3.5 mr-1.5" />
+            )}
+            {finLoading ? 'Lendo documento…' : 'Preencher com documento (IA)'}
+          </Button>
           <Button
             size="sm"
             variant="outline"
