@@ -1,15 +1,17 @@
 import { useDraggable } from '@dnd-kit/core';
-import { CxDeal, CX_REJECTION_CONFIG, cxCurrency, cxDaysUntil } from '@/types/cxCrm';
-import { Building2, CalendarClock, Landmark, UserRound } from 'lucide-react';
+import { CxDeal, CxStage, CX_REJECTION_CONFIG, cxCurrency, cxDaysUntil } from '@/types/cxCrm';
+import { Building2, CalendarClock, ChevronDown, Landmark, UserRound } from 'lucide-react';
 
 interface Props {
   deal: CxDeal;
   clientName: string;
   onClick: () => void;
   dragging?: boolean;
+  stages?: CxStage[];
+  onMoveTo?: (to: string) => void;
 }
 
-export function CxDealCard({ deal, clientName, onClick, dragging }: Props) {
+export function CxDealCard({ deal, clientName, onClick, dragging, stages, onMoveTo }: Props) {
   const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({ id: deal.id });
 
   const days = cxDaysUntil(deal.next_review_at);
@@ -71,6 +73,33 @@ export function CxDealCard({ deal, clientName, onClick, dragging }: Props) {
           </span>
         )}
       </div>
+
+      {stages && stages.length > 0 && onMoveTo && !dragging && (
+        <div
+          className="mt-2 relative"
+          onClick={(e) => e.stopPropagation()}
+          onPointerDown={(e) => e.stopPropagation()}
+          onMouseDown={(e) => e.stopPropagation()}
+          onTouchStart={(e) => e.stopPropagation()}
+        >
+          <select
+            value={deal.stage}
+            onChange={(e) => {
+              const to = e.target.value;
+              if (to && to !== deal.stage) onMoveTo(to);
+            }}
+            className="w-full appearance-none text-[11px] font-semibold text-slate-600 bg-slate-50 border border-slate-200 rounded-lg pl-2 pr-6 py-1.5 cursor-pointer hover:border-[#1a3a6b]/40 focus:outline-none focus:ring-1 focus:ring-[#1a3a6b]/30"
+            title="Mover para outra etapa"
+          >
+            {stages.map((s) => (
+              <option key={s.key} value={s.key}>
+                {s.label}
+              </option>
+            ))}
+          </select>
+          <ChevronDown className="w-3.5 h-3.5 text-slate-400 absolute right-1.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+        </div>
+      )}
     </div>
   );
 }
