@@ -1105,17 +1105,24 @@ export default function CorrespondenteCaixaPage() {
             </div>
           </div>
           <DialogFooter>
-            <Button variant="outline" className="bg-white border-slate-300 text-slate-700 hover:bg-slate-50" onClick={() => setDialogOpen(false)}>
+            <Button
+              variant="outline"
+              className="bg-white border-slate-300 text-slate-700 hover:bg-slate-50"
+              onClick={() => {
+                setDialogOpen(false);
+                setNewDocFiles([]);
+              }}
+            >
               Cancelar
             </Button>
             <Button
               className="text-white hover:opacity-90"
               style={{ backgroundColor: BRAND }}
-              disabled={saving || !form.full_name.trim()}
+              disabled={saving || (newDocFiles.length === 0 && !form.full_name.trim())}
               onClick={handleCreate}
             >
               {saving && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
-              Criar
+              {newDocFiles.length > 0 ? 'Criar com o documento' : 'Criar'}
             </Button>
           </DialogFooter>
         </DialogContent>
