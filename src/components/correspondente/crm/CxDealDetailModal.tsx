@@ -149,10 +149,10 @@ export function CxDealDetailModal({
           <section className="rounded-2xl border border-slate-200 p-4 space-y-3">
             <h4 className="text-xs font-bold uppercase tracking-wide text-slate-400">Etapa</h4>
             <Select value={deal.stage} onValueChange={(v) => onMove(deal.id, deal.stage, v as CxDealStage)}>
-              <SelectTrigger className="bg-white"><SelectValue /></SelectTrigger>
-              <SelectContent>
+              <SelectTrigger className={FIELD}><SelectValue /></SelectTrigger>
+              <SelectContent className={POPOVER}>
                 {stages.map((s) => (
-                  <SelectItem key={s.key} value={s.key}>{s.label}</SelectItem>
+                  <SelectItem key={s.key} value={s.key} className={ITEM}>{s.label}</SelectItem>
                 ))}
               </SelectContent>
             </Select>
@@ -164,10 +164,10 @@ export function CxDealDetailModal({
                   value={deal.rejection_reason || ''}
                   onValueChange={(v) => onUpdate(deal.id, { rejection_reason: v as CxRejectionReason })}
                 >
-                  <SelectTrigger className="bg-white"><SelectValue placeholder="Selecione o motivo" /></SelectTrigger>
-                  <SelectContent>
+                  <SelectTrigger className={FIELD}><SelectValue placeholder="Selecione o motivo" /></SelectTrigger>
+                  <SelectContent className={POPOVER}>
                     {(Object.keys(CX_REJECTION_CONFIG) as CxRejectionReason[]).map((r) => (
-                      <SelectItem key={r} value={r}>{CX_REJECTION_CONFIG[r].label}</SelectItem>
+                      <SelectItem key={r} value={r} className={ITEM}>{CX_REJECTION_CONFIG[r].label}</SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
@@ -176,7 +176,7 @@ export function CxDealDetailModal({
                   onBlur={(e) => onUpdate(deal.id, { rejection_notes: e.target.value || null })}
                   rows={2}
                   placeholder="Detalhes da devolutiva do banco…"
-                  className="bg-white"
+                  className={FIELD}
                 />
               </div>
             )}
@@ -195,7 +195,7 @@ export function CxDealDetailModal({
                   type="date"
                   value={review.next_review_at}
                   onChange={(e) => setReview((p) => ({ ...p, next_review_at: e.target.value }))}
-                  className="bg-white"
+                  className={FIELD}
                 />
               </div>
               <div>
@@ -204,7 +204,7 @@ export function CxDealDetailModal({
                   type="number"
                   value={review.review_interval_days}
                   onChange={(e) => setReview((p) => ({ ...p, review_interval_days: e.target.value }))}
-                  className="bg-white"
+                  className={FIELD}
                 />
               </div>
             </div>
@@ -246,20 +246,20 @@ export function CxDealDetailModal({
         <section className="rounded-2xl border border-slate-200 p-4 space-y-3">
           <h4 className="text-xs font-bold uppercase tracking-wide text-slate-400">Nova consulta de rating / margem</h4>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-            <Input placeholder="Rating" value={check.rating} onChange={(e) => setCheck((p) => ({ ...p, rating: e.target.value }))} className="bg-white" />
-            <Input type="number" placeholder="Margem (R$)" value={check.margin_value} onChange={(e) => setCheck((p) => ({ ...p, margin_value: e.target.value }))} className="bg-white" />
-            <Input type="number" placeholder="Valor aprovado (R$)" value={check.approved_value} onChange={(e) => setCheck((p) => ({ ...p, approved_value: e.target.value }))} className="bg-white" />
+            <Input placeholder="Rating" value={check.rating} onChange={(e) => setCheck((p) => ({ ...p, rating: e.target.value }))} className={FIELD} />
+            <Input type="number" placeholder="Margem (R$)" value={check.margin_value} onChange={(e) => setCheck((p) => ({ ...p, margin_value: e.target.value }))} className={FIELD} />
+            <Input type="number" placeholder="Valor aprovado (R$)" value={check.approved_value} onChange={(e) => setCheck((p) => ({ ...p, approved_value: e.target.value }))} className={FIELD} />
             <Select value={check.result} onValueChange={(v) => setCheck((p) => ({ ...p, result: v }))}>
-              <SelectTrigger className="bg-white"><SelectValue placeholder="Resultado" /></SelectTrigger>
-              <SelectContent>
-                <SelectItem value="liberado">Liberado</SelectItem>
-                <SelectItem value="parcial">Parcialmente liberado</SelectItem>
-                <SelectItem value="sem_margem">Sem margem</SelectItem>
-                <SelectItem value="sem_rating">Sem rating</SelectItem>
+              <SelectTrigger className={FIELD}><SelectValue placeholder="Resultado" /></SelectTrigger>
+              <SelectContent className={POPOVER}>
+                <SelectItem value="liberado" className={ITEM}>Liberado</SelectItem>
+                <SelectItem value="parcial" className={ITEM}>Parcialmente liberado</SelectItem>
+                <SelectItem value="sem_margem" className={ITEM}>Sem margem</SelectItem>
+                <SelectItem value="sem_rating" className={ITEM}>Sem rating</SelectItem>
               </SelectContent>
             </Select>
           </div>
-          <Textarea rows={2} placeholder="Observações da consulta…" value={check.notes} onChange={(e) => setCheck((p) => ({ ...p, notes: e.target.value }))} className="bg-white" />
+          <Textarea rows={2} placeholder="Observações da consulta…" value={check.notes} onChange={(e) => setCheck((p) => ({ ...p, notes: e.target.value }))} className={FIELD} />
           <Button size="sm" className="text-white" style={{ backgroundColor: BRAND }} onClick={submitCheck}>
             Registrar consulta e reagendar
           </Button>
