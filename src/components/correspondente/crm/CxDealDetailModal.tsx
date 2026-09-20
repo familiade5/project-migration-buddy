@@ -219,28 +219,55 @@ export function CxDealDetailModal({
           </section>
         </div>
 
-        <section className="rounded-2xl border border-slate-200 p-4">
-          <h4 className="text-xs font-bold uppercase tracking-wide text-slate-400 mb-3">Dados do financiamento</h4>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-sm">
-            <Info label="Banco" value={deal.bank || '—'} />
-            <Info label="Valor do imóvel" value={money(deal.property_value)} />
-            <Info label="Financiado" value={money(deal.financing_value)} />
-            <Info label="Entrada" value={money(deal.down_payment)} />
-            <Info label="FGTS" value={money(deal.fgts_value)} />
-            <Info label="Subsídio" value={money(deal.subsidy_value)} />
-            <Info label="Renda" value={money(deal.monthly_income)} />
-            <Info label="Parcela" value={money(deal.installment_value)} />
-            <Info label="Rating" value={deal.rating || '—'} />
-            <Info label="Margem" value={money(deal.margin_value)} />
-            <Info label="Valor aprovado" value={money(deal.approved_value)} />
-            <Info label="Responsável" value={deal.responsible_name || '—'} />
+        <section className="rounded-2xl border border-slate-200 p-4 space-y-3">
+          <div className="flex items-center justify-between gap-2">
+            <h4 className="text-xs font-bold uppercase tracking-wide text-slate-400">Dados do financiamento</h4>
+            {finDirty && <span className="text-[11px] font-semibold text-amber-600">Alterações não salvas</span>}
           </div>
-          {deal.pendencies && (
-            <p className="mt-3 text-sm text-amber-700 bg-amber-50 rounded-xl p-3">
-              <strong>Pendências:</strong> {deal.pendencies}
-            </p>
-          )}
-          {deal.notes && <p className="mt-3 text-sm text-slate-600 whitespace-pre-wrap">{deal.notes}</p>}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <div className="space-y-1">
+              <Label className="text-[10px] font-semibold uppercase tracking-wide text-slate-400">Banco</Label>
+              <Select value={fin.bank} onValueChange={(v) => setFinField('bank', v)}>
+                <SelectTrigger className={FIELD}><SelectValue placeholder="Selecione" /></SelectTrigger>
+                <SelectContent className={POPOVER}>
+                  {CX_BANKS.map((b) => (
+                    <SelectItem key={b} value={b} className={ITEM}>{b}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <NumField label="Valor do imóvel" value={fin.property_value} onChange={(v) => setFinField('property_value', v)} />
+            <NumField label="Financiado" value={fin.financing_value} onChange={(v) => setFinField('financing_value', v)} />
+            <NumField label="Entrada" value={fin.down_payment} onChange={(v) => setFinField('down_payment', v)} />
+            <NumField label="FGTS" value={fin.fgts_value} onChange={(v) => setFinField('fgts_value', v)} />
+            <NumField label="Subsídio" value={fin.subsidy_value} onChange={(v) => setFinField('subsidy_value', v)} />
+            <NumField label="Renda" value={fin.monthly_income} onChange={(v) => setFinField('monthly_income', v)} />
+            <NumField label="Parcela" value={fin.installment_value} onChange={(v) => setFinField('installment_value', v)} />
+            <TxtField label="Rating" value={fin.rating} onChange={(v) => setFinField('rating', v)} />
+            <NumField label="Margem" value={fin.margin_value} onChange={(v) => setFinField('margin_value', v)} />
+            <NumField label="Valor aprovado" value={fin.approved_value} onChange={(v) => setFinField('approved_value', v)} />
+            <TxtField label="Responsável" value={fin.responsible_name} onChange={(v) => setFinField('responsible_name', v)} />
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div className="space-y-1">
+              <Label className="text-[10px] font-semibold uppercase tracking-wide text-slate-400">Pendências</Label>
+              <Textarea rows={2} value={fin.pendencies} onChange={(e) => setFinField('pendencies', e.target.value)} className={FIELD} />
+            </div>
+            <div className="space-y-1">
+              <Label className="text-[10px] font-semibold uppercase tracking-wide text-slate-400">Observações</Label>
+              <Textarea rows={2} value={fin.notes} onChange={(e) => setFinField('notes', e.target.value)} className={FIELD} />
+            </div>
+          </div>
+          <div className="flex gap-2">
+            <Button size="sm" className="text-white" style={{ backgroundColor: BRAND }} onClick={saveFin} disabled={!finDirty}>
+              Salvar dados do financiamento
+            </Button>
+            {finDirty && (
+              <Button size="sm" variant="outline" className={BTN} onClick={() => resetFin(deal)}>
+                Descartar
+              </Button>
+            )}
+          </div>
         </section>
 
         <section className="rounded-2xl border border-slate-200 p-4 space-y-3">
