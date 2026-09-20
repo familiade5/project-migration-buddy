@@ -1,11 +1,16 @@
-export type CxDealStage =
-  | 'simulacao'
-  | 'documentacao'
-  | 'em_analise'
-  | 'condicionado'
-  | 'aprovado'
-  | 'contrato'
-  | 'reprovado';
+export type CxDealStage = string;
+
+export interface CxStage {
+  id: string;
+  key: string;
+  label: string;
+  color: string;
+  bg: string;
+  border: string;
+  position: number;
+  is_system: boolean;
+  is_active: boolean;
+}
 
 export type CxRejectionReason = 'rating' | 'capacidade' | 'outro';
 
@@ -77,7 +82,7 @@ export const CX_STAGE_ORDER: CxDealStage[] = [
 ];
 
 export const CX_STAGE_CONFIG: Record<
-  CxDealStage,
+  string,
   { label: string; short: string; color: string; bg: string; border: string }
 > = {
   simulacao: { label: 'Simulação', short: 'Simulação', color: '#64748b', bg: '#f8fafc', border: '#cbd5e1' },
