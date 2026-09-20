@@ -835,6 +835,7 @@ export default function CorrespondenteCaixaPage() {
             )}
           </section>
         </div>
+        </div>
         )}
       </div>
 
