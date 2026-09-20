@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { CxDeal, CxDealStage, CX_BANKS, CX_STAGE_CONFIG, CX_STAGE_ORDER } from '@/types/cxCrm';
+import { CxDeal, CxDealStage, CxStage, CX_BANKS } from '@/types/cxCrm';
 import { CxClient, CxProperty } from '@/types/correspondente';
 
 const BRAND = '#1a3a6b';
@@ -16,6 +16,7 @@ interface Props {
   onClose: () => void;
   clients: CxClient[];
   properties: CxProperty[];
+  stages: CxStage[];
   deal?: CxDeal | null;
   defaultClientId?: string | null;
   onSubmit: (data: Partial<CxDeal> & { client_id: string }) => Promise<unknown>;
@@ -39,7 +40,7 @@ const empty = {
   notes: '',
 };
 
-export function CxDealFormModal({ open, onClose, clients, properties, deal, defaultClientId, onSubmit }: Props) {
+export function CxDealFormModal({ open, onClose, clients, properties, stages, deal, defaultClientId, onSubmit }: Props) {
   const [form, setForm] = useState({ ...empty });
   const [saving, setSaving] = useState(false);
 
@@ -135,8 +136,8 @@ export function CxDealFormModal({ open, onClose, clients, properties, deal, defa
             <Select value={form.stage} onValueChange={(v) => set('stage', v)}>
               <SelectTrigger className="bg-white"><SelectValue /></SelectTrigger>
               <SelectContent>
-                {CX_STAGE_ORDER.map((s) => (
-                  <SelectItem key={s} value={s}>{CX_STAGE_CONFIG[s].label}</SelectItem>
+                {stages.map((s) => (
+                  <SelectItem key={s.key} value={s.key}>{s.label}</SelectItem>
                 ))}
               </SelectContent>
             </Select>

@@ -9,11 +9,11 @@ import {
   CxDeal,
   CxDealStage,
   CxRejectionReason,
+  CxStage,
   CX_REJECTION_CONFIG,
-  CX_STAGE_CONFIG,
-  CX_STAGE_ORDER,
   cxCurrency,
   cxDaysUntil,
+  cxStageCfg,
 } from '@/types/cxCrm';
 import { useCxDealDetail } from '@/hooks/useCxDeals';
 import { CalendarClock, FileText, History, Pencil, Trash2 } from 'lucide-react';
@@ -22,6 +22,7 @@ const BRAND = '#1a3a6b';
 
 interface Props {
   deal: CxDeal | null;
+  stages: CxStage[];
   clientName: string;
   onClose: () => void;
   onUpdate: (id: string, patch: Partial<CxDeal>) => Promise<boolean>;
@@ -39,6 +40,7 @@ function fmtDate(iso?: string | null) {
 
 export function CxDealDetailModal({
   deal,
+  stages,
   clientName,
   onClose,
   onUpdate,
@@ -62,7 +64,7 @@ export function CxDealDetailModal({
 
   if (!deal) return null;
 
-  const cfg = CX_STAGE_CONFIG[deal.stage];
+  const cfg = cxStageCfg(stages, deal.stage);
   const days = cxDaysUntil(deal.next_review_at);
   const isRejected = deal.stage === 'reprovado';
 
@@ -145,8 +147,8 @@ export function CxDealDetailModal({
             <Select value={deal.stage} onValueChange={(v) => onMove(deal.id, deal.stage, v as CxDealStage)}>
               <SelectTrigger className="bg-white"><SelectValue /></SelectTrigger>
               <SelectContent>
-                {CX_STAGE_ORDER.map((s) => (
-                  <SelectItem key={s} value={s}>{CX_STAGE_CONFIG[s].label}</SelectItem>
+                {stages.map((s) => (
+                  <SelectItem key={s.key} value={s.key}>{s.label}</SelectItem>
                 ))}
               </SelectContent>
             </Select>
@@ -286,8 +288,8 @@ export function CxDealDetailModal({
             {history.map((h) => (
               <li key={h.id} className="text-xs text-slate-600">
                 <span className="text-slate-400">{fmtDate(h.created_at)}</span>{' '}
-                {h.from_stage ? `${CX_STAGE_CONFIG[h.from_stage].label} → ` : ''}
-                <strong>{CX_STAGE_CONFIG[h.to_stage].label}</strong>
+                {h.from_stage ? `${cxStageCfg(stages, h.from_stage).label} → ` : ''}
+                <strong>{cxStageCfg(stages, h.to_stage).label}</strong>
                 {h.moved_by_name ? ` · ${h.moved_by_name}` : ''}
               </li>
             ))}

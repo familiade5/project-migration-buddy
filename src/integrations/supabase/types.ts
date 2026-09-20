@@ -1576,32 +1576,32 @@ export type Database = {
         Row: {
           created_at: string
           deal_id: string
-          from_stage: Database["public"]["Enums"]["cx_deal_stage"] | null
+          from_stage: string | null
           id: string
           moved_by_name: string | null
           moved_by_user_id: string | null
           notes: string | null
-          to_stage: Database["public"]["Enums"]["cx_deal_stage"]
+          to_stage: string
         }
         Insert: {
           created_at?: string
           deal_id: string
-          from_stage?: Database["public"]["Enums"]["cx_deal_stage"] | null
+          from_stage?: string | null
           id?: string
           moved_by_name?: string | null
           moved_by_user_id?: string | null
           notes?: string | null
-          to_stage: Database["public"]["Enums"]["cx_deal_stage"]
+          to_stage: string
         }
         Update: {
           created_at?: string
           deal_id?: string
-          from_stage?: Database["public"]["Enums"]["cx_deal_stage"] | null
+          from_stage?: string | null
           id?: string
           moved_by_name?: string | null
           moved_by_user_id?: string | null
           notes?: string | null
-          to_stage?: Database["public"]["Enums"]["cx_deal_stage"]
+          to_stage?: string
         }
         Relationships: [
           {
@@ -1641,7 +1641,7 @@ export type Database = {
           responsible_name: string | null
           responsible_user_id: string | null
           review_interval_days: number
-          stage: Database["public"]["Enums"]["cx_deal_stage"]
+          stage: string
           stage_entered_at: string
           subsidy_value: number | null
           title: string | null
@@ -1674,7 +1674,7 @@ export type Database = {
           responsible_name?: string | null
           responsible_user_id?: string | null
           review_interval_days?: number
-          stage?: Database["public"]["Enums"]["cx_deal_stage"]
+          stage?: string
           stage_entered_at?: string
           subsidy_value?: number | null
           title?: string | null
@@ -1707,7 +1707,7 @@ export type Database = {
           responsible_name?: string | null
           responsible_user_id?: string | null
           review_interval_days?: number
-          stage?: Database["public"]["Enums"]["cx_deal_stage"]
+          stage?: string
           stage_entered_at?: string
           subsidy_value?: number | null
           title?: string | null
@@ -1792,6 +1792,48 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      cx_pipeline_stages: {
+        Row: {
+          bg: string
+          border: string
+          color: string
+          created_at: string
+          id: string
+          is_active: boolean
+          is_system: boolean
+          key: string
+          label: string
+          position: number
+          updated_at: string
+        }
+        Insert: {
+          bg?: string
+          border?: string
+          color?: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          is_system?: boolean
+          key: string
+          label: string
+          position?: number
+          updated_at?: string
+        }
+        Update: {
+          bg?: string
+          border?: string
+          color?: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          is_system?: boolean
+          key?: string
+          label?: string
+          position?: number
+          updated_at?: string
+        }
+        Relationships: []
       }
       cx_properties: {
         Row: {

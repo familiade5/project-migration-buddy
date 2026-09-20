@@ -1,11 +1,16 @@
-export type CxDealStage =
-  | 'simulacao'
-  | 'documentacao'
-  | 'em_analise'
-  | 'condicionado'
-  | 'aprovado'
-  | 'contrato'
-  | 'reprovado';
+export type CxDealStage = string;
+
+export interface CxStage {
+  id: string;
+  key: string;
+  label: string;
+  color: string;
+  bg: string;
+  border: string;
+  position: number;
+  is_system: boolean;
+  is_active: boolean;
+}
 
 export type CxRejectionReason = 'rating' | 'capacidade' | 'outro';
 
@@ -77,7 +82,7 @@ export const CX_STAGE_ORDER: CxDealStage[] = [
 ];
 
 export const CX_STAGE_CONFIG: Record<
-  CxDealStage,
+  string,
   { label: string; short: string; color: string; bg: string; border: string }
 > = {
   simulacao: { label: 'Simulação', short: 'Simulação', color: '#64748b', bg: '#f8fafc', border: '#cbd5e1' },
@@ -117,4 +122,36 @@ export function cxDaysUntil(dateStr: string | null | undefined): number | null {
   const d = new Date(`${dateStr}T00:00:00`);
   if (Number.isNaN(d.getTime())) return null;
   return Math.round((d.getTime() - today.getTime()) / 86400000);
+}
+
+export const CX_STAGE_PALETTE: { label: string; color: string; bg: string; border: string }[] = [
+  { label: 'Azul', color: '#0ea5e9', bg: '#f0f9ff', border: '#bae6fd' },
+  { label: 'Roxo', color: '#6366f1', bg: '#eef2ff', border: '#c7d2fe' },
+  { label: 'Verde', color: '#10b981', bg: '#ecfdf5', border: '#a7f3d0' },
+  { label: 'Âmbar', color: '#f59e0b', bg: '#fffbeb', border: '#fde68a' },
+  { label: 'Vermelho', color: '#ef4444', bg: '#fef2f2', border: '#fecaca' },
+  { label: 'Cinza', color: '#64748b', bg: '#f8fafc', border: '#cbd5e1' },
+  { label: 'Marinho', color: '#1a3a6b', bg: '#eff6ff', border: '#bfdbfe' },
+  { label: 'Rosa', color: '#ec4899', bg: '#fdf2f8', border: '#fbcfe8' },
+];
+
+const CX_STAGE_FALLBACK = { label: 'Etapa', short: 'Etapa', color: '#64748b', bg: '#f8fafc', border: '#cbd5e1' };
+
+export function cxStageCfg(stages: CxStage[], key: string | null | undefined) {
+  if (!key) return CX_STAGE_FALLBACK;
+  const found = stages.find((s) => s.key === key);
+  if (found) {
+    return { label: found.label, short: found.label, color: found.color, bg: found.bg, border: found.border };
+  }
+  return CX_STAGE_CONFIG[key] || { ...CX_STAGE_FALLBACK, label: key, short: key };
+}
+
+export function cxStageKeyFromLabel(label: string) {
+  return label
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '_')
+    .replace(/^_+|_+$/g, '')
+    .slice(0, 40);
 }

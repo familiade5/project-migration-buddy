@@ -1,16 +1,17 @@
 import { useMemo } from 'react';
-import { CxDeal, CX_REJECTION_CONFIG, CX_STAGE_CONFIG, cxCurrency, cxDaysUntil } from '@/types/cxCrm';
+import { CxDeal, CxStage, CX_REJECTION_CONFIG, cxCurrency, cxDaysUntil, cxStageCfg } from '@/types/cxCrm';
 import { AlertTriangle, CalendarClock, CheckCircle2 } from 'lucide-react';
 
 const BRAND = '#1a3a6b';
 
 interface Props {
   deals: CxDeal[];
+  stages: CxStage[];
   clientName: (id: string) => string;
   onOpen: (deal: CxDeal) => void;
 }
 
-export function CxMonitoringList({ deals, clientName, onOpen }: Props) {
+export function CxMonitoringList({ deals, stages, clientName, onOpen }: Props) {
   const watched = useMemo(
     () =>
       deals
@@ -39,7 +40,7 @@ export function CxMonitoringList({ deals, clientName, onOpen }: Props) {
         <div className="divide-y divide-slate-100">
           {watched.map((d) => {
             const days = cxDaysUntil(d.next_review_at);
-            const cfg = CX_STAGE_CONFIG[d.stage];
+            const cfg = cxStageCfg(stages, d.stage);
             return (
               <button
                 key={d.id}

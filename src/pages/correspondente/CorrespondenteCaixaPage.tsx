@@ -25,6 +25,7 @@ import { CxNarrativeWorkspace } from '@/components/correspondente/CxNarrativeWor
 import { CxClientProperties } from '@/components/correspondente/CxClientProperties';
 import { useCxProperties } from '@/hooks/useCxProperties';
 import { useCxDeals } from '@/hooks/useCxDeals';
+import { useCxStages } from '@/hooks/useCxStages';
 import { CxDeal, CxDealStage } from '@/types/cxCrm';
 import { CxCrmDashboard } from '@/components/correspondente/crm/CxCrmDashboard';
 import { CxDealKanban } from '@/components/correspondente/crm/CxDealKanban';
@@ -102,6 +103,7 @@ export default function CorrespondenteCaixaPage() {
   const { clients, isLoading, createClient, updateClient, deleteClient, fetchClients } = useCxClients();
   const { properties: cxProperties } = useCxProperties();
   const { deals, createDeal, updateDeal, moveDeal, deleteDeal } = useCxDeals();
+  const { stages, createStage, deleteStage, moveStage } = useCxStages();
   const [tab, setTabState] = useState<CxTab>('painel');
   const setTab = (t: CxTab) => {
     setTabState(t);
@@ -354,20 +356,24 @@ export default function CorrespondenteCaixaPage() {
 
         {tab === 'painel' ? (
           <div className="flex-1 min-h-0 overflow-y-auto pr-1">
-            <CxCrmDashboard deals={deals} clients={clients} onOpenStage={() => setTab('funil')} />
+            <CxCrmDashboard deals={deals} stages={stages} clients={clients} onOpenStage={() => setTab('funil')} />
           </div>
         ) : tab === 'funil' ? (
           <div className="flex-1 min-h-0 overflow-auto">
             <CxDealKanban
               deals={deals}
+              stages={stages}
               clientName={clientNameOf}
               onMove={(id, from, to) => moveDeal(id, from, to)}
               onCardClick={(d) => setDetailDealId(d.id)}
+              onCreateStage={createStage}
+              onDeleteStage={deleteStage}
+              onReorderStage={moveStage}
             />
           </div>
         ) : tab === 'monitoramento' ? (
           <div className="flex-1 min-h-0 overflow-y-auto pr-1">
-            <CxMonitoringList deals={deals} clientName={clientNameOf} onOpen={(d) => setDetailDealId(d.id)} />
+            <CxMonitoringList deals={deals} stages={stages} clientName={clientNameOf} onOpen={(d) => setDetailDealId(d.id)} />
           </div>
         ) : tab === 'narrativas' ? (
           <div className="flex-1 min-h-0">
@@ -1110,6 +1116,7 @@ export default function CorrespondenteCaixaPage() {
         }}
         clients={clients}
         properties={cxProperties}
+        stages={stages}
         deal={editingDeal}
         defaultClientId={selectedId}
         onSubmit={async (data) => {
@@ -1124,6 +1131,7 @@ export default function CorrespondenteCaixaPage() {
 
       <CxDealDetailModal
         deal={detailDeal}
+        stages={stages}
         clientName={detailDeal ? clientNameOf(detailDeal.client_id) : ''}
         onClose={() => setDetailDealId(null)}
         onUpdate={(id, patch) => updateDeal(id, patch, true)}

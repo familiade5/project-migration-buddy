@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { CxDeal, CX_STAGE_CONFIG, CX_STAGE_ORDER, cxCurrency, cxDaysUntil } from '@/types/cxCrm';
+import { CxDeal, CxStage, cxCurrency, cxDaysUntil } from '@/types/cxCrm';
 import { CxClient } from '@/types/correspondente';
 import { AlertTriangle, CheckCircle2, Layers, TrendingUp, Users } from 'lucide-react';
 
@@ -7,11 +7,12 @@ const BRAND = '#1a3a6b';
 
 interface Props {
   deals: CxDeal[];
+  stages: CxStage[];
   clients: CxClient[];
   onOpenStage: () => void;
 }
 
-export function CxCrmDashboard({ deals, clients, onOpenStage }: Props) {
+export function CxCrmDashboard({ deals, stages, clients, onOpenStage }: Props) {
   const stats = useMemo(() => {
     const approved = deals.filter((d) => d.stage === 'aprovado' || d.stage === 'contrato');
     const rejected = deals.filter((d) => d.stage === 'reprovado');
@@ -29,13 +30,13 @@ export function CxCrmDashboard({ deals, clients, onOpenStage }: Props) {
   }, [deals]);
 
   const byStage = useMemo(() => {
-    const max = Math.max(1, ...CX_STAGE_ORDER.map((s) => deals.filter((d) => d.stage === s).length));
-    return CX_STAGE_ORDER.map((s) => ({
+    const max = Math.max(1, ...stages.map((s) => deals.filter((d) => d.stage === s.key).length));
+    return stages.map((s) => ({
       stage: s,
-      count: deals.filter((d) => d.stage === s).length,
-      pct: (deals.filter((d) => d.stage === s).length / max) * 100,
+      count: deals.filter((d) => d.stage === s.key).length,
+      pct: (deals.filter((d) => d.stage === s.key).length / max) * 100,
     }));
-  }, [deals]);
+  }, [deals, stages]);
 
   const cards = [
     { label: 'Casos ativos', value: deals.filter((d) => d.stage !== 'reprovado').length, icon: Layers, tone: 'text-[#1a3a6b] bg-blue-50' },
@@ -69,9 +70,9 @@ export function CxCrmDashboard({ deals, clients, onOpenStage }: Props) {
           </div>
           <div className="space-y-2.5">
             {byStage.map(({ stage, count, pct }) => {
-              const cfg = CX_STAGE_CONFIG[stage];
+              const cfg = stage;
               return (
-                <div key={stage} className="flex items-center gap-3">
+                <div key={stage.key} className="flex items-center gap-3">
                   <span className="w-36 text-xs font-semibold text-slate-600 truncate">{cfg.label}</span>
                   <div className="flex-1 h-6 rounded-lg bg-slate-100 overflow-hidden">
                     <div
