@@ -26,7 +26,7 @@ import { CxClientProperties } from '@/components/correspondente/CxClientProperti
 import { useCxProperties } from '@/hooks/useCxProperties';
 import { useCxDeals } from '@/hooks/useCxDeals';
 import { useCxStages } from '@/hooks/useCxStages';
-import { CxDeal, CxDealStage } from '@/types/cxCrm';
+import { CxDeal, CxDealStage, cxStageCfg } from '@/types/cxCrm';
 import { CxCrmDashboard } from '@/components/correspondente/crm/CxCrmDashboard';
 import { CxDealKanban } from '@/components/correspondente/crm/CxDealKanban';
 import { CxDealFormModal } from '@/components/correspondente/crm/CxDealFormModal';
@@ -708,11 +708,57 @@ export default function CorrespondenteCaixaPage() {
 
                 <div className="p-6 space-y-6">
                   {clientTab === 'ficha' && (
-                    <CxClientOverview
-                      client={selected}
-                      documents={documents}
-                      onFillFromDocuments={fillProfileFromDocuments}
-                    />
+                    <>
+                      {/* Posição no funil */}
+                      {(() => {
+                        const deal = deals.find((d) => d.client_id === selected.id) || null;
+                        const cfg = deal ? cxStageCfg(stages, deal.stage) : null;
+                        return (
+                          <div className="bg-white rounded-2xl border border-slate-200 p-4 flex flex-col sm:flex-row sm:items-center gap-3">
+                            <div className="flex-1 min-w-0">
+                              <p className="text-xs font-bold uppercase tracking-wide text-slate-500">Posição no funil</p>
+                              {deal && cfg ? (
+                                <p className="text-sm text-slate-700 mt-0.5 flex items-center gap-2">
+                                  <span className={`inline-flex items-center rounded-full border px-2 py-0.5 text-[11px] font-semibold ${cfg.bg} ${cfg.border} ${cfg.color}`}>
+                                    {cfg.label}
+                                  </span>
+                                </p>
+                              ) : (
+                                <p className="text-xs text-slate-400 mt-0.5">Este cliente ainda não está no funil. Escolha uma etapa para adicioná-lo.</p>
+                              )}
+                            </div>
+                            <div className="w-full sm:w-64">
+                              <Select
+                                value={deal?.stage || ''}
+                                onValueChange={async (to) => {
+                                  if (deal) {
+                                    if (to !== deal.stage) await moveDeal(deal.id, deal.stage, to as CxDealStage);
+                                  } else {
+                                    await createDeal({ client_id: selected.id, stage: to as CxDealStage, title: selected.full_name });
+                                  }
+                                }}
+                              >
+                                <SelectTrigger className="bg-white border-slate-200 text-slate-900 focus:ring-[#1a3a6b]/20 focus:border-[#1a3a6b]">
+                                  <SelectValue placeholder="Mover para..." />
+                                </SelectTrigger>
+                                <SelectContent className="bg-white border-slate-200 text-slate-900">
+                                  {stages.map((s) => (
+                                    <SelectItem key={s.key} value={s.key} className="text-slate-900 focus:bg-slate-100 focus:text-slate-900">
+                                      {s.label}
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                            </div>
+                          </div>
+                        );
+                      })()}
+                      <CxClientOverview
+                        client={selected}
+                        documents={documents}
+                        onFillFromDocuments={fillProfileFromDocuments}
+                      />
+                    </>
                   )}
 
                   {/* Checklist + upload */}
