@@ -36,7 +36,7 @@ export function CxShell({ children, right }: Props) {
                 Correspondente Caixa
               </p>
               <p className="text-[11px] text-slate-500 leading-tight truncate hidden sm:block">
-                Análise de documentação e renda para o SICAQ
+                CRM de análise de documentação e aprovação de financiamentos
               </p>
             </div>
           </div>
