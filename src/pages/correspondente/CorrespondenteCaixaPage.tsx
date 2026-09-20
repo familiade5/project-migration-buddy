@@ -31,7 +31,14 @@ import { CxDealKanban } from '@/components/correspondente/crm/CxDealKanban';
 import { CxDealFormModal } from '@/components/correspondente/crm/CxDealFormModal';
 import { CxDealDetailModal } from '@/components/correspondente/crm/CxDealDetailModal';
 import { CxMonitoringList } from '@/components/correspondente/crm/CxMonitoringList';
-import { LayoutDashboard, KanbanSquare, BellRing } from 'lucide-react';
+import { CxIntakePanel } from '@/components/correspondente/CxIntakePanel';
+import { CxClientOverview } from '@/components/correspondente/CxClientOverview';
+import { CxClientTimeline } from '@/components/correspondente/CxClientTimeline';
+import { useCxIntake } from '@/hooks/useCxIntake';
+import { useCxClientEvents, logCxClientEvent } from '@/hooks/useCxClientEvents';
+import { CxProfileData, formatCpf, onlyDigits } from '@/lib/cxProfile';
+import { supabase } from '@/integrations/supabase/client';
+import { LayoutDashboard, KanbanSquare, BellRing, IdCard, History, Sparkles } from 'lucide-react';
 
 import { CopyField } from '@/components/correspondente/CopyField';
 import {
