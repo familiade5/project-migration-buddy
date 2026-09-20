@@ -19,6 +19,10 @@ import { useCxDealDetail } from '@/hooks/useCxDeals';
 import { CalendarClock, FileText, History, Pencil, Trash2 } from 'lucide-react';
 
 const BRAND = '#1a3a6b';
+const BTN = 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50 hover:text-slate-900';
+const POPOVER = 'bg-white text-slate-900 border-slate-200';
+const ITEM = 'text-slate-700 focus:bg-slate-100 focus:text-slate-900';
+const FIELD = 'bg-white border-slate-200 text-slate-900 placeholder:text-slate-400';
 
 interface Props {
   deal: CxDeal | null;
