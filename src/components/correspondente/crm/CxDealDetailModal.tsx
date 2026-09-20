@@ -85,6 +85,26 @@ export function CxDealDetailModal({
   const days = cxDaysUntil(deal.next_review_at);
   const isRejected = deal.stage === 'reprovado';
 
+  const saveFin = async () => {
+    const ok = await onUpdate(deal.id, {
+      bank: fin.bank || null,
+      property_value: num(fin.property_value),
+      financing_value: num(fin.financing_value),
+      down_payment: num(fin.down_payment),
+      fgts_value: num(fin.fgts_value),
+      subsidy_value: num(fin.subsidy_value),
+      monthly_income: num(fin.monthly_income),
+      installment_value: num(fin.installment_value),
+      rating: fin.rating.trim() || null,
+      margin_value: num(fin.margin_value),
+      approved_value: num(fin.approved_value),
+      responsible_name: fin.responsible_name.trim() || null,
+      pendencies: fin.pendencies.trim() || null,
+      notes: fin.notes.trim() || null,
+    });
+    if (ok) setFinDirty(false);
+  };
+
   const saveReview = async () => {
     await onUpdate(deal.id, {
       next_review_at: review.next_review_at || null,
