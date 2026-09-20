@@ -1433,6 +1433,214 @@ export type Database = {
           },
         ]
       }
+      cx_deal_checks: {
+        Row: {
+          approved_value: number | null
+          checked_at: string
+          created_at: string
+          created_by_name: string | null
+          created_by_user_id: string | null
+          deal_id: string
+          id: string
+          margin_value: number | null
+          notes: string | null
+          rating: string | null
+          result: string | null
+        }
+        Insert: {
+          approved_value?: number | null
+          checked_at?: string
+          created_at?: string
+          created_by_name?: string | null
+          created_by_user_id?: string | null
+          deal_id: string
+          id?: string
+          margin_value?: number | null
+          notes?: string | null
+          rating?: string | null
+          result?: string | null
+        }
+        Update: {
+          approved_value?: number | null
+          checked_at?: string
+          created_at?: string
+          created_by_name?: string | null
+          created_by_user_id?: string | null
+          deal_id?: string
+          id?: string
+          margin_value?: number | null
+          notes?: string | null
+          rating?: string | null
+          result?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cx_deal_checks_deal_id_fkey"
+            columns: ["deal_id"]
+            isOneToOne: false
+            referencedRelation: "cx_deals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      cx_deal_history: {
+        Row: {
+          created_at: string
+          deal_id: string
+          from_stage: Database["public"]["Enums"]["cx_deal_stage"] | null
+          id: string
+          moved_by_name: string | null
+          moved_by_user_id: string | null
+          notes: string | null
+          to_stage: Database["public"]["Enums"]["cx_deal_stage"]
+        }
+        Insert: {
+          created_at?: string
+          deal_id: string
+          from_stage?: Database["public"]["Enums"]["cx_deal_stage"] | null
+          id?: string
+          moved_by_name?: string | null
+          moved_by_user_id?: string | null
+          notes?: string | null
+          to_stage: Database["public"]["Enums"]["cx_deal_stage"]
+        }
+        Update: {
+          created_at?: string
+          deal_id?: string
+          from_stage?: Database["public"]["Enums"]["cx_deal_stage"] | null
+          id?: string
+          moved_by_name?: string | null
+          moved_by_user_id?: string | null
+          notes?: string | null
+          to_stage?: Database["public"]["Enums"]["cx_deal_stage"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cx_deal_history_deal_id_fkey"
+            columns: ["deal_id"]
+            isOneToOne: false
+            referencedRelation: "cx_deals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      cx_deals: {
+        Row: {
+          approval_expires_at: string | null
+          approved_value: number | null
+          bank: string | null
+          client_id: string
+          created_at: string
+          created_by_user_id: string | null
+          down_payment: number | null
+          fgts_value: number | null
+          financing_value: number | null
+          id: string
+          installment_value: number | null
+          margin_value: number | null
+          monthly_income: number | null
+          next_review_at: string | null
+          notes: string | null
+          pendencies: string | null
+          property_id: string | null
+          property_value: number | null
+          rating: string | null
+          rejection_notes: string | null
+          rejection_reason:
+            | Database["public"]["Enums"]["cx_rejection_reason"]
+            | null
+          responsible_name: string | null
+          responsible_user_id: string | null
+          review_interval_days: number
+          stage: Database["public"]["Enums"]["cx_deal_stage"]
+          stage_entered_at: string
+          subsidy_value: number | null
+          title: string | null
+          updated_at: string
+        }
+        Insert: {
+          approval_expires_at?: string | null
+          approved_value?: number | null
+          bank?: string | null
+          client_id: string
+          created_at?: string
+          created_by_user_id?: string | null
+          down_payment?: number | null
+          fgts_value?: number | null
+          financing_value?: number | null
+          id?: string
+          installment_value?: number | null
+          margin_value?: number | null
+          monthly_income?: number | null
+          next_review_at?: string | null
+          notes?: string | null
+          pendencies?: string | null
+          property_id?: string | null
+          property_value?: number | null
+          rating?: string | null
+          rejection_notes?: string | null
+          rejection_reason?:
+            | Database["public"]["Enums"]["cx_rejection_reason"]
+            | null
+          responsible_name?: string | null
+          responsible_user_id?: string | null
+          review_interval_days?: number
+          stage?: Database["public"]["Enums"]["cx_deal_stage"]
+          stage_entered_at?: string
+          subsidy_value?: number | null
+          title?: string | null
+          updated_at?: string
+        }
+        Update: {
+          approval_expires_at?: string | null
+          approved_value?: number | null
+          bank?: string | null
+          client_id?: string
+          created_at?: string
+          created_by_user_id?: string | null
+          down_payment?: number | null
+          fgts_value?: number | null
+          financing_value?: number | null
+          id?: string
+          installment_value?: number | null
+          margin_value?: number | null
+          monthly_income?: number | null
+          next_review_at?: string | null
+          notes?: string | null
+          pendencies?: string | null
+          property_id?: string | null
+          property_value?: number | null
+          rating?: string | null
+          rejection_notes?: string | null
+          rejection_reason?:
+            | Database["public"]["Enums"]["cx_rejection_reason"]
+            | null
+          responsible_name?: string | null
+          responsible_user_id?: string | null
+          review_interval_days?: number
+          stage?: Database["public"]["Enums"]["cx_deal_stage"]
+          stage_entered_at?: string
+          subsidy_value?: number | null
+          title?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cx_deals_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "cx_clients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cx_deals_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "cx_properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       cx_documents: {
         Row: {
           client_id: string | null
@@ -2823,6 +3031,15 @@ export type Database = {
     Enums: {
       app_role: "admin" | "user"
       checklist_status: "pendente" | "conforme" | "nao_se_aplica"
+      cx_deal_stage:
+        | "simulacao"
+        | "documentacao"
+        | "em_analise"
+        | "condicionado"
+        | "aprovado"
+        | "contrato"
+        | "reprovado"
+      cx_rejection_reason: "rating" | "capacidade" | "outro"
       lead_classificacao: "quente" | "morno" | "frio"
       lead_sales_stage:
         | "recebido_sdr"
@@ -3009,6 +3226,16 @@ export const Constants = {
     Enums: {
       app_role: ["admin", "user"],
       checklist_status: ["pendente", "conforme", "nao_se_aplica"],
+      cx_deal_stage: [
+        "simulacao",
+        "documentacao",
+        "em_analise",
+        "condicionado",
+        "aprovado",
+        "contrato",
+        "reprovado",
+      ],
+      cx_rejection_reason: ["rating", "capacidade", "outro"],
       lead_classificacao: ["quente", "morno", "frio"],
       lead_sales_stage: [
         "recebido_sdr",
