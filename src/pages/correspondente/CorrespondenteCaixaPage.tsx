@@ -79,15 +79,28 @@ function getClientStatus(client: CxClient, docs: CxDocument[]): ClientStatus {
   return { label: 'Pendente', color: 'text-amber-600', bg: 'bg-amber-50' };
 }
 
+type CxTab = 'painel' | 'funil' | 'monitoramento' | 'clientes' | 'narrativas';
+const CX_TABS: CxTab[] = ['painel', 'funil', 'monitoramento', 'clientes', 'narrativas'];
+
 export default function CorrespondenteCaixaPage() {
   const { clients, isLoading, createClient, updateClient, deleteClient } = useCxClients();
-  const [tab, setTabState] = useState<'clientes' | 'narrativas'>(
-    () => (localStorage.getItem('cx_tab') === 'narrativas' ? 'narrativas' : 'clientes'),
-  );
-  const setTab = (t: 'clientes' | 'narrativas') => {
+  const { properties: cxProperties } = useCxProperties();
+  const { deals, createDeal, updateDeal, moveDeal, deleteDeal } = useCxDeals();
+  const [tab, setTabState] = useState<CxTab>(() => {
+    const saved = localStorage.getItem('cx_tab') as CxTab | null;
+    return saved && CX_TABS.includes(saved) ? saved : 'painel';
+  });
+  const setTab = (t: CxTab) => {
     setTabState(t);
     localStorage.setItem('cx_tab', t);
   };
+
+  const [dealFormOpen, setDealFormOpen] = useState(false);
+  const [editingDeal, setEditingDeal] = useState<CxDeal | null>(null);
+  const [detailDealId, setDetailDealId] = useState<string | null>(null);
+  const detailDeal = useMemo(() => deals.find((d) => d.id === detailDealId) ?? null, [deals, detailDealId]);
+  const clientNameOf = (id: string) => clients.find((c) => c.id === id)?.full_name || 'Cliente';
+
 
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [search, setSearch] = useState('');
