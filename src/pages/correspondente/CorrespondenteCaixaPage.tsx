@@ -23,6 +23,15 @@ import { CX_DOC_TYPES, CX_CHECKLIST, CX_DOC_LABEL, CX_SUBMISSION_STATUS, CxClien
 import { CxDocumentWorkspace } from '@/components/correspondente/CxDocumentWorkspace';
 import { CxNarrativeWorkspace } from '@/components/correspondente/CxNarrativeWorkspace';
 import { CxClientProperties } from '@/components/correspondente/CxClientProperties';
+import { useCxProperties } from '@/hooks/useCxProperties';
+import { useCxDeals } from '@/hooks/useCxDeals';
+import { CxDeal, CxDealStage } from '@/types/cxCrm';
+import { CxCrmDashboard } from '@/components/correspondente/crm/CxCrmDashboard';
+import { CxDealKanban } from '@/components/correspondente/crm/CxDealKanban';
+import { CxDealFormModal } from '@/components/correspondente/crm/CxDealFormModal';
+import { CxDealDetailModal } from '@/components/correspondente/crm/CxDealDetailModal';
+import { CxMonitoringList } from '@/components/correspondente/crm/CxMonitoringList';
+import { LayoutDashboard, KanbanSquare, BellRing } from 'lucide-react';
 
 import { CopyField } from '@/components/correspondente/CopyField';
 import {
