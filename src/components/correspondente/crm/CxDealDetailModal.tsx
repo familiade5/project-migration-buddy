@@ -122,16 +122,16 @@ export function CxDealDetailModal({
         </DialogHeader>
 
         <div className="flex flex-wrap gap-2">
-          <Button size="sm" variant="outline" onClick={() => onEdit(deal)}>
+          <Button size="sm" variant="outline" className={BTN} onClick={() => onEdit(deal)}>
             <Pencil className="w-3.5 h-3.5 mr-1.5" /> Editar
           </Button>
-          <Button size="sm" variant="outline" onClick={() => onOpenClient(deal.client_id)}>
+          <Button size="sm" variant="outline" className={BTN} onClick={() => onOpenClient(deal.client_id)}>
             <FileText className="w-3.5 h-3.5 mr-1.5" /> Documentos do cliente
           </Button>
           <Button
             size="sm"
             variant="outline"
-            className="text-red-600 hover:text-red-700 ml-auto"
+            className="ml-auto bg-white border-slate-200 text-red-600 hover:bg-red-50 hover:text-red-700"
             onClick={() => {
               onDelete(deal.id);
               onClose();
