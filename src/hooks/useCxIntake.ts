@@ -197,6 +197,7 @@ export function useCxIntake({ clients, refreshClients }: IntakeArgs) {
             created,
             message: created ? 'Novo cliente criado' : 'Anexado ao cliente existente',
           });
+          results.push({ clientId: client.id, created });
         } catch (e) {
           patchItem(item.id, {
             status: 'erro',
