@@ -721,6 +721,7 @@ export default function CorrespondenteCaixaPage() {
                       Imagens ou PDF (até 25MB). Vários arquivos do mesmo tipo podem ser enviados juntos — ex.: os 3 últimos contracheques.
                     </p>
                   </div>
+                  )}
 
 
                   {/* Imóveis vinculados */}
