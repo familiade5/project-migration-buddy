@@ -648,8 +648,43 @@ export default function CorrespondenteCaixaPage() {
                 </div>
 
 
+                <div className="px-6 pt-4 border-b border-slate-100 flex gap-1 overflow-x-auto">
+                  {([
+                    { id: 'ficha', label: 'Ficha', icon: IdCard },
+                    { id: 'documentos', label: 'Documentos', icon: FileText },
+                    { id: 'imoveis', label: 'Imóveis', icon: Building2 },
+                    { id: 'historico', label: 'Histórico', icon: History },
+                  ] as const).map((t) => {
+                    const Icon = t.icon;
+                    const active = clientTab === t.id;
+                    return (
+                      <button
+                        key={t.id}
+                        onClick={() => setClientTab(t.id)}
+                        className={`flex items-center gap-2 px-4 py-2.5 text-sm font-semibold rounded-t-lg border-b-2 transition-colors whitespace-nowrap ${
+                          active
+                            ? 'border-[#1a3a6b] text-[#1a3a6b] bg-slate-50'
+                            : 'border-transparent text-slate-500 hover:text-slate-800'
+                        }`}
+                      >
+                        <Icon className="w-4 h-4" />
+                        {t.label}
+                      </button>
+                    );
+                  })}
+                </div>
+
                 <div className="p-6 space-y-6">
+                  {clientTab === 'ficha' && (
+                    <CxClientOverview
+                      client={selected}
+                      documents={documents}
+                      onFillFromDocuments={fillProfileFromDocuments}
+                    />
+                  )}
+
                   {/* Checklist + upload */}
+                  {clientTab === 'documentos' && (
                   <div className="bg-slate-50 rounded-2xl border border-slate-200 p-5 space-y-4">
                     <div className="flex items-center justify-between">
                       <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
