@@ -615,7 +615,10 @@ export default function CorrespondenteCaixaPage() {
                         <span className="text-xs font-semibold text-slate-500">Posição no funil</span>
                         <div className="flex items-center gap-2">
                           {deal && cfg ? (
-                            <span className={`inline-flex items-center rounded-full border px-2 py-0.5 text-[11px] font-semibold ${cfg.bg} ${cfg.border} ${cfg.color}`}>
+                            <span
+                              className="inline-flex items-center rounded-full border px-2 py-0.5 text-[11px] font-semibold"
+                              style={{ color: cfg.color, backgroundColor: cfg.bg, borderColor: cfg.border }}
+                            >
                               {cfg.label}
                             </span>
                           ) : (
@@ -642,6 +645,20 @@ export default function CorrespondenteCaixaPage() {
                               ))}
                             </SelectContent>
                           </Select>
+                          {deal && (
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="h-8 border-slate-200 text-xs text-slate-600 hover:text-red-600 hover:border-red-200"
+                              onClick={async () => {
+                                if (confirm(`Retirar ${selected.full_name} do funil de crédito?`)) {
+                                  await deleteDeal(deal.id);
+                                }
+                              }}
+                            >
+                              Retirar do funil
+                            </Button>
+                          )}
                         </div>
                       </div>
                     );
