@@ -12,6 +12,7 @@ import {
   CxStage,
   CX_REJECTION_CONFIG,
   cxCurrency,
+  CX_BANKS,
   cxDaysUntil,
   cxStageCfg,
 } from '@/types/cxCrm';
