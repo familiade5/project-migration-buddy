@@ -231,6 +231,33 @@ export default function CorrespondenteCaixaPage() {
   );
 
   const handleCreate = async () => {
+    // Criação a partir de um documento anexado (opcional)
+    if (newDocFiles.length > 0) {
+      setSaving(true);
+      const results = await intake.processFiles(newDocFiles, newDocType);
+      setSaving(false);
+      const first = results[0];
+      if (!first) {
+        toast.error('Não foi possível ler o documento. Preencha os dados manualmente.');
+        return;
+      }
+      const extras: Record<string, unknown> = {};
+      if (form.full_name.trim()) extras.full_name = form.full_name.trim();
+      if (form.email.trim()) extras.email = form.email.trim();
+      if (form.phone.trim()) extras.phone = form.phone.trim();
+      if (form.whatsapp.trim()) extras.whatsapp = form.whatsapp.trim();
+      if (form.notes.trim()) extras.notes = form.notes.trim();
+      if (Object.keys(extras).length > 0) {
+        await supabase.from('cx_clients').update(extras).eq('id', first.clientId);
+        await fetchClients();
+      }
+      setSelectedId(first.clientId);
+      setClientTab('documentos');
+      setDialogOpen(false);
+      setForm({ full_name: '', email: '', phone: '', whatsapp: '', notes: '' });
+      setNewDocFiles([]);
+      return;
+    }
     if (!form.full_name.trim()) return;
     setSaving(true);
     const created = await createClient({
