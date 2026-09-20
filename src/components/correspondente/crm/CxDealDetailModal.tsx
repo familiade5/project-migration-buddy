@@ -233,16 +233,21 @@ export function CxDealDetailModal({
           <Button
             size="sm"
             variant="outline"
-            className={BTN}
+            className={`${BTN} flex-col items-start h-auto py-1.5`}
             disabled={finLoading}
             onClick={() => finFileRef.current?.click()}
           >
-            {finLoading ? (
-              <Loader2 className="w-3.5 h-3.5 mr-1.5 animate-spin" />
-            ) : (
-              <Sparkles className="w-3.5 h-3.5 mr-1.5" />
-            )}
-            {finLoading ? 'Lendo documento…' : 'Preencher com documento (IA)'}
+            <span className="flex items-center">
+              {finLoading ? (
+                <Loader2 className="w-3.5 h-3.5 mr-1.5 animate-spin" />
+              ) : (
+                <Sparkles className="w-3.5 h-3.5 mr-1.5" />
+              )}
+              {finLoading ? 'Lendo documento…' : 'Preencher Dados Financiamento Automaticamente'}
+            </span>
+            <span className="text-[10px] font-normal text-slate-500 ml-5">
+              Anexe Imagem ou pdf dos dados de financiamento
+            </span>
           </Button>
           <Button
             size="sm"
