@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -17,7 +17,9 @@ import {
   cxStageCfg,
 } from '@/types/cxCrm';
 import { useCxDealDetail } from '@/hooks/useCxDeals';
-import { CalendarClock, FileText, History, Pencil, Trash2 } from 'lucide-react';
+import { CalendarClock, FileText, History, Loader2, Pencil, Sparkles, Trash2 } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
+import { toast } from 'sonner';
 
 const BRAND = '#1a3a6b';
 const BTN = 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50 hover:text-slate-900';
@@ -59,6 +61,57 @@ export function CxDealDetailModal({
   const [review, setReview] = useState({ next_review_at: '', review_interval_days: '30' });
   const [fin, setFin] = useState<FinForm>(emptyFin);
   const [finDirty, setFinDirty] = useState(false);
+  const [finLoading, setFinLoading] = useState(false);
+  const finFileRef = useRef<HTMLInputElement>(null);
+
+  const extractFinancing = async (file: File) => {
+    setFinLoading(true);
+    try {
+      const base64 = await new Promise<string>((resolve, reject) => {
+        const r = new FileReader();
+        r.onload = () => resolve(String(r.result).split(',')[1] || '');
+        r.onerror = () => reject(new Error('Não foi possível ler o arquivo'));
+        r.readAsDataURL(file);
+      });
+
+      const { data, error } = await supabase.functions.invoke('extract-financing-data', {
+        body: { fileBase64: base64, mimeType: file.type || 'image/jpeg' },
+      });
+
+      if (error) throw error;
+      if (data?.error) throw new Error(data.error);
+
+      const d = (data?.data ?? {}) as Record<string, unknown>;
+      const keys: (keyof FinForm)[] = [
+        'bank', 'property_value', 'financing_value', 'down_payment', 'fgts_value',
+        'subsidy_value', 'monthly_income', 'installment_value', 'rating',
+        'margin_value', 'approved_value', 'pendencies', 'notes',
+      ];
+      let filled = 0;
+      setFin((prev) => {
+        const next = { ...prev };
+        keys.forEach((k) => {
+          const v = d[k];
+          if (v !== null && v !== undefined && String(v).trim() !== '') {
+            next[k] = String(v);
+            filled += 1;
+          }
+        });
+        return next;
+      });
+
+      if (filled === 0) {
+        toast.error('Não encontramos dados de financiamento neste documento.');
+      } else {
+        setFinDirty(true);
+        toast.success(`${filled} campo(s) preenchido(s). Confira e salve.`);
+      }
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : 'Falha ao ler o documento');
+    } finally {
+      setFinLoading(false);
+    }
+  };
 
   const resetFin = (d: CxDeal) => {
     setFin(finFromDeal(d));
@@ -165,6 +218,31 @@ export function CxDealDetailModal({
           </Button>
           <Button size="sm" variant="outline" className={BTN} onClick={() => onOpenClient(deal.client_id)}>
             <FileText className="w-3.5 h-3.5 mr-1.5" /> Documentos do cliente
+          </Button>
+          <input
+            ref={finFileRef}
+            type="file"
+            accept="image/*,application/pdf"
+            className="hidden"
+            onChange={(e) => {
+              const f = e.target.files?.[0];
+              e.target.value = '';
+              if (f) extractFinancing(f);
+            }}
+          />
+          <Button
+            size="sm"
+            variant="outline"
+            className={BTN}
+            disabled={finLoading}
+            onClick={() => finFileRef.current?.click()}
+          >
+            {finLoading ? (
+              <Loader2 className="w-3.5 h-3.5 mr-1.5 animate-spin" />
+            ) : (
+              <Sparkles className="w-3.5 h-3.5 mr-1.5" />
+            )}
+            {finLoading ? 'Lendo documento…' : 'Preencher com documento (IA)'}
           </Button>
           <Button
             size="sm"
