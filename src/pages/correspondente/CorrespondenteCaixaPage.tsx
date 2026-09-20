@@ -885,6 +885,44 @@ export default function CorrespondenteCaixaPage() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      <CxDealFormModal
+        open={dealFormOpen}
+        onClose={() => {
+          setDealFormOpen(false);
+          setEditingDeal(null);
+        }}
+        clients={clients}
+        properties={cxProperties}
+        deal={editingDeal}
+        defaultClientId={selectedId}
+        onSubmit={async (data) => {
+          if (editingDeal) {
+            await updateDeal(editingDeal.id, data as Partial<CxDeal>);
+          } else {
+            const created = await createDeal(data);
+            if (created) setDetailDealId(created.id);
+          }
+        }}
+      />
+
+      <CxDealDetailModal
+        deal={detailDeal}
+        clientName={detailDeal ? clientNameOf(detailDeal.client_id) : ''}
+        onClose={() => setDetailDealId(null)}
+        onUpdate={(id, patch) => updateDeal(id, patch, true)}
+        onMove={(id, from, to) => moveDeal(id, from, to as CxDealStage)}
+        onDelete={(id) => deleteDeal(id)}
+        onEdit={(d) => {
+          setEditingDeal(d);
+          setDealFormOpen(true);
+        }}
+        onOpenClient={(clientId) => {
+          setSelectedId(clientId);
+          setDetailDealId(null);
+          setTab('clientes');
+        }}
+      />
     </CxShell>
   );
 }
