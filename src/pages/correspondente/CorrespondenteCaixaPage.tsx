@@ -724,6 +724,7 @@ export default function CorrespondenteCaixaPage() {
 
 
                   {/* Imóveis vinculados */}
+                  {clientTab === 'imoveis' && (
                   <div>
                     <h3 className="text-sm font-bold text-slate-900 mb-3 flex items-center gap-2">
                       <Building2 className="w-4 h-4 text-[#1a3a6b]" />
@@ -731,6 +732,7 @@ export default function CorrespondenteCaixaPage() {
                     </h3>
                     <CxClientProperties clientId={selected.id} />
                   </div>
+                  )}
 
                   {/* Extracted documents */}
                   {clientTab === 'documentos' && (
