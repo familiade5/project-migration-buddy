@@ -102,13 +102,9 @@ export default function CorrespondenteCaixaPage() {
   const { clients, isLoading, createClient, updateClient, deleteClient, fetchClients } = useCxClients();
   const { properties: cxProperties } = useCxProperties();
   const { deals, createDeal, updateDeal, moveDeal, deleteDeal } = useCxDeals();
-  const [tab, setTabState] = useState<CxTab>(() => {
-    const saved = localStorage.getItem('cx_tab') as CxTab | null;
-    return saved && CX_TABS.includes(saved) ? saved : 'painel';
-  });
+  const [tab, setTabState] = useState<CxTab>('painel');
   const setTab = (t: CxTab) => {
     setTabState(t);
-    localStorage.setItem('cx_tab', t);
   };
 
   const [dealFormOpen, setDealFormOpen] = useState(false);
