@@ -1,5 +1,6 @@
 import { useCallback, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import { isEncryptedPdf, pdfToJpegBase64, invokeErrorMessage } from '@/lib/pdfToImages';
 import { toast } from 'sonner';
 import { CxClient, CxExtraction } from '@/types/correspondente';
 import { consolidateProfile, CxProfileData, formatCpf, matchClient, profileFromExtraction } from '@/lib/cxProfile';
@@ -114,16 +115,18 @@ export function useCxIntake({ clients, refreshClients }: IntakeArgs) {
         const item = queued[idx];
         try {
           patchItem(item.id, { status: 'lendo' });
-          const base64 = await fileToBase64(file);
+          const pageImages = (await isEncryptedPdf(file)) ? await pdfToJpegBase64(file) : undefined;
+      const base64 = pageImages ? '' : await fileToBase64(file);
           const { data, error } = await supabase.functions.invoke('extract-client-document', {
             body: {
               fileBase64: base64,
+              pageImages,
               mimeType: file.type,
               fileName: file.name,
               docType: docTypeHint === 'auto' ? 'outro' : docTypeHint,
             },
           });
-          if (error) throw new Error(error.message);
+          if (error) throw new Error(await invokeErrorMessage(error));
           if ((data as { error?: string })?.error) throw new Error((data as { error: string }).error);
 
           const extraction = (data as { data: CxExtraction }).data;

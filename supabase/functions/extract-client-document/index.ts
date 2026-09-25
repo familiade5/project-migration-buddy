@@ -35,9 +35,10 @@ serve(async (req) => {
   }
 
   try {
-    const { fileBase64, mimeType, fileName, docType } = await req.json();
+    const { fileBase64, mimeType, fileName, docType, pageImages } = await req.json();
+    const pages: string[] = Array.isArray(pageImages) ? pageImages.filter((x: unknown) => typeof x === "string" && x).slice(0, 40) : [];
 
-    if (!fileBase64 || typeof fileBase64 !== "string") {
+    if (pages.length === 0 && (!fileBase64 || typeof fileBase64 !== "string")) {
       return new Response(JSON.stringify({ error: "Arquivo não enviado" }), {
         status: 400,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -137,7 +138,9 @@ Regras:
 - Use rótulos curtos e claros em português (ex.: "CNPJ", "Valor Bruto", "Valor Líquido", "Mês de Referência").
 - Retorne o resultado APENAS pela função extract_document_data.`;
 
-    const contentBlock = isPdf
+    const contentBlocks: unknown[] = pages.length > 0
+      ? pages.map((b64) => ({ type: "image_url", image_url: { url: `data:image/jpeg;base64,${b64}` } }))
+      : [isPdf
       ? {
           type: "file",
           file: {
@@ -148,7 +151,7 @@ Regras:
       : {
           type: "image_url",
           image_url: { url: `data:${mime};base64,${fileBase64}` },
-        };
+        }];
 
     const tool = {
       type: "function",
@@ -381,7 +384,7 @@ Regras:
                     ? "Analise esta matrícula/narrativa do imóvel: endereço, ônus (penhoras, alienações, cauções, processos), averbações de endereço e construção, matrícula e cartório, proprietários com CPF e qualificação, inscrição/cadastro municipal (IPTU, cadastro imobiliário, inscrição cadastral) e uso de FGTS."
                     : "Extraia os dados deste documento.",
                 },
-                contentBlock,
+                ...contentBlocks,
               ],
             },
           ],
@@ -412,8 +415,11 @@ Regras:
     }
 
     if (!response || !response.ok) {
+      const friendly = /no pages|password|encrypt/i.test(lastError)
+        ? "Este PDF está protegido ou não pôde ser aberto. Reenvie o arquivo (ele será convertido em imagens) ou envie um print/PDF sem senha."
+        : `Falha na leitura do documento: ${lastError.slice(0, 300)}`;
       return new Response(
-        JSON.stringify({ error: `Falha na leitura do documento: ${lastError.slice(0, 300)}` }),
+        JSON.stringify({ error: friendly }),
         { status: 502, headers: { ...corsHeaders, "Content-Type": "application/json" } },
       );
     }

@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import { isEncryptedPdf, pdfToJpegBase64, invokeErrorMessage } from '@/lib/pdfToImages';
 import { toast } from 'sonner';
 import { CxClient, CxDocument, CxExtraction } from '@/types/correspondente';
 
@@ -146,10 +147,12 @@ export function useCxDocuments(clientId: string | null, propertyId?: string | nu
     await supabase.from('cx_documents').update({ status: 'processing', error_message: null }).eq('id', doc.id);
     await fetchDocuments();
     try {
-      const base64 = await fileToBase64(file);
+      const pageImages = (await isEncryptedPdf(file)) ? await pdfToJpegBase64(file) : undefined;
+      const base64 = pageImages ? '' : await fileToBase64(file);
       const invocation = supabase.functions.invoke('extract-client-document', {
         body: {
           fileBase64: base64,
+              pageImages,
           mimeType: file.type,
           fileName: file.name,
           docType: doc.doc_type,
@@ -162,7 +165,7 @@ export function useCxDocuments(clientId: string | null, propertyId?: string | nu
         ),
       );
       const { data, error } = await Promise.race([invocation, timeout]);
-      if (error) throw new Error(error.message);
+      if (error) throw new Error(await invokeErrorMessage(error));
       if ((data as { error?: string })?.error) throw new Error((data as { error: string }).error);
 
       const extraction = (data as { data: CxExtraction }).data;
