@@ -151,7 +151,7 @@ Regras:
       : {
           type: "image_url",
           image_url: { url: `data:${mime};base64,${fileBase64}` },
-        };
+        }];
 
     const tool = {
       type: "function",
