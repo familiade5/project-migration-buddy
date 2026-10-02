@@ -1,0 +1,2 @@
+ALTER TABLE public.cx_documents ADD COLUMN IF NOT EXISTS deal_id uuid REFERENCES public.cx_deals(id) ON DELETE SET NULL, ADD COLUMN IF NOT EXISTS stage text;
+CREATE INDEX IF NOT EXISTS cx_documents_deal_id_idx ON public.cx_documents(deal_id);

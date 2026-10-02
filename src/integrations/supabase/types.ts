@@ -1743,6 +1743,7 @@ export type Database = {
         Row: {
           client_id: string | null
           created_at: string
+          deal_id: string | null
           doc_type: string
           error_message: string | null
           extracted: Json
@@ -1751,6 +1752,7 @@ export type Database = {
           id: string
           mime_type: string | null
           property_id: string | null
+          stage: string | null
           status: string
           updated_at: string
           uploaded_by_user_id: string | null
@@ -1758,6 +1760,7 @@ export type Database = {
         Insert: {
           client_id?: string | null
           created_at?: string
+          deal_id?: string | null
           doc_type?: string
           error_message?: string | null
           extracted?: Json
@@ -1766,6 +1769,7 @@ export type Database = {
           id?: string
           mime_type?: string | null
           property_id?: string | null
+          stage?: string | null
           status?: string
           updated_at?: string
           uploaded_by_user_id?: string | null
@@ -1773,6 +1777,7 @@ export type Database = {
         Update: {
           client_id?: string | null
           created_at?: string
+          deal_id?: string | null
           doc_type?: string
           error_message?: string | null
           extracted?: Json
@@ -1781,6 +1786,7 @@ export type Database = {
           id?: string
           mime_type?: string | null
           property_id?: string | null
+          stage?: string | null
           status?: string
           updated_at?: string
           uploaded_by_user_id?: string | null
@@ -1791,6 +1797,13 @@ export type Database = {
             columns: ["client_id"]
             isOneToOne: false
             referencedRelation: "cx_clients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cx_documents_deal_id_fkey"
+            columns: ["deal_id"]
+            isOneToOne: false
+            referencedRelation: "cx_deals"
             referencedColumns: ["id"]
           },
           {
