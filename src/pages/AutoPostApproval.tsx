@@ -353,6 +353,11 @@ const AutoPostApproval = () => {
                 {isImporting ? <Loader2 className="w-4 h-4 animate-spin" /> : <RefreshCw className="w-4 h-4" />}
                 {isImporting && regionProgress ? `Extraindo ${regionProgress}` : `Extrair ${regionSel.length} cidade(s)`}
               </Button>
+              {failedCities.length > 0 && !isImporting && (
+                <Button variant="outline" onClick={() => runImport(failedCities)} className="gap-2 h-9 border-red-300 text-red-700 hover:bg-red-50">
+                  Tentar de novo as que falharam ({failedCities.length})
+                </Button>
+              )}
             </div>
             {loadingCities && <p className="text-xs text-gray-500 flex items-center gap-2"><Loader2 className="w-3 h-3 animate-spin" />Carregando cidades da Caixa...</p>}
             {regionCities.length > 0 && (
