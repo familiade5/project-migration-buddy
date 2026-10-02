@@ -218,6 +218,18 @@ const AutoPostApproval = () => {
     refetch();
   };
 
+  const handleMarkPosted = async (item: AutoPostQueueItem) => {
+    setApprovingId(item.id);
+    const { data: u } = await supabase.auth.getUser();
+    const { error } = await supabase.from('auto_post_queue')
+      .update({ status: 'published', approved_by_user_id: u.user?.id, published_at: new Date().toISOString() })
+      .eq('id', item.id);
+    setApprovingId(null);
+    if (error) { toast.error('Não foi possível marcar como postado'); return; }
+    toast.success('Post movido para Publicados');
+    refetch();
+  };
+
   const handleQuickApprove = async (item: AutoPostQueueItem) => {
     setApprovingId(item.id);
     const { data: u } = await supabase.auth.getUser();
@@ -587,6 +599,17 @@ const AutoPostApproval = () => {
                         >
                           <XCircle className="w-4 h-4" />
                           Rejeitar
+                        </Button>
+                        <Button
+                          size="sm"
+                          disabled={approvingId === item.id}
+                          onClick={(e) => { e.stopPropagation(); handleMarkPosted(item); }}
+                          className="flex-1 h-8 text-white gap-1.5"
+                          style={{ backgroundColor: BRAND_BLUE }}
+                          title="Já publiquei manualmente no Instagram"
+                        >
+                          <CheckCircle2 className="w-4 h-4" />
+                          Já postado
                         </Button>
                       </div>
                     )}
