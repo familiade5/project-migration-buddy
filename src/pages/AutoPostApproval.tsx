@@ -2,7 +2,7 @@ import { useState, useMemo } from 'react';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { useAutoPostQueue, AutoPostQueueItem } from '@/hooks/useAutoPostQueue';
 import { AutoPostApprovalDialog } from '@/components/auto-post/AutoPostApprovalDialog';
-import { Loader2, Inbox, CheckCircle2, XCircle, Clock, RefreshCw, Filter } from 'lucide-react';
+import { Loader2, Inbox, CheckCircle2, XCircle, Clock, RefreshCw, Filter, Timer } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { supabase } from '@/integrations/supabase/client';
@@ -46,7 +46,7 @@ const matchesStateFilter = (item: AutoPostQueueItem, stateFilter: string) => {
 
 const AutoPostApproval = () => {
   const [activeTab, setActiveTab] = useState('pending');
-  const [financingFilter, setFinancingFilter] = useState<'all' | 'financing' | 'cash'>('all');
+  const [financingFilter, setFinancingFilter] = useState<'all' | 'financing' | 'cash' | 'countdown'>('all');
   const [stateFilter, setStateFilter] = useState('all');
   const [selectedItem, setSelectedItem] = useState<AutoPostQueueItem | null>(null);
   const [isScraping, setIsScraping] = useState(false);
