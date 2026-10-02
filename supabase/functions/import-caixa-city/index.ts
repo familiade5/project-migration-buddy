@@ -42,9 +42,30 @@ Deno.serve(async (req) => {
     const city = String(body?.city || "").trim();
     if (!STATE_NAMES[uf] || city.length < 2 || city.length > 80) return json({ success: false, error: "Informe estado (UF) e cidade" }, 400);
 
-    const res = await fetch(`https://venda-imoveis.caixa.gov.br/listaweb/Lista_imoveis_${uf}.csv`, { headers: { "User-Agent": "Mozilla/5.0" } });
-    if (!res.ok) return json({ success: false, error: `A Caixa não liberou a lista (${res.status})` }, 502);
-    const text = new TextDecoder("latin1").decode(await res.arrayBuffer());
+    const csvUrl = `https://venda-imoveis.caixa.gov.br/listaweb/Lista_imoveis_${uf}.csv`;
+    let text = "";
+    const res = await fetch(csvUrl, { headers: { "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/124 Safari/537.36", "Accept": "text/csv,*/*" } });
+    if (res.ok) {
+      text = new TextDecoder("latin1").decode(await res.arrayBuffer());
+    } else {
+      // A Caixa bloqueia servidores em nuvem — busca via Firecrawl
+      console.log(`Direct fetch blocked (${res.status}); using Firecrawl`);
+      const key = Deno.env.get("FIRECRAWL_API_KEY");
+      if (!key) return json({ success: false, error: `A Caixa bloqueou a leitura (${res.status})` }, 502);
+      const fc = await fetch("https://api.firecrawl.dev/v2/scrape", {
+        method: "POST",
+        headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
+        body: JSON.stringify({ url: csvUrl, formats: ["rawHtml"], onlyMainContent: false, location: { country: "BR" }, proxy: "auto" }),
+      });
+      const fcBody = await fc.json().catch(() => null);
+      if (!fc.ok) {
+        console.error("Firecrawl error", fc.status, JSON.stringify(fcBody));
+        return json({ success: false, error: `Não foi possível ler a lista da Caixa (${fc.status})` }, 502);
+      }
+      text = fcBody?.data?.rawHtml || fcBody?.rawHtml || fcBody?.data?.markdown || "";
+      text = text.replace(/<[^>]+>/g, "\n").replace(/&amp;/g, "&");
+    }
+    if (!text.includes(";")) return json({ success: false, error: "A Caixa não retornou a lista de imóveis" }, 502);
 
     const target = norm(city);
     const rows = text.split(/\r?\n/).map((l) => l.split(";").map((c) => c.trim()))
