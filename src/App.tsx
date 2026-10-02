@@ -143,7 +143,7 @@ const App = () => (
             <Route path="/imoveis/imovel/:code/simular" element={<SiteSimulate />} />
             <Route path="/imoveis/:uf/:city" element={<SiteCity />} />
             <Route path="/cc-vdh" element={
-              <ProtectedRoute requireAdmin><CCVdh /></ProtectedRoute>
+              <SuperAdminRoute><CCVdh /></SuperAdminRoute>
             } />
             
             <Route path="*" element={<NotFound />} />

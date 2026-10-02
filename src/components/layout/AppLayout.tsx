@@ -57,7 +57,9 @@ const BRAND_GOLD = '#c9a84c';
 
 export function AppLayout({ children }: AppLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const { profile, isAdmin, signOut } = useAuth();
+  const { profile, isAdmin, signOut, user } = useAuth();
+  const isSuperAdmin = user?.email === 'neto@vendadiretahoje.com.br';
+  const visibleAdminNav = adminNavigation.filter((item) => item.href !== '/cc-vdh' || isSuperAdmin);
   const location = useLocation();
   const navigate = useNavigate();
 
