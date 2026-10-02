@@ -475,7 +475,7 @@ Regras:
         const text = `${c.counterparty || ""} ${c.description}`;
         const n = norm(text);
         if (/\b(ESTORNO|DEVOLUCAO|DEVOL|CHARGEBACK|CANCELAMENTO)\b/.test(n)) {
-          c.included = false; c.reason = c.reason && !c.included ? c.reason : "Estorno/devolução";
+          c.included = false; c.reason = "Estorno/devolução";
         } else if (/\b(RESGATE|RESG|APLICACAO|POUPANCA|RENDIMENTO POUP|EMPRESTIMO|CHEQUE ESPECIAL)\b/.test(n)) {
           c.included = false; c.reason = "Resgate/aplicação/empréstimo";
         } else if (isSelf(text) || /\b(MESMA TITULARIDADE|MESMO TITULAR|ENTRE CONTAS|TRANSF PROPRIA)\b/.test(n)) {
