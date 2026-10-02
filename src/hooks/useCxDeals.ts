@@ -1,7 +1,7 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import { CxDeal, CxDealCheck, CxDealHistory, CxDealStage } from '@/types/cxCrm';
+import { CxDeal, CxDealCheck, CxDealHistory, CxDealStage, CxPurchaseType, CX_PURCHASE_LABEL, cxMoveBlocker, cxStagePatch } from '@/types/cxCrm';
 
 export type CxDealInput = Partial<Omit<CxDeal, 'id' | 'created_at' | 'updated_at'>> & {
   client_id: string;
@@ -10,6 +10,8 @@ export type CxDealInput = Partial<Omit<CxDeal, 'id' | 'created_at' | 'updated_at
 export function useCxDeals() {
   const [deals, setDeals] = useState<CxDeal[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const dealsRef = useRef<CxDeal[]>([]);
+  dealsRef.current = deals;
 
   const fetchDeals = useCallback(async () => {
     setIsLoading(true);
