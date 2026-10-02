@@ -57,7 +57,6 @@ Deno.serve(async (req) => {
     const city = String(body?.city || "").trim();
     const listCities = body?.action === "list_cities";
     if (!STATE_NAMES[uf] || (!listCities && city.length < 2) || city.length > 80) return json({ success: false, error: "Informe estado (UF) e cidade" }, 400);
-    if (false || city.length > 80) return json({ success: false, error: "Informe estado (UF) e cidade" }, 400);
 
     const csvUrl = `https://venda-imoveis.caixa.gov.br/listaweb/Lista_imoveis_${uf}.csv`;
     let text = "";
