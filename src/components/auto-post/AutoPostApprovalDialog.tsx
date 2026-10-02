@@ -29,6 +29,7 @@ import {
   ImageIcon, PencilLine, CheckCircle2, XCircle,
   Loader2, Send, ChevronLeft, ChevronRight,
 } from 'lucide-react';
+import { enhancePhoto } from '@/lib/enhancePhoto';
 
 // Helper to convert data URL to Blob
 const dataURLtoBlob = (dataURL: string): Blob => {
@@ -176,6 +177,9 @@ export function AutoPostApprovalDialog({ item, open, onOpenChange, onActionCompl
           try {
             const r = await fetch(`${base}/functions/v1/image-proxy?url=${encodeURIComponent(src)}`);
             val = r.ok ? await toData(await r.blob()) : NO_PHOTO_URL;
+            if (val !== NO_PHOTO_URL) {
+              try { val = await enhancePhoto(val); } catch { /* mantém a original */ }
+            }
           } catch { val = NO_PHOTO_URL; }
         }
         cache.set(src, val);
