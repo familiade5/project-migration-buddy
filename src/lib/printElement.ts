@@ -18,9 +18,10 @@ export function printElement(el: HTMLElement, title: string) {
   win.document.write(`<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><title>${title}</title>
 <base href="${location.origin}/">${styles}
 <style>
-  @page { size: A4; margin: 14mm; }
+  @page { size: A4; margin: 12mm; }
   html, body { background: #fff !important; color: #0f172a !important; }
-  body { font-family: system-ui, -apple-system, Segoe UI, sans-serif; padding: 0; margin: 0; }
+  body { font-family: system-ui, -apple-system, Segoe UI, sans-serif; padding: 5mm; margin: 0; }
+  .print-frame { border: 1.5px solid #cbd5e1; border-radius: 10px; padding: 9mm 8mm; background: #fff; }
   .print-head { display:flex; justify-content:space-between; align-items:flex-end; border-bottom:3px solid #1a3a6b; padding-bottom:8px; margin-bottom:16px; }
   .print-head h1 { font-size:18px; margin:0; color:#1a3a6b; font-weight:800; }
   .print-head span { font-size:11px; color:#64748b; }
@@ -28,9 +29,12 @@ export function printElement(el: HTMLElement, title: string) {
   .truncate { white-space: normal !important; overflow: visible !important; }
   table, tr, img { page-break-inside: avoid; }
   .overflow-hidden, .overflow-auto, .overflow-x-auto, .overflow-y-auto { overflow: visible !important; max-height: none !important; }
+  .rounded-2xl, .rounded-xl, .rounded-lg { border-radius: 6px !important; }
 </style></head><body>
+<div class="print-frame">
 <div class="print-head"><h1>${title}</h1><span>Correspondente Caixa · ${date}</span></div>
 ${clone.outerHTML}
+</div>
 </body></html>`);
   win.document.close();
   const go = () => { win.focus(); win.print(); };
