@@ -20,9 +20,10 @@ Deno.serve(async (req) => {
       const fc = await fetch('https://api.firecrawl.dev/v2/scrape', {
         method: 'POST',
         headers: { Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' },
-        body: JSON.stringify({ url: u.toString(), formats: [{ type: 'screenshot', fullPage: false, viewport: { width: 600, height: 450 } }], location: { country: 'BR' }, proxy: 'auto' }),
+        body: JSON.stringify({ url: u.toString(), formats: ['rawHtml'], proxy: 'auto' }),
       });
       const body = await fc.json().catch(() => null);
+      console.log('fc keys', Object.keys(body?.data || {}), String(body?.data?.rawHtml || '').slice(0, 120));
       const shot = body?.data?.screenshot || body?.screenshot;
       if (fc.ok && shot) {
         const img = shot.startsWith('data:') ? Uint8Array.from(atob(shot.split(',')[1]), (c) => c.charCodeAt(0)) : new Uint8Array(await (await fetch(shot)).arrayBuffer());
