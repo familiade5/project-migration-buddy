@@ -2,7 +2,7 @@ import { createClient } from "npm:@supabase/supabase-js@2";
 import { corsHeaders } from "npm:@supabase/supabase-js@2/cors";
 
 // Sincroniza a vitrine pública do site VDH com a lista oficial da Caixa.
-// Separado da fila de Aprovação Posts (não toca em scraped_properties/auto_post_queue).
+// Imóveis novos também entram na fila de Aprovação Posts (marcados autoSync).
 const STATES = ["AM", "CE", "MS", "PB", "RN", "SC"];
 const ALLOWED = new Set(["venda direta online", "venda online", "venda direta"]);
 
