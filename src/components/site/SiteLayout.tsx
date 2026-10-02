@@ -14,6 +14,11 @@ interface Props {
 
 export function SiteLayout({ children, title, description, whatsapp }: Props) {
   const [menuOpen, setMenuOpen] = useState(false);
+  const { pathname } = useLocation();
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    setMenuOpen(false);
+  }, [pathname]);
   useEffect(() => {
     document.title = title ? `${title} | Venda Direta Hoje` : 'Imóveis Caixa com desconto | Venda Direta Hoje';
     const meta = document.querySelector('meta[name="description"]');
