@@ -723,6 +723,14 @@ export default function CorrespondenteCaixaPage() {
                               ))}
                             </SelectContent>
                           </Select>
+                          <Button
+                            size="sm"
+                            className="h-8 text-xs text-white hover:opacity-90"
+                            style={{ backgroundColor: BRAND }}
+                            onClick={() => openCaseFor(selected.id, selected.full_name)}
+                          >
+                            {deal ? 'Abrir caso' : 'Iniciar atendimento'}
+                          </Button>
                           {deal && (
                             <Button
                               variant="outline"
