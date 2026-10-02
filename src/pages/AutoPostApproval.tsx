@@ -71,11 +71,22 @@ const AutoPostApproval = () => {
   }, [onlyCity]);
   const stateFilteredItems = useMemo(() => dateFilter === 'all' ? onlyCity : onlyCity.filter((i) => dayKey(i.created_at) === dateFilter), [onlyCity, dateFilter]);
 
+  const countdownLabel = (item: AutoPostQueueItem) => {
+    const end = (item.property_data as any)?.countdownEndsAt;
+    if (!end) return '';
+    const ms = new Date(end).getTime() - Date.now();
+    if (ms <= 0) return '';
+    const h = Math.floor(ms / 3600_000);
+    const d = Math.floor(h / 24);
+    return d > 0 ? `${d} dia${d > 1 ? 's' : ''} e ${h % 24}h` : `${h}h`;
+  };
+
   const filteredItems = useMemo(() => {
     return stateFilteredItems.filter((item) => {
       const isFinancing = isFinancingProperty(item);
       if (financingFilter === 'financing' && !isFinancing) return false;
       if (financingFilter === 'cash' && isFinancing) return false;
+      if (financingFilter === 'countdown' && !countdownLabel(item)) return false;
       return true;
     });
   }, [stateFilteredItems, financingFilter]);
@@ -384,6 +395,13 @@ const AutoPostApproval = () => {
             >
               💵 À Vista ({financingCount.cash})
             </button>
+            <button
+              onClick={() => setFinancingFilter('countdown')}
+              className="px-3 py-1.5 rounded-md text-xs font-medium transition-all"
+              style={financingFilter === 'countdown' ? { backgroundColor: '#dc2626', color: 'white' } : { color: '#6b7280' }}
+            >
+              ⏱ Em contagem ({stateFilteredItems.filter((i) => countdownLabel(i)).length})
+            </button>
           </div>
 
           {/* State filter */}
@@ -517,6 +535,11 @@ const AutoPostApproval = () => {
                       )}
                       Adicionado em {new Date(item.created_at).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
                     </p>
+                    {countdownLabel(item) && (
+                      <p className="text-xs font-semibold flex items-center gap-1.5 px-2 py-1 rounded-md w-fit" style={{ backgroundColor: '#fef2f2', color: '#dc2626' }}>
+                        <Timer className="w-3.5 h-3.5" /> Cronômetro Caixa: {countdownLabel(item)}
+                      </p>
+                    )}
                     {item.status === 'pending' && (
                       <div className="flex gap-2 mt-2">
                         <Button
