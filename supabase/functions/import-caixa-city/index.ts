@@ -104,7 +104,13 @@ Deno.serve(async (req) => {
         const p = it.property_data;
         await supabase.from("auto_post_queue").update({ property_data: { ...p, neighborhood: repairAll(p.neighborhood || "", fix), fullAddress: repairAll(p.fullAddress || "", fix), street: repairAll(p.street || "", fix), city: repairAll(p.city || "", fix) } }).eq("id", it.id);
       }
-      return json({ success: true, fixed: bad.length, total: items?.length, qErr });
+      const { data: sps } = await supabase.from("scraped_properties").select("id, neighborhood, address, city").like("external_id", "caixa-csv-%").limit(5000);
+      const badSp = (sps || []).filter((s) => /\uFFFD/.test(`${s.neighborhood}${s.address}${s.city}`));
+      const fix2 = await fixAccents(badSp.flatMap((s) => [s.neighborhood, s.address, s.city]));
+      for (const s of badSp) {
+        await supabase.from("scraped_properties").update({ neighborhood: repairAll(s.neighborhood || "", fix2), address: repairAll(s.address || "", fix2), city: repairAll(s.city || "", fix2) }).eq("id", s.id);
+      }
+      return json({ success: true, fixed: bad.length, fixedScraped: badSp.length, qErr });
     }
     if (body?.action === "refresh_countdowns") {
       const key = Deno.env.get("FIRECRAWL_API_KEY");
@@ -178,17 +184,8 @@ Deno.serve(async (req) => {
     const accentFix = await fixAccents(fresh.flatMap((c) => [c[2], c[3], c[4]]));
     fresh.forEach((c) => { c[2] = /\uFFFD/.test(c[2]) ? city.toUpperCase() : c[2]; c[3] = repairAll(c[3], accentFix); c[4] = repairAll(c[4], accentFix); });
 
-    // Cronômetro da Caixa: só para imóveis que aceitam financiamento (1 crédito Firecrawl cada)
+    // Leitura do cronômetro desativada a pedido do usuário (economia de créditos)
     const countdowns = new Map<string, string | null>();
-    const fcKey = Deno.env.get("FIRECRAWL_API_KEY");
-    if (fcKey) {
-      const finIds = fresh.filter((c) => norm(c[8]) === "SIM").map((c) => c[0]).slice(0, 60);
-      for (let i = 0; i < finIds.length; i += 6) {
-        const part = finIds.slice(i, i + 6);
-        const res = await Promise.all(part.map((id) => fetchCountdown(id, fcKey)));
-        part.forEach((id, k) => countdowns.set(id, res[k]));
-      }
-    }
 
     let inserted = 0, financing = 0, cash = 0, noPhoto = 0;
     for (let i = 0; i < fresh.length; i += 20) {
