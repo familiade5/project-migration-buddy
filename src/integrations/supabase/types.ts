@@ -1419,6 +1419,7 @@ export type Database = {
           extracted: Json
           full_name: string
           id: string
+          lead_source: string | null
           marital_status: string | null
           monthly_income: number | null
           mother_name: string | null
@@ -1454,6 +1455,7 @@ export type Database = {
           extracted?: Json
           full_name: string
           id?: string
+          lead_source?: string | null
           marital_status?: string | null
           monthly_income?: number | null
           mother_name?: string | null
@@ -1489,6 +1491,7 @@ export type Database = {
           extracted?: Json
           full_name?: string
           id?: string
+          lead_source?: string | null
           marital_status?: string | null
           monthly_income?: number | null
           mother_name?: string | null
@@ -1621,6 +1624,7 @@ export type Database = {
           client_id: string
           created_at: string
           created_by_user_id: string | null
+          credit_status: string | null
           down_payment: number | null
           fgts_value: number | null
           financing_value: number | null
@@ -1633,6 +1637,7 @@ export type Database = {
           pendencies: string | null
           property_id: string | null
           property_value: number | null
+          purchase_type: string | null
           rating: string | null
           rejection_notes: string | null
           rejection_reason:
@@ -1654,6 +1659,7 @@ export type Database = {
           client_id: string
           created_at?: string
           created_by_user_id?: string | null
+          credit_status?: string | null
           down_payment?: number | null
           fgts_value?: number | null
           financing_value?: number | null
@@ -1666,6 +1672,7 @@ export type Database = {
           pendencies?: string | null
           property_id?: string | null
           property_value?: number | null
+          purchase_type?: string | null
           rating?: string | null
           rejection_notes?: string | null
           rejection_reason?:
@@ -1687,6 +1694,7 @@ export type Database = {
           client_id?: string
           created_at?: string
           created_by_user_id?: string | null
+          credit_status?: string | null
           down_payment?: number | null
           fgts_value?: number | null
           financing_value?: number | null
@@ -1699,6 +1707,7 @@ export type Database = {
           pendencies?: string | null
           property_id?: string | null
           property_value?: number | null
+          purchase_type?: string | null
           rating?: string | null
           rejection_notes?: string | null
           rejection_reason?:

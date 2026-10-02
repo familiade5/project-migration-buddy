@@ -15,7 +15,7 @@ export function CxMonitoringList({ deals, stages, clientName, onOpen }: Props) {
   const watched = useMemo(
     () =>
       deals
-        .filter((d) => d.stage === 'reprovado' || d.stage === 'condicionado' || d.next_review_at)
+        .filter((d) => d.stage === 'pendencia' || d.next_review_at)
         .sort((a, b) => (a.next_review_at || '9999').localeCompare(b.next_review_at || '9999')),
     [deals],
   );
@@ -35,7 +35,7 @@ export function CxMonitoringList({ deals, stages, clientName, onOpen }: Props) {
       <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
         <div className="px-5 py-3 border-b border-slate-100">
           <h3 className="text-sm font-bold" style={{ color: BRAND }}>Monitoramento de rating e margem</h3>
-          <p className="text-xs text-slate-500">Clientes reprovados ou condicionados aguardando nova liberação.</p>
+          <p className="text-xs text-slate-500">Clientes em Pendência/Acompanhamento aguardando resolução para nova análise de crédito.</p>
         </div>
         <div className="divide-y divide-slate-100">
           {watched.map((d) => {

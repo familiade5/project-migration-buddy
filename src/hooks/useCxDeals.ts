@@ -1,7 +1,7 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import { CxDeal, CxDealCheck, CxDealHistory, CxDealStage } from '@/types/cxCrm';
+import { CxDeal, CxDealCheck, CxDealHistory, CxDealStage, CxPurchaseType, CX_PURCHASE_LABEL, cxMoveBlocker, cxStagePatch } from '@/types/cxCrm';
 
 export type CxDealInput = Partial<Omit<CxDeal, 'id' | 'created_at' | 'updated_at'>> & {
   client_id: string;
@@ -10,6 +10,8 @@ export type CxDealInput = Partial<Omit<CxDeal, 'id' | 'created_at' | 'updated_at
 export function useCxDeals() {
   const [deals, setDeals] = useState<CxDeal[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const dealsRef = useRef<CxDeal[]>([]);
+  dealsRef.current = deals;
 
   const fetchDeals = useCallback(async () => {
     setIsLoading(true);
@@ -77,10 +79,23 @@ export function useCxDeals() {
   );
 
   const moveDeal = useCallback(
-    async (id: string, from: CxDealStage, to: CxDealStage) => {
+    async (id: string, from: CxDealStage, to: CxDealStage, extra: Partial<CxDeal> = {}, note?: string) => {
+      const current = dealsRef.current.find((d) => d.id === id);
+      if (current) {
+        const blocker = cxMoveBlocker({ ...current, ...extra }, to);
+        if (blocker) {
+          toast.error('Movimento não permitido', { description: blocker });
+          return false;
+        }
+      }
       const user = await currentUser();
-      const patch: Partial<CxDeal> = { stage: to, stage_entered_at: new Date().toISOString() };
-      if (to !== 'reprovado') patch.rejection_reason = null;
+      const patch: Partial<CxDeal> = {
+        ...extra,
+        ...(cxStagePatch(to) as Partial<CxDeal>),
+        stage: to,
+        stage_entered_at: new Date().toISOString(),
+      };
+      if (to !== 'pendencia') patch.rejection_reason = null;
       const ok = await updateDeal(id, patch, true);
       if (!ok) return false;
       await supabase.from('cx_deal_history').insert({
@@ -89,10 +104,20 @@ export function useCxDeals() {
         to_stage: to,
         moved_by_user_id: user?.id ?? null,
         moved_by_name: (user?.user_metadata as any)?.full_name || user?.email || null,
+        notes: note ?? null,
       } as never);
       return true;
     },
     [updateDeal],
+  );
+
+  /** Define o tipo de compra e leva o caso à próxima etapa do fluxo. */
+  const setPurchaseType = useCallback(
+    async (deal: CxDeal, type: CxPurchaseType) => {
+      const to = type === 'avista' ? 'vincular_imovel' : 'analise_credito';
+      return moveDeal(deal.id, deal.stage, to, { purchase_type: type, credit_status: null }, `Tipo de compra: ${CX_PURCHASE_LABEL[type]}`);
+    },
+    [moveDeal],
   );
 
   const deleteDeal = useCallback(
@@ -109,7 +134,7 @@ export function useCxDeals() {
     [],
   );
 
-  return { deals, isLoading, fetchDeals, createDeal, updateDeal, moveDeal, deleteDeal };
+  return { deals, isLoading, fetchDeals, createDeal, updateDeal, moveDeal, setPurchaseType, deleteDeal };
 }
 
 export function useCxDealDetail(dealId: string | null) {

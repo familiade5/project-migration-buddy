@@ -119,7 +119,7 @@ export default function CorrespondenteCaixaPage() {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [search, setSearch] = useState('');
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [form, setForm] = useState({ full_name: '', email: '', phone: '', whatsapp: '', notes: '' });
+  const [form, setForm] = useState({ full_name: '', cpf: '', email: '', phone: '', whatsapp: '', lead_source: '', notes: '' });
   const [saving, setSaving] = useState(false);
   const [newDocFiles, setNewDocFiles] = useState<File[]>([]);
   const [newDocType, setNewDocType] = useState('auto');
@@ -254,7 +254,7 @@ export default function CorrespondenteCaixaPage() {
       setSelectedId(first.clientId);
       setClientTab('documentos');
       setDialogOpen(false);
-      setForm({ full_name: '', email: '', phone: '', whatsapp: '', notes: '' });
+      setForm({ full_name: '', cpf: '', email: '', phone: '', whatsapp: '', lead_source: '', notes: '' });
       setNewDocFiles([]);
       return;
     }
@@ -266,12 +266,15 @@ export default function CorrespondenteCaixaPage() {
       phone: form.phone.trim() || null,
       whatsapp: form.whatsapp.trim() || null,
       notes: form.notes.trim() || null,
-    });
+      cpf: form.cpf.trim() || null,
+      lead_source: form.lead_source || null,
+    } as never);
     setSaving(false);
     if (created) {
+      await createDeal({ client_id: created.id, stage: 'cadastro', title: created.full_name });
       setSelectedId(created.id);
       setDialogOpen(false);
-      setForm({ full_name: '', email: '', phone: '', whatsapp: '', notes: '' });
+      setForm({ full_name: '', cpf: '', email: '', phone: '', whatsapp: '', lead_source: '', notes: '' });
       await logCxClientEvent(created.id, { kind: 'cliente', title: 'Cliente cadastrado manualmente' });
     }
   };
@@ -630,7 +633,7 @@ export default function CorrespondenteCaixaPage() {
                               if (deal) {
                                 if (to !== deal.stage) await moveDeal(deal.id, deal.stage, to as CxDealStage);
                               } else {
-                                await createDeal({ client_id: selected.id, stage: to as CxDealStage, title: selected.full_name });
+                                await createDeal({ client_id: selected.id, stage: (['cadastro', 'tipo_compra'].includes(to) ? to : 'cadastro') as CxDealStage, title: selected.full_name });
                               }
                             }}
                           >
@@ -1051,6 +1054,23 @@ export default function CorrespondenteCaixaPage() {
                 />
               </div>
             </div>
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <Label className="text-xs font-semibold text-slate-600">CPF</Label>
+                <Input value={form.cpf} onChange={(e) => setForm({ ...form, cpf: e.target.value })} placeholder="000.000.000-00" className="mt-1 bg-white border-slate-200 text-slate-900 placeholder:text-slate-400 focus:ring-[#1a3a6b]/20 focus:border-[#1a3a6b]" />
+              </div>
+              <div>
+                <Label className="text-xs font-semibold text-slate-600">Origem do lead</Label>
+                <Select value={form.lead_source} onValueChange={(v) => setForm({ ...form, lead_source: v })}>
+                  <SelectTrigger className="mt-1 bg-white border-slate-200 text-slate-900"><SelectValue placeholder="Selecione" /></SelectTrigger>
+                  <SelectContent className="bg-white border-slate-200 text-slate-900">
+                    {['Instagram', 'Facebook', 'OLX', 'WhatsApp', 'Site', 'Indicação', 'Tráfego pago', 'Outro'].map((o) => (
+                      <SelectItem key={o} value={o} className="text-slate-900 focus:bg-slate-100">{o}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
             <div>
               <Label className="text-xs font-semibold text-slate-600">E-mail</Label>
               <Input
@@ -1195,6 +1215,7 @@ export default function CorrespondenteCaixaPage() {
         onClose={() => setDetailDealId(null)}
         onUpdate={(id, patch) => updateDeal(id, patch, true)}
         onMove={(id, from, to) => moveDeal(id, from, to as CxDealStage)}
+        onFlow={(to, extra, note) => detailDeal && moveDeal(detailDeal.id, detailDeal.stage, to, extra, note ?? undefined)}
         onDelete={(id) => deleteDeal(id)}
         onEdit={(d) => {
           setEditingDeal(d);
