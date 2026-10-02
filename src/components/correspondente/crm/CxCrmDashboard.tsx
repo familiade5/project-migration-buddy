@@ -14,11 +14,11 @@ interface Props {
 
 export function CxCrmDashboard({ deals, stages, clients, onOpenStage }: Props) {
   const stats = useMemo(() => {
-    const approved = deals.filter((d) => d.stage === 'aprovado' || d.stage === 'contrato');
-    const rejected = deals.filter((d) => d.stage === 'reprovado');
-    const conditioned = deals.filter((d) => d.stage === 'condicionado');
+    const approved = deals.filter((d) => d.credit_status === 'aprovado' || d.purchase_type === 'avista');
+    const rejected = deals.filter((d) => d.stage === 'pendencia');
+    const conditioned = deals.filter((d) => d.stage === 'analise_credito');
     const pipeline = deals
-      .filter((d) => d.stage !== 'reprovado')
+      .filter((d) => d.stage !== 'concluido')
       .reduce((s, d) => s + (d.financing_value || 0), 0);
     const dueReview = deals.filter((d) => {
       const days = cxDaysUntil(d.next_review_at);
@@ -39,7 +39,7 @@ export function CxCrmDashboard({ deals, stages, clients, onOpenStage }: Props) {
   }, [deals, stages]);
 
   const cards = [
-    { label: 'Casos ativos', value: deals.filter((d) => d.stage !== 'reprovado').length, icon: Layers, tone: 'text-[#1a3a6b] bg-blue-50' },
+    { label: 'Casos ativos', value: deals.filter((d) => d.stage !== 'concluido').length, icon: Layers, tone: 'text-[#1a3a6b] bg-blue-50' },
     { label: 'Clientes', value: clients.length, icon: Users, tone: 'text-slate-700 bg-slate-100' },
     { label: 'Aprovados', value: stats.approved.length, icon: CheckCircle2, tone: 'text-emerald-600 bg-emerald-50' },
     { label: 'Taxa de aprovação', value: `${stats.rate}%`, icon: TrendingUp, tone: 'text-indigo-600 bg-indigo-50' },
@@ -97,7 +97,7 @@ export function CxCrmDashboard({ deals, stages, clients, onOpenStage }: Props) {
             <Row label="Condicionados" value={stats.conditioned.length} tone="text-amber-600" />
             <Row label="Reprovados por rating" value={stats.rejected.filter((d) => d.rejection_reason === 'rating').length} tone="text-red-600" />
             <Row label="Reprovados por capacidade" value={stats.rejected.filter((d) => d.rejection_reason === 'capacidade').length} tone="text-red-600" />
-            <Row label="Em contrato/assinatura" value={deals.filter((d) => d.stage === 'contrato').length} tone="text-[#1a3a6b]" />
+            <Row label="Em contrato" value={deals.filter((d) => d.stage === 'contrato').length} tone="text-[#1a3a6b]" />
           </div>
         </div>
       </div>

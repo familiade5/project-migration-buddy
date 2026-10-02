@@ -137,7 +137,7 @@ export function CxDealDetailModal({
 
   const cfg = cxStageCfg(stages, deal.stage);
   const days = cxDaysUntil(deal.next_review_at);
-  const isRejected = deal.stage === 'reprovado';
+  const isRejected = deal.stage === 'pendencia';
 
   const saveFin = async () => {
     const ok = await onUpdate(deal.id, {

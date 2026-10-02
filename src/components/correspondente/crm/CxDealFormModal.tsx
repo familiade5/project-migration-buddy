@@ -26,7 +26,7 @@ const empty = {
   client_id: '',
   property_id: '',
   title: '',
-  stage: 'simulacao' as CxDealStage,
+  stage: 'cadastro' as CxDealStage,
   bank: '',
   property_value: '',
   financing_value: '',
