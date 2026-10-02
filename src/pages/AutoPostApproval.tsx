@@ -218,6 +218,18 @@ const AutoPostApproval = () => {
     refetch();
   };
 
+  const handleMarkPosted = async (item: AutoPostQueueItem) => {
+    setApprovingId(item.id);
+    const { data: u } = await supabase.auth.getUser();
+    const { error } = await supabase.from('auto_post_queue')
+      .update({ status: 'published', approved_by_user_id: u.user?.id, published_at: new Date().toISOString() })
+      .eq('id', item.id);
+    setApprovingId(null);
+    if (error) { toast.error('Não foi possível marcar como postado'); return; }
+    toast.success('Post movido para Publicados');
+    refetch();
+  };
+
   const handleQuickApprove = async (item: AutoPostQueueItem) => {
     setApprovingId(item.id);
     const { data: u } = await supabase.auth.getUser();
