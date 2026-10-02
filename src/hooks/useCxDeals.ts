@@ -134,7 +134,7 @@ export function useCxDeals() {
     [],
   );
 
-  return { deals, isLoading, fetchDeals, createDeal, updateDeal, moveDeal, deleteDeal };
+  return { deals, isLoading, fetchDeals, createDeal, updateDeal, moveDeal, setPurchaseType, deleteDeal };
 }
 
 export function useCxDealDetail(dealId: string | null) {
