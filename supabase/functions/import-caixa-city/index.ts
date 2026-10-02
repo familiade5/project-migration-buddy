@@ -188,7 +188,7 @@ Deno.serve(async (req) => {
     return json({
       success: true, city: title(city), state: uf, total_city: rows.length, allowed: allowed.length,
       ignored_modality: rows.length - allowed.length, already_existing: allowed.length - fresh.length,
-      new_properties: inserted, financing, cash, without_photo: noPhoto,
+      new_properties: inserted, financing, cash, without_photo: noPhoto, with_countdown: [...countdowns.values()].filter(Boolean).length,
     });
   } catch (e) {
     console.error("import-caixa-city error:", e);
