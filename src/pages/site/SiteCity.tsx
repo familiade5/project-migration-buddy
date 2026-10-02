@@ -7,6 +7,7 @@ import { SiteProperty, SITE_GREEN, fetchAll, siteTable, stateName, countdownLabe
 
 type Fin = 'all' | 'fin' | 'cash';
 type Sort = 'discount' | 'price_asc' | 'price_desc' | 'new';
+const PER_PAGE = 24;
 
 const chip = (active: boolean) =>
   active ? { backgroundColor: SITE_GREEN, color: '#fff', borderColor: SITE_GREEN } : { backgroundColor: '#fff', color: '#334155', borderColor: '#e2e8f0' };
@@ -50,6 +51,17 @@ export default function SiteCity() {
 
   const finCount = items.filter((i) => i.accepts_financing && i.status === 'active').length;
 
+  const [page, setPage] = useState(1);
+  useEffect(() => { setPage(1); }, [uf, cityName, fin, beds, maxPrice, type, sort, onlyDispute]);
+  const pages = Math.max(1, Math.ceil(list.length / PER_PAGE));
+  const safePage = Math.min(page, pages);
+  const goTo = (n: number) => { setPage(n); window.scrollTo({ top: 0, behavior: 'smooth' }); };
+  const pageNums: number[] = [];
+  for (let n = 1; n <= pages; n++) {
+    if (n === 1 || n === pages || Math.abs(n - safePage) <= 1) pageNums.push(n);
+    else if (pageNums[pageNums.length - 1] !== 0) pageNums.push(0);
+  }
+
   return (
     <SiteLayout title={`Imóveis Caixa em ${cityName} - ${uf.toUpperCase()}`} description={`${items.length} imóveis da Caixa em ${cityName}, ${stateName(uf)}. Veja os que aceitam financiamento.`}>
       <div className="max-w-6xl mx-auto px-4 py-6">
@@ -82,9 +94,21 @@ export default function SiteCity() {
         ) : list.length === 0 ? (
           <p className="text-slate-500 py-16 text-center">Nenhum imóvel com esses filtros.</p>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 mt-6">
-            {list.map((p) => <PropertyCard key={p.code} p={p} />)}
-          </div>
+          <>
+            <p className="text-xs text-slate-500 mt-5">Mostrando {(safePage - 1) * PER_PAGE + 1}–{Math.min(safePage * PER_PAGE, list.length)} de {list.length} imóveis</p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 mt-3">
+              {list.slice((safePage - 1) * PER_PAGE, safePage * PER_PAGE).map((p) => <PropertyCard key={p.code} p={p} />)}
+            </div>
+            {pages > 1 && (
+              <div className="flex items-center justify-center gap-2 mt-8 flex-wrap">
+                <button disabled={safePage === 1} onClick={() => goTo(safePage - 1)} className="px-4 py-2 rounded-full border text-sm font-medium disabled:opacity-40" style={chip(false)}>‹ Anterior</button>
+                {pageNums.map((n, i) => n === 0
+                  ? <span key={`e${i}`} className="px-1 text-slate-400">…</span>
+                  : <button key={n} onClick={() => goTo(n)} className="w-10 h-10 rounded-full border text-sm font-medium" style={chip(n === safePage)}>{n}</button>)}
+                <button disabled={safePage === pages} onClick={() => goTo(safePage + 1)} className="px-4 py-2 rounded-full border text-sm font-medium disabled:opacity-40" style={chip(false)}>Próxima ›</button>
+              </div>
+            )}
+          </>
         )}
       </div>
     </SiteLayout>
