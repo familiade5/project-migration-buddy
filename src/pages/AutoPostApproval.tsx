@@ -420,15 +420,6 @@ const AutoPostApproval = () => {
             >
               ⏱ Em contagem ({stateFilteredItems.filter((i) => countdownLabel(i)).length})
             </button>
-            <button
-              onClick={handleRefreshCountdowns}
-              disabled={refreshingClock}
-              className="px-3 py-1.5 rounded-md text-xs font-medium flex items-center gap-1"
-              style={{ color: '#dc2626' }}
-            >
-              {refreshingClock ? <Loader2 className="w-3 h-3 animate-spin" /> : <RefreshCw className="w-3 h-3" />}
-              Atualizar cronômetros
-            </button>
           </div>
 
           {/* State filter */}
