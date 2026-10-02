@@ -600,6 +600,17 @@ const AutoPostApproval = () => {
                           <XCircle className="w-4 h-4" />
                           Rejeitar
                         </Button>
+                        <Button
+                          size="sm"
+                          disabled={approvingId === item.id}
+                          onClick={(e) => { e.stopPropagation(); handleMarkPosted(item); }}
+                          className="flex-1 h-8 text-white gap-1.5"
+                          style={{ backgroundColor: BRAND_BLUE }}
+                          title="Já publiquei manualmente no Instagram"
+                        >
+                          <CheckCircle2 className="w-4 h-4" />
+                          Já postado
+                        </Button>
                       </div>
                     )}
                   </div>
