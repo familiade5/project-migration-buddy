@@ -372,6 +372,18 @@ const AutoPostApproval = () => {
                     <p className="text-[10px] text-gray-300 pt-1">
                       {new Date(item.created_at).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
                     </p>
+                    {item.status === 'pending' && (
+                      <Button
+                        size="sm"
+                        disabled={approvingId === item.id}
+                        onClick={(e) => { e.stopPropagation(); handleQuickApprove(item); }}
+                        className="w-full mt-2 h-8 text-white gap-1.5"
+                        style={{ backgroundColor: '#22c55e' }}
+                      >
+                        {approvingId === item.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <CheckCircle2 className="w-4 h-4" />}
+                        Aprovar
+                      </Button>
+                    )}
                   </div>
                 </div>
               );
