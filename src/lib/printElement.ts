@@ -32,7 +32,6 @@ export function printElement(el: HTMLElement, title: string) {
   .print-frame td, .print-frame th { word-break: break-word; overflow-wrap: anywhere; padding: 4px 5px !important; }
   .truncate, .whitespace-nowrap { white-space: normal !important; overflow: visible !important; }
   [class*="-mx-"] { margin-left: 0 !important; margin-right: 0 !important; }
-  .print-frame tr > :last-child:not(:first-child) { display: none; }
   .overflow-hidden, .overflow-auto, .overflow-x-auto, .overflow-y-auto { overflow: visible !important; max-height: none !important; }
   .rounded-2xl, .rounded-xl, .rounded-lg { border-radius: 6px !important; }
 </style></head><body>
