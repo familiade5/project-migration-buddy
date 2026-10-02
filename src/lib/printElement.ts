@@ -5,7 +5,15 @@ export function printElement(el: HTMLElement, title: string) {
   const styles = Array.from(document.querySelectorAll('style, link[rel="stylesheet"]'))
     .map((n) => (n as HTMLElement).outerHTML).join('\n');
   const clone = el.cloneNode(true) as HTMLElement;
-  clone.querySelectorAll('[data-noprint], button').forEach((n) => n.remove());
+  // Remove apenas botões de ação marcados; campos de cópia viram texto simples
+  clone.querySelectorAll('[data-noprint]').forEach((n) => n.remove());
+  clone.querySelectorAll('button').forEach((btn) => {
+    btn.querySelectorAll('svg').forEach((s) => s.remove());
+    const div = document.createElement('div');
+    div.className = btn.className;
+    div.innerHTML = btn.innerHTML;
+    btn.replaceWith(div);
+  });
   const date = new Date().toLocaleString('pt-BR');
   win.document.write(`<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><title>${title}</title>
 <base href="${location.origin}/">${styles}
