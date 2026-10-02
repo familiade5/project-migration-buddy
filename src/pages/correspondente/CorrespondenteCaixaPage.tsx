@@ -506,7 +506,7 @@ export default function CorrespondenteCaixaPage() {
                     size="sm"
                     className="h-8 w-8 p-0 text-white hover:opacity-90"
                     style={{ backgroundColor: BRAND }}
-                    onClick={() => setDialogOpen(true)}
+                    onClick={() => setRegOpen(true)}
                   >
                     <Plus className="w-4 h-4" />
                   </Button>
@@ -527,7 +527,7 @@ export default function CorrespondenteCaixaPage() {
               <Button
                 className="w-full text-white hover:opacity-90"
                 style={{ backgroundColor: BRAND }}
-                onClick={() => setDialogOpen(true)}
+                onClick={() => setRegOpen(true)}
               >
                 <Plus className="w-4 h-4 mr-2" /> Novo cliente
               </Button>
