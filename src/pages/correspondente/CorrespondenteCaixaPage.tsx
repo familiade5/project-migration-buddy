@@ -31,6 +31,7 @@ import { CxCrmDashboard } from '@/components/correspondente/crm/CxCrmDashboard';
 import { CxDealKanban } from '@/components/correspondente/crm/CxDealKanban';
 import { CxDealFormModal } from '@/components/correspondente/crm/CxDealFormModal';
 import { CxDealDetailModal } from '@/components/correspondente/crm/CxDealDetailModal';
+import { CxWorkbench } from '@/components/correspondente/crm/CxWorkbench';
 import { CxMonitoringList } from '@/components/correspondente/crm/CxMonitoringList';
 import { CxIntakePanel } from '@/components/correspondente/CxIntakePanel';
 import { CxClientOverview } from '@/components/correspondente/CxClientOverview';
@@ -124,6 +125,8 @@ export default function CorrespondenteCaixaPage() {
   const [newDocFiles, setNewDocFiles] = useState<File[]>([]);
   const [newDocType, setNewDocType] = useState('auto');
   const newDocRef = useRef<HTMLInputElement>(null);
+  const [reviewClientId, setReviewClientId] = useState<string | null>(null);
+  const [pickDocOnOpen, setPickDocOnOpen] = useState(false);
 
   const [docType, setDocType] = useState<string>('rg');
   const [uploading, setUploading] = useState(false);
@@ -199,6 +202,14 @@ export default function CorrespondenteCaixaPage() {
   };
 
   useEffect(() => {
+    if (dialogOpen && pickDocOnOpen) {
+      setPickDocOnOpen(false);
+      const t = setTimeout(() => newDocRef.current?.click(), 150);
+      return () => clearTimeout(t);
+    }
+  }, [dialogOpen, pickDocOnOpen]);
+
+  useEffect(() => {
     setReviewNotes(selected?.review_notes || '');
   }, [selected?.id, selected?.review_notes]);
 
@@ -230,8 +241,51 @@ export default function CorrespondenteCaixaPage() {
     [selected, documents],
   );
 
+  const resetNewClient = () => {
+    setForm({ full_name: '', cpf: '', email: '', phone: '', whatsapp: '', lead_source: '', notes: '' });
+    setNewDocFiles([]);
+    setReviewClientId(null);
+  };
+
+  /** Garante um caso no funil para o cliente e abre o passo a passo. */
+  const openCaseFor = async (clientId: string, name: string) => {
+    const existing = deals.find((d) => d.client_id === clientId && d.stage !== 'concluido');
+    const deal = existing ?? (await createDeal({ client_id: clientId, stage: 'cadastro', title: name }));
+    if (deal) setDetailDealId(deal.id);
+  };
+
   const handleCreate = async () => {
-    // Criação a partir de um documento anexado (opcional)
+    // Etapa de conferência: dados extraídos do documento revisados pelo analista
+    if (reviewClientId) {
+      if (!form.full_name.trim()) return;
+      setSaving(true);
+      const { error } = await supabase
+        .from('cx_clients')
+        .update({
+          full_name: form.full_name.trim(),
+          cpf: form.cpf.trim() || null,
+          email: form.email.trim() || null,
+          phone: form.phone.trim() || null,
+          whatsapp: form.whatsapp.trim() || null,
+          lead_source: form.lead_source || null,
+          notes: form.notes.trim() || null,
+        } as never)
+        .eq('id', reviewClientId);
+      setSaving(false);
+      if (error) {
+        toast.error('Não foi possível salvar', { description: error.message });
+        return;
+      }
+      await fetchClients();
+      const id = reviewClientId;
+      const name = form.full_name.trim();
+      setSelectedId(id);
+      setDialogOpen(false);
+      resetNewClient();
+      await openCaseFor(id, name);
+      return;
+    }
+    // Criação a partir de um documento anexado: lê e abre a conferência
     if (newDocFiles.length > 0) {
       setSaving(true);
       const results = await intake.processFiles(newDocFiles, newDocType);
@@ -241,21 +295,20 @@ export default function CorrespondenteCaixaPage() {
         toast.error('Não foi possível ler o documento. Preencha os dados manualmente.');
         return;
       }
-      const extras: Record<string, unknown> = {};
-      if (form.full_name.trim()) extras.full_name = form.full_name.trim();
-      if (form.email.trim()) extras.email = form.email.trim();
-      if (form.phone.trim()) extras.phone = form.phone.trim();
-      if (form.whatsapp.trim()) extras.whatsapp = form.whatsapp.trim();
-      if (form.notes.trim()) extras.notes = form.notes.trim();
-      if (Object.keys(extras).length > 0) {
-        await supabase.from('cx_clients').update(extras).eq('id', first.clientId);
-        await fetchClients();
-      }
-      setSelectedId(first.clientId);
-      setClientTab('documentos');
-      setDialogOpen(false);
-      setForm({ full_name: '', cpf: '', email: '', phone: '', whatsapp: '', lead_source: '', notes: '' });
+      const { data: c } = await supabase.from('cx_clients').select('*').eq('id', first.clientId).maybeSingle();
+      const row = (c || {}) as Record<string, any>;
+      setForm({
+        full_name: form.full_name.trim() || row.full_name || '',
+        cpf: form.cpf.trim() || row.cpf || '',
+        email: form.email.trim() || row.email || '',
+        phone: form.phone.trim() || row.phone || '',
+        whatsapp: form.whatsapp.trim() || row.whatsapp || '',
+        lead_source: form.lead_source || row.lead_source || '',
+        notes: form.notes.trim() || row.notes || '',
+      });
       setNewDocFiles([]);
+      setReviewClientId(first.clientId);
+      toast.success('Dados lidos do documento. Confira e confirme.');
       return;
     }
     if (!form.full_name.trim()) return;
@@ -271,11 +324,11 @@ export default function CorrespondenteCaixaPage() {
     } as never);
     setSaving(false);
     if (created) {
-      await createDeal({ client_id: created.id, stage: 'cadastro', title: created.full_name });
       setSelectedId(created.id);
       setDialogOpen(false);
-      setForm({ full_name: '', cpf: '', email: '', phone: '', whatsapp: '', lead_source: '', notes: '' });
+      resetNewClient();
       await logCxClientEvent(created.id, { kind: 'cliente', title: 'Cliente cadastrado manualmente' });
+      await openCaseFor(created.id, created.full_name);
     }
   };
 
@@ -359,7 +412,23 @@ export default function CorrespondenteCaixaPage() {
 
         {tab === 'painel' ? (
           <div className="flex-1 min-h-0 overflow-y-auto pr-1">
-            <CxCrmDashboard deals={deals} stages={stages} clients={clients} onOpenStage={() => setTab('funil')} />
+            <CxWorkbench
+              deals={deals}
+              stages={stages}
+              clients={clients}
+              clientName={clientNameOf}
+              onNewWithDocument={() => {
+                resetNewClient();
+                setPickDocOnOpen(true);
+                setDialogOpen(true);
+              }}
+              onNewManual={() => {
+                resetNewClient();
+                setDialogOpen(true);
+              }}
+              onOpenDeal={(d) => setDetailDealId(d.id)}
+              onOpenFunnel={() => setTab('funil')}
+            />
           </div>
         ) : tab === 'funil' ? (
           <div className="flex-1 min-h-0 overflow-auto">
@@ -376,7 +445,13 @@ export default function CorrespondenteCaixaPage() {
           </div>
         ) : tab === 'monitoramento' ? (
           <div className="flex-1 min-h-0 overflow-y-auto pr-1">
-            <CxMonitoringList deals={deals} stages={stages} clientName={clientNameOf} onOpen={(d) => setDetailDealId(d.id)} />
+            <CxMonitoringList
+              deals={deals}
+              stages={stages}
+              clientName={clientNameOf}
+              onOpen={(d) => setDetailDealId(d.id)}
+              onNewAnalysis={(d) => moveDeal(d.id, d.stage, 'analise_credito', {}, 'Pendência resolvida — nova análise')}
+            />
           </div>
         ) : tab === 'narrativas' ? (
           <div className="flex-1 min-h-0">
@@ -648,6 +723,14 @@ export default function CorrespondenteCaixaPage() {
                               ))}
                             </SelectContent>
                           </Select>
+                          <Button
+                            size="sm"
+                            className="h-8 text-xs text-white hover:opacity-90"
+                            style={{ backgroundColor: BRAND }}
+                            onClick={() => openCaseFor(selected.id, selected.full_name)}
+                          >
+                            {deal ? 'Abrir caso' : 'Iniciar atendimento'}
+                          </Button>
                           {deal && (
                             <Button
                               variant="outline"
@@ -1016,15 +1099,20 @@ export default function CorrespondenteCaixaPage() {
         </DialogContent>
       </Dialog>
 
-      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+      <Dialog open={dialogOpen} onOpenChange={(o) => { setDialogOpen(o); if (!o) resetNewClient(); }}>
         <DialogContent className="bg-white border-slate-200 sm:max-w-lg">
           <DialogHeader>
             <DialogTitle className="text-slate-900 flex items-center gap-2">
               <UserRound className="w-5 h-5 text-[#1a3a6b]" />
-              Novo cliente
+              {reviewClientId ? 'Confira os dados do cliente' : 'Novo cliente'}
             </DialogTitle>
           </DialogHeader>
           <div className="space-y-3">
+            {reviewClientId && (
+              <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-3 text-xs text-emerald-800">
+                Dados lidos do documento. Confira, complete telefone, e-mail e origem do lead e confirme para seguir no fluxo.
+              </div>
+            )}
             <div>
               <Label className="text-xs font-semibold text-slate-600">Nome *</Label>
               <Input
@@ -1090,7 +1178,7 @@ export default function CorrespondenteCaixaPage() {
               />
             </div>
 
-            <div className="rounded-xl border border-slate-200 bg-slate-50 p-3 space-y-3">
+            <div className={`rounded-xl border border-slate-200 bg-slate-50 p-3 space-y-3 ${reviewClientId ? 'hidden' : ''}`}>
               <div className="flex items-start justify-between gap-3">
                 <div className="min-w-0">
                   <p className="text-sm font-semibold text-slate-800 flex items-center gap-2">
@@ -1169,7 +1257,7 @@ export default function CorrespondenteCaixaPage() {
               className="bg-white border-slate-300 text-slate-700 hover:bg-slate-50"
               onClick={() => {
                 setDialogOpen(false);
-                setNewDocFiles([]);
+                resetNewClient();
               }}
             >
               Cancelar
@@ -1181,7 +1269,7 @@ export default function CorrespondenteCaixaPage() {
               onClick={handleCreate}
             >
               {saving && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
-              {newDocFiles.length > 0 ? 'Criar com o documento' : 'Criar'}
+              {reviewClientId ? 'Confirmar e seguir o fluxo' : newDocFiles.length > 0 ? 'Ler documento' : 'Cadastrar e seguir o fluxo'}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -1221,8 +1309,10 @@ export default function CorrespondenteCaixaPage() {
           setEditingDeal(d);
           setDealFormOpen(true);
         }}
-        onOpenClient={(clientId) => {
+        properties={cxProperties}
+        onOpenClient={(clientId, t) => {
           setSelectedId(clientId);
+          if (t) setClientTab(t);
           setDetailDealId(null);
           setTab('clientes');
         }}

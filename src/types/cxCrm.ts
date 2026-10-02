@@ -211,3 +211,48 @@ export function cxStagePatch(to: string): Record<string, unknown> {
   if (to === 'analise_credito') return { credit_status: null };
   return {};
 }
+
+// ================= Próxima ação (mesa do analista) =================
+export interface CxNextAction {
+  label: string;
+  urgent: boolean;
+}
+
+/** O que o analista precisa fazer agora neste caso. */
+export function cxNextAction(deal: CxDeal): CxNextAction | null {
+  const days = cxDaysUntil(deal.next_review_at);
+  switch (deal.stage) {
+    case 'cadastro':
+    case 'tipo_compra':
+      return { label: 'Definir tipo de compra', urgent: false };
+    case 'analise_credito':
+      return { label: 'Registrar resultado da análise', urgent: false };
+    case 'credito_aprovado':
+      return { label: 'Vincular imóvel', urgent: false };
+    case 'pendencia':
+      return days !== null && days <= 0
+        ? { label: days < 0 ? `Pendência vencida há ${Math.abs(days)}d` : 'Pendência vence hoje', urgent: true }
+        : { label: 'Acompanhar pendência', urgent: false };
+    case 'vincular_imovel':
+      return { label: deal.property_id ? 'Seguir para Contrato' : 'Vincular imóvel', urgent: false };
+    case 'contrato':
+      return { label: 'Concluir contrato', urgent: false };
+    case 'itbi_registro':
+      return { label: 'Concluir ITBI/Registro', urgent: false };
+    case 'entrega_chaves':
+      return { label: 'Entregar as chaves', urgent: false };
+    case 'concluido':
+      return null;
+    default:
+      return { label: 'Avançar etapa', urgent: false };
+  }
+}
+
+/** Dias desde a última mudança de etapa. */
+export function cxDaysIdle(deal: CxDeal): number {
+  const t = new Date(deal.stage_entered_at || deal.updated_at).getTime();
+  return Number.isNaN(t) ? 0 : Math.floor((Date.now() - t) / 86400000);
+}
+
+export const CX_FLOW_AVISTA = ['cadastro', 'tipo_compra', 'vincular_imovel', 'contrato', 'itbi_registro', 'entrega_chaves', 'concluido'];
+export const CX_FLOW_FINANCIADA = ['cadastro', 'tipo_compra', 'analise_credito', 'credito_aprovado', 'vincular_imovel', 'contrato', 'itbi_registro', 'entrega_chaves', 'concluido'];
