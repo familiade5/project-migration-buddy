@@ -11,7 +11,26 @@ Deno.serve(async (req) => {
     }
     const r = await fetch(u.toString(), { headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/124 Safari/537.36' } });
     const type = r.headers.get('content-type') || '';
-    if (!r.ok || !type.startsWith('image')) {
+    if (r.ok && type.startsWith('image')) {
+      return new Response(await r.arrayBuffer(), { headers: { ...corsHeaders, 'Content-Type': type, 'Cache-Control': 'public, max-age=86400' } });
+    }
+    // A Caixa bloqueia servidores em nuvem: tira um "print" da foto via Firecrawl (1 crédito)
+    const key = Deno.env.get('FIRECRAWL_API_KEY');
+    if (key) {
+      const fc = await fetch('https://api.firecrawl.dev/v2/scrape', {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url: u.toString(), formats: [{ type: 'screenshot', fullPage: false, viewport: { width: 600, height: 450 } }], location: { country: 'BR' }, proxy: 'auto' }),
+      });
+      const body = await fc.json().catch(() => null);
+      const shot = body?.data?.screenshot || body?.screenshot;
+      if (fc.ok && shot) {
+        const img = shot.startsWith('data:') ? Uint8Array.from(atob(shot.split(',')[1]), (c) => c.charCodeAt(0)) : new Uint8Array(await (await fetch(shot)).arrayBuffer());
+        return new Response(img, { headers: { ...corsHeaders, 'Content-Type': 'image/png', 'Cache-Control': 'public, max-age=86400' } });
+      }
+      console.error('Firecrawl screenshot failed', fc.status, JSON.stringify(body)?.slice(0, 500));
+    }
+    {
       return new Response(JSON.stringify({ error: `Foto indisponível (${r.status})` }), { status: 404, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
     }
     return new Response(await r.arrayBuffer(), { headers: { ...corsHeaders, 'Content-Type': type, 'Cache-Control': 'public, max-age=86400' } });
