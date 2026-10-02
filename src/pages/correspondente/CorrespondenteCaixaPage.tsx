@@ -31,6 +31,7 @@ import { CxCrmDashboard } from '@/components/correspondente/crm/CxCrmDashboard';
 import { CxDealKanban } from '@/components/correspondente/crm/CxDealKanban';
 import { CxDealFormModal } from '@/components/correspondente/crm/CxDealFormModal';
 import { CxDealDetailModal } from '@/components/correspondente/crm/CxDealDetailModal';
+import { CxWorkbench } from '@/components/correspondente/crm/CxWorkbench';
 import { CxMonitoringList } from '@/components/correspondente/crm/CxMonitoringList';
 import { CxIntakePanel } from '@/components/correspondente/CxIntakePanel';
 import { CxClientOverview } from '@/components/correspondente/CxClientOverview';
@@ -199,6 +200,14 @@ export default function CorrespondenteCaixaPage() {
     await fetchEvents();
     toast.success('Ficha atualizada com os dados dos documentos');
   };
+
+  useEffect(() => {
+    if (dialogOpen && pickDocOnOpen) {
+      setPickDocOnOpen(false);
+      const t = setTimeout(() => newDocRef.current?.click(), 150);
+      return () => clearTimeout(t);
+    }
+  }, [dialogOpen, pickDocOnOpen]);
 
   useEffect(() => {
     setReviewNotes(selected?.review_notes || '');
@@ -403,7 +412,23 @@ export default function CorrespondenteCaixaPage() {
 
         {tab === 'painel' ? (
           <div className="flex-1 min-h-0 overflow-y-auto pr-1">
-            <CxCrmDashboard deals={deals} stages={stages} clients={clients} onOpenStage={() => setTab('funil')} />
+            <CxWorkbench
+              deals={deals}
+              stages={stages}
+              clients={clients}
+              clientName={clientNameOf}
+              onNewWithDocument={() => {
+                resetNewClient();
+                setPickDocOnOpen(true);
+                setDialogOpen(true);
+              }}
+              onNewManual={() => {
+                resetNewClient();
+                setDialogOpen(true);
+              }}
+              onOpenDeal={(d) => setDetailDealId(d.id)}
+              onOpenFunnel={() => setTab('funil')}
+            />
           </div>
         ) : tab === 'funil' ? (
           <div className="flex-1 min-h-0 overflow-auto">
@@ -420,7 +445,13 @@ export default function CorrespondenteCaixaPage() {
           </div>
         ) : tab === 'monitoramento' ? (
           <div className="flex-1 min-h-0 overflow-y-auto pr-1">
-            <CxMonitoringList deals={deals} stages={stages} clientName={clientNameOf} onOpen={(d) => setDetailDealId(d.id)} />
+            <CxMonitoringList
+              deals={deals}
+              stages={stages}
+              clientName={clientNameOf}
+              onOpen={(d) => setDetailDealId(d.id)}
+              onNewAnalysis={(d) => moveDeal(d.id, d.stage, 'analise_credito', {}, 'Pendência resolvida — nova análise')}
+            />
           </div>
         ) : tab === 'narrativas' ? (
           <div className="flex-1 min-h-0">
@@ -1060,15 +1091,20 @@ export default function CorrespondenteCaixaPage() {
         </DialogContent>
       </Dialog>
 
-      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+      <Dialog open={dialogOpen} onOpenChange={(o) => { setDialogOpen(o); if (!o) resetNewClient(); }}>
         <DialogContent className="bg-white border-slate-200 sm:max-w-lg">
           <DialogHeader>
             <DialogTitle className="text-slate-900 flex items-center gap-2">
               <UserRound className="w-5 h-5 text-[#1a3a6b]" />
-              Novo cliente
+              {reviewClientId ? 'Confira os dados do cliente' : 'Novo cliente'}
             </DialogTitle>
           </DialogHeader>
           <div className="space-y-3">
+            {reviewClientId && (
+              <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-3 text-xs text-emerald-800">
+                Dados lidos do documento. Confira, complete telefone, e-mail e origem do lead e confirme para seguir no fluxo.
+              </div>
+            )}
             <div>
               <Label className="text-xs font-semibold text-slate-600">Nome *</Label>
               <Input
@@ -1134,7 +1170,7 @@ export default function CorrespondenteCaixaPage() {
               />
             </div>
 
-            <div className="rounded-xl border border-slate-200 bg-slate-50 p-3 space-y-3">
+            <div className={`rounded-xl border border-slate-200 bg-slate-50 p-3 space-y-3 ${reviewClientId ? 'hidden' : ''}`}>
               <div className="flex items-start justify-between gap-3">
                 <div className="min-w-0">
                   <p className="text-sm font-semibold text-slate-800 flex items-center gap-2">
@@ -1213,7 +1249,7 @@ export default function CorrespondenteCaixaPage() {
               className="bg-white border-slate-300 text-slate-700 hover:bg-slate-50"
               onClick={() => {
                 setDialogOpen(false);
-                setNewDocFiles([]);
+                resetNewClient();
               }}
             >
               Cancelar
@@ -1225,7 +1261,7 @@ export default function CorrespondenteCaixaPage() {
               onClick={handleCreate}
             >
               {saving && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
-              {newDocFiles.length > 0 ? 'Criar com o documento' : 'Criar'}
+              {reviewClientId ? 'Confirmar e seguir o fluxo' : newDocFiles.length > 0 ? 'Ler documento' : 'Cadastrar e seguir o fluxo'}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -1265,8 +1301,10 @@ export default function CorrespondenteCaixaPage() {
           setEditingDeal(d);
           setDealFormOpen(true);
         }}
-        onOpenClient={(clientId) => {
+        properties={cxProperties}
+        onOpenClient={(clientId, t) => {
           setSelectedId(clientId);
+          if (t) setClientTab(t);
           setDetailDealId(null);
           setTab('clientes');
         }}
