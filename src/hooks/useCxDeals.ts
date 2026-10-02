@@ -77,10 +77,23 @@ export function useCxDeals() {
   );
 
   const moveDeal = useCallback(
-    async (id: string, from: CxDealStage, to: CxDealStage) => {
+    async (id: string, from: CxDealStage, to: CxDealStage, extra: Partial<CxDeal> = {}, note?: string) => {
+      const current = dealsRef.current.find((d) => d.id === id);
+      if (current) {
+        const blocker = cxMoveBlocker({ ...current, ...extra }, to);
+        if (blocker) {
+          toast.error('Movimento não permitido', { description: blocker });
+          return false;
+        }
+      }
       const user = await currentUser();
-      const patch: Partial<CxDeal> = { stage: to, stage_entered_at: new Date().toISOString() };
-      if (to !== 'reprovado') patch.rejection_reason = null;
+      const patch: Partial<CxDeal> = {
+        ...extra,
+        ...(cxStagePatch(to) as Partial<CxDeal>),
+        stage: to,
+        stage_entered_at: new Date().toISOString(),
+      };
+      if (to !== 'pendencia') patch.rejection_reason = null;
       const ok = await updateDeal(id, patch, true);
       if (!ok) return false;
       await supabase.from('cx_deal_history').insert({
@@ -89,10 +102,20 @@ export function useCxDeals() {
         to_stage: to,
         moved_by_user_id: user?.id ?? null,
         moved_by_name: (user?.user_metadata as any)?.full_name || user?.email || null,
+        notes: note ?? null,
       } as never);
       return true;
     },
     [updateDeal],
+  );
+
+  /** Define o tipo de compra e leva o caso à próxima etapa do fluxo. */
+  const setPurchaseType = useCallback(
+    async (deal: CxDeal, type: CxPurchaseType) => {
+      const to = type === 'avista' ? 'vincular_imovel' : 'analise_credito';
+      return moveDeal(deal.id, deal.stage, to, { purchase_type: type, credit_status: null }, `Tipo de compra: ${CX_PURCHASE_LABEL[type]}`);
+    },
+    [moveDeal],
   );
 
   const deleteDeal = useCallback(
