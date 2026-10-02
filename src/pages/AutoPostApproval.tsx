@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import noPhotoImg from '@/assets/imagem-nao-fornecida.jpg';
 
 const BRAND_BLUE = '#1a3a6b';
 const BRAND_GOLD = '#c9a84c';
@@ -420,15 +421,6 @@ const AutoPostApproval = () => {
             >
               ⏱ Em contagem ({stateFilteredItems.filter((i) => countdownLabel(i)).length})
             </button>
-            <button
-              onClick={handleRefreshCountdowns}
-              disabled={refreshingClock}
-              className="px-3 py-1.5 rounded-md text-xs font-medium flex items-center gap-1"
-              style={{ color: '#dc2626' }}
-            >
-              {refreshingClock ? <Loader2 className="w-3 h-3 animate-spin" /> : <RefreshCw className="w-3 h-3" />}
-              Atualizar cronômetros
-            </button>
           </div>
 
           {/* State filter */}
@@ -491,16 +483,15 @@ const AutoPostApproval = () => {
                   onClick={() => setSelectedItem(item)}
                 >
                   {/* Photo */}
-                  {item.photos && item.photos.length > 0 && (
-                    <div className="h-40 bg-gray-100 overflow-hidden">
-                      <img
-                        src={item.photos[0]}
-                        alt="Foto do imóvel"
-                        className="w-full h-full object-cover"
-                        onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
-                      />
-                    </div>
-                  )}
+                  <div className="h-40 bg-gray-100 overflow-hidden">
+                    <img
+                      src={item.photos?.[0] || noPhotoImg}
+                      alt="Foto do imóvel"
+                      loading="lazy"
+                      className="w-full h-full object-cover"
+                      onError={(e) => { const img = e.target as HTMLImageElement; if (!img.src.includes('imagem-nao-fornecida')) img.src = noPhotoImg; }}
+                    />
+                  </div>
 
                   <div className="p-4 space-y-2">
                     {/* Type + Location */}
