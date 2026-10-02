@@ -633,7 +633,7 @@ export default function CorrespondenteCaixaPage() {
                               if (deal) {
                                 if (to !== deal.stage) await moveDeal(deal.id, deal.stage, to as CxDealStage);
                               } else {
-                                await createDeal({ client_id: selected.id, stage: to as CxDealStage, title: selected.full_name });
+                                await createDeal({ client_id: selected.id, stage: (['cadastro', 'tipo_compra'].includes(to) ? to : 'cadastro') as CxDealStage, title: selected.full_name });
                               }
                             }}
                           >
