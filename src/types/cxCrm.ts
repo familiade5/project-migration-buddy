@@ -20,6 +20,8 @@ export interface CxDeal {
   property_id: string | null;
   title: string | null;
   stage: CxDealStage;
+  purchase_type: CxPurchaseType | null;
+  credit_status: CxCreditStatus | null;
   rejection_reason: CxRejectionReason | null;
   rejection_notes: string | null;
   bank: string | null;
@@ -154,4 +156,58 @@ export function cxStageKeyFromLabel(label: string) {
     .replace(/[^a-z0-9]+/g, '_')
     .replace(/^_+|_+$/g, '')
     .slice(0, 40);
+}
+
+// ================= Fluxo do funil (regras) =================
+export type CxPurchaseType = 'avista' | 'financiada';
+export type CxCreditStatus = 'aprovado' | 'reprovado';
+
+export const CX_PURCHASE_LABEL: Record<CxPurchaseType, string> = {
+  avista: 'À vista',
+  financiada: 'Financiada',
+};
+
+/** Etapas pós-crédito, em sequência obrigatória. */
+export const CX_CLOSING_TRACK = ['vincular_imovel', 'contrato', 'itbi_registro', 'entrega_chaves', 'concluido'];
+export const CX_CREDIT_STAGES = ['analise_credito', 'credito_aprovado', 'pendencia'];
+
+type FlowDeal = Pick<CxDeal, 'stage' | 'property_id'> & {
+  purchase_type?: string | null;
+  credit_status?: string | null;
+};
+
+/** Retorna o motivo do bloqueio, ou null se a mudança de etapa for permitida. */
+export function cxMoveBlocker(deal: FlowDeal, to: string): string | null {
+  const from = deal.stage;
+  if (from === to) return null;
+  const type = deal.purchase_type;
+  if (to === 'cadastro' || to === 'tipo_compra') return null;
+  if (CX_CREDIT_STAGES.includes(to)) {
+    if (type !== 'financiada') return 'Análise de crédito é só para compra financiada.';
+    if (to === 'credito_aprovado' && from !== 'analise_credito')
+      return 'O crédito só pode ser aprovado a partir da Análise de crédito.';
+    if (to === 'pendencia' && from !== 'analise_credito' && from !== 'credito_aprovado')
+      return 'Pendência vem de uma análise de crédito não aprovada.';
+    return null;
+  }
+  const idx = CX_CLOSING_TRACK.indexOf(to);
+  if (idx >= 0) {
+    if (!type) return 'Defina primeiro o tipo de compra (à vista ou financiada).';
+    if (type === 'financiada' && deal.credit_status !== 'aprovado')
+      return 'Compra financiada só avança para Vincular imóvel após o crédito aprovado.';
+    const fromIdx = CX_CLOSING_TRACK.indexOf(from);
+    if (idx === 0) return null;
+    if (fromIdx < 0 || fromIdx < idx - 1) return `Avance uma etapa por vez até "${to.replace(/_/g, ' ')}".`;
+    if (idx >= 1 && !deal.property_id) return 'Vincule um imóvel ao caso antes de seguir para o Contrato.';
+    return null;
+  }
+  return null; // etapas personalizadas
+}
+
+/** Campos extras a gravar ao entrar numa etapa. */
+export function cxStagePatch(to: string): Record<string, unknown> {
+  if (to === 'credito_aprovado') return { credit_status: 'aprovado' };
+  if (to === 'pendencia') return { credit_status: 'reprovado' };
+  if (to === 'analise_credito') return { credit_status: null };
+  return {};
 }
