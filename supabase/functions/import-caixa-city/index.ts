@@ -97,7 +97,7 @@ Deno.serve(async (req) => {
     if (!STATE_NAMES[uf] || (!listCities && body?.action !== "refresh_countdowns" && city.length < 2) || city.length > 80) return json({ success: false, error: "Informe estado (UF) e cidade" }, 400);
 
     if (body?.action === "repair_accents") {
-      const { data: items } = await supabase.from("auto_post_queue").select("id, property_data").like("external_id", "caixa-csv-%");
+      const { data: items } = await supabase.from("auto_post_queue").select("id, property_data").limit(5000);
       const bad = (items || []).filter((it) => /\uFFFD/.test(JSON.stringify(it.property_data)));
       const fix = await fixAccents(bad.flatMap((it) => [it.property_data.neighborhood, it.property_data.fullAddress, it.property_data.street, it.property_data.city]));
       for (const it of bad) {
