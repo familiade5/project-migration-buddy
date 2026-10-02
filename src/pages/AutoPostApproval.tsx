@@ -69,6 +69,48 @@ const AutoPostApproval = () => {
   const visibleCount = filteredItems.length;
   const stateScopedCount = stateFilteredItems.length;
 
+  const [importCity, setImportCity] = useState('Horizonte');
+  const [importState, setImportState] = useState('CE');
+  const [isImporting, setIsImporting] = useState(false);
+  const [approvingId, setApprovingId] = useState<string | null>(null);
+
+  const handleImportCity = async () => {
+    if (importCity.trim().length < 2) { toast.error('Informe a cidade'); return; }
+    setIsImporting(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('import-caixa-city', {
+        body: { city: importCity.trim(), state: importState },
+      });
+      if (error) {
+        const ctx = (error as any)?.context;
+        const msg = ctx?.json ? (await ctx.json().catch(() => null))?.error : null;
+        throw new Error(msg || error.message);
+      }
+      if (!data?.success) throw new Error(data?.error || 'Falha na importação');
+      toast.success(
+        `${data.city}: ${data.new_properties} novos (${data.financing} com financiamento, ${data.cash} à vista). ${data.already_existing} já existiam.`
+      );
+      setActiveTab('pending');
+      refetch();
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : 'Erro ao importar');
+    } finally {
+      setIsImporting(false);
+    }
+  };
+
+  const handleQuickApprove = async (item: AutoPostQueueItem) => {
+    setApprovingId(item.id);
+    const { data: u } = await supabase.auth.getUser();
+    const { error } = await supabase.from('auto_post_queue')
+      .update({ status: 'approved', approved_by_user_id: u.user?.id })
+      .eq('id', item.id);
+    setApprovingId(null);
+    if (error) { toast.error('Não foi possível aprovar'); return; }
+    toast.success('Post aprovado');
+    refetch();
+  };
+
   const handleScrapeNow = async () => {
     setIsScraping(true);
     try {
@@ -129,6 +171,31 @@ const AutoPostApproval = () => {
             {isScraping ? <Loader2 className="w-4 h-4 animate-spin" /> : <RefreshCw className="w-4 h-4" />}
             {isScraping ? 'Buscando...' : 'Buscar Imóveis'}
           </Button>
+        </div>
+
+        {/* Importar por cidade (lista oficial da Caixa) */}
+        <div className="bg-white border border-gray-200 rounded-2xl p-4 mb-6 shadow-sm">
+          <p className="text-sm font-semibold mb-1" style={{ color: BRAND_BLUE }}>Extrair imóveis da Caixa por cidade</p>
+          <p className="text-xs text-gray-500 mb-3">Somente Venda Direta e Venda Online. Os posts entram em "Pendentes", separados por financiamento e à vista.</p>
+          <div className="flex flex-wrap items-center gap-2">
+            <input
+              value={importCity}
+              onChange={(e) => setImportCity(e.target.value)}
+              placeholder="Cidade"
+              maxLength={80}
+              className="h-9 px-3 rounded-md border border-gray-200 bg-white text-sm text-gray-800 w-56"
+            />
+            <input
+              value={importState}
+              onChange={(e) => setImportState(e.target.value.toUpperCase().slice(0, 2))}
+              placeholder="UF"
+              className="h-9 px-3 rounded-md border border-gray-200 bg-white text-sm text-gray-800 w-16 uppercase"
+            />
+            <Button onClick={handleImportCity} disabled={isImporting} className="text-white gap-2 h-9" style={{ backgroundColor: BRAND_BLUE }}>
+              {isImporting ? <Loader2 className="w-4 h-4 animate-spin" /> : <RefreshCw className="w-4 h-4" />}
+              {isImporting ? 'Extraindo...' : 'Extrair posts'}
+            </Button>
+          </div>
         </div>
 
         {/* Status Tabs */}
