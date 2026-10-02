@@ -116,8 +116,8 @@ export default function SiteSimulate() {
     <SiteLayout title="Pré-análise de crédito" whatsapp={whatsappLink(p)}>
       <div className="max-w-2xl mx-auto px-4 py-6">
         <Link to={p ? `/imoveis/imovel/${p.code}` : '/imoveis'} className="inline-flex items-center gap-1 text-sm text-slate-500 hover:text-slate-900"><ArrowLeft className="w-4 h-4" /> Voltar ao imóvel</Link>
-        <h1 className="text-2xl font-extrabold mt-2 text-slate-900">Descubra se você aprova</h1>
-        <p className="text-sm text-slate-500">Leva uns 3 minutos. Seus dados ficam protegidos e só nossa equipe de crédito tem acesso.</p>
+        <h1 className="text-2xl font-extrabold mt-2 text-slate-900">Solicite sua pré-análise</h1>
+        <p className="text-sm text-slate-500">Leva uns 3 minutos. Nossa equipe considera a modalidade, sua renda, FGTS e documentos para montar o cenário correto.</p>
 
         {p && (
           <div className="flex items-center gap-3 mt-4 p-3 rounded-xl border border-slate-200 bg-white">
