@@ -25,7 +25,7 @@ export function SiteLayout({ children, title, description, whatsapp }: Props) {
       <header className="sticky top-0 z-40 border-b border-border bg-background/95 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 h-[72px] flex items-center justify-between gap-6">
           <Link to="/imoveis" className="flex items-center" aria-label="Venda Direta Hoje — início">
-            <img src={logoVDH} alt="Venda Direta Hoje" className="h-9 sm:h-10 w-auto object-contain" />
+            <img src={logoVDH} alt="Venda Direta Hoje" className="h-9 sm:h-10 w-auto object-contain" style={{ filter: "brightness(0) saturate(100%) invert(22%) sepia(90%) saturate(1200%) hue-rotate(130deg) brightness(90%)" }} />
           </Link>
           <nav className="hidden lg:flex items-center gap-7 text-sm font-semibold text-muted-foreground">
             <NavItem to="/imoveis">Encontrar imóvel</NavItem>
