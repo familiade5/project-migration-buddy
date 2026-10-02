@@ -145,6 +145,7 @@ const AutoPostApproval = () => {
   const [regionSel, setRegionSel] = useState<string[]>([]);
   const [loadingCities, setLoadingCities] = useState(false);
   const [regionProgress, setRegionProgress] = useState('');
+  const [failedCities, setFailedCities] = useState<string[]>([]);
 
   const loadRegionCities = async (uf: string) => {
     setRegionState(uf); setRegionCities([]); setRegionSel([]); setLoadingCities(true);
@@ -161,16 +162,16 @@ const AutoPostApproval = () => {
     } finally { setLoadingCities(false); }
   };
 
-  const handleImportRegion = async () => {
-    if (!regionSel.length) { toast.error('Escolha ao menos uma cidade'); return; }
+  const runImport = async (cities: string[]) => {
+    if (!cities.length) { toast.error('Escolha ao menos uma cidade'); return; }
     setIsImporting(true);
     const empty: string[] = [];
     const failed: string[] = [];
     let totalNew = 0, withClock = 0;
     try {
-      for (let i = 0; i < regionSel.length; i++) {
-        const city = regionSel[i];
-        setRegionProgress(`${i + 1}/${regionSel.length}: ${city}`);
+      for (let i = 0; i < cities.length; i++) {
+        const city = cities[i];
+        setRegionProgress(`${i + 1}/${cities.length}: ${city}`);
         try {
           const data = await importOneCity(city, regionState);
           totalNew += data.new_properties || 0;
@@ -180,9 +181,10 @@ const AutoPostApproval = () => {
           failed.push(city);
         }
       }
+      setFailedCities(failed);
       const parts = [`${totalNew} novos imóveis extraídos${withClock ? ` (${withClock} em contagem regressiva)` : ''}.`];
       if (empty.length) parts.push(`Sem imóveis na Caixa hoje: ${empty.join(', ')}.`);
-      if (failed.length) parts.push(`Falhou em: ${failed.join(', ')} — tente de novo.`);
+      if (failed.length) parts.push(`Falhou em: ${failed.join(', ')} — use o botão "Tentar de novo as que falharam".`);
       if (totalNew > 0) { toast.success(parts.join(' '), { duration: 8000 }); setActiveTab('pending'); refetch(); }
       else if (failed.length === 0) toast.info(parts.join(' '), { duration: 8000 });
       else toast.error(parts.join(' '), { duration: 8000 });
@@ -190,6 +192,8 @@ const AutoPostApproval = () => {
       setIsImporting(false); setRegionProgress('');
     }
   };
+
+  const handleImportRegion = () => runImport(regionSel);
 
   const [refreshingClock, setRefreshingClock] = useState(false);
   const handleRefreshCountdowns = async () => {
@@ -349,6 +353,11 @@ const AutoPostApproval = () => {
                 {isImporting ? <Loader2 className="w-4 h-4 animate-spin" /> : <RefreshCw className="w-4 h-4" />}
                 {isImporting && regionProgress ? `Extraindo ${regionProgress}` : `Extrair ${regionSel.length} cidade(s)`}
               </Button>
+              {failedCities.length > 0 && !isImporting && (
+                <Button variant="outline" onClick={() => runImport(failedCities)} className="gap-2 h-9 border-red-300 text-red-700 hover:bg-red-50">
+                  Tentar de novo as que falharam ({failedCities.length})
+                </Button>
+              )}
             </div>
             {loadingCities && <p className="text-xs text-gray-500 flex items-center gap-2"><Loader2 className="w-3 h-3 animate-spin" />Carregando cidades da Caixa...</p>}
             {regionCities.length > 0 && (
