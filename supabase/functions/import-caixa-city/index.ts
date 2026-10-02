@@ -147,13 +147,14 @@ Deno.serve(async (req) => {
       text.split(/\r?\n/).map((l) => l.split(";").map((c) => c.trim()))
         .filter((c) => c.length >= 12 && /^\d{6,}$/.test(c[0]) && ALLOWED.has(c[10].toLowerCase()))
         .forEach((c) => { const n = title(c[2]); counts.set(n, (counts.get(n) || 0) + 1); });
-      const cities = [...counts.entries()].map(([name, count]) => ({ name, count })).sort((a, b) => b.count - a.count);
+      const cityFix = await fixAccents([...counts.keys()]);
+      const cities = [...counts.entries()].map(([name, count]) => ({ name: repairAll(name, cityFix), count })).sort((a, b) => b.count - a.count);
       return json({ success: true, state: uf, cities });
     }
 
     const target = norm(city);
     const rows = text.split(/\r?\n/).map((l) => l.split(";").map((c) => c.trim()))
-      .filter((c) => c.length >= 12 && /^\d{6,}$/.test(c[0]) && norm(c[2]) === target);
+      .filter((c) => c.length >= 12 && /^\d{6,}$/.test(c[0]) && (norm(c[2]) === target || sameName(c[2], city)));
     const allowed = rows.filter((c) => ALLOWED.has(c[10].toLowerCase()));
 
     const ids = allowed.map((c) => `caixa-csv-${c[0]}`);
@@ -163,6 +164,9 @@ Deno.serve(async (req) => {
       (data || []).forEach((r) => existing.add(r.external_id));
     }
     const fresh = allowed.filter((c) => !existing.has(`caixa-csv-${c[0]}`));
+    // Restaura acentos de cidade, bairro e endereço só dos novos
+    const accentFix = await fixAccents(fresh.flatMap((c) => [c[2], c[3], c[4]]));
+    fresh.forEach((c) => { c[2] = /\uFFFD/.test(c[2]) ? city.toUpperCase() : c[2]; c[3] = repairAll(c[3], accentFix); c[4] = repairAll(c[4], accentFix); });
 
     // Cronômetro da Caixa: só para imóveis que aceitam financiamento (1 crédito Firecrawl cada)
     const countdowns = new Map<string, string | null>();
