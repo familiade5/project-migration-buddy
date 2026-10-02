@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
+import { SuperAdminRoute } from "@/components/SuperAdminRoute";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import Library from "./pages/Library";
@@ -143,7 +144,7 @@ const App = () => (
             <Route path="/imoveis/imovel/:code/simular" element={<SiteSimulate />} />
             <Route path="/imoveis/:uf/:city" element={<SiteCity />} />
             <Route path="/cc-vdh" element={
-              <ProtectedRoute requireAdmin><CCVdh /></ProtectedRoute>
+              <SuperAdminRoute><CCVdh /></SuperAdminRoute>
             } />
             
             <Route path="*" element={<NotFound />} />
