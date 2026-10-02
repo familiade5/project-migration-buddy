@@ -94,7 +94,7 @@ export function AutoPostApprovalDialog({ item, open, onOpenChange, onActionCompl
 
   const [olxCaption, setOlxCaption] = useState('');
   useEffect(() => {
-    if (open) { setCaption(defaultCaption); setOlxCaption(stripEmojis(defaultCaption)); }
+    if (open) { setCaption(defaultCaption); setOlxCaption(stripEmojis(defaultCaption).split('\n').map((l) => l.trim()).join('\n')); }
   }, [open, defaultCaption]);
 
   // Feed slides
@@ -392,7 +392,7 @@ export function AutoPostApprovalDialog({ item, open, onOpenChange, onActionCompl
                 Cancelar
               </Button>
               {item.status === 'pending' && (
-                <Button onClick={() => { setCaption(defaultCaption); setOlxCaption(stripEmojis(defaultCaption)); setStep('caption'); }}
+                <Button onClick={() => { setCaption(defaultCaption); setOlxCaption(stripEmojis(defaultCaption).split('\n').map((l) => l.trim()).join('\n')); setStep('caption'); }}
                   className="text-white" style={{ backgroundColor: '#1A3A6B' }}>
                   Imagens OK, revisar legenda
                 </Button>
