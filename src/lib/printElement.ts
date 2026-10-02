@@ -30,7 +30,9 @@ export function printElement(el: HTMLElement, title: string) {
   .print-frame, .print-frame * { max-width: 100% !important; min-width: 0 !important; box-sizing: border-box; }
   .print-frame table { width: 100% !important; table-layout: fixed; font-size: 9px; }
   .print-frame td, .print-frame th { word-break: break-word; overflow-wrap: anywhere; padding: 4px 5px !important; }
-  .truncate { white-space: normal !important; overflow: visible !important; }
+  .truncate, .whitespace-nowrap { white-space: normal !important; overflow: visible !important; }
+  [class*="-mx-"] { margin-left: 0 !important; margin-right: 0 !important; }
+  .print-frame tr > :last-child:not(:first-child) { display: none; }
   .overflow-hidden, .overflow-auto, .overflow-x-auto, .overflow-y-auto { overflow: visible !important; max-height: none !important; }
   .rounded-2xl, .rounded-xl, .rounded-lg { border-radius: 6px !important; }
 </style></head><body>
