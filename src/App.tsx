@@ -36,6 +36,9 @@ import SiteHome from "./pages/site/SiteHome";
 import SiteCity from "./pages/site/SiteCity";
 import SitePropertyPage from "./pages/site/SiteProperty";
 import SiteSimulate from "./pages/site/SiteSimulate";
+import SiteAbout from "./pages/site/SiteAbout";
+import SitePrivacy from "./pages/site/SitePrivacy";
+import SiteFaq from "./pages/site/SiteFaq";
 import CCVdh from "./pages/CCVdh";
 
 
@@ -133,6 +136,9 @@ const App = () => (
             <Route path="/imovel/:slug" element={<LandingPage />} />
             {/* Site público VDH */}
             <Route path="/imoveis" element={<SiteHome />} />
+            <Route path="/imoveis/sobre-nos" element={<SiteAbout />} />
+            <Route path="/imoveis/privacidade" element={<SitePrivacy />} />
+            <Route path="/imoveis/perguntas-frequentes" element={<SiteFaq />} />
             <Route path="/imoveis/imovel/:code" element={<SitePropertyPage />} />
             <Route path="/imoveis/imovel/:code/simular" element={<SiteSimulate />} />
             <Route path="/imoveis/:uf/:city" element={<SiteCity />} />

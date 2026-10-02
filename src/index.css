@@ -108,6 +108,39 @@
     --surface: 220 5% 96%;
     --surface-elevated: 0 0% 100%;
   }
+
+  .vdh-site {
+    --background: 150 14% 97%;
+    --foreground: 156 28% 13%;
+    --card: 0 0% 100%;
+    --card-foreground: 156 28% 13%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 156 28% 13%;
+    --primary: 151 100% 20%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 150 14% 93%;
+    --secondary-foreground: 154 35% 18%;
+    --muted: 150 10% 94%;
+    --muted-foreground: 150 7% 40%;
+    --accent: 43 52% 54%;
+    --accent-foreground: 156 34% 12%;
+    --border: 150 11% 86%;
+    --input: 150 11% 86%;
+    --ring: 151 100% 20%;
+    --radius: 0.75rem;
+    color-scheme: light;
+    font-family: 'Golos Text', sans-serif;
+  }
+
+  .vdh-site h1,
+  .vdh-site h2,
+  .vdh-site h3,
+  .vdh-site h4,
+  .vdh-site h5,
+  .vdh-site h6 {
+    font-family: 'Golos Text', sans-serif;
+    letter-spacing: 0;
+  }
 }
 
 @layer base {

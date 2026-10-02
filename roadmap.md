@@ -1,7 +1,9 @@
-# Site público VDH — ajustes solicitados
+# Site público VDH — atualização institucional
 
-- [x] Mostrar entrada mínima de 5% para Venda Direta e Venda Direta Online, com ressalva de análise e regras do edital.
-- [x] Exibir uma descrição comercial completa no padrão da legenda VDH, sem alterar os criadores de post.
-- [x] Disponibilizar a matrícula oficial da Caixa para download na página do imóvel.
-- [x] Remover a simulação rápida imprecisa e substituí-la por uma pré-análise adequada às regras variáveis da Caixa.
-- [x] Validar a página do imóvel em computador e celular.
+- [x] Definir direção visual com busca em destaque, verde e cinza.
+- [x] Modernizar cabeçalho, página inicial e rodapé em todo o site público.
+- [x] Adicionar página Sobre nós.
+- [x] Adicionar Política de Privacidade com informações factuais e contato.
+- [x] Adicionar Perguntas Frequentes com o conteúdo dos anexos.
+- [x] Adicionar contato, CNPJ e CRECIs ao rodapé.
+- [x] Validar navegação, busca e páginas em computador e celular.
