@@ -3,7 +3,7 @@ import { Link, useParams } from 'react-router-dom';
 import { ArrowLeft, BedDouble, Car, Ruler, MapPin, Timer, MessageCircle, FileCheck2 } from 'lucide-react';
 import noPhoto from '@/assets/imagem-nao-fornecida.jpg';
 import { SiteLayout } from '@/components/site/SiteLayout';
-import { SiteProperty as P, SITE_GREEN, SITE_GOLD, SITE_GREEN_DARK, brl, countdownLabel, estimate, siteTable, stateName, whatsappLink } from '@/lib/vdhSite';
+import { SiteProperty as P, SITE_GREEN, SITE_GOLD, SITE_GREEN_DARK, brl, countdownLabel, estimate, formatDescription, siteTable, stateName, whatsappLink } from '@/lib/vdhSite';
 
 export default function SiteProperty() {
   const { code = '' } = useParams();
@@ -29,7 +29,7 @@ export default function SiteProperty() {
   const cd = countdownLabel(p.countdown_ends_at);
   const sold = p.status === 'sold';
   const inc = Number(income.replace(/\D/g, '')) / 100;
-  const est = estimate(p.price, inc);
+  const est = estimate(p.price, inc, p.sale_modality);
 
   return (
     <SiteLayout
@@ -55,9 +55,11 @@ export default function SiteProperty() {
               {p.area ? <span className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-100 text-slate-700 text-sm"><Ruler className="w-4 h-4" />{Math.round(p.area)} m²</span> : null}
             </div>
             <div className="mt-6">
-              <h2 className="font-bold text-slate-900">Descrição da Caixa</h2>
-              <p className="text-slate-600 text-sm mt-1 leading-relaxed">{p.description}</p>
-              <p className="text-xs text-slate-400 mt-3">Código Caixa {p.code} · {p.sale_modality}</p>
+              <h2 className="font-bold text-slate-900 mb-2">Sobre este imóvel</h2>
+              <div className="bg-slate-50 rounded-2xl p-5 text-slate-700 text-sm whitespace-pre-line leading-relaxed border border-slate-100">
+                {formatDescription(p)}
+              </div>
+              <p className="text-[10px] text-slate-400 mt-3 px-1 uppercase tracking-wider">Código Caixa {p.code} · {p.sale_modality}</p>
             </div>
           </div>
 
@@ -89,25 +91,51 @@ export default function SiteProperty() {
 
             {p.accepts_financing && !sold && (
               <div className="rounded-2xl p-5" style={{ backgroundColor: '#f2f8f4', border: '1px solid #cfe5d7' }}>
-                <p className="font-bold text-slate-900">Simulação rápida</p>
-                <label className="text-xs text-slate-600 mt-3 block">Renda mensal da família</label>
-                <input
-                  inputMode="numeric"
-                  value={income ? brl(inc).replace(/,00$/, '') : ''}
-                  onChange={(e) => setIncome(e.target.value.replace(/\D/g, '') + '00')}
-                  placeholder="R$ 3.000"
-                  className="w-full h-11 mt-1 px-3 rounded-xl border border-slate-200 bg-white text-slate-900 outline-none"
-                />
-                {inc > 0 && (
-                  <div className="mt-3 text-sm space-y-1 text-slate-700">
-                    <p>Entrada estimada: <b>{brl(est.entrada)}</b></p>
-                    <p>Parcela estimada: <b>{brl(est.parcela)}</b>/mês</p>
-                    <p className="mt-2 font-semibold" style={{ color: est.verdict === 'boa' ? SITE_GREEN : est.verdict === 'compositor' ? '#b45309' : '#dc2626' }}>
-                      {est.verdict === 'boa' ? 'Boa chance de aprovação!' : est.verdict === 'compositor' ? 'Pode aprovar somando renda com outra pessoa.' : 'Renda abaixo do ideal — fale com a gente, há alternativas (FGTS, subsídio).'}
-                    </p>
-                    <p className="text-[11px] text-slate-500 mt-2">Estimativa com 20% de entrada e 30 anos. A aprovação real depende da análise da Caixa; FGTS e subsídios podem reduzir a entrada.</p>
+                <p className="font-bold text-slate-900 text-sm">Condições de Financiamento</p>
+                <p className="text-[11px] text-slate-600 mt-1">As regras da Caixa variam conforme seu perfil. Veja uma estimativa:</p>
+                
+                <div className="mt-4 space-y-2">
+                  <div className="flex justify-between text-xs border-b border-slate-200 pb-1">
+                    <span className="text-slate-500">Entrada mínima</span>
+                    <span className="font-bold text-slate-900">{brl(estimate(p.price, 0, p.sale_modality).entrada)}</span>
                   </div>
-                )}
+                  <div className="flex justify-between text-xs border-b border-slate-200 pb-1">
+                    <span className="text-slate-500">Uso de FGTS</span>
+                    <span className="font-bold text-green-700">Permitido</span>
+                  </div>
+                  <div className="flex justify-between text-xs border-b border-slate-200 pb-1">
+                    <span className="text-slate-500">Subsídio (MCMV)</span>
+                    <span className="font-bold text-slate-900">Até R$ 55.000</span>
+                  </div>
+                </div>
+
+                <div className="mt-5 bg-white rounded-xl p-3 border border-slate-200">
+                  <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Simular parcela por renda</label>
+                  <div className="relative mt-1">
+                    <input
+                      inputMode="numeric"
+                      value={income ? brl(inc).replace(/,00$/, '') : ''}
+                      onChange={(e) => setIncome(e.target.value.replace(/\D/g, '') + '00')}
+                      placeholder="R$ 3.000"
+                      className="w-full h-10 px-3 rounded-lg border border-slate-200 bg-slate-50 text-sm outline-none focus:border-green-500 transition-colors"
+                    />
+                  </div>
+                  {inc > 0 && (
+                    <div className="mt-3 text-xs space-y-2">
+                      <div className="p-2 rounded-lg bg-green-50 text-green-800 flex justify-between items-center">
+                        <span>Parcela estimada:</span>
+                        <b className="text-sm">{brl(est.parcela)}</b>
+                      </div>
+                      <p className="text-[10px] text-slate-500 leading-tight">
+                        * Valor inicial estimado (SAC). A parcela real depende da idade e relacionamento com o banco.
+                      </p>
+                    </div>
+                  )}
+                </div>
+                
+                <p className="text-[10px] text-slate-400 mt-4 leading-tight italic">
+                  A aprovação final e as taxas exatas dependem da análise técnica da Caixa Econômica Federal.
+                </p>
               </div>
             )}
             <p className="text-[11px] text-slate-400 px-1">Valores conforme a lista oficial da Caixa de {stateName(p.uf)}. <span style={{ color: SITE_GOLD }}>●</span> Atualizado diariamente.</p>

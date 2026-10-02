@@ -61,8 +61,10 @@ export function whatsappLink(p?: Pick<SiteProperty, 'code' | 'address' | 'city' 
 }
 
 /** Estimativa simples (não substitui a análise da Caixa). */
-export function estimate(price: number, income: number) {
-  const entrada = price * 0.2;
+export function estimate(price: number, income: number, modality?: string | null) {
+  const isVD = modality?.toLowerCase().includes("venda direta");
+  const entranceRate = isVD ? 0.05 : 0.20;
+  const entrada = price * entranceRate;
   const financiado = price - entrada;
   const i = 0.0866 / 12;
   const n = 360;
@@ -86,3 +88,32 @@ export async function fetchAll<T>(build: (from: number, to: number) => any): Pro
 }
 
 export const siteTable = () => (supabase as any).from('vdh_site_properties');
+
+export function formatDescription(p: SiteProperty) {
+  const isVD = p.sale_modality?.toLowerCase().includes("venda direta");
+  const lines = [
+    `🏡 ${(p.property_type || 'Imóvel').toUpperCase()} - ${p.neighborhood || p.city}`,
+    '',
+    `💰 Valor de Venda: ${brl(p.price)}`,
+    p.evaluation > p.price ? `🔥 Avaliado em: ${brl(p.evaluation)} (${Math.round(p.discount)}% de desconto)` : null,
+    '',
+    p.accepts_financing ? '🏦 Aceita Financiamento' : '❌ Somente à vista',
+    isVD ? '📥 Entrada: a partir de 5%' : '📥 Entrada: a partir de 20%',
+    p.accepts_financing ? '💼 Pode usar seu FGTS' : null,
+    '',
+    '📌 Características:',
+    p.bedrooms ? `🛏️ ${p.bedrooms} quarto(s)` : null,
+    p.garage_spaces ? `🚗 ${p.garage_spaces} vaga(s)` : null,
+    p.area ? `📐 ${Math.round(p.area)} m²` : null,
+    '',
+    '📍 Localização:',
+    `📍 ${p.address}`,
+    `📍 ${p.city} - ${p.uf}`,
+  ].filter(l => l !== null);
+  
+  if (p.description) {
+    lines.push('', '📝 Descrição oficial:', p.description);
+  }
+  
+  return lines.join('\n');
+}
