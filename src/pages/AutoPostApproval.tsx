@@ -2,7 +2,7 @@ import { useState, useMemo } from 'react';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { useAutoPostQueue, AutoPostQueueItem } from '@/hooks/useAutoPostQueue';
 import { AutoPostApprovalDialog } from '@/components/auto-post/AutoPostApprovalDialog';
-import { Loader2, Inbox, CheckCircle2, XCircle, Clock, RefreshCw, Filter, Timer } from 'lucide-react';
+import { Loader2, Inbox, CheckCircle2, XCircle, Clock, RefreshCw, Filter, Timer, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { supabase } from '@/integrations/supabase/client';

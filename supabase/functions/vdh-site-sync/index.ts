@@ -129,7 +129,73 @@ async function syncState(supabase: any, uf: string) {
   const { data: sold } = await supabase.from("vdh_site_properties")
     .update({ status: "sold", sold_at: started }).eq("uf", uf).eq("status", "active").lt("last_seen_at", started).select("code");
   await supabase.from("vdh_site_properties").delete().eq("uf", uf).eq("status", "sold").lt("sold_at", new Date(Date.now() - 30 * 86400_000).toISOString());
-  return { uf, total: rows.length, new: toInsert.length, sold: (sold || []).length };
+  const queued = await queueNewPosts(supabase, uf, toInsert);
+  return { uf, total: rows.length, new: toInsert.length, sold: (sold || []).length, queued };
+}
+
+const STATE_NAMES: Record<string, string> = { AM: "Amazonas", CE: "Ceará", MS: "Mato Grosso do Sul", PB: "Paraíba", RN: "Rio Grande do Norte", SC: "Santa Catarina" };
+const brl = (n: number) => n.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+
+// Imóveis novos na Caixa também entram na Aprovação Posts (aba "Adicionados recentemente")
+async function queueNewPosts(supabase: any, uf: string, props: any[]) {
+  if (!props.length) return 0;
+  const ids = props.map((p) => `caixa-csv-${p.code}`);
+  const existing = new Set<string>();
+  for (let i = 0; i < ids.length; i += 200) {
+    const { data } = await supabase.from("scraped_properties").select("external_id").in("external_id", ids.slice(i, i + 200));
+    (data || []).forEach((r: any) => existing.add(r.external_id));
+  }
+  const fresh = props.filter((p) => !existing.has(`caixa-csv-${p.code}`));
+  let queued = 0;
+  for (let i = 0; i < fresh.length; i += 50) {
+    const batch = fresh.slice(i, i + 50).map((p) => {
+      const d = p.description || "";
+      const areaPriv = grab(d, /([\d.]+)\s*de .{1,2}rea privativa/i);
+      const areaTerr = grab(d, /([\d.]+)\s*de .{1,2}rea do terreno/i);
+      const areaTot = grab(d, /([\d.]+)\s*de .{1,2}rea total/i);
+      const addr = p.address || "";
+      const photos = Array(5).fill(p.photo_url);
+      const fin = p.accepts_financing;
+      const property_data = {
+        entryValue: "", propertySource: "Imóvel Caixa", type: p.property_type, bedrooms: String(p.bedrooms || 0),
+        city: p.city, state: STATE_NAMES[uf], neighborhood: p.neighborhood || "",
+        evaluationValue: brl(p.evaluation), minimumValue: brl(p.price), discount: String(Math.round(p.discount || 0)),
+        garageSpaces: String(p.garage_spaces || 0), bathrooms: /WC/i.test(d) ? "1" : "0",
+        area: areaPriv && areaPriv !== "0.00" ? areaPriv : areaTerr,
+        acceptsFGTS: fin, acceptsFinancing: fin, hasEasyEntry: false, canUseFGTS: fin,
+        creci: "", features: [], customSlide2Texts: ["", "", ""], customSlide3Texts: ["", "", ""],
+        contactPhone: "", contactName: "", propertyName: "",
+        paymentMethod: fin ? "À vista ou financiado" : "Somente à vista",
+        hasSala: /sala/i.test(d), hasCozinha: /cozinha/i.test(d), hasAreaServico: /a\.serv/i.test(d),
+        areaTotal: areaTot, areaPrivativa: areaPriv, areaTerreno: areaTerr,
+        street: addr.split(",")[0]?.trim() || addr, number: grab(addr, /N\.\s*([^,]+)/i), complement: "", cep: "",
+        fullAddress: `${addr}, ${p.neighborhood || ""} - ${p.city}/${uf}`, customPhotoSpecs: [],
+        condominiumRules: "Responsabilidade do comprador (até 10% do valor de avaliação). A CAIXA arcará com o excedente.",
+        taxRules: "Responsabilidade do comprador.", saleModality: p.sale_modality, caixaLink: p.caixa_link,
+        countdownEndsAt: null, autoSync: true,
+      };
+      return {
+        row: {
+          external_id: `caixa-csv-${p.code}`, source_url: p.caixa_link, sale_modality: p.sale_modality, property_type: p.property_type,
+          address: addr, neighborhood: p.neighborhood, city: p.city, state: uf,
+          price_evaluation: p.evaluation, price_minimum: p.price, discount_percentage: p.discount,
+          bedrooms: p.bedrooms, bathrooms: Number(property_data.bathrooms), garage_spaces: p.garage_spaces,
+          area_total: Number(areaTot) || null, area_private: Number(areaPriv) || null, area_terrain: Number(areaTerr) || null,
+          photo_urls: photos, accepts_financing: fin, accepts_fgts: fin, payment_method: property_data.paymentMethod,
+          raw_data: { source: "caixa-csv", hdnimovel: p.code, description: d, via: "vdh-site-sync" }, status: "new",
+        },
+        property_data, photos,
+      };
+    });
+    const { data: rowsIn, error } = await supabase.from("scraped_properties").insert(batch.map((b) => b.row)).select("id, external_id");
+    if (error) { console.error("queueNewPosts scraped", error); continue; }
+    const byId = new Map(batch.map((b) => [b.row.external_id, b]));
+    const queue = (rowsIn || []).map((r: any) => ({ scraped_property_id: r.id, property_data: byId.get(r.external_id)!.property_data, photos: byId.get(r.external_id)!.photos, status: "pending" }));
+    const { error: qErr } = await supabase.from("auto_post_queue").insert(queue);
+    if (qErr) { console.error("queueNewPosts queue", qErr); continue; }
+    queued += queue.length;
+  }
+  return queued;
 }
 
 Deno.serve(async (req) => {
