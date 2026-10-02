@@ -118,31 +118,56 @@ const AutoPostApproval = () => {
     return data;
   };
 
-  const CE_CITIES = ['Eusébio', 'Caucaia', 'Maracanaú', 'Pacatuba', 'Fortaleza', 'Pacajus', 'Maranguape', 'Aquiraz', 'Cascavel'];
+  const CRECI_STATES = STATES.filter((st) => st.value !== 'all');
+  const CE_DEFAULT = ['Eusébio', 'Caucaia', 'Maracanaú', 'Pacatuba', 'Fortaleza', 'Pacajus', 'Maranguape', 'Aquiraz', 'Cascavel'];
+  const [regionState, setRegionState] = useState('');
+  const [regionCities, setRegionCities] = useState<{ name: string; count: number }[]>([]);
+  const [regionSel, setRegionSel] = useState<string[]>([]);
+  const [loadingCities, setLoadingCities] = useState(false);
+  const [regionProgress, setRegionProgress] = useState('');
 
-  const handleImportCeCities = async () => {
+  const loadRegionCities = async (uf: string) => {
+    setRegionState(uf); setRegionCities([]); setRegionSel([]); setLoadingCities(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('import-caixa-city', { body: { state: uf, action: 'list_cities' } });
+      if (error || !data?.success) throw new Error(data?.error || 'Não foi possível carregar as cidades');
+      setRegionCities(data.cities);
+      if (uf === 'CE') {
+        const n = (x: string) => x.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toUpperCase();
+        setRegionSel(data.cities.filter((c: any) => CE_DEFAULT.some((d) => n(d) === n(c.name))).map((c: any) => c.name));
+      }
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : 'Erro ao carregar cidades');
+    } finally { setLoadingCities(false); }
+  };
+
+  const handleImportRegion = async () => {
+    if (!regionSel.length) { toast.error('Escolha ao menos uma cidade'); return; }
     setIsImporting(true);
     const empty: string[] = [];
     const failed: string[] = [];
-    let totalNew = 0;
+    let totalNew = 0, withClock = 0;
     try {
-      for (const city of CE_CITIES) {
+      for (let i = 0; i < regionSel.length; i++) {
+        const city = regionSel[i];
+        setRegionProgress(`${i + 1}/${regionSel.length}: ${city}`);
         try {
-          const data = await importOneCity(city, 'CE');
+          const data = await importOneCity(city, regionState);
           totalNew += data.new_properties || 0;
+          withClock += data.with_countdown || 0;
           if ((data.new_properties || 0) === 0 && (data.already_existing || 0) === 0) empty.push(city);
         } catch {
           failed.push(city);
         }
       }
-      const parts = [`${totalNew} novos imóveis extraídos.`];
+      const parts = [`${totalNew} novos imóveis extraídos${withClock ? ` (${withClock} em contagem regressiva)` : ''}.`];
       if (empty.length) parts.push(`Sem imóveis na Caixa hoje: ${empty.join(', ')}.`);
       if (failed.length) parts.push(`Falhou em: ${failed.join(', ')} — tente de novo.`);
       if (totalNew > 0) { toast.success(parts.join(' '), { duration: 8000 }); setActiveTab('pending'); refetch(); }
       else if (failed.length === 0) toast.info(parts.join(' '), { duration: 8000 });
       else toast.error(parts.join(' '), { duration: 8000 });
     } finally {
-      setIsImporting(false);
+      setIsImporting(false); setRegionProgress('');
     }
   };
 
@@ -251,10 +276,49 @@ const AutoPostApproval = () => {
               {isImporting ? <Loader2 className="w-4 h-4 animate-spin" /> : <RefreshCw className="w-4 h-4" />}
               {isImporting ? 'Extraindo...' : 'Extrair posts'}
             </Button>
-            <Button onClick={handleImportCeCities} disabled={isImporting} className="text-white gap-2 h-9" style={{ backgroundColor: BRAND_GOLD }}>
-              {isImporting ? <Loader2 className="w-4 h-4 animate-spin" /> : <RefreshCw className="w-4 h-4" />}
-              {isImporting ? 'Extraindo...' : 'Extrair região de Fortaleza (9 cidades)'}
-            </Button>
+          </div>
+          <div className="border-t border-gray-100 mt-4 pt-4">
+            <p className="text-sm font-semibold mb-1" style={{ color: BRAND_GOLD }}>Extrair região (várias cidades)</p>
+            <p className="text-xs text-gray-500 mb-3">Escolha o estado (só estados com CRECI) e marque as cidades.</p>
+            <div className="flex flex-wrap items-center gap-2 mb-3">
+              <Select value={regionState} onValueChange={loadRegionCities}>
+                <SelectTrigger className="w-[220px] h-9 text-sm" style={{ backgroundColor: '#fff', borderColor: '#e5e7eb', color: '#374151' }}>
+                  <SelectValue placeholder="Escolha o estado" />
+                </SelectTrigger>
+                <SelectContent>
+                  {CRECI_STATES.map((st) => <SelectItem key={st.value} value={st.value}>{st.label}</SelectItem>)}
+                </SelectContent>
+              </Select>
+              {regionCities.length > 0 && (
+                <>
+                  <button type="button" className="text-xs underline text-gray-600" onClick={() => setRegionSel(regionCities.map((c) => c.name))}>Marcar todas</button>
+                  <button type="button" className="text-xs underline text-gray-600" onClick={() => setRegionSel([])}>Limpar</button>
+                </>
+              )}
+              <Button onClick={handleImportRegion} disabled={isImporting || !regionSel.length} className="text-white gap-2 h-9" style={{ backgroundColor: BRAND_GOLD }}>
+                {isImporting ? <Loader2 className="w-4 h-4 animate-spin" /> : <RefreshCw className="w-4 h-4" />}
+                {isImporting && regionProgress ? `Extraindo ${regionProgress}` : `Extrair ${regionSel.length} cidade(s)`}
+              </Button>
+            </div>
+            {loadingCities && <p className="text-xs text-gray-500 flex items-center gap-2"><Loader2 className="w-3 h-3 animate-spin" />Carregando cidades da Caixa...</p>}
+            {regionCities.length > 0 && (
+              <div className="flex flex-wrap gap-1.5 max-h-48 overflow-y-auto">
+                {regionCities.map((c) => {
+                  const on = regionSel.includes(c.name);
+                  return (
+                    <button
+                      key={c.name}
+                      type="button"
+                      onClick={() => setRegionSel(on ? regionSel.filter((x) => x !== c.name) : [...regionSel, c.name])}
+                      className="px-2.5 py-1 rounded-full text-xs border"
+                      style={on ? { backgroundColor: BRAND_BLUE, color: '#fff', borderColor: BRAND_BLUE } : { backgroundColor: '#fff', color: '#374151', borderColor: '#e5e7eb' }}
+                    >
+                      {c.name} ({c.count})
+                    </button>
+                  );
+                })}
+              </div>
+            )}
           </div>
         </div>
 
