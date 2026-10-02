@@ -21,19 +21,23 @@ export function useAutoPostQueue(statusFilter: string = 'pending') {
   const query = useQuery({
     queryKey: ['auto-post-queue', statusFilter],
     queryFn: async () => {
-      let q = supabase
-        .from('auto_post_queue')
-        .select('*')
-        .order('created_at', { ascending: false })
-        .limit(5000);
-
-      if (statusFilter !== 'all') {
-        q = q.eq('status', statusFilter);
+      // O servidor devolve no máximo 1000 linhas por vez: busca em páginas
+      const PAGE = 1000;
+      const all: AutoPostQueueItem[] = [];
+      for (let from = 0; from < 20000; from += PAGE) {
+        let q = supabase
+          .from('auto_post_queue')
+          .select('*')
+          .order('created_at', { ascending: false })
+          .order('id', { ascending: true })
+          .range(from, from + PAGE - 1);
+        if (statusFilter !== 'all') q = q.eq('status', statusFilter);
+        const { data, error } = await q;
+        if (error) throw error;
+        all.push(...((data || []) as AutoPostQueueItem[]));
+        if (!data || data.length < PAGE) break;
       }
-
-      const { data, error } = await q;
-      if (error) throw error;
-      return (data || []) as AutoPostQueueItem[];
+      return all;
     },
   });
 
