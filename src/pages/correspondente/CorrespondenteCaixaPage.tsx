@@ -1195,6 +1195,7 @@ export default function CorrespondenteCaixaPage() {
         onClose={() => setDetailDealId(null)}
         onUpdate={(id, patch) => updateDeal(id, patch, true)}
         onMove={(id, from, to) => moveDeal(id, from, to as CxDealStage)}
+        onFlow={(to, extra, note) => detailDeal && moveDeal(detailDeal.id, detailDeal.stage, to, extra, note ?? undefined)}
         onDelete={(id) => deleteDeal(id)}
         onEdit={(d) => {
           setEditingDeal(d);

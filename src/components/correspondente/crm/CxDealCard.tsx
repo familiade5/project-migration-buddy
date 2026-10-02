@@ -60,6 +60,11 @@ export function CxDealCard({ deal, clientName, onClick, dragging, stages, onMove
               <Building2 className="w-3 h-3" /> Imóvel
             </span>
           )}
+          {deal.purchase_type && (
+            <span className={`px-1.5 py-0.5 rounded font-semibold ${deal.purchase_type === 'avista' ? 'bg-orange-50 text-orange-600' : 'bg-green-50 text-green-700'}`}>
+              {deal.purchase_type === 'avista' ? 'À vista' : 'Financiada'}
+            </span>
+          )}
           {deal.stage === 'pendencia' && deal.rejection_reason && (
             <span className="px-1.5 py-0.5 rounded bg-red-50 text-red-600 uppercase tracking-wide">
               {CX_REJECTION_CONFIG[deal.rejection_reason].short}

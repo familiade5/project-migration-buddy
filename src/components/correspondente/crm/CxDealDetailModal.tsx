@@ -16,6 +16,7 @@ import {
   cxDaysUntil,
   cxStageCfg,
 } from '@/types/cxCrm';
+import { CX_PURCHASE_LABEL, CX_CLOSING_TRACK } from '@/types/cxCrm';
 import { useCxDealDetail } from '@/hooks/useCxDeals';
 import { CalendarClock, FileText, History, Loader2, Pencil, Sparkles, Trash2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
@@ -30,6 +31,7 @@ const FIELD = 'bg-white border-slate-200 text-slate-900 placeholder:text-slate-4
 interface Props {
   deal: CxDeal | null;
   stages: CxStage[];
+  onFlow?: (to: string, extra: Partial<CxDeal>, note: string | null) => void;
   clientName: string;
   onClose: () => void;
   onUpdate: (id: string, patch: Partial<CxDeal>) => Promise<boolean>;
@@ -48,6 +50,7 @@ function fmtDate(iso?: string | null) {
 export function CxDealDetailModal({
   deal,
   stages,
+  onFlow,
   clientName,
   onClose,
   onUpdate,
@@ -273,6 +276,41 @@ export function CxDealDetailModal({
                 ))}
               </SelectContent>
             </Select>
+
+            {onFlow && (
+              <div className="rounded-xl border border-slate-200 bg-slate-50 p-3 space-y-2">
+                <div className="text-[11px] font-semibold text-slate-500">
+                  Tipo de compra:{' '}
+                  <strong className="text-slate-800">{deal.purchase_type ? CX_PURCHASE_LABEL[deal.purchase_type] : 'não definido'}</strong>
+                </div>
+                {(deal.stage === 'cadastro' || deal.stage === 'tipo_compra' || !deal.purchase_type) && (
+                  <div className="flex flex-wrap gap-2">
+                    <Button size="sm" variant="outline" className={BTN} onClick={() => onFlow('vincular_imovel', { purchase_type: 'avista', credit_status: null }, 'Tipo de compra: À vista')}>À vista → Vincular imóvel</Button>
+                    <Button size="sm" variant="outline" className={BTN} onClick={() => onFlow('analise_credito', { purchase_type: 'financiada', credit_status: null }, 'Tipo de compra: Financiada')}>Financiada → Análise de crédito</Button>
+                  </div>
+                )}
+                {deal.stage === 'analise_credito' && (
+                  <div className="flex flex-wrap gap-2">
+                    <Button size="sm" className="bg-emerald-600 hover:bg-emerald-700 text-white" onClick={() => onFlow('credito_aprovado', {}, 'Crédito aprovado')}>Crédito aprovado</Button>
+                    <Button size="sm" variant="outline" className="bg-white border-red-200 text-red-600 hover:bg-red-50" onClick={() => onFlow('pendencia', {}, 'Crédito não aprovado')}>Crédito não aprovado</Button>
+                  </div>
+                )}
+                {deal.stage === 'credito_aprovado' && (
+                  <Button size="sm" variant="outline" className={BTN} onClick={() => onFlow('vincular_imovel', {}, null)}>Avançar → Vincular imóvel</Button>
+                )}
+                {deal.stage === 'pendencia' && (
+                  <Button size="sm" variant="outline" className={BTN} onClick={() => onFlow('analise_credito', {}, 'Pendência resolvida — nova análise')}>Pendência resolvida → Nova análise de crédito</Button>
+                )}
+                {CX_CLOSING_TRACK.includes(deal.stage) && deal.stage !== 'concluido' && (() => {
+                  const next = CX_CLOSING_TRACK[CX_CLOSING_TRACK.indexOf(deal.stage) + 1];
+                  return (
+                    <Button size="sm" variant="outline" className={BTN} onClick={() => onFlow(next, {}, null)}>
+                      Avançar → {cxStageCfg(stages, next).label}
+                    </Button>
+                  );
+                })()}
+              </div>
+            )}
 
             {isRejected && (
               <div className="space-y-2">
