@@ -1,5 +1,5 @@
 import { ReactNode, useEffect, useState } from 'react';
-import { Link, NavLink } from 'react-router-dom';
+import { Link, NavLink, useLocation } from 'react-router-dom';
 import { Building2, Instagram, Mail, Menu, MessageCircle, ShieldCheck, X } from 'lucide-react';
 import logoVDH from '@/assets/logo-vdh-transparent-cropped.png';
 import { whatsappLink } from '@/lib/vdhSite';
