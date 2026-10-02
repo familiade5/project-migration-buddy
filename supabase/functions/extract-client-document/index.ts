@@ -458,6 +458,31 @@ Regras:
           reason: c.reason ? String(c.reason) : null,
         }))
         .filter((c: { amount: number }) => c.amount > 0);
+
+      // Garantia determinística: exclui PIX/TED/transferências do próprio titular,
+      // estornos e resgates mesmo que a IA marque como renda.
+      const norm = (s: string) => s.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase().replace(/[^A-Z0-9 ]/g, " ").replace(/\s+/g, " ").trim();
+      const STOP = new Set(["DA", "DE", "DO", "DAS", "DOS", "E"]);
+      const holderTokens = norm(String(data.bankAnalysis.holder || "")).split(" ").filter((t) => t.length > 1 && !STOP.has(t));
+      const isSelf = (text: string) => {
+        if (holderTokens.length < 2) return false;
+        const words = new Set(norm(text).split(" "));
+        const first = holderTokens[0];
+        const others = holderTokens.slice(1);
+        return words.has(first) && others.some((t) => words.has(t) || [...words].some((w) => w.length >= 3 && t.startsWith(w)));
+      };
+      for (const c of credits as Array<{ description: string; counterparty: string | null; kind: string | null; included: boolean; reason: string | null }>) {
+        const text = `${c.counterparty || ""} ${c.description}`;
+        const n = norm(text);
+        if (/\b(ESTORNO|DEVOLUCAO|DEVOL|CHARGEBACK|CANCELAMENTO)\b/.test(n)) {
+          c.included = false; c.reason = c.reason && !c.included ? c.reason : "Estorno/devolução";
+        } else if (/\b(RESGATE|RESG|APLICACAO|POUPANCA|RENDIMENTO POUP|EMPRESTIMO|CHEQUE ESPECIAL)\b/.test(n)) {
+          c.included = false; c.reason = "Resgate/aplicação/empréstimo";
+        } else if (isSelf(text) || /\b(MESMA TITULARIDADE|MESMO TITULAR|ENTRE CONTAS|TRANSF PROPRIA)\b/.test(n)) {
+          c.included = false; c.reason = "PIX/transferência do próprio titular";
+        }
+      }
+
       bankAnalysis = {
         holder: data.bankAnalysis.holder || null,
         bank: data.bankAnalysis.bank || null,
