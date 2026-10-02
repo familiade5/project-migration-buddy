@@ -52,10 +52,24 @@ const AutoPostApproval = () => {
   const [isScraping, setIsScraping] = useState(false);
   const { data: items, isLoading, refetch } = useAutoPostQueue(activeTab);
 
-  const stateFilteredItems = useMemo(() => {
-    if (!items) return [];
-    return items.filter((item) => matchesStateFilter(item, stateFilter));
-  }, [items, stateFilter]);
+  const [cityFilter, setCityFilter] = useState('all');
+  const [dateFilter, setDateFilter] = useState('all');
+  const dayKey = (iso: string) => new Date(iso).toLocaleDateString('pt-BR');
+  const todayKey = new Date().toLocaleDateString('pt-BR');
+
+  const onlyState = useMemo(() => (items || []).filter((i) => matchesStateFilter(i, stateFilter)), [items, stateFilter]);
+  const cityOptions = useMemo(() => {
+    const m = new Map<string, number>();
+    onlyState.forEach((i) => { const c = ((i.property_data as any)?.city || '').trim(); if (c) m.set(c, (m.get(c) || 0) + 1); });
+    return [...m.entries()].sort((a, b) => a[0].localeCompare(b[0], 'pt-BR'));
+  }, [onlyState]);
+  const onlyCity = useMemo(() => cityFilter === 'all' ? onlyState : onlyState.filter((i) => ((i.property_data as any)?.city || '').trim() === cityFilter), [onlyState, cityFilter]);
+  const dateOptions = useMemo(() => {
+    const m = new Map<string, { n: number; t: number }>();
+    onlyCity.forEach((i) => { const k = dayKey(i.created_at); const t = new Date(i.created_at).getTime(); const cur = m.get(k); m.set(k, { n: (cur?.n || 0) + 1, t: Math.max(cur?.t || 0, t) }); });
+    return [...m.entries()].sort((a, b) => b[1].t - a[1].t);
+  }, [onlyCity]);
+  const stateFilteredItems = useMemo(() => dateFilter === 'all' ? onlyCity : onlyCity.filter((i) => dayKey(i.created_at) === dateFilter), [onlyCity, dateFilter]);
 
   const filteredItems = useMemo(() => {
     return stateFilteredItems.filter((item) => {
@@ -130,6 +144,15 @@ const AutoPostApproval = () => {
     } finally {
       setIsImporting(false);
     }
+  };
+
+  const handleQuickReject = async (item: AutoPostQueueItem) => {
+    setApprovingId(item.id);
+    const { error } = await supabase.from('auto_post_queue').update({ status: 'rejected' }).eq('id', item.id);
+    setApprovingId(null);
+    if (error) { toast.error('Não foi possível rejeitar'); return; }
+    toast.success('Post rejeitado');
+    refetch();
   };
 
   const handleQuickApprove = async (item: AutoPostQueueItem) => {
@@ -302,7 +325,7 @@ const AutoPostApproval = () => {
           {/* State filter */}
           <div className="flex items-center gap-2">
             <Filter className="w-4 h-4 text-gray-400" />
-            <Select value={stateFilter} onValueChange={setStateFilter}>
+            <Select value={stateFilter} onValueChange={(v) => { setStateFilter(v); setCityFilter('all'); setDateFilter('all'); }}>
               <SelectTrigger className="w-[180px] h-8 text-xs" style={{ backgroundColor: '#fff', borderColor: '#e5e7eb', color: '#374151' }}>
                 <SelectValue placeholder="Filtrar por estado" />
               </SelectTrigger>
@@ -310,6 +333,24 @@ const AutoPostApproval = () => {
                 {STATES.map(s => (
                   <SelectItem key={s.value} value={s.value}>{s.label}</SelectItem>
                 ))}
+              </SelectContent>
+            </Select>
+            <Select value={cityFilter} onValueChange={(v) => { setCityFilter(v); setDateFilter('all'); }}>
+              <SelectTrigger className="w-[190px] h-8 text-xs" style={{ backgroundColor: '#fff', borderColor: '#e5e7eb', color: '#374151' }}>
+                <SelectValue placeholder="Cidade" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Todas as cidades</SelectItem>
+                {cityOptions.map(([c, n]) => <SelectItem key={c} value={c}>{c} ({n})</SelectItem>)}
+              </SelectContent>
+            </Select>
+            <Select value={dateFilter} onValueChange={setDateFilter}>
+              <SelectTrigger className="w-[200px] h-8 text-xs" style={{ backgroundColor: '#fff', borderColor: '#e5e7eb', color: '#374151' }}>
+                <SelectValue placeholder="Adicionados em" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Todas as datas</SelectItem>
+                {dateOptions.map(([d, v]) => <SelectItem key={d} value={d}>{d === todayKey ? `Hoje (${d})` : d} — {v.n} novos</SelectItem>)}
               </SelectContent>
             </Select>
           </div>
@@ -406,20 +447,35 @@ const AutoPostApproval = () => {
                     </div>
 
                     {/* Date */}
-                    <p className="text-[10px] text-gray-300 pt-1">
-                      {new Date(item.created_at).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
+                    <p className="text-[10px] text-gray-400 pt-1 flex items-center gap-1.5">
+                      {dayKey(item.created_at) === todayKey && (
+                        <span className="px-1.5 py-0.5 rounded font-bold text-white" style={{ backgroundColor: BRAND_GOLD }}>NOVO HOJE</span>
+                      )}
+                      Adicionado em {new Date(item.created_at).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
                     </p>
                     {item.status === 'pending' && (
-                      <Button
-                        size="sm"
-                        disabled={approvingId === item.id}
-                        onClick={(e) => { e.stopPropagation(); handleQuickApprove(item); }}
-                        className="w-full mt-2 h-8 text-white gap-1.5"
-                        style={{ backgroundColor: '#22c55e' }}
-                      >
-                        {approvingId === item.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <CheckCircle2 className="w-4 h-4" />}
-                        Aprovar
-                      </Button>
+                      <div className="flex gap-2 mt-2">
+                        <Button
+                          size="sm"
+                          disabled={approvingId === item.id}
+                          onClick={(e) => { e.stopPropagation(); handleQuickApprove(item); }}
+                          className="flex-1 h-8 text-white gap-1.5"
+                          style={{ backgroundColor: '#22c55e' }}
+                        >
+                          {approvingId === item.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <CheckCircle2 className="w-4 h-4" />}
+                          Aprovar
+                        </Button>
+                        <Button
+                          size="sm"
+                          disabled={approvingId === item.id}
+                          onClick={(e) => { e.stopPropagation(); handleQuickReject(item); }}
+                          className="flex-1 h-8 text-white gap-1.5"
+                          style={{ backgroundColor: '#ef4444' }}
+                        >
+                          <XCircle className="w-4 h-4" />
+                          Rejeitar
+                        </Button>
+                      </div>
                     )}
                   </div>
                 </div>
