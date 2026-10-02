@@ -9,6 +9,14 @@ import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import noPhotoImg from '@/assets/imagem-nao-fornecida.jpg';
 
+// Foto oficial "Imagem não fornecida" usada no post quando a Caixa não tem foto (5x para a OLX)
+const NO_PHOTO_URL = 'https://kubdwbzahemthstrxrxh.supabase.co/storage/v1/object/public/exported-creatives/placeholders%2Fimagem-nao-fornecida.jpg';
+const usePlaceholderPhoto = async (item: { id: string; photos?: string[] | null }) => {
+  const photos = Array(5).fill(NO_PHOTO_URL);
+  item.photos = photos;
+  await supabase.from('auto_post_queue').update({ photos }).eq('id', item.id);
+};
+
 const BRAND_BLUE = '#1a3a6b';
 const BRAND_GOLD = '#c9a84c';
 
@@ -485,11 +493,11 @@ const AutoPostApproval = () => {
                   {/* Photo */}
                   <div className="h-40 bg-gray-100 overflow-hidden">
                     <img
-                      src={item.photos?.[0] || noPhotoImg}
+                      src={item.photos?.[0] || NO_PHOTO_URL}
                       alt="Foto do imóvel"
                       loading="lazy"
                       className="w-full h-full object-cover"
-                      onError={(e) => { const img = e.target as HTMLImageElement; if (!img.src.includes('imagem-nao-fornecida')) img.src = noPhotoImg; }}
+                      onError={(e) => { const img = e.target as HTMLImageElement; if (img.src.includes('imagem-nao-fornecida')) return; img.src = noPhotoImg; usePlaceholderPhoto(item); }}
                     />
                   </div>
 
