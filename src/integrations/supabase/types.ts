@@ -3002,6 +3002,137 @@ export type Database = {
         }
         Relationships: []
       }
+      vdh_cc_lead_history: {
+        Row: {
+          created_at: string
+          from_stage: string | null
+          id: string
+          lead_id: string
+          note: string | null
+          to_stage: string | null
+          user_id: string | null
+          user_name: string | null
+        }
+        Insert: {
+          created_at?: string
+          from_stage?: string | null
+          id?: string
+          lead_id: string
+          note?: string | null
+          to_stage?: string | null
+          user_id?: string | null
+          user_name?: string | null
+        }
+        Update: {
+          created_at?: string
+          from_stage?: string | null
+          id?: string
+          lead_id?: string
+          note?: string | null
+          to_stage?: string | null
+          user_id?: string | null
+          user_name?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vdh_cc_lead_history_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "vdh_cc_leads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      vdh_cc_leads: {
+        Row: {
+          analyst_notes: string | null
+          approved_value: number | null
+          assigned_broker_id: string | null
+          assigned_broker_name: string | null
+          birth_date: string | null
+          city: string | null
+          coborrower_income: number | null
+          coborrower_name: string | null
+          consent_at: string | null
+          cpf: string | null
+          created_at: string
+          documents: Json
+          email: string | null
+          full_name: string
+          has_coborrower: boolean
+          id: string
+          income_type: string | null
+          marital_status: string | null
+          monthly_income: number
+          phone: string
+          property_code: string | null
+          property_snapshot: Json | null
+          rejection_reason: string | null
+          stage: string
+          uf: string | null
+          updated_at: string
+          uses_fgts: boolean
+        }
+        Insert: {
+          analyst_notes?: string | null
+          approved_value?: number | null
+          assigned_broker_id?: string | null
+          assigned_broker_name?: string | null
+          birth_date?: string | null
+          city?: string | null
+          coborrower_income?: number | null
+          coborrower_name?: string | null
+          consent_at?: string | null
+          cpf?: string | null
+          created_at?: string
+          documents?: Json
+          email?: string | null
+          full_name: string
+          has_coborrower?: boolean
+          id?: string
+          income_type?: string | null
+          marital_status?: string | null
+          monthly_income?: number
+          phone: string
+          property_code?: string | null
+          property_snapshot?: Json | null
+          rejection_reason?: string | null
+          stage?: string
+          uf?: string | null
+          updated_at?: string
+          uses_fgts?: boolean
+        }
+        Update: {
+          analyst_notes?: string | null
+          approved_value?: number | null
+          assigned_broker_id?: string | null
+          assigned_broker_name?: string | null
+          birth_date?: string | null
+          city?: string | null
+          coborrower_income?: number | null
+          coborrower_name?: string | null
+          consent_at?: string | null
+          cpf?: string | null
+          created_at?: string
+          documents?: Json
+          email?: string | null
+          full_name?: string
+          has_coborrower?: boolean
+          id?: string
+          income_type?: string | null
+          marital_status?: string | null
+          monthly_income?: number
+          phone?: string
+          property_code?: string | null
+          property_snapshot?: Json | null
+          rejection_reason?: string | null
+          stage?: string
+          uf?: string | null
+          updated_at?: string
+          uses_fgts?: boolean
+        }
+        Relationships: []
+      }
       vdh_olx_listings: {
         Row: {
           accepts_fgts: boolean | null
@@ -3110,6 +3241,84 @@ export type Database = {
           transaction_type?: Database["public"]["Enums"]["olx_transaction_type"]
           updated_at?: string
           zip_code?: string
+        }
+        Relationships: []
+      }
+      vdh_site_properties: {
+        Row: {
+          accepts_financing: boolean
+          address: string | null
+          area: number | null
+          bedrooms: number
+          caixa_link: string | null
+          city: string
+          code: string
+          countdown_ends_at: string | null
+          description: string | null
+          discount: number
+          evaluation: number
+          first_seen_at: string
+          garage_spaces: number
+          last_seen_at: string
+          neighborhood: string | null
+          photo_url: string | null
+          price: number
+          property_type: string | null
+          sale_modality: string | null
+          sold_at: string | null
+          status: string
+          uf: string
+          updated_at: string
+        }
+        Insert: {
+          accepts_financing?: boolean
+          address?: string | null
+          area?: number | null
+          bedrooms?: number
+          caixa_link?: string | null
+          city: string
+          code: string
+          countdown_ends_at?: string | null
+          description?: string | null
+          discount?: number
+          evaluation?: number
+          first_seen_at?: string
+          garage_spaces?: number
+          last_seen_at?: string
+          neighborhood?: string | null
+          photo_url?: string | null
+          price?: number
+          property_type?: string | null
+          sale_modality?: string | null
+          sold_at?: string | null
+          status?: string
+          uf: string
+          updated_at?: string
+        }
+        Update: {
+          accepts_financing?: boolean
+          address?: string | null
+          area?: number | null
+          bedrooms?: number
+          caixa_link?: string | null
+          city?: string
+          code?: string
+          countdown_ends_at?: string | null
+          description?: string | null
+          discount?: number
+          evaluation?: number
+          first_seen_at?: string
+          garage_spaces?: number
+          last_seen_at?: string
+          neighborhood?: string | null
+          photo_url?: string | null
+          price?: number
+          property_type?: string | null
+          sale_modality?: string | null
+          sold_at?: string | null
+          status?: string
+          uf?: string
+          updated_at?: string
         }
         Relationships: []
       }
