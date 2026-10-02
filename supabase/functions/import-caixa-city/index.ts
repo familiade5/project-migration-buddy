@@ -56,7 +56,28 @@ Deno.serve(async (req) => {
     const uf = String(body?.state || "").trim().toUpperCase();
     const city = String(body?.city || "").trim();
     const listCities = body?.action === "list_cities";
-    if (!STATE_NAMES[uf] || (!listCities && city.length < 2) || city.length > 80) return json({ success: false, error: "Informe estado (UF) e cidade" }, 400);
+    if (!STATE_NAMES[uf] || (!listCities && body?.action !== "refresh_countdowns" && city.length < 2) || city.length > 80) return json({ success: false, error: "Informe estado (UF) e cidade" }, 400);
+
+    if (body?.action === "refresh_countdowns") {
+      const key = Deno.env.get("FIRECRAWL_API_KEY");
+      if (!key) return json({ success: false, error: "Leitura indisponível" }, 500);
+      const { data: items } = await supabase.from("auto_post_queue")
+        .select("id, property_data, scraped_properties(external_id, raw_data)")
+        .eq("status", "pending").eq("property_data->>acceptsFinancing", "true").eq("property_data->>state", STATE_NAMES[uf]);
+      const list = (items || []).filter((i: any) => !city || norm(i.property_data?.city || "") === norm(city)).slice(0, 60);
+      let found = 0;
+      for (let i = 0; i < list.length; i += 6) {
+        await Promise.all(list.slice(i, i + 6).map(async (it: any) => {
+          const sp = it.scraped_properties;
+          const hid = sp?.raw_data?.hdnimovel || String(sp?.external_id || "").replace(/^\D+-/, "").replace(/^caixa-csv-/, "");
+          if (!hid) return;
+          const end = await fetchCountdown(hid, key);
+          if (end) found++;
+          await supabase.from("auto_post_queue").update({ property_data: { ...it.property_data, countdownEndsAt: end } }).eq("id", it.id);
+        }));
+      }
+      return json({ success: true, checked: list.length, with_countdown: found });
+    }
 
     const csvUrl = `https://venda-imoveis.caixa.gov.br/listaweb/Lista_imoveis_${uf}.csv`;
     let text = "";

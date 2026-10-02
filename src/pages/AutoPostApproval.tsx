@@ -182,6 +182,24 @@ const AutoPostApproval = () => {
     }
   };
 
+  const [refreshingClock, setRefreshingClock] = useState(false);
+  const handleRefreshCountdowns = async () => {
+    setRefreshingClock(true);
+    let found = 0, checked = 0;
+    try {
+      const ufs = stateFilter !== 'all' ? [stateFilter] : STATES.filter((x) => x.value !== 'all').map((x) => x.value);
+      for (const uf of ufs) {
+        const { data } = await supabase.functions.invoke('import-caixa-city', {
+          body: { action: 'refresh_countdowns', state: uf, city: cityFilter !== 'all' ? cityFilter : '' },
+        });
+        found += data?.with_countdown || 0; checked += data?.checked || 0;
+      }
+      toast.success(`${checked} imóveis com financiamento conferidos: ${found} em contagem regressiva.`);
+      refetch();
+    } catch { toast.error('Não foi possível atualizar os cronômetros'); }
+    finally { setRefreshingClock(false); }
+  };
+
   const handleQuickReject = async (item: AutoPostQueueItem) => {
     setApprovingId(item.id);
     const { error } = await supabase.from('auto_post_queue').update({ status: 'rejected' }).eq('id', item.id);
@@ -401,6 +419,15 @@ const AutoPostApproval = () => {
               style={financingFilter === 'countdown' ? { backgroundColor: '#dc2626', color: 'white' } : { color: '#6b7280' }}
             >
               ⏱ Em contagem ({stateFilteredItems.filter((i) => countdownLabel(i)).length})
+            </button>
+            <button
+              onClick={handleRefreshCountdowns}
+              disabled={refreshingClock}
+              className="px-3 py-1.5 rounded-md text-xs font-medium flex items-center gap-1"
+              style={{ color: '#dc2626' }}
+            >
+              {refreshingClock ? <Loader2 className="w-3 h-3 animate-spin" /> : <RefreshCw className="w-3 h-3" />}
+              Atualizar cronômetros
             </button>
           </div>
 
