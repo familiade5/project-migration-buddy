@@ -48,6 +48,14 @@ async function fixAccents(values: string[]): Promise<Map<string, string>> {
   return out;
 }
 const repairAll = (s: string, map: Map<string, string>) => map.get(s) || s.replace(/\uFFFD/g, "");
+// Palavras frequentes da lista da Caixa, corrigidas sem gastar IA
+const COMMON: [RegExp, string][] = [
+  [/PR\uFFFDDIO/g, "PRÉDIO"], [/Pr\uFFFDdio/g, "Prédio"], [/\uFFFDREA/g, "ÁREA"], [/\uFFFDrea/g, "área"],
+  [/T\uFFFDRREO/g, "TÉRREO"], [/T\uFFFDrreo/g, "Térreo"], [/IM\uFFFDVEL/g, "IMÓVEL"], [/Im\uFFFDvel/g, "Imóvel"],
+  [/CONCEI\uFFFD\uFFFDO/g, "CONCEIÇÃO"], [/S\uFFFDO /g, "SÃO "], [/S\uFFFDo /g, "São "], [/JO\uFFFDO/g, "JOÃO"], [/Jo\uFFFDo/g, "João"],
+  [/LIC\uFFFDA\uFFFD\uFFFDO/g, "LICITAÇÃO"], [/Licita\uFFFD\uFFFDo/g, "Licitação"], [/Loja/g, "Loja"],
+];
+const fixCommon = (s: string) => COMMON.reduce((acc, [re, v]) => acc.replace(re, v), s);
 const brNum = (s: string) => Number((s || "0").replace(/\./g, "").replace(",", ".")) || 0;
 const brl = (n: number) => n.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 const title = (s: string) => s.trim().toLowerCase().replace(/(^|\s)\S/g, (c) => c.toUpperCase());
@@ -204,8 +212,9 @@ Deno.serve(async (req) => {
     }
     const fresh = allowed.filter((c) => !existing.has(`caixa-csv-${c[0]}`));
     // Restaura acentos de cidade, bairro e endereço só dos novos
-    const accentFix = await fixAccents(fresh.flatMap((c) => [c[2], c[3], c[4]]));
-    fresh.forEach((c) => { c[2] = /\uFFFD/.test(c[2]) ? city.toUpperCase() : c[2]; c[3] = repairAll(c[3], accentFix); c[4] = repairAll(c[4], accentFix); });
+    fresh.forEach((c) => { for (const k of [3, 4, 9, 10]) c[k] = fixCommon(c[k] || ""); });
+    const accentFix = await fixAccents(fresh.flatMap((c) => [c[2], c[3], c[4], c[9]]));
+    fresh.forEach((c) => { c[2] = /\uFFFD/.test(c[2]) ? city.toUpperCase() : c[2]; c[3] = repairAll(c[3], accentFix); c[4] = repairAll(c[4], accentFix); c[9] = repairAll(c[9], accentFix); });
 
     // Leitura do cronômetro desativada a pedido do usuário (economia de créditos)
     const countdowns = new Map<string, string | null>();
