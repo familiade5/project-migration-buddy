@@ -3,7 +3,9 @@ import { CxDocument, CX_DOC_LABEL, CxExtraction } from '@/types/correspondente';
 import { CxBankCreditsTable } from './CxBankCreditsTable';
 import { cxGetBankAnalysis } from '@/lib/cxIncome';
 import { CopyField } from './CopyField';
-import { Eye, Download, Loader2, RefreshCw, Trash2, FileText, AlertCircle, CheckCircle2 } from 'lucide-react';
+import { Eye, Download, Loader2, RefreshCw, Trash2, FileText, AlertCircle, CheckCircle2, Printer } from 'lucide-react';
+import { useRef } from 'react';
+import { printElement } from '@/lib/printElement';
 
 interface Props {
   doc: CxDocument;
@@ -22,6 +24,7 @@ const STATUS_MAP: Record<string, { label: string; color: string; bg: string; ico
 };
 
 export function CxDocumentCard({ doc, onOpen, onDownload, onDelete, onRetry, onUpdateExtraction }: Props) {
+  const cardRef = useRef<HTMLDivElement>(null);
   const extraction = doc.extracted as CxExtraction;
   const groups = Array.isArray(extraction?.groups) ? extraction.groups : [];
   const bankAnalysis = cxGetBankAnalysis(doc);
@@ -40,7 +43,7 @@ export function CxDocumentCard({ doc, onOpen, onDownload, onDelete, onRetry, onU
 
 
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+    <div ref={cardRef} className="rounded-2xl border border-slate-200 bg-white overflow-hidden shadow-sm hover:shadow-md transition-shadow">
       <div className="flex flex-wrap items-center justify-between gap-3 px-5 py-4 border-b border-slate-100 bg-slate-50/60">
         <div className="flex items-center gap-3 min-w-0">
           <div className={`p-2 rounded-lg ${status.bg} ${status.color}`}>
@@ -72,6 +75,16 @@ export function CxDocumentCard({ doc, onOpen, onDownload, onDelete, onRetry, onU
           >
             <Download className="w-4 h-4" />
             <span className="hidden sm:inline">Baixar</span>
+          </Button>
+          <Button
+            size="sm"
+            variant="outline"
+            disabled={doc.status !== 'done'}
+            className="h-8 gap-1.5 bg-white text-[#1a3a6b] border-[#1a3a6b]/30 hover:bg-blue-50"
+            onClick={() => cardRef.current && printElement(cardRef.current, `Análise — ${CX_DOC_LABEL(doc.doc_type)}`)}
+          >
+            <Printer className="w-4 h-4" />
+            <span className="hidden sm:inline">Imprimir</span>
           </Button>
           <Button
             variant="ghost"
