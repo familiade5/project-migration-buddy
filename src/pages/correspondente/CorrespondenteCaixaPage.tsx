@@ -124,6 +124,8 @@ export default function CorrespondenteCaixaPage() {
   const [newDocFiles, setNewDocFiles] = useState<File[]>([]);
   const [newDocType, setNewDocType] = useState('auto');
   const newDocRef = useRef<HTMLInputElement>(null);
+  const [reviewClientId, setReviewClientId] = useState<string | null>(null);
+  const [pickDocOnOpen, setPickDocOnOpen] = useState(false);
 
   const [docType, setDocType] = useState<string>('rg');
   const [uploading, setUploading] = useState(false);
@@ -230,8 +232,51 @@ export default function CorrespondenteCaixaPage() {
     [selected, documents],
   );
 
+  const resetNewClient = () => {
+    setForm({ full_name: '', cpf: '', email: '', phone: '', whatsapp: '', lead_source: '', notes: '' });
+    setNewDocFiles([]);
+    setReviewClientId(null);
+  };
+
+  /** Garante um caso no funil para o cliente e abre o passo a passo. */
+  const openCaseFor = async (clientId: string, name: string) => {
+    const existing = deals.find((d) => d.client_id === clientId && d.stage !== 'concluido');
+    const deal = existing ?? (await createDeal({ client_id: clientId, stage: 'cadastro', title: name }));
+    if (deal) setDetailDealId(deal.id);
+  };
+
   const handleCreate = async () => {
-    // Criação a partir de um documento anexado (opcional)
+    // Etapa de conferência: dados extraídos do documento revisados pelo analista
+    if (reviewClientId) {
+      if (!form.full_name.trim()) return;
+      setSaving(true);
+      const { error } = await supabase
+        .from('cx_clients')
+        .update({
+          full_name: form.full_name.trim(),
+          cpf: form.cpf.trim() || null,
+          email: form.email.trim() || null,
+          phone: form.phone.trim() || null,
+          whatsapp: form.whatsapp.trim() || null,
+          lead_source: form.lead_source || null,
+          notes: form.notes.trim() || null,
+        } as never)
+        .eq('id', reviewClientId);
+      setSaving(false);
+      if (error) {
+        toast.error('Não foi possível salvar', { description: error.message });
+        return;
+      }
+      await fetchClients();
+      const id = reviewClientId;
+      const name = form.full_name.trim();
+      setSelectedId(id);
+      setDialogOpen(false);
+      resetNewClient();
+      await openCaseFor(id, name);
+      return;
+    }
+    // Criação a partir de um documento anexado: lê e abre a conferência
     if (newDocFiles.length > 0) {
       setSaving(true);
       const results = await intake.processFiles(newDocFiles, newDocType);
@@ -241,21 +286,20 @@ export default function CorrespondenteCaixaPage() {
         toast.error('Não foi possível ler o documento. Preencha os dados manualmente.');
         return;
       }
-      const extras: Record<string, unknown> = {};
-      if (form.full_name.trim()) extras.full_name = form.full_name.trim();
-      if (form.email.trim()) extras.email = form.email.trim();
-      if (form.phone.trim()) extras.phone = form.phone.trim();
-      if (form.whatsapp.trim()) extras.whatsapp = form.whatsapp.trim();
-      if (form.notes.trim()) extras.notes = form.notes.trim();
-      if (Object.keys(extras).length > 0) {
-        await supabase.from('cx_clients').update(extras).eq('id', first.clientId);
-        await fetchClients();
-      }
-      setSelectedId(first.clientId);
-      setClientTab('documentos');
-      setDialogOpen(false);
-      setForm({ full_name: '', cpf: '', email: '', phone: '', whatsapp: '', lead_source: '', notes: '' });
+      const { data: c } = await supabase.from('cx_clients').select('*').eq('id', first.clientId).maybeSingle();
+      const row = (c || {}) as Record<string, any>;
+      setForm({
+        full_name: form.full_name.trim() || row.full_name || '',
+        cpf: form.cpf.trim() || row.cpf || '',
+        email: form.email.trim() || row.email || '',
+        phone: form.phone.trim() || row.phone || '',
+        whatsapp: form.whatsapp.trim() || row.whatsapp || '',
+        lead_source: form.lead_source || row.lead_source || '',
+        notes: form.notes.trim() || row.notes || '',
+      });
       setNewDocFiles([]);
+      setReviewClientId(first.clientId);
+      toast.success('Dados lidos do documento. Confira e confirme.');
       return;
     }
     if (!form.full_name.trim()) return;
@@ -271,11 +315,11 @@ export default function CorrespondenteCaixaPage() {
     } as never);
     setSaving(false);
     if (created) {
-      await createDeal({ client_id: created.id, stage: 'cadastro', title: created.full_name });
       setSelectedId(created.id);
       setDialogOpen(false);
-      setForm({ full_name: '', cpf: '', email: '', phone: '', whatsapp: '', lead_source: '', notes: '' });
+      resetNewClient();
       await logCxClientEvent(created.id, { kind: 'cliente', title: 'Cliente cadastrado manualmente' });
+      await openCaseFor(created.id, created.full_name);
     }
   };
 
