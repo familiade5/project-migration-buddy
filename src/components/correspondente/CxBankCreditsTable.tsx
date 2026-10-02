@@ -137,6 +137,7 @@ export function CxBankCreditsTable({ analysis, onToggle, disabled }: Props) {
                     </span>
                     {onToggle && (
                       <Button
+                        data-noprint
                         size="sm"
                         variant="ghost"
                         disabled={disabled}

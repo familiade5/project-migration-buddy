@@ -22,13 +22,16 @@ export function printElement(el: HTMLElement, title: string) {
   html, body { background: #fff !important; color: #0f172a !important; }
   body { font-family: system-ui, -apple-system, Segoe UI, sans-serif; padding: 0; margin: 0; }
   .print-frame { border: 1.5px solid #cbd5e1; border-radius: 10px; padding: 8mm 8mm; background: #fff; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
-  tr, .rounded-2xl, .rounded-xl { break-inside: avoid; page-break-inside: avoid; }
-  .print-head { display:flex; justify-content:space-between; align-items:flex-end; border-bottom:3px solid #1a3a6b; padding-bottom:8px; margin-bottom:16px; }
+  tr, img { break-inside: avoid; page-break-inside: avoid; }
+  .print-head { display:flex; justify-content:space-between; align-items:flex-end; border-bottom:3px solid #1a3a6b; padding-bottom:8px; margin-bottom:16px; break-after: avoid; page-break-after: avoid; }
   .print-head h1 { font-size:18px; margin:0; color:#1a3a6b; font-weight:800; }
   .print-head span { font-size:11px; color:#64748b; }
   * { -webkit-print-color-adjust: exact; print-color-adjust: exact; box-shadow:none !important; }
-  .truncate { white-space: normal !important; overflow: visible !important; }
-  table, tr, img { page-break-inside: avoid; }
+  .print-frame, .print-frame * { max-width: 100% !important; min-width: 0 !important; box-sizing: border-box; }
+  .print-frame table { width: 100% !important; table-layout: fixed; font-size: 9px; }
+  .print-frame td, .print-frame th { word-break: break-word; overflow-wrap: anywhere; padding: 4px 5px !important; }
+  .truncate, .whitespace-nowrap { white-space: normal !important; overflow: visible !important; }
+  [class*="-mx-"] { margin-left: 0 !important; margin-right: 0 !important; }
   .overflow-hidden, .overflow-auto, .overflow-x-auto, .overflow-y-auto { overflow: visible !important; max-height: none !important; }
   .rounded-2xl, .rounded-xl, .rounded-lg { border-radius: 6px !important; }
 </style></head><body>
