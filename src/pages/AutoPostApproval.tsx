@@ -145,6 +145,7 @@ const AutoPostApproval = () => {
   const [regionSel, setRegionSel] = useState<string[]>([]);
   const [loadingCities, setLoadingCities] = useState(false);
   const [regionProgress, setRegionProgress] = useState('');
+  const [failedCities, setFailedCities] = useState<string[]>([]);
 
   const loadRegionCities = async (uf: string) => {
     setRegionState(uf); setRegionCities([]); setRegionSel([]); setLoadingCities(true);
