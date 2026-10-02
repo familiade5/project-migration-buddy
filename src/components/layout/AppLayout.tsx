@@ -178,7 +178,7 @@ export function AppLayout({ children }: AppLayoutProps) {
                     Administração
                   </p>
                 </div>
-                {adminNavigation.map((item) => (
+                {visibleAdminNav.map((item) => (
                   <Link
                     key={item.name}
                     to={item.href}
