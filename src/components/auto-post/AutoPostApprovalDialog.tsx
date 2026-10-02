@@ -407,7 +407,7 @@ export function AutoPostApprovalDialog({ item, open, onOpenChange, onActionCompl
           </div>
         )}
 
-        <DialogFooter className="gap-2">
+        <DialogFooter className="gap-2 sticky -bottom-6 -mx-6 -mb-6 px-6 py-3 border-t" style={{ backgroundColor: '#ffffff', borderColor: '#e5e7eb' }}>
           {item.status === 'pending' && (
             <Button
               variant="outline"
