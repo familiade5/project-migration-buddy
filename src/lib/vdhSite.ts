@@ -45,6 +45,17 @@ export const slugCity = (c: string) => encodeURIComponent(c);
 
 export const isNew = (p: SiteProperty) => Date.now() - new Date(p.first_seen_at).getTime() < 3 * 86400_000;
 
+export const hasFivePercentEntry = (p: Pick<SiteProperty, 'sale_modality' | 'accepts_financing'>) => {
+  const modality = (p.sale_modality || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+  return p.accepts_financing && (modality === 'venda direta' || modality === 'venda direta online');
+};
+
+export const minimumEntry = (p: Pick<SiteProperty, 'price' | 'sale_modality' | 'accepts_financing'>) =>
+  hasFivePercentEntry(p) ? p.price * 0.05 : null;
+
+export const matriculaUrl = (p: Pick<SiteProperty, 'code' | 'uf'>) =>
+  `https://venda-imoveis.caixa.gov.br/editais/matricula/${p.uf.toUpperCase()}/${p.code}.pdf`;
+
 export function countdownLabel(iso: string | null) {
   if (!iso) return null;
   const ms = new Date(iso).getTime() - Date.now();
@@ -58,21 +69,6 @@ export function whatsappLink(p?: Pick<SiteProperty, 'code' | 'address' | 'city' 
     ? `Olá! Vi no site o imóvel ${p.code} (${p.address || ''} - ${p.city}/${p.uf}) e quero saber mais.`
     : 'Olá! Vim pelo site Venda Direta Hoje e quero tirar uma dúvida.';
   return `https://wa.me/${SITE_WHATSAPP}?text=${encodeURIComponent(msg)}`;
-}
-
-/** Estimativa simples (não substitui a análise da Caixa). */
-export function estimate(price: number, income: number, modality?: string | null) {
-  const isVD = modality?.toLowerCase().includes("venda direta");
-  const entranceRate = isVD ? 0.05 : 0.20;
-  const entrada = price * entranceRate;
-  const financiado = price - entrada;
-  const i = 0.0866 / 12;
-  const n = 360;
-  const parcela = financiado * (i / (1 - Math.pow(1 + i, -n)));
-  const capacidade = income * 0.3;
-  const ratio = capacidade > 0 ? parcela / capacidade : 99;
-  const verdict = ratio <= 1 ? 'boa' : ratio <= 1.4 ? 'compositor' : 'fora';
-  return { entrada, financiado, parcela, capacidade, verdict } as const;
 }
 
 /** Busca todas as linhas, contornando o limite de 1000 por consulta. */
@@ -90,30 +86,30 @@ export async function fetchAll<T>(build: (from: number, to: number) => any): Pro
 export const siteTable = () => (supabase as any).from('vdh_site_properties');
 
 export function formatDescription(p: SiteProperty) {
-  const isVD = p.sale_modality?.toLowerCase().includes("venda direta");
   const lines = [
-    `🏡 ${(p.property_type || 'Imóvel').toUpperCase()} - ${p.neighborhood || p.city}`,
+    `🏡 ${(p.property_type || 'Imóvel').toUpperCase()}${p.neighborhood ? ` - ${p.neighborhood.toUpperCase()}` : ''}`,
     '',
-    `💰 Valor de Venda: ${brl(p.price)}`,
-    p.evaluation > p.price ? `🔥 Avaliado em: ${brl(p.evaluation)} (${Math.round(p.discount)}% de desconto)` : null,
+    `💰 Valor de avaliação: ${brl(p.evaluation)}`,
+    `🔥 Valor de venda: ${brl(p.price)}${p.discount > 0 ? ` (${Math.round(p.discount)}% de desconto)` : ''}`,
     '',
-    p.accepts_financing ? '🏦 Aceita Financiamento' : '❌ Somente à vista',
-    isVD ? '📥 Entrada: a partir de 5%' : '📥 Entrada: a partir de 20%',
-    p.accepts_financing ? '💼 Pode usar seu FGTS' : null,
+    `🏷️ Modalidade: ${p.sale_modality || 'Consulte as condições'}`,
+    p.accepts_financing ? '🏦 Aceita financiamento' : '💵 Pagamento à vista',
+    hasFivePercentEntry(p) ? `📥 Entrada a partir de 5% (${brl(p.price * 0.05)})*` : null,
     '',
-    '📌 Características:',
-    p.bedrooms ? `🛏️ ${p.bedrooms} quarto(s)` : null,
-    p.garage_spaces ? `🚗 ${p.garage_spaces} vaga(s)` : null,
-    p.area ? `📐 ${Math.round(p.area)} m²` : null,
+    '📌 Características do imóvel:',
+    `🏠 Tipo: ${p.property_type || 'Imóvel'}`,
+    p.bedrooms ? `🛏️ ${p.bedrooms} quarto${p.bedrooms > 1 ? 's' : ''}` : null,
+    p.garage_spaces ? `🚗 ${p.garage_spaces} vaga${p.garage_spaces > 1 ? 's' : ''} de garagem` : null,
+    p.area ? `📐 Área: ${Math.round(p.area)} m²` : null,
+    p.description ? `📝 ${p.description}` : null,
     '',
     '📍 Localização:',
-    `📍 ${p.address}`,
-    `📍 ${p.city} - ${p.uf}`,
+    `📍 ${p.address || 'Endereço informado pela Caixa'}`,
+    `📍 ${p.city}/${p.uf}`,
+    '',
+    `🔎 Código do imóvel na Caixa: ${p.code}`,
+    hasFivePercentEntry(p) ? '' : null,
+    hasFivePercentEntry(p) ? '*Entrada mínima sujeita à análise de crédito, às condições do edital e às regras vigentes da Caixa.' : null,
   ].filter(l => l !== null);
-  
-  if (p.description) {
-    lines.push('', '📝 Descrição oficial:', p.description);
-  }
-  
   return lines.join('\n');
 }

@@ -37,7 +37,7 @@ export default function SiteHome() {
           <p className="text-sm font-semibold tracking-wide" style={{ color: SITE_GOLD }}>IMÓVEIS CAIXA · ATUALIZADOS HOJE</p>
           <h1 className="text-3xl sm:text-5xl font-extrabold mt-2 max-w-2xl leading-tight">Onde você quer morar?</h1>
           <p className="mt-3 max-w-xl" style={{ color: 'rgba(255,255,255,0.85)' }}>
-            Escolha o estado e a cidade. Mostramos só imóveis que estão à venda na Caixa hoje, e você já descobre se consegue financiar.
+            Escolha o estado e a cidade. Mostramos só imóveis que estão à venda na Caixa hoje, com pré-análise personalizada para os que aceitam financiamento.
           </p>
           <div className="mt-6 flex flex-wrap gap-2">
             {SITE_STATES.map((s) => (
