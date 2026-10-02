@@ -138,7 +138,7 @@ Deno.serve(async (req) => {
     // Cache da lista do estado (3h): evita baixar a mesma lista para cada cidade
     const cachePath = `caixa-cache/${uf}.json`;
     try {
-      const { data: blob } = await supabase.storage.from("exported-creatives").download(`${cachePath}?t=${Date.now()}`);
+      const { data: blob } = await supabase.storage.from("exported-creatives").download(cachePath);
       if (blob) {
         const c = JSON.parse(await blob.text());
         if (c?.text && Date.now() - Number(c.at) < 3 * 3600_000) text = c.text;
