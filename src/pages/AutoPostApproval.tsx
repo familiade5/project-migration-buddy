@@ -228,6 +228,10 @@ const AutoPostApproval = () => {
               {isImporting ? <Loader2 className="w-4 h-4 animate-spin" /> : <RefreshCw className="w-4 h-4" />}
               {isImporting ? 'Extraindo...' : 'Extrair posts'}
             </Button>
+            <Button onClick={handleImportCeCities} disabled={isImporting} className="text-white gap-2 h-9" style={{ backgroundColor: BRAND_GOLD }}>
+              {isImporting ? <Loader2 className="w-4 h-4 animate-spin" /> : <RefreshCw className="w-4 h-4" />}
+              {isImporting ? 'Extraindo...' : 'Extrair região de Fortaleza (9 cidades)'}
+            </Button>
           </div>
         </div>
 
