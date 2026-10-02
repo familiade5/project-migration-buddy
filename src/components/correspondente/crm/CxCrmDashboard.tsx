@@ -94,7 +94,7 @@ export function CxCrmDashboard({ deals, stages, clients, onOpenStage }: Props) {
           </div>
           <div className="h-px bg-slate-100" />
           <div className="space-y-2 text-sm">
-            <Row label="Condicionados" value={stats.conditioned.length} tone="text-amber-600" />
+            <Row label="Em análise de crédito" value={stats.conditioned.length} tone="text-amber-600" />
             <Row label="Reprovados por rating" value={stats.rejected.filter((d) => d.rejection_reason === 'rating').length} tone="text-red-600" />
             <Row label="Reprovados por capacidade" value={stats.rejected.filter((d) => d.rejection_reason === 'capacidade').length} tone="text-red-600" />
             <Row label="Em contrato" value={deals.filter((d) => d.stage === 'contrato').length} tone="text-[#1a3a6b]" />
