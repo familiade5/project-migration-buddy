@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { CxDeal, CxStage, cxNextAction, cxStageCfg, CX_PURCHASE_LABEL } from '@/types/cxCrm';
 import { CxClient } from '@/types/correspondente';
-import { ArrowRight, FileUp, PenLine, Sparkles, UserPlus } from 'lucide-react';
+import { ArrowRight, FileUp, Sparkles, UserPlus } from 'lucide-react';
 import { CxCrmDashboard } from './CxCrmDashboard';
 
 const BRAND = '#1a3a6b';
@@ -36,23 +36,14 @@ export function CxWorkbench({ deals, stages, clients, clientName, onNewWithDocum
           <h2 className="text-lg font-bold">Novo atendimento</h2>
         </div>
         <p className="text-sm text-white/80 mb-4">Cadastre o cliente e siga o passo a passo até o Concluído.</p>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <button onClick={onNewWithDocument} className="rounded-xl bg-white text-left p-4 hover:bg-blue-50 transition-colors">
-            <div className="flex items-center gap-2 mb-1" style={{ color: BRAND }}>
-              <FileUp className="w-5 h-5" />
-              <span className="font-bold">Anexar documento</span>
-              <Sparkles className="w-4 h-4 text-amber-500" />
-            </div>
-            <p className="text-xs text-slate-500">RG, CNH ou comprovante — os dados são lidos e preenchidos sozinhos.</p>
-          </button>
-          <button onClick={onNewManual} className="rounded-xl bg-white/10 border border-white/30 text-left p-4 hover:bg-white/20 transition-colors">
-            <div className="flex items-center gap-2 mb-1">
-              <PenLine className="w-5 h-5" />
-              <span className="font-bold">Preencher manualmente</span>
-            </div>
-            <p className="text-xs text-white/75">Nome, CPF, telefone, e-mail e origem do lead.</p>
-          </button>
-        </div>
+        <button onClick={onNewWithDocument} className="w-full rounded-xl bg-white text-left p-4 hover:bg-blue-50 transition-colors">
+          <div className="flex items-center gap-2 mb-1" style={{ color: BRAND }}>
+            <FileUp className="w-5 h-5" />
+            <span className="font-bold">Cadastrar cliente</span>
+            <Sparkles className="w-4 h-4 text-amber-500" />
+          </div>
+          <p className="text-xs text-slate-500">Dados pessoais, contato, endereço e renda — digite ou anexe cada documento (RG/CNH, comprovante, contracheque, extrato) para preencher sozinho.</p>
+        </button>
       </section>
 
       {/* Próximas ações */}
