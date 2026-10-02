@@ -1,4 +1,6 @@
-import { useState, useMemo, useRef } from 'react';
+import { useState, useMemo, useRef, useEffect } from 'react';
+import { stripEmojis } from '@/lib/olxCaption';
+import { resolveUF } from '@/lib/stateUF';
 import { flushSync } from 'react-dom';
 import { toPng } from 'html-to-image';
 import { AutoPostQueueItem } from '@/hooks/useAutoPostQueue';
@@ -64,7 +66,17 @@ interface Props {
 
 export function AutoPostApprovalDialog({ item, open, onOpenChange, onActionComplete }: Props) {
   const { crecis, formatCreci } = useCrecis();
-  const data = item.property_data as PropertyData;
+  const rawData = item.property_data as PropertyData;
+  const data = useMemo<PropertyData>(() => {
+    const isCE = resolveUF(rawData.state || '') === 'CE';
+    return {
+      ...rawData,
+      contactName: rawData.contactName || 'Iury Sampaio',
+      contactPhone: rawData.contactPhone || '(92) 98839-1098',
+      creci: rawData.creci || 'CRECI',
+      selectedBroker: isCE ? 'almir' : (rawData as any).selectedBroker,
+    } as PropertyData;
+  }, [rawData]);
   const photos = item.photos || [];
 
   const [step, setStep] = useState<'preview' | 'caption'>('preview');
@@ -79,6 +91,11 @@ export function AutoPostApprovalDialog({ item, open, onOpenChange, onActionCompl
     () => buildVdhCaption(data, crecis, formatCreci),
     [data, crecis, formatCreci],
   );
+
+  const [olxCaption, setOlxCaption] = useState('');
+  useEffect(() => {
+    if (open) { setCaption(defaultCaption); setOlxCaption(stripEmojis(defaultCaption)); }
+  }, [open, defaultCaption]);
 
   // Feed slides
   const feedSlides = useMemo(() => {
@@ -338,6 +355,20 @@ export function AutoPostApprovalDialog({ item, open, onOpenChange, onActionCompl
             <div className="flex justify-end text-xs" style={{ color: '#6b7280' }}>
               {caption.trim().length}/2200
             </div>
+            <div className="flex items-center justify-between">
+              <span className="text-sm font-semibold" style={{ color: '#1f2937' }}>Legenda para a OLX (sem emojis)</span>
+              <Button type="button" variant="outline" size="sm"
+                style={{ backgroundColor: '#ffffff', color: '#374151', borderColor: '#d1d5db' }}
+                onClick={() => { navigator.clipboard.writeText(olxCaption); toast.success('Legenda da OLX copiada'); }}>
+                Copiar
+              </Button>
+            </div>
+            <Textarea
+              value={olxCaption}
+              onChange={(e) => setOlxCaption(e.target.value)}
+              className="min-h-[200px] resize-y"
+              style={{ backgroundColor: '#ffffff', color: '#1f2937', borderColor: '#d1d5db' }}
+            />
           </div>
         )}
 
@@ -361,7 +392,7 @@ export function AutoPostApprovalDialog({ item, open, onOpenChange, onActionCompl
                 Cancelar
               </Button>
               {item.status === 'pending' && (
-                <Button onClick={() => { setCaption(defaultCaption); setStep('caption'); }}
+                <Button onClick={() => { setCaption(defaultCaption); setOlxCaption(stripEmojis(defaultCaption)); setStep('caption'); }}
                   className="text-white" style={{ backgroundColor: '#1A3A6B' }}>
                   Imagens OK, revisar legenda
                 </Button>
