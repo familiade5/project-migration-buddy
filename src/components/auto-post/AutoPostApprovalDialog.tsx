@@ -145,20 +145,17 @@ export function AutoPostApprovalDialog({ item, open, onOpenChange, onActionCompl
   };
 
   // Upload image to storage
-  const uploadImage = async (dataUrl: string, index: number, asJpeg = false): Promise<string> => {
-    let finalDataUrl = dataUrl;
-    let contentType = 'image/png';
-    let ext = 'png';
-    if (asJpeg) {
-      finalDataUrl = await convertToJpeg(dataUrl);
-      contentType = 'image/jpeg';
-      ext = 'jpg';
-    }
+  const uploadImage = async (dataUrl: string, index: number, isStory = false): Promise<string> => {
+    // Instagram rejeita alguns PNG gerados no navegador: sempre envia JPEG
+    const finalDataUrl = await convertToJpeg(dataUrl);
+    const contentType = 'image/jpeg';
+    const ext = 'jpg';
     const blob = dataURLtoBlob(finalDataUrl);
-    const fileName = `auto-post/${item.id}/feed-${index + 1}.${ext}`;
+    // Nome único a cada tentativa: regravar o mesmo arquivo é bloqueado pelas permissões
+    const fileName = `auto-post/${item.id}/${isStory ? "story" : "feed"}-${Date.now()}-${index + 1}.${ext}`;
     const { error } = await supabase.storage
       .from('exported-creatives')
-      .upload(fileName, blob, { contentType, upsert: true });
+      .upload(fileName, blob, { contentType, upsert: false });
     if (error) throw error;
     const { data: { publicUrl } } = supabase.storage
       .from('exported-creatives')
