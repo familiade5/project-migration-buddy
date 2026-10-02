@@ -14,6 +14,7 @@ import {
   cxStageCfg,
 } from '@/types/cxCrm';
 import { CxProperty } from '@/types/correspondente';
+import { CxStageDocSlot, useDealDocs } from './CxStageDocs';
 import { Banknote, Building2, Check, CheckCircle2, Home, Landmark, RotateCcw, XCircle } from 'lucide-react';
 
 const FIELD = 'bg-white border-slate-200 text-slate-900 placeholder:text-slate-400';
@@ -59,6 +60,12 @@ export function CxFlowStepper({ deal, stages, properties, onFlow, onUpdate, onAd
     setPropId(deal.property_id || '');
     setStepNote('');
   }, [deal.id, deal.stage]);
+
+  const { docs, refetch: refetchDocs } = useDealDocs(deal.id);
+  const hasDoc = (t: string) => docs.some((d) => d.doc_type === t);
+  const slot = (stage: string, docType: string, label: string, hint?: string, autofill?: boolean) => (
+    <CxStageDocSlot deal={deal} stage={stage} docType={docType} label={label} hint={hint} docs={docs} onSaved={refetchDocs} autofill={autofill} onUpdate={onUpdate} />
+  );
 
   const clientProps = properties.filter((p) => p.client_id === deal.client_id);
   const otherProps = properties.filter((p) => p.client_id !== deal.client_id);
@@ -128,14 +135,19 @@ export function CxFlowStepper({ deal, stages, properties, onFlow, onUpdate, onAd
           <>
             <h4 className="text-sm font-bold text-slate-900">Resultado da análise de crédito</h4>
             <p className="text-xs text-slate-500">
-              Confira renda e documentos do cliente e preencha os dados do financiamento abaixo. Depois registre o resultado.
+              Anexe o resultado da análise de crédito. Se tiver a análise do banco, anexe também: os dados do financiamento são preenchidos sozinhos.
             </p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              {slot('analise_credito', 'resultado_analise', 'Resultado da análise de crédito *', 'Obrigatório para registrar o resultado')}
+              {slot('analise_credito', 'analise_banco', 'Análise do banco', 'Preenche banco, valores, rating e margem', true)}
+            </div>
+            {!hasDoc('resultado_analise') && <p className="text-[11px] font-semibold text-amber-600">Anexe o resultado da análise para liberar os botões abaixo.</p>}
             {!rejecting ? (
               <div className="flex flex-wrap gap-2">
-                <Button className="bg-emerald-600 hover:bg-emerald-700 text-white" onClick={() => onFlow('credito_aprovado', {}, 'Crédito aprovado')}>
+                <Button disabled={!hasDoc('resultado_analise')} className="bg-emerald-600 hover:bg-emerald-700 text-white" onClick={() => onFlow('credito_aprovado', {}, 'Crédito aprovado')}>
                   <CheckCircle2 className="w-4 h-4 mr-1.5" /> Crédito aprovado
                 </Button>
-                <Button variant="outline" className="bg-white border-red-200 text-red-600 hover:bg-red-50 hover:text-red-700" onClick={() => setRejecting(true)}>
+                <Button disabled={!hasDoc('resultado_analise')} variant="outline" className="bg-white border-red-200 text-red-600 hover:bg-red-50 hover:text-red-700" onClick={() => setRejecting(true)}>
                   <XCircle className="w-4 h-4 mr-1.5" /> Crédito não aprovado
                 </Button>
               </div>
@@ -237,9 +249,16 @@ export function CxFlowStepper({ deal, stages, properties, onFlow, onUpdate, onAd
             const order = ['contrato', 'itbi_registro', 'entrega_chaves', 'concluido'];
             const next = order[order.indexOf(deal.stage) + 1];
             const label = cxStageCfg(stages, deal.stage).label;
+            const req = {
+              contrato: { type: 'contrato', label: 'Contrato assinado *', hint: 'PDF ou foto do contrato assinado' },
+              itbi_registro: { type: 'itbi', label: 'Guia/comprovante do ITBI e registro *', hint: 'ITBI pago e/ou matrícula registrada' },
+              entrega_chaves: { type: 'termo_entrega', label: 'Termo de entrega das chaves *', hint: 'Termo assinado ou foto da entrega' },
+            }[deal.stage as 'contrato' | 'itbi_registro' | 'entrega_chaves'];
             return (
               <>
                 <h4 className="text-sm font-bold text-slate-900">{label}</h4>
+                {slot(deal.stage, req.type, req.label, req.hint)}
+                {!hasDoc(req.type) && <p className="text-[11px] font-semibold text-amber-600">Anexe o documento para concluir esta etapa.</p>}
                 <div className="grid grid-cols-1 sm:grid-cols-[180px_1fr] gap-3">
                   <div className="space-y-1">
                     <Label className="text-slate-600 text-xs">Data de conclusão</Label>
@@ -253,6 +272,7 @@ export function CxFlowStepper({ deal, stages, properties, onFlow, onUpdate, onAd
                 <Button
                   style={{ backgroundColor: BRAND }}
                   className="text-white hover:opacity-90"
+                  disabled={!hasDoc(req.type)}
                   onClick={() =>
                     onFlow(next, {}, `${label} concluído em ${stepDate.split('-').reverse().join('/')}${stepNote ? ` — ${stepNote}` : ''}`)
                   }
