@@ -1,5 +1,5 @@
 import { useDraggable } from '@dnd-kit/core';
-import { CxDeal, CxStage, CX_REJECTION_CONFIG, cxCurrency, cxDaysUntil } from '@/types/cxCrm';
+import { CxDeal, CxStage, CX_REJECTION_CONFIG, cxCurrency, cxDaysUntil, cxNextAction } from '@/types/cxCrm';
 import { Building2, CalendarClock, ChevronDown, Landmark, UserRound } from 'lucide-react';
 
 interface Props {
@@ -71,6 +71,12 @@ export function CxDealCard({ deal, clientName, onClick, dragging, stages, onMove
             </span>
           )}
         </div>
+        {(() => {
+          const a = cxNextAction(deal);
+          return a ? (
+            <p className={`text-[10px] font-semibold ${a.urgent ? 'text-red-600' : 'text-[#1a3a6b]'}`}>→ {a.label}</p>
+          ) : null;
+        })()}
         {reviewTone && (
           <span className={`inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-semibold ${reviewTone}`}>
             <CalendarClock className="w-3 h-3" />
