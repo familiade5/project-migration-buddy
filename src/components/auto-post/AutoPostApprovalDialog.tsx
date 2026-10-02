@@ -274,7 +274,7 @@ export function AutoPostApprovalDialog({ item, open, onOpenChange, onActionCompl
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent
-        className="max-w-4xl sm:rounded-lg"
+        className="max-w-4xl sm:rounded-lg max-h-[92vh] overflow-y-auto"
         style={{ backgroundColor: '#ffffff', color: '#111827', borderColor: '#e5e7eb' }}
       >
         <DialogHeader>
@@ -407,7 +407,7 @@ export function AutoPostApprovalDialog({ item, open, onOpenChange, onActionCompl
           </div>
         )}
 
-        <DialogFooter className="gap-2">
+        <DialogFooter className="gap-2 sticky -bottom-6 -mx-6 -mb-6 px-6 py-3 border-t" style={{ backgroundColor: '#ffffff', borderColor: '#e5e7eb' }}>
           {item.status === 'pending' && (
             <Button
               variant="outline"
