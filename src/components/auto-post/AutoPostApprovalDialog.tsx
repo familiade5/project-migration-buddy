@@ -13,6 +13,7 @@ import { useCrecis } from '@/hooks/useCrecis';
 import { buildVdhCaption } from '@/lib/vdhCaption';
 import { supabase } from '@/integrations/supabase/client';
 import { safePixelRatio, isIOS } from '@/lib/exportUtils';
+const NO_PHOTO_URL = 'https://kubdwbzahemthstrxrxh.supabase.co/storage/v1/object/public/exported-creatives/placeholders%2Fimagem-nao-fornecida.jpg';
 import { toast } from 'sonner';
 import {
   Dialog,
@@ -165,15 +166,38 @@ export function AutoPostApprovalDialog({ item, open, onOpenChange, onActionCompl
     return publicUrl;
   };
 
+  // Fotos da Caixa não podem ir direto para a arte (bloqueio do site); busca por um intermediário
+  const loadExportPhotos = async (): Promise<string[]> => {
+    const base = import.meta.env.VITE_SUPABASE_URL;
+    const toData = (b: Blob) => new Promise<string>((res) => { const r = new FileReader(); r.onload = () => res(r.result as string); r.readAsDataURL(b); });
+    const cache = new Map<string, string>();
+    const out: string[] = [];
+    for (const src of photos) {
+      if (!cache.has(src)) {
+        let val = src;
+        if (/caixa\.gov\.br/.test(src)) {
+          try {
+            const r = await fetch(`${base}/functions/v1/image-proxy?url=${encodeURIComponent(src)}`);
+            val = r.ok ? await toData(await r.blob()) : NO_PHOTO_URL;
+          } catch { val = NO_PHOTO_URL; }
+        }
+        cache.set(src, val);
+      }
+      out.push(cache.get(src)!);
+    }
+    return out.length ? out : Array(5).fill(NO_PHOTO_URL);
+  };
+
   const handleApproveAndPublish = async () => {
     setIsPublishing(true);
     try {
+      const exportPhotos = await loadExportPhotos();
       // 1. Capture all feed slides
       const imageUrls: string[] = [];
       for (let i = 0; i < feedSlides.length; i++) {
         const slide = feedSlides[i];
-        const photo = photos[slide.photoIndex] || photos[0] || null;
-        const dataUrl = await captureSlide(slide.component, photo, photos, {
+        const photo = exportPhotos[slide.photoIndex] || exportPhotos[0] || null;
+        const dataUrl = await captureSlide(slide.component, photo, exportPhotos, {
           slideIndex: slide.slideIndex,
           totalSlides: feedSlides.length,
         });
@@ -183,8 +207,8 @@ export function AutoPostApprovalDialog({ item, open, onOpenChange, onActionCompl
 
       // 2. Capture VDH Story 1
       let storyImageUrl: string | undefined;
-      if (photos.length > 0) {
-        const storyDataUrl = await captureSlide(VDHStory1, photos[0] || null, photos, {});
+      if (exportPhotos.length > 0) {
+        const storyDataUrl = await captureSlide(VDHStory1, exportPhotos[0] || null, exportPhotos, {});
         storyImageUrl = await uploadImage(storyDataUrl, 0, true);
       }
 

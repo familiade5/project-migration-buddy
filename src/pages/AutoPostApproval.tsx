@@ -571,7 +571,7 @@ const AutoPostApproval = () => {
                         <Button
                           size="sm"
                           disabled={approvingId === item.id}
-                          onClick={(e) => { e.stopPropagation(); handleQuickApprove(item); }}
+                          onClick={(e) => { e.stopPropagation(); setSelectedItem(item); }}
                           className="flex-1 h-8 text-white gap-1.5"
                           style={{ backgroundColor: '#22c55e' }}
                         >
