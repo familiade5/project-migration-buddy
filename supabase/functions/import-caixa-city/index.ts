@@ -22,6 +22,21 @@ async function photoExists(url: string) {
   } catch { return false; }
 }
 
+async function fetchCountdown(id: string, key: string): Promise<string | null> {
+  try {
+    const r = await fetch("https://api.firecrawl.dev/v2/scrape", {
+      method: "POST",
+      headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
+      body: JSON.stringify({ url: `https://venda-imoveis.caixa.gov.br/sistema/detalhe-imovel.asp?hdnOrigem=index&hdnimovel=${id}`, formats: ["markdown"], waitFor: 3000, proxy: "auto" }),
+    });
+    const b = await r.json().catch(() => null);
+    const md: string = b?.data?.markdown || "";
+    const m = md.match(/Tempo restante:[\s\S]{0,40}?(\d+)\s*DIAS[\s\S]{0,20}?(\d+)\s*HORAS/i);
+    if (!m) return null;
+    return new Date(Date.now() + (Number(m[1]) * 24 + Number(m[2])) * 3600_000).toISOString();
+  } catch { return null; }
+}
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
   const json = (b: unknown, status = 200) =>
@@ -40,7 +55,9 @@ Deno.serve(async (req) => {
     const body = await req.json().catch(() => ({}));
     const uf = String(body?.state || "").trim().toUpperCase();
     const city = String(body?.city || "").trim();
-    if (!STATE_NAMES[uf] || city.length < 2 || city.length > 80) return json({ success: false, error: "Informe estado (UF) e cidade" }, 400);
+    const listCities = body?.action === "list_cities";
+    if (!STATE_NAMES[uf] || (!listCities && city.length < 2) || city.length > 80) return json({ success: false, error: "Informe estado (UF) e cidade" }, 400);
+    if (false || city.length > 80) return json({ success: false, error: "Informe estado (UF) e cidade" }, 400);
 
     const csvUrl = `https://venda-imoveis.caixa.gov.br/listaweb/Lista_imoveis_${uf}.csv`;
     let text = "";
@@ -67,6 +84,15 @@ Deno.serve(async (req) => {
     }
     if (!text.includes(";")) return json({ success: false, error: "A Caixa não retornou a lista de imóveis" }, 502);
 
+    if (listCities) {
+      const counts = new Map<string, number>();
+      text.split(/\r?\n/).map((l) => l.split(";").map((c) => c.trim()))
+        .filter((c) => c.length >= 12 && /^\d{6,}$/.test(c[0]) && ALLOWED.has(c[10].toLowerCase()))
+        .forEach((c) => { const n = title(c[2]); counts.set(n, (counts.get(n) || 0) + 1); });
+      const cities = [...counts.entries()].map(([name, count]) => ({ name, count })).sort((a, b) => b.count - a.count);
+      return json({ success: true, state: uf, cities });
+    }
+
     const target = norm(city);
     const rows = text.split(/\r?\n/).map((l) => l.split(";").map((c) => c.trim()))
       .filter((c) => c.length >= 12 && /^\d{6,}$/.test(c[0]) && norm(c[2]) === target);
@@ -79,6 +105,18 @@ Deno.serve(async (req) => {
       (data || []).forEach((r) => existing.add(r.external_id));
     }
     const fresh = allowed.filter((c) => !existing.has(`caixa-csv-${c[0]}`));
+
+    // Cronômetro da Caixa: só para imóveis que aceitam financiamento (1 crédito Firecrawl cada)
+    const countdowns = new Map<string, string | null>();
+    const fcKey = Deno.env.get("FIRECRAWL_API_KEY");
+    if (fcKey) {
+      const finIds = fresh.filter((c) => norm(c[8]) === "SIM").map((c) => c[0]).slice(0, 60);
+      for (let i = 0; i < finIds.length; i += 6) {
+        const part = finIds.slice(i, i + 6);
+        const res = await Promise.all(part.map((id) => fetchCountdown(id, fcKey)));
+        part.forEach((id, k) => countdowns.set(id, res[k]));
+      }
+    }
 
     let inserted = 0, financing = 0, cash = 0, noPhoto = 0;
     for (let i = 0; i < fresh.length; i += 20) {
@@ -119,6 +157,7 @@ Deno.serve(async (req) => {
           customPhotoSpecs: [],
           condominiumRules: "Responsabilidade do comprador (até 10% do valor de avaliação). A CAIXA arcará com o excedente.",
           taxRules: "Responsabilidade do comprador.", saleModality: modal, caixaLink: link,
+          countdownEndsAt: countdowns.get(id) || null,
         };
         return {
           row: {
