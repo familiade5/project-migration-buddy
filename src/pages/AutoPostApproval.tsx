@@ -78,15 +78,7 @@ const AutoPostApproval = () => {
     if (importCity.trim().length < 2) { toast.error('Informe a cidade'); return; }
     setIsImporting(true);
     try {
-      const { data, error } = await supabase.functions.invoke('import-caixa-city', {
-        body: { city: importCity.trim(), state: importState },
-      });
-      if (error) {
-        const ctx = (error as any)?.context;
-        const msg = ctx?.json ? (await ctx.json().catch(() => null))?.error : null;
-        throw new Error(msg || error.message);
-      }
-      if (!data?.success) throw new Error(data?.error || 'Falha na importação');
+      const data = await importOneCity(importCity.trim(), importState);
       toast.success(
         `${data.city}: ${data.new_properties} novos (${data.financing} com financiamento, ${data.cash} à vista). ${data.already_existing} já existiam.`
       );
@@ -94,6 +86,47 @@ const AutoPostApproval = () => {
       refetch();
     } catch (err) {
       toast.error(err instanceof Error ? err.message : 'Erro ao importar');
+    } finally {
+      setIsImporting(false);
+    }
+  };
+
+  const importOneCity = async (city: string, state: string) => {
+    const { data, error } = await supabase.functions.invoke('import-caixa-city', {
+      body: { city, state },
+    });
+    if (error) {
+      const ctx = (error as any)?.context;
+      const msg = ctx?.json ? (await ctx.json().catch(() => null))?.error : null;
+      throw new Error(msg || error.message);
+    }
+    if (!data?.success) throw new Error(data?.error || 'Falha na importação');
+    return data;
+  };
+
+  const CE_CITIES = ['Eusébio', 'Caucaia', 'Maracanaú', 'Pacatuba', 'Fortaleza', 'Pacajus', 'Maranguape', 'Aquiraz', 'Cascavel'];
+
+  const handleImportCeCities = async () => {
+    setIsImporting(true);
+    const empty: string[] = [];
+    const failed: string[] = [];
+    let totalNew = 0;
+    try {
+      for (const city of CE_CITIES) {
+        try {
+          const data = await importOneCity(city, 'CE');
+          totalNew += data.new_properties || 0;
+          if ((data.new_properties || 0) === 0 && (data.already_existing || 0) === 0) empty.push(city);
+        } catch {
+          failed.push(city);
+        }
+      }
+      const parts = [`${totalNew} novos imóveis extraídos.`];
+      if (empty.length) parts.push(`Sem imóveis na Caixa hoje: ${empty.join(', ')}.`);
+      if (failed.length) parts.push(`Falhou em: ${failed.join(', ')} — tente de novo.`);
+      if (totalNew > 0) { toast.success(parts.join(' '), { duration: 8000 }); setActiveTab('pending'); refetch(); }
+      else if (failed.length === 0) toast.info(parts.join(' '), { duration: 8000 });
+      else toast.error(parts.join(' '), { duration: 8000 });
     } finally {
       setIsImporting(false);
     }
