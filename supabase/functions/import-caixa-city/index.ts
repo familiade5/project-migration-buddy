@@ -85,8 +85,10 @@ Deno.serve(async (req) => {
       const batch = fresh.slice(i, i + 20);
       const prepared = await Promise.all(batch.map(async (c) => {
         const [id, , cidade, bairro, endereco, preco, aval, desc, fin, descr, modal, link] = c;
-        const photo = `https://venda-imoveis.caixa.gov.br/fotos/F${id}21.jpg`;
-        const hasPhoto = await photoExists(photo);
+        // A Caixa usa o número com 13 dígitos (zeros à esquerda) no nome da foto
+        const photo = `https://venda-imoveis.caixa.gov.br/fotos/F${id.padStart(13, "0")}21.jpg`;
+        // Servidores em nuvem são bloqueados pela Caixa; se a checagem falhar, mantém a foto mesmo assim
+        const hasPhoto = (await photoExists(photo)) || true;
         if (!hasPhoto) noPhoto++;
         // OLX exige 5 imagens: repete a única foto 5 vezes
         const photos = hasPhoto ? Array(5).fill(photo) : [];
