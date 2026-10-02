@@ -31,6 +31,7 @@ import { CxCrmDashboard } from '@/components/correspondente/crm/CxCrmDashboard';
 import { CxDealKanban } from '@/components/correspondente/crm/CxDealKanban';
 import { CxDealFormModal } from '@/components/correspondente/crm/CxDealFormModal';
 import { CxDealDetailModal } from '@/components/correspondente/crm/CxDealDetailModal';
+import { CxClientRegistrationDialog } from '@/components/correspondente/crm/CxClientRegistrationDialog';
 import { CxWorkbench } from '@/components/correspondente/crm/CxWorkbench';
 import { CxMonitoringList } from '@/components/correspondente/crm/CxMonitoringList';
 import { CxIntakePanel } from '@/components/correspondente/CxIntakePanel';
@@ -127,6 +128,7 @@ export default function CorrespondenteCaixaPage() {
   const newDocRef = useRef<HTMLInputElement>(null);
   const [reviewClientId, setReviewClientId] = useState<string | null>(null);
   const [pickDocOnOpen, setPickDocOnOpen] = useState(false);
+  const [regOpen, setRegOpen] = useState(false);
 
   const [docType, setDocType] = useState<string>('rg');
   const [uploading, setUploading] = useState(false);
@@ -417,15 +419,8 @@ export default function CorrespondenteCaixaPage() {
               stages={stages}
               clients={clients}
               clientName={clientNameOf}
-              onNewWithDocument={() => {
-                resetNewClient();
-                setPickDocOnOpen(true);
-                setDialogOpen(true);
-              }}
-              onNewManual={() => {
-                resetNewClient();
-                setDialogOpen(true);
-              }}
+              onNewWithDocument={() => setRegOpen(true)}
+              onNewManual={() => setRegOpen(true)}
               onOpenDeal={(d) => setDetailDealId(d.id)}
               onOpenFunnel={() => setTab('funil')}
             />
@@ -1274,6 +1269,16 @@ export default function CorrespondenteCaixaPage() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      <CxClientRegistrationDialog
+        open={regOpen}
+        onOpenChange={setRegOpen}
+        onCreated={async (id, name) => {
+          await fetchClients();
+          setSelectedId(id);
+          await openCaseFor(id, name);
+        }}
+      />
 
       <CxDealFormModal
         open={dealFormOpen}

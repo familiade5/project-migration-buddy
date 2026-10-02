@@ -194,6 +194,11 @@ export const CX_DOC_TYPES = [
   { value: 'extrato_fgts', label: 'Extrato de FGTS' },
   { value: 'extrato_bancario', label: 'Extrato Bancário (comprovação de renda)' },
   { value: 'matricula_imovel', label: 'Matrícula / Narrativa do Imóvel' },
+  { value: 'resultado_analise', label: 'Resultado da análise de crédito' },
+  { value: 'analise_banco', label: 'Análise do banco' },
+  { value: 'contrato', label: 'Contrato' },
+  { value: 'itbi', label: 'ITBI / Registro' },
+  { value: 'termo_entrega', label: 'Termo de entrega das chaves' },
 
   { value: 'outro', label: 'Outro' },
 ] as const;
