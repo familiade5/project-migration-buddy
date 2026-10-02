@@ -135,26 +135,49 @@ Deno.serve(async (req) => {
 
     const csvUrl = `https://venda-imoveis.caixa.gov.br/listaweb/Lista_imoveis_${uf}.csv`;
     let text = "";
-    const res = await fetch(csvUrl, { headers: { "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/124 Safari/537.36", "Accept": "text/csv,*/*" } });
-    if (res.ok) {
-      text = new TextDecoder("latin1").decode(await res.arrayBuffer());
-    } else {
-      // A Caixa bloqueia servidores em nuvem — busca via Firecrawl
-      console.log(`Direct fetch blocked (${res.status}); using Firecrawl`);
-      const key = Deno.env.get("FIRECRAWL_API_KEY");
-      if (!key) return json({ success: false, error: `A Caixa bloqueou a leitura (${res.status})` }, 502);
-      const fc = await fetch("https://api.firecrawl.dev/v2/scrape", {
-        method: "POST",
-        headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
-        body: JSON.stringify({ url: csvUrl, formats: ["rawHtml"], onlyMainContent: false, location: { country: "BR" }, proxy: "auto" }),
-      });
-      const fcBody = await fc.json().catch(() => null);
-      if (!fc.ok) {
-        console.error("Firecrawl error", fc.status, JSON.stringify(fcBody));
-        return json({ success: false, error: `Não foi possível ler a lista da Caixa (${fc.status})` }, 502);
+    // Cache da lista do estado (3h): evita baixar a mesma lista para cada cidade
+    const cachePath = `caixa-cache/${uf}.json`;
+    try {
+      const { data: blob } = await supabase.storage.from("exported-creatives").download(cachePath);
+      if (blob) {
+        const c = JSON.parse(await blob.text());
+        if (c?.text && Date.now() - Number(c.at) < 3 * 3600_000) text = c.text;
       }
-      text = fcBody?.data?.rawHtml || fcBody?.rawHtml || fcBody?.data?.markdown || "";
-      text = text.replace(/<[^>]+>/g, "\n").replace(/&amp;/g, "&");
+    } catch { /* sem cache */ }
+
+    if (!text) {
+      const res = await fetch(csvUrl, { headers: { "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/124 Safari/537.36", "Accept": "text/csv,*/*" } });
+      if (res.ok) {
+        text = new TextDecoder("latin1").decode(await res.arrayBuffer());
+      } else {
+        // A Caixa bloqueia servidores em nuvem — busca via Firecrawl
+        console.log(`Direct fetch blocked (${res.status}); using Firecrawl`);
+        const key = Deno.env.get("FIRECRAWL_API_KEY");
+        if (!key) return json({ success: false, error: `A Caixa bloqueou a leitura (${res.status})` }, 502);
+        let fc: Response | null = null, fcBody: any = null;
+        for (let attempt = 0; attempt < 4; attempt++) {
+          fc = await fetch("https://api.firecrawl.dev/v2/scrape", {
+            method: "POST",
+            headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
+            body: JSON.stringify({ url: csvUrl, formats: ["rawHtml"], onlyMainContent: false, location: { country: "BR" }, proxy: "auto" }),
+          });
+          fcBody = await fc.json().catch(() => null);
+          if (fc.status !== 429) break;
+          const wait = Math.min(Number(String(fcBody?.error || "").match(/retry after (\d+)s/)?.[1] || 10) + 1, 20);
+          console.log(`Firecrawl 429, aguardando ${wait}s`);
+          await new Promise((r) => setTimeout(r, wait * 1000));
+        }
+        if (!fc || !fc.ok) {
+          console.error("Firecrawl error", fc?.status, JSON.stringify(fcBody));
+          const msg = fc?.status === 429 ? "Muitas leituras seguidas na Caixa. Aguarde 1 minuto e tente de novo." : `Não foi possível ler a lista da Caixa (${fc?.status})`;
+          return json({ success: false, error: msg }, 502);
+        }
+        text = fcBody?.data?.rawHtml || fcBody?.rawHtml || fcBody?.data?.markdown || "";
+        text = text.replace(/<[^>]+>/g, "\n").replace(/&amp;/g, "&");
+      }
+      if (text.includes(";")) {
+        await supabase.storage.from("exported-creatives").upload(cachePath, new Blob([JSON.stringify({ at: Date.now(), text })], { type: "application/json" }), { upsert: true }).catch(() => null);
+      }
     }
     if (!text.includes(";")) return json({ success: false, error: "A Caixa não retornou a lista de imóveis" }, 502);
 
