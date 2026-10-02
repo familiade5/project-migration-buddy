@@ -21,6 +21,7 @@ const BRAND_BLUE = '#1a3a6b';
 const BRAND_GOLD = '#c9a84c';
 
 const statusTabs = [
+  { key: 'recent', label: 'Adicionados recentemente', icon: Sparkles, color: '#c9a84c' },
   { key: 'pending', label: 'Pendentes', icon: Clock, color: '#f59e0b' },
   { key: 'approved', label: 'Aprovados', icon: CheckCircle2, color: '#22c55e' },
   { key: 'published', label: 'Publicados', icon: CheckCircle2, color: BRAND_BLUE },
@@ -59,7 +60,10 @@ const AutoPostApproval = () => {
   const [stateFilter, setStateFilter] = useState('all');
   const [selectedItem, setSelectedItem] = useState<AutoPostQueueItem | null>(null);
   const [isScraping, setIsScraping] = useState(false);
-  const { data: items, isLoading, refetch } = useAutoPostQueue(activeTab);
+  const { data: rawItems, isLoading, refetch } = useAutoPostQueue(activeTab === 'recent' ? 'pending' : activeTab);
+  // "Adicionados recentemente": pendentes trazidos pela atualização diária do site nos últimos 7 dias
+  const items = useMemo(() => activeTab !== 'recent' ? rawItems : (rawItems || []).filter((i) =>
+    (i.property_data as any)?.autoSync === true && Date.now() - new Date(i.created_at).getTime() < 7 * 86400_000), [rawItems, activeTab]);
 
   const [cityFilter, setCityFilter] = useState('all');
   const [dateFilter, setDateFilter] = useState('all');
