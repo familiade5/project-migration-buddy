@@ -97,14 +97,14 @@ Deno.serve(async (req) => {
     if (!STATE_NAMES[uf] || (!listCities && body?.action !== "refresh_countdowns" && city.length < 2) || city.length > 80) return json({ success: false, error: "Informe estado (UF) e cidade" }, 400);
 
     if (body?.action === "repair_accents") {
-      const { data: items } = await supabase.from("auto_post_queue").select("id, property_data").limit(5000);
+      const { data: items, error: qErr } = await supabase.from("auto_post_queue").select("id, property_data").limit(5000);
       const bad = (items || []).filter((it) => /\uFFFD/.test(JSON.stringify(it.property_data)));
       const fix = await fixAccents(bad.flatMap((it) => [it.property_data.neighborhood, it.property_data.fullAddress, it.property_data.street, it.property_data.city]));
       for (const it of bad) {
         const p = it.property_data;
         await supabase.from("auto_post_queue").update({ property_data: { ...p, neighborhood: repairAll(p.neighborhood || "", fix), fullAddress: repairAll(p.fullAddress || "", fix), street: repairAll(p.street || "", fix), city: repairAll(p.city || "", fix) } }).eq("id", it.id);
       }
-      return json({ success: true, fixed: bad.length });
+      return json({ success: true, fixed: bad.length, total: items?.length, qErr });
     }
     if (body?.action === "refresh_countdowns") {
       const key = Deno.env.get("FIRECRAWL_API_KEY");
