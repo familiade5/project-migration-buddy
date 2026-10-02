@@ -11,7 +11,12 @@ export default function SiteProperty() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    siteTable().select('*').eq('code', code).maybeSingle().then(({ data }: any) => { setP(data); setLoading(false); });
+    let active = true;
+    siteTable().select('*').eq('code', code).maybeSingle()
+      .then(({ data }: any) => { if (active) setP(data || null); })
+      .catch(() => { if (active) setP(null); })
+      .finally(() => { if (active) setLoading(false); });
+    return () => { active = false; };
   }, [code]);
 
   if (loading) return <SiteLayout><p className="text-center text-slate-500 py-24">Carregando…</p></SiteLayout>;
