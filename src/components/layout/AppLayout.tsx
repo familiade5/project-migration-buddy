@@ -45,6 +45,7 @@ const navigation = [
 
 const adminNavigation = [
   { name: 'Aprovação Posts', href: '/aprovacao-posts', icon: Zap },
+  { name: 'CC VDH', href: '/cc-vdh', icon: Shield },
   { name: 'Imobiliária', href: '/imobiliaria', icon: Building2 },
   { name: 'Catálogo OLX', href: '/olx-catalog', icon: Tag },
   { name: 'Admin', href: '/admin', icon: Shield },

@@ -32,6 +32,11 @@ import PortalDashboard from "./pages/portal/PortalDashboard";
 
 import AutoPostApproval from "./pages/AutoPostApproval";
 import LandingPage from "./pages/LandingPage";
+import SiteHome from "./pages/site/SiteHome";
+import SiteCity from "./pages/site/SiteCity";
+import SitePropertyPage from "./pages/site/SiteProperty";
+import SiteSimulate from "./pages/site/SiteSimulate";
+import CCVdh from "./pages/CCVdh";
 
 
 const queryClient = new QueryClient();
@@ -126,6 +131,14 @@ const App = () => (
             } />
             {/* Landing pages públicas (sem auth) */}
             <Route path="/imovel/:slug" element={<LandingPage />} />
+            {/* Site público VDH */}
+            <Route path="/imoveis" element={<SiteHome />} />
+            <Route path="/imoveis/imovel/:code" element={<SitePropertyPage />} />
+            <Route path="/imoveis/imovel/:code/simular" element={<SiteSimulate />} />
+            <Route path="/imoveis/:uf/:city" element={<SiteCity />} />
+            <Route path="/cc-vdh" element={
+              <ProtectedRoute requireAdmin><CCVdh /></ProtectedRoute>
+            } />
             
             <Route path="*" element={<NotFound />} />
           </Routes>
