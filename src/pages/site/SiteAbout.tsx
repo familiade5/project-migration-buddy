@@ -24,11 +24,11 @@ export default function SiteAbout() {
         <div><p className="text-xs font-bold uppercase text-primary">Nosso compromisso</p><h2 className="mt-2 text-3xl font-extrabold text-foreground">Clareza em cada etapa</h2></div>
         <div className="grid gap-6 sm:grid-cols-2">
           {[
-            [FileSearch, 'Curadoria diária', 'Acompanhamos a lista oficial da Caixa para apresentar oportunidades disponíveis.'],
-            [Handshake, 'Assessoria gratuita', 'Orientamos sobre o imóvel, a documentação e o caminho para realizar a proposta.'],
-            [Building2, 'Análise de crédito', 'Quem precisa de financiamento pode solicitar uma pré-análise com nossa equipe.'],
-            [MapPin, 'Atuação regional', 'Atendemos Amazonas, Ceará, Paraíba, Mato Grosso do Sul, Rio Grande do Norte e Santa Catarina.'],
-          ].map(([Icon, title, text]) => <article key={String(title)} className="border-t border-border pt-5"><Icon className="size-6 text-primary" /><h3 className="mt-3 font-bold text-foreground">{String(title)}</h3><p className="mt-2 text-sm leading-6 text-muted-foreground">{String(text)}</p></article>)}
+            { icon: FileSearch, title: 'Curadoria diária', text: 'Acompanhamos a lista oficial da Caixa para apresentar oportunidades disponíveis.' },
+            { icon: Handshake, title: 'Assessoria gratuita', text: 'Orientamos sobre o imóvel, a documentação e o caminho para realizar a proposta.' },
+            { icon: Building2, title: 'Análise de crédito', text: 'Quem precisa de financiamento pode solicitar uma pré-análise com nossa equipe.' },
+            { icon: MapPin, title: 'Atuação regional', text: 'Atendemos Amazonas, Ceará, Paraíba, Mato Grosso do Sul, Rio Grande do Norte e Santa Catarina.' },
+          ].map(({ icon: Icon, title, text }) => <article key={title} className="border-t border-border pt-5"><Icon className="size-6 text-primary" /><h3 className="mt-3 font-bold text-foreground">{title}</h3><p className="mt-2 text-sm leading-6 text-muted-foreground">{text}</p></article>)}
         </div>
       </div>
     </section>

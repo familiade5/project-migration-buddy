@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { ArrowRight, FileCheck2, MapPin, MessageCircle, Search, ShieldCheck } from 'lucide-react';
 import { SiteLayout } from '@/components/site/SiteLayout';
 import { Button } from '@/components/ui/button';
@@ -126,7 +126,7 @@ export default function SiteHome() {
             <p className="mt-1 text-sm leading-6 text-muted-foreground">{b.d}</p>
           </div>
         ))}
-      </div><Button asChild variant="outline" className="mt-10"><a href="/imoveis/perguntas-frequentes">Entenda como funciona <ArrowRight /></a></Button></div></section>
+      </div><Button asChild variant="outline" className="mt-10"><Link to="/imoveis/perguntas-frequentes">Entenda como funciona <ArrowRight /></Link></Button></div></section>
     </SiteLayout>
   );
 }
