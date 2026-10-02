@@ -136,7 +136,7 @@ export function CxDealFormModal({ open, onClose, clients, properties, stages, de
             <Select value={form.stage} onValueChange={(v) => set('stage', v)}>
               <SelectTrigger className="bg-white"><SelectValue /></SelectTrigger>
               <SelectContent>
-                {stages.map((s) => (
+                {stages.filter((s) => deal || s.key === 'cadastro' || s.key === 'tipo_compra').map((s) => (
                   <SelectItem key={s.key} value={s.key}>{s.label}</SelectItem>
                 ))}
               </SelectContent>
