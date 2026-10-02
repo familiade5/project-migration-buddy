@@ -16,15 +16,16 @@ Deno.serve(async (req) => {
     }
     // A Caixa bloqueia servidores em nuvem: tira um "print" da foto via Firecrawl (1 crédito)
     const key = Deno.env.get('FIRECRAWL_API_KEY');
+    const SCRIPT = `document.documentElement.innerHTML='<body style="margin:0;background:#fff"><img id="i" style="display:block;width:100vw;height:100vh;object-fit:cover"></body>';document.getElementById('i').src=${JSON.stringify(u.toString())};`;
     if (key) {
       const fc = await fetch('https://api.firecrawl.dev/v2/scrape', {
         method: 'POST',
         headers: { Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' },
-        body: JSON.stringify({ url: u.toString(), formats: ['rawHtml'], proxy: 'auto' }),
+        body: JSON.stringify({ url: 'https://example.com', formats: [{ type: 'screenshot', fullPage: false, viewport: { width: 600, height: 450 } }], actions: [{ type: 'executeJavascript', script: SCRIPT }, { type: 'wait', milliseconds: 2500 }], proxy: 'auto' }),
       });
       const body = await fc.json().catch(() => null);
       console.log('fc keys', Object.keys(body?.data || {}), String(body?.data?.rawHtml || '').slice(0, 120));
-      const shot = body?.data?.screenshot || body?.screenshot;
+      const shot = body?.data?.screenshot || body?.data?.actions?.screenshots?.[0] || body?.screenshot;
       if (fc.ok && shot) {
         const img = shot.startsWith('data:') ? Uint8Array.from(atob(shot.split(',')[1]), (c) => c.charCodeAt(0)) : new Uint8Array(await (await fetch(shot)).arrayBuffer());
         return new Response(img, { headers: { ...corsHeaders, 'Content-Type': 'image/png', 'Cache-Control': 'public, max-age=86400' } });
