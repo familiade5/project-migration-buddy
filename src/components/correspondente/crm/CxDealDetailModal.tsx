@@ -16,7 +16,6 @@ import {
   cxDaysUntil,
   cxStageCfg,
 } from '@/types/cxCrm';
-import { CX_PURCHASE_LABEL, CX_CLOSING_TRACK } from '@/types/cxCrm';
 import { CxFlowStepper } from './CxFlowStepper';
 import { CxProperty } from '@/types/correspondente';
 import { useCxDealDetail } from '@/hooks/useCxDeals';
