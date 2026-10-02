@@ -10,6 +10,44 @@ const STATE_NAMES: Record<string, string> = {
 const ALLOWED = new Set(["venda direta online", "venda online", "venda direta"]);
 
 const norm = (s: string) => s.normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim().toUpperCase();
+// Compara nomes tolerando letras perdidas (�) na lista vinda pelo Firecrawl
+const sameName = (garbled: string, clean: string) => {
+  const g = norm(garbled), c = norm(clean);
+  if (g === c) return true;
+  if (!g.includes("\uFFFD") && !g.includes("?")) return false;
+  const re = new RegExp("^" + g.split(/[\uFFFD?]+/).map((p) => p.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join(".{1,2}") + "$");
+  return re.test(c);
+};
+// Restaura acentos perdidos (ex.: "URUP\uFFFD" -> "URUPÊ") com IA, em lote
+async function fixAccents(values: string[]): Promise<Map<string, string>> {
+  const out = new Map<string, string>();
+  const bad = [...new Set(values.filter((v) => v && /[\uFFFD]/.test(v)))];
+  const key = Deno.env.get("LOVABLE_API_KEY");
+  if (!bad.length || !key) return out;
+  for (let i = 0; i < bad.length; i += 80) {
+    const part = bad.slice(i, i + 80);
+    try {
+      const r = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+        method: "POST",
+        headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
+        body: JSON.stringify({
+          model: "google/gemini-3-flash-preview",
+          messages: [
+            { role: "system", content: "Você corrige textos em português do Brasil (nomes de bairros, ruas e cidades brasileiras) onde letras acentuadas (Ç, Ã, Õ, Á, É, Í, Ó, Ú, Â, Ê, Ô, À, Ü) foram trocadas pelo caractere �. Substitua cada � pela letra correta, mantendo maiúsculas/minúsculas e todo o resto idêntico. Responda apenas JSON: {\"fixed\": [...]} na mesma ordem e quantidade." },
+            { role: "user", content: JSON.stringify(part) },
+          ],
+          response_format: { type: "json_object" },
+        }),
+      });
+      if (!r.ok) { console.error("fixAccents", r.status, await r.text()); continue; }
+      const d = await r.json();
+      const fixed: string[] = JSON.parse(d.choices?.[0]?.message?.content || "{}").fixed || [];
+      part.forEach((v, k) => { if (fixed[k] && fixed[k].length >= v.length - 2) out.set(v, fixed[k]); });
+    } catch (e) { console.error("fixAccents error", e); }
+  }
+  return out;
+}
+const repairAll = (s: string, map: Map<string, string>) => map.get(s) || s.replace(/\uFFFD/g, "");
 const brNum = (s: string) => Number((s || "0").replace(/\./g, "").replace(",", ".")) || 0;
 const brl = (n: number) => n.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 const title = (s: string) => s.trim().toLowerCase().replace(/(^|\s)\S/g, (c) => c.toUpperCase());
