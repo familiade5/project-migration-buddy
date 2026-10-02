@@ -363,6 +363,17 @@ export function AutoPostApprovalDialog({ item, open, onOpenChange, onActionCompl
                 </button>
               ))}
             </div>
+
+            {/* Story preview */}
+            <div className="flex flex-col items-center gap-2 pt-2">
+              <span className="text-xs font-semibold" style={{ color: '#6b7280' }}>Story (publicado junto)</span>
+              <div className="relative rounded-xl overflow-hidden flex-shrink-0"
+                style={{ width: '180px', height: '320px', boxShadow: '0 8px 32px rgba(0,0,0,0.15)' }}>
+                <div className="origin-top-left" style={{ width: '1080px', height: '1920px', transform: 'scale(0.16667)' }}>
+                  <VDHStory1 data={data} photo={photos[0] || null} />
+                </div>
+              </div>
+            </div>
           </div>
         ) : (
           <div className="space-y-4">
