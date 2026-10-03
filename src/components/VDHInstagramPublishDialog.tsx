@@ -239,11 +239,10 @@ export const VDHInstagramPublishDialog = ({
             const code = `VDH-${Date.now().toString(36).toUpperCase()}`;
             const title = `${data.type || 'Imóvel'}${data.bedrooms ? ` ${data.bedrooms} quartos` : ''} - ${data.neighborhood || data.city}`;
             const address = (data.fullAddress || `${data.street || ''} ${data.number || ''}`).trim();
-            const { uploadOlxPhotos, ensureMinOlxPhotos } = await import('@/lib/olxPhotos');
+            const { ensureMinOlxPhotos } = await import('@/lib/olxPhotos');
             if (!imageUrls?.length) {
               throw new Error('Slides do criador de post indisponíveis para a OLX.');
             }
-            const uploadedPhotos = await uploadOlxPhotos(photos, 'vdh', code);
             const payload = {
               code,
               transaction_type: olxTxType,
@@ -269,11 +268,7 @@ export const VDHInstagramPublishDialog = ({
               iptu: 0,
               accepts_financing: data.acceptsFinancing,
               accepts_fgts: data.acceptsFGTS,
-              photos: (() => {
-                const sobreNosUrl = `${window.location.origin}/vdh-sobre-nos.png`;
-                const [cover, ...rest] = imageUrls;
-                return ensureMinOlxPhotos([cover, sobreNosUrl, ...rest, ...uploadedPhotos], 5);
-              })(),
+              photos: ensureMinOlxPhotos(imageUrls.slice(0, 5), 5),
               broker_name: data.contactName,
               broker_phone: data.contactPhone,
               creci: data.creci,

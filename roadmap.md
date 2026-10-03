@@ -7,3 +7,10 @@
 - [x] Adicionar Perguntas Frequentes com o conteúdo dos anexos.
 - [x] Adicionar contato, CNPJ e CRECIs ao rodapé.
 - [x] Validar navegação, busca e páginas em computador e celular.
+
+# VDH — sequência educativa fixa
+
+- [x] Manter a foto original do imóvel no primeiro slide.
+- [x] Criar três slides educativos sobre imóvel retomado, assessoria e gratuidade.
+- [x] Manter o contato como quinto slide.
+- [x] Aplicar a sequência ao Instagram e à OLX, no criador e na aprovação automática.
