@@ -26,7 +26,7 @@ export function CxShell({ children, right }: Props) {
   ];
 
   return (
-    <div className="min-h-screen bg-slate-100">
+    <div className="cx-crm min-h-screen bg-slate-100">
       <header className="sticky top-0 z-40 bg-white border-b border-slate-200 shadow-sm">
         <div className="mx-auto max-w-[1800px] px-4 lg:px-6 h-16 flex items-center gap-4">
           <div className="flex items-center gap-3 min-w-0">

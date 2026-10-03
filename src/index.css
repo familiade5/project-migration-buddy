@@ -109,6 +109,29 @@
     --surface-elevated: 0 0% 100%;
   }
 
+  .cx-crm {
+    --background: 0 0% 100%;
+    --foreground: 217 33% 17%;
+    --card: 0 0% 100%;
+    --card-foreground: 217 33% 17%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 217 33% 17%;
+    --primary: 216 61% 26%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 214 32% 95%;
+    --secondary-foreground: 216 61% 26%;
+    --muted: 214 32% 96%;
+    --muted-foreground: 215 16% 47%;
+    --accent: 214 32% 93%;
+    --accent-foreground: 216 61% 26%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 214 24% 88%;
+    --input: 214 24% 88%;
+    --ring: 216 61% 26%;
+    color-scheme: light;
+  }
+
   .vdh-site {
     --background: 150 14% 97%;
     --foreground: 156 28% 13%;
