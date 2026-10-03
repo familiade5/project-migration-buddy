@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -26,8 +26,7 @@ import { Archive, CalendarClock, FileText, History, Loader2, Pencil, Sparkles } 
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 
-const BRAND = '#1a3a6b';
-const BTN = 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50 hover:text-slate-900';
+const BTN = 'border-border bg-background text-foreground hover:bg-muted hover:text-foreground';
 const POPOVER = 'bg-white text-slate-900 border-slate-200';
 const ITEM = 'text-slate-700 focus:bg-slate-100 focus:text-slate-900';
 const FIELD = 'bg-white border-slate-200 text-slate-900 placeholder:text-slate-400';
@@ -203,9 +202,10 @@ export function CxDealDetailModal({
 
   return (
     <Dialog open={!!deal} onOpenChange={(o) => !o && onClose()}>
-      <DialogContent className="max-w-4xl bg-white text-slate-900 max-h-[92vh] overflow-y-auto">
+      <DialogContent className="flex h-[min(92vh,920px)] w-[calc(100vw-1.5rem)] max-w-6xl flex-col gap-0 overflow-hidden border-border bg-background p-0 text-foreground shadow-xl sm:w-[calc(100vw-3rem)]">
+        <div className="shrink-0 border-b border-border bg-background px-5 pb-4 pt-5 pr-12 sm:px-6 sm:pr-14">
         <DialogHeader>
-          <DialogTitle className="flex flex-wrap items-center gap-2" style={{ color: BRAND }}>
+          <DialogTitle className="flex flex-wrap items-center gap-2 text-primary">
             {clientName}
             <span
               className="text-[11px] font-bold px-2 py-0.5 rounded-full"
@@ -219,9 +219,12 @@ export function CxDealDetailModal({
               </span>
             )}
           </DialogTitle>
+          <DialogDescription className="text-xs text-muted-foreground">
+            Cadastro, documentos e andamento completo do atendimento.
+          </DialogDescription>
         </DialogHeader>
 
-        <div className="flex flex-wrap gap-2">
+        <div className="mt-4 flex flex-wrap items-stretch gap-2">
           <Button size="sm" variant="outline" className={BTN} onClick={() => onEdit(deal)}>
             <Pencil className="w-3.5 h-3.5 mr-1.5" /> Editar
           </Button>
@@ -242,26 +245,23 @@ export function CxDealDetailModal({
           <Button
             size="sm"
             variant="outline"
-            className={`${BTN} flex-col items-start h-auto py-1.5`}
+            className={`${BTN} h-9 max-w-full`}
             disabled={finLoading}
             onClick={() => finFileRef.current?.click()}
           >
-            <span className="flex items-center">
+            <span className="flex min-w-0 items-center">
               {finLoading ? (
                 <Loader2 className="w-3.5 h-3.5 mr-1.5 animate-spin" />
               ) : (
                 <Sparkles className="w-3.5 h-3.5 mr-1.5" />
               )}
-              {finLoading ? 'Lendo documento…' : 'Preencher Dados Financiamento Automaticamente'}
-            </span>
-            <span className="text-[10px] font-normal text-slate-500 ml-5">
-              Anexe Imagem ou pdf dos dados de financiamento
+              {finLoading ? 'Lendo documento…' : 'Preencher financiamento'}
             </span>
           </Button>
           <Button
             size="sm"
             variant="outline"
-            className="ml-auto bg-white border-slate-200 text-red-600 hover:bg-red-50 hover:text-red-700"
+            className="border-destructive/30 bg-background text-destructive hover:bg-destructive/10 hover:text-destructive sm:ml-auto"
             onClick={() => {
               onDelete(deal.id);
               onClose();
@@ -270,6 +270,9 @@ export function CxDealDetailModal({
             <Archive className="w-3.5 h-3.5 mr-1.5" /> Arquivar
           </Button>
         </div>
+        </div>
+
+        <div className="min-h-0 flex-1 space-y-4 overflow-y-auto overflow-x-hidden px-4 py-4 sm:px-6 sm:py-5">
 
         {onFlow && (
           <CxCreditAnalysisWorkspace
@@ -362,7 +365,7 @@ export function CxDealDetailModal({
                 {days < 0 ? `Atrasado há ${Math.abs(days)} dia(s)` : days === 0 ? 'Reavaliar hoje' : `Faltam ${days} dia(s)`}
               </p>
             )}
-            <Button size="sm" className="text-white" style={{ backgroundColor: BRAND }} onClick={saveReview}>
+            <Button size="sm" onClick={saveReview}>
               Salvar monitoramento
             </Button>
           </section>
@@ -408,7 +411,7 @@ export function CxDealDetailModal({
             </div>
           </div>
           <div className="flex gap-2">
-            <Button size="sm" className="text-white" style={{ backgroundColor: BRAND }} onClick={saveFin} disabled={!finDirty}>
+            <Button size="sm" onClick={saveFin} disabled={!finDirty}>
               Salvar dados do financiamento
             </Button>
             {finDirty && (
@@ -435,6 +438,7 @@ export function CxDealDetailModal({
             {history.length === 0 && <li className="text-xs text-slate-400">Sem movimentações registradas.</li>}
           </ul>
         </section>
+        </div>
       </DialogContent>
     </Dialog>
   );
