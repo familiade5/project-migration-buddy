@@ -61,9 +61,13 @@ const AutoPostApproval = () => {
   const [selectedItem, setSelectedItem] = useState<AutoPostQueueItem | null>(null);
   const [isScraping, setIsScraping] = useState(false);
   const { data: rawItems, isLoading, refetch } = useAutoPostQueue(activeTab === 'recent' ? 'pending' : activeTab);
+  const { data: pendingItems } = useAutoPostQueue('pending');
+  const recentItems = useMemo(() => (pendingItems || []).filter((item) =>
+    (item.property_data as any)?.autoSync === true
+      && Date.now() - new Date(item.created_at).getTime() < 7 * 86400_000
+  ), [pendingItems]);
   // "Adicionados recentemente": pendentes trazidos pela atualização diária do site nos últimos 7 dias
-  const items = useMemo(() => activeTab !== 'recent' ? rawItems : (rawItems || []).filter((i) =>
-    (i.property_data as any)?.autoSync === true && Date.now() - new Date(i.created_at).getTime() < 7 * 86400_000), [rawItems, activeTab]);
+  const items = useMemo(() => activeTab !== 'recent' ? rawItems : recentItems, [rawItems, recentItems, activeTab]);
 
   const [cityFilter, setCityFilter] = useState('all');
   const [dateFilter, setDateFilter] = useState('all');
@@ -301,15 +305,33 @@ const AutoPostApproval = () => {
               Revise e aprove imóveis capturados automaticamente antes de publicar
             </p>
           </div>
-          <Button
-            onClick={handleScrapeNow}
-            disabled={isScraping}
-            className="text-white gap-2"
-            style={{ backgroundColor: BRAND_GOLD }}
-          >
-            {isScraping ? <Loader2 className="w-4 h-4 animate-spin" /> : <RefreshCw className="w-4 h-4" />}
-            {isScraping ? 'Buscando...' : 'Buscar Imóveis'}
-          </Button>
+          <div className="flex flex-wrap gap-2">
+            <Button
+              type="button"
+              onClick={() => {
+                setActiveTab('recent');
+                setStateFilter('all');
+                setCityFilter('all');
+                setDateFilter('all');
+                setFinancingFilter('all');
+              }}
+              className="gap-2 text-white"
+              style={{ backgroundColor: BRAND_BLUE }}
+            >
+              <Sparkles className="h-4 w-4" />
+              Imóveis novos
+              <span className="rounded-full bg-white/20 px-2 py-0.5 text-xs font-bold">{recentItems.length}</span>
+            </Button>
+            <Button
+              onClick={handleScrapeNow}
+              disabled={isScraping}
+              className="text-white gap-2"
+              style={{ backgroundColor: BRAND_GOLD }}
+            >
+              {isScraping ? <Loader2 className="w-4 h-4 animate-spin" /> : <RefreshCw className="w-4 h-4" />}
+              {isScraping ? 'Buscando...' : 'Buscar Imóveis'}
+            </Button>
+          </div>
         </div>
 
         {/* Importar por cidade (lista oficial da Caixa) */}
@@ -498,9 +520,13 @@ const AutoPostApproval = () => {
         ) : filteredItems.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 text-gray-400">
             <Inbox className="w-16 h-16 mb-4" />
-            <p className="text-lg font-medium">Nenhum item {activeTab === 'pending' ? 'pendente' : ''}</p>
+            <p className="text-lg font-medium">
+              {activeTab === 'recent' ? 'Nenhum imóvel novo adicionado' : `Nenhum item ${activeTab === 'pending' ? 'pendente' : ''}`}
+            </p>
             <p className="text-sm">
-              {activeTab === 'pending'
+              {activeTab === 'recent'
+                ? 'A varredura foi concluída, mas não encontrou imóveis inéditos para a fila nos últimos 7 dias.'
+                : activeTab === 'pending'
                 ? 'Clique em "Buscar Imóveis" para capturar novos imóveis'
                 : 'Nenhum item nesta categoria'}
             </p>
