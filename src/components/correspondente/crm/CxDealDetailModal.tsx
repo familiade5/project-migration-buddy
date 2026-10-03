@@ -18,6 +18,7 @@ import {
 } from '@/types/cxCrm';
 import { CxFlowStepper } from './CxFlowStepper';
 import { CxCreditAnalysisWorkspace } from './CxCreditAnalysisWorkspace';
+import { CxOperationalWorkspace } from './CxOperationalWorkspace';
 import { CxProperty } from '@/types/correspondente';
 import { useCxDealDetail } from '@/hooks/useCxDeals';
 import { CalendarClock, FileText, History, Loader2, Pencil, Sparkles, Trash2 } from 'lucide-react';
@@ -287,6 +288,8 @@ export function CxDealDetailModal({
             onAddProperty={() => onOpenClient(deal.client_id, 'imoveis')}
           />
         )}
+
+        <CxOperationalWorkspace deal={deal} />
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           <section className="rounded-2xl border border-slate-200 p-4 space-y-3">

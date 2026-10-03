@@ -193,7 +193,7 @@ export function CxFlowStepper({ deal, stages, properties, onFlow, onUpdate, onAd
         ) : deal.stage === 'documentacao' ? (
           <>
             <h4 className="text-sm font-bold text-slate-900">Documentação do processo</h4>
-            <p className="text-xs text-slate-500">Concentre aqui os documentos conferidos do cliente, imóvel e vendedores.</p>
+            <p className="text-xs text-slate-500">Concentre os arquivos aqui e faça a conferência item a item no controle operacional abaixo.</p>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
               {slot('documentacao', 'documentacao_cliente', 'Documentação do cliente *', 'Documentos conferidos para o processo')}
               {slot('documentacao', 'documentacao_imovel', 'Documentação do imóvel *', 'Matrícula e documentos do imóvel')}
@@ -205,7 +205,7 @@ export function CxFlowStepper({ deal, stages, properties, onFlow, onUpdate, onAd
         ) : deal.stage === 'engenharia' ? (
           <>
             <h4 className="text-sm font-bold text-slate-900">Engenharia / Vistoria</h4>
-            <p className="text-xs text-slate-500">Registre o laudo ou a vistoria antes de seguir para contratação.</p>
+            <p className="text-xs text-slate-500">Anexe o laudo e registre situação, datas, responsável e pendências no controle operacional.</p>
             {slot('engenharia', 'laudo_engenharia', 'Laudo de engenharia / vistoria *', 'PDF ou imagem emitida pelo responsável')}
             <div className="flex flex-wrap gap-2">
               <Button disabled={!hasDoc('laudo_engenharia')} className="bg-emerald-600 hover:bg-emerald-700 text-white" onClick={() => onFlow('contrato', {}, 'Engenharia aprovada')}><CheckCircle2 className="w-4 h-4 mr-1.5" /> Vistoria aprovada</Button>
@@ -231,6 +231,7 @@ export function CxFlowStepper({ deal, stages, properties, onFlow, onUpdate, onAd
             return (
               <>
                 <h4 className="text-sm font-bold text-slate-900">{label}</h4>
+                <p className="text-xs text-slate-500">O documento comprova a etapa; datas, situação e pendências ficam registradas no controle operacional abaixo.</p>
                 {slot(deal.stage, req.type, req.label, req.hint)}
                 {!hasDoc(req.type) && <p className="text-[11px] font-semibold text-amber-600">Anexe o documento para concluir esta etapa.</p>}
                 <div className="grid grid-cols-1 sm:grid-cols-[180px_1fr] gap-3">
