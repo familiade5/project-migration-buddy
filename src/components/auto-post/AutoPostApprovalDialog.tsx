@@ -241,6 +241,48 @@ export function AutoPostApprovalDialog({ item, open, onOpenChange, onActionCompl
       }).eq('id', item.id);
 
       toast.success('Post publicado com sucesso no Instagram!');
+
+      // 6. Enviar também ao catálogo OLX (com os 5 slides publicados)
+      try {
+        const num = (s: unknown): number | null => {
+          if (s === null || s === undefined || s === '') return null;
+          if (typeof s === 'number') return s > 0 ? s : null;
+          const n = Number(String(s).replace(/[^\d,.-]/g, '').replace(/\./g, '').replace(',', '.'));
+          return Number.isFinite(n) && n > 0 ? n : null;
+        };
+        const d: any = data;
+        const { ensureMinOlxPhotos } = await import('@/lib/olxPhotos');
+        const { error: olxError } = await supabase.from('vdh_olx_listings').insert({
+          code: `VDH-${Date.now().toString(36).toUpperCase()}`,
+          transaction_type: 'venda',
+          property_type: d.type || 'Casa',
+          title: `${d.type || 'Imóvel'}${d.bedrooms ? ` ${d.bedrooms} quartos` : ''} - ${d.neighborhood || d.city || ''}`,
+          description: (olxCaption || stripEmojis(caption)).slice(0, 4000),
+          address: (d.fullAddress || `${d.street || ''} ${d.number || ''}`).trim() || d.city || '',
+          address_number: d.number || null,
+          zip_code: String(d.cep || '').replace(/\D/g, ''),
+          neighborhood: d.neighborhood || '',
+          city: d.city || '',
+          state: resolveUF(d.state || '') || 'MS',
+          area: num(d.area),
+          bedrooms: parseInt(d.bedrooms) || 0,
+          bathrooms: parseInt(d.bathrooms) || 0,
+          garage_spaces: parseInt(d.garageSpaces) || 0,
+          sale_price: num(d.minimumValue),
+          accepts_financing: d.acceptsFinancing ?? true,
+          accepts_fgts: d.acceptsFGTS ?? true,
+          photos: ensureMinOlxPhotos(imageUrls.slice(0, 5), 5),
+          broker_name: d.contactName || 'Iury Sampaio',
+          broker_phone: d.contactPhone || '(92) 98839-1098',
+          creci: d.creci || null,
+          is_active: true,
+        });
+        if (olxError) throw olxError;
+        toast.success('Imóvel adicionado ao catálogo OLX!');
+      } catch (olxErr) {
+        console.error('OLX insert error:', olxErr);
+        toast.error(`Instagram OK, mas falhou ao adicionar na OLX: ${olxErr instanceof Error ? olxErr.message : 'erro'}`);
+      }
       handleOpenChange(false);
       onActionComplete();
     } catch (err) {
