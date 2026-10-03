@@ -139,6 +139,9 @@ export interface CxClient {
   state?: string | null;
   zip_code?: string | null;
   monthly_income?: number | null;
+  family_income?: number | null;
+  assigned_broker_user_id?: string | null;
+  assigned_broker_name?: string | null;
   profile?: Record<string, unknown> | null;
   profile_updated_at?: string | null;
   extracted: Record<string, unknown>;
@@ -180,6 +183,14 @@ export interface CxDocument {
   uploaded_by_user_id: string | null;
   created_at: string;
   updated_at: string;
+  deal_id?: string | null;
+  credit_analysis_id?: string | null;
+  participant_id?: string | null;
+  category?: string;
+  checklist_status?: string;
+  notes?: string | null;
+  version_number?: number;
+  archived_at?: string | null;
 }
 
 export const CX_DOC_TYPES = [

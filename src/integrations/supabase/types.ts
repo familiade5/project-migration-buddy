@@ -1362,6 +1362,51 @@ export type Database = {
         }
         Relationships: []
       }
+      cx_audit_log: {
+        Row: {
+          action: string
+          actor_name: string | null
+          actor_user_id: string | null
+          after_data: Json | null
+          before_data: Json | null
+          client_id: string | null
+          created_at: string
+          deal_id: string | null
+          entity_id: string | null
+          entity_type: string
+          id: string
+          metadata: Json
+        }
+        Insert: {
+          action: string
+          actor_name?: string | null
+          actor_user_id?: string | null
+          after_data?: Json | null
+          before_data?: Json | null
+          client_id?: string | null
+          created_at?: string
+          deal_id?: string | null
+          entity_id?: string | null
+          entity_type: string
+          id?: string
+          metadata?: Json
+        }
+        Update: {
+          action?: string
+          actor_name?: string | null
+          actor_user_id?: string | null
+          after_data?: Json | null
+          before_data?: Json | null
+          client_id?: string | null
+          created_at?: string
+          deal_id?: string | null
+          entity_id?: string | null
+          entity_type?: string
+          id?: string
+          metadata?: Json
+        }
+        Relationships: []
+      }
       cx_client_events: {
         Row: {
           actor_name: string | null
@@ -1409,6 +1454,10 @@ export type Database = {
       cx_clients: {
         Row: {
           address: string | null
+          archived_at: string | null
+          archived_by_user_id: string | null
+          assigned_broker_name: string | null
+          assigned_broker_user_id: string | null
           birth_date: string | null
           city: string | null
           cpf: string | null
@@ -1417,6 +1466,7 @@ export type Database = {
           email: string | null
           employer: string | null
           extracted: Json
+          family_income: number | null
           full_name: string
           id: string
           lead_source: string | null
@@ -1445,6 +1495,10 @@ export type Database = {
         }
         Insert: {
           address?: string | null
+          archived_at?: string | null
+          archived_by_user_id?: string | null
+          assigned_broker_name?: string | null
+          assigned_broker_user_id?: string | null
           birth_date?: string | null
           city?: string | null
           cpf?: string | null
@@ -1453,6 +1507,7 @@ export type Database = {
           email?: string | null
           employer?: string | null
           extracted?: Json
+          family_income?: number | null
           full_name: string
           id?: string
           lead_source?: string | null
@@ -1481,6 +1536,10 @@ export type Database = {
         }
         Update: {
           address?: string | null
+          archived_at?: string | null
+          archived_by_user_id?: string | null
+          assigned_broker_name?: string | null
+          assigned_broker_user_id?: string | null
           birth_date?: string | null
           city?: string | null
           cpf?: string | null
@@ -1489,6 +1548,7 @@ export type Database = {
           email?: string | null
           employer?: string | null
           extracted?: Json
+          family_income?: number | null
           full_name?: string
           id?: string
           lead_source?: string | null
@@ -1521,6 +1581,232 @@ export type Database = {
             columns: ["parent_client_id"]
             isOneToOne: false
             referencedRelation: "cx_clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      cx_contracts: {
+        Row: {
+          contract_number: string | null
+          created_at: string
+          deal_id: string
+          document_id: string | null
+          id: string
+          notes: string | null
+          pendencies: string | null
+          prepared_at: string | null
+          signed_at: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          contract_number?: string | null
+          created_at?: string
+          deal_id: string
+          document_id?: string | null
+          id?: string
+          notes?: string | null
+          pendencies?: string | null
+          prepared_at?: string | null
+          signed_at?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          contract_number?: string | null
+          created_at?: string
+          deal_id?: string
+          document_id?: string | null
+          id?: string
+          notes?: string | null
+          pendencies?: string | null
+          prepared_at?: string | null
+          signed_at?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cx_contracts_deal_id_fkey"
+            columns: ["deal_id"]
+            isOneToOne: false
+            referencedRelation: "cx_deals"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cx_contracts_document_id_fkey"
+            columns: ["document_id"]
+            isOneToOne: false
+            referencedRelation: "cx_documents"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      cx_credit_analyses: {
+        Row: {
+          amortization_system: string | null
+          analysis_date: string
+          analyst_name: string | null
+          analyst_user_id: string | null
+          analyzed_cpf: string | null
+          analyzed_name: string | null
+          appraisal_code: string | null
+          approved_value: number | null
+          client_id: string
+          condition_category: string | null
+          condition_reason: string | null
+          correspondent_code: string | null
+          created_at: string
+          created_by_user_id: string | null
+          credit_line: string | null
+          deal_id: string
+          error_message: string | null
+          error_reference: string | null
+          extracted_snapshot: Json
+          financing_value: number | null
+          funding_source: string | null
+          id: string
+          indexer: string | null
+          installment_value: number | null
+          margin_value: number | null
+          mcmv_tier: string | null
+          modality: string | null
+          notes: string | null
+          operator_name: string | null
+          originating_system: string | null
+          possible_installment: number | null
+          product: string | null
+          property_value: number | null
+          proposal_code: string | null
+          rating: string | null
+          registration_protocol: string | null
+          rejection_category: string | null
+          rejection_reason: string | null
+          relationship_agency: string | null
+          result: string
+          sequence_number: number
+          source: string
+          source_document_id: string | null
+          term_months: number | null
+          validity_end: string | null
+          validity_start: string | null
+        }
+        Insert: {
+          amortization_system?: string | null
+          analysis_date?: string
+          analyst_name?: string | null
+          analyst_user_id?: string | null
+          analyzed_cpf?: string | null
+          analyzed_name?: string | null
+          appraisal_code?: string | null
+          approved_value?: number | null
+          client_id: string
+          condition_category?: string | null
+          condition_reason?: string | null
+          correspondent_code?: string | null
+          created_at?: string
+          created_by_user_id?: string | null
+          credit_line?: string | null
+          deal_id: string
+          error_message?: string | null
+          error_reference?: string | null
+          extracted_snapshot?: Json
+          financing_value?: number | null
+          funding_source?: string | null
+          id?: string
+          indexer?: string | null
+          installment_value?: number | null
+          margin_value?: number | null
+          mcmv_tier?: string | null
+          modality?: string | null
+          notes?: string | null
+          operator_name?: string | null
+          originating_system?: string | null
+          possible_installment?: number | null
+          product?: string | null
+          property_value?: number | null
+          proposal_code?: string | null
+          rating?: string | null
+          registration_protocol?: string | null
+          rejection_category?: string | null
+          rejection_reason?: string | null
+          relationship_agency?: string | null
+          result: string
+          sequence_number: number
+          source?: string
+          source_document_id?: string | null
+          term_months?: number | null
+          validity_end?: string | null
+          validity_start?: string | null
+        }
+        Update: {
+          amortization_system?: string | null
+          analysis_date?: string
+          analyst_name?: string | null
+          analyst_user_id?: string | null
+          analyzed_cpf?: string | null
+          analyzed_name?: string | null
+          appraisal_code?: string | null
+          approved_value?: number | null
+          client_id?: string
+          condition_category?: string | null
+          condition_reason?: string | null
+          correspondent_code?: string | null
+          created_at?: string
+          created_by_user_id?: string | null
+          credit_line?: string | null
+          deal_id?: string
+          error_message?: string | null
+          error_reference?: string | null
+          extracted_snapshot?: Json
+          financing_value?: number | null
+          funding_source?: string | null
+          id?: string
+          indexer?: string | null
+          installment_value?: number | null
+          margin_value?: number | null
+          mcmv_tier?: string | null
+          modality?: string | null
+          notes?: string | null
+          operator_name?: string | null
+          originating_system?: string | null
+          possible_installment?: number | null
+          product?: string | null
+          property_value?: number | null
+          proposal_code?: string | null
+          rating?: string | null
+          registration_protocol?: string | null
+          rejection_category?: string | null
+          rejection_reason?: string | null
+          relationship_agency?: string | null
+          result?: string
+          sequence_number?: number
+          source?: string
+          source_document_id?: string | null
+          term_months?: number | null
+          validity_end?: string | null
+          validity_start?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cx_credit_analyses_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "cx_clients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cx_credit_analyses_deal_id_fkey"
+            columns: ["deal_id"]
+            isOneToOne: false
+            referencedRelation: "cx_deals"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cx_credit_analyses_source_document_fk"
+            columns: ["source_document_id"]
+            isOneToOne: false
+            referencedRelation: "cx_documents"
             referencedColumns: ["id"]
           },
         ]
@@ -1620,8 +1906,11 @@ export type Database = {
         Row: {
           approval_expires_at: string | null
           approved_value: number | null
+          archived_at: string | null
+          archived_by_user_id: string | null
           bank: string | null
           client_id: string
+          closed_at: string | null
           created_at: string
           created_by_user_id: string | null
           credit_status: string | null
@@ -1630,11 +1919,19 @@ export type Database = {
           financing_value: number | null
           id: string
           installment_value: number | null
+          lost_reason: string | null
           margin_value: number | null
           monthly_income: number | null
+          next_action: string | null
+          next_action_due_at: string | null
+          next_action_responsible_id: string | null
+          next_action_responsible_name: string | null
           next_review_at: string | null
           notes: string | null
+          opened_at: string
           pendencies: string | null
+          process_number: string | null
+          process_status: string
           property_id: string | null
           property_value: number | null
           purchase_type: string | null
@@ -1655,8 +1952,11 @@ export type Database = {
         Insert: {
           approval_expires_at?: string | null
           approved_value?: number | null
+          archived_at?: string | null
+          archived_by_user_id?: string | null
           bank?: string | null
           client_id: string
+          closed_at?: string | null
           created_at?: string
           created_by_user_id?: string | null
           credit_status?: string | null
@@ -1665,11 +1965,19 @@ export type Database = {
           financing_value?: number | null
           id?: string
           installment_value?: number | null
+          lost_reason?: string | null
           margin_value?: number | null
           monthly_income?: number | null
+          next_action?: string | null
+          next_action_due_at?: string | null
+          next_action_responsible_id?: string | null
+          next_action_responsible_name?: string | null
           next_review_at?: string | null
           notes?: string | null
+          opened_at?: string
           pendencies?: string | null
+          process_number?: string | null
+          process_status?: string
           property_id?: string | null
           property_value?: number | null
           purchase_type?: string | null
@@ -1690,8 +1998,11 @@ export type Database = {
         Update: {
           approval_expires_at?: string | null
           approved_value?: number | null
+          archived_at?: string | null
+          archived_by_user_id?: string | null
           bank?: string | null
           client_id?: string
+          closed_at?: string | null
           created_at?: string
           created_by_user_id?: string | null
           credit_status?: string | null
@@ -1700,11 +2011,19 @@ export type Database = {
           financing_value?: number | null
           id?: string
           installment_value?: number | null
+          lost_reason?: string | null
           margin_value?: number | null
           monthly_income?: number | null
+          next_action?: string | null
+          next_action_due_at?: string | null
+          next_action_responsible_id?: string | null
+          next_action_responsible_name?: string | null
           next_review_at?: string | null
           notes?: string | null
+          opened_at?: string
           pendencies?: string | null
+          process_number?: string | null
+          process_status?: string
           property_id?: string | null
           property_value?: number | null
           purchase_type?: string | null
@@ -1741,8 +2060,13 @@ export type Database = {
       }
       cx_documents: {
         Row: {
+          archived_at: string | null
+          archived_by_user_id: string | null
+          category: string
+          checklist_status: string
           client_id: string | null
           created_at: string
+          credit_analysis_id: string | null
           deal_id: string | null
           doc_type: string
           error_message: string | null
@@ -1751,15 +2075,24 @@ export type Database = {
           file_path: string
           id: string
           mime_type: string | null
+          notes: string | null
+          participant_id: string | null
           property_id: string | null
+          replaces_document_id: string | null
           stage: string | null
           status: string
           updated_at: string
           uploaded_by_user_id: string | null
+          version_number: number
         }
         Insert: {
+          archived_at?: string | null
+          archived_by_user_id?: string | null
+          category?: string
+          checklist_status?: string
           client_id?: string | null
           created_at?: string
+          credit_analysis_id?: string | null
           deal_id?: string | null
           doc_type?: string
           error_message?: string | null
@@ -1768,15 +2101,24 @@ export type Database = {
           file_path: string
           id?: string
           mime_type?: string | null
+          notes?: string | null
+          participant_id?: string | null
           property_id?: string | null
+          replaces_document_id?: string | null
           stage?: string | null
           status?: string
           updated_at?: string
           uploaded_by_user_id?: string | null
+          version_number?: number
         }
         Update: {
+          archived_at?: string | null
+          archived_by_user_id?: string | null
+          category?: string
+          checklist_status?: string
           client_id?: string | null
           created_at?: string
+          credit_analysis_id?: string | null
           deal_id?: string | null
           doc_type?: string
           error_message?: string | null
@@ -1785,11 +2127,15 @@ export type Database = {
           file_path?: string
           id?: string
           mime_type?: string | null
+          notes?: string | null
+          participant_id?: string | null
           property_id?: string | null
+          replaces_document_id?: string | null
           stage?: string | null
           status?: string
           updated_at?: string
           uploaded_by_user_id?: string | null
+          version_number?: number
         }
         Relationships: [
           {
@@ -1800,6 +2146,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "cx_documents_credit_analysis_id_fkey"
+            columns: ["credit_analysis_id"]
+            isOneToOne: false
+            referencedRelation: "cx_credit_analyses"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "cx_documents_deal_id_fkey"
             columns: ["deal_id"]
             isOneToOne: false
@@ -1807,10 +2160,154 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "cx_documents_participant_id_fkey"
+            columns: ["participant_id"]
+            isOneToOne: false
+            referencedRelation: "cx_process_participants"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "cx_documents_property_id_fkey"
             columns: ["property_id"]
             isOneToOne: false
             referencedRelation: "cx_properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cx_documents_replaces_document_id_fkey"
+            columns: ["replaces_document_id"]
+            isOneToOne: false
+            referencedRelation: "cx_documents"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      cx_engineering_inspections: {
+        Row: {
+          created_at: string
+          deal_id: string
+          due_at: string | null
+          id: string
+          inspection_at: string | null
+          notes: string | null
+          pendencies: string | null
+          property_id: string | null
+          report_document_id: string | null
+          responsible_name: string | null
+          responsible_user_id: string | null
+          result: string | null
+          scheduled_at: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          deal_id: string
+          due_at?: string | null
+          id?: string
+          inspection_at?: string | null
+          notes?: string | null
+          pendencies?: string | null
+          property_id?: string | null
+          report_document_id?: string | null
+          responsible_name?: string | null
+          responsible_user_id?: string | null
+          result?: string | null
+          scheduled_at?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          deal_id?: string
+          due_at?: string | null
+          id?: string
+          inspection_at?: string | null
+          notes?: string | null
+          pendencies?: string | null
+          property_id?: string | null
+          report_document_id?: string | null
+          responsible_name?: string | null
+          responsible_user_id?: string | null
+          result?: string | null
+          scheduled_at?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cx_engineering_inspections_deal_id_fkey"
+            columns: ["deal_id"]
+            isOneToOne: false
+            referencedRelation: "cx_deals"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cx_engineering_inspections_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "cx_properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cx_engineering_inspections_report_document_id_fkey"
+            columns: ["report_document_id"]
+            isOneToOne: false
+            referencedRelation: "cx_documents"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      cx_key_handovers: {
+        Row: {
+          created_at: string
+          deal_id: string
+          delivered_at: string | null
+          expected_at: string | null
+          id: string
+          notes: string | null
+          receipt_document_id: string | null
+          responsible_name: string | null
+          responsible_user_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          deal_id: string
+          delivered_at?: string | null
+          expected_at?: string | null
+          id?: string
+          notes?: string | null
+          receipt_document_id?: string | null
+          responsible_name?: string | null
+          responsible_user_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          deal_id?: string
+          delivered_at?: string | null
+          expected_at?: string | null
+          id?: string
+          notes?: string | null
+          receipt_document_id?: string | null
+          responsible_name?: string | null
+          responsible_user_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cx_key_handovers_deal_id_fkey"
+            columns: ["deal_id"]
+            isOneToOne: true
+            referencedRelation: "cx_deals"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cx_key_handovers_receipt_document_id_fkey"
+            columns: ["receipt_document_id"]
+            isOneToOne: false
+            referencedRelation: "cx_documents"
             referencedColumns: ["id"]
           },
         ]
@@ -1857,45 +2354,201 @@ export type Database = {
         }
         Relationships: []
       }
-      cx_properties: {
+      cx_process_checklist: {
         Row: {
-          address: string | null
-          client_id: string | null
+          category: string
           created_at: string
-          created_by_user_id: string | null
+          deal_id: string
+          document_id: string | null
+          due_at: string | null
           id: string
-          name: string
-          notary_office: string | null
+          item_name: string
           notes: string | null
-          registration_number: string | null
+          responsible_user_id: string | null
           status: string
           updated_at: string
         }
         Insert: {
-          address?: string | null
-          client_id?: string | null
+          category: string
           created_at?: string
-          created_by_user_id?: string | null
+          deal_id: string
+          document_id?: string | null
+          due_at?: string | null
           id?: string
-          name: string
-          notary_office?: string | null
+          item_name: string
           notes?: string | null
-          registration_number?: string | null
+          responsible_user_id?: string | null
           status?: string
           updated_at?: string
         }
         Update: {
+          category?: string
+          created_at?: string
+          deal_id?: string
+          document_id?: string | null
+          due_at?: string | null
+          id?: string
+          item_name?: string
+          notes?: string | null
+          responsible_user_id?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cx_process_checklist_deal_id_fkey"
+            columns: ["deal_id"]
+            isOneToOne: false
+            referencedRelation: "cx_deals"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cx_process_checklist_document_id_fkey"
+            columns: ["document_id"]
+            isOneToOne: false
+            referencedRelation: "cx_documents"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      cx_process_participants: {
+        Row: {
+          birth_date: string | null
+          client_id: string | null
+          cpf: string | null
+          created_at: string
+          created_by_user_id: string | null
+          deal_id: string
+          email: string | null
+          full_name: string
+          id: string
+          income_participation: number | null
+          marital_status: string | null
+          monthly_income: number | null
+          notes: string | null
+          phone: string | null
+          profession: string | null
+          role: string
+          updated_at: string
+        }
+        Insert: {
+          birth_date?: string | null
+          client_id?: string | null
+          cpf?: string | null
+          created_at?: string
+          created_by_user_id?: string | null
+          deal_id: string
+          email?: string | null
+          full_name: string
+          id?: string
+          income_participation?: number | null
+          marital_status?: string | null
+          monthly_income?: number | null
+          notes?: string | null
+          phone?: string | null
+          profession?: string | null
+          role: string
+          updated_at?: string
+        }
+        Update: {
+          birth_date?: string | null
+          client_id?: string | null
+          cpf?: string | null
+          created_at?: string
+          created_by_user_id?: string | null
+          deal_id?: string
+          email?: string | null
+          full_name?: string
+          id?: string
+          income_participation?: number | null
+          marital_status?: string | null
+          monthly_income?: number | null
+          notes?: string | null
+          phone?: string | null
+          profession?: string | null
+          role?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cx_process_participants_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "cx_clients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cx_process_participants_deal_id_fkey"
+            columns: ["deal_id"]
+            isOneToOne: false
+            referencedRelation: "cx_deals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      cx_properties: {
+        Row: {
+          address: string | null
+          city: string | null
+          client_id: string | null
+          created_at: string
+          created_by_user_id: string | null
+          deal_id: string | null
+          id: string
+          municipal_registration: string | null
+          name: string
+          notary_office: string | null
+          notes: string | null
+          occupancy_status: string | null
+          property_type: string | null
+          registration_number: string | null
+          state: string | null
+          status: string
+          updated_at: string
+          value: number | null
+          zip_code: string | null
+        }
+        Insert: {
           address?: string | null
+          city?: string | null
           client_id?: string | null
           created_at?: string
           created_by_user_id?: string | null
+          deal_id?: string | null
           id?: string
+          municipal_registration?: string | null
+          name: string
+          notary_office?: string | null
+          notes?: string | null
+          occupancy_status?: string | null
+          property_type?: string | null
+          registration_number?: string | null
+          state?: string | null
+          status?: string
+          updated_at?: string
+          value?: number | null
+          zip_code?: string | null
+        }
+        Update: {
+          address?: string | null
+          city?: string | null
+          client_id?: string | null
+          created_at?: string
+          created_by_user_id?: string | null
+          deal_id?: string | null
+          id?: string
+          municipal_registration?: string | null
           name?: string
           notary_office?: string | null
           notes?: string | null
+          occupancy_status?: string | null
+          property_type?: string | null
           registration_number?: string | null
+          state?: string | null
           status?: string
           updated_at?: string
+          value?: number | null
+          zip_code?: string | null
         }
         Relationships: [
           {
@@ -1905,7 +2558,248 @@ export type Database = {
             referencedRelation: "cx_clients"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "cx_properties_deal_id_fkey"
+            columns: ["deal_id"]
+            isOneToOne: false
+            referencedRelation: "cx_deals"
+            referencedColumns: ["id"]
+          },
         ]
+      }
+      cx_property_sellers: {
+        Row: {
+          cpf_cnpj: string | null
+          created_at: string
+          created_by_user_id: string | null
+          deal_id: string | null
+          email: string | null
+          full_name: string
+          id: string
+          marital_status: string | null
+          notes: string | null
+          person_type: string
+          phone: string | null
+          property_id: string
+          spouse_name: string | null
+          updated_at: string
+        }
+        Insert: {
+          cpf_cnpj?: string | null
+          created_at?: string
+          created_by_user_id?: string | null
+          deal_id?: string | null
+          email?: string | null
+          full_name: string
+          id?: string
+          marital_status?: string | null
+          notes?: string | null
+          person_type?: string
+          phone?: string | null
+          property_id: string
+          spouse_name?: string | null
+          updated_at?: string
+        }
+        Update: {
+          cpf_cnpj?: string | null
+          created_at?: string
+          created_by_user_id?: string | null
+          deal_id?: string | null
+          email?: string | null
+          full_name?: string
+          id?: string
+          marital_status?: string | null
+          notes?: string | null
+          person_type?: string
+          phone?: string | null
+          property_id?: string
+          spouse_name?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cx_property_sellers_deal_id_fkey"
+            columns: ["deal_id"]
+            isOneToOne: false
+            referencedRelation: "cx_deals"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cx_property_sellers_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "cx_properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      cx_registry_records: {
+        Row: {
+          created_at: string
+          deal_id: string
+          document_id: string | null
+          id: string
+          itbi_issued_at: string | null
+          itbi_paid_at: string | null
+          itbi_value: number | null
+          notes: string | null
+          pendencies: string | null
+          protocol_at: string | null
+          protocol_number: string | null
+          registered_at: string | null
+          registry_office: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          deal_id: string
+          document_id?: string | null
+          id?: string
+          itbi_issued_at?: string | null
+          itbi_paid_at?: string | null
+          itbi_value?: number | null
+          notes?: string | null
+          pendencies?: string | null
+          protocol_at?: string | null
+          protocol_number?: string | null
+          registered_at?: string | null
+          registry_office?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          deal_id?: string
+          document_id?: string | null
+          id?: string
+          itbi_issued_at?: string | null
+          itbi_paid_at?: string | null
+          itbi_value?: number | null
+          notes?: string | null
+          pendencies?: string | null
+          protocol_at?: string | null
+          protocol_number?: string | null
+          registered_at?: string | null
+          registry_office?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cx_registry_records_deal_id_fkey"
+            columns: ["deal_id"]
+            isOneToOne: false
+            referencedRelation: "cx_deals"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cx_registry_records_document_id_fkey"
+            columns: ["document_id"]
+            isOneToOne: false
+            referencedRelation: "cx_documents"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      cx_tasks: {
+        Row: {
+          client_id: string | null
+          completed_at: string | null
+          created_at: string
+          created_by_user_id: string | null
+          deal_id: string
+          description: string | null
+          due_at: string | null
+          id: string
+          kind: string
+          priority: string
+          responsible_name: string | null
+          responsible_user_id: string | null
+          status: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          client_id?: string | null
+          completed_at?: string | null
+          created_at?: string
+          created_by_user_id?: string | null
+          deal_id: string
+          description?: string | null
+          due_at?: string | null
+          id?: string
+          kind?: string
+          priority?: string
+          responsible_name?: string | null
+          responsible_user_id?: string | null
+          status?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          client_id?: string | null
+          completed_at?: string | null
+          created_at?: string
+          created_by_user_id?: string | null
+          deal_id?: string
+          description?: string | null
+          due_at?: string | null
+          id?: string
+          kind?: string
+          priority?: string
+          responsible_name?: string | null
+          responsible_user_id?: string | null
+          status?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cx_tasks_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "cx_clients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cx_tasks_deal_id_fkey"
+            columns: ["deal_id"]
+            isOneToOne: false
+            referencedRelation: "cx_deals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      cx_team_roles: {
+        Row: {
+          assigned_by_user_id: string | null
+          created_at: string
+          id: string
+          is_active: boolean
+          role: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          assigned_by_user_id?: string | null
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          role: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          assigned_by_user_id?: string | null
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          role?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       profiles: {
         Row: {
@@ -3366,6 +4260,7 @@ export type Database = {
           full_name: string
         }[]
       }
+      cx_is_admin: { Args: { _user_id: string }; Returns: boolean }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]

@@ -17,6 +17,7 @@ import {
   cxStageCfg,
 } from '@/types/cxCrm';
 import { CxFlowStepper } from './CxFlowStepper';
+import { CxCreditAnalysisWorkspace } from './CxCreditAnalysisWorkspace';
 import { CxProperty } from '@/types/correspondente';
 import { useCxDealDetail } from '@/hooks/useCxDeals';
 import { CalendarClock, FileText, History, Loader2, Pencil, Sparkles, Trash2 } from 'lucide-react';
@@ -269,6 +270,14 @@ export function CxDealDetailModal({
         </div>
 
         {onFlow && (
+          <CxCreditAnalysisWorkspace
+            deal={deal}
+            onUpdate={onUpdate}
+            onMove={(to, extra, note) => onFlow(to, extra, note)}
+          />
+        )}
+
+        {onFlow && (
           <CxFlowStepper
             deal={deal}
             stages={stages}
@@ -402,47 +411,6 @@ export function CxDealDetailModal({
               </Button>
             )}
           </div>
-        </section>
-
-        <section className="rounded-2xl border border-slate-200 p-4 space-y-3">
-          <h4 className="text-xs font-bold uppercase tracking-wide text-slate-400">Nova consulta de rating / margem</h4>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-            <Input placeholder="Rating" value={check.rating} onChange={(e) => setCheck((p) => ({ ...p, rating: e.target.value }))} className={FIELD} />
-            <Input type="number" placeholder="Margem (R$)" value={check.margin_value} onChange={(e) => setCheck((p) => ({ ...p, margin_value: e.target.value }))} className={FIELD} />
-            <Input type="number" placeholder="Valor aprovado (R$)" value={check.approved_value} onChange={(e) => setCheck((p) => ({ ...p, approved_value: e.target.value }))} className={FIELD} />
-            <Select value={check.result} onValueChange={(v) => setCheck((p) => ({ ...p, result: v }))}>
-              <SelectTrigger className={FIELD}><SelectValue placeholder="Resultado" /></SelectTrigger>
-              <SelectContent className={POPOVER}>
-                <SelectItem value="liberado" className={ITEM}>Liberado</SelectItem>
-                <SelectItem value="parcial" className={ITEM}>Parcialmente liberado</SelectItem>
-                <SelectItem value="sem_margem" className={ITEM}>Sem margem</SelectItem>
-                <SelectItem value="sem_rating" className={ITEM}>Sem rating</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-          <Textarea rows={2} placeholder="Observações da consulta…" value={check.notes} onChange={(e) => setCheck((p) => ({ ...p, notes: e.target.value }))} className={FIELD} />
-          <Button size="sm" className="text-white" style={{ backgroundColor: BRAND }} onClick={submitCheck}>
-            Registrar consulta e reagendar
-          </Button>
-
-          {checks.length > 0 && (
-            <ul className="space-y-2 pt-2">
-              {checks.map((c) => (
-                <li key={c.id} className="text-xs bg-slate-50 rounded-xl p-2.5">
-                  <div className="flex justify-between gap-2">
-                    <span className="font-semibold text-slate-700">
-                      {fmtDate(c.checked_at)} — {c.result || 'consulta'}
-                    </span>
-                    <span className="text-slate-500">{c.created_by_name || ''}</span>
-                  </div>
-                  <p className="text-slate-500 mt-0.5">
-                    Rating: {c.rating || '—'} · Margem: {money(c.margin_value)} · Aprovado: {money(c.approved_value)}
-                  </p>
-                  {c.notes && <p className="text-slate-500 mt-0.5">{c.notes}</p>}
-                </li>
-              ))}
-            </ul>
-          )}
         </section>
 
         <section className="rounded-2xl border border-slate-200 p-4">

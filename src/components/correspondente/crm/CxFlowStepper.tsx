@@ -15,7 +15,7 @@ import {
 } from '@/types/cxCrm';
 import { CxProperty } from '@/types/correspondente';
 import { CxStageDocSlot, useDealDocs } from './CxStageDocs';
-import { Banknote, Building2, Check, CheckCircle2, Home, Landmark, RotateCcw, XCircle } from 'lucide-react';
+import { Banknote, Building2, Check, CheckCircle2, Home, Landmark, RotateCcw } from 'lucide-react';
 
 const FIELD = 'bg-white border-slate-200 text-slate-900 placeholder:text-slate-400';
 const POPOVER = 'bg-white text-slate-900 border-slate-200';
@@ -133,62 +133,8 @@ export function CxFlowStepper({ deal, stages, properties, onFlow, onUpdate, onAd
           </>
         ) : deal.stage === 'analise_credito' ? (
           <>
-            <h4 className="text-sm font-bold text-slate-900">Resultado da análise de crédito</h4>
-            <p className="text-xs text-slate-500">
-              Anexe o resultado da análise de crédito. Se tiver a análise do banco, anexe também: os dados do financiamento são preenchidos sozinhos.
-            </p>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-              {slot('analise_credito', 'resultado_analise', 'Resultado da análise de crédito *', 'Obrigatório para registrar o resultado')}
-              {slot('analise_credito', 'analise_banco', 'Análise do banco', 'Preenche banco, valores, rating e margem', true)}
-            </div>
-            {!hasDoc('resultado_analise') && <p className="text-[11px] font-semibold text-amber-600">Anexe o resultado da análise para liberar os botões abaixo.</p>}
-            {!rejecting ? (
-              <div className="flex flex-wrap gap-2">
-                <Button disabled={!hasDoc('resultado_analise')} className="bg-emerald-600 hover:bg-emerald-700 text-white" onClick={() => onFlow('credito_aprovado', {}, 'Crédito aprovado')}>
-                  <CheckCircle2 className="w-4 h-4 mr-1.5" /> Crédito aprovado
-                </Button>
-                <Button disabled={!hasDoc('resultado_analise')} variant="outline" className="bg-white border-red-200 text-red-600 hover:bg-red-50 hover:text-red-700" onClick={() => setRejecting(true)}>
-                  <XCircle className="w-4 h-4 mr-1.5" /> Crédito não aprovado
-                </Button>
-              </div>
-            ) : (
-              <div className="space-y-3 rounded-lg border border-red-200 bg-red-50/40 p-3">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <div className="space-y-1">
-                    <Label className="text-slate-600">Motivo</Label>
-                    <Select value={reason} onValueChange={(v) => setReason(v as CxRejectionReason)}>
-                      <SelectTrigger className={FIELD}><SelectValue placeholder="Selecione" /></SelectTrigger>
-                      <SelectContent className={POPOVER}>
-                        {(Object.keys(CX_REJECTION_CONFIG) as CxRejectionReason[]).map((r) => (
-                          <SelectItem key={r} value={r} className={ITEM}>{CX_REJECTION_CONFIG[r].label}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="space-y-1">
-                    <Label className="text-slate-600">Reavaliar em</Label>
-                    <Input type="date" className={FIELD} value={reviewAt} onChange={(e) => setReviewAt(e.target.value)} />
-                  </div>
-                </div>
-                <Textarea className={FIELD} rows={2} placeholder="O que o cliente precisa resolver?" value={rejectNote} onChange={(e) => setRejectNote(e.target.value)} />
-                <div className="flex gap-2">
-                  <Button
-                    className="bg-red-600 hover:bg-red-700 text-white"
-                    disabled={!reason}
-                    onClick={() =>
-                      onFlow(
-                        'pendencia',
-                        { rejection_reason: reason as CxRejectionReason, rejection_notes: rejectNote || null, pendencies: rejectNote || null, next_review_at: reviewAt || null },
-                        `Crédito não aprovado — ${CX_REJECTION_CONFIG[reason as CxRejectionReason]?.short ?? ''}`,
-                      )
-                    }
-                  >
-                    Enviar para Pendência
-                  </Button>
-                  <Button variant="outline" className="bg-white border-slate-200 text-slate-700" onClick={() => setRejecting(false)}>Cancelar</Button>
-                </div>
-              </div>
-            )}
+            <h4 className="text-sm font-bold text-slate-900">Análise de crédito em andamento</h4>
+            <p className="text-xs text-slate-500">Use “Nova análise” acima para anexar o resultado da CAIXA, conferir todos os dados e registrar o resultado. O processo será movimentado automaticamente sem apagar análises anteriores.</p>
           </>
         ) : deal.stage === 'pendencia' ? (
           <>

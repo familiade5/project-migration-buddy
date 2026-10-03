@@ -95,7 +95,6 @@ export function useCxDeals() {
         stage: to,
         stage_entered_at: new Date().toISOString(),
       };
-      if (to !== 'pendencia') patch.rejection_reason = null;
       const ok = await updateDeal(id, patch, true);
       if (!ok) return false;
       await supabase.from('cx_deal_history').insert({
@@ -122,19 +121,30 @@ export function useCxDeals() {
 
   const deleteDeal = useCallback(
     async (id: string) => {
+      const { data: auth } = await supabase.auth.getUser();
+      const { data: role } = await supabase.from('cx_team_roles').select('id').eq('user_id', auth.user?.id ?? '').eq('role', 'administrador').eq('is_active', true).maybeSingle();
+      if (!role) {
+        const { error } = await supabase.from('cx_deals').update({ archived_at: new Date().toISOString(), archived_by_user_id: auth.user?.id ?? null } as never).eq('id', id);
+        if (error) { toast.error('Erro ao arquivar', { description: error.message }); return false; }
+        toast.success('Processo arquivado');
+        setDeals((prev) => prev.filter((d) => d.id !== id));
+        return true;
+      }
+      const confirmation = window.prompt('Exclusão definitiva: digite EXCLUIR para confirmar.');
+      if (confirmation !== 'EXCLUIR') return false;
       const { error } = await supabase.from('cx_deals').delete().eq('id', id);
       if (error) {
         toast.error('Erro ao excluir', { description: error.message });
         return false;
       }
-      toast.success('Caso excluído');
+      toast.success('Processo excluído definitivamente');
       setDeals((prev) => prev.filter((d) => d.id !== id));
       return true;
     },
     [],
   );
 
-  return { deals, isLoading, fetchDeals, createDeal, updateDeal, moveDeal, setPurchaseType, deleteDeal };
+  return { deals: deals.filter((d) => !d.archived_at), isLoading, fetchDeals, createDeal, updateDeal, moveDeal, setPurchaseType, deleteDeal };
 }
 
 export function useCxDealDetail(dealId: string | null) {
