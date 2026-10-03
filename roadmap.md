@@ -17,7 +17,7 @@
 
 # CC de AM — CRM operacional completo
 
-- [ ] Fase 1: fundação de dados, perfis e preservação dos 35 clientes.
+- [x] Fase 1: fundação de dados, perfis e preservação dos 35 clientes.
 - [ ] Fase 2: processo e histórico imutável de análises de crédito.
 - [ ] Fase 3: operação imobiliária, engenharia, contrato, registro e chaves.
 - [ ] Fase 4: painel, Kanban, monitoramento, alertas, busca e relatórios.
