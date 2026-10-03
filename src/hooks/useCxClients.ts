@@ -75,7 +75,6 @@ export function useCxClients() {
       toast.error('Erro ao arquivar', { description: error.message });
       return false;
     }
-    await supabase.from('cx_audit_log').insert({ actor_user_id: auth.user?.id ?? null, actor_name: (auth.user?.user_metadata as any)?.full_name || auth.user?.email || null, action: 'arquivado', entity_type: 'cliente', entity_id: id, client_id: id, after_data: { archived_at: archivedAt } } as never);
     toast.success('Cliente arquivado com histórico preservado');
     await fetchClients();
     return true;

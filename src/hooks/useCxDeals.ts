@@ -122,14 +122,12 @@ export function useCxDeals() {
   const deleteDeal = useCallback(
     async (id: string) => {
       const { data: auth } = await supabase.auth.getUser();
-      const current = dealsRef.current.find((d) => d.id === id);
       const archivedAt = new Date().toISOString();
       const { error } = await supabase.from('cx_deals').update({ archived_at: archivedAt, archived_by_user_id: auth.user?.id ?? null } as never).eq('id', id);
       if (error) {
         toast.error('Erro ao arquivar', { description: error.message });
         return false;
       }
-      await supabase.from('cx_audit_log').insert({ actor_user_id: auth.user?.id ?? null, actor_name: (auth.user?.user_metadata as any)?.full_name || auth.user?.email || null, action: 'arquivado', entity_type: 'processo', entity_id: id, deal_id: id, client_id: current?.client_id ?? null, before_data: current || null, after_data: { archived_at: archivedAt } } as never);
       toast.success('Processo arquivado com histórico preservado');
       setDeals((prev) => prev.filter((d) => d.id !== id));
       return true;

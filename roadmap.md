@@ -21,4 +21,4 @@
 - [x] Fase 2: processo e histórico imutável de análises de crédito.
 - [x] Fase 3: operação imobiliária, engenharia, contrato, registro e chaves.
 - [x] Fase 4: painel, Kanban, monitoramento, alertas, busca e relatórios.
-- [ ] Fase 5: segurança por perfil, auditoria e aceite final.
+- [x] Fase 5: segurança por perfil, auditoria e aceite final.
