@@ -7,7 +7,7 @@ import { AutoPostQueueItem } from '@/hooks/useAutoPostQueue';
 import { PropertyData } from '@/types/property';
 import { PostCover } from '@/components/posts/PostCover';
 import { PostContact } from '@/components/posts/PostContact';
-import { VDHFeedPhotoSlide } from '@/components/posts/VDHFeedPhotoSlide';
+import { VDHFullSupportSlide, VDHNoCostSlide, VDHRetakenPropertySlide } from '@/components/posts/VDHEducationalSlides';
 import { VDHStory1 } from '@/components/posts/story/VDHStory1';
 import { useCrecis } from '@/hooks/useCrecis';
 import { buildVdhCaption } from '@/lib/vdhCaption';
@@ -102,17 +102,14 @@ export function AutoPostApprovalDialog({ item, open, onOpenChange, onActionCompl
   // Feed slides
   const feedSlides = useMemo(() => {
     const slides: { name: string; component: React.ComponentType<any>; photoIndex: number; slideIndex?: number }[] = [
-      { name: 'Capa', component: PostCover, photoIndex: 0 },
-      ...Array.from({ length: Math.max(0, photos.length - 2) }, (_, i) => ({
-        name: `Foto ${i + 1}`,
-        component: VDHFeedPhotoSlide,
-        photoIndex: 1 + i,
-        slideIndex: i,
-      })),
-      { name: 'Contato', component: PostContact, photoIndex: Math.max(0, photos.length - 1) },
+      { name: 'Imóvel', component: PostCover, photoIndex: 0 },
+      { name: 'Imóvel retomado', component: VDHRetakenPropertySlide, photoIndex: 0 },
+      { name: 'Assessoria completa', component: VDHFullSupportSlide, photoIndex: 0 },
+      { name: 'Sem custo', component: VDHNoCostSlide, photoIndex: 0 },
+      { name: 'Contato', component: PostContact, photoIndex: 0 },
     ];
     return slides;
-  }, [photos.length]);
+  }, []);
 
   const CurrentComponent = feedSlides[currentSlide]?.component;
   const currentPhoto = photos[feedSlides[currentSlide]?.photoIndex] || photos[0] || null;
