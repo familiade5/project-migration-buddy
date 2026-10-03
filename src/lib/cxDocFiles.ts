@@ -22,6 +22,18 @@ export async function extractClientFile(file: File, docType: string): Promise<Cx
   return (data as { data: CxExtraction }).data;
 }
 
+/** Lê um resultado/análise da CAIXA e devolve os campos estruturados para conferência. */
+export async function extractCreditAnalysisFile(file: File): Promise<Record<string, unknown>> {
+  const pageImages = (await isEncryptedPdf(file)) ? await pdfToJpegBase64(file) : undefined;
+  const base64 = pageImages ? '' : await fileToBase64(file);
+  const { data, error } = await supabase.functions.invoke('extract-financing-data', {
+    body: { fileBase64: base64, pageImages, mimeType: file.type, fileName: file.name },
+  });
+  if (error) throw new Error(await invokeErrorMessage(error));
+  if ((data as { error?: string })?.error) throw new Error((data as { error: string }).error);
+  return ((data as { data?: Record<string, unknown> })?.data ?? {});
+}
+
 /** Envia o arquivo para a pasta do cliente e registra em cx_documents. */
 export async function saveCxFile(opts: {
   clientId: string;

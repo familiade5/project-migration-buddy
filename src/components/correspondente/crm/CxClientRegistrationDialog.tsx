@@ -22,7 +22,7 @@ export type RegForm = Record<
   | 'full_name' | 'cpf' | 'rg' | 'birth_date' | 'mother_name' | 'marital_status'
   | 'email' | 'phone' | 'whatsapp' | 'lead_source'
   | 'zip_code' | 'address' | 'neighborhood' | 'city' | 'state'
-  | 'profession' | 'employer' | 'monthly_income' | 'notes',
+  | 'profession' | 'employer' | 'monthly_income' | 'family_income' | 'assigned_broker_name' | 'notes',
   string
 >;
 
@@ -30,7 +30,7 @@ const EMPTY: RegForm = {
   full_name: '', cpf: '', rg: '', birth_date: '', mother_name: '', marital_status: '',
   email: '', phone: '', whatsapp: '', lead_source: '',
   zip_code: '', address: '', neighborhood: '', city: '', state: '',
-  profession: '', employer: '', monthly_income: '', notes: '',
+  profession: '', employer: '', monthly_income: '', family_income: '', assigned_broker_name: '', notes: '',
 };
 
 interface PendingFile { file: File; docType: string; extracted: unknown }
@@ -99,13 +99,14 @@ export function CxClientRegistrationDialog({ open, onOpenChange, onCreated }: Pr
     try {
       const { data: u } = await supabase.auth.getUser();
       const income = Number(form.monthly_income.replace(/[^\d,]/g, '').replace(',', '.'));
+      const familyIncome = Number(form.family_income.replace(/[^\d,]/g, '').replace(',', '.'));
       const payload: Record<string, unknown> = {
         created_by_user_id: u.user?.id ?? null,
         profile_updated_at: new Date().toISOString(),
       };
       (Object.keys(EMPTY) as (keyof RegForm)[]).forEach((k) => {
         const v = form[k].trim();
-        payload[k] = k === 'monthly_income' ? (Number.isFinite(income) && income > 0 ? income : null) : v || null;
+        payload[k] = k === 'monthly_income' ? (Number.isFinite(income) && income > 0 ? income : null) : k === 'family_income' ? (Number.isFinite(familyIncome) && familyIncome > 0 ? familyIncome : null) : v || null;
       });
       const { data: client, error } = await supabase.from('cx_clients').insert(payload as never).select().single();
       if (error) throw new Error(error.message);
@@ -204,7 +205,7 @@ export function CxClientRegistrationDialog({ open, onOpenChange, onCreated }: Pr
 
         <div className="space-y-4">
           {section(IdCard, 'Dados pessoais', [{ type: 'rg', label: 'RG/CNH' }, { type: 'certidao', label: 'certidão' }], (
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
               <div className="sm:col-span-2">{field('full_name', 'Nome completo *')}</div>
               {field('cpf', 'CPF', { onBlur: () => form.cpf && set('cpf', formatCpf(form.cpf)) })}
               {field('rg', 'RG')}
@@ -263,6 +264,8 @@ export function CxClientRegistrationDialog({ open, onOpenChange, onCreated }: Pr
               {field('profession', 'Profissão / cargo')}
               {field('employer', 'Empresa')}
               {field('monthly_income', 'Renda mensal (R$)', { inputMode: 'decimal', placeholder: '0,00' })}
+              {field('family_income', 'Renda familiar (R$)', { inputMode: 'decimal', placeholder: '0,00' })}
+              {field('assigned_broker_name', 'Corretor responsável')}
             </div>
           ))}
 
