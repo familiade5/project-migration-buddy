@@ -22,3 +22,4 @@
 - [x] Fase 3: operação imobiliária, engenharia, contrato, registro e chaves.
 - [x] Fase 4: painel, Kanban, monitoramento, alertas, busca e relatórios.
 - [x] Fase 5: segurança por perfil, auditoria e aceite final.
+- [x] Reorganizar a janela do cliente, manter o fluxo enquadrado e padronizar o contraste dos botões.

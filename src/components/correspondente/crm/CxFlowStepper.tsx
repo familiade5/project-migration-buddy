@@ -20,7 +20,6 @@ import { Banknote, Building2, Check, CheckCircle2, Home, Landmark, RotateCcw } f
 const FIELD = 'bg-white border-slate-200 text-slate-900 placeholder:text-slate-400';
 const POPOVER = 'bg-white text-slate-900 border-slate-200';
 const ITEM = 'text-slate-700 focus:bg-slate-100 focus:text-slate-900';
-const BRAND = '#1a3a6b';
 
 interface Props {
   deal: CxDeal;
@@ -71,13 +70,13 @@ export function CxFlowStepper({ deal, stages, properties, onFlow, onUpdate, onAd
   const otherProps = properties.filter((p) => p.client_id !== deal.client_id);
 
   return (
-    <section className="rounded-2xl border-2 p-4 space-y-4" style={{ borderColor: '#bfdbfe', backgroundColor: '#f8fbff' }}>
+    <section className="space-y-4 rounded-lg border border-primary/25 bg-primary/5 p-4">
       {/* Barra de progresso */}
       <div>
         <p className="text-[11px] font-bold uppercase tracking-wide text-slate-500 mb-2">
           Fluxo {deal.purchase_type === 'avista' ? 'à vista' : deal.purchase_type === 'financiada' ? 'financiado' : 'do atendimento'}
         </p>
-        <div className="flex items-center gap-1 overflow-x-auto pb-1">
+        <div className="flex items-center gap-1 overflow-x-auto pb-2 [scrollbar-width:thin]">
           {flow.filter((k) => k !== 'cadastro').map((key, i) => {
             const idx = i + 1;
             const done = inFlow && idx < currentIdx;
@@ -92,10 +91,9 @@ export function CxFlowStepper({ deal, stages, properties, onFlow, onUpdate, onAd
                       : current
                       ? deal.stage === 'pendencia'
                         ? 'bg-red-50 border-red-300 text-red-700'
-                        : 'text-white border-transparent'
+                        : 'border-primary bg-primary text-primary-foreground'
                       : 'bg-white border-slate-200 text-slate-400'
                   }`}
-                  style={current && deal.stage !== 'pendencia' ? { backgroundColor: BRAND } : undefined}
                 >
                   {done && <Check className="w-3 h-3" />}
                   {current && deal.stage === 'pendencia' ? 'Pendência' : label}
@@ -113,22 +111,24 @@ export function CxFlowStepper({ deal, stages, properties, onFlow, onUpdate, onAd
           <>
             <h4 className="text-sm font-bold text-slate-900">Qual é o tipo de compra?</h4>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <button
+              <Button
+                type="button"
+                variant="outline"
                 onClick={() => onFlow('vincular_imovel', { purchase_type: 'avista', credit_status: null }, 'Tipo de compra: À vista')}
-                className="rounded-xl border-2 border-orange-200 bg-orange-50 hover:bg-orange-100 p-4 text-left transition-colors"
+                className="h-auto min-h-28 w-full items-start justify-start whitespace-normal border-orange-200 bg-orange-50 p-4 text-left text-orange-800 hover:bg-orange-100 hover:text-orange-900"
               >
-                <Banknote className="w-6 h-6 text-orange-600 mb-2" />
-                <p className="font-bold text-orange-700">À vista</p>
-                <p className="text-xs text-orange-700/80">Vai direto para vincular o imóvel.</p>
-              </button>
-              <button
+                <Banknote className="mt-0.5 h-6 w-6 shrink-0 text-orange-600" />
+                <span><span className="block font-bold">À vista</span><span className="mt-1 block text-xs font-normal">Vai direto para vincular o imóvel.</span></span>
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
                 onClick={() => onFlow('analise_credito', { purchase_type: 'financiada', credit_status: null }, 'Tipo de compra: Financiada')}
-                className="rounded-xl border-2 border-green-200 bg-green-50 hover:bg-green-100 p-4 text-left transition-colors"
+                className="h-auto min-h-28 w-full items-start justify-start whitespace-normal border-emerald-200 bg-emerald-50 p-4 text-left text-emerald-800 hover:bg-emerald-100 hover:text-emerald-900"
               >
-                <Landmark className="w-6 h-6 text-green-700 mb-2" />
-                <p className="font-bold text-green-800">Financiada</p>
-                <p className="text-xs text-green-800/80">Segue para a análise de crédito.</p>
-              </button>
+                <Landmark className="mt-0.5 h-6 w-6 shrink-0 text-emerald-700" />
+                <span><span className="block font-bold">Financiada</span><span className="mt-1 block text-xs font-normal">Segue para a análise de crédito.</span></span>
+              </Button>
             </div>
           </>
         ) : deal.stage === 'analise_credito' ? (
@@ -149,7 +149,7 @@ export function CxFlowStepper({ deal, stages, properties, onFlow, onUpdate, onAd
                 <Input type="date" className={FIELD} value={deal.next_review_at || ''} onChange={(e) => onUpdate(deal.id, { next_review_at: e.target.value || null })} />
               </div>
             </div>
-            <Button style={{ backgroundColor: BRAND }} className="text-white hover:opacity-90" onClick={() => onFlow('analise_credito', { pendencies: pendNote || null }, 'Pendência resolvida — nova análise')}>
+            <Button onClick={() => onFlow('analise_credito', { pendencies: pendNote || null }, 'Pendência resolvida — nova análise')}>
               <RotateCcw className="w-4 h-4 mr-1.5" /> Pendência resolvida → Nova análise de crédito
             </Button>
           </>
@@ -157,7 +157,7 @@ export function CxFlowStepper({ deal, stages, properties, onFlow, onUpdate, onAd
           <>
             <h4 className="text-sm font-bold text-emerald-700">Crédito aprovado</h4>
             <p className="text-xs text-slate-500">Agora vincule o imóvel escolhido pelo cliente.</p>
-            <Button style={{ backgroundColor: BRAND }} className="text-white hover:opacity-90" onClick={() => onFlow('vincular_imovel', {}, null)}>
+            <Button onClick={() => onFlow('vincular_imovel', {}, null)}>
               <Home className="w-4 h-4 mr-1.5" /> Ir para Vincular imóvel
             </Button>
           </>
@@ -182,8 +182,6 @@ export function CxFlowStepper({ deal, stages, properties, onFlow, onUpdate, onAd
             </div>
             {properties.length === 0 && <p className="text-xs text-slate-500">Nenhum imóvel cadastrado ainda. Cadastre na ficha do cliente (aba Imóveis).</p>}
             <Button
-              style={{ backgroundColor: BRAND }}
-              className="text-white hover:opacity-90"
               disabled={!propId}
               onClick={() => onFlow('documentacao', { property_id: propId }, `Imóvel vinculado: ${properties.find((p) => p.id === propId)?.name ?? ''}`)}
             >
@@ -198,7 +196,7 @@ export function CxFlowStepper({ deal, stages, properties, onFlow, onUpdate, onAd
               {slot('documentacao', 'documentacao_cliente', 'Documentação do cliente *', 'Documentos conferidos para o processo')}
               {slot('documentacao', 'documentacao_imovel', 'Documentação do imóvel *', 'Matrícula e documentos do imóvel')}
             </div>
-            <Button disabled={!hasDoc('documentacao_cliente') || !hasDoc('documentacao_imovel')} style={{ backgroundColor: BRAND }} className="text-white hover:opacity-90" onClick={() => onFlow(deal.purchase_type === 'financiada' ? 'engenharia' : 'contrato', {}, 'Documentação conferida')}>
+            <Button disabled={!hasDoc('documentacao_cliente') || !hasDoc('documentacao_imovel')} onClick={() => onFlow(deal.purchase_type === 'financiada' ? 'engenharia' : 'contrato', {}, 'Documentação conferida')}>
               <Check className="w-4 h-4 mr-1.5" /> Concluir documentação
             </Button>
           </>
@@ -208,7 +206,7 @@ export function CxFlowStepper({ deal, stages, properties, onFlow, onUpdate, onAd
             <p className="text-xs text-slate-500">Anexe o laudo e registre situação, datas, responsável e pendências no controle operacional.</p>
             {slot('engenharia', 'laudo_engenharia', 'Laudo de engenharia / vistoria *', 'PDF ou imagem emitida pelo responsável')}
             <div className="flex flex-wrap gap-2">
-              <Button disabled={!hasDoc('laudo_engenharia')} className="bg-emerald-600 hover:bg-emerald-700 text-white" onClick={() => onFlow('contrato', {}, 'Engenharia aprovada')}><CheckCircle2 className="w-4 h-4 mr-1.5" /> Vistoria aprovada</Button>
+              <Button disabled={!hasDoc('laudo_engenharia')} onClick={() => onFlow('contrato', {}, 'Engenharia aprovada')}><CheckCircle2 className="w-4 h-4 mr-1.5" /> Vistoria aprovada</Button>
               <Button variant="outline" className="bg-white border-red-200 text-red-600" onClick={() => onFlow('pendencia_engenharia', {}, 'Pendência identificada na engenharia')}>Registrar pendência</Button>
             </div>
           </>
@@ -216,7 +214,7 @@ export function CxFlowStepper({ deal, stages, properties, onFlow, onUpdate, onAd
           <>
             <h4 className="text-sm font-bold text-red-700">Pendência de engenharia</h4>
             <Textarea className={FIELD} rows={2} placeholder="Descreva o que precisa ser corrigido" value={pendNote} onChange={(e) => setPendNote(e.target.value)} onBlur={() => onUpdate(deal.id, { pendencies: pendNote || null })} />
-            <Button style={{ backgroundColor: BRAND }} className="text-white" onClick={() => onFlow('engenharia', { pendencies: pendNote || null }, 'Correção enviada — nova conferência da engenharia')}><RotateCcw className="w-4 h-4 mr-1.5" /> Voltar para Engenharia</Button>
+            <Button onClick={() => onFlow('engenharia', { pendencies: pendNote || null }, 'Correção enviada — nova conferência da engenharia')}><RotateCcw className="w-4 h-4 mr-1.5" /> Voltar para Engenharia</Button>
           </>
         ) : ['contrato', 'itbi_registro', 'entrega_chaves'].includes(deal.stage) ? (
           (() => {
@@ -245,8 +243,6 @@ export function CxFlowStepper({ deal, stages, properties, onFlow, onUpdate, onAd
                   </div>
                 </div>
                 <Button
-                  style={{ backgroundColor: BRAND }}
-                  className="text-white hover:opacity-90"
                   disabled={!hasDoc(req.type)}
                   onClick={() =>
                     onFlow(next, {}, `${label} concluído em ${stepDate.split('-').reverse().join('/')}${stepNote ? ` — ${stepNote}` : ''}`)

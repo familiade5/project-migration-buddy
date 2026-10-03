@@ -43,7 +43,7 @@ export function CxStakeholders({ deal }: { deal: CxDeal }) {
         <div><Label className="text-xs text-slate-600">CPF</Label><Input className={FIELD} value={form.cpf} onChange={(e) => setForm((p) => ({...p, cpf:e.target.value}))} /></div>
         <div><Label className="text-xs text-slate-600">Renda mensal</Label><Input className={FIELD} inputMode="decimal" value={form.monthly_income} onChange={(e) => setForm((p) => ({...p, monthly_income:e.target.value}))} /></div>
       </div>
-      <Button variant="outline" disabled={!form.full_name.trim()} onClick={add}><UserPlus className="w-4 h-4 mr-1.5" />Adicionar participante</Button>
+      <Button disabled={!form.full_name.trim()} onClick={add}><UserPlus className="w-4 h-4 mr-1.5" />Adicionar participante</Button>
     </section>
   );
 }
