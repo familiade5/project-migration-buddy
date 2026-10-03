@@ -18,9 +18,11 @@ import {
 } from '@/types/cxCrm';
 import { CxFlowStepper } from './CxFlowStepper';
 import { CxCreditAnalysisWorkspace } from './CxCreditAnalysisWorkspace';
+import { CxOperationalWorkspace } from './CxOperationalWorkspace';
+import { CxStakeholders } from './CxStakeholders';
 import { CxProperty } from '@/types/correspondente';
 import { useCxDealDetail } from '@/hooks/useCxDeals';
-import { CalendarClock, FileText, History, Loader2, Pencil, Sparkles, Trash2 } from 'lucide-react';
+import { Archive, CalendarClock, FileText, History, Loader2, Pencil, Sparkles } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 
@@ -265,7 +267,7 @@ export function CxDealDetailModal({
               onClose();
             }}
           >
-            <Trash2 className="w-3.5 h-3.5 mr-1.5" /> Excluir
+            <Archive className="w-3.5 h-3.5 mr-1.5" /> Arquivar
           </Button>
         </div>
 
@@ -277,6 +279,8 @@ export function CxDealDetailModal({
           />
         )}
 
+        <CxStakeholders deal={deal} />
+
         {onFlow && (
           <CxFlowStepper
             deal={deal}
@@ -287,6 +291,8 @@ export function CxDealDetailModal({
             onAddProperty={() => onOpenClient(deal.client_id, 'imoveis')}
           />
         )}
+
+        <CxOperationalWorkspace deal={deal} />
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           <section className="rounded-2xl border border-slate-200 p-4 space-y-3">

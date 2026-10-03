@@ -13,7 +13,9 @@ import {
 import { CxDeal, CxDealStage, CxStage, CX_STAGE_PALETTE } from '@/types/cxCrm';
 import { CxDealColumn } from './CxDealColumn';
 import { CxDealCard } from './CxDealCard';
-import { Plus, X } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Plus, Search, X } from 'lucide-react';
 
 interface Props {
   deals: CxDeal[];
@@ -40,6 +42,19 @@ export function CxDealKanban({
   const [adding, setAdding] = useState(false);
   const [newLabel, setNewLabel] = useState('');
   const [paletteIndex, setPaletteIndex] = useState(0);
+  const [query, setQuery] = useState('');
+  const [purchaseFilter, setPurchaseFilter] = useState('todos');
+
+  const visibleDeals = useMemo(() => {
+    const term = query.trim().toLocaleLowerCase('pt-BR');
+    return deals.filter((deal) => {
+      const matchesQuery = !term || clientName(deal.client_id).toLocaleLowerCase('pt-BR').includes(term)
+        || (deal.process_number || '').toLocaleLowerCase('pt-BR').includes(term)
+        || (deal.title || '').toLocaleLowerCase('pt-BR').includes(term);
+      const matchesPurchase = purchaseFilter === 'todos' || deal.purchase_type === purchaseFilter;
+      return matchesQuery && matchesPurchase;
+    });
+  }, [clientName, deals, purchaseFilter, query]);
 
   const sensors = useSensors(
     useSensor(MouseSensor, { activationConstraint: { distance: 8 } }),
@@ -52,21 +67,21 @@ export function CxDealKanban({
       grouped[s.key] = [];
     });
     const fallback = stages[0]?.key;
-    deals.forEach((d) => {
+    visibleDeals.forEach((d) => {
       if (grouped[d.stage]) grouped[d.stage].push(d);
       else if (fallback) grouped[fallback].push(d);
     });
     return grouped;
-  }, [deals, stages]);
+  }, [visibleDeals, stages]);
 
   const handleStart = (e: DragStartEvent) => {
-    setActive(deals.find((d) => d.id === e.active.id) ?? null);
+    setActive(visibleDeals.find((d) => d.id === e.active.id) ?? null);
   };
 
   const handleEnd = (e: DragEndEvent) => {
     setActive(null);
     if (!e.over) return;
-    const deal = deals.find((d) => d.id === e.active.id);
+    const deal = visibleDeals.find((d) => d.id === e.active.id);
     if (!deal) return;
     const to = String(e.over.id);
     if (deal.stage !== to) onMove(deal.id, deal.stage, to);
@@ -83,6 +98,17 @@ export function CxDealKanban({
 
   return (
     <DndContext sensors={sensors} collisionDetection={closestCenter} onDragStart={handleStart} onDragEnd={handleEnd}>
+      <div className="flex flex-wrap items-center gap-2 mb-3 sticky left-0">
+        <div className="relative flex-1 min-w-[240px] max-w-md">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+          <Input className="pl-9 bg-white border-slate-200 text-slate-900" value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Buscar cliente, processo ou imóvel" />
+        </div>
+        <Select value={purchaseFilter} onValueChange={setPurchaseFilter}>
+          <SelectTrigger className="w-[180px] bg-white border-slate-200 text-slate-900"><SelectValue /></SelectTrigger>
+          <SelectContent className="bg-white text-slate-900"><SelectItem value="todos">Todos os tipos</SelectItem><SelectItem value="financiada">Financiada</SelectItem><SelectItem value="avista">À vista</SelectItem></SelectContent>
+        </Select>
+        <span className="text-xs font-semibold text-slate-500">{visibleDeals.length} processo(s)</span>
+      </div>
       <div className="flex gap-3 pb-4 overflow-x-auto">
         {stages.map((stage, i) => (
           <CxDealColumn

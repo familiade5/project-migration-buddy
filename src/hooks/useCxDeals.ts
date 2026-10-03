@@ -122,22 +122,13 @@ export function useCxDeals() {
   const deleteDeal = useCallback(
     async (id: string) => {
       const { data: auth } = await supabase.auth.getUser();
-      const { data: role } = await supabase.from('cx_team_roles').select('id').eq('user_id', auth.user?.id ?? '').eq('role', 'administrador').eq('is_active', true).maybeSingle();
-      if (!role) {
-        const { error } = await supabase.from('cx_deals').update({ archived_at: new Date().toISOString(), archived_by_user_id: auth.user?.id ?? null } as never).eq('id', id);
-        if (error) { toast.error('Erro ao arquivar', { description: error.message }); return false; }
-        toast.success('Processo arquivado');
-        setDeals((prev) => prev.filter((d) => d.id !== id));
-        return true;
-      }
-      const confirmation = window.prompt('Exclusão definitiva: digite EXCLUIR para confirmar.');
-      if (confirmation !== 'EXCLUIR') return false;
-      const { error } = await supabase.from('cx_deals').delete().eq('id', id);
+      const archivedAt = new Date().toISOString();
+      const { error } = await supabase.from('cx_deals').update({ archived_at: archivedAt, archived_by_user_id: auth.user?.id ?? null } as never).eq('id', id);
       if (error) {
-        toast.error('Erro ao excluir', { description: error.message });
+        toast.error('Erro ao arquivar', { description: error.message });
         return false;
       }
-      toast.success('Processo excluído definitivamente');
+      toast.success('Processo arquivado com histórico preservado');
       setDeals((prev) => prev.filter((d) => d.id !== id));
       return true;
     },

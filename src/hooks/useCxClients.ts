@@ -27,6 +27,7 @@ export function useCxClients() {
     const { data, error } = await supabase
       .from('cx_clients')
       .select('*')
+      .is('archived_at', null)
       .order('created_at', { ascending: false });
     if (error) {
       toast.error('Erro ao carregar clientes', { description: error.message });
@@ -67,12 +68,14 @@ export function useCxClients() {
   }, [fetchClients]);
 
   const deleteClient = useCallback(async (id: string) => {
-    const { error } = await supabase.from('cx_clients').delete().eq('id', id);
+    const { data: auth } = await supabase.auth.getUser();
+    const archivedAt = new Date().toISOString();
+    const { error } = await supabase.from('cx_clients').update({ archived_at: archivedAt, archived_by_user_id: auth.user?.id ?? null } as never).eq('id', id);
     if (error) {
-      toast.error('Erro ao excluir', { description: error.message });
+      toast.error('Erro ao arquivar', { description: error.message });
       return false;
     }
-    toast.success('Cliente excluído');
+    toast.success('Cliente arquivado com histórico preservado');
     await fetchClients();
     return true;
   }, [fetchClients]);
