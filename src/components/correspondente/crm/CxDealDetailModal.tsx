@@ -19,6 +19,7 @@ import {
 import { CxFlowStepper } from './CxFlowStepper';
 import { CxCreditAnalysisWorkspace } from './CxCreditAnalysisWorkspace';
 import { CxOperationalWorkspace } from './CxOperationalWorkspace';
+import { CxStakeholders } from './CxStakeholders';
 import { CxProperty } from '@/types/correspondente';
 import { useCxDealDetail } from '@/hooks/useCxDeals';
 import { CalendarClock, FileText, History, Loader2, Pencil, Sparkles, Trash2 } from 'lucide-react';
@@ -277,6 +278,8 @@ export function CxDealDetailModal({
             onMove={(to, extra, note) => onFlow(to, extra, note)}
           />
         )}
+
+        <CxStakeholders deal={deal} />
 
         {onFlow && (
           <CxFlowStepper
