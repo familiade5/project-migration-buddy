@@ -7,7 +7,6 @@ import { AutoPostQueueItem } from '@/hooks/useAutoPostQueue';
 import { PropertyData } from '@/types/property';
 import { PostCover } from '@/components/posts/PostCover';
 import { PostContact } from '@/components/posts/PostContact';
-import { VDHFeedPhotoSlide } from '@/components/posts/VDHFeedPhotoSlide';
 import { VDHFullSupportSlide, VDHNoCostSlide, VDHRetakenPropertySlide } from '@/components/posts/VDHEducationalSlides';
 import { VDHStory1 } from '@/components/posts/story/VDHStory1';
 import { useCrecis } from '@/hooks/useCrecis';

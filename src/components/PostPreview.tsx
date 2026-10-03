@@ -9,7 +9,6 @@ import { PostCover } from './posts/PostCover';
 import { PostDetails } from './posts/PostDetails';
 import { PostFeatures } from './posts/PostFeatures';
 import { PostContact } from './posts/PostContact';
-import { VDHFeedPhotoSlide } from './posts/VDHFeedPhotoSlide';
 import { VDHFullSupportSlide, VDHNoCostSlide, VDHRetakenPropertySlide } from './posts/VDHEducationalSlides';
 import { PostCoverStory } from './posts/story/PostCoverStory';
 import { PostContactStory } from './posts/story/PostContactStory';
