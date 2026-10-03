@@ -27,7 +27,10 @@ export function CxOperationalWorkspace({ deal }: { deal: CxDeal }) {
 
   useEffect(() => {
     const next: Record<string, string> = {};
-    Object.entries(record || {}).forEach(([key, value]) => { next[key] = value == null ? '' : String(value).slice(0, key.endsWith('_at') ? 16 : undefined); });
+    Object.entries(record || {}).forEach(([key, value]) => {
+      if (value == null) next[key] = '';
+      else next[key] = key.endsWith('_at') ? String(value).slice(0, 16) : String(value);
+    });
     setForm(next);
   }, [record?.id, deal.stage]);
 
