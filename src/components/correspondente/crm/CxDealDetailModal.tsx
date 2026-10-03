@@ -22,7 +22,7 @@ import { CxOperationalWorkspace } from './CxOperationalWorkspace';
 import { CxStakeholders } from './CxStakeholders';
 import { CxProperty } from '@/types/correspondente';
 import { useCxDealDetail } from '@/hooks/useCxDeals';
-import { CalendarClock, FileText, History, Loader2, Pencil, Sparkles, Trash2 } from 'lucide-react';
+import { Archive, CalendarClock, FileText, History, Loader2, Pencil, Sparkles } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 
@@ -267,7 +267,7 @@ export function CxDealDetailModal({
               onClose();
             }}
           >
-            <Trash2 className="w-3.5 h-3.5 mr-1.5" /> Excluir
+            <Archive className="w-3.5 h-3.5 mr-1.5" /> Arquivar
           </Button>
         </div>
 

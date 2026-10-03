@@ -669,7 +669,7 @@ export default function CorrespondenteCaixaPage() {
                       size="sm"
                       className="text-slate-500 hover:text-red-600"
                       onClick={async () => {
-                        if (confirm(`Excluir ${selected.full_name} e todos os documentos?`)) {
+                        if (confirm(`Arquivar ${selected.full_name}? O histórico e os documentos serão preservados.`)) {
                           await deleteClient(selected.id);
                           setSelectedId(null);
                         }
@@ -732,13 +732,13 @@ export default function CorrespondenteCaixaPage() {
                               size="sm"
                               className="h-8 bg-white border-slate-200 text-xs font-medium text-slate-700 hover:bg-red-50 hover:text-red-600 hover:border-red-300 shadow-sm"
                               onClick={async () => {
-                                if (confirm(`Retirar ${selected.full_name} do funil de crédito?`)) {
+                                if (confirm(`Arquivar o processo de ${selected.full_name}? Todo o histórico será preservado.`)) {
                                   await deleteDeal(deal.id);
                                 }
                               }}
                             >
                               <Trash2 className="w-3.5 h-3.5 mr-1.5 text-red-500" />
-                              Retirar do funil
+                              Arquivar processo
                             </Button>
                           )}
                         </div>
