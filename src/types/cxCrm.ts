@@ -13,6 +13,11 @@ export interface CxStage {
 }
 
 export type CxRejectionReason = 'rating' | 'capacidade' | 'outro';
+export type CxCreditAnalysisResult = 'aprovado' | 'condicionado' | 'reprovado' | 'erro';
+export type CxProcessStatus =
+  | 'novo_cadastro' | 'aguardando_analise' | 'acompanhamento_credito' | 'credito_aprovado'
+  | 'vinculacao_imovel' | 'documentacao' | 'engenharia' | 'pendencia_engenharia'
+  | 'contratacao' | 'itbi_registro' | 'entrega_chaves' | 'concluido' | 'perdido';
 
 export interface CxDeal {
   id: string;
@@ -22,6 +27,16 @@ export interface CxDeal {
   stage: CxDealStage;
   purchase_type: CxPurchaseType | null;
   credit_status: CxCreditStatus | null;
+  process_number?: string | null;
+  process_status?: CxProcessStatus;
+  next_action?: string | null;
+  next_action_responsible_id?: string | null;
+  next_action_responsible_name?: string | null;
+  next_action_due_at?: string | null;
+  opened_at?: string;
+  closed_at?: string | null;
+  lost_reason?: string | null;
+  archived_at?: string | null;
   rejection_reason: CxRejectionReason | null;
   rejection_notes: string | null;
   bank: string | null;
@@ -71,6 +86,69 @@ export interface CxDealCheck {
   created_by_user_id: string | null;
   created_by_name: string | null;
   created_at: string;
+}
+
+export interface CxCreditAnalysis {
+  id: string;
+  deal_id: string;
+  client_id: string;
+  sequence_number: number;
+  analysis_date: string;
+  result: CxCreditAnalysisResult;
+  proposal_code: string | null;
+  appraisal_code: string | null;
+  correspondent_code: string | null;
+  analyzed_cpf: string | null;
+  analyzed_name: string | null;
+  registration_protocol: string | null;
+  relationship_agency: string | null;
+  funding_source: string | null;
+  modality: string | null;
+  product: string | null;
+  credit_line: 'mcmv' | 'sbpe' | 'outro' | null;
+  mcmv_tier: 'faixa_1' | 'faixa_2' | 'faixa_3' | 'faixa_4' | null;
+  property_value: number | null;
+  financing_value: number | null;
+  approved_value: number | null;
+  possible_installment: number | null;
+  installment_value: number | null;
+  indexer: string | null;
+  amortization_system: string | null;
+  term_months: number | null;
+  originating_system: string | null;
+  validity_start: string | null;
+  validity_end: string | null;
+  rating: string | null;
+  margin_value: number | null;
+  condition_category: string | null;
+  condition_reason: string | null;
+  rejection_category: CxRejectionReason | null;
+  rejection_reason: string | null;
+  error_message: string | null;
+  error_reference: string | null;
+  operator_name: string | null;
+  analyst_name: string | null;
+  source_document_id: string | null;
+  notes: string | null;
+  created_at: string;
+}
+
+export const CX_ANALYSIS_RESULT = {
+  aprovado: { label: 'Aprovado', tone: 'bg-emerald-50 text-emerald-700 border-emerald-200' },
+  condicionado: { label: 'Condicionado', tone: 'bg-amber-50 text-amber-700 border-amber-200' },
+  reprovado: { label: 'Reprovado', tone: 'bg-red-50 text-red-700 border-red-200' },
+  erro: { label: 'Erro de validação', tone: 'bg-rose-50 text-rose-700 border-rose-200' },
+} satisfies Record<CxCreditAnalysisResult, { label: string; tone: string }>;
+
+export function cxProcessStatusForStage(stage: string): CxProcessStatus {
+  const map: Record<string, CxProcessStatus> = {
+    cadastro: 'novo_cadastro', tipo_compra: 'novo_cadastro', analise_credito: 'aguardando_analise',
+    pendencia: 'acompanhamento_credito', credito_aprovado: 'credito_aprovado',
+    vincular_imovel: 'vinculacao_imovel', documentacao: 'documentacao', engenharia: 'engenharia',
+    pendencia_engenharia: 'pendencia_engenharia', contrato: 'contratacao', itbi_registro: 'itbi_registro',
+    entrega_chaves: 'entrega_chaves', concluido: 'concluido', perdido: 'perdido',
+  };
+  return map[stage] ?? 'novo_cadastro';
 }
 
 export const CX_STAGE_ORDER: CxDealStage[] = [
@@ -160,7 +238,7 @@ export function cxStageKeyFromLabel(label: string) {
 
 // ================= Fluxo do funil (regras) =================
 export type CxPurchaseType = 'avista' | 'financiada';
-export type CxCreditStatus = 'aprovado' | 'reprovado';
+export type CxCreditStatus = 'aprovado' | 'condicionado' | 'reprovado' | 'erro';
 
 export const CX_PURCHASE_LABEL: Record<CxPurchaseType, string> = {
   avista: 'À vista',
@@ -206,10 +284,7 @@ export function cxMoveBlocker(deal: FlowDeal, to: string): string | null {
 
 /** Campos extras a gravar ao entrar numa etapa. */
 export function cxStagePatch(to: string): Record<string, unknown> {
-  if (to === 'credito_aprovado') return { credit_status: 'aprovado' };
-  if (to === 'pendencia') return { credit_status: 'reprovado' };
-  if (to === 'analise_credito') return { credit_status: null };
-  return {};
+  return { process_status: cxProcessStatusForStage(to) };
 }
 
 // ================= Próxima ação (mesa do analista) =================
