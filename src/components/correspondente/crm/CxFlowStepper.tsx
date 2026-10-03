@@ -185,10 +185,38 @@ export function CxFlowStepper({ deal, stages, properties, onFlow, onUpdate, onAd
               style={{ backgroundColor: BRAND }}
               className="text-white hover:opacity-90"
               disabled={!propId}
-              onClick={() => onFlow('contrato', { property_id: propId }, `Imóvel vinculado: ${properties.find((p) => p.id === propId)?.name ?? ''}`)}
+              onClick={() => onFlow('documentacao', { property_id: propId }, `Imóvel vinculado: ${properties.find((p) => p.id === propId)?.name ?? ''}`)}
             >
-              Vincular e seguir para Contrato
+              Vincular e iniciar Documentação
             </Button>
+          </>
+        ) : deal.stage === 'documentacao' ? (
+          <>
+            <h4 className="text-sm font-bold text-slate-900">Documentação do processo</h4>
+            <p className="text-xs text-slate-500">Concentre aqui os documentos conferidos do cliente, imóvel e vendedores.</p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              {slot('documentacao', 'documentacao_cliente', 'Documentação do cliente *', 'Documentos conferidos para o processo')}
+              {slot('documentacao', 'documentacao_imovel', 'Documentação do imóvel *', 'Matrícula e documentos do imóvel')}
+            </div>
+            <Button disabled={!hasDoc('documentacao_cliente') || !hasDoc('documentacao_imovel')} style={{ backgroundColor: BRAND }} className="text-white hover:opacity-90" onClick={() => onFlow(deal.purchase_type === 'financiada' ? 'engenharia' : 'contrato', {}, 'Documentação conferida')}>
+              <Check className="w-4 h-4 mr-1.5" /> Concluir documentação
+            </Button>
+          </>
+        ) : deal.stage === 'engenharia' ? (
+          <>
+            <h4 className="text-sm font-bold text-slate-900">Engenharia / Vistoria</h4>
+            <p className="text-xs text-slate-500">Registre o laudo ou a vistoria antes de seguir para contratação.</p>
+            {slot('engenharia', 'laudo_engenharia', 'Laudo de engenharia / vistoria *', 'PDF ou imagem emitida pelo responsável')}
+            <div className="flex flex-wrap gap-2">
+              <Button disabled={!hasDoc('laudo_engenharia')} className="bg-emerald-600 hover:bg-emerald-700 text-white" onClick={() => onFlow('contrato', {}, 'Engenharia aprovada')}><CheckCircle2 className="w-4 h-4 mr-1.5" /> Vistoria aprovada</Button>
+              <Button variant="outline" className="bg-white border-red-200 text-red-600" onClick={() => onFlow('pendencia_engenharia', {}, 'Pendência identificada na engenharia')}>Registrar pendência</Button>
+            </div>
+          </>
+        ) : deal.stage === 'pendencia_engenharia' ? (
+          <>
+            <h4 className="text-sm font-bold text-red-700">Pendência de engenharia</h4>
+            <Textarea className={FIELD} rows={2} placeholder="Descreva o que precisa ser corrigido" value={pendNote} onChange={(e) => setPendNote(e.target.value)} onBlur={() => onUpdate(deal.id, { pendencies: pendNote || null })} />
+            <Button style={{ backgroundColor: BRAND }} className="text-white" onClick={() => onFlow('engenharia', { pendencies: pendNote || null }, 'Correção enviada — nova conferência da engenharia')}><RotateCcw className="w-4 h-4 mr-1.5" /> Voltar para Engenharia</Button>
           </>
         ) : ['contrato', 'itbi_registro', 'entrega_chaves'].includes(deal.stage) ? (
           (() => {

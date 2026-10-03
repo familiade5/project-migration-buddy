@@ -116,6 +116,7 @@ export interface CxCreditAnalysis {
   amortization_system: string | null;
   term_months: number | null;
   originating_system: string | null;
+  response_at: string | null;
   validity_start: string | null;
   validity_end: string | null;
   rating: string | null;
@@ -246,7 +247,7 @@ export const CX_PURCHASE_LABEL: Record<CxPurchaseType, string> = {
 };
 
 /** Etapas pós-crédito, em sequência obrigatória. */
-export const CX_CLOSING_TRACK = ['vincular_imovel', 'contrato', 'itbi_registro', 'entrega_chaves', 'concluido'];
+export const CX_CLOSING_TRACK = ['vincular_imovel', 'documentacao', 'engenharia', 'contrato', 'itbi_registro', 'entrega_chaves', 'concluido'];
 export const CX_CREDIT_STAGES = ['analise_credito', 'credito_aprovado', 'pendencia'];
 
 type FlowDeal = Pick<CxDeal, 'stage' | 'property_id'> & {
@@ -268,12 +269,16 @@ export function cxMoveBlocker(deal: FlowDeal, to: string): string | null {
       return 'Pendência vem de uma análise de crédito não aprovada.';
     return null;
   }
-  const idx = CX_CLOSING_TRACK.indexOf(to);
+  const track = type === 'avista'
+    ? ['vincular_imovel', 'documentacao', 'contrato', 'itbi_registro', 'entrega_chaves', 'concluido']
+    : CX_CLOSING_TRACK;
+  if (to === 'pendencia_engenharia') return from === 'engenharia' ? null : 'A pendência de engenharia deve partir da vistoria.';
+  const idx = track.indexOf(to);
   if (idx >= 0) {
     if (!type) return 'Defina primeiro o tipo de compra (à vista ou financiada).';
     if (type === 'financiada' && deal.credit_status !== 'aprovado')
       return 'Compra financiada só avança para Vincular imóvel após o crédito aprovado.';
-    const fromIdx = CX_CLOSING_TRACK.indexOf(from);
+    const fromIdx = from === 'pendencia_engenharia' ? track.indexOf('engenharia') : track.indexOf(from);
     if (idx === 0) return null;
     if (fromIdx < 0 || fromIdx < idx - 1) return `Avance uma etapa por vez até "${to.replace(/_/g, ' ')}".`;
     if (idx >= 1 && !deal.property_id) return 'Vincule um imóvel ao caso antes de seguir para o Contrato.';
@@ -309,7 +314,13 @@ export function cxNextAction(deal: CxDeal): CxNextAction | null {
         ? { label: days < 0 ? `Pendência vencida há ${Math.abs(days)}d` : 'Pendência vence hoje', urgent: true }
         : { label: 'Acompanhar pendência', urgent: false };
     case 'vincular_imovel':
-      return { label: deal.property_id ? 'Seguir para Contrato' : 'Vincular imóvel', urgent: false };
+      return { label: deal.property_id ? 'Iniciar documentação' : 'Vincular imóvel', urgent: false };
+    case 'documentacao':
+      return { label: 'Conferir documentação', urgent: false };
+    case 'engenharia':
+      return { label: 'Acompanhar vistoria', urgent: false };
+    case 'pendencia_engenharia':
+      return { label: 'Resolver pendência da vistoria', urgent: true };
     case 'contrato':
       return { label: 'Concluir contrato', urgent: false };
     case 'itbi_registro':
@@ -329,5 +340,5 @@ export function cxDaysIdle(deal: CxDeal): number {
   return Number.isNaN(t) ? 0 : Math.floor((Date.now() - t) / 86400000);
 }
 
-export const CX_FLOW_AVISTA = ['cadastro', 'tipo_compra', 'vincular_imovel', 'contrato', 'itbi_registro', 'entrega_chaves', 'concluido'];
-export const CX_FLOW_FINANCIADA = ['cadastro', 'tipo_compra', 'analise_credito', 'credito_aprovado', 'vincular_imovel', 'contrato', 'itbi_registro', 'entrega_chaves', 'concluido'];
+export const CX_FLOW_AVISTA = ['cadastro', 'tipo_compra', 'vincular_imovel', 'documentacao', 'contrato', 'itbi_registro', 'entrega_chaves', 'concluido'];
+export const CX_FLOW_FINANCIADA = ['cadastro', 'tipo_compra', 'analise_credito', 'credito_aprovado', 'vincular_imovel', 'documentacao', 'engenharia', 'contrato', 'itbi_registro', 'entrega_chaves', 'concluido'];

@@ -1683,6 +1683,7 @@ export type Database = {
           rejection_category: string | null
           rejection_reason: string | null
           relationship_agency: string | null
+          response_at: string | null
           result: string
           sequence_number: number
           source: string
@@ -1731,6 +1732,7 @@ export type Database = {
           rejection_category?: string | null
           rejection_reason?: string | null
           relationship_agency?: string | null
+          response_at?: string | null
           result: string
           sequence_number: number
           source?: string
@@ -1779,6 +1781,7 @@ export type Database = {
           rejection_category?: string | null
           rejection_reason?: string | null
           relationship_agency?: string | null
+          response_at?: string | null
           result?: string
           sequence_number?: number
           source?: string

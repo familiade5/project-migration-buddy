@@ -11,13 +11,13 @@ import { extractCreditAnalysisFile, openCxFile, saveCxFile } from '@/lib/cxDocFi
 import { useCxCreditAnalyses } from '@/hooks/useCxCreditAnalyses';
 import { supabase } from '@/integrations/supabase/client';
 
-const FIELD = 'bg-background border-border text-foreground';
+const FIELD = 'bg-white border-slate-200 text-slate-900 placeholder:text-slate-400';
 type Form = Record<string, string> & { result: CxCreditAnalysisResult };
 const EMPTY: Form = {
   result: 'aprovado', proposal_code: '', appraisal_code: '', correspondent_code: '', analyzed_cpf: '', analyzed_name: '',
   registration_protocol: '', relationship_agency: '', funding_source: '', modality: '', product: '', credit_line: '', mcmv_tier: '',
   property_value: '', financing_value: '', approved_value: '', installment_value: '', possible_installment: '', indexer: '',
-  amortization_system: '', term_months: '', originating_system: '', validity_start: '', validity_end: '', rating: '', margin_value: '',
+  amortization_system: '', term_months: '', originating_system: '', response_at: '', validity_start: '', validity_end: '', rating: '', margin_value: '',
   condition_category: '', condition_reason: '', rejection_category: '', rejection_reason: '', error_message: '', error_reference: '',
   operator_name: '', notes: '',
 };
@@ -78,7 +78,7 @@ export function CxCreditAnalysisWorkspace({ deal, onUpdate, onMove }: Props) {
       const doc = await saveCxFile({ clientId: deal.client_id, file, docType: 'resultado_analise', extracted, dealId: deal.id, stage: 'analise_credito' });
       const payload: Record<string, unknown> = { client_id: deal.client_id, result: form.result, source_document_id: doc.id, source: extracted ? 'extracao_conferida' : 'manual', extracted_snapshot: extracted || {} };
       const numeric = ['property_value','financing_value','approved_value','installment_value','possible_installment','margin_value','term_months'];
-      const dates = ['validity_start','validity_end'];
+      const dates = ['validity_start','validity_end','response_at'];
       Object.keys(EMPTY).forEach((key) => {
         if (key === 'result') return;
         payload[key] = numeric.includes(key) ? number(form[key]) : dates.includes(key) ? date(form[key]) : form[key].trim() || null;
@@ -95,7 +95,8 @@ export function CxCreditAnalysisWorkspace({ deal, onUpdate, onMove }: Props) {
         next_review_at: isApproved ? null : deal.next_review_at,
         next_action: isApproved ? 'Vincular imóvel' : 'Acompanhar pendência e preparar reanálise',
       });
-      onMove(isApproved ? 'credito_aprovado' : 'pendencia', {}, `Análise #${saved.sequence_number}: ${CX_ANALYSIS_RESULT[form.result].label}`);
+      const inCreditFlow = ['cadastro', 'tipo_compra', 'analise_credito', 'credito_aprovado', 'pendencia'].includes(deal.stage);
+      if (inCreditFlow) onMove(isApproved ? 'credito_aprovado' : 'pendencia', {}, `Análise #${saved.sequence_number}: ${CX_ANALYSIS_RESULT[form.result].label}`);
       setEditing(false); setForm(EMPTY); setFile(null); setExtracted(null);
       toast.success('Nova análise salva no histórico');
     } catch (error) { toast.error('Não foi possível salvar a análise', { description: error instanceof Error ? error.message : undefined }); }
@@ -111,21 +112,21 @@ export function CxCreditAnalysisWorkspace({ deal, onUpdate, onMove }: Props) {
       <Button onClick={() => setEditing(true)}><Plus className="mr-2 h-4 w-4" />Nova análise</Button>
     </div>
 
-    {editing && <div className="rounded-lg border border-border bg-muted/30 p-4 space-y-4">
+    {editing && <div className="rounded-lg border border-slate-200 bg-slate-50 p-4 space-y-4 overflow-hidden">
       <input ref={ref} type="file" accept="image/*,application/pdf" className="hidden" onChange={(e) => { const selected=e.target.files?.[0]; e.target.value=''; if(selected) read(selected); }} />
       <div className="flex flex-wrap items-center gap-2">
-        <Button variant="outline" onClick={() => ref.current?.click()} disabled={reading || saving}>{reading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Sparkles className="mr-2 h-4 w-4" />}{reading ? 'Lendo documento…' : 'Anexar e preencher automaticamente'}</Button>
+        <Button variant="outline" className="bg-white border-slate-200 text-slate-700 hover:bg-slate-100" onClick={() => ref.current?.click()} disabled={reading || saving}>{reading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Sparkles className="mr-2 h-4 w-4" />}{reading ? 'Lendo documento…' : 'Anexar e preencher automaticamente'}</Button>
         {file && <span className="text-xs text-muted-foreground"><FileText className="inline h-4 w-4 mr-1" />{file.name}</span>}
       </div>
       <div><Label className="text-xs text-muted-foreground">Resultado *</Label><Select value={form.result} onValueChange={(v) => set('result', v)}><SelectTrigger className={FIELD}><SelectValue /></SelectTrigger><SelectContent>{Object.entries(CX_ANALYSIS_RESULT).map(([key,cfg]) => <SelectItem key={key} value={key}>{cfg.label}</SelectItem>)}</SelectContent></Select></div>
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">{input('proposal_code','Código da proposta')}{input('appraisal_code','Código da avaliação')}{input('correspondent_code','Código do correspondente')}{input('analyzed_name','Nome analisado')}{input('analyzed_cpf','CPF analisado')}{input('relationship_agency','Agência de relacionamento')}{input('registration_protocol','Protocolo')}{input('operator_name','Operador solicitante')}{input('funding_source','Origem do recurso')}</div>
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">{input('modality','Modalidade')}{input('product','Produto')}<div><Label className="text-xs text-muted-foreground">Linha de crédito</Label><Select value={form.credit_line} onValueChange={(v) => set('credit_line',v)}><SelectTrigger className={FIELD}><SelectValue placeholder="Selecione" /></SelectTrigger><SelectContent><SelectItem value="mcmv">MCMV</SelectItem><SelectItem value="sbpe">SBPE</SelectItem><SelectItem value="outro">Outro</SelectItem></SelectContent></Select></div>{form.credit_line==='mcmv' && <div><Label className="text-xs text-muted-foreground">Faixa MCMV *</Label><Select value={form.mcmv_tier} onValueChange={(v)=>set('mcmv_tier',v)}><SelectTrigger className={FIELD}><SelectValue placeholder="Selecione" /></SelectTrigger><SelectContent>{[1,2,3,4].map(n=><SelectItem key={n} value={`faixa_${n}`}>Faixa {n}</SelectItem>)}</SelectContent></Select></div>}</div>
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">{input('property_value','Valor do imóvel')}{input('financing_value','Financiamento')}{input('approved_value','Valor aprovado')}{input('installment_value','Prestação')}{input('possible_installment','Prestação possível')}{input('term_months','Prazo (meses)','number')}{input('indexer','Indexador')}{input('amortization_system','Amortização')}{input('originating_system','Sistema originador')}{input('validity_start','Validade inicial')}{input('validity_end','Validade final')}{input('rating','Rating')}{input('margin_value','Margem')}</div>
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">{input('property_value','Valor do imóvel')}{input('financing_value','Financiamento')}{input('approved_value','Valor aprovado')}{input('installment_value','Prestação')}{input('possible_installment','Prestação possível')}{input('term_months','Prazo (meses)','number')}{input('indexer','Indexador')}{input('amortization_system','Amortização')}{input('originating_system','Sistema originador')}{input('response_at','Resposta SIRIC')}{input('validity_start','Validade inicial')}{input('validity_end','Validade final')}{input('rating','Rating')}{input('margin_value','Margem')}</div>
       {form.result==='condicionado' && <div className="space-y-2">{input('condition_category','Categoria da condição')}<Label className="text-xs text-muted-foreground">Condição de aprovação</Label><Textarea value={form.condition_reason} onChange={(e)=>set('condition_reason',e.target.value)} className={FIELD} /></div>}
       {form.result==='reprovado' && <div className="space-y-2"><Label className="text-xs text-muted-foreground">Motivo</Label><Select value={form.rejection_category} onValueChange={(v)=>set('rejection_category',v)}><SelectTrigger className={FIELD}><SelectValue placeholder="Selecione" /></SelectTrigger><SelectContent><SelectItem value="rating">Rating</SelectItem><SelectItem value="capacidade">Capacidade de pagamento</SelectItem><SelectItem value="outro">Outro</SelectItem></SelectContent></Select><Textarea value={form.rejection_reason} onChange={(e)=>set('rejection_reason',e.target.value)} placeholder="Mensagem exata da reprovação" className={FIELD} /></div>}
       {form.result==='erro' && <div className="space-y-2"><Textarea value={form.error_message} onChange={(e)=>set('error_message',e.target.value)} placeholder="Mensagem do erro de validação" className={FIELD} />{input('error_reference','Pergunta ou referência')}</div>}
       <Textarea value={form.notes} onChange={(e)=>set('notes',e.target.value)} placeholder="Observações da análise" className={FIELD} />
-      <div className="flex justify-end gap-2"><Button variant="outline" onClick={()=>setEditing(false)} disabled={saving}>Cancelar</Button><Button onClick={save} disabled={saving || reading || !file}>{saving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}Confirmar e salvar nova análise</Button></div>
+      <div className="flex flex-wrap justify-end gap-2"><Button variant="outline" className="bg-white border-slate-200 text-slate-700" onClick={()=>setEditing(false)} disabled={saving}>Cancelar</Button><Button className="bg-[#1a3a6b] text-white hover:bg-[#142e55]" onClick={save} disabled={saving || reading || !file}>{saving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}Confirmar e salvar nova análise</Button></div>
     </div>}
 
     {loading ? <p className="text-sm text-muted-foreground">Carregando histórico…</p> : analyses.length===0 ? <div className="rounded-lg border border-dashed border-border py-8 text-center text-sm text-muted-foreground"><FileSearch className="mx-auto mb-2 h-6 w-6" />Nenhuma análise registrada.</div> : <div className="space-y-2">{analyses.map((a) => <AnalysisCard key={a.id} analysis={a} latest={a.id===latest?.id} />)}</div>}

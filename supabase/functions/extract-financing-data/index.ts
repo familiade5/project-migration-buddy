@@ -14,6 +14,7 @@ Regras:
 - "property_value" = valor de venda/avaliação do imóvel; "financing_value" = valor financiado; "down_payment" = recursos próprios/entrada; "fgts_value" = FGTS utilizado; "subsidy_value" = subsídio/desconto do governo (MCMV); "monthly_income" = renda bruta familiar considerada; "installment_value" = valor da primeira prestação/parcela total.
 - Classifique "result" como "aprovado", "condicionado", "reprovado" ou "erro". "Avaliação de Risco Aprovada não Propagada" é aprovada. Não confunda erro de validação com reprovação.
 - Extraia literalmente códigos da proposta, avaliação e correspondente, CPF/nome, protocolo, agência, operador, datas de validade, origem de recurso, modalidade, produto, linha MCMV/SBPE, faixa, indexador, amortização, prazo e sistema originador.
+- "response_at" é a data/hora da Resposta SIRIC. Ela NUNCA é validade. "validity_start" e "validity_end" só vêm da linha explicitamente chamada Validade.
 - Se condicionado, separe a mensagem em "condition_reason" e a prestação possível em "possible_installment".
 - Se reprovado, classifique "rejection_category" como "rating", "capacidade" ou "outro" e preserve a mensagem literal em "rejection_reason".
 - Se erro, preserve a mensagem em "error_message" e a pergunta/referência em "error_reference".
@@ -57,6 +58,7 @@ const tool = {
         amortization_system: { type: ["string", "null"] },
         term_months: { type: ["integer", "null"] },
         originating_system: { type: ["string", "null"] },
+        response_at: { type: ["string", "null"] },
         validity_start: { type: ["string", "null"] },
         validity_end: { type: ["string", "null"] },
         rating: { type: ["string", "null"] },
