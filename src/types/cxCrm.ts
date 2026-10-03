@@ -116,6 +116,7 @@ export interface CxCreditAnalysis {
   amortization_system: string | null;
   term_months: number | null;
   originating_system: string | null;
+  response_at: string | null;
   validity_start: string | null;
   validity_end: string | null;
   rating: string | null;
