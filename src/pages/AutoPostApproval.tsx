@@ -21,8 +21,8 @@ const BRAND_BLUE = '#1a3a6b';
 const BRAND_GOLD = '#c9a84c';
 
 const statusTabs = [
-  { key: 'recent', label: 'Adicionados recentemente', icon: Sparkles, color: '#c9a84c' },
   { key: 'pending', label: 'Pendentes', icon: Clock, color: '#f59e0b' },
+  { key: 'recent', label: 'Imóveis novos', icon: Sparkles, color: '#c9a84c' },
   { key: 'approved', label: 'Aprovados', icon: CheckCircle2, color: '#22c55e' },
   { key: 'published', label: 'Publicados', icon: CheckCircle2, color: BRAND_BLUE },
   { key: 'rejected', label: 'Rejeitados', icon: XCircle, color: '#ef4444' },
@@ -64,9 +64,8 @@ const AutoPostApproval = () => {
   const { data: pendingItems } = useAutoPostQueue('pending');
   const recentItems = useMemo(() => (pendingItems || []).filter((item) =>
     (item.property_data as any)?.autoSync === true
-      && Date.now() - new Date(item.created_at).getTime() < 7 * 86400_000
   ), [pendingItems]);
-  // "Adicionados recentemente": pendentes trazidos pela atualização diária do site nos últimos 7 dias
+  // Imóveis inéditos trazidos pela varredura diária permanecem aqui até serem aprovados, rejeitados ou marcados como publicados.
   const items = useMemo(() => activeTab !== 'recent' ? rawItems : recentItems, [rawItems, recentItems, activeTab]);
 
   const [cityFilter, setCityFilter] = useState('all');
@@ -307,22 +306,6 @@ const AutoPostApproval = () => {
           </div>
           <div className="flex flex-wrap gap-2">
             <Button
-              type="button"
-              onClick={() => {
-                setActiveTab('recent');
-                setStateFilter('all');
-                setCityFilter('all');
-                setDateFilter('all');
-                setFinancingFilter('all');
-              }}
-              className="gap-2 text-white"
-              style={{ backgroundColor: BRAND_BLUE }}
-            >
-              <Sparkles className="h-4 w-4" />
-              Imóveis novos
-              <span className="rounded-full bg-white/20 px-2 py-0.5 text-xs font-bold">{recentItems.length}</span>
-            </Button>
-            <Button
               onClick={handleScrapeNow}
               disabled={isScraping}
               className="text-white gap-2"
@@ -525,7 +508,7 @@ const AutoPostApproval = () => {
             </p>
             <p className="text-sm">
               {activeTab === 'recent'
-                ? 'A varredura foi concluída, mas não encontrou imóveis inéditos para a fila nos últimos 7 dias.'
+                ? 'A última varredura não encontrou imóveis inéditos aguardando sua conferência.'
                 : activeTab === 'pending'
                 ? 'Clique em "Buscar Imóveis" para capturar novos imóveis'
                 : 'Nenhum item nesta categoria'}
