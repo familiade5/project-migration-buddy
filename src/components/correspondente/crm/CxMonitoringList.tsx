@@ -1,11 +1,14 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { CxDeal, CxStage, CX_REJECTION_CONFIG, cxDaysIdle, cxDaysUntil, cxStageCfg } from '@/types/cxCrm';
-import { AlertTriangle, CalendarClock, Hourglass, ListChecks, RotateCcw } from 'lucide-react';
+import { AlertTriangle, CalendarClock, HardHat, Hourglass, ListChecks, RotateCcw } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
 
 const BRAND = '#1a3a6b';
 const IDLE_DAYS = 7;
 
-type Filter = 'pendencias' | 'vencidos' | 'proximos' | 'parados' | 'todos';
+type Filter = 'credito' | 'operacional' | 'vencidos' | 'proximos' | 'parados' | 'todos';
+
+type OpenTask = { deal_id: string; title: string; due_at: string | null; priority: string };
 
 interface Props {
   deals: CxDeal[];
@@ -16,26 +19,34 @@ interface Props {
 }
 
 export function CxMonitoringList({ deals, stages, clientName, onOpen, onNewAnalysis }: Props) {
-  const [filter, setFilter] = useState<Filter>('pendencias');
+  const [filter, setFilter] = useState<Filter>('credito');
+  const [tasks, setTasks] = useState<OpenTask[]>([]);
   const active = useMemo(() => deals.filter((d) => d.stage !== 'concluido'), [deals]);
 
+  useEffect(() => {
+    supabase.from('cx_tasks').select('deal_id,title,due_at,priority').in('status', ['aberta','em_andamento']).then(({ data }) => setTasks((data || []) as OpenTask[]));
+  }, [deals]);
+
   const groups = useMemo(() => {
-    const pend = active.filter((d) => d.stage === 'pendencia');
+    const credit = active.filter((d) => d.stage === 'pendencia');
+    const operationalIds = new Set(tasks.map((t) => t.deal_id));
+    const operational = active.filter((d) => d.stage === 'pendencia_engenharia' || operationalIds.has(d.id));
     const venc = active.filter((d) => (cxDaysUntil(d.next_review_at) ?? 99) <= 0);
     const prox = active.filter((d) => {
       const n = cxDaysUntil(d.next_review_at);
       return n !== null && n > 0 && n <= 7;
     });
     const par = active.filter((d) => cxDaysIdle(d) >= IDLE_DAYS);
-    return { pendencias: pend, vencidos: venc, proximos: prox, parados: par, todos: active };
-  }, [active]);
+    return { credito: credit, operacional: operational, vencidos: venc, proximos: prox, parados: par, todos: active };
+  }, [active, tasks]);
 
   const list = [...groups[filter]].sort((a, b) =>
     (a.next_review_at || '9999').localeCompare(b.next_review_at || '9999'),
   );
 
   const tabs: { key: Filter; label: string; icon: any; tone: string }[] = [
-    { key: 'pendencias', label: 'Em pendência', icon: ListChecks, tone: 'text-red-600 bg-red-50' },
+    { key: 'credito', label: 'Acompanhamento de crédito', icon: ListChecks, tone: 'text-red-600 bg-red-50' },
+    { key: 'operacional', label: 'Pendências operacionais', icon: HardHat, tone: 'text-orange-600 bg-orange-50' },
     { key: 'vencidos', label: 'Vencidos / hoje', icon: AlertTriangle, tone: 'text-amber-600 bg-amber-50' },
     { key: 'proximos', label: 'Próximos 7 dias', icon: CalendarClock, tone: 'text-sky-600 bg-sky-50' },
     { key: 'parados', label: `Parados ${IDLE_DAYS}+ dias`, icon: Hourglass, tone: 'text-slate-600 bg-slate-100' },
@@ -44,7 +55,7 @@ export function CxMonitoringList({ deals, stages, clientName, onOpen, onNewAnaly
 
   return (
     <div className="space-y-4">
-      <div className="grid grid-cols-2 lg:grid-cols-5 gap-3">
+      <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-3">
         {tabs.map((t) => (
           <button
             key={t.key}
@@ -77,7 +88,7 @@ export function CxMonitoringList({ deals, stages, clientName, onOpen, onNewAnaly
                 <div className="min-w-0 flex-1">
                   <p className="text-sm font-semibold text-slate-900 truncate">{clientName(d.client_id)}</p>
                   <p className="text-xs text-slate-500 truncate">
-                    {d.pendencies || d.rejection_notes || d.title || 'Sem descrição'}
+                    {tasks.find((t) => t.deal_id === d.id)?.title || d.pendencies || d.rejection_notes || d.title || 'Sem descrição'}
                   </p>
                 </div>
                 <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ backgroundColor: cfg.bg, color: cfg.color }}>

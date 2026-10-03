@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { CxDeal, CxStage, cxCurrency, cxDaysUntil } from '@/types/cxCrm';
 import { CxClient } from '@/types/correspondente';
-import { AlertTriangle, CheckCircle2, Layers, TrendingUp, Users } from 'lucide-react';
+import { AlertTriangle, CheckCircle2, ClipboardCheck, FileSignature, KeyRound, Layers, SearchCheck, Users } from 'lucide-react';
 
 const BRAND = '#1a3a6b';
 
@@ -15,8 +15,8 @@ interface Props {
 export function CxCrmDashboard({ deals, stages, clients, onOpenStage }: Props) {
   const stats = useMemo(() => {
     const approved = deals.filter((d) => d.credit_status === 'aprovado' || d.purchase_type === 'avista');
-    const rejected = deals.filter((d) => d.stage === 'pendencia');
-    const conditioned = deals.filter((d) => d.stage === 'analise_credito');
+    const creditFollowUp = deals.filter((d) => d.stage === 'pendencia');
+    const inCreditAnalysis = deals.filter((d) => d.stage === 'analise_credito');
     const pipeline = deals
       .filter((d) => d.stage !== 'concluido')
       .reduce((s, d) => s + (d.financing_value || 0), 0);
@@ -24,9 +24,7 @@ export function CxCrmDashboard({ deals, stages, clients, onOpenStage }: Props) {
       const days = cxDaysUntil(d.next_review_at);
       return days !== null && days <= 0;
     });
-    const closedCount = approved.length + rejected.length;
-    const rate = closedCount > 0 ? Math.round((approved.length / closedCount) * 100) : 0;
-    return { approved, rejected, conditioned, pipeline, dueReview, rate };
+    return { approved, creditFollowUp, inCreditAnalysis, pipeline, dueReview };
   }, [deals]);
 
   const byStage = useMemo(() => {
@@ -39,16 +37,19 @@ export function CxCrmDashboard({ deals, stages, clients, onOpenStage }: Props) {
   }, [deals, stages]);
 
   const cards = [
-    { label: 'Casos ativos', value: deals.filter((d) => d.stage !== 'concluido').length, icon: Layers, tone: 'text-[#1a3a6b] bg-blue-50' },
+    { label: 'Casos ativos', value: deals.filter((d) => !['concluido','perdido'].includes(d.stage)).length, icon: Layers, tone: 'text-[#1a3a6b] bg-blue-50' },
     { label: 'Clientes', value: clients.length, icon: Users, tone: 'text-slate-700 bg-slate-100' },
-    { label: 'Aprovados', value: stats.approved.length, icon: CheckCircle2, tone: 'text-emerald-600 bg-emerald-50' },
-    { label: 'Taxa de aprovação', value: `${stats.rate}%`, icon: TrendingUp, tone: 'text-indigo-600 bg-indigo-50' },
+    { label: 'Crédito aprovado', value: deals.filter((d) => d.credit_status === 'aprovado').length, icon: CheckCircle2, tone: 'text-emerald-600 bg-emerald-50' },
+    { label: 'Em documentação', value: deals.filter((d) => d.stage === 'documentacao').length, icon: ClipboardCheck, tone: 'text-sky-600 bg-sky-50' },
     { label: 'Reavaliações vencidas', value: stats.dueReview.length, icon: AlertTriangle, tone: 'text-amber-600 bg-amber-50' },
+    { label: 'Em engenharia', value: deals.filter((d) => ['engenharia','pendencia_engenharia'].includes(d.stage)).length, icon: SearchCheck, tone: 'text-cyan-700 bg-cyan-50' },
+    { label: 'Contrato / registro', value: deals.filter((d) => ['contrato','itbi_registro'].includes(d.stage)).length, icon: FileSignature, tone: 'text-indigo-600 bg-indigo-50' },
+    { label: 'Aguardando chaves', value: deals.filter((d) => d.stage === 'entrega_chaves').length, icon: KeyRound, tone: 'text-orange-600 bg-orange-50' },
   ];
 
   return (
     <div className="space-y-4">
-      <div className="grid grid-cols-2 lg:grid-cols-5 gap-3">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
         {cards.map((c) => (
           <div key={c.label} className="bg-white rounded-2xl border border-slate-200 p-4 shadow-sm">
             <div className={`w-9 h-9 rounded-xl flex items-center justify-center mb-2 ${c.tone}`}>
@@ -94,10 +95,11 @@ export function CxCrmDashboard({ deals, stages, clients, onOpenStage }: Props) {
           </div>
           <div className="h-px bg-slate-100" />
           <div className="space-y-2 text-sm">
-            <Row label="Em análise de crédito" value={stats.conditioned.length} tone="text-amber-600" />
-            <Row label="Reprovados por rating" value={stats.rejected.filter((d) => d.rejection_reason === 'rating').length} tone="text-red-600" />
-            <Row label="Reprovados por capacidade" value={stats.rejected.filter((d) => d.rejection_reason === 'capacidade').length} tone="text-red-600" />
+            <Row label="Em análise de crédito" value={stats.inCreditAnalysis.length} tone="text-amber-600" />
+            <Row label="Acompanhamento de crédito" value={stats.creditFollowUp.length} tone="text-red-600" />
+            <Row label="Pendência de engenharia" value={deals.filter((d) => d.stage === 'pendencia_engenharia').length} tone="text-red-600" />
             <Row label="Em contrato" value={deals.filter((d) => d.stage === 'contrato').length} tone="text-[#1a3a6b]" />
+            <Row label="Concluídos" value={deals.filter((d) => d.stage === 'concluido').length} tone="text-emerald-600" />
           </div>
         </div>
       </div>
