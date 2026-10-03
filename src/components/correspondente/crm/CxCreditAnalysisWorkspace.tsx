@@ -11,7 +11,7 @@ import { extractCreditAnalysisFile, openCxFile, saveCxFile } from '@/lib/cxDocFi
 import { useCxCreditAnalyses } from '@/hooks/useCxCreditAnalyses';
 import { supabase } from '@/integrations/supabase/client';
 
-const FIELD = 'bg-background border-border text-foreground';
+const FIELD = 'bg-white border-slate-200 text-slate-900 placeholder:text-slate-400';
 type Form = Record<string, string> & { result: CxCreditAnalysisResult };
 const EMPTY: Form = {
   result: 'aprovado', proposal_code: '', appraisal_code: '', correspondent_code: '', analyzed_cpf: '', analyzed_name: '',
@@ -111,10 +111,10 @@ export function CxCreditAnalysisWorkspace({ deal, onUpdate, onMove }: Props) {
       <Button onClick={() => setEditing(true)}><Plus className="mr-2 h-4 w-4" />Nova análise</Button>
     </div>
 
-    {editing && <div className="rounded-lg border border-border bg-muted/30 p-4 space-y-4">
+    {editing && <div className="rounded-lg border border-slate-200 bg-slate-50 p-4 space-y-4 overflow-hidden">
       <input ref={ref} type="file" accept="image/*,application/pdf" className="hidden" onChange={(e) => { const selected=e.target.files?.[0]; e.target.value=''; if(selected) read(selected); }} />
       <div className="flex flex-wrap items-center gap-2">
-        <Button variant="outline" onClick={() => ref.current?.click()} disabled={reading || saving}>{reading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Sparkles className="mr-2 h-4 w-4" />}{reading ? 'Lendo documento…' : 'Anexar e preencher automaticamente'}</Button>
+        <Button variant="outline" className="bg-white border-slate-200 text-slate-700 hover:bg-slate-100" onClick={() => ref.current?.click()} disabled={reading || saving}>{reading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Sparkles className="mr-2 h-4 w-4" />}{reading ? 'Lendo documento…' : 'Anexar e preencher automaticamente'}</Button>
         {file && <span className="text-xs text-muted-foreground"><FileText className="inline h-4 w-4 mr-1" />{file.name}</span>}
       </div>
       <div><Label className="text-xs text-muted-foreground">Resultado *</Label><Select value={form.result} onValueChange={(v) => set('result', v)}><SelectTrigger className={FIELD}><SelectValue /></SelectTrigger><SelectContent>{Object.entries(CX_ANALYSIS_RESULT).map(([key,cfg]) => <SelectItem key={key} value={key}>{cfg.label}</SelectItem>)}</SelectContent></Select></div>
@@ -125,7 +125,7 @@ export function CxCreditAnalysisWorkspace({ deal, onUpdate, onMove }: Props) {
       {form.result==='reprovado' && <div className="space-y-2"><Label className="text-xs text-muted-foreground">Motivo</Label><Select value={form.rejection_category} onValueChange={(v)=>set('rejection_category',v)}><SelectTrigger className={FIELD}><SelectValue placeholder="Selecione" /></SelectTrigger><SelectContent><SelectItem value="rating">Rating</SelectItem><SelectItem value="capacidade">Capacidade de pagamento</SelectItem><SelectItem value="outro">Outro</SelectItem></SelectContent></Select><Textarea value={form.rejection_reason} onChange={(e)=>set('rejection_reason',e.target.value)} placeholder="Mensagem exata da reprovação" className={FIELD} /></div>}
       {form.result==='erro' && <div className="space-y-2"><Textarea value={form.error_message} onChange={(e)=>set('error_message',e.target.value)} placeholder="Mensagem do erro de validação" className={FIELD} />{input('error_reference','Pergunta ou referência')}</div>}
       <Textarea value={form.notes} onChange={(e)=>set('notes',e.target.value)} placeholder="Observações da análise" className={FIELD} />
-      <div className="flex justify-end gap-2"><Button variant="outline" onClick={()=>setEditing(false)} disabled={saving}>Cancelar</Button><Button onClick={save} disabled={saving || reading || !file}>{saving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}Confirmar e salvar nova análise</Button></div>
+      <div className="flex flex-wrap justify-end gap-2"><Button variant="outline" className="bg-white border-slate-200 text-slate-700" onClick={()=>setEditing(false)} disabled={saving}>Cancelar</Button><Button className="bg-[#1a3a6b] text-white hover:bg-[#142e55]" onClick={save} disabled={saving || reading || !file}>{saving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}Confirmar e salvar nova análise</Button></div>
     </div>}
 
     {loading ? <p className="text-sm text-muted-foreground">Carregando histórico…</p> : analyses.length===0 ? <div className="rounded-lg border border-dashed border-border py-8 text-center text-sm text-muted-foreground"><FileSearch className="mx-auto mb-2 h-6 w-6" />Nenhuma análise registrada.</div> : <div className="space-y-2">{analyses.map((a) => <AnalysisCard key={a.id} analysis={a} latest={a.id===latest?.id} />)}</div>}
