@@ -202,7 +202,7 @@ export function CxDealDetailModal({
 
   return (
     <Dialog open={!!deal} onOpenChange={(o) => !o && onClose()}>
-      <DialogContent className="flex h-[min(92vh,920px)] w-[calc(100vw-1.5rem)] max-w-6xl flex-col gap-0 overflow-hidden border-border bg-background p-0 text-foreground shadow-xl sm:w-[calc(100vw-3rem)]">
+      <DialogContent className="cx-crm flex h-[min(92vh,920px)] w-[calc(100vw-1.5rem)] max-w-6xl flex-col gap-0 overflow-hidden border-border bg-background p-0 text-foreground shadow-xl sm:w-[calc(100vw-3rem)]">
         <div className="shrink-0 border-b border-border bg-background px-5 pb-4 pt-5 pr-12 sm:px-6 sm:pr-14">
         <DialogHeader>
           <DialogTitle className="flex flex-wrap items-center gap-2 text-primary">
